@@ -97,6 +97,7 @@ function(add_self_containment_test name)
     SYSTEM_INCLUDE_DIRECTORIES
     LINK_LIBRARIES
     COMPILE_OPTIONS
+    COMPILE_FEATURES
     COMPILE_DEFINITIONS
   )
 
