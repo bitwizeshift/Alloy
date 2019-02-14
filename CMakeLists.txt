@@ -88,10 +88,12 @@ set(ALLOY_PRECISION "ALLOY_PRECISION_${ALLOY_PRECISION}")
 string(TOUPPER "${ALLOY_PRECISION}" ALLOY_PRECISION)
 
 configure_file( "${ALLOY_CMAKE_TEMPLATE_PATH}/config.hpp.in"
-                "${CMAKE_CURRENT_BINARY_DIR}/include/alloy/config.hpp"
+                "${CMAKE_CURRENT_BINARY_DIR}/include/alloy/core/config.hpp"
                 @ONLY )
 
 #-----------------------------------------------------------------------------
+
+file(GLOB generated_header_files "${CMAKE_CURRENT_BINARY_DIR}/include/**/*.hpp")
 
 set(header_files
   include/alloy/math/types.hpp
@@ -105,7 +107,8 @@ set(source_files
   src/dummy.cpp
 )
 
-add_library(Alloy 
+add_library(Alloy
+  ${generated_header_files}
   ${header_files} 
   ${inline_header_files} 
   ${source_files}
