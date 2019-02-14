@@ -92,7 +92,7 @@ add_library(Alloy
 add_library(Alloy::Alloy ALIAS Alloy)
 
 target_compile_features(Alloy 
-  PUBLIC cxx_std_14
+  PUBLIC cxx_std_17
 )
 set_target_properties(Alloy 
   PROPERTIES
