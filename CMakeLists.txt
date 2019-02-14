@@ -10,11 +10,34 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMake" "${CMAKE_MODULE_PATH}")
 # Project Options
 ##############################################################################
 
-option(ALLOY_COMPILE_SELF_CONTAINMENT_TESTS "Include each header independently in a .cpp file to determine header self-containment" OFF)
+option(BUILD_SHARED_LIBS "Whether to build this library as a shared library" ON)
+option(ALLOY_COMPILE_SELF_CONTAINMENT_TESTS "Include each public header independently in a .cpp file to determine header self-containment" ON)
 option(ALLOY_COMPILE_UNIT_TESTS "Compile and run the unit tests for this library" OFF)
+option(ALLOY_COMPILE_EXAMPLES "Compiles example programs that use this library" OFF)
 option(ALLOY_GENERATE_DOCS "Generates doxygen documentation" OFF)
 option(ALLOY_INSTALL_DOCS "Install documentation for this library" OFF)
 option(ALLOY_VERBOSE_CONFIGURE "Verbosely configures this library project" OFF)
+
+# 'ALLOY_PRECISION' -- used for determining float precision of library
+set(ALLOY_PRECISION "float" CACHE STRING "Precision level for floating point")
+set(ALLOY_PRECISION_VALUES "float" "double")
+set_property(CACHE ALLOY_PRECISION PROPERTY STRINGS ${ALLOY_PRECISION_VALUES})
+mark_as_advanced(ALLOY_PRECISION)
+
+if (NOT ALLOY_PRECISION IN_LIST ALLOY_PRECISION_VALUES)
+  message(FATAL_ERROR "Invalid ALLOY_PRECISION '${ALLOY_PRECISION}'."
+                      "Precision must be one of: " ${ALLOY_PRECISION_VALUES})
+endif ()
+
+option(ALLOY_USE_TRIG_TABLE "Precomputes a trig table for math use, rather than using hardware. The table size is from 'ALLOY_TRIG_TABLE_SIZE'" OFF)
+
+set(ALLOY_TRIG_TABLE_SIZE "4096" CACHE STRING "Number of entries in trig table")
+mark_as_advanced(ALLOY_TRIG_TABLE_SIZE)
+
+if (NOT ALLOY_TRIG_TABLE_SIZE MATCHES "[1-9][0-9].*")
+  message(FATAL_ERROR "Invalid ALLOY_TRIG_TABLE_SIZE '${ALLOY_TRIG_TABLE_SIZE}'."
+                      "Table size must be numeric.")
+endif ()
 
 ##############################################################################
 # Project
@@ -31,23 +54,16 @@ project(Alloy
   LANGUAGES CXX
 )
 
-if( EXISTS "${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake" )
+if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake")
   include("${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake")
   conan_basic_setup()
 endif()
 
-if( ALLOY_VERBOSE_CONFIGURE )
-  message(STATUS "Alloy ${ALLOY_VERSION}")
-endif()
-
 #-----------------------------------------------------------------------------
 
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
 # default to debug when building CMake
-if( NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES )
-  set(CMAKE_BUILD_TYPE Debug)
+if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING "The active build configuration")
 endif()
 
 #-----------------------------------------------------------------------------
@@ -68,9 +84,14 @@ configure_file( "${ALLOY_CMAKE_TEMPLATE_PATH}/version.hpp.in"
                 "${CMAKE_CURRENT_BINARY_DIR}/include/alloy/version.hpp"
                 @ONLY )
 
+set(ALLOY_PRECISION "ALLOY_PRECISION_${ALLOY_PRECISION}")
+string(TOUPPER "${ALLOY_PRECISION}" ALLOY_PRECISION)
+
 configure_file( "${ALLOY_CMAKE_TEMPLATE_PATH}/config.hpp.in"
                 "${CMAKE_CURRENT_BINARY_DIR}/include/alloy/config.hpp"
                 @ONLY )
+
+#-----------------------------------------------------------------------------
 
 set(header_files
   include/alloy/math/types.hpp
@@ -112,7 +133,7 @@ target_include_directories(Alloy PUBLIC
 
 include(AddSelfContainmentTest)
 
-if( ALLOY_COMPILE_SELF_CONTAINMENT_TESTS )
+if (ALLOY_COMPILE_SELF_CONTAINMENT_TESTS)
   add_self_containment_test(Alloy.SelfContainmentTest
     TARGET Alloy
     HEADERS ${header_files}
@@ -124,15 +145,23 @@ endif()
 # Unit Tests
 ##############################################################################
 
-if( ALLOY_COMPILE_UNIT_TESTS )
+if (ALLOY_COMPILE_UNIT_TESTS)
   add_subdirectory(test)
+endif()
+
+##############################################################################
+# Examples
+##############################################################################
+
+if (ALLOY_COMPILE_EXAMPLES)
+  add_subdirectory(example)
 endif()
 
 ##############################################################################
 # Documentation
 ##############################################################################
 
-if( ALLOY_GENERATE_DOCS )
+if (ALLOY_GENERATE_DOCS)
   add_subdirectory(docs)
 endif()
 
