@@ -96,11 +96,14 @@ configure_file( "${ALLOY_CMAKE_TEMPLATE_PATH}/config.hpp.in"
 file(GLOB generated_header_files "${CMAKE_CURRENT_BINARY_DIR}/include/**/*.hpp")
 
 set(header_files
-  include/alloy/math/types.hpp
+  include/alloy/core/precision.hpp
+  include/alloy/core/precision/fixed.hpp
+  include/alloy/core/precision/half.hpp
+  include/alloy/core/precision/real.hpp
 )
 
 set(inline_header_files
-
+  include/alloy/core/precision/detail/real.inl
 )
 
 set(source_files
