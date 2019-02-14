@@ -1,0 +1,277 @@
+###############################################################################
+# Tools
+###############################################################################
+
+#######
+# GPG #
+#######
+
+secring.*
+
+#########
+# Conan #
+#########
+
+conanbuildinfo.cmake
+conanbuildinfo.txt
+conanbuildinfo.*
+conaninfo.txt
+
+# Conan commonly uses just a 'build' directory
+build/
+build.*/
+
+#########
+# CMake #
+#########
+
+# Generated Files
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+###############################################################################
+# Language Byproducts
+###############################################################################
+
+#########
+# C/C++ #
+#########
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Object files
+*.o
+*.ko
+*.obj
+*.elf
+*.slo
+*.lo
+
+# Compiled Dynamic libraries
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Compiled Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+###############################################################################
+# Editors
+###############################################################################
+
+######################
+# Visaul Studio Code #
+######################
+
+.vscode/
+
+#####################
+# Jetbrains General #
+#####################
+
+# User-specific directories
+.idea/
+
+*.iws
+
+#########
+# CLion #
+#########
+
+cmake-build-debug/
+cmake-build-release/
+cmake-build-*/
+
+##################
+# Android Studio #
+##################
+
+# Generated Directories
+.idea/**/gradle.xml
+.idea/**/libraries
+.externalNativeBuild/
+
+# Generated error files and properties
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+###########
+# Eclipse #
+###########
+
+# Metadata files
+.project
+.metadata
+.cproject
+.autotools
+.target
+
+# Generated Directories
+bin/
+tmp/
+
+# Backup files
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# Settings
+local.properties
+.settings/
+.loadpath
+.recommenders/
+*.launch
+
+# External tool builders
+.externalToolBuilders/
+
+#######
+# VIM #
+#######
+
+# Swap
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+
+# Session
+Session.vim
+
+# Temporary
+.netrwhist
+*~
+# Auto-generated tag files
+tags
+
+#########
+# Xcode #
+#########
+
+# User settings
+xcuserdata/
+
+###############################################################################
+# Operating Systems
+###############################################################################
+
+###########
+# Windows #
+###########
+
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+#########
+# macOS #
+#########
+
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+#########
+# Linux #
+#########
+
+# General backup files
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
