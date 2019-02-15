@@ -100,10 +100,13 @@ set(header_files
   include/alloy/core/precision/fixed.hpp
   include/alloy/core/precision/half.hpp
   include/alloy/core/precision/real.hpp
+
+  include/alloy/math/constants.hpp
 )
 
 set(inline_header_files
   include/alloy/core/precision/detail/real.inl
+
 )
 
 set(source_files
