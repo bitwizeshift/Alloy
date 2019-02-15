@@ -101,12 +101,21 @@ set(header_files
   include/alloy/core/precision/half.hpp
   include/alloy/core/precision/real.hpp
 
+  include/alloy/math/angle.hpp
+  include/alloy/math/angle/basic_angle.hpp
+  include/alloy/math/angle/degree.hpp
+  include/alloy/math/angle/gradian.hpp
+  include/alloy/math/angle/radian.hpp
   include/alloy/math/constants.hpp
 )
 
 set(inline_header_files
   include/alloy/core/precision/detail/real.inl
 
+  include/alloy/math/angle/detail/basic_angle.inl
+  include/alloy/math/angle/detail/degree.inl
+  include/alloy/math/angle/detail/gradian.inl
+  include/alloy/math/angle/detail/radian.inl
 )
 
 set(source_files
