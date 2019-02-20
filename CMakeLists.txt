@@ -107,6 +107,7 @@ set(header_files
   include/alloy/math/angle/gradian.hpp
   include/alloy/math/angle/radian.hpp
   include/alloy/math/constants.hpp
+  include/alloy/math/trigonometry.hpp
 )
 
 set(inline_header_files
@@ -119,7 +120,7 @@ set(inline_header_files
 )
 
 set(source_files
-  src/dummy.cpp
+  src/alloy/math/trigonometry.cpp
 )
 
 add_library(Alloy
