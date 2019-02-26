@@ -108,6 +108,7 @@ set(header_files
   include/alloy/math/angle/radian.hpp
   include/alloy/math/constants.hpp
   include/alloy/math/trigonometry.hpp
+  include/alloy/math/math.hpp
 )
 
 set(inline_header_files
