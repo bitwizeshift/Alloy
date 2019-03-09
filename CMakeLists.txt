@@ -107,6 +107,7 @@ set(header_files
   include/alloy/math/angle/gradian.hpp
   include/alloy/math/angle/radian.hpp
   include/alloy/math/constants.hpp
+  include/alloy/math/interpolation.hpp
   include/alloy/math/trigonometry.hpp
   include/alloy/math/math.hpp
 )
