@@ -119,6 +119,7 @@ set(header_files
   include/alloy/math/vector/vector4.hpp
   include/alloy/math/vector/vector_utilities.hpp
   include/alloy/math/vector.hpp
+  include/alloy/math/quaternion.hpp
   include/alloy/math/math.hpp
 )
 
@@ -137,6 +138,7 @@ set(inline_header_files
 
 set(source_files
   src/alloy/math/trigonometry.cpp
+  src/alloy/math/quaternion.cpp
 )
 
 add_library(Alloy
