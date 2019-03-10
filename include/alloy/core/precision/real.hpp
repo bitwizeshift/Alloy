@@ -44,10 +44,16 @@ namespace alloy::core {
   /// \brief Defines a real number for floating-point precision.
   ///
   /// Alloy may be compiled with either
-#ifdef ALLOY_PRECISION_DOUBLE
-  using real = double;
-#else
+#if ALLOY_PRECISION == ALLOY_PRECISION_FLOAT
   using real = float;
+#elif ALLOY_PRECISION == ALLOY_PRECISION_DOUBLE
+  using real = double;
+#elif ALLOY_PRECISION == ALLOY_PRECISION_HALF
+# error ALLOY_PRECISION set to unsupported value (ALLOY_PRECISION_HALF)
+#elif ALLOY_PRECISION == ALLOY_PRECISION_FIXED
+# error ALLOY_PRECISION set to unsupported value (ALLOY_PRECISION_FIXED)
+#else
+# error ALLOY_PRECISION set to unknown value
 #endif
 
   //===========================================================================
