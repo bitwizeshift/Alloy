@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.5)
 
 if (NOT PROJECT_NAME)
   set(NOT_SUBPROJECT TRUE)
@@ -14,6 +14,7 @@ option(BUILD_SHARED_LIBS "Whether to build this library as a shared library" ON)
 option(ALLOY_COMPILE_SELF_CONTAINMENT_TESTS "Include each public header independently in a .cpp file to determine header self-containment" ON)
 option(ALLOY_COMPILE_UNIT_TESTS "Compile and run the unit tests for this library" OFF)
 option(ALLOY_COMPILE_EXAMPLES "Compiles example programs that use this library" OFF)
+option(ALLOY_ENABLE_CLANG_TIDY "Enables clang-tidy integration" OFF)
 option(ALLOY_GENERATE_DOCS "Generates doxygen documentation" OFF)
 option(ALLOY_INSTALL_DOCS "Install documentation for this library" OFF)
 option(ALLOY_VERBOSE_CONFIGURE "Verbosely configures this library project" OFF)
@@ -139,6 +140,16 @@ target_include_directories(Alloy
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
   PUBLIC $<INSTALL_INTERFACE:include>
 )
+
+##############################################################################
+# Clang Tidy
+##############################################################################
+
+include(ClangTidy)
+
+if (ALLOY_ENABLE_CLANG_TIDY)
+  target_enable_clang_tidy(Alloy REQUIRED)
+endif ()
 
 ##############################################################################
 # Header Self-Containment Tests
