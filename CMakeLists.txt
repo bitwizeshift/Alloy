@@ -81,16 +81,20 @@ file(READ "LICENSE.txt" license_text)
 string(REPLACE "\n" "\n  " LICENSE_TEXT "  ${license_text}")
 
 # Generate Files
-configure_file( "${ALLOY_CMAKE_TEMPLATE_PATH}/version.hpp.in"
-                "${CMAKE_CURRENT_BINARY_DIR}/include/alloy/version.hpp"
-                @ONLY )
+configure_file(
+  "${CMAKE_CURRENT_LIST_DIR}/cmake/version.hpp.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/alloy/version.hpp"
+  @ONLY
+)
 
 set(ALLOY_PRECISION "ALLOY_PRECISION_${ALLOY_PRECISION}")
 string(TOUPPER "${ALLOY_PRECISION}" ALLOY_PRECISION)
 
-configure_file( "${ALLOY_CMAKE_TEMPLATE_PATH}/config.hpp.in"
-                "${CMAKE_CURRENT_BINARY_DIR}/include/alloy/core/config.hpp"
-                @ONLY )
+configure_file(
+  "${CMAKE_CURRENT_LIST_DIR}/cmake/config.hpp.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/alloy/core/config.hpp"
+  @ONLY
+)
 
 #-----------------------------------------------------------------------------
 
@@ -170,29 +174,31 @@ endif()
 
 if (ALLOY_GENERATE_DOCS)
   add_subdirectory(docs)
-endif()
+endif ()
 
 ##############################################################################
 # Installation
 ##############################################################################
 
-configure_file(
-  "${ALLOY_CMAKE_TEMPLATE_PATH}/${PROJECT_NAME}ConfigVersion.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-  @ONLY
-)
-
-configure_file(
-  "${ALLOY_CMAKE_TEMPLATE_PATH}/${PROJECT_NAME}Config.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-  @ONLY
-)
-
-#-----------------------------------------------------------------------------
+if (NOT NOT_SUBPROJECT)
+  return()
+endif ()
 
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 set(ALLOY_CMAKE_CONFIG_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
+
+configure_package_config_file(
+  "${CMAKE_CURRENT_LIST_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+  INSTALL_DESTINATION "${ALLOY_CMAKE_CONFIG_DESTINATION}"
+)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+  VERSION "${PROJECT_VERSION}"
+  COMPATIBILITY "SameMajorVersion"
+)
 
 # Includes
 install(
@@ -206,7 +212,7 @@ install(
 
 # Targets
 install(
-  TARGETS "Alloy"
+  TARGETS "${PROJECT_NAME}"
   EXPORT "${PROJECT_NAME}Targets"
   DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 )
