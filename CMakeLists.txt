@@ -17,6 +17,7 @@ option(ALLOY_COMPILE_EXAMPLES "Compiles example programs that use this library" 
 option(ALLOY_GENERATE_DOCS "Generates doxygen documentation" OFF)
 option(ALLOY_INSTALL_DOCS "Install documentation for this library" OFF)
 option(ALLOY_VERBOSE_CONFIGURE "Verbosely configures this library project" OFF)
+option(ALLOY_ENABLE_COMPILER_EXCEPTIONS "Enable exception handling" ON)
 
 # 'ALLOY_PRECISION' -- used for determining float precision of library
 set(ALLOY_PRECISION "float" CACHE STRING "Precision level for floating point")
