@@ -4,7 +4,7 @@ if (NOT PROJECT_NAME)
   set(NOT_SUBPROJECT TRUE)
 endif ()
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMake" "${CMAKE_MODULE_PATH}")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 
 ##############################################################################
 # Project Options
