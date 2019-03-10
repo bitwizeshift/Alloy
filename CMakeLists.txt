@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.4)
 
-enable_testing()
-
-set(ALLOY_CMAKE_TEMPLATE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMake")
+if (NOT PROJECT_NAME)
+  set(NOT_SUBPROJECT TRUE)
+endif ()
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMake" "${CMAKE_MODULE_PATH}")
 
@@ -19,22 +19,21 @@ option(ALLOY_INSTALL_DOCS "Install documentation for this library" OFF)
 option(ALLOY_VERBOSE_CONFIGURE "Verbosely configures this library project" OFF)
 option(ALLOY_ENABLE_COMPILER_EXCEPTIONS "Enable exception handling" ON)
 
-# 'ALLOY_PRECISION' -- used for determining float precision of library
 set(ALLOY_PRECISION "float" CACHE STRING "Precision level for floating point")
 set(ALLOY_PRECISION_VALUES "float" "double")
 set_property(CACHE ALLOY_PRECISION PROPERTY STRINGS ${ALLOY_PRECISION_VALUES})
 mark_as_advanced(ALLOY_PRECISION)
 
+option(ALLOY_USE_TRIG_TABLE "Precomputes a trig table for math use, rather than using hardware. The table size is from 'ALLOY_TRIG_TABLE_SIZE'" OFF)
+set(ALLOY_TRIG_TABLE_SIZE "4096" CACHE STRING "Number of entries in trig table")
+mark_as_advanced(ALLOY_TRIG_TABLE_SIZE)
+
+# Validation
+
 if (NOT ALLOY_PRECISION IN_LIST ALLOY_PRECISION_VALUES)
   message(FATAL_ERROR "Invalid ALLOY_PRECISION '${ALLOY_PRECISION}'."
                       "Precision must be one of: " ${ALLOY_PRECISION_VALUES})
 endif ()
-
-option(ALLOY_USE_TRIG_TABLE "Precomputes a trig table for math use, rather than using hardware. The table size is from 'ALLOY_TRIG_TABLE_SIZE'" OFF)
-
-set(ALLOY_TRIG_TABLE_SIZE "4096" CACHE STRING "Number of entries in trig table")
-mark_as_advanced(ALLOY_TRIG_TABLE_SIZE)
-
 if (NOT ALLOY_TRIG_TABLE_SIZE MATCHES "[1-9][0-9].*")
   message(FATAL_ERROR "Invalid ALLOY_TRIG_TABLE_SIZE '${ALLOY_TRIG_TABLE_SIZE}'."
                       "Table size must be numeric.")
@@ -44,37 +43,40 @@ endif ()
 # Project
 ##############################################################################
 
-set(ALLOY_VERSION_MAJOR 0 CACHE STRING "major version of the Alloy game engine" FORCE)
-set(ALLOY_VERSION_MINOR 0 CACHE STRING "minor version of the Alloy game engine" FORCE)
-set(ALLOY_VERSION_PATCH 1 CACHE STRING "patch version of the Alloy game engine" FORCE)
-
-set(ALLOY_VERSION "${ALLOY_VERSION_MAJOR}.${ALLOY_VERSION_MINOR}.${ALLOY_VERSION_PATCH}" CACHE STRING "version of Alloy game engine" FORCE)
+if (ALLOY_COMPILE_UNIT_TESTS)
+  enable_testing()
+endif ()
 
 project(Alloy
-  VERSION "${ALLOY_VERSION}"
+  VERSION "0.0.1"
   LANGUAGES CXX
 )
 
+set(ALLOY_VERSION_MAJOR ${PROJECT_VERSION_MAJOR} CACHE STRING "major version of the Alloy game engine" FORCE)
+set(ALLOY_VERSION_MINOR ${PROJECT_VERSION_MINOR} CACHE STRING "minor version of the Alloy game engine" FORCE)
+set(ALLOY_VERSION_PATCH ${PROJECT_VERSION_PATCH} CACHE STRING "patch version of the Alloy game engine" FORCE)
+set(ALLOY_VERSION ${PROJECT_VERSION} CACHE STRING "version of Alloy game engine" FORCE)
+
 if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake")
   include("${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake")
-  conan_basic_setup()
-endif()
+
+endif ()
 
 #-----------------------------------------------------------------------------
 
 # default to debug when building CMake
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "The active build configuration")
-endif()
+endif ()
 
 #-----------------------------------------------------------------------------
 
-if( "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
-    "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" )
-  add_compile_options(-Wall -Werror -pedantic )
+if ( "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
+     "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" )
+  add_compile_options(-Wall -Werror -pedantic)
 elseif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" )
   # TODO: Determine MSVC necessary compiler flags
-endif()
+endif ()
 
 # read license, indent each line by 2 spaces
 file(READ "LICENSE.txt" license_text)
@@ -117,25 +119,25 @@ set(source_files
 
 add_library(Alloy
   ${generated_header_files}
-  ${header_files} 
-  ${inline_header_files} 
+  ${header_files}
+  ${inline_header_files}
   ${source_files}
 )
 add_library(Alloy::Alloy ALIAS Alloy)
 
-target_compile_features(Alloy 
+target_compile_features(Alloy
   PUBLIC cxx_std_17
 )
-set_target_properties(Alloy 
+set_target_properties(Alloy
   PROPERTIES
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
 )
 
-target_include_directories(Alloy PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-  $<INSTALL_INTERFACE:include>
+target_include_directories(Alloy
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+  PUBLIC $<INSTALL_INTERFACE:include>
 )
 
 ##############################################################################
@@ -150,7 +152,7 @@ if (ALLOY_COMPILE_SELF_CONTAINMENT_TESTS)
     HEADERS ${header_files}
   )
   target_sources(Alloy.SelfContainmentTest PRIVATE ${inline_header_files})
-endif()
+endif ()
 
 ##############################################################################
 # Unit Tests
@@ -158,7 +160,7 @@ endif()
 
 if (ALLOY_COMPILE_UNIT_TESTS)
   add_subdirectory(test)
-endif()
+endif ()
 
 ##############################################################################
 # Examples
@@ -166,7 +168,7 @@ endif()
 
 if (ALLOY_COMPILE_EXAMPLES)
   add_subdirectory(example)
-endif()
+endif ()
 
 ##############################################################################
 # Documentation
