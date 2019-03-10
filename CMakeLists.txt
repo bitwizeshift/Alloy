@@ -109,6 +109,11 @@ set(header_files
   include/alloy/math/constants.hpp
   include/alloy/math/interpolation.hpp
   include/alloy/math/trigonometry.hpp
+  include/alloy/math/matrix/matrix2.hpp
+  include/alloy/math/matrix/matrix3.hpp
+  include/alloy/math/matrix/matrix4.hpp
+  include/alloy/math/matrix/matrix_utilities.hpp
+  include/alloy/math/matrix.hpp
   include/alloy/math/vector/vector2.hpp
   include/alloy/math/vector/vector3.hpp
   include/alloy/math/vector/vector4.hpp
