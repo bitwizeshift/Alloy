@@ -13,6 +13,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 option(BUILD_SHARED_LIBS "Whether to build this library as a shared library" ON)
 option(ALLOY_COMPILE_SELF_CONTAINMENT_TESTS "Include each public header independently in a .cpp file to determine header self-containment" ON)
 option(ALLOY_COMPILE_UNIT_TESTS "Compile and run the unit tests for this library" OFF)
+option(ALLOY_COMPILE_EXTRAS "Compiles extras that ship with this library" OFF)
 option(ALLOY_COMPILE_EXAMPLES "Compiles example programs that use this library" OFF)
 option(ALLOY_ENABLE_CLANG_TIDY "Enables clang-tidy integration" OFF)
 option(ALLOY_GENERATE_DOCS "Generates doxygen documentation" OFF)
@@ -171,6 +172,14 @@ endif ()
 
 if (ALLOY_COMPILE_UNIT_TESTS)
   add_subdirectory(test)
+endif ()
+
+##############################################################################
+# Extras
+##############################################################################
+
+if (ALLOY_COMPILE_EXTRAS)
+  add_subdirectory(extra)
 endif ()
 
 ##############################################################################
