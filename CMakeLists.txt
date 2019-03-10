@@ -109,14 +109,45 @@ set(header_files
   include/alloy/core/precision/fixed.hpp
   include/alloy/core/precision/half.hpp
   include/alloy/core/precision/real.hpp
+
+  include/alloy/math/angle.hpp
+  include/alloy/math/angle/basic_angle.hpp
+  include/alloy/math/angle/degree.hpp
+  include/alloy/math/angle/gradian.hpp
+  include/alloy/math/angle/radian.hpp
+  include/alloy/math/constants.hpp
+  include/alloy/math/interpolation.hpp
+  include/alloy/math/trigonometry.hpp
+  include/alloy/math/matrix/matrix2.hpp
+  include/alloy/math/matrix/matrix3.hpp
+  include/alloy/math/matrix/matrix4.hpp
+  include/alloy/math/matrix/matrix_utilities.hpp
+  include/alloy/math/matrix.hpp
+  include/alloy/math/vector/vector2.hpp
+  include/alloy/math/vector/vector3.hpp
+  include/alloy/math/vector/vector4.hpp
+  include/alloy/math/vector/vector_utilities.hpp
+  include/alloy/math/vector.hpp
+  include/alloy/math/quaternion.hpp
+  include/alloy/math/math.hpp
 )
 
 set(inline_header_files
   include/alloy/core/precision/detail/real.inl
+
+  include/alloy/math/angle/detail/basic_angle.inl
+  include/alloy/math/angle/detail/degree.inl
+  include/alloy/math/angle/detail/gradian.inl
+  include/alloy/math/angle/detail/radian.inl
+  include/alloy/math/vector/detail/vector2.inl
+  include/alloy/math/vector/detail/vector3.inl
+  include/alloy/math/vector/detail/vector4.inl
+  include/alloy/math/vector/detail/vector_utilities.inl
 )
 
 set(source_files
-  src/dummy.cpp
+  src/alloy/math/trigonometry.cpp
+  src/alloy/math/quaternion.cpp
 )
 
 add_library(Alloy
