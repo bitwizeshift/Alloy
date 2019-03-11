@@ -292,11 +292,11 @@ inline constexpr alloy::math::vector4<T>& alloy::math::vector4<T>::normalize()
 {
   const auto mag = magnitude();
 
-  if( mag > 0 )
+  if (mag > 0)
   {
-    const auto mag_inv = 1.0 / mag;
+    const auto mag_inv = core::real{1} / mag;
 
-    for(auto i = 0; i < 4; ++i) {
+    for (auto i = 0; i < 4; ++i) {
       m_data[i] *= mag_inv;
     }
   }
@@ -308,7 +308,7 @@ template<typename T>
 inline constexpr alloy::math::vector4<T>& alloy::math::vector4<T>::invert()
   noexcept
 {
-  for(auto i = 0; i < 4; ++i) {
+  for (auto i = 0; i < 4; ++i) {
     m_data[i] *= -1;
   }
 
@@ -345,7 +345,7 @@ inline constexpr alloy::math::vector4<T>&
   alloy::math::vector4<T>::operator+=( const vector4<U>& rhs )
   noexcept
 {
-  for(auto i = 0; i < 4; ++i) {
+  for (auto i = 0; i < 4; ++i) {
     m_data[i] += rhs.m_data[i];
   }
   return (*this);
@@ -357,7 +357,7 @@ inline constexpr alloy::math::vector4<T>&
   alloy::math::vector4<T>::operator-=( const vector4<U>& rhs )
   noexcept
 {
-  for(auto i = 0; i < 4; ++i) {
+  for (auto i = 0; i < 4; ++i) {
     m_data[i] -= rhs.m_data[i];
   }
 
@@ -370,7 +370,7 @@ inline constexpr alloy::math::vector4<T>&
   alloy::math::vector4<T>::operator*=( U scalar )
   noexcept
 {
-  for(auto i = 0; i < 4; ++i) {
+  for (auto i = 0; i < 4; ++i) {
     m_data[i] *= scalar;
   }
 
@@ -383,9 +383,9 @@ inline constexpr alloy::math::vector4<T>&
   alloy::math::vector4<T>::operator/=( U scalar )
   noexcept
 {
-  const auto inv = (1.0 / scalar);
+  const auto inv = (core::real{1} / scalar);
 
-  for(auto i = 0; i < 4; ++i) {
+  for (auto i = 0; i < 4; ++i) {
     m_data[i] *= inv;
   }
 
@@ -449,8 +449,10 @@ inline constexpr bool alloy::math::operator==( const vector4<T>& lhs,
                                                const vector4<U>& rhs )
   noexcept
 {
-  for(auto i=0; i<4; ++i) {
-    if( lhs[i]!=rhs[i] ) return false;
+  for (auto i=0; i<4; ++i) {
+    if (lhs[i]!=rhs[i]) {
+      return false;
+    }
   }
   return true;
 }
@@ -470,8 +472,10 @@ inline constexpr bool alloy::math::almost_equal( const vector4<T>& lhs,
                                                  const vector4<U>& rhs )
   noexcept
 {
-  for(auto i=0; i<4; ++i) {
-    if( !almost_equal(rhs[i], rhs[i]) ) return false;
+  for (auto i=0; i<4; ++i) {
+    if (!almost_equal(rhs[i], rhs[i])) {
+      return false;
+    }
   }
   return true;
 }
@@ -482,8 +486,10 @@ inline constexpr bool alloy::math::almost_equal( const vector4<T>& lhs,
                                                  Arithmetic tolerance )
   noexcept
 {
-  for(auto i=0; i<4; ++i) {
-    if( !almost_equal(rhs[i], rhs[i], tolerance) ) return false;
+  for (auto i=0; i<4; ++i) {
+    if (!almost_equal(rhs[i], rhs[i], tolerance)) {
+      return false;
+    }
   }
   return true;
 }

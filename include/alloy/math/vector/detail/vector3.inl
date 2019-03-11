@@ -270,7 +270,7 @@ inline alloy::math::vector3<T>
   const auto square_mag = dot(*this);
   if( square_mag > 0 ){
     // TODO(bitwize): ocnsider replacing with inv_sqrt eventually?
-    const auto mag_inv = 1.0 / sqrt(square_mag);
+    const auto mag_inv = core::real{1} / sqrt(square_mag);
     return {
       x() * mag_inv,
       y() * mag_inv,
@@ -331,7 +331,7 @@ inline constexpr alloy::math::vector3<T>& alloy::math::vector3<T>::normalize()
   const auto mag = magnitude();
 
   if( mag > 0 ){
-    const auto mag_inv = 1.0 / mag;
+    const auto mag_inv = core::real{1} / mag;
 
     x() *= mag_inv;
     y() *= mag_inv;
@@ -418,7 +418,7 @@ inline constexpr alloy::math::vector3<T>&
   alloy::math::vector3<T>::operator/=( U scalar )
   noexcept
 {
-  const auto inv = 1.0 / scalar;
+  const auto inv = core::real{1} / scalar;
 
   x() *= inv;
   y() *= inv;

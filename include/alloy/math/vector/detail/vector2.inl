@@ -249,7 +249,7 @@ inline alloy::math::vector2<T>
 {
   const auto mag = magnitude();
   if( mag > 0 ){
-    const auto mag_inv = 1.0 / mag;
+    const auto mag_inv = core::real{1} / mag;
     return vector2{ x() * mag_inv, y() * mag_inv };
   }
   return (*this);
@@ -309,7 +309,7 @@ inline constexpr alloy::math::vector2<T>& alloy::math::vector2<T>::normalize()
   const auto mag = magnitude();
 
   if( mag > 0 ){
-    const auto mag_inv = 1.0 / mag;
+    const auto mag_inv = core::real{1} / mag;
 
     x() *= mag_inv;
     y() *= mag_inv;
@@ -389,7 +389,7 @@ inline constexpr alloy::math::vector2<T>&
   alloy::math::vector2<T>::operator/=( U scalar )
   noexcept
 {
-  const auto inv = 1.0 / scalar;
+  const auto inv = core::real{1} / scalar;
 
   x() *= inv;
   y() *= inv;
