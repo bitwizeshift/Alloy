@@ -117,6 +117,7 @@ set(header_files
   include/alloy/math/angle/radian.hpp
   include/alloy/math/constants.hpp
   include/alloy/math/interpolation.hpp
+  include/alloy/math/simplex.hpp
   include/alloy/math/trigonometry.hpp
   include/alloy/math/matrix/matrix2.hpp
   include/alloy/math/matrix/matrix3.hpp
@@ -146,6 +147,7 @@ set(inline_header_files
 )
 
 set(source_files
+  src/alloy/math/simplex.cpp
   src/alloy/math/trigonometry.cpp
   src/alloy/math/quaternion.cpp
 )
