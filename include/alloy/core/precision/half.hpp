@@ -27,13 +27,79 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-#ifndef BITWIZESHIFT_ALLOY_HALF_HPP
-#define BITWIZESHIFT_ALLOY_HALF_HPP
+#ifndef ALLOY_CORE_PRECISION_HALF_HPP
+#define ALLOY_CORE_PRECISION_HALF_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-// TODO(bitwize): Implement 'half' precision type
+#include <cassert>
 
-#endif /* BITWIZESHIFT_ALLOY_HALF_HPP */
+namespace alloy::core {
+
+  // TODO(bitwize): Implement 'half' precision type
+  class half;
+
+  //============================================================================
+  // non-member functions : class : half
+  //============================================================================
+
+  //----------------------------------------------------------------------------
+  // Utilities
+  //----------------------------------------------------------------------------
+
+  /// \brief Determines whether a given half value \p f is a nan
+  ///
+  /// \param f the value to check
+  /// \return \c true if \p f is a \c nan
+  bool is_nan( const half& f ) noexcept;
+
+  //----------------------------------------------------------------------------
+
+  /// \brief Determines whether a given half value \p f is finite
+  ///
+  /// \param f the value to check
+  /// \return \c true if \p f is \c finite
+  bool is_finite( const half& f ) noexcept;
+
+  /// \brief Determines whether a given half value \p f is infinite
+  ///
+  /// \param f the value to check
+  /// \return \c true if \p f is \c infinite
+  bool is_infinite( const half& f ) noexcept;
+
+  //----------------------------------------------------------------------------
+
+  /// \brief Determines whether a given half value \p f is normal
+  ///
+  /// \param f the value to check
+  /// \return \c true if \p f is \c normal
+  bool is_normal( const half& f ) noexcept;
+
+  /// \brief Determines whether a given half value \p f is subnormal
+  ///
+  /// \param f the value to check
+  /// \return \c true if \p f is \c subnormal
+  bool is_subnormal( const half& f ) noexcept;
+
+  //============================================================================
+  // literals
+  //============================================================================
+
+  inline namespace literals {
+    inline namespace precision_literals {
+
+      // cannot be implemented without definition of 'half'
+
+      // half operator""_h(long double in) noexcept;
+      // half operator""_half(long double in) noexcept;
+
+    } // inline namespace precision_literals
+  } // inline namespaec literals
+
+} // namespace alloy::core
+
+#include "detail/half.inl"
+
+#endif /* ALLOY_CORE_PRECISION_HALF_HPP */
