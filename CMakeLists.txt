@@ -109,6 +109,7 @@ set(header_files
   include/alloy/core/precision/fixed.hpp
   include/alloy/core/precision/half.hpp
   include/alloy/core/precision/real.hpp
+  include/alloy/core/macros.hpp
 
   include/alloy/math/angle.hpp
   include/alloy/math/angle/basic_angle.hpp
