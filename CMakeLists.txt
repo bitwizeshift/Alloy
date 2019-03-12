@@ -19,7 +19,7 @@ option(ALLOY_ENABLE_CLANG_TIDY "Enables clang-tidy integration" OFF)
 option(ALLOY_GENERATE_DOCS "Generates doxygen documentation" OFF)
 option(ALLOY_INSTALL_DOCS "Install documentation for this library" OFF)
 option(ALLOY_VERBOSE_CONFIGURE "Verbosely configures this library project" OFF)
-option(ALLOY_ENABLE_COMPILER_EXCEPTIONS "Enable exception handling" ON)
+option(ALLOY_ENABLE_EXCEPTIONS "Enable exception handling" ON)
 
 set(ALLOY_PRECISION "float" CACHE STRING "Precision level for floating point")
 set(ALLOY_PRECISION_VALUES "float" "double")
@@ -105,6 +105,7 @@ configure_file(
 file(GLOB generated_header_files "${CMAKE_CURRENT_BINARY_DIR}/include/**/*.hpp")
 
 set(header_files
+  include/alloy/core/intrinsics.hpp
   include/alloy/core/precision.hpp
   include/alloy/core/precision/fixed.hpp
   include/alloy/core/precision/half.hpp
@@ -135,6 +136,9 @@ set(header_files
 )
 
 set(inline_header_files
+  include/alloy/core/intrinsics/clang.hpp
+  include/alloy/core/intrinsics/gcc.hpp
+  include/alloy/core/intrinsics/msvc.hpp
   include/alloy/core/precision/detail/real.inl
 
   include/alloy/math/angle/detail/basic_angle.inl

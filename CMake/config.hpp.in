@@ -56,7 +56,7 @@
 
 //! \def ALLOY_PRECISION_FIXED
 //!
-//! \brief Marker value for \ref ALLOY_PRECISION indicating fixed-point 
+//! \brief Marker value for \ref ALLOY_PRECISION indicating fixed-point
 //!        precision is to be used
 //!
 //! TODO(bitwizeshift) add support for this option
@@ -129,7 +129,7 @@
 
 //! \def ALLOY_COMPILER_EXCEPTIONS_ENABLED
 //! \brief defines a macro for enabling exception handling
-#define ALLOY_COMPILER_EXCEPTIONS_ENABLED @ALLOY_ENABLE_COMPILER_EXCEPTIONS@
+#define ALLOY_EXCEPTIONS_ENABLED @ALLOY_ENABLE_EXCEPTIONS@
 
 //=============================================================================
 // config : visibility macros
