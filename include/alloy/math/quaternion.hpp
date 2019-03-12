@@ -96,6 +96,53 @@ namespace alloy::math {
     using matrix4_type = matrix4<value_type>; ///< The 4x4 matrix type
 
     //--------------------------------------------------------------------------
+    // Static Factory Functions
+    //--------------------------------------------------------------------------
+  public:
+
+    /// \brief Constructs a quaternion from an \p angle and an \p axis
+    ///
+    /// \param angle the angle
+    /// \param axis the axis
+    /// \return the constructed quaternion
+    static quaternion from_angle_axis( radian angle,
+                                       const vector_type& axis ) noexcept;
+
+    /// \brief Constructs a quaternion from the given a \p yaw, \p pitch, and
+    ///        \p roll
+    ///
+    /// \param yaw the yaw angle
+    /// \param pitch the pitch angle
+    /// \param roll the roll angle
+    /// \return the constructed quaternion
+    static quaternion from_angles( radian yaw,
+                                   radian pitch,
+                                   radian roll ) noexcept;
+
+    /// \brief Constructs a quaternion from a 3x3 rotation matrix
+    ///
+    /// \param rot the rotation matrix
+    /// \return the constructed quaternion
+    static quaternion from_rotation_matrix( const matrix3_type& rot ) noexcept;
+
+    /// \brief Constructs a quaternion from a 4x4 rotation matrix
+    ///
+    /// \param rot the rotation matrix
+    /// \return the constructed quaternion
+    static quaternion from_rotation_matrix( const matrix4_type& rot ) noexcept;
+
+    /// \brief Constructs a quaternion from 3 axes forming a 3x3 rotation
+    ///        matrix
+    ///
+    /// \param x_axis the vector representing the x-axis
+    /// \param y_axis the vector representing the y-axis
+    /// \param z_axis the vector representing the z-axis
+    /// \return the constructed quaternion
+    static quaternion from_rotation_axes( const vector_type& x_axis,
+                                          const vector_type& y_axis,
+                                          const vector_type& z_axis ) noexcept;
+
+    //--------------------------------------------------------------------------
     // Constructors / Assignment
     //--------------------------------------------------------------------------
   public:
@@ -103,56 +150,21 @@ namespace alloy::math {
     /// \brief Constructs a quaternion with an angle of 0
     constexpr quaternion() noexcept;
 
-    /// Constructs a quaternion around an axis
-    ///
-    /// \param angle the angle of the quaternion
-    /// \param axis  the axis of the rotation
-    quaternion( radian angle, const vector_type& axis ) noexcept;
-
-    /// \brief Constructs a quaternion from the \p yaw, \p pitch, and
-    ///        \p roll angles
-    ///
-    /// \param yaw the yaw angle
-    /// \param pitch the pitch angle
-    /// \param roll the roll angle
-    quaternion( radian yaw, radian pitch, radian roll ) noexcept;
-
     /// \brief Constructs a quaternion with only 1 real component
     ///
-    /// \param x the real component of the quaternion
-    constexpr explicit quaternion( value_type x ) noexcept;
+    /// \param w the real component of the quaternion
+    constexpr explicit quaternion( value_type w ) noexcept;
 
     /// \brief Constructs a quaternion with 4 angle components
     ///
-    /// \param x the real component of the quaternion
-    /// \param y the first imaginary component of the quaternion
-    /// \param z the second imaginary component of the quaternion
-    /// \param w the final imaginary component of the quaternion
-    constexpr quaternion( value_type x,
+    /// \param w the real component of the quaternion
+    /// \param x the first imaginary component of the quaternion
+    /// \param y the second imaginary component of the quaternion
+    /// \param z the final imaginary component of the quaternion
+    constexpr quaternion( value_type w,
+                          value_type x,
                           value_type y,
-                          value_type z,
-                          value_type w ) noexcept;
-
-    /// Constructs a quaternion with 3 axis vectors
-    ///
-    /// \param x_axis Vector of the x-axis rotation
-    /// \param y_axis Vector of the y-axis rotation
-    /// \param z_axis Vector of the z-axis rotation
-    quaternion( const vector_type& x_axis,
-                const vector_type& y_axis,
-                const vector_type& z_axis ) noexcept;
-
-    /// \brief Constructs a quaternion out of a 3-component rotation
-    ///        matrix
-    ///
-    /// \param rot 3x3 rotation matrix
-    explicit quaternion( const matrix3_type& rot ) noexcept;
-
-    /// \brief Constructs a quaternion out of a 4-component rotation
-    ///        matrix
-    ///
-    /// \param rot 4x4 rotation matrix
-    explicit quaternion( const matrix4_type& rot ) noexcept;
+                          value_type z ) noexcept;
 
     /// \brief Copy-constructs a quaternion from another quaternion
     ///
@@ -431,35 +443,6 @@ namespace alloy::math {
   private:
 
     alignas(16) value_type m_data[4]; ///< The data (w + i*x + j*y + k*z)
-
-    //--------------------------------------------------------------------------
-    // Private Member Functions
-    //--------------------------------------------------------------------------
-  private:
-
-    /// \brief Initializes the quaternion from a \p angle and \p axis
-    ///
-    /// \param angle the angle
-    /// \param axis the axis
-    void from_angle_axis( radian angle, const vector_type& axis ) noexcept;
-
-    /// \brief Initializes the quaternion from a \p yaw, \p pitch, and
-    ///        \p roll
-    ///
-    /// \param yaw the yaw angle
-    /// \param pitch the pitch angle
-    /// \param roll the roll angle
-    void from_angles( radian yaw, radian pitch, radian roll ) noexcept;
-
-    /// \brief Initializes the quaternion from a 3x3 rotation matrix
-    ///
-    /// \param rot the rotation matrix
-    void from_rotation_matrix( const matrix3_type& rot ) noexcept;
-
-    /// \brief Initializes the quaternion from a 4x4 rotation matrix
-    ///
-    /// \param rot the rotation matrix
-    void from_rotation_matrix( const matrix4_type& rot ) noexcept;
   };
 
   //============================================================================
@@ -567,7 +550,7 @@ namespace alloy::math {
 
 inline constexpr alloy::math::quaternion::quaternion()
   noexcept
-  : m_data {
+  : quaternion{
     core::real{1},
     core::real{0},
     core::real{0},
@@ -577,56 +560,21 @@ inline constexpr alloy::math::quaternion::quaternion()
 
 }
 
-inline alloy::math::quaternion::quaternion( radian angle,
-                                            const vector_type& axis )
+inline constexpr alloy::math::quaternion::quaternion( value_type w )
   noexcept
-{
-  from_angle_axis(angle,axis);
-}
-
-inline alloy::math::quaternion::quaternion( radian yaw,
-                                            radian pitch,
-                                            radian roll )
-  noexcept
-{
-  from_angles(yaw,pitch,roll);
-}
-
-inline constexpr alloy::math::quaternion::quaternion( value_type x )
-  noexcept
-  : m_data{x,0,0,0}
+  : quaternion{w,0,0,0}
 {
 
 }
 
-inline constexpr alloy::math::quaternion::quaternion( value_type x,
+inline constexpr alloy::math::quaternion::quaternion( value_type w,
+                                                      value_type x,
                                                       value_type y,
-                                                      value_type z,
-                                                      value_type w )
+                                                      value_type z )
   noexcept
-  : m_data{x,y,z,w}
+  : m_data{w,x,y,z}
 {
 
-}
-
-inline alloy::math::quaternion::quaternion( const vector_type& x_axis,
-                                            const vector_type& y_axis,
-                                            const vector_type& z_axis )
-  noexcept
-{
-  from_rotation_matrix( matrix3_type{x_axis,y_axis,z_axis} );
-}
-
-inline alloy::math::quaternion::quaternion( const matrix3_type& rot )
-  noexcept
-{
-  from_rotation_matrix( rot );
-}
-
-inline alloy::math::quaternion::quaternion( const matrix4_type& rot )
-  noexcept
-{
-  from_rotation_matrix( rot );
 }
 
 //------------------------------------------------------------------------------
@@ -785,7 +733,7 @@ inline alloy::math::quaternion alloy::math::quaternion::operator+()
 inline alloy::math::quaternion alloy::math::quaternion::operator-()
   const noexcept
 {
-  return quaternion( -w(), -x(), -y(), -z() );
+  return quaternion{ -w(), -x(), -y(), -z() };
 }
 
 //==============================================================================

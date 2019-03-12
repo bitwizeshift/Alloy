@@ -33,6 +33,134 @@
 #include <stdexcept> // std::out_of_range
 #include <cassert>   // assert
 
+//------------------------------------------------------------------------------
+// Static Factory Functions
+//------------------------------------------------------------------------------
+
+alloy::math::quaternion
+  alloy::math::quaternion::from_angle_axis( radian angle,
+                                            const vector_type& axis )
+  noexcept
+{
+  const auto norm_axis = axis.normalized();
+
+  const auto half_angle = angle * core::real{0.5};
+  const auto result = trigonometry::sin(half_angle);
+
+  const auto w = trigonometry::cos( half_angle );
+  const auto x = norm_axis.x() * result;
+  const auto y = norm_axis.y() * result;
+  const auto z = norm_axis.z() * result;
+
+  return {w,x,y,z};
+}
+
+alloy::math::quaternion
+  alloy::math::quaternion::from_angles( radian yaw, radian pitch, radian roll )
+  noexcept
+{
+  // Half Angles
+  const auto half_yaw   = yaw * core::real{0.5};
+  const auto half_pitch = pitch * core::real{0.5};
+  const auto half_roll  = roll * core::real{0.5};
+
+  // y-vector
+  const auto v0w = trigonometry::cos( half_yaw );
+  const auto v0y = trigonometry::sin( half_yaw );
+
+  // x-vector
+  const auto v1w = trigonometry::cos( half_pitch );
+  const auto v1x = trigonometry::sin( half_pitch );
+
+  // z-vector
+  const auto v2w = trigonometry::cos( half_roll );
+  const auto v2z = trigonometry::sin( half_roll );
+
+  // y * x vector
+  const auto w1 = (v0w * v1w);
+  const auto x1 = (v0w * v1x);
+  const auto y1 = (v0y * v1w);
+  const auto z1 = -(v0y * v1x);
+
+  // (x * y) * z vector
+  const auto w = (w1 * v2w) - (z1 * v2z);
+  const auto x = (x1 * v2w) + (y1 * v2z);
+  const auto y = (y1 * v2w) - (x1 * v2z);
+  const auto z = (w1 * v2z) + (z1 * v2w);
+
+  return {w,x,y,z};
+}
+
+alloy::math::quaternion
+  alloy::math::quaternion::from_rotation_matrix( const matrix3_type& rot )
+  noexcept
+{
+  // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
+  // article "Quaternion Calculus and Fast Animation".
+
+  const auto trace = rot.trace();
+  auto root = core::real{};
+
+  if (trace > core::real{0}){
+    root = sqrt( trace + 1 );
+    const auto w = core::real{0.5} * root;
+    root = core::real{0.5} / root;
+    const auto x = (rot(2,1) - rot(1,2)) * root;
+    const auto y = (rot(0,2) - rot(2,0)) * root;
+    const auto z = (rot(1,0) - rot(0,1)) * root;
+
+    return {w,x,y,z};
+  }
+
+  static constexpr int s_next[3] = { 1, 2, 0 };
+  core::real apk_quat[3] = {};
+  int i, j, k;
+
+  i = 0;
+  if ( rot(1,1) > rot(0,0) ) {
+    i = 1;
+  }
+  if ( rot(2,2) > rot(i,i) ) {
+    i = 2;
+  }
+  j = s_next[i];
+  k = s_next[j];
+
+  root = sqrt(rot(i,i) - rot(j,j) - rot(k,k) + core::real{1});
+
+  apk_quat[i] = core::real{0.5} * root;
+
+  root = core::real{0.5} / root;
+
+  apk_quat[j] = (rot(j,i) + rot(i,j)) * root;
+  apk_quat[k] = (rot(k,i) + rot(i,k)) * root;
+
+  const auto w = (rot(k,j) - rot(j,k)) * root;
+  const auto x = apk_quat[0];
+  const auto y = apk_quat[1];
+  const auto z = apk_quat[2];
+
+  return {w,x,y,z};
+}
+
+alloy::math::quaternion
+  alloy::math::quaternion::from_rotation_matrix( const matrix4_type& rot )
+  noexcept
+{
+  using namespace alloy::math::casts;
+
+  return from_rotation_matrix( matrix_cast<matrix3_type>(rot) );
+}
+
+alloy::math::quaternion
+  alloy::math::quaternion::from_rotation_axes( const vector_type& x_axis,
+                                               const vector_type& y_axis,
+                                               const vector_type& z_axis )
+  noexcept
+{
+  return from_rotation_matrix( matrix3_type{x_axis,y_axis,z_axis} );
+}
+
 //----------------------------------------------------------------------------
 // Element Access
 //----------------------------------------------------------------------------
@@ -471,109 +599,6 @@ alloy::math::quaternion&
 }
 
 //----------------------------------------------------------------------------
-// Private Member Functions
-//----------------------------------------------------------------------------
-
-void alloy::math::quaternion::from_angle_axis( radian angle,
-                                               const vector_type& axis )
-  noexcept
-{
-  const auto norm_axis = axis.normalized();
-
-  auto half_angle = angle * 0.5f;
-  auto result     = trigonometry::sin(half_angle);
-
-  w() = trigonometry::cos( half_angle );
-  x() = norm_axis.x() * result;
-  y() = norm_axis.y() * result;
-  z() = norm_axis.z() * result;
-}
-
-void alloy::math::quaternion::from_angles( radian yaw, radian pitch, radian roll )
-  noexcept
-{
-  // Half Angles
-  const auto half_yaw   = yaw * 0.5;
-  const auto half_pitch = pitch * 0.5;
-  const auto half_roll  = roll * 0.5;
-
-  // y-vector
-  const auto v0w = trigonometry::cos( half_yaw );
-  const auto v0y = trigonometry::sin( half_yaw );
-
-  // x-vector
-  const auto v1w = trigonometry::cos( half_pitch );
-  const auto v1x = trigonometry::sin( half_pitch );
-
-  // z-vector
-  const auto v2w = trigonometry::cos( half_roll );
-  const auto v2z = trigonometry::sin( half_roll );
-
-  // y * x vector
-  const auto w1 = (v0w * v1w);
-  const auto x1 = (v0w * v1x);
-  const auto y1 = (v0y * v1w);
-  const auto z1 = -(v0y * v1x);
-
-  // (x * y) * z vector
-  w() = (w1 * v2w) - (z1 * v2z);
-  x() = (x1 * v2w) + (y1 * v2z);
-  y() = (y1 * v2w) - (x1 * v2z);
-  z() = (w1 * v2z) + (z1 * v2w);
-}
-
-void alloy::math::quaternion::from_rotation_matrix( const matrix3_type& rot )
-  noexcept
-{
-  // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
-  // article "Quaternion Calculus and Fast Animation".
-
-  const auto trace = rot.trace();
-  auto root = value_type();
-
-  if(trace > 0.0){
-    root = sqrt( trace + 1 );
-    w() = 0.5 * root;
-    root = 0.5 / root;
-    x() = (rot(2,1) - rot(1,2)) * root;
-    y() = (rot(0,2) - rot(2,0)) * root;
-    z() = (rot(1,0) - rot(0,1)) * root;
-  }else{
-    static const index_type s_next[3] = { 1, 2, 0 };
-    value_type* apk_quat[3] = { &x(), &y(), &z() };
-    size_t i, j, k;
-
-    i = 0;
-    if ( rot(1,1) > rot(0,0) ){
-      i = 1;
-    }
-    if ( rot(2,2) > rot(i,i) ){
-      i = 2;
-    }
-    j = s_next[i];
-    k = s_next[j];
-
-    root = sqrt(rot(i,i) - rot(j,j) - rot(k,k) + 1.0);
-
-    (*apk_quat[i]) = 0.5 * root;
-
-    root = 0.5 / root;
-
-    w() = (rot(k,j) - rot(j,k)) * root;
-    (*apk_quat[j]) = (rot(j,i) + rot(i,j)) * root;
-    (*apk_quat[k]) = (rot(k,i) + rot(i,k)) * root;
-  }
-}
-
-void alloy::math::quaternion::from_rotation_matrix( const matrix4_type& rot )
-  noexcept
-{
-  using namespace alloy::math::casts;
-
-  from_rotation_matrix( matrix_cast<matrix3_type>(rot) );
-}
-
-//----------------------------------------------------------------------------
 
 alloy::math::quaternion::vector_type
   alloy::math::operator*( const quaternion& lhs,
@@ -584,8 +609,8 @@ alloy::math::quaternion::vector_type
 
   auto uv = qvec.cross(rhs);
   auto uuv = qvec.cross(uv);
-  uv *= (2.0 * lhs.w());
-  uuv *= 2.0;
+  uv *= (core::real{2} * lhs.w());
+  uuv *= core::real{2};
 
   return (rhs + uv + uuv);
 }
