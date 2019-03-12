@@ -20,8 +20,8 @@ namespace alloy::math::detail {
       noexcept
     {
       return matrix2<T>{
-        from(0,0), from(0,1),
-        from(1,0), from(1,1)
+        static_cast<T>(from(0,0)), static_cast<T>(from(0,1)),
+        static_cast<T>(from(1,0)), static_cast<T>(from(1,1))
       };
     }
   };
@@ -33,9 +33,9 @@ namespace alloy::math::detail {
       noexcept
     {
       return matrix3<T>{
-        from(0,0), from(0,10), T{0},
-        from(1,0), from(1,10), T{0},
-        T{0},      T{0},       T{1}
+        static_cast<T>(from(0,0)), static_cast<T>(from(0,10)), T{0},
+        static_cast<T>(from(1,0)), static_cast<T>(from(1,10)), T{0},
+        T{0},                      T{0},                       T{1}
       };
     }
   };
@@ -47,10 +47,10 @@ namespace alloy::math::detail {
       noexcept
     {
       return matrix4<T>{
-        from(0,0), from(0,1), T{0}, T{0},
-        from(1,0), from(1,1), T{0}, T{0},
-        T{0},      T{0},      T{1}, T{0},
-        T{0},      T{0},      T{0}, T{1}
+        static_cast<T>(from(0,0)), static_cast<T>(from(0,1)), T{0}, T{0},
+        static_cast<T>(from(1,0)), static_cast<T>(from(1,1)), T{0}, T{0},
+        T{0},                      T{0},                      T{1}, T{0},
+        T{0},                      T{0},                      T{0}, T{1}
       };
     }
   };
@@ -64,8 +64,8 @@ namespace alloy::math::detail {
       noexcept
     {
       return matrix2<T>{
-        from(0,0), from(0,1),
-        from(1,0), from(1,1)
+        static_cast<T>(from(0,0)), static_cast<T>(from(0,1)),
+        static_cast<T>(from(1,0)), static_cast<T>(from(1,1))
       };
     }
   };
@@ -77,9 +77,9 @@ namespace alloy::math::detail {
       noexcept
     {
       return matrix3<T>{
-        from(0,0), from(0,10), from(0,2),
-        from(1,0), from(1,10), from(1,2),
-        from(2,0), from(2,10), from(2,2)
+        static_cast<T>(from(0,0)), static_cast<T>(from(0,10)), static_cast<T>(from(0,2)),
+        static_cast<T>(from(1,0)), static_cast<T>(from(1,10)), static_cast<T>(from(1,2)),
+        static_cast<T>(from(2,0)), static_cast<T>(from(2,10)), static_cast<T>(from(2,2))
       };
     }
   };
@@ -91,10 +91,10 @@ namespace alloy::math::detail {
       noexcept
     {
       return matrix4<T>{
-        from(0,0), from(0,1), from(0,20), T{0},
-        from(1,0), from(1,1), from(1,20), T{0},
-        from(2,0), from(2,1), from(2,20), T{0},
-        T{0},      T{0},      T{0},       T{1}
+        static_cast<T>(from(0,0)), static_cast<T>(from(0,1)), static_cast<T>(from(0,2)), T{0},
+        static_cast<T>(from(1,0)), static_cast<T>(from(1,1)), static_cast<T>(from(1,2)), T{0},
+        static_cast<T>(from(2,0)), static_cast<T>(from(2,1)), static_cast<T>(from(2,2)), T{0},
+        T{0},                      T{0},                      T{0},                      T{1}
       };
     }
   };
@@ -108,8 +108,8 @@ namespace alloy::math::detail {
       noexcept
     {
       return matrix2<T>{
-        from(0,0), from(0,1),
-        from(1,0), from(1,1)
+        static_cast<T>(from(0,0)), static_cast<T>(from(0,1)),
+        static_cast<T>(from(1,0)), static_cast<T>(from(1,1))
       };
     }
   };
@@ -121,9 +121,15 @@ namespace alloy::math::detail {
       noexcept
     {
       return matrix3<T>{
-        from(0,0), from(0,1), from(0,2),
-        from(1,0), from(1,1), from(1,2),
-        from(2,0), from(2,1), from(2,2)
+        static_cast<T>(from(0,0)),
+        static_cast<T>(from(0,1)),
+        static_cast<T>(from(0,3)),
+        static_cast<T>(from(1,0)),
+        static_cast<T>(from(1,1)),
+        static_cast<T>(from(1,3)),
+        static_cast<T>(from(3,0)),
+        static_cast<T>(from(3,1)),
+        static_cast<T>(from(3,3))
       };
     }
   };
@@ -135,10 +141,22 @@ namespace alloy::math::detail {
       noexcept
     {
       return matrix4<T>{
-        from(0,0), from(0,1), from(0,2), from(0,3),
-        from(1,0), from(1,1), from(1,2), from(1,3),
-        from(2,0), from(2,1), from(2,2), from(2,3),
-        from(3,0), from(3,1), from(3,2), from(3,3)
+        static_cast<T>(from(0,0)),
+        static_cast<T>(from(0,1)),
+        static_cast<T>(from(0,2)),
+        static_cast<T>(from(0,3)),
+        static_cast<T>(from(1,0)),
+        static_cast<T>(from(1,1)),
+        static_cast<T>(from(1,2)),
+        static_cast<T>(from(1,3)),
+        static_cast<T>(from(2,0)),
+        static_cast<T>(from(2,1)),
+        static_cast<T>(from(2,2)),
+        static_cast<T>(from(2,3)),
+        static_cast<T>(from(3,0)),
+        static_cast<T>(from(3,1)),
+        static_cast<T>(from(3,2)),
+        static_cast<T>(from(3,3))
       };
     }
   };

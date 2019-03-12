@@ -18,7 +18,10 @@ namespace alloy::math::detail {
     static constexpr vector2<T> cast( const vector2<U>& from )
       noexcept
     {
-      return vector2<T>{ from.x(), from.y() };
+      return vector2<T>{
+        static_cast<T>(from.x()),
+        static_cast<T>(from.y())
+      };
     }
   };
 
@@ -28,7 +31,11 @@ namespace alloy::math::detail {
     static constexpr vector3<T> cast( const vector2<U>& from )
       noexcept
     {
-      return vector3<T>{ from.x(), from.y(), T{0} };
+      return vector3<T>{
+        static_cast<T>(from.x()),
+        static_cast<T>(from.y()),
+        T{0}
+      };
     }
   };
 
@@ -38,7 +45,12 @@ namespace alloy::math::detail {
     static constexpr vector4<T> cast( const vector2<U>& from )
       noexcept
     {
-      return vector4<T>{ from.x(), from.y(), T{0}, T{0} };
+      return vector4<T>{
+        static_cast<T>(from.x()),
+        static_cast<T>(from.y()),
+        T{0},
+        T{0}
+      };
     }
   };
 
@@ -50,7 +62,10 @@ namespace alloy::math::detail {
     static constexpr vector2<T> cast( const vector3<U>& from )
       noexcept
     {
-      return vector2<T>{ from.x(), from.y() };
+      return vector2<T>{
+        static_cast<T>(from.x()),
+        static_cast<T>(from.y())
+      };
     }
   };
 
@@ -60,7 +75,11 @@ namespace alloy::math::detail {
     static constexpr vector3<T> cast( const vector3<U>& from )
       noexcept
     {
-      return vector3<T>{ from.x(), from.y(), from.z() };
+      return vector3<T>{
+        static_cast<T>(from.x()),
+        static_cast<T>(from.y()),
+        static_cast<T>(from.z())
+      };
     }
   };
 
@@ -70,7 +89,12 @@ namespace alloy::math::detail {
     static constexpr vector4<T> cast( const vector3<U>& from )
       noexcept
     {
-      return vector4<T>{ from.x(), from.y(), from.z(), T{0} };
+      return vector4<T>{
+        static_cast<T>(from.x()),
+        static_cast<T>(from.y()),
+        static_cast<T>(from.z()),
+        T{0}
+      };
     }
   };
 
@@ -82,7 +106,10 @@ namespace alloy::math::detail {
     static constexpr vector2<T> cast( const vector4<U>& from )
       noexcept
     {
-      return vector2<T>{ from.x(), from.y() };
+      return vector2<T>{
+        static_cast<T>(from.x()),
+        static_cast<T>(from.y())
+      };
     }
   };
 
@@ -92,7 +119,11 @@ namespace alloy::math::detail {
     static constexpr vector3<T> cast( const vector4<U>& from )
       noexcept
     {
-      return vector3<T>{ from.x(), from.y(), from.z() };
+      return vector3<T>{
+        static_cast<T>(from.x()),
+        static_cast<T>(from.y()),
+        static_cast<T>(from.z())
+      };
     }
   };
 
@@ -102,7 +133,12 @@ namespace alloy::math::detail {
     static constexpr vector4<T> cast( const vector4<U>& from )
       noexcept
     {
-      return vector4<T>{ from.x(), from.y(), from.z(), from.w() };
+      return vector4<T>{
+        static_cast<T>(from.x()),
+        static_cast<T>(from.y()),
+        static_cast<T>(from.z()),
+        static_cast<T>(from.w())
+      };
     }
   };
 
