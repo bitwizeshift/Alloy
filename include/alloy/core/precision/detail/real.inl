@@ -5,6 +5,10 @@
 # error "real.inl included without first including declaration header real.hpp"
 #endif
 
+//==============================================================================
+// definitions : non-member functions : alias : real
+//==============================================================================
+
 inline bool alloy::core::is_nan( real f )
   noexcept
 {
@@ -33,6 +37,24 @@ inline bool alloy::core::is_subnormal( real f )
   noexcept
 {
   return std::fpclassify(f) == FP_SUBNORMAL;
+}
+
+//==============================================================================
+// definitions : literals
+//==============================================================================
+
+inline constexpr alloy::core::real
+  alloy::core::literals::precision_literals::operator""_r(long double in)
+  noexcept
+{
+  return static_cast<real>(in);
+}
+
+inline constexpr alloy::core::real
+  alloy::core::literals::precision_literals::operator""_real(long double in)
+  noexcept
+{
+  return static_cast<real>(in);
 }
 
 #endif /* ALLOY_CORE_PRECISION_DETAIL_REAL_INL */

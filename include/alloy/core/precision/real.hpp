@@ -56,13 +56,13 @@ namespace alloy::core {
 # error ALLOY_PRECISION set to unknown value
 #endif
 
-  //===========================================================================
+  //============================================================================
   // non-member functions : alias : real
-  //===========================================================================
+  //============================================================================
 
-  //---------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
   // Utilities
-  //---------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   /// \brief Determines whether a given real value \p f is a nan
   ///
@@ -70,7 +70,7 @@ namespace alloy::core {
   /// \return \c true if \p f is a \c nan
   bool is_nan( real f ) noexcept;
 
-  //---------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   /// \brief Determines whether a given real value \p f is finite
   ///
@@ -84,7 +84,7 @@ namespace alloy::core {
   /// \return \c true if \p f is \c infinite
   bool is_infinite( real f ) noexcept;
 
-  //------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   /// \brief Determines whether a given real value \p f is normal
   ///
@@ -97,6 +97,19 @@ namespace alloy::core {
   /// \param f the value to check
   /// \return \c true if \p f is \c subnormal
   bool is_subnormal( real f ) noexcept;
+
+  //============================================================================
+  // literals
+  //============================================================================
+
+  inline namespace literals {
+    inline namespace precision_literals {
+
+      constexpr real operator""_r(long double in) noexcept;
+      constexpr real operator""_real(long double in) noexcept;
+
+    } // inline namespace precision_literals
+  } // inline namespaec literals
 
 } // namespace alloy::core
 
