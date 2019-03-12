@@ -105,6 +105,7 @@ configure_file(
 file(GLOB generated_header_files "${CMAKE_CURRENT_BINARY_DIR}/include/**/*.hpp")
 
 set(header_files
+  include/alloy/core/assert.hpp
   include/alloy/core/intrinsics.hpp
   include/alloy/core/precision.hpp
   include/alloy/core/precision/fixed.hpp
