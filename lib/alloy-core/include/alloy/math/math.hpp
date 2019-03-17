@@ -336,7 +336,7 @@ inline constexpr Arithmetic alloy::math::abs( Arithmetic x )
 }
 
 template<typename Arithmetic,
-          std::enable_if_t<std::is_unsigned<Arithmetic>::value>* = nullptr>
+          std::enable_if_t<std::is_unsigned<Arithmetic>::value>*>
 inline constexpr Arithmetic alloy::math::abs( Arithmetic x )
   noexcept
 {
