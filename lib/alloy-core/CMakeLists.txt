@@ -1,0 +1,162 @@
+##############################################################################
+# Configured Files
+##############################################################################
+
+# read license, indent each line by 2 spaces
+file(READ "${PROJECT_SOURCE_DIR}/LICENSE.txt" license_text)
+string(REPLACE "\n" "\n  " LICENSE_TEXT "  ${license_text}")
+
+# Generate Files
+configure_file(
+  "${ALLOY_MODULE_PATH}/version.hpp.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/alloy/core/version.hpp"
+  @ONLY
+)
+
+set(ALLOY_PRECISION "ALLOY_PRECISION_${ALLOY_PRECISION}")
+string(TOUPPER "${ALLOY_PRECISION}" ALLOY_PRECISION)
+
+configure_file(
+  "${ALLOY_MODULE_PATH}/config.hpp.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/alloy/core/config.hpp"
+  @ONLY
+)
+
+##############################################################################
+# Target
+##############################################################################
+
+set(generated_header_files
+  ${CMAKE_CURRENT_BINARY_DIR}/include/alloy/core/version.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/include/alloy/core/config.hpp
+)
+
+set(header_files
+  include/alloy/core/assert.hpp
+  include/alloy/core/intrinsics.hpp
+  include/alloy/core/precision.hpp
+  include/alloy/core/precision/fixed.hpp
+  include/alloy/core/precision/half.hpp
+  include/alloy/core/precision/real.hpp
+  include/alloy/core/macros.hpp
+
+  include/alloy/math/angle.hpp
+  include/alloy/math/angle/basic_angle.hpp
+  include/alloy/math/angle/degree.hpp
+  include/alloy/math/angle/gradian.hpp
+  include/alloy/math/angle/radian.hpp
+  include/alloy/math/constants.hpp
+  include/alloy/math/interpolation.hpp
+  include/alloy/math/simplex.hpp
+  include/alloy/math/trigonometry.hpp
+  include/alloy/math/matrix/matrix2.hpp
+  include/alloy/math/matrix/matrix3.hpp
+  include/alloy/math/matrix/matrix4.hpp
+  include/alloy/math/matrix/matrix_utilities.hpp
+  include/alloy/math/matrix.hpp
+  include/alloy/math/vector/vector2.hpp
+  include/alloy/math/vector/vector3.hpp
+  include/alloy/math/vector/vector4.hpp
+  include/alloy/math/vector/vector_utilities.hpp
+  include/alloy/math/vector.hpp
+  include/alloy/math/quaternion.hpp
+  include/alloy/math/math.hpp
+)
+
+set(inline_header_files
+  include/alloy/core/intrinsics/clang.hpp
+  include/alloy/core/intrinsics/gcc.hpp
+  include/alloy/core/intrinsics/msvc.hpp
+  include/alloy/core/precision/detail/real.inl
+
+  include/alloy/math/angle/detail/basic_angle.inl
+  include/alloy/math/angle/detail/degree.inl
+  include/alloy/math/angle/detail/gradian.inl
+  include/alloy/math/angle/detail/radian.inl
+  include/alloy/math/vector/detail/vector2.inl
+  include/alloy/math/vector/detail/vector3.inl
+  include/alloy/math/vector/detail/vector4.inl
+  include/alloy/math/vector/detail/vector_utilities.inl
+)
+
+set(source_files
+  src/alloy/math/simplex.cpp
+  src/alloy/math/trigonometry.cpp
+  src/alloy/math/quaternion.cpp
+)
+
+add_library(${PROJECT_NAME}Core
+  ${generated_header_files}
+  ${header_files}
+  ${inline_header_files}
+  ${source_files}
+)
+add_library(${PROJECT_NAME}::Core ALIAS ${PROJECT_NAME}Core)
+
+target_compile_features(${PROJECT_NAME}Core
+  PUBLIC cxx_std_17
+)
+set_target_properties(${PROJECT_NAME}Core
+  PROPERTIES
+    OUTPUT_NAME "alloy-core"
+    CXX_STANDARD_REQUIRED ON
+    CXX_EXTENSIONS OFF
+)
+
+target_include_directories(${PROJECT_NAME}Core
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+  PUBLIC $<INSTALL_INTERFACE:include>
+)
+
+# Header Self-Containment Tests
+
+include(AddSelfContainmentTest)
+
+if (ALLOY_COMPILE_SELF_CONTAINMENT_TESTS)
+  add_self_containment_test(${PROJECT_NAME}Core.SelfContainmentTest
+    TARGET ${PROJECT_NAME}Core
+    HEADERS ${header_files}
+  )
+  target_sources(${PROJECT_NAME}Core.SelfContainmentTest PRIVATE ${inline_header_files})
+endif ()
+
+# Unit Tests
+
+if (ALLOY_COMPILE_UNIT_TESTS)
+  add_subdirectory("test")
+endif ()
+
+##############################################################################
+# Installation
+##############################################################################
+
+if (NOT NOT_SUBPROJECT)
+  return()
+endif ()
+
+include(GNUInstallDirs)
+
+set(ALLOY_CMAKE_CONFIG_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
+
+# Targets
+install(
+  TARGETS "${PROJECT_NAME}Core"
+  EXPORT "${PROJECT_NAME}CoreTargets"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+)
+install(
+  EXPORT "${PROJECT_NAME}CoreTargets"
+  NAMESPACE "${PROJECT_NAME}::"
+  DESTINATION "${ALLOY_CMAKE_CONFIG_DESTINATION}"
+)
+
+# Includes
+install(
+  DIRECTORY "include/"
+  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+)
+install(
+  DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include/"
+  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+)
