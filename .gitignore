@@ -150,7 +150,6 @@ fabric.properties
 .target
 
 # Generated Directories
-bin/
 tmp/
 
 # Backup files
