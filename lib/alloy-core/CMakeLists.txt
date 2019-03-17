@@ -32,57 +32,55 @@ set(generated_header_files
 )
 
 set(header_files
+  include/alloy/core/angle.hpp
+  include/alloy/core/angle/basic_angle.hpp
+  include/alloy/core/angle/degree.hpp
+  include/alloy/core/angle/gradian.hpp
+  include/alloy/core/angle/radian.hpp
   include/alloy/core/assert.hpp
+  include/alloy/core/interpolation.hpp
   include/alloy/core/intrinsics.hpp
+  include/alloy/core/macros.hpp
+  include/alloy/core/math_constants.hpp
+  include/alloy/core/math.hpp
+  include/alloy/core/matrix.hpp
+  include/alloy/core/matrix/matrix_utilities.hpp
+  include/alloy/core/matrix/matrix2.hpp
+  include/alloy/core/matrix/matrix3.hpp
+  include/alloy/core/matrix/matrix4.hpp
   include/alloy/core/precision.hpp
   include/alloy/core/precision/fixed.hpp
   include/alloy/core/precision/half.hpp
   include/alloy/core/precision/real.hpp
-  include/alloy/core/macros.hpp
-
-  include/alloy/math/angle.hpp
-  include/alloy/math/angle/basic_angle.hpp
-  include/alloy/math/angle/degree.hpp
-  include/alloy/math/angle/gradian.hpp
-  include/alloy/math/angle/radian.hpp
-  include/alloy/math/constants.hpp
-  include/alloy/math/interpolation.hpp
-  include/alloy/math/simplex.hpp
-  include/alloy/math/trigonometry.hpp
-  include/alloy/math/matrix/matrix2.hpp
-  include/alloy/math/matrix/matrix3.hpp
-  include/alloy/math/matrix/matrix4.hpp
-  include/alloy/math/matrix/matrix_utilities.hpp
-  include/alloy/math/matrix.hpp
-  include/alloy/math/vector/vector2.hpp
-  include/alloy/math/vector/vector3.hpp
-  include/alloy/math/vector/vector4.hpp
-  include/alloy/math/vector/vector_utilities.hpp
-  include/alloy/math/vector.hpp
-  include/alloy/math/quaternion.hpp
-  include/alloy/math/math.hpp
+  include/alloy/core/quaternion.hpp
+  include/alloy/core/simplex.hpp
+  include/alloy/core/trigonometry.hpp
+  include/alloy/core/vector.hpp
+  include/alloy/core/vector/vector_utilities.hpp
+  include/alloy/core/vector/vector2.hpp
+  include/alloy/core/vector/vector3.hpp
+  include/alloy/core/vector/vector4.hpp
 )
 
 set(inline_header_files
+  include/alloy/core/angle/detail/basic_angle.inl
+  include/alloy/core/angle/detail/degree.inl
+  include/alloy/core/angle/detail/gradian.inl
+  include/alloy/core/angle/detail/radian.inl
   include/alloy/core/intrinsics/clang.hpp
   include/alloy/core/intrinsics/gcc.hpp
   include/alloy/core/intrinsics/msvc.hpp
   include/alloy/core/precision/detail/real.inl
-
-  include/alloy/math/angle/detail/basic_angle.inl
-  include/alloy/math/angle/detail/degree.inl
-  include/alloy/math/angle/detail/gradian.inl
-  include/alloy/math/angle/detail/radian.inl
-  include/alloy/math/vector/detail/vector2.inl
-  include/alloy/math/vector/detail/vector3.inl
-  include/alloy/math/vector/detail/vector4.inl
-  include/alloy/math/vector/detail/vector_utilities.inl
+  include/alloy/core/vector/detail/vector_utilities.inl
+  include/alloy/core/vector/detail/vector2.inl
+  include/alloy/core/vector/detail/vector3.inl
+  include/alloy/core/vector/detail/vector4.inl
 )
 
 set(source_files
-  src/alloy/math/simplex.cpp
-  src/alloy/math/trigonometry.cpp
-  src/alloy/math/quaternion.cpp
+  src/alloy/core/simplex.cpp
+  src/alloy/core/trigonometry.cpp
+  src/alloy/core/quaternion.cpp
 )
 
 add_library(${PROJECT_NAME}Core
