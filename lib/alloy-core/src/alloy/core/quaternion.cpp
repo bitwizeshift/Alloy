@@ -39,7 +39,7 @@
 
 alloy::core::quaternion
   alloy::core::quaternion::from_angle_axis( radian angle,
-                                            const vector_type& axis )
+                                            const vector3& axis )
   noexcept
 {
   const auto norm_axis = axis.normalized();
@@ -153,9 +153,9 @@ alloy::core::quaternion
 }
 
 alloy::core::quaternion
-  alloy::core::quaternion::from_rotation_axes( const vector_type& x_axis,
-                                               const vector_type& y_axis,
-                                               const vector_type& z_axis )
+  alloy::core::quaternion::from_rotation_axes( const vector3& x_axis,
+                                               const vector3& y_axis,
+                                               const vector3& z_axis )
   noexcept
 {
   return from_rotation_matrix( matrix3_type{x_axis,y_axis,z_axis} );
@@ -179,20 +179,21 @@ alloy::core::quaternion::const_reference
   alloy::core::quaternion::at( index_type n )
   const
 {
-  if( n >= 4 || n < 0 )
+  if( n >= 4 || n < 0 ) {
     throw std::out_of_range{"quaternion::at: index out of range"};
+  }
 
   return m_data[n];
 }
 
 //----------------------------------------------------------------------------
 
-alloy::core::vector3<alloy::core::quaternion::value_type>
+alloy::core::vector3
   alloy::core::quaternion::x_axis()
   const noexcept
 {
-  const auto ty  = 2.0f * y();
-  const auto tz  = 2.0f * z();
+  const auto ty  = real{2.0} * y();
+  const auto tz  = real{2.0} * z();
   const auto twy = ty * w();
   const auto twz = tz * w();
   const auto txy = ty * x();
@@ -200,12 +201,12 @@ alloy::core::vector3<alloy::core::quaternion::value_type>
   const auto tyy = ty * y();
   const auto tzz = tz * z();
 
-  return vector_type{1.0f - (tyy + tzz), txy + twz, txz - twy};
+  return vector3{real{1.0} - (tyy + tzz), txy + twz, txz - twy};
 }
 
 //----------------------------------------------------------------------------
 
-alloy::core::vector3<alloy::core::quaternion::value_type>
+alloy::core::vector3
   alloy::core::quaternion::y_axis()
   const noexcept
 {
@@ -219,12 +220,12 @@ alloy::core::vector3<alloy::core::quaternion::value_type>
   const auto tyz = tz * y();
   const auto tzz = tz * z();
 
-  return vector_type{txy - twz, 1.0f - (txx + tzz), tyz + twx};
+  return vector3{txy - twz, 1.0f - (txx + tzz), tyz + twx};
 }
 
 //----------------------------------------------------------------------------
 
-alloy::core::vector3<alloy::core::quaternion::value_type>
+alloy::core::vector3
   alloy::core::quaternion::z_axis()
   const noexcept
 {
@@ -238,7 +239,7 @@ alloy::core::vector3<alloy::core::quaternion::value_type>
   const auto tyy = ty * y();
   const auto tyz = tz * y();
 
-  return vector_type{txz+twy, tyz-twx, 1.0f-(txx+tyy)};
+  return vector3{txz+twy, tyz-twx, 1.0f-(txx+tyy)};
 }
 
 //----------------------------------------------------------------------------
@@ -328,7 +329,7 @@ void alloy::core::quaternion::extract_rotation_matrix( matrix4_type* rot )
 //----------------------------------------------------------------------------
 
 void alloy::core::quaternion::extract_angle_axis( radian* angle,
-                                                  vector_type* axis )
+                                                  vector3* axis )
   const noexcept
 {
   assert( angle != nullptr );
@@ -356,9 +357,9 @@ void alloy::core::quaternion::extract_angle_axis( radian* angle,
 
 //----------------------------------------------------------------------------
 
-void alloy::core::quaternion::extract_axes( vector_type* x_axis,
-                                            vector_type* y_axis,
-                                            vector_type* z_axis )
+void alloy::core::quaternion::extract_axes( vector3* x_axis,
+                                            vector3* y_axis,
+                                            vector3* z_axis )
   const noexcept
 {
   assert( x_axis != nullptr );
@@ -600,14 +601,14 @@ alloy::core::quaternion&
 
 //----------------------------------------------------------------------------
 
-alloy::core::quaternion::vector_type
+alloy::core::vector3
   alloy::core::operator*( const quaternion& lhs,
-                          const quaternion::vector_type& rhs )
+                          const vector3& rhs )
   noexcept
 {
-  auto qvec = quaternion::vector_type{lhs.x(), lhs.y(), lhs.z()};
+  auto qvec = vector3{lhs.x(), lhs.y(), lhs.z()};
 
-  auto uv = qvec.cross(rhs);
+  auto uv  = qvec.cross(rhs);
   auto uuv = qvec.cross(uv);
   uv *= (real{2} * lhs.w());
   uuv *= real{2};

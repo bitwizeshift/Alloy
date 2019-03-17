@@ -55,19 +55,14 @@ namespace alloy::core {
   /// Operations on this type are able to promote results to reduce loss of
   /// data, depending on what the operands are.
   //////////////////////////////////////////////////////////////////////////////
-  template<typename T>
   class vector3
   {
-    static_assert( !std::is_reference<T>::value );
-    static_assert( !std::is_void<T>::value );
-    static_assert( !std::is_pointer<T>::value );
-
     //--------------------------------------------------------------------------
     // Public Types
     //--------------------------------------------------------------------------
   public:
 
-    using value_type      = T;
+    using value_type      = real;
     using pointer         = value_type*;
     using const_pointer   = const value_type*;
     using reference       = value_type&;
@@ -77,19 +72,19 @@ namespace alloy::core {
     using index_type = std::ptrdiff_t;
 
     //--------------------------------------------------------------------------
-    // Constructors
+    // Constructors / Assignment
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Default constructs a vector3 with an undefined value
-    constexpr vector3() = default;
+    /// \brief Default constructs a vector3 with 0 values
+    constexpr vector3() noexcept;
 
     /// \brief Constructs a vector3 with components \p x and \p y
     ///
     /// \param x the x-component of the vector3
     /// \param y the y-component of the vector3
     /// \param z the z-component of the vector3
-    constexpr vector3( value_type x, value_type y, value_type z ) noexcept;
+    constexpr vector3( real x, real y, real z ) noexcept;
 
     /// \brief Copy-constructs a vector3 with the value of another
     ///        vector3
@@ -104,9 +99,6 @@ namespace alloy::core {
     constexpr vector3( vector3&& other ) noexcept = default;
 
     //--------------------------------------------------------------------------
-    // Assignment
-    //--------------------------------------------------------------------------
-  public:
 
     /// \brief Copy-assigns \p other to \c this
     ///
@@ -198,17 +190,13 @@ namespace alloy::core {
     ///
     /// \param rhs the other vector3 to perform the dot-product with
     /// \return the dot product of \c this and \p rhs
-    template<typename U>
-    constexpr std::common_type_t<T,U>
-      dot( const vector3<U>& rhs ) const noexcept;
+    constexpr real dot( const vector3& rhs ) const noexcept;
 
     /// \brief Calculates the cross-product of \c this and \p rhs
     ///
     /// \param rhs the other vector3 to perform the cross-product with
     /// \return the cross product of \c this and \p rhs
-    template<typename U>
-    constexpr vector3<std::common_type_t<T,U>>
-      cross( const vector3<U>& rhs ) const noexcept;
+    constexpr vector3 cross( const vector3& rhs ) const noexcept;
 
     /// \brief Gets the magnitude of this vector3
     ///
@@ -219,39 +207,31 @@ namespace alloy::core {
     ///
     /// \param vec the vector3 to get the midpoint from
     /// \return the midpoint between \c this and \p vec
-    template<typename U>
-    constexpr vector3<std::common_type_t<T,U>>
-      midpoint( const vector3<U>& vec ) const noexcept;
+    constexpr vector3 midpoint( const vector3& vec ) const noexcept;
 
     /// \brief Gets the reflection vector3 of \c this reflected through the
     ///        \p normal
     ///
     /// \param normal the normal vector3
     /// \return the reflection
-    template<typename U>
-    constexpr vector3<std::common_type_t<T,U>>
-      reflection( const vector3<U>& normal ) const noexcept;
+    constexpr vector3 reflection( const vector3& normal ) const noexcept;
 
     /// \brief Projects the components of this vector onto \p vector
     ///
     /// \param vector the vector to project onto
     /// \return the projection
-    template<typename U>
-    constexpr vector3<std::common_type_t<T,U>>
-      projection( const vector3<U>& vector ) const noexcept;
+    constexpr vector3 projection( const vector3& vector ) const noexcept;
 
     /// \brief Projects the components of this vector off of \p vector
     ///
     /// \param vector the vector to project off of
     /// \return the rejection
-    template<typename U>
-    constexpr vector3<std::common_type_t<T,U>>
-      rejection( const vector3<U>& vector ) const noexcept;
+    constexpr vector3 rejection( const vector3& vector ) const noexcept;
 
     /// \brief Gets the perpendicular of this vector3
     ///
     /// \return the perpendicular vector3 to \c this
-    constexpr vector3 perpendicular() const noexcept;
+    vector3 perpendicular() const noexcept;
 
     /// \brief Gets the normalized vector3 of \c this
     ///
@@ -267,15 +247,13 @@ namespace alloy::core {
     ///
     /// \param other the other vector to determine the angle between
     /// \return the angle between \c this and \p other
-    template<typename U>
-    radian angle_between( const vector3<U>& other ) const noexcept;
+    radian angle_between( const vector3& other ) const noexcept;
 
     /// \brief Determines the angle from \p to \p other
     ///
     /// \param other the other vector to get the angle to
     /// \return the angle from \c this to \p other
-    template<typename U>
-    radian angle_to( const vector3<U>& other ) const noexcept;
+    radian angle_to( const vector3& other ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -285,7 +263,7 @@ namespace alloy::core {
     /// \brief Normalizes this vector3 and returns a reference to \c (*this)
     ///
     /// \return the reference to \c (*this)
-    constexpr vector3& normalize() noexcept;
+    vector3& normalize() noexcept;
 
     /// \brief Inverts this vector3 and returns a reference to \c (*this)
     ///
@@ -305,60 +283,46 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    template<typename U>
-    constexpr vector3& operator+=( const vector3<U>& rhs ) noexcept;
-    template<typename U>
-    constexpr vector3& operator-=( const vector3<U>& rhs ) noexcept;
-    template<typename U>
-    constexpr vector3& operator*=( U scalar ) noexcept;
-    template<typename U>
-    constexpr vector3& operator/=( U scalar ) noexcept;
+    constexpr vector3& operator+=( const vector3& rhs ) noexcept;
+    constexpr vector3& operator-=( const vector3& rhs ) noexcept;
+    constexpr vector3& operator*=( real scalar ) noexcept;
+    constexpr vector3& operator/=( real scalar ) noexcept;
 
     //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------
   private:
 
-    value_type m_data[3]; ///< The storage data
+    real m_data[3]; ///< The storage data
   };
 
   //============================================================================
-  // non-member functions : class : vector3<T>
+  // non-member functions : class : vector3
   //============================================================================
 
   //----------------------------------------------------------------------------
   // Arithmetic Operators
   //----------------------------------------------------------------------------
 
-  template<typename T, typename U>
-  constexpr vector3<std::common_type_t<T,U>>
-    operator+( const vector3<T>& lhs, const vector3<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr vector3<std::common_type_t<T,U>>
-    operator-( const vector3<T>& lhs, const vector3<U>& rhs ) noexcept;
-  template<typename T, typename U,
-           typename = std::enable_if<std::is_arithmetic<U>::value>>
-  constexpr vector3<std::common_type_t<T,U>>
-    operator*( const vector3<T>& lhs, U scalar ) noexcept;
-  template<typename T, typename U,
-           typename = std::enable_if<std::is_arithmetic<T>::value>>
-  constexpr vector3<std::common_type_t<T,U>>
-    operator*( T scalar, const vector3<U>& rhs ) noexcept;
-  template<typename T, typename U,
-           typename = std::enable_if<std::is_arithmetic<U>::value>>
-  constexpr vector3<std::common_type_t<T,U>>
-    operator/( const vector3<T>& lhs, U scalar ) noexcept;
+  constexpr vector3 operator+( const vector3& lhs,
+                               const vector3& rhs ) noexcept;
+  constexpr vector3 operator-( const vector3& lhs,
+                               const vector3& rhs ) noexcept;
+  constexpr vector3 operator*( const vector3& lhs,
+                               real scalar ) noexcept;
+  constexpr vector3 operator*( real scalar,
+                               const vector3& rhs ) noexcept;
+  constexpr vector3 operator/( const vector3& lhs,
+                               real scalar ) noexcept;
 
   //----------------------------------------------------------------------------
   // Comparisons
   //----------------------------------------------------------------------------
 
-  template<typename T, typename U>
-  constexpr bool operator==( const vector3<T>& lhs,
-                             const vector3<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr bool operator!=( const vector3<T>& lhs,
-                             const vector3<U>& rhs ) noexcept;
+  constexpr bool operator==( const vector3& lhs,
+                             const vector3& rhs ) noexcept;
+  constexpr bool operator!=( const vector3& lhs,
+                             const vector3& rhs ) noexcept;
 
   //----------------------------------------------------------------------------
 
@@ -368,20 +332,18 @@ namespace alloy::core {
   /// \param lhs the left vector3
   /// \param rhs the right vector3
   /// \return \c true if the two vector3 contain almost equal values
-  template<typename T, typename U>
-  constexpr bool almost_equal( const vector3<T>& lhs,
-                               const vector3<U>& rhs ) noexcept;
+
+  constexpr bool almost_equal( const vector3& lhs,
+                               const vector3& rhs ) noexcept;
 
   /// \brief Determines equality between two vector3 relative to \p tolerance
   ///
   /// \param lhs the left vector3
   /// \param rhs the right vector3
   /// \return \c true if the two vector3 contain almost equal values
-  template<typename T, typename U, typename Arithmetic,
-           typename = std::enable_if_t<std::is_arithmetic<Arithmetic>::value>>
-  constexpr bool almost_equal( const vector3<T>& lhs,
-                               const vector3<U>& rhs,
-                               Arithmetic tolerance ) noexcept;
+  constexpr bool almost_equal( const vector3& lhs,
+                               const vector3& rhs,
+                               real tolerance ) noexcept;
 
   //----------------------------------------------------------------------------
   // Quantifiers
@@ -392,25 +354,20 @@ namespace alloy::core {
   /// \param lhs the left vector3
   /// \param rhs the right vector3
   /// \return
-  template<typename T, typename U>
-  constexpr std::common_type_t<T,U>
-    dot( const vector3<T>& lhs, const vector3<U>& rhs ) noexcept;
+  constexpr real dot( const vector3& lhs, const vector3& rhs ) noexcept;
 
   /// \brief Performs the cross product between \p lhs and \p rhs
   ///
   /// \param lhs the left vector2
   /// \param rhs the right vector2
   /// \return the result of the dot product
-  template<typename T, typename U>
-  constexpr vector3<std::common_type_t<T,U>>
-    cross( const vector3<T>& lhs, const vector3<U>& rhs ) noexcept;
+  constexpr vector3 cross( const vector3& lhs, const vector3& rhs ) noexcept;
 
   /// \brief Calculates the magnitude of the vector3 \p vec
   ///
   /// \param vec the vector3 to calculate the magnitude from
   /// \return the magnitude
-  template<typename T>
-  core::real magnitude( const vector3<T>& vec ) noexcept;
+  core::real magnitude( const vector3& vec ) noexcept;
 
   //============================================================================
   // trait : is_vector3
@@ -419,70 +376,21 @@ namespace alloy::core {
   /// \brief Trait to detect whether \p T is a \ref vector3
   ///
   /// The result is aliased as \c ::value
-  template<typename T> struct is_vector3 : std::false_type{};
-
-  template<typename T> struct is_vector3<vector3<T>> : std::true_type{};
+  template<typename T>
+  struct is_vector3 : std::false_type{};
+  template<>
+  struct is_vector3<vector3> : std::true_type{};
 
   /// \brief Convenience template variable to extract out
-  ///        \c is_vector4<T>::value
+  ///        \c is_vector4::value
   template<typename T>
   constexpr bool is_vector3_v = is_vector3<T>::value;
-
-  //============================================================================
-  // struct : vector3_constants
-  //============================================================================
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief A collection of vector3 constants
-  //////////////////////////////////////////////////////////////////////////////
-  template<typename T>
-  struct vector3_constants
-  {
-    //--------------------------------------------------------------------------
-    // Public Member Types
-    //--------------------------------------------------------------------------
-
-    using vector_type = vector3<T>;
-
-    //--------------------------------------------------------------------------
-    // Public Constants
-    //--------------------------------------------------------------------------
-
-    static inline constexpr auto zero = vector_type {
-      T{0}, T{0}, T{0}
-    };
-    static inline constexpr auto unit_x = vector_type {
-      T{1}, T{0}, T{0}
-    };
-    static inline constexpr auto unit_y = vector_type {
-      T{0}, T{1}, T{0}
-    };
-    static inline constexpr auto unit_z = vector_type {
-      T{0}, T{0}, T{1}
-    };
-    static inline constexpr auto neg_unit_x = -unit_x;
-    static inline constexpr auto neg_unit_y = -unit_y;
-    static inline constexpr auto neg_unit_z = -unit_z;
-  };
 
   //============================================================================
   // aliases
   //============================================================================
 
-  using vector3f  = vector3<float>;
-  using vector3d  = vector3<double>;
-  using vector3ld = vector3<long double>;
-  using vector3r  = vector3<real>;
-
-  using vec3f  = vector3f;
-  using vec3d  = vector3d;
-  using vec3ld = vector3ld;
-  using vec3r  = vector3r;
-
-  using vector3f_constants  = vector3_constants<float>;
-  using vector3d_constants  = vector3_constants<double>;
-  using vector3ld_constants = vector3_constants<long double>;
-  using vector3r_constants  = vector3_constants<real>;
+  using vec3 = vector3;
 
 } // namespace alloy::core
 

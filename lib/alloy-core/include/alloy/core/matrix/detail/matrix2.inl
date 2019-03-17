@@ -14,8 +14,8 @@
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline constexpr alloy::core::matrix2<T>::matrix2( const vector2<T>& v0,
-                                                   const vector2<T>& v1 )
+inline constexpr alloy::core::matrix2<T>::matrix2( const vector2& v0,
+                                                   const vector2& v1 )
   noexcept
   : m_matrix {
       v0.x(), v0.y(),
@@ -109,19 +109,19 @@ inline constexpr typename alloy::core::matrix2<T>::const_reference
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline constexpr alloy::core::vector2<T>
+inline constexpr alloy::core::vector2
   alloy::core::matrix2<T>::row( index_type r )
   const noexcept
 {
-  return vector2<T>{ get(r,0), get(r,1) };
+  return vector2{ get(r,0), get(r,1) };
 }
 
 template<typename T>
-inline constexpr alloy::core::vector2<T>
+inline constexpr alloy::core::vector2
   alloy::core::matrix2<T>::column( index_type c )
   const noexcept
 {
-  return vector2<T>{ get(0,c), get(1,c) };
+  return vector2{ get(0,c), get(1,c) };
 }
 
 //------------------------------------------------------------------------------
@@ -203,11 +203,11 @@ inline constexpr alloy::core::matrix2<T>
 
 template<typename T>
 template<typename U>
-constexpr alloy::core::vector2<std::common_type_t<T,U>>
-  alloy::core::matrix2<T>::combine( const vector2<U>& vec )
+constexpr alloy::core::vector2
+  alloy::core::matrix2<T>::combine( const vector2& vec )
   const noexcept
 {
-  auto result = vector2<std::common_type_t<T,U>>{};
+  auto result = vector2{};
 
   for (auto r = 0; r < columns; ++r) {
     auto sum = std::common_type_t<T,U>{0};
@@ -383,8 +383,8 @@ inline constexpr alloy::core::matrix2<std::common_type_t<T,U>>
 }
 
 template<typename T, typename U>
-inline constexpr alloy::core::vector2<std::common_type_t<T,U>>
-  alloy::core::operator*( const vector2<T>& lhs, const matrix2<U>& rhs )
+inline constexpr alloy::core::vector2
+  alloy::core::operator*( const vector2& lhs, const matrix2<U>& rhs )
   noexcept
 {
   return rhs.combine(lhs);

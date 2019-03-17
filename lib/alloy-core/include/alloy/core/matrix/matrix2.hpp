@@ -100,8 +100,8 @@ namespace alloy::core {
     ///
     /// \param v0 the first row vector
     /// \param v1 the second row vector
-    constexpr matrix2( const vector2<T>& v0,
-                        const vector2<T>& v1 ) noexcept;
+    constexpr matrix2( const vector2& v0,
+                       const vector2& v1 ) noexcept;
 
     /// \brief Constructs a matrix2 from an array of 4 entries
     ///
@@ -183,12 +183,12 @@ namespace alloy::core {
     /// \brief Retrieves the vector at row \p r
     ///
     /// \param r the row index to retrieve
-    constexpr vector2<T> row( index_type r ) const noexcept;
+    constexpr vector2 row( index_type r ) const noexcept;
 
     /// \brief Retrieves the vector at row \p c
     ///
     /// \param c the column index to retrieve
-    constexpr vector2<T> column( index_type c ) const noexcept;
+    constexpr vector2 column( index_type c ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -240,8 +240,8 @@ namespace alloy::core {
     /// \param vec the vector to combine
     /// \return the result of \c vec * matrix
     template<typename U>
-    constexpr vector2<std::common_type_t<T,U>>
-      combine( const vector2<U>& vec ) const noexcept;
+    constexpr vector2
+      combine( const vector2& vec ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -322,8 +322,8 @@ namespace alloy::core {
   constexpr matrix2<std::common_type_t<T,U>>
     operator*( const matrix2<T>& lhs, const matrix2<U>& rhs ) noexcept;
   template<typename T, typename U>
-  constexpr vector2<std::common_type_t<T,U>>
-    operator*( const vector2<T>& lhs, const matrix2<U>& rhs ) noexcept;
+  constexpr vector2
+    operator*( const vector2& lhs, const matrix2<U>& rhs ) noexcept;
   template<typename T, typename U>
   constexpr matrix2<std::common_type_t<T,U>>
     operator*( T lhs, const matrix2<U>& rhs ) noexcept;

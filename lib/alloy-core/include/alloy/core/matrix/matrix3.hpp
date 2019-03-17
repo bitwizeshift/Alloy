@@ -100,9 +100,9 @@ namespace alloy::core {
     ///
     /// \param v0 the first row vector
     /// \param v1 the second row vector
-    constexpr matrix3( const vector3<T>& v0,
-                       const vector3<T>& v1,
-                       const vector3<T>& v2 ) noexcept;
+    constexpr matrix3( const vector3& v0,
+                       const vector3& v1,
+                       const vector3& v2 ) noexcept;
 
     /// \brief Constructs a matrix3 from an array of 4 entries
     ///
@@ -189,12 +189,12 @@ namespace alloy::core {
     /// \brief Retrieves the vector at row \p r
     ///
     /// \param r the row index to retrieve
-    constexpr vector3<T> row( index_type r ) const noexcept;
+    constexpr vector3 row( index_type r ) const noexcept;
 
     /// \brief Retrieves the vector at row \p c
     ///
     /// \param c the column index to retrieve
-    constexpr vector3<T> column( index_type c ) const noexcept;
+    constexpr vector3 column( index_type c ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -246,8 +246,8 @@ namespace alloy::core {
     /// \param vec the vector to combine
     /// \return the result of \c vec * matrix
     template<typename U>
-    constexpr vector3<std::common_type_t<T,U>>
-      combine( const vector3<U>& vec ) const noexcept;
+    constexpr vector3
+      combine( const vector3& vec ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -330,8 +330,8 @@ namespace alloy::core {
   constexpr matrix3<std::common_type_t<T,U>>
     operator*( const matrix3<T>& lhs, const matrix3<U>& rhs ) noexcept;
   template<typename T, typename U>
-  constexpr vector3<std::common_type_t<T,U>>
-    operator*( const vector3<T>& lhs, const matrix3<U>& rhs ) noexcept;
+  constexpr vector3
+    operator*( const vector3& lhs, const matrix3<U>& rhs ) noexcept;
   template<typename T, typename U>
   constexpr matrix3<std::common_type_t<T,U>>
     operator*( T lhs, const matrix3<U>& rhs ) noexcept;

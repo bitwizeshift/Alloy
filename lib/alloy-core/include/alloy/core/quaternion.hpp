@@ -91,7 +91,6 @@ namespace alloy::core {
     using size_type  = std::size_t;           ///< The type used for sizes
     using index_type = std::ptrdiff_t;        ///< The type used for indices
 
-    using vector_type  = vector3<value_type>; ///< The vector type
     using matrix3_type = matrix3<value_type>; ///< The 3x3 matrix type
     using matrix4_type = matrix4<value_type>; ///< The 4x4 matrix type
 
@@ -106,7 +105,7 @@ namespace alloy::core {
     /// \param axis the axis
     /// \return the constructed quaternion
     static quaternion from_angle_axis( radian angle,
-                                       const vector_type& axis ) noexcept;
+                                       const vector3& axis ) noexcept;
 
     /// \brief Constructs a quaternion from the given a \p yaw, \p pitch, and
     ///        \p roll
@@ -138,9 +137,9 @@ namespace alloy::core {
     /// \param y_axis the vector representing the y-axis
     /// \param z_axis the vector representing the z-axis
     /// \return the constructed quaternion
-    static quaternion from_rotation_axes( const vector_type& x_axis,
-                                          const vector_type& y_axis,
-                                          const vector_type& z_axis ) noexcept;
+    static quaternion from_rotation_axes( const vector3& x_axis,
+                                          const vector3& y_axis,
+                                          const vector3& z_axis ) noexcept;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -272,17 +271,17 @@ namespace alloy::core {
     /// \brief Retrieves the x-axis from this quaternion
     ///
     /// \return the x-axis
-    vector_type x_axis() const noexcept;
+    vector3 x_axis() const noexcept;
 
     /// \brief Retrieves the y-axis from this quaternion
     ///
     /// \return the y-axis
-    vector_type y_axis() const noexcept;
+    vector3 y_axis() const noexcept;
 
     /// \brief Retrieves the z-axis from this quaternion
     ///
     /// \return the z-axis
-    vector_type z_axis() const noexcept;
+    vector3 z_axis() const noexcept;
 
     //--------------------------------------------------------------------------
 
@@ -294,12 +293,12 @@ namespace alloy::core {
     /// \brief Calculates and returns the rotation angle and axis
     ///
     /// \return a tuple containing the angle and the axis
-    std::tuple<radian,vector_type> angle_axis() const noexcept;
+    std::tuple<radian,vector3> angle_axis() const noexcept;
 
     /// \brief Calculates and returns the x, y, and z axss as vectors
     ///
     /// \return a tuple containing the x, y, and z vector axes
-    std::tuple<vector_type,vector_type,vector_type> axes() const noexcept;
+    std::tuple<vector3,vector3,vector3> axes() const noexcept;
 
     //--------------------------------------------------------------------------
 
@@ -334,7 +333,7 @@ namespace alloy::core {
     ///
     /// \param angle the angle to extract into
     /// \param axis the vector to extract into
-    void extract_angle_axis( radian* angle, vector_type* axis ) const noexcept;
+    void extract_angle_axis( radian* angle, vector3* axis ) const noexcept;
 
     //--------------------------------------------------------------------------
 
@@ -343,9 +342,9 @@ namespace alloy::core {
     /// \param x_axis pointer to the x-axis vector
     /// \param y_axis pointer to the y-axis vector
     /// \param z_axis pointer to the z-axis vector
-    void extract_axes( vector_type* x_axis,
-                       vector_type* y_axis,
-                       vector_type* z_axis ) const noexcept;
+    void extract_axes( vector3* x_axis,
+                       vector3* y_axis,
+                       vector3* z_axis ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -462,14 +461,13 @@ namespace alloy::core {
   quaternion operator/( const quaternion& lhs,
                         const quaternion& rhs ) noexcept;
   quaternion operator*( const quaternion& lhs,
-                        core::real rhs ) noexcept;
-  quaternion operator*( core::real lhs,
+                        real rhs ) noexcept;
+  quaternion operator*( real lhs,
                         const quaternion& rhs ) noexcept;
-  quaternion::vector_type
-    operator*( const quaternion& lhs,
-               const quaternion::vector_type& rhs ) noexcept;
+  vector3 operator*( const quaternion& lhs,
+                     const vector3& rhs ) noexcept;
   quaternion operator/( const quaternion& lhs,
-                        quaternion::value_type rhs ) noexcept;
+                        real rhs ) noexcept;
 
   //----------------------------------------------------------------------------
   // Comparisons
@@ -686,20 +684,20 @@ inline alloy::core::quaternion::matrix3_type
   return mat;
 }
 
-inline std::tuple<alloy::core::radian,alloy::core::quaternion::vector_type>
+inline std::tuple<alloy::core::radian,alloy::core::vector3>
   alloy::core::quaternion::angle_axis()
   const noexcept
 {
   auto rad = radian{};
-  auto vec = vector_type{};
+  auto vec = vector3{};
 
   extract_angle_axis(&rad,&vec);
   return std::make_tuple(rad,vec);
 }
 
-inline std::tuple<alloy::core::quaternion::vector_type,
-                  alloy::core::quaternion::vector_type,
-                  alloy::core::quaternion::vector_type>
+inline std::tuple<alloy::core::vector3,
+                  alloy::core::vector3,
+                  alloy::core::vector3>
   alloy::core::quaternion::axes()
   const noexcept
 {

@@ -15,9 +15,9 @@
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline constexpr alloy::core::matrix3<T>::matrix3( const vector3<T>& v0,
-                                                   const vector3<T>& v1,
-                                                   const vector3<T>& v2 )
+inline constexpr alloy::core::matrix3<T>::matrix3( const vector3& v0,
+                                                   const vector3& v1,
+                                                   const vector3& v2 )
   noexcept
   : m_matrix {
       v0.x(), v0.y(), v0.z(),
@@ -113,19 +113,19 @@ inline constexpr typename alloy::core::matrix3<T>::const_reference
 }
 
 template<typename T>
-inline constexpr alloy::core::vector3<T>
+inline constexpr alloy::core::vector3
   alloy::core::matrix3<T>::row( index_type r )
   const noexcept
 {
-  return vector3<T>{ get(r,0), get(r,1), get(r,2) };
+  return vector3{ get(r,0), get(r,1), get(r,2) };
 }
 
 template<typename T>
-inline constexpr alloy::core::vector3<T>
+inline constexpr alloy::core::vector3
   alloy::core::matrix3<T>::column( index_type c )
   const noexcept
 {
-  return vector3<T>{ get(0,c), get(1,c), get(2,c) };
+  return vector3{ get(0,c), get(1,c), get(2,c) };
 }
 
 //------------------------------------------------------------------------------
@@ -220,11 +220,11 @@ inline constexpr alloy::core::matrix3<T>
 
 template<typename T>
 template<typename U>
-constexpr alloy::core::vector3<std::common_type_t<T,U>>
-  alloy::core::matrix3<T>::combine( const vector3<U>& vec )
+constexpr alloy::core::vector3
+  alloy::core::matrix3<T>::combine( const vector3& vec )
   const noexcept
 {
-  auto result = vector3<std::common_type_t<T,U>>();
+  auto result = vector3();
 
   for (auto r = 0; r < columns; ++r) {
     auto sum = std::common_type_t<T,U>(0);
@@ -406,8 +406,8 @@ inline constexpr alloy::core::matrix3<std::common_type_t<T,U>>
 }
 
 template<typename T, typename U>
-inline constexpr alloy::core::vector3<std::common_type_t<T,U>>
-  alloy::core::operator*( const vector3<T>& lhs, const matrix3<U>& rhs )
+inline constexpr alloy::core::vector3
+  alloy::core::operator*( const vector3& lhs, const matrix3<U>& rhs )
   noexcept
 {
   return rhs.combine(lhs);

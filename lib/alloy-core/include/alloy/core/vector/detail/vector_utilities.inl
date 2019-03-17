@@ -12,132 +12,132 @@ namespace alloy::core::detail {
 
   //----------------------------------------------------------------------------
 
-  template<typename T, typename U>
-  struct vector_caster<vector2<T>,vector2<U>>
+  template<>
+  struct vector_caster<vector2,vector2>
   {
-    static constexpr vector2<T> cast( const vector2<U>& from )
+    static constexpr vector2 cast( const vector2& from )
       noexcept
     {
-      return vector2<T>{
-        static_cast<T>(from.x()),
-        static_cast<T>(from.y())
+      return vector2{
+        from.x(),
+        from.y()
       };
     }
   };
 
-  template<typename T, typename U>
-  struct vector_caster<vector3<T>,vector2<U>>
+  template<>
+  struct vector_caster<vector3,vector2>
   {
-    static constexpr vector3<T> cast( const vector2<U>& from )
+    static constexpr vector3 cast( const vector2& from )
       noexcept
     {
-      return vector3<T>{
-        static_cast<T>(from.x()),
-        static_cast<T>(from.y()),
-        T{0}
+      return vector3{
+        from.x(),
+        from.y(),
+        real{0}
       };
     }
   };
 
-  template<typename T, typename U>
-  struct vector_caster<vector4<T>,vector2<U>>
+  template<>
+  struct vector_caster<vector4,vector2>
   {
-    static constexpr vector4<T> cast( const vector2<U>& from )
+    static constexpr vector4 cast( const vector2& from )
       noexcept
     {
-      return vector4<T>{
-        static_cast<T>(from.x()),
-        static_cast<T>(from.y()),
-        T{0},
-        T{0}
-      };
-    }
-  };
-
-  //----------------------------------------------------------------------------
-
-  template<typename T, typename U>
-  struct vector_caster<vector2<T>,vector3<U>>
-  {
-    static constexpr vector2<T> cast( const vector3<U>& from )
-      noexcept
-    {
-      return vector2<T>{
-        static_cast<T>(from.x()),
-        static_cast<T>(from.y())
-      };
-    }
-  };
-
-  template<typename T, typename U>
-  struct vector_caster<vector3<T>,vector3<U>>
-  {
-    static constexpr vector3<T> cast( const vector3<U>& from )
-      noexcept
-    {
-      return vector3<T>{
-        static_cast<T>(from.x()),
-        static_cast<T>(from.y()),
-        static_cast<T>(from.z())
-      };
-    }
-  };
-
-  template<typename T, typename U>
-  struct vector_caster<vector4<T>,vector3<U>>
-  {
-    static constexpr vector4<T> cast( const vector3<U>& from )
-      noexcept
-    {
-      return vector4<T>{
-        static_cast<T>(from.x()),
-        static_cast<T>(from.y()),
-        static_cast<T>(from.z()),
-        T{0}
+      return vector4{
+        from.x(),
+        from.y(),
+        real{0},
+        real{0}
       };
     }
   };
 
   //----------------------------------------------------------------------------
 
-  template<typename T, typename U>
-  struct vector_caster<vector2<T>,vector4<U>>
+  template<>
+  struct vector_caster<vector2,vector3>
   {
-    static constexpr vector2<T> cast( const vector4<U>& from )
+    static constexpr vector2 cast( const vector3& from )
       noexcept
     {
-      return vector2<T>{
-        static_cast<T>(from.x()),
-        static_cast<T>(from.y())
+      return vector2{
+        from.x(),
+        from.y()
       };
     }
   };
 
-  template<typename T, typename U>
-  struct vector_caster<vector3<T>,vector4<U>>
+  template<>
+  struct vector_caster<vector3,vector3>
   {
-    static constexpr vector3<T> cast( const vector4<U>& from )
+    static constexpr vector3 cast( const vector3& from )
       noexcept
     {
-      return vector3<T>{
-        static_cast<T>(from.x()),
-        static_cast<T>(from.y()),
-        static_cast<T>(from.z())
+      return vector3{
+        from.x(),
+        from.y(),
+        from.z()
       };
     }
   };
 
-  template<typename T, typename U>
-  struct vector_caster<vector4<T>,vector4<U>>
+  template<>
+  struct vector_caster<vector4,vector3>
   {
-    static constexpr vector4<T> cast( const vector4<U>& from )
+    static constexpr vector4 cast( const vector3& from )
       noexcept
     {
-      return vector4<T>{
-        static_cast<T>(from.x()),
-        static_cast<T>(from.y()),
-        static_cast<T>(from.z()),
-        static_cast<T>(from.w())
+      return vector4{
+        from.x(),
+        from.y(),
+        from.z(),
+        real{0}
+      };
+    }
+  };
+
+  //----------------------------------------------------------------------------
+
+  template<>
+  struct vector_caster<vector2,vector4>
+  {
+    static constexpr vector2 cast( const vector4& from )
+      noexcept
+    {
+      return vector2{
+        from.x(),
+        from.y()
+      };
+    }
+  };
+
+  template<>
+  struct vector_caster<vector3,vector4>
+  {
+    static constexpr vector3 cast( const vector4& from )
+      noexcept
+    {
+      return vector3{
+        from.x(),
+        from.y(),
+        from.z()
+      };
+    }
+  };
+
+  template<>
+  struct vector_caster<vector4,vector4>
+  {
+    static constexpr vector4 cast( const vector4& from )
+      noexcept
+    {
+      return vector4{
+        from.x(),
+        from.y(),
+        from.z(),
+        from.w()
       };
     }
   };

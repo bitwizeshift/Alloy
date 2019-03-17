@@ -54,6 +54,105 @@ namespace alloy::core {
   } // inline namespace casts
 
   //============================================================================
+  // struct : vector2_constants
+  //============================================================================
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief A collection of vector2 constants
+  //////////////////////////////////////////////////////////////////////////////
+  struct vector2_constants
+  {
+    //--------------------------------------------------------------------------
+    // Public Constants
+    //--------------------------------------------------------------------------
+
+    static inline constexpr auto zero = vector2{
+      real{0}, real{0}
+    };
+    static inline constexpr auto unit_x = vector2{
+      real{1}, real{0}
+    };
+    static inline constexpr auto unit_y = vector2{
+      real{0}, real{1}
+    };
+    static inline constexpr auto neg_unit_x = -unit_x;
+    static inline constexpr auto neg_unit_y = -unit_y;
+  };
+
+  //============================================================================
+  // struct : vector3_constants
+  //============================================================================
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief A collection of vector3 constants
+  //////////////////////////////////////////////////////////////////////////////
+
+  struct vector3_constants
+  {
+    //--------------------------------------------------------------------------
+    // Public Constants
+    //--------------------------------------------------------------------------
+
+    static inline constexpr auto zero = vector3{
+      real{0},  real{0},  real{0}
+    };
+    static inline constexpr auto unit_x = vector3{
+      real{1}, real{0}, real{0}
+    };
+    static inline constexpr auto unit_y = vector3{
+      real{0}, real{1}, real{0}
+    };
+    static inline constexpr auto unit_z = vector3{
+      real{0}, real{0}, real{1}
+    };
+    static inline constexpr auto neg_unit_x = -unit_x;
+    static inline constexpr auto neg_unit_y = -unit_y;
+    static inline constexpr auto neg_unit_z = -unit_z;
+  };
+
+  //============================================================================
+  // struct : vector4_constants
+  //============================================================================
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief A collection of vector4 constants
+  //////////////////////////////////////////////////////////////////////////////
+  struct vector4_constants
+  {
+    //--------------------------------------------------------------------------
+    // Public Constants
+    //--------------------------------------------------------------------------
+
+    static inline constexpr auto zero = vector4{
+      real{0}, real{0}, real{0}, real{0}
+    };
+    static inline constexpr auto unit_x = vector4{
+      real{1}, real{0}, real{0}, real{0}
+    };
+    static inline constexpr auto unit_y = vector4{
+      real{0}, real{1}, real{0}, real{0}
+    };
+    static inline constexpr auto unit_z = vector4{
+      real{0}, real{0}, real{1}, real{0}
+    };
+    static inline constexpr auto unit_w = vector4{
+      real{0}, real{0}, real{0}, real{1}
+    };
+    static inline constexpr auto neg_unit_x = -unit_x;
+    static inline constexpr auto neg_unit_y = -unit_y;
+    static inline constexpr auto neg_unit_z = -unit_z;
+    static inline constexpr auto neg_unit_w = -unit_w;
+  };
+
+  //============================================================================
+  // aliases
+  //============================================================================
+
+  using vec2_constants = vector2_constants;
+  using vec3_constants = vector3_constants;
+  using vec4_constants = vector4_constants;
+
+  //============================================================================
   // trait : is_vector
   //============================================================================
 
@@ -62,9 +161,9 @@ namespace alloy::core {
   /// The result is aliased as \c ::value
   template<typename T> struct is_vector : std::false_type{};
 
-  template<typename T> struct is_vector<vector2<T>> : std::true_type{};
-  template<typename T> struct is_vector<vector3<T>> : std::true_type{};
-  template<typename T> struct is_vector<vector4<T>> : std::true_type{};
+  template<typename T> struct is_vector<vector2> : std::true_type{};
+  template<typename T> struct is_vector<vector3> : std::true_type{};
+  template<typename T> struct is_vector<vector4> : std::true_type{};
 
   /// \brief Convenience template variable to extract out
   ///        \c is_vector<T>::value

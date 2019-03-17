@@ -14,10 +14,10 @@
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline constexpr alloy::core::matrix4<T>::matrix4( const vector4<T>& v0,
-                                                   const vector4<T>& v1,
-                                                   const vector4<T>& v2,
-                                                   const vector4<T>& v3 )
+inline constexpr alloy::core::matrix4<T>::matrix4( const vector4& v0,
+                                                   const vector4& v1,
+                                                   const vector4& v2,
+                                                   const vector4& v3 )
   noexcept
   : m_matrix {
       v0.x(), v0.y(), v0.z(), v0.w(),
@@ -91,9 +91,9 @@ inline constexpr alloy::core::matrix4<T>
 }
 
 template<typename T>
-inline constexpr alloy::core::matrix4<T>::matrix4( const vector3<T>& v0,
-                                                   const vector3<T>& v1,
-                                                   const vector3<T>& v2 )
+inline constexpr alloy::core::matrix4<T>::matrix4( const vector3& v0,
+                                                   const vector3& v1,
+                                                   const vector3& v2 )
   noexcept
   : m_matrix{
       v0.x(), v0.y(), T{0}, v0.z(),
@@ -151,7 +151,7 @@ inline constexpr typename alloy::core::matrix4<T>::const_reference
 }
 
 template<typename T>
-inline constexpr alloy::core::vector4<T>
+inline constexpr alloy::core::vector4
   alloy::core::matrix4<T>::row( index_type r )
   const noexcept
 {
@@ -159,7 +159,7 @@ inline constexpr alloy::core::vector4<T>
 }
 
 template<typename T>
-inline constexpr alloy::core::vector4<T>
+inline constexpr alloy::core::vector4
   alloy::core::matrix4<T>::column( index_type c )
   const noexcept
 {
@@ -263,11 +263,11 @@ inline constexpr alloy::core::matrix4<T>
 
 template<typename T>
 template<typename U>
-constexpr alloy::core::vector4<std::common_type_t<T,U>>
-  alloy::core::matrix4<T>::combine( const vector4<U>& vec )
+constexpr alloy::core::vector4
+  alloy::core::matrix4<T>::combine( const vector4& vec )
   const noexcept
 {
-  auto result = vector4<std::common_type_t<T,U>>{};
+  auto result = vector4{};
 
   for( auto r = 0; r < columns; ++r ) {
     auto sum = std::common_type_t<T,U>{0};
@@ -579,8 +579,8 @@ inline constexpr alloy::core::matrix4<std::common_type_t<T,U>>
 }
 
 template<typename T, typename U>
-inline constexpr alloy::core::vector4<std::common_type_t<T,U>>
-  alloy::core::operator*( const vector4<T>& lhs, const matrix4<U>& rhs )
+inline constexpr alloy::core::vector4
+  alloy::core::operator*( const vector4& lhs, const matrix4<U>& rhs )
   noexcept
 {
   return rhs.combine(lhs);

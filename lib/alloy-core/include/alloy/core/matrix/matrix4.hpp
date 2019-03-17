@@ -109,10 +109,10 @@ namespace alloy::core {
     /// \param v1 the second row vector
     /// \param v2 the third row vector
     /// \param v3 the fourth row vector
-    constexpr matrix4( const vector4<T>& v0,
-                       const vector4<T>& v1,
-                       const vector4<T>& v2,
-                       const vector4<T>& v3 ) noexcept;
+    constexpr matrix4( const vector4& v0,
+                       const vector4& v1,
+                       const vector4& v2,
+                       const vector4& v3 ) noexcept;
 
     /// \brief Constructs a matrix4 from an array of 4 entries
     ///
@@ -167,9 +167,9 @@ namespace alloy::core {
     /// \param v0 the first row vector of the 3x3 matrix
     /// \param v1 the second row vector of the 3x3 matrix
     /// \param v2 the third row vector of the 3x3 matrix
-    constexpr matrix4( const vector3<T>& v0,
-                       const vector3<T>& v1,
-                       const vector3<T>& v2 ) noexcept;
+    constexpr matrix4( const vector3& v0,
+                       const vector3& v1,
+                       const vector3& v2 ) noexcept;
 
     /// \brief Copy-constructs a matrix4 from another matrix4
     ///
@@ -232,12 +232,12 @@ namespace alloy::core {
     /// \brief Retrieves the vector at row \p r
     ///
     /// \param r the row index to retrieve
-    constexpr vector4<T> row( index_type r ) const noexcept;
+    constexpr vector4 row( index_type r ) const noexcept;
 
     /// \brief Retrieves the vector at row \p c
     ///
     /// \param c the column index to retrieve
-    constexpr vector4<T> column( index_type c ) const noexcept;
+    constexpr vector4 column( index_type c ) const noexcept;
 
     //----------------------------------------------------------------------
     // Observers
@@ -289,8 +289,8 @@ namespace alloy::core {
     /// \param vec the vector to combine
     /// \return the result of \c vec * matrix
     template<typename U>
-    constexpr vector4<std::common_type_t<T,U>>
-      combine( const vector4<U>& vec ) const noexcept;
+    constexpr vector4
+      combine( const vector4& vec ) const noexcept;
 
     //----------------------------------------------------------------------
     // Modifiers
@@ -371,8 +371,8 @@ namespace alloy::core {
   constexpr matrix4<std::common_type_t<T,U>>
     operator*( const matrix4<T>& lhs, const matrix4<U>& rhs ) noexcept;
   template<typename T, typename U>
-  constexpr vector4<std::common_type_t<T,U>>
-    operator*( const vector4<T>& lhs, const matrix4<U>& rhs ) noexcept;
+  constexpr vector4
+    operator*( const vector4& lhs, const matrix4<U>& rhs ) noexcept;
   template<typename T, typename U>
   constexpr matrix4<std::common_type_t<T,U>>
     operator*( T lhs, const matrix4<U>& rhs ) noexcept;

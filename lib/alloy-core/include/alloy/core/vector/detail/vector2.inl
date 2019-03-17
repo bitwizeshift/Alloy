@@ -6,28 +6,34 @@
 #endif
 
 //==============================================================================
-// class : vector2<T>
+// class : vector2
 //==============================================================================
 
 //------------------------------------------------------------------------------
 // Constructors
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline alloy::core::vector2<T>::vector2( value_type magnitude,
-                                         radian direction )
+inline constexpr alloy::core::vector2::vector2()
   noexcept
-  : m_data {
-      static_cast<T>( magnitude * trigonometry::cos(direction) ),
-      static_cast<T>( magnitude * trigonometry::sin(direction) )
+  : m_data{
+      real{0},
+      real{0}
     }
 {
 
 }
 
-template<typename T>
-inline constexpr alloy::core::vector2<T>::vector2( value_type x,
-                                                   value_type y )
+inline alloy::core::vector2::vector2( real magnitude, radian direction )
+  noexcept
+  : m_data{
+      magnitude * trigonometry::cos(direction),
+      magnitude * trigonometry::sin(direction)
+    }
+{
+
+}
+
+inline constexpr alloy::core::vector2::vector2( real x, real y )
   noexcept
   : m_data{x,y}
 {
@@ -38,9 +44,8 @@ inline constexpr alloy::core::vector2<T>::vector2( value_type x,
 // Observers
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr typename alloy::core::vector2<T>::size_type
-  alloy::core::vector2<T>::size()
+inline constexpr alloy::core::vector2::size_type
+  alloy::core::vector2::size()
   const noexcept
 {
   return 2;
@@ -48,17 +53,15 @@ inline constexpr typename alloy::core::vector2<T>::size_type
 
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr typename alloy::core::vector2<T>::reference
-  alloy::core::vector2<T>::x()
+inline constexpr alloy::core::vector2::reference
+  alloy::core::vector2::x()
   noexcept
 {
   return m_data[0];
 }
 
-template<typename T>
-inline constexpr typename alloy::core::vector2<T>::const_reference
-  alloy::core::vector2<T>::x()
+inline constexpr alloy::core::vector2::const_reference
+  alloy::core::vector2::x()
   const noexcept
 {
   return m_data[0];
@@ -66,17 +69,15 @@ inline constexpr typename alloy::core::vector2<T>::const_reference
 
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr typename alloy::core::vector2<T>::reference
-  alloy::core::vector2<T>::y()
+inline constexpr alloy::core::vector2::reference
+  alloy::core::vector2::y()
   noexcept
 {
   return m_data[1];
 }
 
-template<typename T>
-inline constexpr typename alloy::core::vector2<T>::const_reference
-  alloy::core::vector2<T>::y()
+inline constexpr alloy::core::vector2::const_reference
+  alloy::core::vector2::y()
   const noexcept
 {
   return m_data[1];
@@ -84,33 +85,30 @@ inline constexpr typename alloy::core::vector2<T>::const_reference
 
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr typename alloy::core::vector2<T>::pointer
-  alloy::core::vector2<T>::data()
+inline constexpr alloy::core::vector2::pointer
+  alloy::core::vector2::data()
   noexcept
 {
-  return m_data;
+  return &m_data[0];
 }
 
-template<typename T>
-inline constexpr typename alloy::core::vector2<T>::const_pointer
-  alloy::core::vector2<T>::data()
+inline constexpr alloy::core::vector2::const_pointer
+  alloy::core::vector2::data()
   const noexcept
 {
-  return m_data;
+  return &m_data[0];
 }
 
 //------------------------------------------------------------------------------
 // Element Access
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr typename alloy::core::vector2<T>::reference
-  alloy::core::vector2<T>::at( index_type n )
+inline constexpr alloy::core::vector2::reference
+  alloy::core::vector2::at( index_type n )
 {
 #if ALLOY_ENABLE_EXCEPTIONS
   if( n >= 2 || n < 0 ) {
-    throw std::out_of_range("alloy::core::vector2<T>::at: index out of range");
+    throw std::out_of_range("alloy::core::vector2::at: index out of range");
   }
 #else
   assert( n < 2 && n >= 0 );
@@ -118,14 +116,13 @@ inline constexpr typename alloy::core::vector2<T>::reference
   return m_data[n];
 }
 
-template<typename T>
-inline constexpr typename alloy::core::vector2<T>::const_reference
-alloy::core::vector2<T>::at( index_type n )
+inline constexpr alloy::core::vector2::const_reference
+  alloy::core::vector2::at( index_type n )
   const
 {
 #if ALLOY_ENABLE_EXCEPTIONS
   if( n >= 2 || n < 0 ) {
-    throw std::out_of_range("alloy::core::vector2<T>::at: index out of range");
+    throw std::out_of_range("alloy::core::vector2::at: index out of range");
   }
 #else
   assert( n < 2 && n >= 0 );
@@ -135,18 +132,16 @@ alloy::core::vector2<T>::at( index_type n )
 
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr typename alloy::core::vector2<T>::reference
-  alloy::core::vector2<T>::operator[]( index_type n )
+inline constexpr alloy::core::vector2::reference
+  alloy::core::vector2::operator[]( index_type n )
   noexcept
 {
   assert( n < 2 && n >= 0 );
   return m_data[n];
 }
 
-template<typename T>
-inline constexpr typename alloy::core::vector2<T>::const_reference
-alloy::core::vector2<T>::operator[]( index_type n )
+inline constexpr alloy::core::vector2::const_reference
+  alloy::core::vector2::operator[]( index_type n )
   const noexcept
 {
   assert( n < 2 && n >= 0 );
@@ -157,10 +152,8 @@ alloy::core::vector2<T>::operator[]( index_type n )
 // Quantifiers
 //------------------------------------------------------------------------------
 
-template<typename T>
-template<typename U>
-inline constexpr std::common_type_t<T,U>
-  alloy::core::vector2<T>::dot( const vector2<U>& other )
+inline constexpr alloy::core::real
+  alloy::core::vector2::dot( const vector2& other )
   const noexcept
 {
   return (x() * other.x()) + (y() * other.y());
@@ -168,10 +161,8 @@ inline constexpr std::common_type_t<T,U>
 
 //------------------------------------------------------------------------------
 
-template<typename T>
-template<typename U>
-inline constexpr std::common_type_t<T,U>
-  alloy::core::vector2<T>::cross( const vector2<U>& other )
+inline constexpr alloy::core::real
+  alloy::core::vector2::cross( const vector2& other )
   const noexcept
 {
   return (x() * other.y()) - (y() * other.x());
@@ -179,52 +170,46 @@ inline constexpr std::common_type_t<T,U>
 
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline typename alloy::core::real
-  alloy::core::vector2<T>::magnitude()
+inline alloy::core::real
+  alloy::core::vector2::magnitude()
   const noexcept
 {
   return sqrt( (x()*x()) + (y()*y()) );
 }
 
-template<typename T>
-template<typename U>
-inline constexpr alloy::core::vector2<std::common_type_t<T,U>>
-  alloy::core::vector2<T>::midpoint( const vector2<U>& rhs )
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::midpoint( const vector2& rhs )
   const noexcept
 {
-  return {
-    ((x() + rhs.x()) * 0.5f),
-    ((y() + rhs.y()) * 0.5f)
+  return vector2{
+    ((x() + rhs.x()) * real{0.5}),
+    ((y() + rhs.y()) * real{0.5})
   };
 }
 
-template<typename T>
-template<typename U>
-inline constexpr alloy::core::vector2<std::common_type_t<T,U>>
-  alloy::core::vector2<T>::reflection( const vector2<U>& normal )
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::reflection( const vector2& normal )
   const noexcept
 {
-  return (*this) - (normal * (2 * dot(normal)));
+  return (*this) - (normal * (real{2} * dot(normal)));
 }
 
 //------------------------------------------------------------------------------
 
-template<typename T>
-template<typename U>
-inline constexpr alloy::core::vector2<std::common_type_t<T,U>>
-  alloy::core::vector2<T>::projection( const vector2<U>& vector )
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::projection( const vector2& vector )
   const noexcept
 {
   const auto multiplier = dot(vector) / dot(*this);
 
-  return {multiplier*vector.x(),multiplier*vector.y()};
+  return vector2{
+    multiplier * vector.x(),
+    multiplier * vector.y()
+  };
 }
 
-template<typename T>
-template<typename U>
-inline constexpr alloy::core::vector2<std::common_type_t<T,U>>
-  alloy::core::vector2<T>::rejection( const vector2<U>& vector )
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::rejection( const vector2& vector )
   const noexcept
 {
   return (*this) - projection(vector);
@@ -233,65 +218,61 @@ inline constexpr alloy::core::vector2<std::common_type_t<T,U>>
 
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr alloy::core::vector2<T>
-  alloy::core::vector2<T>::perpendicular()
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::perpendicular()
   const noexcept
 {
   return vector2{ -y(), x() };
 }
 
-
-template<typename T>
-inline alloy::core::vector2<T>
-  alloy::core::vector2<T>::normalized()
+inline alloy::core::vector2
+  alloy::core::vector2::normalized()
   const noexcept
 {
   const auto mag = magnitude();
-  if( mag > 0 ){
+
+  if (mag > real{0}) {
     const auto mag_inv = real{1} / mag;
-    return vector2{ x() * mag_inv, y() * mag_inv };
+    return vector2{
+      x() * mag_inv,
+      y() * mag_inv
+    };
   }
   return (*this);
 }
 
-template<typename T>
-inline constexpr alloy::core::vector2<T>
-  alloy::core::vector2<T>::inverse()
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::inverse()
   const noexcept
 {
-  return vector2<T>( -x(), -y() );
+  return vector2{ -x(), -y() };
 }
 
 //------------------------------------------------------------------------------
 
-template<typename T>
-template<typename U>
 inline alloy::core::radian
-  alloy::core::vector2<T>::angle_between( const vector2<U>& other )
+  alloy::core::vector2::angle_between( const vector2& other )
   const noexcept
 {
   auto mag_product = magnitude() * other.magnitude();
 
-  if( almost_equal( mag_product, 0 ) ){
+  if( almost_equal( mag_product, real{0} ) ){
     mag_product = default_tolerance;
   }
 
   auto f = dot(other) / mag_product;
 
-  f = clamp( f, -1.0, 1.0 );
-  return arccos( f );
+  f = clamp( f, real{-1.0}, real{1.0} );
+  return trigonometry::arccos( f );
 }
 
-template<typename T>
-template<typename U>
 inline alloy::core::radian
-  alloy::core::vector2<T>::angle_to( const vector2<U>& other )
+  alloy::core::vector2::angle_to( const vector2& other )
   const noexcept
 {
   auto angle = angle_between( other );
 
-  if( cross(other) < T{0} ) {
+  if( cross(other) < real{0} ) {
     return radian_constants::revolution - angle;
   }
 
@@ -302,13 +283,13 @@ inline alloy::core::radian
 // Modifiers
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr alloy::core::vector2<T>& alloy::core::vector2<T>::normalize()
+inline alloy::core::vector2&
+  alloy::core::vector2::normalize()
   noexcept
 {
   const auto mag = magnitude();
 
-  if( mag > 0 ){
+  if (mag > real{0}) {
     const auto mag_inv = real{1} / mag;
 
     x() *= mag_inv;
@@ -318,8 +299,8 @@ inline constexpr alloy::core::vector2<T>& alloy::core::vector2<T>::normalize()
   return (*this);
 }
 
-template<typename T>
-inline constexpr alloy::core::vector2<T>& alloy::core::vector2<T>::invert()
+inline constexpr alloy::core::vector2&
+  alloy::core::vector2::invert()
   noexcept
 {
   x() = -x();
@@ -332,28 +313,26 @@ inline constexpr alloy::core::vector2<T>& alloy::core::vector2<T>::invert()
 // Unary Operators
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr const alloy::core::vector2<T>& alloy::core::vector2<T>::operator+()
+inline constexpr const alloy::core::vector2&
+  alloy::core::vector2::operator+()
   const noexcept
 {
   return (*this);
 }
 
-template<typename T>
-inline constexpr alloy::core::vector2<T> alloy::core::vector2<T>::operator-()
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::operator-()
   const noexcept
 {
-  return vector2<T>{ -x(), -y() };
+  return vector2{ -x(), -y() };
 }
 
 //------------------------------------------------------------------------------
 // Compound Operators
 //------------------------------------------------------------------------------
 
-template<typename T>
-template<typename U>
-inline constexpr alloy::core::vector2<T>&
-  alloy::core::vector2<T>::operator+=( const vector2<U>& rhs )
+inline constexpr alloy::core::vector2&
+  alloy::core::vector2::operator+=( const vector2& rhs )
   noexcept
 {
   x() += rhs.x();
@@ -361,10 +340,8 @@ inline constexpr alloy::core::vector2<T>&
   return (*this);
 }
 
-template<typename T>
-template<typename U>
-inline constexpr alloy::core::vector2<T>&
-  alloy::core::vector2<T>::operator-=( const vector2<U>& rhs )
+inline constexpr alloy::core::vector2&
+  alloy::core::vector2::operator-=( const vector2& rhs )
   noexcept
 {
   x() -= rhs.x();
@@ -372,10 +349,8 @@ inline constexpr alloy::core::vector2<T>&
   return (*this);
 }
 
-template<typename T>
-template<typename U>
-inline constexpr alloy::core::vector2<T>&
-  alloy::core::vector2<T>::operator*=( U scalar )
+inline constexpr alloy::core::vector2&
+  alloy::core::vector2::operator*=( real scalar )
   noexcept
 {
   x() *= scalar;
@@ -383,10 +358,8 @@ inline constexpr alloy::core::vector2<T>&
   return (*this);
 }
 
-template<typename T>
-template<typename U>
-inline constexpr alloy::core::vector2<T>&
-  alloy::core::vector2<T>::operator/=( U scalar )
+inline constexpr alloy::core::vector2&
+  alloy::core::vector2::operator/=( real scalar )
   noexcept
 {
   const auto inv = real{1} / scalar;
@@ -397,74 +370,66 @@ inline constexpr alloy::core::vector2<T>&
 }
 
 //==============================================================================
-// non-member functions : class : vector2<T>
+// non-member functions : class : vector2
 //==============================================================================
 
 //------------------------------------------------------------------------------
 // Arithmetic Operators
 //------------------------------------------------------------------------------
 
-template<typename T, typename U>
-inline constexpr alloy::core::vector2<std::common_type_t<T,U>>
-  alloy::core::operator+( const vector2<T>& lhs, const vector2<U>& rhs )
+inline constexpr alloy::core::vector2
+  alloy::core::operator+( const vector2& lhs, const vector2& rhs )
   noexcept
 {
-  return vector2<std::common_type_t<T,U>>(lhs)+=rhs;
+  return vector2{lhs}+=rhs;
 }
 
-template<typename T, typename U>
-inline constexpr alloy::core::vector2<std::common_type_t<T,U>>
-  alloy::core::operator-( const vector2<T>& lhs, const vector2<U>& rhs )
+inline constexpr alloy::core::vector2
+  alloy::core::operator-( const vector2& lhs, const vector2& rhs )
   noexcept
 {
-  return vector2<std::common_type_t<T,U>>(lhs)-=rhs;
+  return vector2{lhs}-=rhs;
 }
 
-template<typename T, typename U, typename>
-inline constexpr alloy::core::vector2<std::common_type_t<T,U>>
-  alloy::core::operator*( const vector2<T>& lhs, U scalar )
+inline constexpr alloy::core::vector2
+  alloy::core::operator*( const vector2& lhs, real scalar )
   noexcept
 {
-  return vector2<std::common_type_t<T,U>>(lhs)*=scalar;
+  return vector2{lhs}*=scalar;
 }
 
-template<typename T, typename U, typename>
-inline constexpr alloy::core::vector2<std::common_type_t<T,U>>
-  alloy::core::operator*( T scalar, const vector2<U>& lhs )
+inline constexpr alloy::core::vector2
+  alloy::core::operator*( real scalar, const vector2& lhs )
   noexcept
 {
-  return vector2<std::common_type_t<T,U>>(lhs)*=scalar;
+  return vector2{lhs}*=scalar;
 }
 
-template<typename T, typename U, typename>
-inline constexpr alloy::core::vector2<std::common_type_t<T,U>>
-  alloy::core::operator/( const vector2<T>& lhs, U scalar )
+inline constexpr alloy::core::vector2
+  alloy::core::operator/( const vector2& lhs, real scalar )
   noexcept
 {
-  return vector2<std::common_type_t<T,U>>(lhs)/=scalar;
+  return vector2{lhs}/=scalar;
 }
-
 
 //------------------------------------------------------------------------------
 // Comparisons
 //------------------------------------------------------------------------------
 
-template<typename T, typename U>
-inline constexpr bool alloy::core::operator==( const vector2<T>& lhs,
-                                               const vector2<U>& rhs )
+inline constexpr bool
+  alloy::core::operator==( const vector2& lhs, const vector2& rhs )
   noexcept
 {
-  for(auto i=0;i<2;++i) {
-    if( lhs[i]!=rhs[i] ) {
+  for (auto i=0; i<2; ++i) {
+    if (lhs[i]!=rhs[i]) {
       return false;
     }
   }
   return true;
 }
 
-template<typename T, typename U>
-inline constexpr bool alloy::core::operator!=( const vector2<T>& lhs,
-                                               const vector2<U>& rhs )
+inline constexpr bool
+  alloy::core::operator!=( const vector2& lhs, const vector2& rhs )
   noexcept
 {
   return !(lhs==rhs);
@@ -472,27 +437,28 @@ inline constexpr bool alloy::core::operator!=( const vector2<T>& lhs,
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename U>
-inline constexpr bool alloy::core::almost_equal( const vector2<T>& lhs,
-                                                 const vector2<U>& rhs )
+inline constexpr bool
+  alloy::core::almost_equal( const vector2& lhs, const vector2& rhs )
   noexcept
 {
-  for(auto i=0;i<2;++i) {
-    if( !almost_equal(rhs[i],rhs[i]) ) {
+  for (auto i=0;i<2;++i) {
+    if (!almost_equal(rhs[i],rhs[i])) {
       return false;
     }
   }
   return true;
 }
 
-template<typename T, typename U, typename Arithmetic, typename>
-inline constexpr bool alloy::core::almost_equal( const vector2<T>& lhs,
-                                                 const vector2<U>& rhs,
-                                                 Arithmetic tolerance )
+inline constexpr bool
+  alloy::core::almost_equal( const vector2& lhs,
+                             const vector2& rhs,
+                             real tolerance )
   noexcept
 {
-  for(auto i=0;i<2;++i) {
-    if( !almost_equal(rhs[i],rhs[i],tolerance) ) return false;
+  for (auto i=0;i<2;++i) {
+    if (!almost_equal(rhs[i],rhs[i],tolerance)) {
+      return false;
+    }
   }
   return true;
 }
@@ -501,25 +467,22 @@ inline constexpr bool alloy::core::almost_equal( const vector2<T>& lhs,
 // Quantifiers
 //----------------------------------------------------------------------------
 
-template<typename T, typename U>
-inline constexpr std::common_type_t<T,U>
-  alloy::core::dot( const vector2<T>& lhs, const vector2<U>& rhs )
+inline constexpr alloy::core::real
+  alloy::core::dot( const vector2& lhs, const vector2& rhs )
   noexcept
 {
   return lhs.dot(rhs);
 }
 
-template<typename T, typename U>
-inline constexpr alloy::core::vector2<std::common_type_t<T,U>>
-  alloy::core::cross( const vector2<T>& lhs, const vector2<U>& rhs )
+inline constexpr alloy::core::real
+  alloy::core::cross( const vector2& lhs, const vector2& rhs )
   noexcept
 {
   return lhs.cross(rhs);
 }
 
-template<typename T>
-typename alloy::core::real
-  alloy::core::magnitude( const vector2<T>& vec )
+inline alloy::core::real
+  alloy::core::magnitude( const vector2& vec )
   noexcept
 {
   return vec.magnitude();

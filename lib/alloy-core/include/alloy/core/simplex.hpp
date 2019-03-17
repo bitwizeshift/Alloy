@@ -77,13 +77,13 @@ namespace alloy::core {
     ///
     /// \param pos the 2-dimensional vector position
     /// \return the result of the raw noise
-    static core::real raw_noise( const vector2r& pos ) noexcept;
+    static core::real raw_noise( const vector2& pos ) noexcept;
 
     /// \brief Generates 3-dimensional raw simplex noise
     ///
     /// \param pos the 3-dimensional vector position
     /// \return the result of the raw noise
-    static core::real raw_noise( const vector3r& pos ) noexcept;
+    static core::real raw_noise( const vector3& pos ) noexcept;
 
     //--------------------------------------------------------------------------
     // Raw Scaled Noise
@@ -102,11 +102,11 @@ namespace alloy::core {
 
     static core::real scaled_raw_noise( core::real low,
                                         core::real high,
-                                        const vector2r& pos ) noexcept;
+                                        const vector2& pos ) noexcept;
 
     static core::real scaled_raw_noise( core::real low,
                                         core::real high,
-                                        const vector3r& pos ) noexcept;
+                                        const vector3& pos ) noexcept;
 
     //----------------------------------------------------------------------
     // Octave Noise
@@ -130,12 +130,12 @@ namespace alloy::core {
     static core::real octave_noise( core::real octaves,
                                     core::real persistence,
                                     core::real scale,
-                                    const vector2r& pos ) noexcept;
+                                    const vector2& pos ) noexcept;
 
     static core::real octave_noise( core::real octaves,
                                     core::real persistence,
                                     core::real scale,
-                                    const vector3r& pos ) noexcept;
+                                    const vector3& pos ) noexcept;
 
     //----------------------------------------------------------------------
     // Scaled Octave Noise
@@ -165,14 +165,14 @@ namespace alloy::core {
                                            core::real scale,
                                            core::real low,
                                            core::real high,
-                                           const vector2r& pos ) noexcept;
+                                           const vector2& pos ) noexcept;
 
     static core::real scaled_octave_noise( core::real octaves,
                                            core::real persistence,
                                            core::real scale,
                                            core::real low,
                                            core::real high,
-                                           const vector3r& pos ) noexcept;
+                                           const vector3& pos ) noexcept;
 
   };
 
@@ -184,7 +184,7 @@ namespace alloy::core {
 //----------------------------------------------------------------------------
 
 inline alloy::core::real
-  alloy::core::simplex::raw_noise( const vector2r& pos )
+  alloy::core::simplex::raw_noise( const vector2& pos )
   noexcept
 {
   return raw_noise( pos.x(), pos.y() );
@@ -193,7 +193,7 @@ inline alloy::core::real
 //----------------------------------------------------------------------------
 
 inline alloy::core::real
-  alloy::core::simplex::raw_noise( const vector3r& pos )
+  alloy::core::simplex::raw_noise( const vector3& pos )
   noexcept
 {
   return raw_noise( pos.x(), pos.y(), pos.z() );
@@ -239,7 +239,7 @@ inline alloy::core::real
 inline alloy::core::real
   alloy::core::simplex::scaled_raw_noise( core::real low,
                                           core::real high,
-                                          const vector2r& pos )
+                                          const vector2& pos )
   noexcept
 {
   return scaled_raw_noise( low, high, pos.x(), pos.y() );
@@ -250,7 +250,7 @@ inline alloy::core::real
 inline alloy::core::real
   alloy::core::simplex::scaled_raw_noise( core::real low,
                                           core::real high,
-                                          const vector3r& pos )
+                                          const vector3& pos )
   noexcept
 {
   return scaled_raw_noise( low, high, pos.x(), pos.y(), pos.z() );
@@ -264,7 +264,7 @@ inline alloy::core::real
   alloy::core::simplex::octave_noise( core::real octaves,
                                       core::real persistence,
                                       core::real scale,
-                                      const vector2r& pos )
+                                      const vector2& pos )
   noexcept
 {
   return octave_noise( octaves, persistence, scale, pos.x(), pos.y() );
@@ -276,7 +276,7 @@ inline alloy::core::real
   alloy::core::simplex::octave_noise( core::real octaves,
                                       core::real persistence,
                                       core::real scale,
-                                      const vector3r& pos )
+                                      const vector3& pos )
   noexcept
 {
   return octave_noise( octaves, persistence, scale, pos.x(), pos.y(), pos.z() );
@@ -332,7 +332,7 @@ inline alloy::core::real
                                              core::real scale,
                                              core::real low,
                                              core::real high,
-                                             const vector2r& pos )
+                                             const vector2& pos )
   noexcept
 {
   return scaled_octave_noise( octaves, persistence, scale,
@@ -347,7 +347,7 @@ inline alloy::core::real
                                              core::real scale,
                                              core::real low,
                                              core::real high,
-                                             const vector3r& pos )
+                                             const vector3& pos )
   noexcept
 {
   return scaled_octave_noise( octaves, persistence, scale,
