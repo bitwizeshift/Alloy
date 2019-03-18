@@ -92,7 +92,7 @@ alloy::core::quaternion
 }
 
 alloy::core::quaternion
-  alloy::core::quaternion::from_rotation_matrix( const matrix3_type& rot )
+  alloy::core::quaternion::from_rotation_matrix( const matrix3& rot )
   noexcept
 {
   // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
@@ -105,9 +105,9 @@ alloy::core::quaternion
     root = sqrt( trace + 1 );
     const auto w = real{0.5} * root;
     root = real{0.5} / root;
-    const auto x = (rot(2,1) - rot(1,2)) * root;
-    const auto y = (rot(0,2) - rot(2,0)) * root;
-    const auto z = (rot(1,0) - rot(0,1)) * root;
+    const auto x = (rot.get(2,1) - rot.get(1,2)) * root;
+    const auto y = (rot.get(0,2) - rot.get(2,0)) * root;
+    const auto z = (rot.get(1,0) - rot.get(0,1)) * root;
 
     return {w,x,y,z};
   }
@@ -117,25 +117,25 @@ alloy::core::quaternion
   int i, j, k;
 
   i = 0;
-  if ( rot(1,1) > rot(0,0) ) {
+  if ( rot.get(1,1) > rot.get(0,0) ) {
     i = 1;
   }
-  if ( rot(2,2) > rot(i,i) ) {
+  if ( rot.get(2,2) > rot.get(i,i) ) {
     i = 2;
   }
   j = s_next[i];
   k = s_next[j];
 
-  root = sqrt(rot(i,i) - rot(j,j) - rot(k,k) + real{1});
+  root = sqrt(rot.get(i,i) - rot.get(j,j) - rot.get(k,k) + real{1});
 
   apk_quat[i] = real{0.5} * root;
 
   root = real{0.5} / root;
 
-  apk_quat[j] = (rot(j,i) + rot(i,j)) * root;
-  apk_quat[k] = (rot(k,i) + rot(i,k)) * root;
+  apk_quat[j] = (rot.get(j,i) + rot.get(i,j)) * root;
+  apk_quat[k] = (rot.get(k,i) + rot.get(i,k)) * root;
 
-  const auto w = (rot(k,j) - rot(j,k)) * root;
+  const auto w = (rot.get(k,j) - rot.get(j,k)) * root;
   const auto x = apk_quat[0];
   const auto y = apk_quat[1];
   const auto z = apk_quat[2];
@@ -144,12 +144,12 @@ alloy::core::quaternion
 }
 
 alloy::core::quaternion
-  alloy::core::quaternion::from_rotation_matrix( const matrix4_type& rot )
+  alloy::core::quaternion::from_rotation_matrix( const matrix4& rot )
   noexcept
 {
   using namespace alloy::core::casts;
 
-  return from_rotation_matrix( matrix_cast<matrix3_type>(rot) );
+  return from_rotation_matrix( matrix_cast<matrix3>(rot) );
 }
 
 alloy::core::quaternion
@@ -158,7 +158,7 @@ alloy::core::quaternion
                                                const vector3& z_axis )
   noexcept
 {
-  return from_rotation_matrix( matrix3_type{x_axis,y_axis,z_axis} );
+  return from_rotation_matrix( matrix3{x_axis,y_axis,z_axis} );
 }
 
 //----------------------------------------------------------------------------
@@ -246,7 +246,7 @@ alloy::core::vector3
 // Extraction
 //----------------------------------------------------------------------------
 
-void alloy::core::quaternion::extract_rotation_matrix( matrix3_type* rot )
+void alloy::core::quaternion::extract_rotation_matrix( matrix3* rot )
   const noexcept
 {
   const auto tx  = 2 * x();
@@ -268,27 +268,27 @@ void alloy::core::quaternion::extract_rotation_matrix( matrix3_type* rot )
 
   auto& matrix = (*rot);
 
-  matrix(0,0) = real{1} - (tyy + tzz);
-  matrix(0,1) = txy - twz;
-  matrix(0,2) = txz + twy;
+  matrix.get(0,0) = real{1} - (tyy + tzz);
+  matrix.get(0,1) = txy - twz;
+  matrix.get(0,2) = txz + twy;
 
-  matrix(1,0) = txy + twz;
-  matrix(1,1) = real{1} - (txx + tzz);
-  matrix(1,2) = tyz - twx;
+  matrix.get(1,0) = txy + twz;
+  matrix.get(1,1) = real{1} - (txx + tzz);
+  matrix.get(1,2) = tyz - twx;
 
-  matrix(2,0) = txz - twy;
-  matrix(2,1) = tyz + twx;
-  matrix(2,2) = real{1} - (txx + tyy);
+  matrix.get(2,0) = txz - twy;
+  matrix.get(2,1) = tyz + twx;
+  matrix.get(2,2) = real{1} - (txx + tyy);
 }
 
 //----------------------------------------------------------------------------
 
-void alloy::core::quaternion::extract_rotation_matrix( matrix4_type* rot )
+void alloy::core::quaternion::extract_rotation_matrix( matrix4* rot )
   const noexcept
 {
-  const auto tx  = 2 * x();
-  const auto ty  = 2 * y();
-  const auto tz  = 2 * z();
+  const auto tx  = real{2} * x();
+  const auto ty  = real{2} * y();
+  const auto tz  = real{2} * z();
   const auto twx = tx * w();
   const auto twy = ty * w();
   const auto twz = tz * w();
@@ -305,25 +305,25 @@ void alloy::core::quaternion::extract_rotation_matrix( matrix4_type* rot )
 
   auto& matrix = (*rot);
 
-  matrix(0,0) = real{1} - (tyy + tzz);
-  matrix(0,1) = txy - twz;
-  matrix(0,2) = txz + twy;
-  matrix(0,3) = real{0};
+  matrix.get(0,0) = real{1} - (tyy + tzz);
+  matrix.get(0,1) = txy - twz;
+  matrix.get(0,2) = txz + twy;
+  matrix.get(0,3) = real{0};
 
-  matrix(1,0) = txy + twz;
-  matrix(1,1) = real{1} - (txx + tzz);
-  matrix(1,2) = tyz - twx;
-  matrix(1,3) = real{0};
+  matrix.get(1,0) = txy + twz;
+  matrix.get(1,1) = real{1} - (txx + tzz);
+  matrix.get(1,2) = tyz - twx;
+  matrix.get(1,3) = real{0};
 
-  matrix(2,0) = txz - twy;
-  matrix(2,1) = tyz + twx;
-  matrix(2,2) = real{1} - (txx + tyy);
-  matrix(2,3) = real{0};
+  matrix.get(2,0) = txz - twy;
+  matrix.get(2,1) = tyz + twx;
+  matrix.get(2,2) = real{1} - (txx + tyy);
+  matrix.get(2,3) = real{0};
 
-  matrix(3,0) = real{0};
-  matrix(3,1) = real{0};
-  matrix(3,2) = real{0};
-  matrix(3,3) = real{1};
+  matrix.get(3,0) = real{0};
+  matrix.get(3,1) = real{0};
+  matrix.get(3,2) = real{0};
+  matrix.get(3,3) = real{1};
 }
 
 //----------------------------------------------------------------------------
@@ -366,7 +366,7 @@ void alloy::core::quaternion::extract_axes( vector3* x_axis,
   assert( y_axis != nullptr );
   assert( z_axis != nullptr );
 
-  auto mat = matrix3_type{};
+  auto mat = matrix3{};
   extract_rotation_matrix(&mat);
 
   (*x_axis) = mat.row(0);

@@ -6,20 +6,33 @@
 #endif
 
 //==============================================================================
-// class : matrix4<T>
+// class : matrix4
 //==============================================================================
 
 //------------------------------------------------------------------------------
 // Constructors
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr alloy::core::matrix4<T>::matrix4( const vector4& v0,
-                                                   const vector4& v1,
-                                                   const vector4& v2,
-                                                   const vector4& v3 )
+inline constexpr alloy::core::matrix4
+  ::matrix4()
   noexcept
-  : m_matrix {
+  : m_matrix{
+    real{0}, real{0}, real{0}, real{0},
+    real{0}, real{0}, real{0}, real{0},
+    real{0}, real{0}, real{0}, real{0},
+    real{0}, real{0}, real{0}, real{0}
+  }
+{
+
+}
+
+inline constexpr alloy::core::matrix4
+  ::matrix4( const vector4& v0,
+             const vector4& v1,
+             const vector4& v2,
+             const vector4& v3 )
+  noexcept
+  : m_matrix{
       v0.x(), v0.y(), v0.z(), v0.w(),
       v1.x(), v1.y(), v1.z(), v1.w(),
       v2.x(), v2.y(), v2.z(), v2.w(),
@@ -29,9 +42,8 @@ inline constexpr alloy::core::matrix4<T>::matrix4( const vector4& v0,
 
 }
 
-template<typename T>
-inline constexpr alloy::core::matrix4<T>
-  ::matrix4( const value_type(&array)[16] )
+inline constexpr alloy::core::matrix4
+  ::matrix4( const real(&array)[16] )
   noexcept
   : m_matrix {
       array[0],  array[1],  array[2],  array[3],
@@ -43,9 +55,8 @@ inline constexpr alloy::core::matrix4<T>
 
 }
 
-template<typename T>
-inline constexpr alloy::core::matrix4<T>
-  ::matrix4( const value_type(&array)[4][4] )
+inline constexpr alloy::core::matrix4
+  ::matrix4( const real(&array)[4][4] )
   noexcept
   : m_matrix {
       array[0][0], array[0][1], array[0][2], array[0][3],
@@ -57,12 +68,11 @@ inline constexpr alloy::core::matrix4<T>
 
 }
 
-template<typename T>
-inline constexpr alloy::core::matrix4<T>
-  ::matrix4( value_type m00, value_type m01, value_type m02, value_type m03,
-             value_type m10, value_type m11, value_type m12, value_type m13,
-             value_type m20, value_type m21, value_type m22, value_type m23,
-             value_type m30, value_type m31, value_type m32, value_type m33 )
+inline constexpr alloy::core::matrix4
+  ::matrix4( real m00, real m01, real m02, real m03,
+             real m10, real m11, real m12, real m13,
+             real m20, real m21, real m22, real m23,
+             real m30, real m31, real m32, real m33 )
   noexcept
   : m_matrix {
       m00, m01, m02, m03,
@@ -74,44 +84,12 @@ inline constexpr alloy::core::matrix4<T>
 
 }
 
-template<typename T>
-inline constexpr alloy::core::matrix4<T>
-  ::matrix4( value_type m00, value_type m01, value_type m02,
-             value_type m10, value_type m11, value_type m12,
-             value_type m20, value_type m21, value_type m22  )
-  noexcept
-  : m_matrix{
-      m00,  m01,  T{0}, m02,
-      m10,  m11,  T{0}, m12,
-      T{0}, T{0}, T{1}, T{0},
-      m20,  m21,  T{0}, m22
-    }
-{
-
-}
-
-template<typename T>
-inline constexpr alloy::core::matrix4<T>::matrix4( const vector3& v0,
-                                                   const vector3& v1,
-                                                   const vector3& v2 )
-  noexcept
-  : m_matrix{
-      v0.x(), v0.y(), T{0}, v0.z(),
-      v1.x(), v1.y(), T{0}, v1.z(),
-      T{0},   T{0},   T{1}, T{0},
-      v2.x(), v2.y(), T{0}, v2.z()
-    }
-{
-
-}
-
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Element Access
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr typename alloy::core::matrix4<T>::reference
-  alloy::core::matrix4<T>::at( index_type c, index_type r )
+inline constexpr alloy::core::matrix4::reference
+  alloy::core::matrix4::at( index_type c, index_type r )
 {
   if( c >=columns || c < 0 || r >=rows || r < 0 ) {
     throw std::out_of_range{"matrix4::at: index out of range"};
@@ -120,9 +98,8 @@ inline constexpr typename alloy::core::matrix4<T>::reference
 }
 
 
-template<typename T>
-inline constexpr typename alloy::core::matrix4<T>::const_reference
-  alloy::core::matrix4<T>::at( index_type c, index_type r )
+inline constexpr alloy::core::matrix4::const_reference
+  alloy::core::matrix4::at( index_type c, index_type r )
   const
 {
   if( c >=columns || c < 0 || r >=rows || r < 0 ) {
@@ -131,64 +108,58 @@ inline constexpr typename alloy::core::matrix4<T>::const_reference
   return get(r,c);
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr typename alloy::core::matrix4<T>::reference
-  alloy::core::matrix4<T>::operator()( index_type r, index_type c )
+inline constexpr alloy::core::matrix4::reference
+  alloy::core::matrix4::get( index_type r, index_type c )
   noexcept
 {
-  return get(r,c);
+  return m_matrix[r][c];
 }
 
-
-template<typename T>
-inline constexpr typename alloy::core::matrix4<T>::const_reference
-  alloy::core::matrix4<T>::operator()( index_type r, index_type c )
+inline constexpr alloy::core::matrix4::const_reference
+  alloy::core::matrix4::get( index_type r, index_type c )
   const noexcept
 {
-  return get(r,c);
+  return m_matrix[r][c];
 }
 
-template<typename T>
+//------------------------------------------------------------------------------
+
 inline constexpr alloy::core::vector4
-  alloy::core::matrix4<T>::row( index_type r )
+  alloy::core::matrix4::row( index_type r )
   const noexcept
 {
-  return { get(r,0), get(r,1), get(r,2), get(r,3) };
+  return vector4{ get(r,0), get(r,1), get(r,2), get(r,3) };
 }
 
-template<typename T>
 inline constexpr alloy::core::vector4
-  alloy::core::matrix4<T>::column( index_type c )
+  alloy::core::matrix4::column( index_type c )
   const noexcept
 {
-  return { get(0,c), get(1,c), get(2,c), get(3,c) };
+  return vector4{ get(0,c), get(1,c), get(2,c), get(3,c) };
 }
 
 //----------------------------------------------------------------------------
 // Observers
 //----------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr typename alloy::core::matrix4<T>::size_type
-  alloy::core::matrix4<T>::size()
+inline constexpr alloy::core::matrix4::size_type
+  alloy::core::matrix4::size()
   const noexcept
 {
   return rows * columns;
 }
 
-template<typename T>
-inline constexpr typename alloy::core::matrix4<T>::pointer
-  alloy::core::matrix4<T>::data()
+inline constexpr alloy::core::matrix4::pointer
+  alloy::core::matrix4::data()
   noexcept
 {
   return &get(0,0);
 }
 
-template<typename T>
-inline constexpr typename alloy::core::matrix4<T>::const_pointer
-  alloy::core::matrix4<T>::data()
+inline constexpr alloy::core::matrix4::const_pointer
+  alloy::core::matrix4::data()
   const noexcept
 {
   return &get(0,0);
@@ -198,9 +169,8 @@ inline constexpr typename alloy::core::matrix4<T>::const_pointer
 // Quantifiers
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr typename alloy::core::matrix4<T>::value_type
-  alloy::core::matrix4<T>::determinant()
+inline constexpr alloy::core::real
+  alloy::core::matrix4::determinant()
   const noexcept
 {
   return  get(0,0) *
@@ -233,44 +203,40 @@ inline constexpr typename alloy::core::matrix4<T>::value_type
           get(3,0) * get(1,2) * get(2,1));
 }
 
-template<typename T>
-inline constexpr typename alloy::core::matrix4<T>::value_type
-  alloy::core::matrix4<T>::trace()
+inline constexpr alloy::core::real
+  alloy::core::matrix4::trace()
   const noexcept
 {
   return (get(0,0) + get(1,1) + get(2,2) + get(3,3));
 }
 
-template<typename T>
-inline constexpr alloy::core::matrix4<T>
-  alloy::core::matrix4<T>::inverse()
+inline constexpr alloy::core::matrix4
+  alloy::core::matrix4::inverse()
   const noexcept
 {
-  return matrix4<T>{*this}.invert();
+  return matrix4{*this}.invert();
 }
 
-template<typename T>
-inline constexpr alloy::core::matrix4<T>
-  alloy::core::matrix4<T>::transposed()
+inline constexpr alloy::core::matrix4
+  alloy::core::matrix4::transposed()
   const noexcept
 {
-  return matrix4<T> {
-    get(0,0), get(1,0), get(2,0),
-    get(0,1), get(1,1), get(2,1),
-    get(0,2), get(1,2), get(2,2)
+  return matrix4{
+    get(0,0), get(1,0), get(2,0), get(3,0),
+    get(0,1), get(1,1), get(2,1), get(3,1),
+    get(0,2), get(1,2), get(2,2), get(3,2),
+    get(0,3), get(1,3), get(2,3), get(3,3)
   };
 }
 
-template<typename T>
-template<typename U>
 constexpr alloy::core::vector4
-  alloy::core::matrix4<T>::combine( const vector4& vec )
+  alloy::core::matrix4::combine( const vector4& vec )
   const noexcept
 {
   auto result = vector4{};
 
   for( auto r = 0; r < columns; ++r ) {
-    auto sum = std::common_type_t<T,U>{0};
+    auto sum = real{0};
 
     for( auto c = 0; c < rows; ++c ) {
       sum += vec[c] * get(r,c);
@@ -284,11 +250,11 @@ constexpr alloy::core::vector4
 // Modifiers
 //------------------------------------------------------------------------------
 
-template<typename T>
-inline constexpr alloy::core::matrix4<T>& alloy::core::matrix4<T>::invert()
+inline constexpr alloy::core::matrix4&
+  alloy::core::matrix4::invert()
   noexcept
 {
-  value_type inv[4][4]; // The resultant matrix
+  real inv[4][4] = {}; // The resultant matrix
 
   inv[0][0] = get(1,1) * get(2,2) * get(3,3) -
               get(1,1) * get(2,3) * get(3,2) -
@@ -318,14 +284,20 @@ inline constexpr alloy::core::matrix4<T>& alloy::core::matrix4<T>::invert()
               get(3,0) * get(1,1) * get(2,2) +
               get(3,0) * get(1,2) * get(2,1);
 
-  T det = get(0,0) * inv[0][0] +
-          get(0,1) * inv[1][0] +
-          get(0,2) * inv[2][0] +
-          get(0,3) * inv[3][0];
+  auto det = get(0,0) * inv[0][0] +
+             get(0,1) * inv[1][0] +
+             get(0,2) * inv[2][0] +
+             get(0,3) * inv[3][0];
 
   // If determinant is zero, just return the identity matrix
-  if (det == T{0}) {
-    (*this) = matrix4_constants<T>::identity;
+  if (det == real{0}) {
+    (*this) = matrix4{
+      real{1}, real{0}, real{0}, real{0},
+      real{0}, real{1}, real{0}, real{0},
+      real{0}, real{0}, real{1}, real{0},
+      real{0}, real{0}, real{0}, real{1}
+    };
+
     return (*this);
   }
 
@@ -413,7 +385,7 @@ inline constexpr alloy::core::matrix4<T>& alloy::core::matrix4<T>::invert()
               get(2,0) * get(0,1) * get(1,2) -
               get(2,0) * get(0,2) * get(1,1);
 
-  const auto inv_det = T{1} / det;
+  const auto inv_det = real{1} / det;
 
   for (auto r = 0; r < rows; ++r) {
     for (auto c = 0; c < columns; ++c) {
@@ -424,8 +396,8 @@ inline constexpr alloy::core::matrix4<T>& alloy::core::matrix4<T>::invert()
   return (*this);
 }
 
-template<typename T>
-inline constexpr alloy::core::matrix4<T>& alloy::core::matrix4<T>::transpose()
+inline constexpr alloy::core::matrix4&
+  alloy::core::matrix4::transpose()
   noexcept
 {
   using std::swap;
@@ -445,10 +417,8 @@ inline constexpr alloy::core::matrix4<T>& alloy::core::matrix4<T>::transpose()
 // Compound Operators
 //------------------------------------------------------------------------------
 
-template<typename T>
-template<typename U>
-inline alloy::core::matrix4<T>&
-  alloy::core::matrix4<T>::operator+=( const matrix4<U>& rhs )
+inline alloy::core::matrix4&
+  alloy::core::matrix4::operator+=( const matrix4& rhs )
   noexcept
 {
   for (auto r = 0; r < rows; ++r) {
@@ -459,10 +429,8 @@ inline alloy::core::matrix4<T>&
   return (*this);
 }
 
-template<typename T>
-template<typename U>
-alloy::core::matrix4<T>&
-  alloy::core::matrix4<T>::operator-=(const matrix4<U>& rhs)
+alloy::core::matrix4&
+  alloy::core::matrix4::operator-=( const matrix4& rhs )
   noexcept
 {
   for (auto r = 0; r < rows; ++r) {
@@ -473,17 +441,15 @@ alloy::core::matrix4<T>&
   return (*this);
 }
 
-template<typename T>
-template<typename U>
-alloy::core::matrix4<T>&
-  alloy::core::matrix4<T>::operator*=(const matrix4<U>& rhs)
+alloy::core::matrix4&
+  alloy::core::matrix4::operator*=( const matrix4& rhs )
   noexcept
 {
-  auto result = matrix4<T>{};
+  auto result = matrix4{};
 
   for (auto r = 0; r < rows; ++r) {
     for (auto c = 0; c < columns; ++c) {
-      auto sum = std::common_type_t<T,U>{0};
+      auto sum = real{0};
 
       for (auto i = 0; i < rows; ++i) {
         sum += (get(i,c) * rhs.get(r,i));
@@ -496,10 +462,8 @@ alloy::core::matrix4<T>&
   return (*this);
 }
 
-template<typename T>
-template<typename U>
-alloy::core::matrix4<T>&
-  alloy::core::matrix4<T>::operator*=(U scalar)
+alloy::core::matrix4&
+  alloy::core::matrix4::operator*=( real scalar )
   noexcept
 {
   for (auto r = 0; r < rows; ++r) {
@@ -510,13 +474,11 @@ alloy::core::matrix4<T>&
   return (*this);
 }
 
-template<typename T>
-template<typename U>
-alloy::core::matrix4<T>&
-  alloy::core::matrix4<T>::operator/=( U scalar )
+alloy::core::matrix4&
+  alloy::core::matrix4::operator/=( real scalar )
   noexcept
 {
-  const auto inv = T{1} / scalar;
+  const auto inv = real{1} / scalar;
 
   for (auto r = 0; r < rows; ++r) {
     for (auto c = 0; c < columns; ++c) {
@@ -526,94 +488,67 @@ alloy::core::matrix4<T>&
   return (*this);
 }
 
-//------------------------------------------------------------------------------
-// Private Member Functions
-//------------------------------------------------------------------------------
-
-template<typename T>
-inline constexpr typename alloy::core::matrix4<T>::reference
-  alloy::core::matrix4<T>::get( index_type r, index_type c )
-  noexcept
-{
-  return m_matrix[r][c];
-}
-
-template<typename T>
-inline constexpr typename alloy::core::matrix4<T>::const_reference
-  alloy::core::matrix4<T>::get( index_type r, index_type c )
-  const noexcept
-{
-  return m_matrix[r][c];
-}
-
 //==============================================================================
-// non-member functions : class : matrix4<T>
+// non-member functions : class : matrix4
 //==============================================================================
 
 //------------------------------------------------------------------------------
 // Arithmetic Operators
 //------------------------------------------------------------------------------
 
-template<typename T, typename U>
-inline constexpr alloy::core::matrix4<std::common_type_t<T,U>>
-  alloy::core::operator+( const matrix4<T>& lhs, const matrix4<U>& rhs )
+inline alloy::core::matrix4
+  alloy::core::operator+( const matrix4& lhs, const matrix4& rhs )
   noexcept
 {
-  return matrix4<std::common_type_t<T,U>>(lhs)+=rhs;
+  return matrix4{lhs} += rhs;
 }
 
-template<typename T, typename U>
-inline constexpr alloy::core::matrix4<std::common_type_t<T,U>>
-  alloy::core::operator-( const matrix4<T>& lhs, const matrix4<U>& rhs )
+inline alloy::core::matrix4
+  alloy::core::operator-( const matrix4& lhs, const matrix4& rhs )
   noexcept
 {
-  return matrix4<std::common_type_t<T,U>>(lhs)-=rhs;
+  return matrix4{lhs} -= rhs;
 }
 
-template<typename T, typename U>
-inline constexpr alloy::core::matrix4<std::common_type_t<T,U>>
-  alloy::core::operator*( const matrix4<T>& lhs, const matrix4<U>& rhs )
+inline alloy::core::matrix4
+  alloy::core::operator*( const matrix4& lhs, const matrix4& rhs )
   noexcept
 {
-  return matrix4<std::common_type_t<T,U>>(lhs)*=rhs;
+  return matrix4{lhs} *= rhs;
 }
 
-template<typename T, typename U>
-inline constexpr alloy::core::vector4
-  alloy::core::operator*( const vector4& lhs, const matrix4<U>& rhs )
+inline alloy::core::vector4
+  alloy::core::operator*( const vector4& lhs, const matrix4& rhs )
   noexcept
 {
   return rhs.combine(lhs);
 }
 
-template<typename T, typename U, typename>
-constexpr alloy::core::matrix4<std::common_type_t<T,U>>
-  alloy::core::operator*( T lhs, const matrix4<U>& rhs )
+inline alloy::core::matrix4
+  alloy::core::operator*( real lhs, const matrix4& rhs )
   noexcept
 {
-  return matrix4<std::common_type_t<T,U>>(rhs) *= lhs;
+  return matrix4{rhs} *= lhs;
 }
 
-template<typename T, typename U, typename>
-constexpr alloy::core::matrix4<std::common_type_t<T,U>>
-  alloy::core::operator*( const matrix4<T>& lhs, U rhs )
+inline alloy::core::matrix4
+  alloy::core::operator*( const matrix4& lhs, real rhs )
   noexcept
 {
-  return matrix4<std::common_type_t<T,U>>(lhs) *= rhs;
+  return matrix4{lhs} *= rhs;
 }
 
 //------------------------------------------------------------------------------
 // Comparisons
 //------------------------------------------------------------------------------
 
-template<typename T, typename U>
-inline constexpr bool alloy::core::operator==( const matrix4<T>& lhs,
-                                               const matrix4<U>& rhs )
+inline constexpr bool
+  alloy::core::operator==( const matrix4& lhs, const matrix4& rhs )
   noexcept
 {
-  for(auto r=0;r<matrix4<T>::rows;++r) {
-    for(auto c=0;c<matrix4<T>::columns;++c) {
-      if( lhs(r,c) != rhs(r,c) ) {
+  for(auto r = 0; r < matrix4::rows; ++r) {
+    for(auto c = 0; c < matrix4::columns; ++c) {
+      if( lhs.get(r,c) != rhs.get(r,c) ) {
         return false;
       }
     }
@@ -621,9 +556,8 @@ inline constexpr bool alloy::core::operator==( const matrix4<T>& lhs,
   return true;
 }
 
-template<typename T, typename U>
-inline constexpr bool alloy::core::operator!=( const matrix4<T>& lhs,
-                                               const matrix4<U>& rhs )
+inline constexpr bool
+  alloy::core::operator!=( const matrix4& lhs, const matrix4& rhs )
   noexcept
 {
   return !(lhs==rhs);
@@ -631,14 +565,13 @@ inline constexpr bool alloy::core::operator!=( const matrix4<T>& lhs,
 
 //----------------------------------------------------------------------------
 
-template<typename T, typename U>
-inline constexpr bool alloy::core::almost_equal( const matrix4<T>& lhs,
-                                                 const matrix4<U>& rhs )
+inline constexpr bool
+  alloy::core::almost_equal( const matrix4& lhs, const matrix4& rhs )
   noexcept
 {
-  for(auto r=0;r<matrix4<T>::rows;++r) {
-    for(auto c=0;c<matrix4<T>::columns;++c) {
-      if( !almost_equal(rhs(r,c),rhs(r,c)) ) {
+  for(auto r = 0; r < matrix4::rows; ++r) {
+    for(auto c = 0; c < matrix4::columns; ++c) {
+      if( !almost_equal(rhs.get(r,c), rhs.get(r,c)) ) {
         return false;
       }
     }
@@ -646,15 +579,15 @@ inline constexpr bool alloy::core::almost_equal( const matrix4<T>& lhs,
   return true;
 }
 
-template<typename T, typename U, typename Arithmetic, typename>
-inline constexpr bool alloy::core::almost_equal( const matrix4<T>& lhs,
-                                                 const matrix4<U>& rhs,
-                                                 Arithmetic tolerance )
+inline constexpr bool
+  alloy::core::almost_equal( const matrix4& lhs,
+                             const matrix4& rhs,
+                             real tolerance )
   noexcept
 {
-  for(auto r=0;r<matrix4<T>::rows;++r) {
-    for(auto c=0;c<matrix4<T>::columns;++c) {
-      if( !almost_equal(rhs(r,c),rhs(r,c), tolerance) ) {
+  for(auto r = 0; r < matrix4::rows; ++r) {
+    for(auto c = 0; c < matrix4::columns; ++c) {
+      if( !almost_equal(rhs.get(r,c), rhs.get(r,c), tolerance) ) {
         return false;
       }
     }

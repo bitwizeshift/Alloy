@@ -48,17 +48,104 @@ namespace alloy::core {
   } // inline namespace casts
 
   //============================================================================
+  // struct : matrix2_constants
+  //============================================================================
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief A collection of matrix2 constants
+  //////////////////////////////////////////////////////////////////////////////
+  struct matrix2_constants
+  {
+    //--------------------------------------------------------------------------
+    // Public Constants
+    //--------------------------------------------------------------------------
+
+    static inline constexpr auto zero = matrix2{
+      real{0}, real{0},
+      real{0}, real{0}
+    };
+    static inline constexpr auto identity = matrix2{
+      real{1}, real{0},
+      real{0}, real{1},
+    };
+  };
+
+  //============================================================================
+  // struct : matrix3_constants
+  //============================================================================
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief A collection of matrix3 constants
+  //////////////////////////////////////////////////////////////////////////////
+  struct matrix3_constants
+  {
+    //--------------------------------------------------------------------------
+    // Public Constants
+    //--------------------------------------------------------------------------
+
+    static inline constexpr auto zero = matrix3{
+      real{0}, real{0}, real{0},
+      real{0}, real{0}, real{0},
+      real{0}, real{0}, real{0}
+    };
+    static inline constexpr auto identity = matrix3{
+      real{1}, real{0}, real{0},
+      real{0}, real{1}, real{0},
+      real{0}, real{0}, real{1}
+    };
+  };
+
+  //============================================================================
+  // struct : matrix4_constants
+  //============================================================================
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief A collection of matrix4 constants
+  //////////////////////////////////////////////////////////////////////////////
+  struct matrix4_constants
+  {
+    //--------------------------------------------------------------------------
+    // Public Constants
+    //--------------------------------------------------------------------------
+
+    static inline constexpr auto zero = matrix4{
+      real{0}, real{0}, real{0}, real{0},
+      real{0}, real{0}, real{0}, real{0},
+      real{0}, real{0}, real{0}, real{0},
+      real{0}, real{0}, real{0}, real{0}
+    };
+    static inline constexpr auto identity = matrix4{
+      real{1}, real{0}, real{0}, real{0},
+      real{0}, real{1}, real{0}, real{0},
+      real{0}, real{0}, real{1}, real{0},
+      real{0}, real{0}, real{0}, real{1}
+    };
+  };
+
+  //============================================================================
+  // aliases
+  //============================================================================
+
+  using mat2_constants = matrix2_constants;
+  using mat3_constants = matrix3_constants;
+  using mat4_constants = matrix4_constants;
+
+  //============================================================================
   // trait : is_matrix
   //============================================================================
 
   /// \brief Trait to detect whether \p T is a matrix type.
   ///
   /// The result is aliased as \c ::value
-  template<typename T> struct is_matrix : std::false_type{};
+  template<typename T>
+  struct is_matrix : std::false_type{};
 
-  template<typename T> struct is_matrix<matrix2<T>> : std::true_type{};
-  template<typename T> struct is_matrix<matrix3<T>> : std::true_type{};
-  template<typename T> struct is_matrix<matrix4<T>> : std::true_type{};
+  template<>
+  struct is_matrix<matrix2> : std::true_type{};
+  template<>
+  struct is_matrix<matrix3> : std::true_type{};
+  template<>
+  struct is_matrix<matrix4> : std::true_type{};
 
   /// \brief Convenience template variable to extract out
   ///        \c is_matrix<T>::value

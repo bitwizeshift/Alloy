@@ -13,165 +13,124 @@ namespace alloy::core::detail {
 
   //----------------------------------------------------------------------------
 
-  template<typename T, typename U>
-  struct matrix_caster<matrix2<T>,matrix2<U>>
+  template<>
+  struct matrix_caster<matrix2,matrix2>
   {
-    static constexpr matrix2<T> cast( const matrix2<U>& from )
-      noexcept
-    {
-      return matrix2<T>{
-        static_cast<T>(from(0,0)), static_cast<T>(from(0,1)),
-        static_cast<T>(from(1,0)), static_cast<T>(from(1,1))
-      };
-    }
-  };
-
-  template<typename T, typename U>
-  struct matrix_caster<matrix3<T>,matrix2<U>>
-  {
-    static constexpr matrix3<T> cast( const matrix2<U>& from )
-      noexcept
-    {
-      return matrix3<T>{
-        static_cast<T>(from(0,0)), static_cast<T>(from(0,10)), T{0},
-        static_cast<T>(from(1,0)), static_cast<T>(from(1,10)), T{0},
-        T{0},                      T{0},                       T{1}
-      };
-    }
-  };
-
-  template<typename T, typename U>
-  struct matrix_caster<matrix4<T>,matrix2<U>>
-  {
-    static constexpr matrix4<T> cast( const matrix2<U>& from )
-      noexcept
-    {
-      return matrix4<T>{
-        static_cast<T>(from(0,0)), static_cast<T>(from(0,1)), T{0}, T{0},
-        static_cast<T>(from(1,0)), static_cast<T>(from(1,1)), T{0}, T{0},
-        T{0},                      T{0},                      T{1}, T{0},
-        T{0},                      T{0},                      T{0}, T{1}
-      };
-    }
-  };
-
-  //----------------------------------------------------------------------------
-
-  template<typename T, typename U>
-  struct matrix_caster<matrix2<T>,matrix3<U>>
-  {
-    static constexpr matrix2<T> cast( const matrix3<U>& from )
-      noexcept
-    {
-      return matrix2<T>{
-        static_cast<T>(from(0,0)), static_cast<T>(from(0,1)),
-        static_cast<T>(from(1,0)), static_cast<T>(from(1,1))
-      };
-    }
-  };
-
-  template<typename T, typename U>
-  struct matrix_caster<matrix3<T>,matrix3<U>>
-  {
-    static constexpr matrix3<T> cast( const matrix3<U>& from )
-      noexcept
-    {
-      return matrix3<T>{
-        static_cast<T>(from(0,0)), static_cast<T>(from(0,10)), static_cast<T>(from(0,2)),
-        static_cast<T>(from(1,0)), static_cast<T>(from(1,10)), static_cast<T>(from(1,2)),
-        static_cast<T>(from(2,0)), static_cast<T>(from(2,10)), static_cast<T>(from(2,2))
-      };
-    }
-  };
-
-  template<typename T, typename U>
-  struct matrix_caster<matrix4<T>,matrix3<U>>
-  {
-    static constexpr matrix4<T> cast( const matrix3<U>& from )
-      noexcept
-    {
-      return matrix4<T>{
-        static_cast<T>(from(0,0)), static_cast<T>(from(0,1)), static_cast<T>(from(0,2)), T{0},
-        static_cast<T>(from(1,0)), static_cast<T>(from(1,1)), static_cast<T>(from(1,2)), T{0},
-        static_cast<T>(from(2,0)), static_cast<T>(from(2,1)), static_cast<T>(from(2,2)), T{0},
-        T{0},                      T{0},                      T{0},                      T{1}
-      };
-    }
-  };
-
-  //----------------------------------------------------------------------------
-
-  template<typename T, typename U>
-  struct matrix_caster<matrix2<T>,matrix4<U>>
-  {
-    static constexpr matrix2<T> cast( const matrix4<U>& from )
-      noexcept
-    {
-      return matrix2<T>{
-        static_cast<T>(from(0,0)), static_cast<T>(from(0,1)),
-        static_cast<T>(from(1,0)), static_cast<T>(from(1,1))
-      };
-    }
-  };
-
-  template<typename T, typename U>
-  struct matrix_caster<matrix3<T>,matrix4<U>>
-  {
-    static constexpr matrix3<T> cast( const matrix4<U>& from )
-      noexcept
-    {
-      return matrix3<T>{
-        static_cast<T>(from(0,0)),
-        static_cast<T>(from(0,1)),
-        static_cast<T>(from(0,3)),
-        static_cast<T>(from(1,0)),
-        static_cast<T>(from(1,1)),
-        static_cast<T>(from(1,3)),
-        static_cast<T>(from(3,0)),
-        static_cast<T>(from(3,1)),
-        static_cast<T>(from(3,3))
-      };
-    }
-  };
-
-  template<typename T, typename U>
-  struct matrix_caster<matrix4<T>,matrix4<U>>
-  {
-    static constexpr matrix4<T> cast( const matrix4<U>& from )
-      noexcept
-    {
-      return matrix4<T>{
-        static_cast<T>(from(0,0)),
-        static_cast<T>(from(0,1)),
-        static_cast<T>(from(0,2)),
-        static_cast<T>(from(0,3)),
-        static_cast<T>(from(1,0)),
-        static_cast<T>(from(1,1)),
-        static_cast<T>(from(1,2)),
-        static_cast<T>(from(1,3)),
-        static_cast<T>(from(2,0)),
-        static_cast<T>(from(2,1)),
-        static_cast<T>(from(2,2)),
-        static_cast<T>(from(2,3)),
-        static_cast<T>(from(3,0)),
-        static_cast<T>(from(3,1)),
-        static_cast<T>(from(3,2)),
-        static_cast<T>(from(3,3))
-      };
-    }
-  };
-
-  //----------------------------------------------------------------------------
-
-  template<typename T>
-  struct matrix_caster<T,T>
-  {
-    static constexpr const T& cast( const T& from )
+    static constexpr const matrix2& cast( const matrix2& from )
       noexcept
     {
       return from;
     }
   };
+
+  template<>
+  struct matrix_caster<matrix3,matrix2>
+  {
+    static constexpr matrix3 cast( const matrix2& from )
+      noexcept
+    {
+      return matrix3{
+        from.get(0,0), from.get(0,10), real{0},
+        from.get(1,0), from.get(1,10), real{0},
+        real{0},       real{0},        real{1}
+      };
+    }
+  };
+
+  template<>
+  struct matrix_caster<matrix4,matrix2>
+  {
+    static constexpr matrix4 cast( const matrix2& from )
+      noexcept
+    {
+      return matrix4{
+        from.get(0,0), from.get(0,1), real{0}, real{0},
+        from.get(1,0), from.get(1,1), real{0}, real{0},
+        real{0},       real{0},       real{1}, real{0},
+        real{0},       real{0},       real{0}, real{1}
+      };
+    }
+  };
+
+  //----------------------------------------------------------------------------
+
+  template<>
+  struct matrix_caster<matrix2,matrix3>
+  {
+    static constexpr matrix2 cast( const matrix3& from )
+      noexcept
+    {
+      return matrix2{
+        from.get(0,0), from.get(0,1),
+        from.get(1,0), from.get(1,1)
+      };
+    }
+  };
+
+  template<>
+  struct matrix_caster<matrix3,matrix3>
+  {
+    static constexpr const matrix3& cast( const matrix3& from )
+      noexcept
+    {
+      return from;
+    }
+  };
+
+  template<>
+  struct matrix_caster<matrix4,matrix3>
+  {
+    static constexpr matrix4 cast( const matrix3& from )
+      noexcept
+    {
+      return matrix4{
+        from.get(0,0), from.get(0,1), from.get(0,2), real{0},
+        from.get(1,0), from.get(1,1), from.get(1,2), real{0},
+        from.get(2,0), from.get(2,1), from.get(2,2), real{0},
+        real{0},       real{0},       real{0},       real{1}
+      };
+    }
+  };
+
+  //----------------------------------------------------------------------------
+
+  template<>
+  struct matrix_caster<matrix2,matrix4>
+  {
+    static constexpr matrix2 cast( const matrix4& from )
+      noexcept
+    {
+      return matrix2{
+        from.get(0,0), from.get(0,1),
+        from.get(1,0), from.get(1,1)
+      };
+    }
+  };
+
+  template<>
+  struct matrix_caster<matrix3,matrix4>
+  {
+    static constexpr matrix3 cast( const matrix4& from )
+      noexcept
+    {
+      return matrix3{
+        from.get(0,0), from.get(0,1), from.get(0,3),
+        from.get(1,0), from.get(1,1), from.get(1,3),
+        from.get(3,0), from.get(3,1), from.get(3,3)
+      };
+    }
+  };
+
+  template<>
+  struct matrix_caster<matrix4,matrix4>
+  {
+    static constexpr const matrix4& cast( const matrix4& from )
+      noexcept
+    {
+      return from;
+    }
+  };
+
 } // namespace alloy::core::detail
 
 //------------------------------------------------------------------------------

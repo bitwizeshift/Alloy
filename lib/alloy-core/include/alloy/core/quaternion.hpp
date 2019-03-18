@@ -91,9 +91,6 @@ namespace alloy::core {
     using size_type  = std::size_t;           ///< The type used for sizes
     using index_type = std::ptrdiff_t;        ///< The type used for indices
 
-    using matrix3_type = matrix3<value_type>; ///< The 3x3 matrix type
-    using matrix4_type = matrix4<value_type>; ///< The 4x4 matrix type
-
     //--------------------------------------------------------------------------
     // Static Factory Functions
     //--------------------------------------------------------------------------
@@ -122,13 +119,13 @@ namespace alloy::core {
     ///
     /// \param rot the rotation matrix
     /// \return the constructed quaternion
-    static quaternion from_rotation_matrix( const matrix3_type& rot ) noexcept;
+    static quaternion from_rotation_matrix( const matrix3& rot ) noexcept;
 
     /// \brief Constructs a quaternion from a 4x4 rotation matrix
     ///
     /// \param rot the rotation matrix
     /// \return the constructed quaternion
-    static quaternion from_rotation_matrix( const matrix4_type& rot ) noexcept;
+    static quaternion from_rotation_matrix( const matrix4& rot ) noexcept;
 
     /// \brief Constructs a quaternion from 3 axes forming a 3x3 rotation
     ///        matrix
@@ -288,7 +285,7 @@ namespace alloy::core {
     /// \brief Calculates and returns the 3x3 rotation matrix
     ///
     /// \return the rotation matrix
-    matrix3_type rotation_matrix() const noexcept;
+    matrix3 rotation_matrix() const noexcept;
 
     /// \brief Calculates and returns the rotation angle and axis
     ///
@@ -320,12 +317,12 @@ namespace alloy::core {
     /// \brief Extracts a 3x3 rotation matrix from this quaternion
     ///
     /// \param rot pointer to the rotation matrix to extract into
-    void extract_rotation_matrix( matrix3_type* rot ) const noexcept;
+    void extract_rotation_matrix( matrix3* rot ) const noexcept;
 
     /// \brief Extracts a 4x4 rotation matrix from this quaternion
     ///
     /// \param rot pointer to the rotation matrix to extract into
-    void extract_rotation_matrix( matrix4_type* rot ) const noexcept;
+    void extract_rotation_matrix( matrix4* rot ) const noexcept;
 
     //--------------------------------------------------------------------------
 
@@ -492,10 +489,9 @@ namespace alloy::core {
   /// \param lhs the left quaternion
   /// \param rhs the right quaternion
   /// \return \c true if \p lhs almost equals \p rhs
-  template<typename Arithmetic, std::enable_if_t<std::is_arithmetic<Arithmetic>::value>* = nullptr>
   bool almost_equal( const quaternion& lhs,
-                      const quaternion& rhs,
-                      Arithmetic tolerance ) noexcept;
+                     const quaternion& rhs,
+                     real tolerance ) noexcept;
 
   //----------------------------------------------------------------------------
   // Quantifiers
@@ -674,11 +670,11 @@ inline constexpr alloy::core::quaternion::const_reference
   return m_data[i];
 }
 
-inline alloy::core::quaternion::matrix3_type
+inline alloy::core::matrix3
   alloy::core::quaternion::rotation_matrix()
   const noexcept
 {
-  auto mat = matrix3_type{};
+  auto mat = matrix3{};
   extract_rotation_matrix(&mat);
 
   return mat;
@@ -845,10 +841,9 @@ inline bool alloy::core::almost_equal( const quaternion& lhs,
   return true;
 }
 
-template<typename Arithmetic, typename>
 inline bool alloy::core::almost_equal( const quaternion& lhs,
                                        const quaternion& rhs,
-                                       Arithmetic tolerance )
+                                       real tolerance )
   noexcept
 {
   for (auto i=0; i<4;++i) {

@@ -47,7 +47,7 @@
 namespace alloy::core {
 
   //============================================================================
-  // class : matrix4<T>
+  // class : matrix4
   //============================================================================
 
   //////////////////////////////////////////////////////////////////////////////
@@ -56,19 +56,14 @@ namespace alloy::core {
   /// The matrix is accessed in column-major format (e.g. mat[col][row]) as
   /// opposed to the native [row][col] way that C++ handles 2d arrays
   //////////////////////////////////////////////////////////////////////////////
-  template<typename T>
   class matrix4
   {
-    static_assert( !std::is_reference<T>::value );
-    static_assert( !std::is_void<T>::value );
-    static_assert( !std::is_pointer<T>::value );
-
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Public Types
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
-    using value_type      = T;
+    using value_type      = real;
     using pointer         = value_type*;
     using const_pointer   = const value_type*;
     using reference       = value_type&;
@@ -77,29 +72,29 @@ namespace alloy::core {
     using size_type  = std::size_t;
     using index_type = std::ptrdiff_t;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Public Constants
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
-    static inline constexpr size_type rows    = 4;
-    static inline constexpr size_type columns = 4;
+    static inline constexpr auto rows    = index_type{4};
+    static inline constexpr auto columns = index_type{4};
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Constructors / Assignment
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     /// \brief Default-constructs a matrix4.
     ///
-    /// A default constructs matrix4 has an undefined default value
-    constexpr matrix4() noexcept = default;
+    /// Default constructs a matrix4 with an empty matrix (0 values)
+    constexpr matrix4() noexcept;
 
     /// \brief Constructs a matrix4 from 4 row vectors
     ///
     /// This constructor is to allow a fluid interface for construction:
     /// \code
-    /// auto mat = matrix4<float> { { 1, 0, 0, 0 },
+    /// auto mat = matrix4 { { 1, 0, 0, 0 },
     ///                             { 0, 1, 0, 0 },
     ///                             { 0, 0, 1, 0 },
     ///                             { 0, 0, 0, 1 } };
@@ -117,12 +112,12 @@ namespace alloy::core {
     /// \brief Constructs a matrix4 from an array of 4 entries
     ///
     /// \param array the 1-dimensional array
-    constexpr matrix4( const value_type(&array)[16] ) noexcept;
+    constexpr matrix4( const real(&array)[16] ) noexcept;
 
     /// \brief Constructs a matrix4 from a 2-dimensional array
     ///
     /// \param array the 2-dimensional array
-    constexpr matrix4( const value_type(&array)[4][4] ) noexcept;
+    constexpr matrix4( const real(&array)[4][4] ) noexcept;
 
     /// \brief Constructs a matrix4 from value entries
     ///
@@ -142,34 +137,10 @@ namespace alloy::core {
     /// \param m31 the entry at coordinate (3,1)
     /// \param m32 the entry at coordinate (3,2)
     /// \param m33 the entry at coordinate (3,3)
-    constexpr matrix4( value_type m00, value_type m01, value_type m02, value_type m03,
-                       value_type m10, value_type m11, value_type m12, value_type m13,
-                       value_type m20, value_type m21, value_type m22, value_type m23,
-                       value_type m30, value_type m31, value_type m32, value_type m33 ) noexcept;
-
-    /// \brief Constructs a 3x3 mapped matrix in this 4x4 matrix
-    ///
-    /// \param m00 the entry at coordinate (0,0)
-    /// \param m01 the entry at coordinate (0,1)
-    /// \param m02 the entry at coordinate (0,2)
-    /// \param m10 the entry at coordinate (1,0)
-    /// \param m11 the entry at coordinate (1,1)
-    /// \param m12 the entry at coordinate (1,2)
-    /// \param m20 the entry at coordinate (2,0)
-    /// \param m21 the entry at coordinate (2,1)
-    /// \param m22 the entry at coordinate (2,2)
-    constexpr matrix4( value_type m00, value_type m01, value_type m02,
-                       value_type m10, value_type m11, value_type m12,
-                       value_type m20, value_type m21, value_type m22  ) noexcept;
-
-    /// \brief Constructs a 3x3 mapped matrix in this 4x4 matrix
-    ///
-    /// \param v0 the first row vector of the 3x3 matrix
-    /// \param v1 the second row vector of the 3x3 matrix
-    /// \param v2 the third row vector of the 3x3 matrix
-    constexpr matrix4( const vector3& v0,
-                       const vector3& v1,
-                       const vector3& v2 ) noexcept;
+    constexpr matrix4( real m00, real m01, real m02, real m03,
+                       real m10, real m11, real m12, real m13,
+                       real m20, real m21, real m22, real m23,
+                       real m30, real m31, real m32, real m33 ) noexcept;
 
     /// \brief Copy-constructs a matrix4 from another matrix4
     ///
@@ -181,7 +152,7 @@ namespace alloy::core {
     /// \param other the other matrix4 to move
     constexpr matrix4( matrix4&& other ) noexcept = default;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     /// \brief Copy-assigns a matrix4 from another matrix4
     ///
@@ -195,9 +166,9 @@ namespace alloy::core {
     /// \return reference to \c (*this)
     matrix4& operator=( matrix4&& other ) = default;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Element Access
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     /// \{
@@ -213,21 +184,19 @@ namespace alloy::core {
     constexpr const_reference at( index_type r, index_type c ) const;
     /// \}
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
+    /// \{
     /// \brief Retrieves the matrix entry at column \p c, and returns a
     ///        proxy to that row
     ///
     /// \param c the column
     /// \return a proxy to the row
-    constexpr reference
-      operator()( index_type r, index_type c ) noexcept;
+    constexpr reference get( index_type r, index_type c ) noexcept;
+    constexpr const_reference get( index_type r, index_type c ) const noexcept;
+    /// \}
 
-    /// \copydoc matrix4::at( index-type )
-    constexpr const_reference
-      operator()( index_type r, index_type c ) const noexcept;
-
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     /// \brief Retrieves the vector at row \p r
     ///
@@ -239,9 +208,9 @@ namespace alloy::core {
     /// \param c the column index to retrieve
     constexpr vector4 column( index_type c ) const noexcept;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Observers
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     /// \brief Retrieves the number of entries in this matrix
@@ -257,20 +226,20 @@ namespace alloy::core {
     constexpr const_pointer data() const noexcept;
     /// \}
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Quantifiers
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     /// Calculates the determinant for this matrix4
     ///
     /// \returns the determinant of this matrix
-    constexpr value_type determinant() const noexcept;
+    constexpr real determinant() const noexcept;
 
     /// Calculates the trace for this matrix4
     ///
     /// \returns the trace of this matrix
-    constexpr value_type trace() const noexcept;
+    constexpr real trace() const noexcept;
 
     /// \brief Computes the inverse of this matrix4
     ///
@@ -288,13 +257,11 @@ namespace alloy::core {
     ///
     /// \param vec the vector to combine
     /// \return the result of \c vec * matrix
-    template<typename U>
-    constexpr vector4
-      combine( const vector4& vec ) const noexcept;
+    constexpr vector4 combine( const vector4& vec ) const noexcept;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Modifiers
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     /// \brief Inverts this current matrix4, and returns a reference to
@@ -313,81 +280,53 @@ namespace alloy::core {
     /// \return reference to \c (*this)
     constexpr matrix4& transpose() noexcept;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Compound Operators
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
-    template<typename U>
-    matrix4& operator+=( const matrix4<U>& rhs ) noexcept;
-    template<typename U>
-    matrix4& operator-=( const matrix4<U>& rhs ) noexcept;
-    template<typename U>
-    matrix4& operator*=( const matrix4<U>& rhs ) noexcept;
-    template<typename U>
-    matrix4& operator*=( U scalar ) noexcept;
-    template<typename U>
-    matrix4& operator/=( U scalar ) noexcept;
+    matrix4& operator+=( const matrix4& rhs ) noexcept;
+    matrix4& operator-=( const matrix4& rhs ) noexcept;
+    matrix4& operator*=( const matrix4& rhs ) noexcept;
+    matrix4& operator*=( real scalar ) noexcept;
+    matrix4& operator/=( real scalar ) noexcept;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Private Members
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   private:
 
-    alignas(16) value_type m_matrix[rows][columns]; ///< Linear array that represents the matrix
-
-    //----------------------------------------------------------------------
-    // Private Member Functions
-    //----------------------------------------------------------------------
-  private:
-
-    /// \{
-    /// \brief Non-throwing matrix element access
-    ///
-    /// \param r the row
-    /// \param c the column
-    /// \return reference to the entry
-    constexpr reference get( index_type r, index_type c ) noexcept;
-    constexpr const_reference get( index_type r, index_type c ) const noexcept;
-    /// \}
+    alignas(16) real m_matrix[rows][columns]; ///< Linear array that represents the matrix
 
   };
 
   //============================================================================
-  // non-member functions : class : matrix4<T>
+  // non-member functions : class : matrix4
   //============================================================================
 
   //----------------------------------------------------------------------------
   // Arithmetic Operators
   //----------------------------------------------------------------------------
 
-  template<typename T, typename U>
-  constexpr matrix4<std::common_type_t<T,U>>
-    operator+( const matrix4<T>& lhs, const matrix4<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr matrix4<std::common_type_t<T,U>>
-    operator-( const matrix4<T>& lhs, const matrix4<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr matrix4<std::common_type_t<T,U>>
-    operator*( const matrix4<T>& lhs, const matrix4<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr vector4
-    operator*( const vector4& lhs, const matrix4<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr matrix4<std::common_type_t<T,U>>
-    operator*( T lhs, const matrix4<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr matrix4<std::common_type_t<T,U>>
-    operator*( const matrix4<T>& lhs, U rhs ) noexcept;
+  matrix4 operator+( const matrix4& lhs,
+                     const matrix4& rhs ) noexcept;
+  matrix4 operator-( const matrix4& lhs,
+                     const matrix4& rhs ) noexcept;
+  matrix4 operator*( const matrix4& lhs,
+                     const matrix4& rhs ) noexcept;
+  vector4 operator*( const vector4& lhs,
+                     const matrix4& rhs ) noexcept;
+  matrix4 operator*( real lhs,
+                     const matrix4& rhs ) noexcept;
+  matrix4 operator*( const matrix4& lhs,
+                     real rhs ) noexcept;
 
   //----------------------------------------------------------------------------
   // Comparisons
   //----------------------------------------------------------------------------
 
-  template<typename T, typename U>
-  constexpr bool operator==( const matrix4<T>& lhs, const matrix4<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr bool operator!=( const matrix4<T>& lhs, const matrix4<U>& rhs ) noexcept;
+  constexpr bool operator==( const matrix4& lhs, const matrix4& rhs ) noexcept;
+  constexpr bool operator!=( const matrix4& lhs, const matrix4& rhs ) noexcept;
 
   //----------------------------------------------------------------------------
 
@@ -397,68 +336,23 @@ namespace alloy::core {
   /// \param lhs the left matrix4
   /// \param rhs the right matrix4
   /// \return \c true if the two matrix4 contain almost equal values
-  template<typename T, typename U>
-  constexpr bool almost_equal( const matrix4<T>& lhs,
-                               const matrix4<U>& rhs ) noexcept;
+  constexpr bool almost_equal( const matrix4& lhs,
+                               const matrix4& rhs ) noexcept;
 
   /// \brief Determines equality between two matrix4 relative to \ref tolerance
   ///
   /// \param lhs the left matrix4
   /// \param rhs the right matrix4
   /// \return \c true if the two matrix4 contain almost equal values
-  template<typename T, typename U, typename Arithmetic,
-           typename = std::enable_if_t<std::is_arithmetic<Arithmetic>::value>>
-  constexpr bool almost_equal( const matrix4<T>& lhs,
-                               const matrix4<U>& rhs,
-                               Arithmetic tolerance ) noexcept;
-
-  //============================================================================
-  // struct : matrix4_constants
-  //============================================================================
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief A collection of matrix4 constants
-  //////////////////////////////////////////////////////////////////////////////
-  template<typename T>
-  struct matrix4_constants
-  {
-    //--------------------------------------------------------------------------
-    // Public Member Types
-    //--------------------------------------------------------------------------
-
-    using matrix_type = matrix4<T>;
-
-    //--------------------------------------------------------------------------
-    // Public Constants
-    //--------------------------------------------------------------------------
-
-    static inline constexpr auto zero = matrix_type {
-      T{0}, T{0}, T{0}, T{0},
-      T{0}, T{0}, T{0}, T{0},
-      T{0}, T{0}, T{0}, T{0},
-      T{0}, T{0}, T{0}, T{0}
-    };
-    static inline constexpr auto identity = matrix_type {
-      T{1}, T{0}, T{0}, T{0},
-      T{0}, T{1}, T{0}, T{0},
-      T{0}, T{0}, T{1}, T{0},
-      T{0}, T{0}, T{0}, T{1}
-    };
-  };
+  constexpr bool almost_equal( const matrix4& lhs,
+                               const matrix4& rhs,
+                               real tolerance ) noexcept;
 
   //============================================================================
   // aliases
   //============================================================================
 
-  using matrix4f  = matrix4<float>;
-  using matrix4d  = matrix4<double>;
-  using matrix4ld = matrix4<long double>;
-  using matrix4r  = matrix4<real>;
-
-  using mat4f  = matrix4f;
-  using mat4d  = matrix4d;
-  using mat4ld = matrix4ld;
-  using mat4r  = matrix4r;
+  using mat4 = matrix4;
 
   //----------------------------------------------------------------------------
   // Type Traits
@@ -467,8 +361,11 @@ namespace alloy::core {
   /// \brief Trait to detect whether \p T is a \ref matrix4
   ///
   /// The result is aliased as \c ::value
-  template<typename T> struct is_matrix4 : std::false_type{};
-  template<typename T> struct is_matrix4<matrix4<T>> : std::true_type{};
+  template<typename T>
+  struct is_matrix4 : std::false_type{};
+
+  template<>
+  struct is_matrix4<matrix4> : std::true_type{};
 
   /// \brief Helper variable template to retrieve the result of \ref is_matrix4
   template<typename T>

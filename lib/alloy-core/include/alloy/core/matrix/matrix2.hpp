@@ -46,7 +46,7 @@
 namespace alloy::core {
 
   //============================================================================
-  // class : matrix2<T>
+  // class : matrix2
   //============================================================================
 
   //////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,6 @@ namespace alloy::core {
   /// The matrix is accessed in column-major format (e.g. mat[col][row]) as
   /// opposed to the native [row][col] way that C++ handles 2d arrays
   //////////////////////////////////////////////////////////////////////////////
-  template<typename T>
   class matrix2
   {
     //--------------------------------------------------------------------------
@@ -63,7 +62,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    using value_type      = T;
+    using value_type      = real;
     using pointer         = value_type*;
     using const_pointer   = const value_type*;
     using reference       = value_type&;
@@ -77,8 +76,8 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-  static inline constexpr auto rows    = size_type{2};
-  static inline constexpr auto columns = size_type{2};
+  static inline constexpr auto rows    = index_type{2};
+  static inline constexpr auto columns = index_type{2};
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -87,15 +86,15 @@ namespace alloy::core {
 
     /// \brief Default-constructs a matrix2.
     ///
-    /// A default constructs matrix2 has an undefined default value
-    constexpr matrix2() noexcept = default;
+    /// Default constructs a matrix2 with an empty matrix (0 values)
+    constexpr matrix2() noexcept;
 
     /// \brief Constructs a matrix2 from 2 row vectors
     ///
     /// This constructor is to allow a fluid interface for construction:
     /// \code
-    /// auto mat = matrix2<float> { { 1, 0 },
-    ///                             { 0, 1 } };
+    /// auto mat = matrix2{ vector2{ 1, 0 },
+    ///                     vector2{ 0, 1 } };
     /// \endcode
     ///
     /// \param v0 the first row vector
@@ -106,12 +105,12 @@ namespace alloy::core {
     /// \brief Constructs a matrix2 from an array of 4 entries
     ///
     /// \param array the 1-dimensional array
-    explicit constexpr matrix2( const value_type(&array)[4] ) noexcept;
+    explicit constexpr matrix2( const real(&array)[4] ) noexcept;
 
     /// \brief Constructs a matrix2 from a 2-dimensional array
     ///
     /// \param array the 2-dimensional array
-    explicit constexpr matrix2( const value_type(&array)[2][2] ) noexcept;
+    explicit constexpr matrix2( const real(&array)[2][2] ) noexcept;
 
     /// \brief Constructs a matrix2 from value entries
     ///
@@ -119,8 +118,8 @@ namespace alloy::core {
     /// \param m01 the entry at coordinate (0,1)
     /// \param m10 the entry at coordinate (1,0)
     /// \param m11 the entry at coordinate (1,1)
-    constexpr matrix2( value_type m00, value_type m01,
-                        value_type m10, value_type m11 ) noexcept;
+    constexpr matrix2( real m00, real m01,
+                       real m10, real m11 ) noexcept;
 
     /// \brief Copy-constructs a matrix2 from another matrix2
     ///
@@ -167,15 +166,13 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
 
     /// \{
-    /// \brief Retrieves the matrix entry at column \p c, and returns a
-    ///        proxy to that row
+    /// \brief Retrieves the matrix entry at column \p c and row \p r
     ///
+    /// \param r the row
     /// \param c the column
-    /// \return a proxy to the row
-    constexpr reference
-      operator()( index_type r, index_type c ) noexcept;
-    constexpr const_reference
-      operator()( index_type r, index_type c ) const noexcept;
+    /// \return reference to the entry
+    constexpr reference get( index_type r, index_type c ) noexcept;
+    constexpr const_reference get( index_type r, index_type c ) const noexcept;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -216,12 +213,12 @@ namespace alloy::core {
     /// Calculates the determinant for this matrix2
     ///
     /// \returns the determinant of this matrix
-    constexpr value_type determinant() const noexcept;
+    constexpr real determinant() const noexcept;
 
     /// Calculates the trace for this matrix2
     ///
     /// \returns the trace of this matrix
-    constexpr value_type trace() const noexcept;
+    constexpr real trace() const noexcept;
 
     /// \brief Computes the inverse of this matrix2
     ///
@@ -239,9 +236,7 @@ namespace alloy::core {
     ///
     /// \param vec the vector to combine
     /// \return the result of \c vec * matrix
-    template<typename U>
-    constexpr vector2
-      combine( const vector2& vec ) const noexcept;
+    constexpr vector2 combine( const vector2& vec ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -262,85 +257,57 @@ namespace alloy::core {
     ///        \c (*this)
     ///
     /// \return reference to \c (*this)
-    constexpr matrix2& transpose() noexcept;
+    matrix2& transpose() noexcept;
 
     //--------------------------------------------------------------------------
     // Compound Operators
     //--------------------------------------------------------------------------
   public:
 
-    template<typename U>
-    matrix2& operator+=( const matrix2<U>& rhs ) noexcept;
-    template<typename U>
-    matrix2& operator-=( const matrix2<U>& rhs ) noexcept;
-    template<typename U>
-    matrix2& operator*=( const matrix2<U>& rhs ) noexcept;
-    template<typename U>
-    matrix2& operator*=( U scalar ) noexcept;
-    template<typename U>
-    matrix2& operator/=( U scalar ) noexcept;
+    matrix2& operator+=( const matrix2& rhs ) noexcept;
+    matrix2& operator-=( const matrix2& rhs ) noexcept;
+    matrix2& operator*=( const matrix2& rhs ) noexcept;
+    matrix2& operator*=( real scalar ) noexcept;
+    matrix2& operator/=( real scalar ) noexcept;
 
     //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------
   private:
 
-    value_type m_matrix[rows][columns]; ///< Linear array that represents the matrix
-
-    //--------------------------------------------------------------------------
-    // Private Member Functions
-    //--------------------------------------------------------------------------
-  private:
-
-    /// \{
-    /// \brief Non-throwing matrix element access
-    ///
-    /// \param r the row
-    /// \param c the column
-    /// \return reference to the entry
-    constexpr reference get( index_type r, index_type c ) noexcept;
-    constexpr const_reference get( index_type r, index_type c ) const noexcept;
-    /// \}
+    real m_matrix[rows][columns]; ///< Linear array that represents the matrix
 
   };
 
   //============================================================================
-  // non-member functions : class : matrix2<T>
+  // non-member functions : class : matrix2
   //============================================================================
 
   //----------------------------------------------------------------------------
   // Arithmetic Operators
   //----------------------------------------------------------------------------
 
-  template<typename T, typename U>
-  constexpr matrix2<std::common_type_t<T,U>>
-    operator+( const matrix2<T>& lhs, const matrix2<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr matrix2<std::common_type_t<T,U>>
-    operator-( const matrix2<T>& lhs, const matrix2<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr matrix2<std::common_type_t<T,U>>
-    operator*( const matrix2<T>& lhs, const matrix2<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr vector2
-    operator*( const vector2& lhs, const matrix2<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr matrix2<std::common_type_t<T,U>>
-    operator*( T lhs, const matrix2<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr matrix2<std::common_type_t<T,U>>
-    operator*( const matrix2<T>& lhs, U rhs ) noexcept;
+  matrix2 operator+( const matrix2& lhs,
+                     const matrix2& rhs ) noexcept;
+  matrix2 operator-( const matrix2& lhs,
+                     const matrix2& rhs ) noexcept;
+  matrix2 operator*( const matrix2& lhs,
+                     const matrix2& rhs ) noexcept;
+  vector2 operator*( const vector2& lhs,
+                     const matrix2& rhs ) noexcept;
+  matrix2 operator*( real lhs,
+                     const matrix2& rhs ) noexcept;
+  matrix2 operator*( const matrix2& lhs,
+                     real rhs ) noexcept;
 
   //------------------------------------------------------------------------
   // Comparisons
   //------------------------------------------------------------------------
 
-  template<typename T, typename U>
-  constexpr bool operator==( const matrix2<T>& lhs,
-                             const matrix2<U>& rhs ) noexcept;
-  template<typename T, typename U>
-  constexpr bool operator!=( const matrix2<T>& lhs,
-                             const matrix2<U>& rhs ) noexcept;
+  constexpr bool operator==( const matrix2& lhs,
+                             const matrix2& rhs ) noexcept;
+  constexpr bool operator!=( const matrix2& lhs,
+                             const matrix2& rhs ) noexcept;
 
   //----------------------------------------------------------------------------
 
@@ -350,64 +317,23 @@ namespace alloy::core {
   /// \param lhs the left matrix2
   /// \param rhs the right matrix2
   /// \return \c true if the two matrix2 contain almost equal values
-  template<typename T, typename U>
-  constexpr bool almost_equal( const matrix2<T>& lhs,
-                               const matrix2<U>& rhs ) noexcept;
+  constexpr bool almost_equal( const matrix2& lhs,
+                               const matrix2& rhs ) noexcept;
 
   /// \brief Determines equality between two matrix2 relative to \ref tolerance
   ///
   /// \param lhs the left matrix2
   /// \param rhs the right matrix2
   /// \return \c true if the two matrix2 contain almost equal values
-  template<typename T, typename U, typename Arithmetic,
-            typename = std::enable_if_t<std::is_arithmetic<Arithmetic>::value>>
-  constexpr bool almost_equal( const matrix2<T>& lhs,
-                               const matrix2<U>& rhs,
-                               Arithmetic tolerance ) noexcept;
-
-  //============================================================================
-  // struct : matrix2_constants
-  //============================================================================
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief A collection of matrix2 constants
-  //////////////////////////////////////////////////////////////////////////////
-  template<typename T>
-  struct matrix2_constants
-  {
-    //--------------------------------------------------------------------------
-    // Public Member Types
-    //--------------------------------------------------------------------------
-
-    using matrix_type = matrix2<T>;
-
-    //--------------------------------------------------------------------------
-    // Public Constants
-    //--------------------------------------------------------------------------
-
-    static inline constexpr auto zero = matrix_type {
-      T{0}, T{0},
-      T{0}, T{0}
-    };
-    static inline constexpr auto identity = matrix_type {
-      T{1}, T{0},
-      T{0}, T{1},
-    };
-  };
+  constexpr bool almost_equal( const matrix2& lhs,
+                               const matrix2& rhs,
+                               real tolerance ) noexcept;
 
   //============================================================================
   // aliases
   //============================================================================
 
-  using matrix2f  = matrix2<float>;
-  using matrix2d  = matrix2<double>;
-  using matrix2ld = matrix2<long double>;
-  using matrix2r  = matrix2<real>;
-
-  using mat2f  = matrix2f;
-  using mat2d  = matrix2d;
-  using mat2ld = matrix2ld;
-  using mat2r  = matrix2r;
+  using mat2 = matrix2;
 
   //----------------------------------------------------------------------------
   // Type Traits
@@ -416,12 +342,16 @@ namespace alloy::core {
   /// \brief Trait to detect whether \p T is a \ref matrix2
   ///
   /// The result is aliased as \c ::value
-  template<typename T> struct is_matrix2 : std::false_type{};
-  template<typename T> struct is_matrix2<matrix2<T>> : std::true_type{};
+  template<typename T>
+  struct is_matrix2 : std::false_type{};
+
+  template<>
+  struct is_matrix2<matrix2> : std::true_type{};
 
   /// \brief Helper variable template to retrieve the result of \ref is_matrix2
   template<typename T>
   constexpr bool is_matrix2_v = is_matrix2<T>::value;
+
 } // namespace alloy::core
 
 #include "detail/matrix2.inl"
