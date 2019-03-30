@@ -47,6 +47,7 @@ set(header_files
   include/alloy/core/math/angle/degree.hpp
   include/alloy/core/math/angle/gradian.hpp
   include/alloy/core/math/angle/radian.hpp
+  include/alloy/core/math/euler_angles.hpp
   include/alloy/core/math/interpolation.hpp
   include/alloy/core/math/math_constants.hpp
   include/alloy/core/math/math.hpp
