@@ -161,9 +161,9 @@ namespace alloy::core {
   /// The result is aliased as \c ::value
   template<typename T> struct is_vector : std::false_type{};
 
-  template<typename T> struct is_vector<vector2> : std::true_type{};
-  template<typename T> struct is_vector<vector3> : std::true_type{};
-  template<typename T> struct is_vector<vector4> : std::true_type{};
+  template<> struct is_vector<vector2> : std::true_type{};
+  template<> struct is_vector<vector3> : std::true_type{};
+  template<> struct is_vector<vector4> : std::true_type{};
 
   /// \brief Convenience template variable to extract out
   ///        \c is_vector<T>::value
