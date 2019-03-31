@@ -463,6 +463,18 @@ inline constexpr bool
   return true;
 }
 
+inline constexpr bool
+  alloy::core::are_linearly_independent( const vector2& v1,
+                                         const vector2& v2 )
+  noexcept
+{
+  // linear-independence tested by checking if the determinant of a produced
+  // 2x2 matrix is non-zero
+
+  const auto determinant = v1.x() * v2.y() - v1.y() * v2.x();
+  return !almost_equal( real{0}, determinant );
+}
+
 //----------------------------------------------------------------------------
 // Quantifiers
 //----------------------------------------------------------------------------

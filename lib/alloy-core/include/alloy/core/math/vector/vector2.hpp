@@ -344,6 +344,16 @@ namespace alloy::core {
                                real tolerance ) noexcept;
 
   //----------------------------------------------------------------------------
+
+  /// \brief Determines if two vector2's are linearly independent
+  ///
+  /// \param v1 the first vector
+  /// \param v2 the second vector
+  /// \return \c true if the two vectors are linearly independent
+  constexpr bool are_linearly_independent( const vector2& v1,
+                                           const vector2& v2 ) noexcept;
+
+  //----------------------------------------------------------------------------
   // Quantifiers
   //----------------------------------------------------------------------------
 

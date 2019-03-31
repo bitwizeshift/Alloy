@@ -46,6 +46,10 @@
 
 namespace alloy::core {
 
+  //============================================================================
+  // class : vector3
+  //============================================================================
+
   //////////////////////////////////////////////////////////////////////////////
   /// \brief This object represents a 3-component vector in linear algebra.
   ///
@@ -344,6 +348,18 @@ namespace alloy::core {
   constexpr bool almost_equal( const vector3& lhs,
                                const vector3& rhs,
                                real tolerance ) noexcept;
+
+  //----------------------------------------------------------------------------
+
+  /// \brief Determines if two vector3's are linearly independent
+  ///
+  /// \param v1 the first vector
+  /// \param v2 the second vector
+  /// \param v3 the third vector
+  /// \return \c true if the three vectors are linearly independent
+  constexpr bool are_linearly_independent( const vector3& v1,
+                                           const vector3& v2,
+                                           const vector3& v3 ) noexcept;
 
   //----------------------------------------------------------------------------
   // Quantifiers

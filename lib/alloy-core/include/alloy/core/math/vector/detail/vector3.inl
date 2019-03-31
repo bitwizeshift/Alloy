@@ -489,6 +489,30 @@ inline constexpr bool alloy::core::almost_equal( const vector3& lhs,
 }
 
 //------------------------------------------------------------------------------
+
+inline constexpr bool
+  alloy::core::are_linearly_independent( const vector3& v1,
+                                         const vector3& v2,
+                                         const vector3& v3 )
+  noexcept
+{
+  // linear-independence tested by checking if the determinant of a produced
+  // 3x3 matrix is non-zero
+  const vector3 matrix[3] = {v1,v2,v3};
+
+  const auto determinant = (matrix[0][0] * matrix[1][1] * matrix[2][2]) -
+                           (matrix[0][0] * matrix[1][2] * matrix[2][1]) -
+                           (matrix[0][1] * matrix[1][0] * matrix[2][2]) +
+                           (matrix[0][1] * matrix[1][2] * matrix[2][0]) +
+                           (matrix[0][2] * matrix[1][0] * matrix[2][1]) -
+                           (matrix[0][2] * matrix[1][1] * matrix[2][0]);
+
+  return !almost_equal( real{0}, determinant );
+}
+
+
+
+//------------------------------------------------------------------------------
 // Quantifiers
 //------------------------------------------------------------------------------
 
