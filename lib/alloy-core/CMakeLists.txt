@@ -67,6 +67,9 @@ set(header_files
   include/alloy/core/math/vector/vector2.hpp
   include/alloy/core/math/vector/vector3.hpp
   include/alloy/core/math/vector/vector4.hpp
+
+  # Model
+  include/alloy/core/model/color.hpp
 )
 
 set(inline_header_files
@@ -92,9 +95,13 @@ set(inline_header_files
 )
 
 set(source_files
+  # Math
   src/alloy/core/math/simplex.cpp
   src/alloy/core/math/trigonometry.cpp
   src/alloy/core/math/quaternion.cpp
+
+  # Model
+  src/alloy/core/model/color.cpp
 )
 
 add_library(${PROJECT_NAME}Core
