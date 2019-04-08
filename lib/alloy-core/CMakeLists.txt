@@ -72,6 +72,7 @@ set(header_files
   include/alloy/core/math/vector/vector4.hpp
 
   # Geometry
+  include/alloy/core/geometry/line_segment.hpp
   include/alloy/core/geometry/plane.hpp
   include/alloy/core/geometry/point.hpp
   include/alloy/core/geometry/sphere.hpp
@@ -110,6 +111,7 @@ set(source_files
   src/alloy/core/math/quaternion.cpp
 
   # Geometry
+  src/alloy/core/geometry/line_segment.cpp
   src/alloy/core/geometry/plane.cpp
   src/alloy/core/geometry/ray.cpp
 
