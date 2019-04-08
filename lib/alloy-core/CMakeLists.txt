@@ -68,6 +68,9 @@ set(header_files
   include/alloy/core/math/vector/vector3.hpp
   include/alloy/core/math/vector/vector4.hpp
 
+  # Geometry
+  include/alloy/core/geometry/point.hpp
+
   # Model
   include/alloy/core/model/color.hpp
 )
