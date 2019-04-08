@@ -34,7 +34,8 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "alloy/core/precision.hpp"    // core::real
+#include "alloy/core/precision.hpp" // core::real
+#include "alloy/core/utilities/piecewise_compare.hpp" // core::piecewise_compare
 #include "alloy/core/math/angle/radian.hpp" // core::radian
 #include "alloy/core/math/trigonometry.hpp" // core::cos, core::sin, etc
 #include "alloy/core/math/math.hpp"         // core::sqrt
@@ -45,6 +46,10 @@
 #include <cassert>     // assert
 
 namespace alloy::core {
+
+  //============================================================================
+  // class : vector4
+  //============================================================================
 
   //////////////////////////////////////////////////////////////////////////////
   /// \brief This object represents a 4-component vector in linear algebra.
@@ -57,9 +62,9 @@ namespace alloy::core {
   //////////////////////////////////////////////////////////////////////////////
   class vector4
   {
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Public Types
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     using value_type      = real;
@@ -71,9 +76,9 @@ namespace alloy::core {
     using size_type  = std::size_t;
     using index_type = std::ptrdiff_t;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Constructors
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     /// \brief Default constructs a vector4 with 0 values
@@ -99,9 +104,9 @@ namespace alloy::core {
     /// \param other the other vector4 to move
     constexpr vector4( vector4&& other ) noexcept = default;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Assignment
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     /// \brief Copy-assigns \p other to \c this
@@ -116,9 +121,9 @@ namespace alloy::core {
     /// \return reference to \c (*this)
     vector4& operator=( vector4&& other ) = default;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Observers
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     /// \brief Gets the number of components in the vector4
@@ -166,9 +171,9 @@ namespace alloy::core {
     constexpr const_pointer data() const noexcept;
     /// \}
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Element Access
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     /// \{
@@ -191,9 +196,9 @@ namespace alloy::core {
     constexpr const_reference operator[]( index_type n ) const noexcept;
     /// \}
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Quantifiers
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     /// \brief Determines the dot-product of \c this and \p rhs
@@ -245,9 +250,9 @@ namespace alloy::core {
     /// \return the inverse of \c this vector4
     constexpr vector4 inverse() const noexcept;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Modifiers
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     /// \brief Normalizes this vector4 and returns a reference to \c (*this)
@@ -260,17 +265,17 @@ namespace alloy::core {
     /// \return the reference to \c (*this)
     constexpr vector4& invert() noexcept;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Unary Operators
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     constexpr const vector4& operator+() const noexcept;
     constexpr vector4 operator-() const noexcept;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Compound Operators
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     constexpr vector4& operator+=( const vector4& rhs ) noexcept;
@@ -278,9 +283,9 @@ namespace alloy::core {
     constexpr vector4& operator*=( real scalar ) noexcept;
     constexpr vector4& operator/=( real scalar ) noexcept;
 
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Private Members
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   private:
 
     value_type m_data[4]; ///< The storage data
@@ -305,9 +310,9 @@ namespace alloy::core {
   constexpr vector4 operator/( const vector4& lhs,
                                real scalar ) noexcept;
 
-  //------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
   // Comparisons
-  //------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   constexpr bool operator==( const vector4& lhs,
                              const vector4& rhs ) noexcept;
@@ -357,6 +362,17 @@ namespace alloy::core {
   /// \param vec the vector4 to calculate the magnitude from
   /// \return the magnitude
   real magnitude( const vector4& vec ) noexcept;
+
+  //============================================================================
+  // struct : piecewise_compare<vector4>
+  //============================================================================
+
+  template<>
+  struct piecewise_compare<vector4>
+  {
+    constexpr bool operator()( const vector4& lhs,
+                               const vector4& rhs ) noexcept;
+  };
 
   //============================================================================
   // trait : is_vector4

@@ -6,8 +6,13 @@
 #ifndef ALLOY_CORE_GEOMETRY_POINT_POINT_HPP
 #define ALLOY_CORE_GEOMETRY_POINT_POINT_HPP
 
-#include "alloy/core/assert.hpp"              // ALLOY_ASSERT
-#include "alloy/core/precision.hpp"           // core::real
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+# pragma once
+#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+
+#include "alloy/core/precision.hpp" // core::real
+#include "alloy/core/assert.hpp"    // ALLOY_ASSERT
+#include "alloy/core/utilities/piecewise_compare.hpp" // core::piecewise_compare
 #include "alloy/core/math/vector/vector3.hpp" // core::vector3
 #include "alloy/core/math/math.hpp"           // core::almost_equal
 
@@ -190,6 +195,17 @@ namespace alloy::core {
   /// \param p the point to convert
   /// \return the vector3
   constexpr vector3 to_vector( const point& p ) noexcept;
+
+  //============================================================================
+  // struct : piecewise_compare<point>
+  //============================================================================
+
+  template<>
+  struct piecewise_compare<point>
+  {
+    constexpr bool operator()( const point& lhs,
+                               const point& rhs ) noexcept;
+  };
 
 } // namespace alloy::core
 
@@ -404,6 +420,22 @@ inline constexpr alloy::core::vector3 alloy::core::to_vector( const point& p )
   noexcept
 {
   return {p.x(), p.y(), p.z()};
+}
+
+//==============================================================================
+// struct : piecewise_compare<point>
+//==============================================================================
+
+inline constexpr bool
+  alloy::core::piecewise_compare<alloy::core::point>
+  ::operator()( const point& lhs, const point& rhs )
+  noexcept
+{
+  return (lhs.x() == rhs.x()) ?
+           (lhs.y() == rhs.y()) ?
+             (lhs.z() < rhs.z()) :
+           (lhs.y() < rhs.y()) :
+         (lhs.x() < rhs.x());
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_POINT_POINT_HPP */

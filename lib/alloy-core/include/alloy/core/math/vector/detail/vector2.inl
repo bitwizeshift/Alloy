@@ -500,4 +500,18 @@ inline alloy::core::real
   return vec.magnitude();
 }
 
+//==============================================================================
+// struct : piecewise_compare<vector2>
+//==============================================================================
+
+inline constexpr bool
+  alloy::core::piecewise_compare<alloy::core::vector2>
+  ::operator()( const vector2& lhs, const vector2& rhs )
+  noexcept
+{
+  return (lhs.x() == rhs.x()) ?
+           (lhs.y() < rhs.y()) :
+         (lhs.x() < rhs.x());
+}
+
 #endif /* ALLOY_CORE_MATH_VECTOR_DETAIL_VECTOR2_INL */

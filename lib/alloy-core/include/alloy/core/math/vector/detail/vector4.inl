@@ -483,4 +483,22 @@ inline alloy::core::real
   return vec.magnitude();
 }
 
+//==============================================================================
+// struct : piecewise_compare<vector4>
+//==============================================================================
+
+inline constexpr bool
+  alloy::core::piecewise_compare<alloy::core::vector4>
+  ::operator()( const vector4& lhs, const vector4& rhs )
+  noexcept
+{
+  return (lhs.x() == rhs.x()) ?
+           (lhs.y() == rhs.y()) ?
+             (lhs.z() == rhs.z()) ?
+               (lhs.w() < rhs.w()) :
+             (lhs.z() < rhs.z()) :
+           (lhs.y() < rhs.y()) :
+         (lhs.x() < rhs.x());
+}
+
 #endif /* ALLOY_CORE_MATH_DETAIL_VECTOR_VECTOR4_INL */

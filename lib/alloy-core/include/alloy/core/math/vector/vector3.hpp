@@ -34,7 +34,8 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "alloy/core/precision.hpp"         // core::real
+#include "alloy/core/precision.hpp" // core::real
+#include "alloy/core/utilities/piecewise_compare.hpp" // core::piecewise_compare
 #include "alloy/core/math/angle/radian.hpp" // core::radian
 #include "alloy/core/math/trigonometry.hpp" // core::cos, core::sin, etc
 #include "alloy/core/math/math.hpp"         // core::sqrt
@@ -384,6 +385,17 @@ namespace alloy::core {
   /// \param vec the vector3 to calculate the magnitude from
   /// \return the magnitude
   core::real magnitude( const vector3& vec ) noexcept;
+
+  //============================================================================
+  // struct : piecewise_compare<vector3>
+  //============================================================================
+
+  template<>
+  struct piecewise_compare<vector3>
+  {
+    constexpr bool operator()( const vector3& lhs,
+                               const vector3& rhs ) noexcept;
+  };
 
   //============================================================================
   // trait : is_vector3

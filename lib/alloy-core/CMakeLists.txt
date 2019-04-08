@@ -41,6 +41,9 @@ set(header_files
   include/alloy/core/precision/half.hpp
   include/alloy/core/precision/real.hpp
 
+  # Utilities
+  include/alloy/core/utilities/piecewise_compare.hpp
+
   # Math
   include/alloy/core/math/angle.hpp
   include/alloy/core/math/angle/basic_angle.hpp
