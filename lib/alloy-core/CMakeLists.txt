@@ -74,6 +74,7 @@ set(header_files
   # Geometry
   include/alloy/core/geometry/point.hpp
   include/alloy/core/geometry/sphere.hpp
+  include/alloy/core/geometry/ray.hpp
 
   # Model
   include/alloy/core/model/color.hpp
@@ -106,6 +107,9 @@ set(source_files
   src/alloy/core/math/simplex.cpp
   src/alloy/core/math/trigonometry.cpp
   src/alloy/core/math/quaternion.cpp
+
+  # Geometry
+  src/alloy/core/geometry/ray.cpp
 
   # Model
   src/alloy/core/model/color.cpp
