@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/assert.hpp"    // ALLOY_ASSERT
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/math/math.hpp" // core::almost_equal
 #include "alloy/core/geometry/point.hpp"// core::point
@@ -67,7 +68,7 @@ namespace alloy::core {
     ///
     /// \param center the center point
     /// \param radius the radius of the sphere
-    constexpr sphere( const point& center, real radius ) noexcept;
+    sphere( const point& center, real radius ) noexcept;
 
     /// \brief Constructs a sphere by moving an existing instance
     ///
@@ -165,13 +166,12 @@ inline constexpr alloy::core::sphere::sphere()
 
 }
 
-inline constexpr alloy::core::sphere::sphere( const point& center,
-                                              real radius )
+inline alloy::core::sphere::sphere( const point& center, real radius )
   noexcept
   : m_center{center},
     m_radius{radius}
 {
-
+  ALLOY_ASSERT( radius >= 0, "radius must be positive" );
 }
 
 //------------------------------------------------------------------------------
