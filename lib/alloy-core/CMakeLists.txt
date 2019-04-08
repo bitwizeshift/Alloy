@@ -73,6 +73,7 @@ set(header_files
 
   # Geometry
   include/alloy/core/geometry/point.hpp
+  include/alloy/core/geometry/sphere.hpp
 
   # Model
   include/alloy/core/model/color.hpp
