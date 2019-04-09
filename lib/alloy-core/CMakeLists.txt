@@ -3,7 +3,7 @@
 ##############################################################################
 
 # read license, indent each line by 2 spaces
-file(READ "${PROJECT_SOURCE_DIR}/LICENSE.txt" license_text)
+file(READ "${PROJECT_SOURCE_DIR}/LICENSE" license_text)
 string(REPLACE "\n" "\n  " LICENSE_TEXT "  ${license_text}")
 
 # Generate Files
