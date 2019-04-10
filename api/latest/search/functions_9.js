@@ -1,0 +1,5 @@
+var searchData=
+[
+  ['line_5fsegment',['line_segment',['../d3/d3a/classalloy_1_1core_1_1line__segment.html#abeca617d60f1a791b23ef5a6c0189986',1,'alloy::core::line_segment::line_segment() noexcept'],['../d3/d3a/classalloy_1_1core_1_1line__segment.html#ae47fd8107906da8de4a7ffcba456557e',1,'alloy::core::line_segment::line_segment(const point &amp;p0, const point &amp;p1) noexcept'],['../d3/d3a/classalloy_1_1core_1_1line__segment.html#a833ec021cc5426f8547c87fdec5b7133',1,'alloy::core::line_segment::line_segment(const point &amp;origin, const vector3 &amp;distance) noexcept'],['../d3/d3a/classalloy_1_1core_1_1line__segment.html#af94eb10645835b928f05aeb18a390942',1,'alloy::core::line_segment::line_segment(line_segment &amp;&amp;other) noexcept=default'],['../d3/d3a/classalloy_1_1core_1_1line__segment.html#a7db5b0ca2fffe2e769888e2f01093c1c',1,'alloy::core::line_segment::line_segment(const line_segment &amp;other) noexcept=default']]],
+  ['linear',['linear',['../db/d92/structalloy_1_1core_1_1interpolation.html#ac822799624d59ea69080a26b53adf08d',1,'alloy::core::interpolation']]]
+];
