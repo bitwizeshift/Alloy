@@ -5,7 +5,7 @@
 This development kit is licensed under the [MIT License](../LICENSE),
 which is an open-source initiative approved license.
 
-Under this license, you may use `alloy` for any purpose you wish
+Under this license, you may use **Alloy** for any purpose you wish
 _WITHOUT ANY WARRANTY_, and modify it as you see fit -- subject to the one
 condition:
 
@@ -14,19 +14,19 @@ condition:
 
 ## Simplified
 
-In non legal terms, this means that whenever an application built with `alloy` is
+In non legal terms, this means that whenever an application built with **Alloy** is
 distributed -- either as source code, or as a binary package, the
 [license text](../LICENSE) must also accompany the distribution in some form.
 This may be in the form of a printed documentation, a digital list of
 credits distributed with the application, or even as acknowledgement
 from within the application itself (e.g. in credits, 'about', etc).
 
-Similarly, if the the `alloy` project is used as the basis to a new engine,
+Similarly, if the the **Alloy** project is used as the basis to a new engine,
 attribution must be made for any substantially copied portions (algorithms,
 designs, etc.).
 
 ## Endorsement
 
-At no point is `alloy` or any of its contributors to be misrepresented as
+At no point is **Alloy** or any of its contributors to be misrepresented as
 endorsing a project that uses this engine without prior written
 acknowledgement from the maintainers.

@@ -20,24 +20,67 @@ have come before it, the complete list can be seen
 
 ## Table of Contents
 
-* Consumers
-  * [Features](#features) \
-    A summary of all existing features for the Alloy engine
-  * [**Alloy** API Reference](https://bitwizeshift.github.io/alloy/api/latest/manual.html) \
-    For doxygen-generated API information
-  * [**Alloy** Tutorials](https://bitwizeshift.github.io/alloy/api/latest/tutorials.html) \
-    For tutorials on how to use `alloy`
-  * [Legal](doc/legal.md) \
-    Information about how to attribute this project
-* Contributors
-  * [Building the **Alloy** library](doc/building.md) \
-    Detailed instructions for how to build the `alloy` library
-  * [Contributing Guidelines](.github/CONTRIBUTING.md) \
-    Guidelines that must be followed in order to contribute to the project
+* [Features](#features) \
+  A summary of all existing features for the Alloy engine
+* [Components](#components) \
+  A brief summary of all components in **Alloy**
+* [API Reference](https://bitwizeshift.github.io/alloy/api/latest/manual.html) \
+  For doxygen-generated API information
+* [Tutorials](https://bitwizeshift.github.io/alloy/api/latest/tutorials.html) \
+  For tutorials on how to use `alloy`
+* [Legal](doc/legal.md) \
+  Information about how to attribute this project
+* [How to build](doc/building.md) \
+  Detailed instructions for how to build the `alloy` library
+* [Design Goals](doc/design-goals.md) \
+  The design goals of this library
+* [Contributing Guidelines](.github/CONTRIBUTING.md) \
+  Guidelines that must be followed in order to contribute to the project
 
-## Features
+## <a name="features"></a>Features
 
-TODO
+* [x] Written with Modern C++ (C++17)
+  * [x] Supports for `constexpr` wherever possible
+* [x] Designed using componentized architecture (easier reuse)
+* [x] Strong focus on readability and design
+* [ ] Supports multiple render systems _(in progress)_
+  * [ ] OpenGL
+  * [ ] DirectX
+  * [ ] Vulkan
+* [ ] Supports multiple audio systems _(in progress)_
+  * [ ] OpenAL
+  * [ ] FMOD
+* [ ] Handles intersections of geometric objects
+* [ ] Easily build scene graphs and skeletons
+* [ ] Manages game objects using entity-component system
+
+## <a name="components"></a>Components
+
+**Alloy** is designed using component-based architecture in order to promote
+better logical design and reusability through code-sharing.
+
+The library and application components are detailed below:
+
+### Libraries
+
+* [`Alloy::Core`](lib/alloy-core/README.md) \
+  The core library that the rest of **Alloy** is built off of
+* [`Alloy::IO`](lib/alloy-io/README.md) \
+  The library for managing all IO tasks (filesystem, network, etc)
+* [`Alloy::Render`](lib/alloy-render/README.md) \
+  The library for managing rendering tasks, and abstracting the
+  underlying rendering system (DX, OpenGL, etc)
+* [`Alloy::Audio`](lib/alloy-audio/README.md) \
+  The library for managing the audio tasks, and abstracting the
+  underlying mixing system (FMOD, OpenAL, etc)
+* [`Alloy::Engine`](lib/alloy-engine/README.md) \
+  The library for managing all engine details, including subsystem
+  initialization & coordination, entity-component management,
+  resource management, etc.
+
+### Applications
+
+TODO detail applications
 
 ## <a name="inspirations"></a>Inspirations
 
