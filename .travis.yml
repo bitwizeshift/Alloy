@@ -1,0 +1,182 @@
+################################################################################
+# Travis-CI
+# ---------
+# Pipeline: Build -> Test -> Validate -> Deploy
+#
+# Build: Builds the project
+# Test: Runs unit tests
+# Validate: Runs sanitizers
+# Deploy: Publishes documentation and binary
+################################################################################
+
+# Setup
+################################################################################
+
+# Enable C++
+language: cpp
+
+dist: trusty
+sudo: required
+group: edge
+addons:
+  apt:
+    packages:
+      - "python3"
+      - "python3-pip"
+
+branches:
+  except:
+    - prototype/.*
+    - gh-pages
+
+# Set python version to 3.6
+python:
+  - "3.6"
+
+# Agents
+################################################################################
+
+osx_agent: &osx_agent
+  os: osx
+  osx_image: xcode10
+  language: generic
+  compiler: clang
+  env:
+    - CC=clang
+    - CXX=clang++
+
+linux_gcc_agent: &linux_gcc_agent
+  os: linux
+  compiler: gcc
+  env:
+    - CC=gcc-8
+    - CXX=g++-8
+  addons:
+    apt:
+      sources: ['ubuntu-toolchain-r-test']
+      packages: ['g++-8', 'ninja-build']
+
+linux_clang_agent: &linux_clang_agent
+  os: linux
+  compiler: clang
+  env:
+    - CC=clang-6.0
+    - CXX=clang++-6.0
+  addons:
+    apt:
+      sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+      packages: ['g++-6', 'clang-6.0', 'ninja-build']
+
+# Stages
+################################################################################
+
+stages:
+  - build
+  - unit-test
+  - validate
+  - deploy
+
+# Jobs
+################################################################################
+
+jobs:
+  include:
+    # Build
+    ############################################################################
+
+    - <<: *linux_gcc_agent
+      stage: build
+      name: "Build (linux-g++-8)"
+      script: ./.travis/build.sh
+
+    - <<: *linux_clang_agent
+      stage: build
+      name: "Build (linux-clang++-6.0)"
+      script: ./.travis/build.sh
+
+    - <<: *osx_agent
+      stage: build
+      name: "Build (macos-xcode10-clang)"
+      script: ./.travis/build.sh
+
+    # Test
+    ############################################################################
+
+    - <<: *linux_gcc_agent
+      stage: test
+      name: "Unit Test (linux-g++-8)"
+      script: ./.travis/test.sh
+
+    - <<: *linux_clang_agent
+      stage: test
+      name: "Unit Test (linux-clang++-6.0)"
+      script: ./.travis/test.sh
+
+    - <<: *osx_agent
+      stage: test
+      name: "Unit Test (macos-xcode10-clang)"
+      script: ./.travis/test.sh
+
+    # Validate
+    ############################################################################
+
+    - <<: *linux_clang_agent
+      stage: validate
+      name: "Thread Sanitizer (linux-clang++-6.0)"
+      script: ./.travis/validate.sh
+
+    - <<: *linux_clang_agent
+      stage: validate
+      name: "Address Sanitizer (linux-clang++-6.0)"
+      script: ./.travis/validate.sh
+
+    - <<: *linux_clang_agent
+      stage: validate
+      name: "Memory Sanitizer (linux-clang++-6.0)"
+      script: ./.travis/validate.sh
+
+    # Deploy
+    ############################################################################
+
+    - <<: *linux_gcc_agent
+      stage: deploy
+      name: "Deploy (doxygen)"
+      if: (tag =~ ^v) AND (branch = master) AND (type = push)
+      script: ./.travis/deploy-doxygen.sh
+
+
+    - <<: *linux_gcc_agent
+      stage: deploy
+      name: "Deploy (linux-g++-8)"
+      if: (tag =~ ^v) AND (branch = master) AND (type = push)
+      script: ./.travis/deploy-conan.sh
+
+    - <<: *linux_clang_agent
+      stage: deploy
+      name: "Deploy (linux-clang++-6.0)"
+      if: (tag =~ ^v) AND (branch = master) AND (type = push)
+      script: ./.travis/deploy-conan.sh
+
+    - <<: *osx_agent
+      stage: deploy
+      name: "Deploy (macos-xcode10-clang)"
+      if: (tag =~ ^v) AND (branch = master) AND (type = push)
+      script: ./.travis/deploy-conan.sh
+
+before_install:
+  - ./.travis/before-install.sh
+
+install:
+  - ./.travis/install.sh
+
+before_script:
+  - export CC=${C_COMPILER}
+  - export CXX=${CXX_COMPILER}
+
+  # Dump settings
+  - uname -a
+  - $CXX --version
+  - cmake --version
+  - ninja --version
+  - python3 --version
+  - conan --version
