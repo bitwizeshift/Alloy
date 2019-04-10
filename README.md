@@ -1,3 +1,5 @@
+![Alloy Engine](doc/src/images/alloy-logo.png)
+
 [![Release](https://img.shields.io/github/release/bitwizeshift/alloy.svg)](https://github.com/bitwizeshift/alloy/releases/latest)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/bitwizeshift/alloy/master/LICENSE)
 [![Github Issues](https://img.shields.io/github/issues/bitwizeshift/alloy.svg)](http://github.com/bitwizeshift/alloy/issues)
