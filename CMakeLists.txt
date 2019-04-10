@@ -101,7 +101,7 @@ endif ()
 
 add_subdirectory("lib/alloy-core")
 add_subdirectory("lib/alloy-io")
-add_subdirectory("lib/alloy-graphics")
+add_subdirectory("lib/alloy-render")
 add_subdirectory("lib/alloy-audio")
 add_subdirectory("lib/alloy-engine")
 
@@ -111,7 +111,7 @@ add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME}
   INTERFACE Alloy::Core
 # INTERFACE Alloy::IO
-# INTERFACE Alloy::Graphics
+# INTERFACE Alloy::Render
 # INTERFACE Alloy::Audio
 # INTERFACE Alloy::Engine
 )
