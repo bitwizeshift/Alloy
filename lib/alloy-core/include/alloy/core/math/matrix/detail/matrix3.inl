@@ -282,7 +282,7 @@ inline alloy::core::matrix3&
   return (*this);
 }
 
-alloy::core::matrix3&
+inline alloy::core::matrix3&
   alloy::core::matrix3::operator-=( const matrix3& rhs )
   noexcept
 {
@@ -294,7 +294,7 @@ alloy::core::matrix3&
   return (*this);
 }
 
-alloy::core::matrix3&
+inline alloy::core::matrix3&
   alloy::core::matrix3::operator*=( const matrix3& rhs )
   noexcept
 {
@@ -318,7 +318,7 @@ alloy::core::matrix3&
   return (*this);
 }
 
-alloy::core::matrix3&
+inline alloy::core::matrix3&
   alloy::core::matrix3::operator*=( real scalar )
   noexcept
 {
@@ -330,7 +330,7 @@ alloy::core::matrix3&
   return (*this);
 }
 
-alloy::core::matrix3&
+inline alloy::core::matrix3&
   alloy::core::matrix3::operator/=( real scalar )
   noexcept
 {
