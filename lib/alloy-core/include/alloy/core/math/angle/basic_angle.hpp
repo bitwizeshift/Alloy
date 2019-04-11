@@ -34,7 +34,8 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "alloy/core/precision.hpp"
+#include "alloy/core/precision.hpp" // core::real
+#include "alloy/core/math/math.hpp" // core::almost_equal
 
 #include <cmath>       // std::fmod
 #include <type_traits> // std::true_type / std::false_type
