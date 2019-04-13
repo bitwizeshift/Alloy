@@ -6,11 +6,11 @@ Script for generating doxygen output
 def root_path():
   import os
 
-  root_path = os.path.realpath(__file__) # ./tools/run-doxygen.py
-  root_path = os.path.dirname(root_path) # ./tools/
-  root_path = os.path.dirname(root_path) # ./
+  path = os.path.realpath(__file__) # ./tools/run-doxygen.py
+  path = os.path.dirname(path)      # ./tools/
+  path = os.path.dirname(path)      # ./
 
-  return root_path
+  return path
 
 
 if __name__ == "__main__":

@@ -3,14 +3,14 @@
 Script for running clang-format locally
 """
 
-def _root_path():
+def root_path():
   import os
 
-  root_path = os.path.realpath(__file__) # ./tools/run-clang-format.py
-  root_path = os.path.dirname(root_path) # ./tools/
-  root_path = os.path.dirname(root_path) # ./
+  path = os.path.realpath(__file__) # ./tools/run-clang-format.py
+  path = os.path.dirname(path)      # ./tools/
+  path = os.path.dirname(path)      # ./
 
-  return root_path
+  return path
 
 
 if __name__ == "__main__":
@@ -18,7 +18,7 @@ if __name__ == "__main__":
   import glob
   import subprocess
 
-  ROOT_PATH = _root_path()
+  ROOT_PATH = root_path()
 
   files = []
   files.extend(glob.glob("include/**/*.hpp",recursive=True))
