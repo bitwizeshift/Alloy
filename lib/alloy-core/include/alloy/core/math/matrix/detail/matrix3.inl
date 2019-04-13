@@ -18,9 +18,9 @@ inline constexpr alloy::core::matrix3
   ::matrix3()
   noexcept
   : m_matrix {
-    real{0}, real{0}, real{0},
-    real{0}, real{0}, real{0},
-    real{0}, real{0}, real{0}
+    {real{0}, real{0}, real{0}},
+    {real{0}, real{0}, real{0}},
+    {real{0}, real{0}, real{0}}
   }
 {
 
@@ -30,9 +30,9 @@ inline constexpr alloy::core::matrix3
   ::matrix3( const vector3& v0, const vector3& v1, const vector3& v2 )
   noexcept
   : m_matrix {
-      v0.x(), v0.y(), v0.z(),
-      v1.x(), v1.y(), v1.z(),
-      v2.x(), v2.y(), v2.z()
+      {v0.x(), v0.y(), v0.z()},
+      {v1.x(), v1.y(), v1.z()},
+      {v2.x(), v2.y(), v2.z()}
     }
 {
 
@@ -42,9 +42,9 @@ inline constexpr alloy::core::matrix3
   ::matrix3( const real(&array)[9] )
   noexcept
   : m_matrix {
-      array[0], array[1], array[2],
-      array[3], array[4], array[5],
-      array[6], array[7], array[8]
+      {array[0], array[1], array[2]},
+      {array[3], array[4], array[5]},
+      {array[6], array[7], array[8]}
     }
 {
 
@@ -54,9 +54,9 @@ inline constexpr alloy::core::matrix3
   ::matrix3( const real(&array)[3][3] )
   noexcept
   : m_matrix {
-      array[0][0], array[0][1], array[0][2],
-      array[1][0], array[1][1], array[1][2],
-      array[2][0], array[2][1], array[2][2]
+      {array[0][0], array[0][1], array[0][2]},
+      {array[1][0], array[1][1], array[1][2]},
+      {array[2][0], array[2][1], array[2][2]}
     }
 {
 
@@ -68,9 +68,9 @@ inline constexpr alloy::core::matrix3
              real m20, real m21, real m22 )
   noexcept
   : m_matrix {
-      m00, m01, m02,
-      m10, m11, m12,
-      m20, m21, m22
+      {m00, m01, m02},
+      {m10, m11, m12},
+      {m20, m21, m22}
     }
 {
 
@@ -160,7 +160,7 @@ inline constexpr typename alloy::core::matrix3::const_pointer
 // Quantifiers
 //------------------------------------------------------------------------------
 
-inline constexpr typename alloy::core::real
+inline constexpr alloy::core::real
   alloy::core::matrix3::determinant()
   const noexcept
 {
@@ -172,7 +172,7 @@ inline constexpr typename alloy::core::real
          (get(0,2)*get(1,1)*get(2,0));
 }
 
-inline constexpr typename alloy::core::real
+inline constexpr alloy::core::real
   alloy::core::matrix3::trace()
   const noexcept
 {
@@ -242,7 +242,7 @@ constexpr alloy::core::vector3
 // Modifiers
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::matrix3&
+inline alloy::core::matrix3&
   alloy::core::matrix3::invert()
   noexcept
 {
@@ -250,7 +250,7 @@ inline constexpr alloy::core::matrix3&
   return (*this);
 }
 
-inline constexpr alloy::core::matrix3&
+inline alloy::core::matrix3&
   alloy::core::matrix3::transpose()
   noexcept
 {

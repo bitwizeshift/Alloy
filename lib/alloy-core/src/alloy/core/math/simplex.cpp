@@ -54,14 +54,14 @@ namespace {
     return a[0]*x + a[1]*y;
   }
 
-  constexpr alloy::core::real dot3( const int* a,
-                                    alloy::core::real x,
-                                    alloy::core::real y,
-                                    alloy::core::real z )
-    noexcept
-  {
-    return a[0]*x + a[1]*y + a[2]*z;
-  }
+  // constexpr alloy::core::real dot3( const int* a,
+  //                                   alloy::core::real x,
+  //                                   alloy::core::real y,
+  //                                   alloy::core::real z )
+  //   noexcept
+  // {
+  //   return a[0]*x + a[1]*y + a[2]*z;
+  // }
 
   constexpr int floor_f_to_i( alloy::core::real x )
     noexcept

@@ -251,7 +251,7 @@ namespace alloy::core {
     /// is left unmodified
     ///
     /// \return reference to \c (*this)
-    constexpr matrix2& invert() noexcept;
+    matrix2& invert() noexcept;
 
     /// \brief Transposes this current matrix2, returning a reference to
     ///        \c (*this)

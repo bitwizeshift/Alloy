@@ -17,8 +17,8 @@ inline constexpr alloy::core::matrix2
   ::matrix2()
   noexcept
   : m_matrix {
-      real{0}, real{0},
-      real{0}, real{0}
+      {real{0}, real{0}},
+      {real{0}, real{0}}
     }
 {
 
@@ -28,8 +28,8 @@ inline constexpr alloy::core::matrix2
   ::matrix2( const vector2& v0, const vector2& v1 )
   noexcept
   : m_matrix {
-      v0.x(), v0.y(),
-      v1.x(), v1.y()
+      {v0.x(), v0.y()},
+      {v1.x(), v1.y()}
     }
 {
 
@@ -39,8 +39,8 @@ inline constexpr alloy::core::matrix2
   ::matrix2( const real(&array)[4] )
   noexcept
   : m_matrix {
-      array[0], array[1],
-      array[2], array[3]
+      {array[0], array[1]},
+      {array[2], array[3]}
     }
 {
 
@@ -50,8 +50,8 @@ inline constexpr alloy::core::matrix2
   ::matrix2( const real(&array)[2][2] )
   noexcept
   : m_matrix {
-      array[0][0], array[0][1],
-      array[1][0], array[1][1]
+      {array[0][0], array[0][1]},
+      {array[1][0], array[1][1]}
     }
 {
 
@@ -62,8 +62,8 @@ inline constexpr alloy::core::matrix2
              real m10, real m11 )
   noexcept
   : m_matrix {
-      m00, m01,
-      m10, m11
+      {m00, m01},
+      {m10, m11}
     }
 {
 
@@ -216,7 +216,7 @@ constexpr alloy::core::vector2
 // Modifiers
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::matrix2&
+inline alloy::core::matrix2&
   alloy::core::matrix2::invert()
   noexcept
 {

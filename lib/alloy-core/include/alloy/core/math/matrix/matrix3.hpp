@@ -257,13 +257,13 @@ namespace alloy::core {
     /// is left unmodified
     ///
     /// \return reference to \c (*this)
-    constexpr matrix3& invert() noexcept;
+    matrix3& invert() noexcept;
 
     /// \brief Transposes this current matrix3, returning a reference to
     ///        \c (*this)
     ///
     /// \return reference to \c (*this)
-    constexpr matrix3& transpose() noexcept;
+    matrix3& transpose() noexcept;
 
     //--------------------------------------------------------------------------
     // Compound Operators

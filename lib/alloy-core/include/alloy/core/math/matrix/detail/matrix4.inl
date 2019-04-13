@@ -17,10 +17,10 @@ inline constexpr alloy::core::matrix4
   ::matrix4()
   noexcept
   : m_matrix{
-    real{0}, real{0}, real{0}, real{0},
-    real{0}, real{0}, real{0}, real{0},
-    real{0}, real{0}, real{0}, real{0},
-    real{0}, real{0}, real{0}, real{0}
+    {real{0}, real{0}, real{0}, real{0}},
+    {real{0}, real{0}, real{0}, real{0}},
+    {real{0}, real{0}, real{0}, real{0}},
+    {real{0}, real{0}, real{0}, real{0}}
   }
 {
 
@@ -33,10 +33,10 @@ inline constexpr alloy::core::matrix4
              const vector4& v3 )
   noexcept
   : m_matrix{
-      v0.x(), v0.y(), v0.z(), v0.w(),
-      v1.x(), v1.y(), v1.z(), v1.w(),
-      v2.x(), v2.y(), v2.z(), v2.w(),
-      v3.x(), v3.y(), v3.z(), v3.w()
+      {v0.x(), v0.y(), v0.z(), v0.w()},
+      {v1.x(), v1.y(), v1.z(), v1.w()},
+      {v2.x(), v2.y(), v2.z(), v2.w()},
+      {v3.x(), v3.y(), v3.z(), v3.w()}
     }
 {
 
@@ -46,10 +46,10 @@ inline constexpr alloy::core::matrix4
   ::matrix4( const real(&array)[16] )
   noexcept
   : m_matrix {
-      array[0],  array[1],  array[2],  array[3],
-      array[4],  array[5],  array[6],  array[7],
-      array[8],  array[9],  array[10], array[11],
-      array[12], array[13], array[14], array[15]
+      {array[0],  array[1],  array[2],  array[3]},
+      {array[4],  array[5],  array[6],  array[7]},
+      {array[8],  array[9],  array[10], array[11]},
+      {array[12], array[13], array[14], array[15]}
     }
 {
 
@@ -59,10 +59,10 @@ inline constexpr alloy::core::matrix4
   ::matrix4( const real(&array)[4][4] )
   noexcept
   : m_matrix {
-      array[0][0], array[0][1], array[0][2], array[0][3],
-      array[1][0], array[1][1], array[1][2], array[1][3],
-      array[2][0], array[2][1], array[2][2], array[2][3],
-      array[3][0], array[3][1], array[3][2], array[3][3]
+      {array[0][0], array[0][1], array[0][2], array[0][3]},
+      {array[1][0], array[1][1], array[1][2], array[1][3]},
+      {array[2][0], array[2][1], array[2][2], array[2][3]},
+      {array[3][0], array[3][1], array[3][2], array[3][3]}
     }
 {
 
@@ -75,10 +75,10 @@ inline constexpr alloy::core::matrix4
              real m30, real m31, real m32, real m33 )
   noexcept
   : m_matrix {
-      m00, m01, m02, m03,
-      m10, m11, m12, m13,
-      m20, m21, m23, m23,
-      m30, m31, m32, m33
+      {m00, m01, m02, m03},
+      {m10, m11, m12, m13},
+      {m20, m21, m23, m23},
+      {m30, m31, m32, m33}
     }
 {
 
@@ -250,7 +250,7 @@ constexpr alloy::core::vector4
 // Modifiers
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::matrix4&
+inline alloy::core::matrix4&
   alloy::core::matrix4::invert()
   noexcept
 {
@@ -396,7 +396,7 @@ inline constexpr alloy::core::matrix4&
   return (*this);
 }
 
-inline constexpr alloy::core::matrix4&
+inline alloy::core::matrix4&
   alloy::core::matrix4::transpose()
   noexcept
 {
