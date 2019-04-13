@@ -41,6 +41,7 @@
 
 #include <type_traits> // std::common_type, std::conditional_t, etc
 #include <cstddef>     // std::size_t
+#include <cmath>       // std::fmod
 
 namespace alloy::core {
 
@@ -63,7 +64,7 @@ namespace alloy::core {
   //===========================================================================
 
   /// The tolerance to use for floating-point equality
-  inline constexpr core::real default_tolerance = real{1e-6};
+  inline constexpr auto default_tolerance = real{1e-6};
 
   //===========================================================================
   // non-member functions
@@ -121,8 +122,7 @@ namespace alloy::core {
   /// \param num the numerator
   /// \param den the denominator
   /// \return the modulo of \p num and \p den
-  template<typename T, typename U>
-  std::common_type_t<T,U> mod( T num, U den ) noexcept;
+  real mod( real num, real den ) noexcept;
 
   //---------------------------------------------------------------------------
   // Roots
@@ -196,16 +196,13 @@ namespace alloy::core {
   /// \param max the max value
   /// \param min the min value
   /// \return the clamped value
-  template<typename T, typename U, typename V>
-  constexpr std::common_type_t<T,U,V>
-    clamp( T val, U max, V min ) noexcept;
+  constexpr real clamp( real val, real max, real min ) noexcept;
 
   /// \brief Clamps a floating value between \c [0,1]
   ///
   /// \param val the value to clamp
   /// \return the clamped value
-  template<typename Float>
-  constexpr Float saturate( Float val ) noexcept;
+  constexpr real saturate( real val ) noexcept;
 
   //---------------------------------------------------------------------------
   // Equality
@@ -217,8 +214,7 @@ namespace alloy::core {
   /// \param lhs the value on the left of the equation
   /// \param rhs the value on the right of the equation
   /// \return \c true if \p lhs is almost equal to \p rhs
-  template<typename T, typename U>
-  constexpr bool almost_equal( T lhs, U rhs ) noexcept;
+  constexpr bool almost_equal( real lhs, real rhs ) noexcept;
 
   /// \brief Determines relative equality between \p lhs and \p rhs relative
   ///        to the specified \p tolerance
@@ -227,8 +223,7 @@ namespace alloy::core {
   /// \param rhs the value on the right of the equation
   /// \param tolerance the tolerance to use for comparison
   /// \return \c true if \p lhs is almost equal to \p rhs
-  template<typename T, typename U, typename V>
-  constexpr bool almost_equal( T lhs, U rhs, V tolerance ) noexcept;
+  constexpr bool almost_equal( real lhs, real rhs, real tolerance ) noexcept;
 
 } // namespace alloy::core
 
@@ -284,11 +279,10 @@ inline Arithmetic alloy::core::trunc( Arithmetic a )
   return std::trunc(a);
 }
 
-template<typename T, typename U>
-inline std::common_type_t<T,U> alloy::core::mod( T num, U den )
+inline alloy::core::real alloy::core::mod( real num, real den )
   noexcept
 {
-  return std::fmod<std::common_type_t<T,U>>(num,den);
+  return std::fmod(num,den);
 }
 
 //-----------------------------------------------------------------------------
@@ -347,38 +341,36 @@ inline constexpr Arithmetic alloy::core::abs( Arithmetic x )
 // Clamping
 //-----------------------------------------------------------------------------
 
-template<typename T, typename U, typename V>
-inline constexpr std::common_type_t<T,U,V>
-  alloy::core::clamp( T val, U max, V min )
+inline constexpr alloy::core::real
+  alloy::core::clamp( real val, real max, real min )
   noexcept
 {
   return ((val < min) ? min : ((val > max) ? max : val));
 }
 
-template<typename Float>
-inline constexpr Float alloy::core::saturate( Float val )
+inline constexpr alloy::core::real
+  alloy::core::saturate( real val )
   noexcept
 {
-    return clamp( val, static_cast<Float>(1), static_cast<Float>(0) );
+    return clamp( val, real{1}, real{0} );
 }
 
 //-----------------------------------------------------------------------------
 // Equality
 //-----------------------------------------------------------------------------
 
-template<typename T, typename U>
-inline constexpr bool alloy::core::almost_equal( T lhs, U rhs )
+inline constexpr bool alloy::core::almost_equal( real lhs, real rhs )
   noexcept
 {
   return almost_equal(lhs,rhs,default_tolerance);
 }
 
-template<typename T, typename U, typename V>
-inline constexpr bool alloy::core::almost_equal( T lhs, U rhs, V tolerance )
+inline constexpr bool
+  alloy::core::almost_equal( real lhs, real rhs, real tolerance )
   noexcept
 {
   const auto tmp = (lhs - rhs);
-  return (((tmp < 0) ? -tmp : tmp) <= tolerance);
+  return (((tmp < real{0}) ? -tmp : tmp) <= tolerance);
 }
 
 #endif /* ALLOY_CORE_MATH_MATH_HPP */
