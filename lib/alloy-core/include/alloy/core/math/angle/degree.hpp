@@ -58,6 +58,21 @@ namespace alloy::core {
   using degree = basic_angle<degree_unit>;
 
   //============================================================================
+  // non-member functions : class : degree
+  //============================================================================
+
+  //---------------------------------------------------------------------------
+  // Utilities : Casting
+  //---------------------------------------------------------------------------
+
+  /// \brief Converts the given \p angle to a degree
+  ///
+  /// \param angle the angle to convert
+  /// \return the angle in degrees
+  template<typename AngleUnit>
+  constexpr degree to_degree( basic_angle<AngleUnit> angle ) noexcept;
+
+  //============================================================================
   // trait : is_degree
   //============================================================================
 

@@ -59,6 +59,21 @@ namespace alloy::core {
   using radian = basic_angle<radian_unit>;
 
   //============================================================================
+  // non-member functions : class : radian
+  //============================================================================
+
+  //---------------------------------------------------------------------------
+  // Utilities : Casting
+  //---------------------------------------------------------------------------
+
+  /// \brief Converts the given \p angle to a radian
+  ///
+  /// \param angle the angle to convert
+  /// \return the angle in radians
+  template<typename AngleUnit>
+  constexpr radian to_radian( basic_angle<AngleUnit> angle ) noexcept;
+
+  //============================================================================
   // trait : is_radian
   //============================================================================
 

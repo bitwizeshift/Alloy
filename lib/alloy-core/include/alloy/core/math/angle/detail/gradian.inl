@@ -16,6 +16,22 @@ inline constexpr alloy::core::real alloy::core::gradian_unit::revolution()
 }
 
 //==============================================================================
+// non-member functions : class : gradian
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Utilities : Casting
+//------------------------------------------------------------------------------
+
+template<typename AngleUnit>
+inline constexpr alloy::core::gradian
+  alloy::core::to_gradian( basic_angle<AngleUnit> angle )
+  noexcept
+{
+  return angle_cast<gradian>(angle);
+}
+
+//==============================================================================
 // Literals
 //==============================================================================
 

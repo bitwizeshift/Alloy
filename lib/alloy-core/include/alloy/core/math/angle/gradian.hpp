@@ -58,6 +58,21 @@ namespace alloy::core {
   using gradian = basic_angle<gradian_unit>;
 
   //============================================================================
+  // non-member functions : class : gradian
+  //============================================================================
+
+  //---------------------------------------------------------------------------
+  // Utilities : Casting
+  //---------------------------------------------------------------------------
+
+  /// \brief Converts the given \p angle to a gradian
+  ///
+  /// \param angle the angle to convert
+  /// \return the angle in gradians
+  template<typename AngleUnit>
+  constexpr gradian to_gradian( basic_angle<AngleUnit> angle ) noexcept;
+
+  //============================================================================
   // trait : is_gradian
   //============================================================================
 

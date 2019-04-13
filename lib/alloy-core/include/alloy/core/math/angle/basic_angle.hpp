@@ -94,7 +94,7 @@ namespace alloy::core {
   /// through the use of the \ref AngleUnit template parameter.
   ///
   /// \tparam AngleUnit the angle unit which specifies the value of one full
-  ///                   revolution as a \ref core::real
+  ///                   revolution as a \ref real
   //////////////////////////////////////////////////////////////////////////////
   template<typename AngleUnit>
   class basic_angle
@@ -119,7 +119,7 @@ namespace alloy::core {
     /// \brief Constructs a basic_angle from the given floating point value
     ///
     /// \param value the value of the basic_angle angle
-    constexpr explicit basic_angle( core::real value ) noexcept;
+    constexpr explicit basic_angle( real value ) noexcept;
 
     /// \brief Copy-constructs a basic_angle from another basic_angle
     ///
@@ -154,13 +154,13 @@ namespace alloy::core {
     /// \brief Gets the value decimal value of the angle
     ///
     /// \return the value of the angle
-    constexpr core::real value() const noexcept;
+    constexpr real value() const noexcept;
 
     /// \brief Counts the number of revolutions for the current
     ///        \ref basic_angle
     ///
     /// \return the number of revolutions
-    constexpr core::real revolutions() const noexcept;
+    constexpr real revolutions() const noexcept;
 
     /// \brief Constrains the \ref basic_angle between \c 0 and
     ///        \c AngleUnit::revolution()
@@ -183,15 +183,15 @@ namespace alloy::core {
 
     basic_angle& operator+=( const basic_angle& rhs ) noexcept;
     basic_angle& operator-=( const basic_angle& rhs ) noexcept;
-    basic_angle& operator*=( core::real rhs ) noexcept;
-    basic_angle& operator/=( core::real rhs ) noexcept;
+    basic_angle& operator*=( real rhs ) noexcept;
+    basic_angle& operator/=( real rhs ) noexcept;
 
     //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------
   private:
 
-    core::real m_angle; ///< The angle of this basic_angle
+    real m_angle; ///< The angle of this basic_angle
   };
 
   //============================================================================
@@ -212,13 +212,13 @@ namespace alloy::core {
                const basic_angle<AngleUnit>& rhs ) noexcept;
   template<typename AngleUnit>
   constexpr basic_angle<AngleUnit>
-    operator*( const basic_angle<AngleUnit>& lhs, core::real rhs ) noexcept;
+    operator*( const basic_angle<AngleUnit>& lhs, real rhs ) noexcept;
   template<typename AngleUnit>
   constexpr basic_angle<AngleUnit>
-    operator*( core::real rhs, const basic_angle<AngleUnit>& lhs ) noexcept;
+    operator*( real rhs, const basic_angle<AngleUnit>& lhs ) noexcept;
   template<typename AngleUnit>
   constexpr basic_angle<AngleUnit>
-    operator/( const basic_angle<AngleUnit>& lhs, core::real rhs ) noexcept;
+    operator/( const basic_angle<AngleUnit>& lhs, real rhs ) noexcept;
 
   //----------------------------------------------------------------------------
   // Comparisons
@@ -264,7 +264,7 @@ namespace alloy::core {
   template<typename AngleUnit>
   constexpr bool almost_equal( const basic_angle<AngleUnit>& lhs,
                                const basic_angle<AngleUnit>& rhs,
-                               core::real tolerance ) noexcept;
+                               real tolerance ) noexcept;
 
   //---------------------------------------------------------------------------
   // Utilities : Math Functions
