@@ -24,7 +24,7 @@ var classalloy_1_1core_1_1matrix3 =
     [ "get", "d6/dbc/classalloy_1_1core_1_1matrix3.html#a6ae7472c2bc70e1c6928d72474ff3ca9", null ],
     [ "get", "d6/dbc/classalloy_1_1core_1_1matrix3.html#a143a527dc93581c19728490584f54d33", null ],
     [ "inverse", "d6/dbc/classalloy_1_1core_1_1matrix3.html#ab20276ca83fd47a7e71d4777d4272e17", null ],
-    [ "invert", "d6/dbc/classalloy_1_1core_1_1matrix3.html#afddb3a3c39296b3db49ec8631b355c76", null ],
+    [ "invert", "d6/dbc/classalloy_1_1core_1_1matrix3.html#a1cd7f986c406878d8974d255f953c793", null ],
     [ "operator *=", "d6/dbc/classalloy_1_1core_1_1matrix3.html#a6e16fbe860b521b9e2ddf95aaff280f3", null ],
     [ "operator *=", "d6/dbc/classalloy_1_1core_1_1matrix3.html#a57e4882ff1b2ce7be3235c5d6e245b9e", null ],
     [ "operator+=", "d6/dbc/classalloy_1_1core_1_1matrix3.html#ad19ecd4eb560ddf4a6b71b859378e849", null ],
@@ -35,6 +35,6 @@ var classalloy_1_1core_1_1matrix3 =
     [ "row", "d6/dbc/classalloy_1_1core_1_1matrix3.html#a07e8188c3c3d05c3c1d0b08f736c64c6", null ],
     [ "size", "d6/dbc/classalloy_1_1core_1_1matrix3.html#a4c4cb807a883e59283d2c792706d7c4e", null ],
     [ "trace", "d6/dbc/classalloy_1_1core_1_1matrix3.html#aa450614d9da21992eeb2af18dbe4b3e7", null ],
-    [ "transpose", "d6/dbc/classalloy_1_1core_1_1matrix3.html#a5edf3378a590ac66d3e24ef63ef3b19b", null ],
+    [ "transpose", "d6/dbc/classalloy_1_1core_1_1matrix3.html#a6af65c383587dbaa9b19cd79614c774d", null ],
     [ "transposed", "d6/dbc/classalloy_1_1core_1_1matrix3.html#aaca9b3f13fe9bdd474bb4af174a07a4d", null ]
 ];

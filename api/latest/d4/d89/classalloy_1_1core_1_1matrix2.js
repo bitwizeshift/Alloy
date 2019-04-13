@@ -24,7 +24,7 @@ var classalloy_1_1core_1_1matrix2 =
     [ "get", "d4/d89/classalloy_1_1core_1_1matrix2.html#ae09a826c69a8c91bc072cf25efbc5869", null ],
     [ "get", "d4/d89/classalloy_1_1core_1_1matrix2.html#afd4efb514595015ca2f768d92527c952", null ],
     [ "inverse", "d4/d89/classalloy_1_1core_1_1matrix2.html#a2f88d3da72e780b21c6f5f91a59c617f", null ],
-    [ "invert", "d4/d89/classalloy_1_1core_1_1matrix2.html#a242f3d5c62024e585959b23ee76c5844", null ],
+    [ "invert", "d4/d89/classalloy_1_1core_1_1matrix2.html#aa273396603805ae4f0029c1603bfae71", null ],
     [ "operator *=", "d4/d89/classalloy_1_1core_1_1matrix2.html#ab0089f2b9c75b27b070295d489b70345", null ],
     [ "operator *=", "d4/d89/classalloy_1_1core_1_1matrix2.html#a9a297c653baf4a43217570eb91b12db5", null ],
     [ "operator+=", "d4/d89/classalloy_1_1core_1_1matrix2.html#aeb80766e4a6c0330078710338ff842ef", null ],

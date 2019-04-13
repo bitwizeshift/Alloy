@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['value',['value',['../d7/d2e/classalloy_1_1core_1_1basic__angle.html#a4273abf60a8fc3199d53d90525d7c3c4',1,'alloy::core::basic_angle']]],
+  ['value',['value',['../d7/d2e/classalloy_1_1core_1_1basic__angle.html#a86b9b5bb3f5c8972a3a5359ebeebaf12',1,'alloy::core::basic_angle']]],
   ['value_5ftype',['value_type',['../d9/dce/classalloy_1_1core_1_1euler__angles.html#ad796d2133bab51e0195106bf42f6326b',1,'alloy::core::euler_angles']]],
   ['vector2',['vector2',['../dc/dcf/classalloy_1_1core_1_1vector2.html',1,'alloy::core::vector2'],['../dc/dcf/classalloy_1_1core_1_1vector2.html#a6b2ca0d4f7bcf09537ec492647fac4da',1,'alloy::core::vector2::vector2() noexcept'],['../dc/dcf/classalloy_1_1core_1_1vector2.html#a7bb0393facd2bcbe21d5ede7746e2588',1,'alloy::core::vector2::vector2(real magnitude, radian direction) noexcept'],['../dc/dcf/classalloy_1_1core_1_1vector2.html#ae1c8fcc37f49ac59331707d518869de4',1,'alloy::core::vector2::vector2(real x, real y) noexcept'],['../dc/dcf/classalloy_1_1core_1_1vector2.html#adf4b18f39959934edd617639dd69523f',1,'alloy::core::vector2::vector2(const vector2 &amp;other) noexcept=default'],['../dc/dcf/classalloy_1_1core_1_1vector2.html#aeddb0461e9972e0369cbccf714f758e2',1,'alloy::core::vector2::vector2(vector2 &amp;&amp;other) noexcept=default']]],
   ['vector2_5fconstants',['vector2_constants',['../d7/d9e/structalloy_1_1core_1_1vector2__constants.html',1,'alloy::core']]],

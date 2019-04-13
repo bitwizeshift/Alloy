@@ -24,7 +24,7 @@ var classalloy_1_1core_1_1matrix4 =
     [ "get", "df/da7/classalloy_1_1core_1_1matrix4.html#ad5bbe2c87a34577f5936dc75d4824f02", null ],
     [ "get", "df/da7/classalloy_1_1core_1_1matrix4.html#a6feb9d5999986ceed0cdd25ffc7576b7", null ],
     [ "inverse", "df/da7/classalloy_1_1core_1_1matrix4.html#a5b3bba36c9330bdcaea703a2fffc1bb1", null ],
-    [ "invert", "df/da7/classalloy_1_1core_1_1matrix4.html#ad2a1a90c321451816a1ab8f4b3d5140b", null ],
+    [ "invert", "df/da7/classalloy_1_1core_1_1matrix4.html#a083c7d7647e8e3d6e0b6476c44f1e44f", null ],
     [ "operator *=", "df/da7/classalloy_1_1core_1_1matrix4.html#ab82b31950c2ffa07d9f5036f673471f4", null ],
     [ "operator *=", "df/da7/classalloy_1_1core_1_1matrix4.html#a73116b346495d43a114c276e46536898", null ],
     [ "operator+=", "df/da7/classalloy_1_1core_1_1matrix4.html#a930e4743c5a22a5ea9425cd01213f9bb", null ],
@@ -35,6 +35,6 @@ var classalloy_1_1core_1_1matrix4 =
     [ "row", "df/da7/classalloy_1_1core_1_1matrix4.html#a445246c1726e5fe538241c89e5b2c609", null ],
     [ "size", "df/da7/classalloy_1_1core_1_1matrix4.html#a7fc87e5cf7050d30c13463d08e068b17", null ],
     [ "trace", "df/da7/classalloy_1_1core_1_1matrix4.html#a27f9140c008e8cdb50ae0b6a72910505", null ],
-    [ "transpose", "df/da7/classalloy_1_1core_1_1matrix4.html#a04a146c869eaeb19fd1bf9d47df847e1", null ],
+    [ "transpose", "df/da7/classalloy_1_1core_1_1matrix4.html#aa8c42af337f0aa064e82fb020e17c5ab", null ],
     [ "transposed", "df/da7/classalloy_1_1core_1_1matrix4.html#aa4d144797e9a31eaebe7dd43d2fb63ff", null ]
 ];
