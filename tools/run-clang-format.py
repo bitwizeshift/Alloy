@@ -21,11 +21,14 @@ if __name__ == "__main__":
   ROOT_PATH = root_path()
 
   files = []
-  files.extend(glob.glob("include/**/*.hpp",recursive=True))
-  files.extend(glob.glob("include/**/*.inl",recursive=True))
-  files.extend(glob.glob("include/**/*.cpp",recursive=True))
+  # Glob all files in all source locations
+  for subpath in ["lib", "bin", "extra", "example"]:
+    for extension in ["hpp", "inl", "cpp"]:
+      glob_expression = "{}/**/*.{}".format(subpath,extension)
+      files.extend(glob.glob(glob_expression,recursive=True))
 
-  # TODO(bitwizeshift): Make clang-format run in-place
+  # TODO(bitwizeshift):
+  #   Make clang-format run in-place once the formatting guideline is stable
   command = ["clang-format","-style=file"]
   command.extend(files)
 
