@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
+################################################################################
+# Travis-CI : deploy-doxygen
+# --------------------------
+#
+# Generates doxygen output, and pushes it to the gh-pages branch of the Alloy
+# repository
+################################################################################
 
-doxygen .codedocs
+set -e
 
-# TODO(bitwizeshift): Determine how to deploy doxygen documentation
+doxygen "$(pwd)/.codedocs"
+
+mkdir -p dist/api
+mv build/doc/* dist/api
+
+# TODO(bitwizeshift): move documentation

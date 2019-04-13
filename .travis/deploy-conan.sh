@@ -3,13 +3,16 @@
 # Travis-CI : deploy-conan
 # ------------------------
 #
-# Deploys a CMake project
+# Builds and deploys a conan project
 ################################################################################
 
-user="Alloy"
-version=$(conan inspect --attribute version | sed 's@version: @@g')
+set -e
 
 test_path="$(pwd)/.conan/test_package"
+conanfile_path="$(pwd)"
+
+user="Alloy"
+version=$(conan inspect "${conanfile_path}" --attribute version | sed 's@version: @@g')
 
 conan create . "alloy/stable"
 conan test "${user}/${version}@alloy/stable" --test-folder="${test_path}"

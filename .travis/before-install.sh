@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+################################################################################
+# Travis-CI : before-install
+# --------------------------
+#
+# Updates the repository for the underlying travis agent
+################################################################################
+
+set -e
 
 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   sudo apt-get update

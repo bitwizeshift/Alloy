@@ -14,6 +14,7 @@
 
 # Enable C++
 language: cpp
+cache: ccache
 
 dist: trusty
 sudo: required
@@ -42,15 +43,15 @@ osx_agent: &osx_agent
   language: generic
   compiler: clang
   env:
-    - CC=clang
-    - CXX=clang++
+    - C_COMPILER=clang
+    - CXX_COMPILER=clang++
 
 linux_gcc_agent: &linux_gcc_agent
   os: linux
   compiler: gcc
   env:
-    - CC=gcc-8
-    - CXX=g++-8
+    - C_COMPILER=gcc-8
+    - CXX_COMPILER=g++-8
   addons:
     apt:
       sources: ['ubuntu-toolchain-r-test']
@@ -60,8 +61,8 @@ linux_clang_agent: &linux_clang_agent
   os: linux
   compiler: clang
   env:
-    - CC=clang-6.0
-    - CXX=clang++-6.0
+    - C_COMPILER=clang-6.0
+    - CXX_COMPILER=clang++-6.0
   addons:
     apt:
       sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
@@ -72,7 +73,7 @@ linux_clang_agent: &linux_clang_agent
 
 stages:
   - build
-  - unit-test
+  - test
   - validate
   - deploy
 
@@ -102,38 +103,53 @@ jobs:
     # Test
     ############################################################################
 
-    - <<: *linux_gcc_agent
-      stage: test
-      name: "Unit Test (linux-g++-8)"
-      script: ./.travis/test.sh
-
-    - <<: *linux_clang_agent
-      stage: test
-      name: "Unit Test (linux-clang++-6.0)"
-      script: ./.travis/test.sh
-
-    - <<: *osx_agent
-      stage: test
-      name: "Unit Test (macos-xcode10-clang)"
-      script: ./.travis/test.sh
+    # TODO(bitwizeshift):
+    #   Enable once build->test->deploy pipeline is set up
+    #
+    # - <<: *linux_gcc_agent
+    #   stage: test
+    #   name: "Unit Test (linux-g++-8)"
+    #   script: ./.travis/test.sh
+    #
+    # - <<: *linux_clang_agent
+    #   stage: test
+    #   name: "Unit Test (linux-clang++-6.0)"
+    #   script: ./.travis/test.sh
+    #
+    # - <<: *osx_agent
+    #   stage: test
+    #   name: "Unit Test (macos-xcode10-clang)"
+    #   script: ./.travis/test.sh
 
     # Validate
     ############################################################################
 
     - <<: *linux_clang_agent
       stage: validate
-      name: "Thread Sanitizer (linux-clang++-6.0)"
-      script: ./.travis/validate.sh
+      name: "Undefined Behavior Sanitizer (linux-clang++-6.0)"
+      script: ./.travis/validate-sanitize.sh ubsan
 
     - <<: *linux_clang_agent
       stage: validate
       name: "Address Sanitizer (linux-clang++-6.0)"
-      script: ./.travis/validate.sh
+      script: ./.travis/validate-sanitize.sh asan
 
     - <<: *linux_clang_agent
       stage: validate
       name: "Memory Sanitizer (linux-clang++-6.0)"
-      script: ./.travis/validate.sh
+      script: ./.travis/validate-sanitize.sh msan
+
+    - <<: *linux_gcc_agent
+      stage: validate
+      name: "Code Coverage (linux-g++-8)"
+      script: ./.travis/validate-coverage.sh
+
+    # TODO(bitwizeshift): Add valgrind agent
+
+    # - <<: *linux_gcc_agent
+    #   stage: validate
+    #   name: "Code Coverage (linux-g++-8)"
+    #   script: ./.travis/validate-valgrind.sh
 
     # Deploy
     ############################################################################
@@ -143,7 +159,6 @@ jobs:
       name: "Deploy (doxygen)"
       if: (tag =~ ^v) AND (branch = master) AND (type = push)
       script: ./.travis/deploy-doxygen.sh
-
 
     - <<: *linux_gcc_agent
       stage: deploy
@@ -170,8 +185,9 @@ install:
   - ./.travis/install.sh
 
 before_script:
-  - export CC=${C_COMPILER}
-  - export CXX=${CXX_COMPILER}
+  # Enable ccache to optimize builds
+  - export CC="ccache ${C_COMPILER}"
+  - export CXX="ccache ${CXX_COMPILER}"
 
   # Dump settings
   - uname -a

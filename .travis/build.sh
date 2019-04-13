@@ -3,23 +3,27 @@
 # Travis-CI : build
 # -----------------
 #
-# Generates a CMake project, and builds it
+# Generates a CMake project, builds it, and tests it
 ################################################################################
 
-# Make build directory and install dependencies
+set -e
+
 build_directory="build"
 
 mkdir -p "${build_directory}"
 cd "${build_directory}"
 conan install ..
 
-# Compile and execute unit tests
 cmake .. \
-      -G"Ninja" \
-      -DALLOY_ENABLE_UNIT_TESTS=On \
-      -DALLOY_ENABLE_HEADER_SELF_CONTAINMENT_TESTS=On \
-      ${CMAKE_OPTIONS}
+  -G"Ninja" \
+  -DALLOY_COMPILE_UNIT_TESTS=On \
+  -DALLOY_COMPILE_HEADER_SELF_CONTAINMENT_TESTS=On \
+  ${CMAKE_OPTIONS}
 
 cmake --build . --config Release
 
-# TODO: Sync binaries to AWS
+# TODO(bitwizeshift):
+#   Optimize CI times by syncing the built binaries to a back-end, and running
+#   tests as a distinct, separate step. This will allow for a quick-fail if
+#   the code fails to compile.
+cmake --build . --target test
