@@ -156,9 +156,15 @@ jobs:
 
     - <<: *linux_gcc_agent
       stage: deploy
-      name: "Deploy (doxygen)"
-      if: (tag =~ ^v) AND (branch = master) AND (type = push)
+      name: "Deploy tag (doxygen)"
+      if: (tag =~ ^v) AND (type = push)
       script: ./.travis/deploy-doxygen.sh
+
+    - <<: *linux_gcc_agent
+      stage: deploy
+      name: "Deploy latest (doxygen)"
+      if: (branch = master) AND (type = push)
+      script: ./.travis/deploy-doxygen.sh latest
 
     - <<: *linux_gcc_agent
       stage: deploy
