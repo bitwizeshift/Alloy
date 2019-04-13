@@ -41,6 +41,7 @@ class AlloyConan(ConanFile):
       "exceptions" : True,
       "precision" : "float"
     }
+    generators = "cmake"
 
     # Dependencies
     build_requires = ("Catch2/2.7.1@catchorg/stable")
