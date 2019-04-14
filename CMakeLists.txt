@@ -17,7 +17,6 @@ option(ALLOY_COMPILE_UNIT_TESTS "Compile and run the unit tests for this library
 option(ALLOY_COMPILE_EXTRAS "Compiles extras that ship with this library" OFF)
 option(ALLOY_COMPILE_EXAMPLES "Compiles example programs that use this library" OFF)
 option(ALLOY_ENABLE_CLANG_TIDY "Enables clang-tidy integration" OFF)
-option(ALLOY_GENERATE_DOCS "Generates doxygen documentation" OFF)
 option(ALLOY_INSTALL_DOCS "Install documentation for this library" OFF)
 option(ALLOY_VERBOSE_CONFIGURE "Verbosely configures this library project" OFF)
 option(ALLOY_ENABLE_EXCEPTIONS "Enable exception handling" ON)
@@ -134,12 +133,6 @@ if (ALLOY_COMPILE_EXAMPLES)
   add_subdirectory("example")
 endif ()
 
-# Documentation
-
-if (ALLOY_GENERATE_DOCS)
-  add_subdirectory("docs")
-endif ()
-
 ##############################################################################
 # Installation
 ##############################################################################
@@ -180,3 +173,11 @@ install(
         "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
   DESTINATION "${ALLOY_CMAKE_CONFIG_DESTINATION}"
 )
+
+if (ALLOY_INSTALL_DOCS)
+  install(
+    FILES "${CMAKE_CURRENT_LIST_DIR}/doc/building.md"
+          "${CMAKE_CURRENT_LIST_DIR}/doc/legal.md"
+    DESTINATION "${CMAKE_INSTALL_DOCDIR}"
+  )
+endif ()
