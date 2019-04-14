@@ -210,7 +210,7 @@ inline constexpr alloy::core::real
   return (get(0,0) + get(1,1) + get(2,2) + get(3,3));
 }
 
-inline constexpr alloy::core::matrix4
+inline alloy::core::matrix4
   alloy::core::matrix4::inverse()
   const noexcept
 {

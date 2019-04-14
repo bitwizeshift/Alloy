@@ -246,7 +246,7 @@ namespace alloy::core {
     /// If no inverse is possible, this returns \ref matrix4::identity
     ///
     /// \return the inverse of this matrix4
-    constexpr matrix4 inverse() const noexcept;
+    matrix4 inverse() const noexcept;
 
     /// \brief Computes the transpose of this matrix4
     ///
