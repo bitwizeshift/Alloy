@@ -20,6 +20,7 @@ option(ALLOY_ENABLE_CLANG_TIDY "Enables clang-tidy integration" OFF)
 option(ALLOY_INSTALL_DOCS "Install documentation for this library" OFF)
 option(ALLOY_VERBOSE_CONFIGURE "Verbosely configures this library project" OFF)
 option(ALLOY_ENABLE_EXCEPTIONS "Enable exception handling" ON)
+option(ALLOY_EXPORT_COMPILE_COMMANDS "Enable exporting compile-commands within CMake" ON)
 
 set(ALLOY_PRECISION "float" CACHE STRING "Precision level for floating point")
 set(ALLOY_PRECISION_VALUES "float" "double")
@@ -39,6 +40,10 @@ endif ()
 if (NOT ALLOY_TRIG_TABLE_SIZE MATCHES "[1-9][0-9].*")
   message(FATAL_ERROR "Invalid ALLOY_TRIG_TABLE_SIZE '${ALLOY_TRIG_TABLE_SIZE}'."
                       "Table size must be numeric.")
+endif ()
+
+if (ALLOY_EXPORT_COMPILE_COMMANDS)
+  set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 endif ()
 
 ##############################################################################
