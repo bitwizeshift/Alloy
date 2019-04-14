@@ -154,9 +154,24 @@ namespace alloy::core {
 
     /// \brief Gets the point at distance \p dt from the origin of this ray
     ///
+    /// \pre \p dt must be greater than 0
     /// \param dt the distance to get this point at
     /// \return the point at the distance
     point point_at_distance( real dt ) const noexcept;
+
+    /// \brief Checks if this ray intersects the given point \p p
+    ///
+    /// \param p the point to check for intersection
+    /// \return \c true if \p p is in the ray
+    bool contains( const point& p ) const noexcept;
+
+    /// \brief Checks if this ray intersects the given point \p p relative to
+    ///        the given \p tolerance
+    ///
+    /// \param p the point to check for intersection
+    /// \param tolerance the tolerance for accepting the containment
+    /// \return \c true if \p p is in the ray
+    bool contains( const point& p, real tolerance ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -210,7 +225,7 @@ namespace alloy::core {
 inline constexpr alloy::core::ray::ray()
   noexcept
   : m_origin{0,0,0},
-    m_direction{0,0,0}
+    m_direction{1,0,0}
 {
 
 }

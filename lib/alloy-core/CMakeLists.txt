@@ -114,6 +114,7 @@ set(source_files
   src/alloy/core/geometry/line_segment.cpp
   src/alloy/core/geometry/plane.cpp
   src/alloy/core/geometry/ray.cpp
+  src/alloy/core/geometry/sphere.cpp
 
   # Model
   src/alloy/core/model/color.cpp

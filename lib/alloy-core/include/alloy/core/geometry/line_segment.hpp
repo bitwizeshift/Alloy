@@ -46,6 +46,12 @@ namespace alloy::core {
 
   //////////////////////////////////////////////////////////////////////////////
   /// \brief A representation of a line segment enclosed between two points.
+  ///
+  /// A line segment is completely bounded between the start point, and the
+  /// end point.
+  ///
+  /// \ingroup geometry
+  /// \ingroup value_type
   //////////////////////////////////////////////////////////////////////////////
   class line_segment
   {
@@ -128,11 +134,27 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Gets the point at distance \p percent from the origin of this line_segment
+    /// \brief Gets the point at distance \p percent from the origin of this
+    ///        line_segment
     ///
+    /// \pre \p percent must be between 0 and 1
     /// \param percent the distance to get this point at
     /// \return the point at the distance
     point point_at_percent( real percent ) const noexcept;
+
+    /// \brief Checks if this line_segment intersects the given point \p p
+    ///
+    /// \param p the point to check for intersection
+    /// \return \c true if \p p is in the line_segment
+    bool contains( const point& p ) const noexcept;
+
+    /// \brief Checks if this line_segment intersects the given point \p p
+    ///        relative to the given \p tolerance
+    ///
+    /// \param p the point to check for intersection
+    /// \param tolerance the tolerance for accepting the containment
+    /// \return \c true if \p p is in the line_segment
+    bool contains( const point& p, real tolerance ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Private Members

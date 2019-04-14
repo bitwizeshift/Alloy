@@ -198,6 +198,20 @@ namespace alloy::core {
     /// \return the inverted plane
     plane inverted() const noexcept;
 
+    /// \brief Checks if this plane intersects the given point \p p
+    ///
+    /// \param p the point to check for intersection
+    /// \return \c true if \p p is in the plane
+    bool contains( const point& p ) const noexcept;
+
+    /// \brief Checks if this plane intersects the given point \p p
+    ///        relative to the given \p tolerance
+    ///
+    /// \param p the point to check for intersection
+    /// \param tolerance the tolerance for accepting the containment
+    /// \return \c true if \p p is in the plane
+    bool contains( const point& p, real tolerance ) const noexcept;
+
     //--------------------------------------------------------------------------
     // Unary Operators
     //--------------------------------------------------------------------------
@@ -262,20 +276,6 @@ namespace alloy::core {
   /// \param plane the plane
   /// \return \c true if \p p is under the \p plane
   bool is_point_under_plane( const point& p, const plane& plane ) noexcept;
-
-  /// \{
-  /// \brief Checks if point \p p exists on the \p plane
-  ///
-  /// \param p the the point to check
-  /// \param plane the plane
-  /// \param tolerance the tolerance to support
-  /// \return \c true if \p p is on the \p plane to the given \p tolerance
-  bool is_point_on_plane( const point& p,
-                          const plane& plane ) noexcept;
-  bool is_point_on_plane( const point& p,
-                          const plane& plane,
-                          real tolerance ) noexcept;
-  /// \}
 
 } // namespace alloy::core
 

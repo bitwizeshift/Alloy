@@ -109,6 +109,21 @@ namespace alloy::core {
     /// \return the radius
     constexpr const real& radius() const noexcept;
 
+    /// \brief Checks whether a given point \p p is contained within this
+    ///        sphere
+    ///
+    /// \param p the point to check
+    /// \return \c true if the point is contained in this sphere
+    bool contains( const point& p ) const noexcept;
+
+    /// \brief Checks whether a given point \p p is contained within this
+    ///        sphere within a specified error \p tolerance
+    ///
+    /// \param p the point to check
+    /// \param tolerance the error tolerance to accept
+    /// \return \c true if the point is contained in this sphere
+    bool contains( const point& p, real tolerance ) const noexcept;
+
     //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------

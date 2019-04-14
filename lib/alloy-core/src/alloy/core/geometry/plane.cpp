@@ -106,6 +106,20 @@ alloy::core::vector3 alloy::core::plane::projection( const vector3& vec )
   return vec * matrix;
 }
 
+bool alloy::core::plane::contains( const point& p )
+  const noexcept
+{
+  return contains(p, default_tolerance);
+}
+
+bool alloy::core::plane::contains( const point& p, real tolerance )
+  const noexcept
+{
+  const auto dt = normal().dot(to_vector(p)) - d();
+
+  return almost_equal(dt, real{0}, tolerance);
+}
+
 //------------------------------------------------------------------------------
 // Utilities
 //------------------------------------------------------------------------------
@@ -120,23 +134,4 @@ bool alloy::core::is_point_under_plane( const point& p, const plane& plane )
   noexcept
 {
   return plane.normal().dot(to_vector(p)) < plane.d();
-}
-
-
-bool alloy::core::is_point_on_plane( const point& p, const plane& plane )
-  noexcept
-{
-  const auto dt = plane.normal().dot(to_vector(p)) - plane.d();
-
-  return almost_equal(dt, real{0});
-}
-
-bool alloy::core::is_point_on_plane( const point& p,
-                                     const plane& plane,
-                                     real tolerance )
-  noexcept
-{
-  const auto dt = plane.normal().dot(to_vector(p)) - plane.d();
-
-  return almost_equal(dt, real{0}, tolerance);
 }
