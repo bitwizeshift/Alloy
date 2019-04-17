@@ -42,6 +42,7 @@ set(header_files
   include/alloy/core/precision/real.hpp
 
   # Utilities
+  include/alloy/core/utilities/not_null.hpp
   include/alloy/core/utilities/piecewise_compare.hpp
 
   # Math
