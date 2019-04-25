@@ -84,9 +84,9 @@
 //!        either a unique counter or the line number (if the counter is
 //!        not otherwise available)
 #ifdef __COUNTER__
-# define ALLOY_UNIQUE_NAME(name) ALLOY_JOIN(name,ALLOY_STRINGIZE(__COUNTER__))
+# define ALLOY_UNIQUE_NAME(name) ALLOY_JOIN(name,__COUNTER__)
 #else
-# define ALLOY_UNIQUE_NAME(name) ALLOY_JOIN(name,ALLOY_STRINGIZE(__LINE__))
+# define ALLOY_UNIQUE_NAME(name) ALLOY_JOIN(name,__LINE__)
 #endif
 
 //----------------------------------------------------------------------------
