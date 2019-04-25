@@ -203,10 +203,15 @@ namespace alloy::core {
     /// \return the cross product of \c this and \p rhs
     constexpr vector3 cross( const vector3& rhs ) const noexcept;
 
+    /// \brief Gets the square magnitude of this vector3
+    ///
+    /// \return the square magnitude of the vector3
+    constexpr real square_magnitude() const noexcept;
+
     /// \brief Gets the magnitude of this vector3
     ///
     /// \return the magnitude of the vector3
-    core::real magnitude() const noexcept;
+    real magnitude() const noexcept;
 
     /// \brief Gets the midpoint between \c this and \p vec
     ///

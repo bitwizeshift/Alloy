@@ -199,6 +199,11 @@ namespace alloy::core {
     /// \return the cross product of \c this and \p rhs
     constexpr real cross( const vector2& rhs ) const noexcept;
 
+    /// \brief Gets the square magnitude of this vector2
+    ///
+    /// \return the square magnitude of the vector2
+    constexpr real square_magnitude() const noexcept;
+
     /// \brief Gets the magnitude of this vector2
     ///
     /// \return the magnitude of the vector2

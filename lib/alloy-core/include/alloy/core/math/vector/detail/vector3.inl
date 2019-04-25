@@ -181,6 +181,13 @@ inline constexpr alloy::core::vector3
 
 //------------------------------------------------------------------------------
 
+inline constexpr alloy::core::real
+  alloy::core::vector3::square_magnitude()
+  const noexcept
+{
+  return dot(*this);
+}
+
 inline alloy::core::real
   alloy::core::vector3::magnitude()
   const noexcept
