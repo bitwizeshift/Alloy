@@ -48,6 +48,7 @@ TEST_CASE("vector2::size()", "[observers]")
 // Element Access
 //-----------------------------------------------------------------------------
 
+#if ALLOY_ENABLE_EXCEPTIONS
 TEST_CASE("vector2::at( index_type )", "[observers]")
 {
   const auto vec = alloy::core::vector2{42,1024};
@@ -75,6 +76,7 @@ TEST_CASE("vector2::at( index_type )", "[observers]")
     }
   }
 }
+#endif // ALLOY_ENABLE_EXCEPTIONS
 
 TEST_CASE("vector2::operator[]( index_type )", "[observers]")
 {
@@ -212,7 +214,7 @@ TEST_CASE("vector2::reflection( const vector2& vec )", "[quantifiers]")
 
     const auto result = vector.reflection( axis );
 
-    REQUIRE( almost_equal(result, alloy::core::vector2{0.0,1.0}) );
+    REQUIRE( almost_equal(result, alloy::core::vector2{-1.0,-2.0}) );
   }
 }
 
@@ -321,7 +323,7 @@ TEST_CASE("vector2::angle_between( const vector2& )", "[quantifiers]")
     const auto angle = vec1.angle_between( vec2 );
     const auto expected = alloy::core::radian{0};
 
-    REQUIRE( almost_equal(angle,expected) );
+    REQUIRE( almost_equal(angle, expected) );
   }
 
   SECTION("Vectors are perpendicular")
@@ -345,7 +347,6 @@ TEST_CASE("vector2::angle_between( const vector2& )", "[quantifiers]")
 
     REQUIRE( almost_equal(angle,expected) );
   }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -364,7 +365,7 @@ TEST_CASE("vector2::normalize()", "[modifiers]")
   SECTION("Vector contains only zeros")
   {
     auto vec = alloy::core::vector2{0.0f, 0.0f};
-    const auto expected =alloy::core::vector2{0.0f,0.0f};
+    const auto expected = alloy::core::vector2{0.0f,0.0f};
 
     vec.normalize();
 
@@ -374,56 +375,56 @@ TEST_CASE("vector2::normalize()", "[modifiers]")
     }
   }
 
-  SECTION("Vector contains values")
+  SECTION("Vector is already normalized")
   {
-    SECTION("Vector is already normalized")
+    auto vec = alloy::core::vector2{
+      alloy::core::real{1} / alloy::core::sqrt(2.0f),
+      alloy::core::real{1} / alloy::core::sqrt(2.0f)
+    };
+    const auto expected = vec;
+
+    vec.normalize();
+
+    SECTION("Does not alter vector")
     {
-      auto vec = alloy::core::vector2{
-        alloy::core::sqrt(2.0f),
-        alloy::core::sqrt(2.0f)
-      };
-      const auto expected = vec;
-
-      vec.normalize();
-
-      SECTION("Does not alter vector")
-      {
-        REQUIRE( almost_equal(vec,expected) );
-      }
+      REQUIRE( almost_equal(vec,expected) );
     }
+  }
 
-    SECTION("Vector is not normalized")
+  SECTION("Vector is not normalized")
+  {
+    auto vec = alloy::core::vector2{ 1.0f, 1.0f };
+    const auto expected = alloy::core::vector2{
+      alloy::core::real{1} / alloy::core::sqrt(2.0f),
+      alloy::core::real{1} / alloy::core::sqrt(2.0f)
+    };
+
+    vec.normalize();
+
+    SECTION("Normalizes vector")
     {
-      auto vec = alloy::core::vector2{ 1.0f, 1.0f };
-      const auto expected = vec;
-
-      vec.normalize();
-
-      SECTION("Normalizes vector")
-      {
-        REQUIRE( almost_equal(vec,expected) );
-      }
+      REQUIRE( almost_equal(vec, expected) );
     }
   }
 
   SECTION("Vector contains near-0 values")
   {
     const auto epsilon = std::numeric_limits<float>::epsilon();
-    auto vec = alloy::core::vector2{epsilon,epsilon};
-    const auto expected = alloy::core::vector2{0.0f,0.0f};
+    auto vec = alloy::core::vector2{epsilon,0.0f};
+    const auto expected = alloy::core::vector2{1.0f,0.0f};
 
     vec.normalize();
 
-    SECTION("Normalizes to zero-vector")
+    SECTION("Normalizes to unit vector")
     {
-      REQUIRE( vec == expected );
+      REQUIRE( almost_equal(vec, expected) );
     }
   }
 }
 
 //-----------------------------------------------------------------------------
 
-TEST_CASE("vector2::inverse()", "[modifiers]")
+TEST_CASE("vector2::invert()", "[modifiers]")
 {
   SECTION("Vector contains only zeros")
   {
