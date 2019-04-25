@@ -107,7 +107,7 @@ inline constexpr alloy::core::vector2::reference
   alloy::core::vector2::at( index_type n )
 {
 #if ALLOY_ENABLE_EXCEPTIONS
-  if( n >= 2 || n < 0 ) {
+  if (n >= 2 || n < 0) {
     throw std::out_of_range("alloy::core::vector2::at: index out of range");
   }
 #else
@@ -121,7 +121,7 @@ inline constexpr alloy::core::vector2::const_reference
   const
 {
 #if ALLOY_ENABLE_EXCEPTIONS
-  if( n >= 2 || n < 0 ) {
+  if (n >= 2 || n < 0) {
     throw std::out_of_range("alloy::core::vector2::at: index out of range");
   }
 #else
@@ -236,16 +236,7 @@ inline alloy::core::vector2
   alloy::core::vector2::normalized()
   const noexcept
 {
-  const auto mag = magnitude();
-
-  if (mag > real{0}) {
-    const auto mag_inv = real{1} / mag;
-    return vector2{
-      x() * mag_inv,
-      y() * mag_inv
-    };
-  }
-  return (*this);
+  return vector2{*this}.normalize();
 }
 
 inline constexpr alloy::core::vector2
@@ -301,10 +292,14 @@ inline alloy::core::vector2&
   alloy::core::vector2::normalize()
   noexcept
 {
-  const auto mag = magnitude();
+  const auto square_mag = square_magnitude();
 
-  if (mag > real{0}) {
-    const auto mag_inv = real{1} / mag;
+  if (almost_equal(square_mag, real{1})) {
+    return (*this);
+  }
+
+  if (square_mag > real{0}) {
+    const auto mag_inv = real{1} / sqrt(square_mag);
 
     x() *= mag_inv;
     y() *= mag_inv;

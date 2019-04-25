@@ -287,11 +287,14 @@ inline alloy::core::vector4&
   alloy::core::vector4::normalize()
   noexcept
 {
-  const auto mag = magnitude();
+  const auto square_mag = square_magnitude();
 
-  if (mag > real{0})
-  {
-    const auto mag_inv = real{1} / mag;
+  if (almost_equal(square_mag, real{1})) {
+    return (*this);
+  }
+
+  if (square_mag > real{0}) {
+    const auto mag_inv = real{1} / sqrt(square_mag);
 
     for (auto i = 0; i < 4; ++i) {
       m_data[i] *= mag_inv;

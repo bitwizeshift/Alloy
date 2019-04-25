@@ -257,17 +257,7 @@ inline alloy::core::vector3
   alloy::core::vector3::normalized()
   const noexcept
 {
-  const auto square_mag = dot(*this);
-  if (square_mag > real{0}) {
-    // TODO(bitwize): consider replacing with inv_sqrt eventually?
-    const auto mag_inv = real{1} / sqrt(square_mag);
-    return vector3{
-      x() * mag_inv,
-      y() * mag_inv,
-      z() * mag_inv
-    };
-  }
-  return (*this);
+  return vector3{*this}.normalize();
 }
 
 inline constexpr alloy::core::vector3
@@ -321,10 +311,14 @@ inline alloy::core::vector3&
   alloy::core::vector3::normalize()
   noexcept
 {
-  const auto mag = magnitude();
+  const auto square_mag = square_magnitude();
 
-  if (mag > real{0}){
-    const auto mag_inv = real{1} / mag;
+  if (almost_equal(square_mag, real{1})) {
+    return (*this);
+  }
+
+  if (square_mag > real{0}){
+    const auto mag_inv = real{1} / sqrt(square_mag);
 
     x() *= mag_inv;
     y() *= mag_inv;
