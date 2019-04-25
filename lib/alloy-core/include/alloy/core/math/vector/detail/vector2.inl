@@ -455,8 +455,8 @@ inline constexpr bool
   alloy::core::almost_equal( const vector2& lhs, const vector2& rhs )
   noexcept
 {
-  for (auto i=0;i<2;++i) {
-    if (!almost_equal(rhs[i],rhs[i])) {
+  for (auto i=0; i<2; ++i) {
+    if (!almost_equal(lhs[i], rhs[i])) {
       return false;
     }
   }
@@ -469,8 +469,8 @@ inline constexpr bool
                              real tolerance )
   noexcept
 {
-  for (auto i=0;i<2;++i) {
-    if (!almost_equal(rhs[i],rhs[i],tolerance)) {
+  for (auto i=0; i<2; ++i) {
+    if (!almost_equal(lhs[i], rhs[i], tolerance)) {
       return false;
     }
   }

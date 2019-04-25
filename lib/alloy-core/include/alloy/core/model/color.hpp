@@ -566,7 +566,7 @@ inline constexpr bool alloy::core::almost_equal( const color& lhs,
   noexcept
 {
   for (auto i=0; i<4; ++i) {
-    if (!almost_equal(rhs[i], rhs[i])) {
+    if (!almost_equal(lhs[i], rhs[i])) {
       return false;
     }
   }
@@ -579,7 +579,7 @@ inline constexpr bool alloy::core::almost_equal( const color& lhs,
   noexcept
 {
   for (auto i=0; i<4; ++i) {
-    if (!almost_equal(rhs[i], rhs[i], tolerance)) {
+    if (!almost_equal(lhs[i], rhs[i], tolerance)) {
       return false;
     }
   }
