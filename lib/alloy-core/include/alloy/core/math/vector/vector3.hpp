@@ -265,6 +265,11 @@ namespace alloy::core {
     /// \return the angle from \c this to \p other
     radian angle_to( const vector3& other ) const noexcept;
 
+    /// \brief Queries whether this vector is normalized
+    ///
+    /// \return \c true if this vector is normalized
+    constexpr bool is_normalized() const noexcept;
+
     //--------------------------------------------------------------------------
     // Modifiers
     //--------------------------------------------------------------------------

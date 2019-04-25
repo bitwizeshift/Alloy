@@ -255,6 +255,11 @@ namespace alloy::core {
     /// \return the inverse of \c this vector4
     constexpr vector4 inverse() const noexcept;
 
+    /// \brief Queries whether this vector is normalized
+    ///
+    /// \return \c true if this vector is normalized
+    constexpr bool is_normalized() const noexcept;
+
     //--------------------------------------------------------------------------
     // Modifiers
     //--------------------------------------------------------------------------

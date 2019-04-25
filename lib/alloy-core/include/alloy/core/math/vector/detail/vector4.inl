@@ -272,6 +272,13 @@ inline constexpr alloy::core::vector4
   return vector4{*this}.invert();
 }
 
+inline constexpr bool
+  alloy::core::vector4::is_normalized()
+  const noexcept
+{
+  return almost_equal(square_magnitude(), real{1});
+}
+
 //------------------------------------------------------------------------------
 // Modifiers
 //------------------------------------------------------------------------------

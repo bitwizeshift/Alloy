@@ -286,6 +286,13 @@ inline alloy::core::radian
   return angle;
 }
 
+inline constexpr bool
+  alloy::core::vector2::is_normalized()
+  const noexcept
+{
+  return almost_equal(square_magnitude(), real{1});
+}
+
 //------------------------------------------------------------------------------
 // Modifiers
 //------------------------------------------------------------------------------
