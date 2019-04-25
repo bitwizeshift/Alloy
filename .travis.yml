@@ -192,8 +192,10 @@ install:
 
 before_script:
   # Enable ccache to optimize builds
-  - export CC="ccache ${C_COMPILER}"
-  - export CXX="ccache ${CXX_COMPILER}"
+  # - export CC="ccache ${C_COMPILER}"
+  # - export CXX="ccache ${CXX_COMPILER}"
+  - export CC=${C_COMPILER}
+  - export CXX=${CXX_COMPILER}
 
   # Dump settings
   - uname -a
