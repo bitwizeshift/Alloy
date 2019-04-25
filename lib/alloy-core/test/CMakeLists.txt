@@ -1,4 +1,4 @@
-find_package(Catch2)
+find_package(Catch2 REQUIRED)
 
 ##############################################################################
 # Target
@@ -7,6 +7,7 @@ find_package(Catch2)
 set(source_files
   # Math
   src/alloy/core/math/vector/vector2.test.cpp
+  src/alloy/core/math/vector/vector3.test.cpp
 
   src/main.cpp
 )
