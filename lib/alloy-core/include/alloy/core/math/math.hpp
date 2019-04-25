@@ -193,10 +193,10 @@ namespace alloy::core {
   /// \brief Clamps a value between [\p min , \p max ]
   ///
   /// \param val the value to clamp
-  /// \param max the max value
   /// \param min the min value
+  /// \param max the max value
   /// \return the clamped value
-  constexpr real clamp( real val, real max, real min ) noexcept;
+  constexpr real clamp( real val, real min, real max ) noexcept;
 
   /// \brief Clamps a floating value between \c [0,1]
   ///
@@ -342,7 +342,7 @@ inline constexpr Arithmetic alloy::core::abs( Arithmetic x )
 //-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::real
-  alloy::core::clamp( real val, real max, real min )
+  alloy::core::clamp( real val, real min, real max )
   noexcept
 {
   return ((val < min) ? min : ((val > max) ? max : val));
