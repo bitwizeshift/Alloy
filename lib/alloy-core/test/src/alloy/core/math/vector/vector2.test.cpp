@@ -101,8 +101,8 @@ TEST_CASE("vector2::operator[]( index_type )", "[observers]")
 
 TEST_CASE("vector2::dot( vector2 )", "[quantifiers]")
 {
-  auto vec1 = alloy::core::vector2{ 1.0f, 2.0f };
-  auto vec2 = alloy::core::vector2{ 2.0f, 1.0f };
+  const auto vec1 = alloy::core::vector2{ 1.0f, 2.0f };
+  const auto vec2 = alloy::core::vector2{ 2.0f, 1.0f };
 
   SECTION("Dot product returns sum of multiples")
   {
@@ -114,9 +114,17 @@ TEST_CASE("vector2::dot( vector2 )", "[quantifiers]")
 
 TEST_CASE("vector2::cross( vector2 )", "[quantifiers]")
 {
-  SECTION("Vectors are perpendicular")
+  SECTION("Cross product is anti-commutative")
   {
-    SECTION("Returns 0")
+    const auto a = alloy::core::vector2{ 1.0f, 2.0f };
+    const auto b = alloy::core::vector2{ 2.0f, 1.0f };
+
+    // a x b == -b x a
+    REQUIRE( almost_equal(a.cross(b), (-b).cross(a)) );
+  }
+  SECTION("Vectors are parallel")
+  {
+    SECTION("Returns zero")
     {
       auto vec1 = alloy::core::vector2{ 1.0f, 2.0f };
       auto vec2 = alloy::core::vector2{ 1.0f, 2.0f };
@@ -124,14 +132,24 @@ TEST_CASE("vector2::cross( vector2 )", "[quantifiers]")
       REQUIRE( vec1.cross(vec2) == 0.0f );
     }
   }
-  SECTION("Vectors are parallel")
+  SECTION("Vectors are perpendicular")
   {
-    // TODO(bitwize): test this condition
-  }
+    const auto vec1 = alloy::core::vector2{ 1.0f, 0.0f };
+    const auto vec2 = alloy::core::vector2{ 0.0f, 1.0f };
 
-  SECTION("Vectors are arbitrary")
-  {
-    // TODO(bitwize): test this condition
+    const auto result = vec1.cross(vec2);
+
+    SECTION("Returns nonzero")
+    {
+      REQUIRE( result != 0.0f );
+    }
+    SECTION("Magnitude of cross-product is product of magnitudes")
+    {
+      const auto lhs = result;
+      const auto rhs = vec1.magnitude() * vec2.magnitude();
+
+      REQUIRE( almost_equal(lhs, rhs) );
+    }
   }
 }
 
@@ -301,14 +319,14 @@ TEST_CASE("vector2::perpendicular()", "[quantifiers]")
 
 TEST_CASE("vector2::normalized()", "[quantifiers]")
 {
-  // TODO(bitwizeshift): test this
+  // Untested (same as normalize)
 }
 
 //-----------------------------------------------------------------------------
 
 TEST_CASE("vector2::inverse()", "[quantifiers]")
 {
-  // TODO(bitwizeshift): test this
+  // Untested (same as invert)
 }
 
 //-----------------------------------------------------------------------------
@@ -428,10 +446,127 @@ TEST_CASE("vector2::invert()", "[modifiers]")
 {
   SECTION("Vector contains only zeros")
   {
+    auto vec = alloy::core::vector2{0.0f, 0.0f};
+    const auto expected = vec;
 
+    vec.invert();
+
+    SECTION("Does not alter vector")
+    {
+      REQUIRE( vec == expected );
+    }
   }
   SECTION("Vector contains values")
   {
+    auto vec = alloy::core::vector2{1.0f, 2.0f};
+    const auto expected = alloy::core::vector2{-1.0f, -2.0f};
 
+    vec.invert();
+
+    SECTION("Inverts the vector")
+    {
+      REQUIRE( vec == expected );
+    }
+  }
+}
+
+//==============================================================================
+// Mathematical Properties
+//==============================================================================
+
+TEST_CASE("operator+( vector2, vector2 )", "[arithmetic]")
+{
+  SECTION("Adds values piecewise")
+  {
+    const auto lhs = alloy::core::vector2{1,2};
+    const auto rhs = alloy::core::vector2{2,1};
+    const auto result = alloy::core::vector2{3,3};
+
+    REQUIRE( (lhs + rhs) == result );
+  }
+  SECTION("Is commutative")
+  {
+    const auto a = alloy::core::vector2{1,2};
+    const auto b = alloy::core::vector2{4,5};
+
+    REQUIRE( (a + b) == (b + a) );
+  }
+  SECTION("Is associative")
+  {
+    const auto a = alloy::core::vector2{1,2};
+    const auto b = alloy::core::vector2{4,5};
+    const auto c = alloy::core::vector2{8,9};
+
+    REQUIRE( ((a + b) + c) == (a + (b + c)) );
+  }
+  SECTION("Contains identity")
+  {
+    const auto a = alloy::core::vector2{1,2};
+    const auto identity = alloy::core::vector2{0,0};
+
+    REQUIRE( (a + identity) == (a) );
+  }
+}
+
+TEST_CASE("operator-( vector2, vector2 )", "[arithmetic]")
+{
+  SECTION("Subtracts values piecewise")
+  {
+    const auto lhs = alloy::core::vector2{1,2};
+    const auto rhs = alloy::core::vector2{2,1};
+    const auto result = alloy::core::vector2{-1,1};
+
+    REQUIRE( (lhs - rhs) == result );
+  }
+  SECTION("Contains identity")
+  {
+    const auto a = alloy::core::vector2{1,2};
+    const auto identity = alloy::core::vector2{0,0};
+
+    REQUIRE( (a - identity) == (a) );
+  }
+}
+
+TEST_CASE("operator*( real, vector2 )", "[arithmetic]")
+{
+  SECTION("Is distributive")
+  {
+    const auto constant = alloy::core::real{2};
+    const auto a = alloy::core::vector2{1,2};
+    const auto b = alloy::core::vector2{2,1};
+
+    const auto lhs = (constant * (a + b));
+    const auto rhs = (constant * a + constant * b);
+
+    REQUIRE( lhs == rhs );
+  }
+  SECTION("Contains identity")
+  {
+    const auto a = alloy::core::vector2{1,2};
+    const auto identity = alloy::core::real{1};
+
+    REQUIRE( (identity * a) == (a) );
+  }
+}
+
+TEST_CASE("operator*( vector2, real )", "[arithmetic]")
+{
+  SECTION("Is distributive")
+  {
+    const auto constant = alloy::core::real{2};
+    const auto a = alloy::core::vector2{1,2};
+    const auto b = alloy::core::vector2{2,1};
+
+    const auto lhs = ((a + b) * constant);
+    const auto rhs = (a * constant + b * constant);
+
+    REQUIRE( lhs == rhs );
+  }
+  SECTION("Contains identity")
+  {
+    const auto a = alloy::core::vector2{1,2};
+    const auto identity = alloy::core::real{1};
+
+    REQUIRE( (a * identity) == (a) );
   }
 }

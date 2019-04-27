@@ -127,7 +127,7 @@ TEST_CASE("vector3::dot( vector3 )", "[quantifiers]")
 
 TEST_CASE("vector3::cross( vector3 )", "[quantifiers]")
 {
-  SECTION("Cross product is commutative")
+  SECTION("Cross product is anti-commutative")
   {
     const auto a = alloy::core::vector3{ 1.0f, 0.0f, 0.0f };
     const auto b = alloy::core::vector3{ 0.0f, 1.0f, 0.0f };
@@ -144,8 +144,36 @@ TEST_CASE("vector3::cross( vector3 )", "[quantifiers]")
     const auto lhs = (a.cross(b)).magnitude();
     const auto rhs = a.magnitude() * b.magnitude() * sqrt(descriminant);
 
-    // a x b == |a||b|*sqrt(1-(a dot b)^2)
+    // |a x b| == |a||b|*sqrt(1-(a dot b)^2)
     REQUIRE( almost_equal(lhs, rhs) );
+  }
+  SECTION("Vectors are parallel")
+  {
+    SECTION("Returns zero vector")
+    {
+      const auto vec1 = alloy::core::vector3{ 1.0f, 1.0f, 1.0f };
+      const auto vec2 = alloy::core::vector3{ 1.0f, 1.0f, 1.0f };
+
+      const auto result = vec1.cross(vec2);
+      const auto expected = alloy::core::vector3{ 0.0f, 0.0f, 0.0f };
+
+      REQUIRE( almost_equal(result, expected) );
+    }
+  }
+  SECTION("Vectors are perpendicular")
+  {
+    SECTION("Magnitude of cross-product is product of magnitudes")
+    {
+      const auto vec1 = alloy::core::vector3{ 1.0f, 0.0f, 0.0f };
+      const auto vec2 = alloy::core::vector3{ 0.0f, 1.0f, 0.0f };
+
+      const auto result = vec1.cross(vec2);
+
+      const auto lhs = result.magnitude();
+      const auto rhs = vec1.magnitude() * vec2.magnitude();
+
+      REQUIRE( almost_equal(lhs, rhs) );
+    }
   }
 }
 
@@ -355,5 +383,106 @@ TEST_CASE("vector3::invert()", "[modifiers]")
     {
       REQUIRE( vec == expected );
     }
+  }
+}
+
+//==============================================================================
+// Mathematical Properties
+//==============================================================================
+
+TEST_CASE("operator+( vector3, vector3 )", "[arithmetic]")
+{
+  SECTION("Adds values piecewise")
+  {
+    const auto lhs = alloy::core::vector3{1,2,3};
+    const auto rhs = alloy::core::vector3{2,1,4};
+    const auto result = alloy::core::vector3{3,3,7};
+
+    REQUIRE( (lhs + rhs) == result );
+  }
+  SECTION("Is commutative")
+  {
+    const auto a = alloy::core::vector3{1,2,3};
+    const auto b = alloy::core::vector3{4,5,6};
+
+    REQUIRE( (a + b) == (b + a) );
+  }
+  SECTION("Is associative")
+  {
+    const auto a = alloy::core::vector3{1,2,3};
+    const auto b = alloy::core::vector3{4,5,6};
+    const auto c = alloy::core::vector3{7,8,9};
+
+    REQUIRE( ((a + b) + c) == (a + (b + c)) );
+  }
+  SECTION("Contains identity")
+  {
+    const auto a = alloy::core::vector3{1,2,3};
+    const auto identity = alloy::core::vector3{0,0,0};
+
+    REQUIRE( (a + identity) == (a) );
+  }
+}
+
+TEST_CASE("operator-( vector3, vector3 )", "[arithmetic]")
+{
+  SECTION("Subtracts values piecewise")
+  {
+    const auto lhs = alloy::core::vector3{1,2,1};
+    const auto rhs = alloy::core::vector3{2,1,2};
+    const auto result = alloy::core::vector3{-1,1,-1};
+
+    REQUIRE( (lhs - rhs) == result );
+  }
+  SECTION("Contains identity")
+  {
+    const auto a = alloy::core::vector3{1,2,3};
+    const auto identity = alloy::core::vector3{0,0,0};
+
+    REQUIRE( (a - identity) == (a) );
+  }
+}
+
+TEST_CASE("operator*( real, vector3 )", "[arithmetic]")
+{
+  SECTION("Is distributive")
+  {
+    const auto constant = alloy::core::real{2};
+    const auto a = alloy::core::vector3{1,2,1};
+    const auto b = alloy::core::vector3{2,1,2};
+
+    const auto lhs = (constant * (a + b));
+    const auto rhs = (constant * a + constant * b);
+
+    REQUIRE( lhs == rhs );
+  }
+  SECTION("Contains identity")
+  {
+    const auto a = alloy::core::vector3{1,2,3};
+    const auto identity = alloy::core::real{1};
+
+    REQUIRE( (identity * a) == (a) );
+  }
+}
+
+TEST_CASE("operator*( vector3, real )", "[arithmetic]")
+{
+  SECTION("Is distributive")
+  {
+    const auto constant = alloy::core::real{2};
+    const auto a = alloy::core::vector3{1,2,1};
+    const auto b = alloy::core::vector3{2,1,2};
+
+    const auto lhs = ((a + b) * constant);
+    const auto rhs = (a * constant + b * constant);
+
+    REQUIRE( lhs == rhs );
+  }
+  SECTION("Contains identity")
+  {
+    const auto a = alloy::core::vector3{1,2,3};
+    const auto identity = alloy::core::real{1};
+
+    REQUIRE( (a * identity) == (a) );
   }
 }
