@@ -50,7 +50,7 @@ dist_path="$(pwd)/dist"
 api_doc_path="${dist_path}/api/${version}"
 
 # Clone a git repo for doxygen
-git clone -b gh-pages "https://${GITHUB_REPO_REF}" "${dist_path}"
+git clone --single-branch -b gh-pages "https://${GITHUB_REPO_REF}" "${dist_path}"
 git config --global push.default simple
 
 # Add a .nojekyll file
