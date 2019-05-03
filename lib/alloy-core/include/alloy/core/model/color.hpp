@@ -38,7 +38,7 @@
 #include "alloy/core/assert.hpp"
 #include "alloy/core/math/math.hpp"
 
-#include <cstdint> // std::uinr32_t, std::uint64_t
+#include <cstdint> // std::uint32_t, std::uint64_t
 #include <type_traits>
 
 namespace alloy::core {

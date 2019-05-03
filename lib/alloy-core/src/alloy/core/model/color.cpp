@@ -1,6 +1,7 @@
 #include "alloy/core/model/color.hpp"
 
 #include "alloy/core/intrinsics.hpp"
+#include <algorithm> // std::min, std::max
 
 //==============================================================================
 // class : color
@@ -277,7 +278,7 @@ alloy::core::hsb alloy::core::color::to_hsb()
 {
   const auto min_value = std::min(r(), std::min(g(), b()));
   const auto max_value = std::max(r(), std::max(g(), b()));
-  const auto delta = max_value - min_value;
+  const auto delta     = max_value - min_value;
 
   const auto brightness = max_value;
 
