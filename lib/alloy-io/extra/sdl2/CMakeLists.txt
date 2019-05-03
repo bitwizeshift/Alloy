@@ -4,12 +4,12 @@
 
 set(header_files
   include/alloy/io/sdl2_window.hpp
-  include/alloy/io/sdl2_vulkan_window.hpp
+  include/alloy/io/sdl2_gl_window.hpp
 )
 
 set(source_files
   src/alloy/io/sdl2_window.cpp
-  src/alloy/io/sdl2_vulkan_window.cpp
+  src/alloy/io/sdl2_gl_window.cpp
 )
 
 add_library(${PROJECT_NAME}IOSDL2 STATIC
