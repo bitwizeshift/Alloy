@@ -1,7 +1,7 @@
 # How to build Alloy
 
 This guide walks through all the required tools and software
-dependencies in order to build the `alloy` game-engine.
+dependencies in order to build the **Alloy** game-engine.
 
 ## Requirements
 

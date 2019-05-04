@@ -27,11 +27,11 @@ have come before it, the complete list can be seen
 * [API Reference](https://bitwizeshift.github.io/alloy/api/latest/manual.html) \
   For doxygen-generated API information
 * [Tutorials](https://bitwizeshift.github.io/alloy/api/latest/tutorials.html) \
-  For tutorials on how to use `alloy`
+  For tutorials on how to use **Alloy**
 * [Legal](doc/legal.md) \
   Information about how to attribute this project
 * [How to build](doc/building.md) \
-  Detailed instructions for how to build the `alloy` library
+  Detailed instructions for how to build the **Alloy** library
 * [Design Goals](doc/design-goals.md) \
   The design goals of this library
 * [Contributing Guidelines](.github/CONTRIBUTING.md) \
