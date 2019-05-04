@@ -76,11 +76,12 @@ namespace alloy::io {
 
     sdl2_gl_window( const char* title,
                     int width, int height,
-                    sdl_gl_version version ) noexcept;
+                    sdl_gl_version version );
     sdl2_gl_window( const char* title,
                     int x, int y,
                     int width, int height,
-                    sdl_gl_version version ) noexcept;
+                    sdl_gl_version version );
+    ~sdl2_gl_window();
 
     //--------------------------------------------------------------------------
     // Observers

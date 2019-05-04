@@ -35,7 +35,7 @@ target_include_directories(${PROJECT_NAME}IOSDL2
 
 target_link_libraries(${PROJECT_NAME}IOSDL2
   PUBLIC SDL2
-  PRIVATE ${PROJECT_NAME}::IO
+  PUBLIC ${PROJECT_NAME}::IO
 )
 
 # Header Self-Containment Tests

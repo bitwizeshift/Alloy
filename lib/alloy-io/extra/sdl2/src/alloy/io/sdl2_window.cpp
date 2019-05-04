@@ -13,7 +13,6 @@
 alloy::io::sdl2_window::sdl2_window( const char* title,
                                      int width, int height,
                                      std::uint32_t flags )
-  noexcept
   : sdl2_window{
       title,
       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -28,7 +27,6 @@ alloy::io::sdl2_window::sdl2_window( const char* title,
                                      int x, int y,
                                      int width, int height,
                                      std::uint32_t flags )
-  noexcept
   : m_window{nullptr}
 {
   const auto adjusted_flags = SDL_WINDOW_ALLOW_HIGHDPI |

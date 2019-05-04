@@ -58,17 +58,19 @@ namespace alloy::io {
     using window_handle_type = ::SDL_Window*;
 
     //--------------------------------------------------------------------------
-    // Protected Constructors
+    // Protected Constructors / Destructor
     //--------------------------------------------------------------------------
   protected:
 
     sdl2_window( const char* title,
                  int width, int height,
-                 std::uint32_t flags ) noexcept;
+                 std::uint32_t flags );
     sdl2_window( const char* title,
                  int x, int y,
                  int width, int height,
-                 std::uint32_t flags ) noexcept;
+                 std::uint32_t flags );
+
+    ~sdl2_window();
 
     //--------------------------------------------------------------------------
     // Observers
@@ -99,7 +101,7 @@ namespace alloy::io {
 
     void do_set_dimensions( int width, int height ) override;
     void do_set_position( int x, int y ) override;
-    virtual void do_update() = 0;
+    virtual void do_update() override = 0;
 
     //--------------------------------------------------------------------------
     // Hooks : Access

@@ -9,11 +9,11 @@
 alloy::io::sdl2_gl_window::sdl2_gl_window( const char* title,
                                            int width, int height,
                                            sdl_gl_version version )
-  noexcept
   : sdl2_gl_window{
       title,
       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-      width, height
+      width, height,
+      version
     }
 {
 
@@ -23,7 +23,6 @@ alloy::io::sdl2_gl_window::sdl2_gl_window( const char* title,
                                            int x, int y,
                                            int width, int height,
                                            sdl_gl_version version )
-  noexcept
   : sdl2_window{title, x, y, width, height, SDL_WINDOW_OPENGL},
     m_gl_context{nullptr}
 {
@@ -34,7 +33,7 @@ alloy::io::sdl2_gl_window::sdl2_gl_window( const char* title,
 
   m_gl_context = ::SDL_GL_CreateContext(sdl2_window::window_handle());
 
-  if (m_window == nullptr) {
+  if (m_gl_context == nullptr) {
     auto message = std::string{::SDL_GetError()};
     ::SDL_ClearError();
 
