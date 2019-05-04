@@ -18,7 +18,7 @@ conan install ..
 # Compile and execute unit tests
 cmake .. \
   -G"Ninja" \
-  -DALLOY_COMPILE_UNIT_TESTS=On \
+  -DALLOY_COMPILE_TESTS=On \
   -DALLOY_COMPILE_HEADER_SELF_CONTAINMENT_TESTS=On \
   -DALLOY_ENABLE_COVERAGE=On
 

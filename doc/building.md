@@ -62,7 +62,7 @@ These are all optional; any generator can be chosen, and any
 options may be chosen. For the complete list of options, check the root project's `CMakeLists.txt`
 
 ```sh
-cmake .. -G"Ninja" -DALLOY_COMPILE_EXTRAS=On -DALLOY_COMPILE_UNIT_TESTS=On
+cmake .. -G"Ninja" -DALLOY_COMPILE_EXTRAS=On -DALLOY_COMPILE_TESTS=On
 ```
 
 4. Build the project

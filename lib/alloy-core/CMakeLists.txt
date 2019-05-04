@@ -161,7 +161,7 @@ endif ()
 
 # Unit Tests
 
-if (ALLOY_COMPILE_UNIT_TESTS)
+if (ALLOY_COMPILE_TESTS)
   add_subdirectory("test")
 endif ()
 

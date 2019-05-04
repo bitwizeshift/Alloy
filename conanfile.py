@@ -58,7 +58,7 @@ class AlloyConan(ConanFile):
 
         # Features
         cmake.definitions["ALLOY_COMPILE_SELF_CONTAINMENT_TESTS"] = "ON"
-        cmake.definitions["ALLOY_COMPILE_UNIT_TESTS"] = "OFF"
+        cmake.definitions["ALLOY_COMPILE_TESTS"] = "OFF"
         cmake.definitions["ALLOY_COMPILE_EXTRAS"] = "ON" if self.options.extras else "OFF"
         cmake.definitions["ALLOY_COMPILE_EXAMPLES"] = "ON" if self.options.examples else "OFF"
         cmake.definitions["ALLOY_GENERATE_DOCS"] = "ON" if self.options.install_docs else "OFF"

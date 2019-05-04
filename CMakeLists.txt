@@ -13,7 +13,7 @@ set(CMAKE_MODULE_PATH "${ALLOY_MODULE_PATH}" "${CMAKE_MODULE_PATH}")
 
 option(BUILD_SHARED_LIBS "Whether to build this library as a shared library" ON)
 option(ALLOY_COMPILE_SELF_CONTAINMENT_TESTS "Include each public header independently in a .cpp file to determine header self-containment" ON)
-option(ALLOY_COMPILE_UNIT_TESTS "Compile and run the unit tests for this library" OFF)
+option(ALLOY_COMPILE_TESTS "Compile and run the unit tests for this library" OFF)
 option(ALLOY_COMPILE_EXTRAS "Compiles extras that ship with this library" OFF)
 option(ALLOY_COMPILE_EXAMPLES "Compiles example programs that use this library" OFF)
 option(ALLOY_ENABLE_CLANG_TIDY "Enables clang-tidy integration" OFF)
@@ -50,7 +50,7 @@ endif ()
 # Project
 ##############################################################################
 
-if (NOT CMAKE_TESTING_ENABLED AND ALLOY_COMPILE_UNIT_TESTS)
+if (NOT CMAKE_TESTING_ENABLED AND ALLOY_COMPILE_TESTS)
   enable_testing()
 endif ()
 
