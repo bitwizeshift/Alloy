@@ -11,6 +11,7 @@ set(CMAKE_MODULE_PATH "${ALLOY_MODULE_PATH}" "${CMAKE_MODULE_PATH}")
 # Project Options
 ##############################################################################
 
+option(CMAKE_EXPORT_COMPILE_COMMANDS "Enable exporting compile-commands within CMake" ON)
 option(BUILD_SHARED_LIBS "Whether to build this library as a shared library" ON)
 
 option(ALLOY_COMPILE_SELF_CONTAINMENT_TESTS "Include each public header independently in a .cpp file to determine header self-containment" ON)
@@ -19,7 +20,6 @@ option(ALLOY_COMPILE_EXTRAS "Compiles extras that ship with this library" OFF)
 option(ALLOY_COMPILE_EXAMPLES "Compiles example programs that use this library" OFF)
 option(ALLOY_ENABLE_CLANG_TIDY "Enables clang-tidy integration" OFF)
 option(ALLOY_ENABLE_EXCEPTIONS "Enable exception handling" ON)
-option(ALLOY_EXPORT_COMPILE_COMMANDS "Enable exporting compile-commands within CMake" ON)
 
 set(ALLOY_PRECISION "float" CACHE STRING "Precision level for floating point")
 set(ALLOY_PRECISION_VALUES "float" "double")
@@ -31,10 +31,6 @@ mark_as_advanced(ALLOY_PRECISION)
 if (NOT ALLOY_PRECISION IN_LIST ALLOY_PRECISION_VALUES)
   message(FATAL_ERROR "Invalid ALLOY_PRECISION '${ALLOY_PRECISION}'."
                       "Precision must be one of: " ${ALLOY_PRECISION_VALUES})
-endif ()
-
-if (ALLOY_EXPORT_COMPILE_COMMANDS)
-  set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 endif ()
 
 ##############################################################################
@@ -50,10 +46,10 @@ project(Alloy
   LANGUAGES CXX
 )
 
-set(ALLOY_VERSION_MAJOR ${PROJECT_VERSION_MAJOR} CACHE STRING "Major version of the Alloy game engine" FORCE)
-set(ALLOY_VERSION_MINOR ${PROJECT_VERSION_MINOR} CACHE STRING "Minor version of the Alloy game engine" FORCE)
-set(ALLOY_VERSION_PATCH ${PROJECT_VERSION_PATCH} CACHE STRING "Patch version of the Alloy game engine" FORCE)
-set(ALLOY_VERSION ${PROJECT_VERSION} CACHE STRING "Version of Alloy game engine" FORCE)
+set(ALLOY_VERSION_MAJOR ${PROJECT_VERSION_MAJOR} CACHE INTERNAL "Major version of the Alloy game engine")
+set(ALLOY_VERSION_MINOR ${PROJECT_VERSION_MINOR} CACHE INTERNAL "Minor version of the Alloy game engine")
+set(ALLOY_VERSION_PATCH ${PROJECT_VERSION_PATCH} CACHE INTERNAL "Patch version of the Alloy game engine")
+set(ALLOY_VERSION ${PROJECT_VERSION} CACHE INTERNAL "Version of Alloy game engine")
 
 # If using conan, only set the find paths. This project is trying to be
 # fully CMake
