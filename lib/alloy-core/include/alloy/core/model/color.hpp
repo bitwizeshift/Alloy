@@ -27,8 +27,8 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-#ifndef ALLOY_GRAPHICS_COLOR_HPP
-#define ALLOY_GRAPHICS_COLOR_HPP
+#ifndef ALLOY_CORE_MODEL_COLOR_HPP
+#define ALLOY_CORE_MODEL_COLOR_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
 # pragma once
@@ -616,4 +616,4 @@ inline constexpr alloy::core::color
 }
 
 
-#endif /* ALLOY_GRAPHICS_COLOR_HPP */
+#endif /* ALLOY_CORE_MODEL_COLOR_HPP */
