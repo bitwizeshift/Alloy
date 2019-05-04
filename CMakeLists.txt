@@ -12,13 +12,12 @@ set(CMAKE_MODULE_PATH "${ALLOY_MODULE_PATH}" "${CMAKE_MODULE_PATH}")
 ##############################################################################
 
 option(BUILD_SHARED_LIBS "Whether to build this library as a shared library" ON)
+
 option(ALLOY_COMPILE_SELF_CONTAINMENT_TESTS "Include each public header independently in a .cpp file to determine header self-containment" ON)
 option(ALLOY_COMPILE_TESTS "Compile and run the unit tests for this library" OFF)
 option(ALLOY_COMPILE_EXTRAS "Compiles extras that ship with this library" OFF)
 option(ALLOY_COMPILE_EXAMPLES "Compiles example programs that use this library" OFF)
 option(ALLOY_ENABLE_CLANG_TIDY "Enables clang-tidy integration" OFF)
-option(ALLOY_INSTALL_DOCS "Install documentation for this library" OFF)
-option(ALLOY_VERBOSE_CONFIGURE "Verbosely configures this library project" OFF)
 option(ALLOY_ENABLE_EXCEPTIONS "Enable exception handling" ON)
 option(ALLOY_EXPORT_COMPILE_COMMANDS "Enable exporting compile-commands within CMake" ON)
 
@@ -27,19 +26,11 @@ set(ALLOY_PRECISION_VALUES "float" "double")
 set_property(CACHE ALLOY_PRECISION PROPERTY STRINGS ${ALLOY_PRECISION_VALUES})
 mark_as_advanced(ALLOY_PRECISION)
 
-option(ALLOY_USE_TRIG_TABLE "Precomputes a trig table for math use, rather than using hardware. The table size is from 'ALLOY_TRIG_TABLE_SIZE'" OFF)
-set(ALLOY_TRIG_TABLE_SIZE "4096" CACHE STRING "Number of entries in trig table")
-mark_as_advanced(ALLOY_TRIG_TABLE_SIZE)
-
 # Validation
 
 if (NOT ALLOY_PRECISION IN_LIST ALLOY_PRECISION_VALUES)
   message(FATAL_ERROR "Invalid ALLOY_PRECISION '${ALLOY_PRECISION}'."
                       "Precision must be one of: " ${ALLOY_PRECISION_VALUES})
-endif ()
-if (NOT ALLOY_TRIG_TABLE_SIZE MATCHES "[1-9][0-9].*")
-  message(FATAL_ERROR "Invalid ALLOY_TRIG_TABLE_SIZE '${ALLOY_TRIG_TABLE_SIZE}'."
-                      "Table size must be numeric.")
 endif ()
 
 if (ALLOY_EXPORT_COMPILE_COMMANDS)
