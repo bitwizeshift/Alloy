@@ -47,9 +47,15 @@ if (ALLOY_COMPILE_SELF_CONTAINMENT_TESTS)
 endif ()
 
 # Extras
-find_package(SDL2)
+include(CMakeDependentOption)
+find_package(SDL2 QUIET)
 
-if (TARGET SDL2)
+cmake_dependent_option(ALLOY_COMPILE_EXTRAS_IO_SDL2
+  "Compiles the SDL implementation of the 'io' library" ON
+  "ALLOY_COMPILE_EXTRAS;SDL2_FOUND" OFF
+)
+
+if (ALLOY_COMPILE_EXTRAS_IO_SDL2)
   add_subdirectory("extra/sdl2")
 endif ()
 
