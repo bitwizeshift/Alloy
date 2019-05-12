@@ -1,0 +1,67 @@
+#include <alloy/core/utilities/scope_guard.hpp>
+
+#include <catch2/catch.hpp>
+
+TEST_CASE("alloy::core::on_scope_exit( Fn&& fn )", "[raii]")
+{
+  bool flag = false;
+
+  SECTION("Executes on clean scope exit")
+  {
+    {
+      auto scope = alloy::core::on_scope_exit([&]()
+      {
+        flag = true;
+      });
+    }
+
+    REQUIRE( flag == true );
+  }
+
+  SECTION("Executes on exception scope exit")
+  {
+    try {
+      auto scope = alloy::core::on_scope_exit([&]()
+      {
+        flag = true;
+      });
+      throw std::exception{};
+    } catch (...) {
+      // do nothing
+    }
+
+    REQUIRE( flag == true );
+  }
+}
+
+TEST_CASE("ALLOY_ON_SCOPE_EXIT(x)", "[raii]")
+{
+  bool flag = false;
+
+  SECTION("Executes on clean scope exit")
+  {
+    {
+      ALLOY_ON_SCOPE_EXIT([&]()
+      {
+        flag = true;
+      });
+    }
+
+    REQUIRE( flag == true );
+  }
+
+  SECTION("Executes on exception scope exit")
+  {
+    try {
+      ALLOY_ON_SCOPE_EXIT([&]()
+      {
+        flag = true;
+      });
+      throw std::exception{};
+    } catch (...) {
+      // do nothing
+    }
+
+    REQUIRE( flag == true );
+  }
+}

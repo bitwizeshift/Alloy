@@ -5,6 +5,9 @@ find_package(Catch2 REQUIRED)
 ##############################################################################
 
 set(source_files
+  # Utilities
+  src/alloy/core/utilities/scope_guard.test.cpp
+
   # Math
   src/alloy/core/math/vector/vector2.test.cpp
   src/alloy/core/math/vector/vector3.test.cpp
