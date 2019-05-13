@@ -4,10 +4,12 @@
 
 set(header_files
   include/alloy/io/window.hpp
+  include/alloy/io/message_pump.hpp
 )
 
 set(source_files
   src/alloy/io/window.cpp
+  src/alloy/io/message_pump.cpp
 )
 
 add_library(${PROJECT_NAME}IO
