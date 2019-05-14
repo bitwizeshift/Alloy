@@ -550,7 +550,7 @@ alloy::io::event::id_type alloy::io::event::handler(operation op,
 template<typename Event>
 inline void alloy::io::message_pump::post_event(Event&& e)
 {
-  const auto erased_event = event::make_event( std::forward<Event>(e) );
+  const auto erased_event = event::make_event<std::decay_t<Event>>( std::forward<Event>(e) );
 
   do_post_event(erased_event);
 }
@@ -558,7 +558,7 @@ inline void alloy::io::message_pump::post_event(Event&& e)
 template<typename Event>
 inline void alloy::io::message_pump::post_immediate_event(Event&& e)
 {
-  const auto erased_event = event::make_event( std::forward<Event>(e) );
+  const auto erased_event = event::make_event<std::decay_t<Event>>( std::forward<Event>(e) );
 
   do_post_immediate_event(erased_event);
 }
