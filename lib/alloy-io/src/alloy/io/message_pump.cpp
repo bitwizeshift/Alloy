@@ -98,6 +98,12 @@ void alloy::io::event::reset()
 // Constructors
 //------------------------------------------------------------------------------
 
+alloy::io::message_pump::message_pump()
+  noexcept
+{
+
+}
+
 //------------------------------------------------------------------------------
 // Modifiers
 //------------------------------------------------------------------------------
@@ -143,7 +149,7 @@ void alloy::io::message_pump::unregister_pump_source( core::not_null<source*> s 
 // Event Posting
 //------------------------------------------------------------------------------
 
-void alloy::io::message_pump::do_post_event(const event& e)
+void alloy::io::message_pump::do_post_event( const event& e )
 {
   // TODO(bitwizeshift): Handle concurrency
   for (auto& listener : m_listeners) {
@@ -151,13 +157,14 @@ void alloy::io::message_pump::do_post_event(const event& e)
   }
 }
 
-void alloy::io::message_pump::do_post_immediate_event(const event& e)
+void alloy::io::message_pump::do_post_immediate_event( const event& e )
 {
   // TODO(bitwizeshift): Handle concurrency
   for (auto& listener : m_listeners) {
     listener->handle_immediate_message(e);
   }
 }
+
 //==============================================================================
 // class : message_pump::listener
 //==============================================================================
