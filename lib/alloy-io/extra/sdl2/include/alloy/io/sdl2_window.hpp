@@ -34,10 +34,10 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/utilities/not_null.hpp"
 #include "alloy/io/window.hpp"
 
 #include <SDL2/SDL.h>
-#include <cstdint> // std::uint32_t
 
 namespace alloy::io {
 
@@ -58,19 +58,36 @@ namespace alloy::io {
     using window_handle_type = ::SDL_Window*;
 
     //--------------------------------------------------------------------------
-    // Protected Constructors / Destructor
+    // Protected Constructors / Destructor / Assignment
     //--------------------------------------------------------------------------
   protected:
 
-    sdl2_window( const char* title,
-                 int width, int height,
-                 std::uint32_t flags );
-    sdl2_window( const char* title,
-                 int x, int y,
-                 int width, int height,
-                 std::uint32_t flags );
+    /// \brief Constructs and sdl2_window from an SDL_Window handle
+    ///
+    /// \note By passing the window handle to this class, ownership is
+    ///       transferred to this class
+    ///
+    /// \pre \p window is not null
+    /// \param window the window handle
+    explicit sdl2_window( core::not_null<::SDL_Window*> window ) noexcept;
 
-    ~sdl2_window();
+    /// \brief Constructs an sdl2_window by moving the contents from \p other
+    ///
+    /// \param other the other window to move
+    sdl2_window( sdl2_window&& other ) noexcept = default;
+    sdl2_window( const sdl2_window& other ) = delete;
+
+    //--------------------------------------------------------------------------
+
+    ~sdl2_window() noexcept;
+
+    //--------------------------------------------------------------------------
+
+    /// \brief Assigns an sdl2_window by moving the contents from \p other
+    ///
+    /// \param other the other window to move
+    sdl2_window& operator=( sdl2_window&& other ) noexcept = default;
+    sdl2_window& operator=( const sdl2_window& other ) = delete;
 
     //--------------------------------------------------------------------------
     // Observers

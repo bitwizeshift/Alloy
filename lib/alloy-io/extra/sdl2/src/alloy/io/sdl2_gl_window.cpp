@@ -6,48 +6,84 @@
 #include <stdexcept> // std::runtime_error
 #include <utility>   // std::move
 
-alloy::io::sdl2_gl_window::sdl2_gl_window( const char* title,
-                                           int width, int height,
-                                           sdl_gl_version version )
-  : sdl2_gl_window{
-      title,
-      SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-      width, height,
-      version
-    }
-{
+//------------------------------------------------------------------------------
+// Public Static Factories
+//------------------------------------------------------------------------------
 
+alloy::io::sdl2_gl_window
+  alloy::io::sdl2_gl_window::from_window_data( const char* title,
+                                               int width, int height,
+                                               sdl_gl_version version )
+{
+  return from_window_data(
+    title,
+    SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+    width, height,
+    version
+  );
 }
 
-alloy::io::sdl2_gl_window::sdl2_gl_window( const char* title,
-                                           int x, int y,
-                                           int width, int height,
-                                           sdl_gl_version version )
-  : sdl2_window{title, x, y, width, height, SDL_WINDOW_OPENGL},
-    m_gl_context{nullptr}
+alloy::io::sdl2_gl_window
+  alloy::io::sdl2_gl_window::from_window_data( const char* title,
+                                               int x, int y,
+                                               int width, int height,
+                                               sdl_gl_version version )
 {
+  const auto flags = SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_OPENGL;
+
+  auto window = ::SDL_CreateWindow(title, x, y, width, height, flags);
+
+  if (window == nullptr) {
+    auto message = std::string{::SDL_GetError()};
+    ::SDL_ClearError();
+
+    throw std::runtime_error{std::move(message)};
+  }
+
   ::SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
   ::SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, version.major);
   ::SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, version.minor);
   ::SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-  m_gl_context = ::SDL_GL_CreateContext(sdl2_window::window_handle());
+  auto context = ::SDL_GL_CreateContext(window);
 
-  if (m_gl_context == nullptr) {
+  if (context == nullptr) {
     auto message = std::string{::SDL_GetError()};
     ::SDL_ClearError();
+    ::SDL_DestroyWindow(window);
 
     throw std::runtime_error{std::move(message)};
-    // TODO(bitwizeshift): Handle errors better
   }
+
+  return sdl2_gl_window{window, context};
 }
 
+//------------------------------------------------------------------------------
+// Public Constructors / Destructor
+//------------------------------------------------------------------------------
+
+alloy::io::sdl2_gl_window::sdl2_gl_window( core::not_null<::SDL_Window*> window,
+                                           ::SDL_GLContext context )
+  noexcept
+  : sdl2_window{window.get()},
+    m_gl_context{context}
+{
+  ALLOY_ASSERT(context != nullptr);
+}
+
+//------------------------------------------------------------------------------
+
 alloy::io::sdl2_gl_window::~sdl2_gl_window()
+  noexcept
 {
   ALLOY_ASSERT(m_gl_context != nullptr);
 
   ::SDL_GL_DeleteContext(m_gl_context);
 }
+
+//------------------------------------------------------------------------------
+// Observers
+//------------------------------------------------------------------------------
 
 alloy::io::sdl2_gl_window::context_handle_type
   alloy::io::sdl2_gl_window::context_handle()
@@ -55,6 +91,10 @@ alloy::io::sdl2_gl_window::context_handle_type
 {
   return m_gl_context;
 }
+
+//------------------------------------------------------------------------------
+// Modifiers
+//------------------------------------------------------------------------------
 
 void alloy::io::sdl2_gl_window::set_swap_interval( swap_interval interval )
 {
@@ -77,6 +117,10 @@ void alloy::io::sdl2_gl_window::set_swap_interval( swap_interval interval )
 
   ::SDL_GL_SetSwapInterval(value);
 }
+
+//------------------------------------------------------------------------------
+// Hooks : Modifiers
+//------------------------------------------------------------------------------
 
 void alloy::io::sdl2_gl_window::do_update()
 {

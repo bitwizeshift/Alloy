@@ -34,9 +34,12 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/utilities/not_null.hpp"
 #include "alloy/io/sdl2_window.hpp"
 
 #include <SDL2/SDL.h>
+
+#include <cstdint> // std::uint32_t
 
 namespace alloy::io {
 
@@ -67,21 +70,77 @@ namespace alloy::io {
     //--------------------------------------------------------------------------
   public:
 
+    enum class swap_interval
+    {
+      immediate,             ///< No synchronization
+      synchronized,          ///< VSync enabled
+      adaptive_synchronized, ///< Adaptive synchronization
+    };
+
     using context_handle_type = ::SDL_GLContext;
 
     //--------------------------------------------------------------------------
-    // Constructors
+    // Public Static Factories
     //--------------------------------------------------------------------------
   public:
 
-    sdl2_gl_window( const char* title,
-                    int width, int height,
-                    sdl_gl_version version );
-    sdl2_gl_window( const char* title,
-                    int x, int y,
-                    int width, int height,
-                    sdl_gl_version version );
-    ~sdl2_gl_window();
+    /// \brief Constructs a window from the specified window data
+    ///
+    /// \param title the window title
+    /// \param width the width of the window
+    /// \param height the height of the window
+    /// \param version the GL version
+    static sdl2_gl_window from_window_data( const char* title,
+                                            int width, int height,
+                                            sdl_gl_version version );
+
+    /// \brief Constructs a window from the specified window data
+    ///
+    /// \param title the window title
+    /// \param x the x-position
+    /// \param y the y-position
+    /// \param width the width of the window
+    /// \param height the height of the window
+    /// \param version the GL version
+    static sdl2_gl_window from_window_data( const char* title,
+                                            int x, int y,
+                                            int width, int height,
+                                            sdl_gl_version version );
+
+    //--------------------------------------------------------------------------
+    // Constructors / Destructor / Assignment
+    //--------------------------------------------------------------------------
+  public:
+
+    /// \brief Constructs a window from an SDL window handle and a gl context
+    ///
+    /// \note By passing the window or context handle to this class, ownership
+    ///       is controlled by this window.
+    ///
+    /// \pre \p window is not null
+    /// \pre \p context is not null
+    /// \param window the window handle
+    /// \param context the opengl context
+    sdl2_gl_window( core::not_null<::SDL_Window*> window,
+                    ::SDL_GLContext context ) noexcept;
+
+    /// \brief Constructs an sdl2_gl_window by moving the contents from \p other
+    ///
+    /// \param other the other window to move
+    sdl2_gl_window( sdl2_gl_window&& other ) noexcept = default;
+    sdl2_gl_window( const sdl2_gl_window& other ) = delete;
+
+    //--------------------------------------------------------------------------
+
+    ~sdl2_gl_window() noexcept;
+
+    //--------------------------------------------------------------------------
+
+    /// \brief Assigns an sdl2_gl_window by moving the contents from \p other
+    ///
+    /// \param other the other window to move
+    sdl2_gl_window& operator=( sdl2_gl_window&& other ) noexcept = default;
+    sdl2_gl_window& operator=( const sdl2_gl_window& other ) = delete;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -98,13 +157,9 @@ namespace alloy::io {
     //--------------------------------------------------------------------------
   public:
 
-    enum class swap_interval
-    {
-      immediate,             ///< No synchronization
-      synchronized,          ///< VSync enabled
-      adaptive_synchronized, ///< Adaptive synchronization
-    };
-
+    /// \brief Sets the swap interval for this window
+    ///
+    /// \param interval the interval for doing framerate swaps
     void set_swap_interval( swap_interval interval );
 
     //--------------------------------------------------------------------------

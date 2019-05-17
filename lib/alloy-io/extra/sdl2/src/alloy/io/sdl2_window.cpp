@@ -7,47 +7,35 @@
 #include <utility>   // std::move
 
 //------------------------------------------------------------------------------
-// Protected Constructors
+// Protected Constructors / Destructor
 //------------------------------------------------------------------------------
 
-alloy::io::sdl2_window::sdl2_window( const char* title,
-                                     int width, int height,
-                                     std::uint32_t flags )
-  : sdl2_window{
-      title,
-      SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-      width, height,
-      flags
-    }
+alloy::io::sdl2_window::sdl2_window( core::not_null<::SDL_Window*> window )
+  noexcept
+  : m_window{window.get()}
 {
 
 }
 
-alloy::io::sdl2_window::sdl2_window( const char* title,
-                                     int x, int y,
-                                     int width, int height,
-                                     std::uint32_t flags )
-  : m_window{nullptr}
-{
-  const auto adjusted_flags = SDL_WINDOW_ALLOW_HIGHDPI |
-                              flags;
-
-  m_window = ::SDL_CreateWindow(title, x, y, width, height, adjusted_flags);
-
-  if (m_window == nullptr) {
-    auto message = std::string{::SDL_GetError()};
-    ::SDL_ClearError();
-
-    throw std::runtime_error{std::move(message)};
-    // TODO(bitwizeshift): Handle errors better
-  }
-}
+//------------------------------------------------------------------------------
 
 alloy::io::sdl2_window::~sdl2_window()
+  noexcept
 {
   ALLOY_ASSERT(m_window != nullptr);
 
   ::SDL_DestroyWindow(m_window);
+}
+
+//------------------------------------------------------------------------------
+// Observers
+//------------------------------------------------------------------------------
+
+alloy::io::sdl2_window::window_handle_type
+  alloy::io::sdl2_window::window_handle()
+  const noexcept
+{
+  return m_window;
 }
 
 //------------------------------------------------------------------------------
