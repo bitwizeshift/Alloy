@@ -120,6 +120,12 @@ void alloy::extra::win32_filesystem_monitor::pump( io::message_pump& p )
 
   // Poll each watch handle for new changes
   for (auto& handle : m_impl->watch_handles) {
+
+    // TODO(bitwizeshift):
+    //   Figure out how to get ALL file changes in a single pump call.
+    //   Putting 'WaitForSingleObject in a loop, comparing the result against
+    //   'WAIT_TIMEOUT' seems to trigger an infinite loop.
+
     const auto result = ::WaitForSingleObject( handle.handle, 0 );
 
     // If we timed out, skip this for later
