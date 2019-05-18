@@ -156,12 +156,31 @@ namespace alloy::io {
     /// \return the id
     id_type id() const noexcept;
 
+    /// \brief Checks if this event is of type \p Event
+    ///
+    /// \tparam Event the event to compare against
+    /// \return \c true if this event is of type \p Event
+    template<typename Event>
+    bool is() const noexcept;
+
     /// \brief Converts this event to the specified \p Event type
     ///
     /// \pre \c id() matches the result of \c event::is_of<Event>()
+    /// \tparam Event the event type to convert to
     /// \return the event
     template<typename Event>
     const Event& as() const noexcept;
+
+    /// \brief Attempts to convert this event to the specified \p Event type
+    ///
+    /// If the underlying event is of type \p Event, this function returns a
+    /// pointer to the underlying event. If it is not valid, it returns
+    /// \c nullptr
+    ///
+    /// \tparam Event the event type to attempt to convert to
+    /// \return a pointer to the event if successful, \c nullptr otherwise
+    template<typename Event>
+    const Event* try_as() const noexcept;
 
     //--------------------------------------------------------------------------
     // Private Functions
@@ -473,6 +492,15 @@ inline alloy::io::event::id_type
 }
 
 template<typename Event>
+inline bool alloy::io::event::is()
+  const noexcept
+{
+  static_assert(is_valid_event<Event>::value);
+
+  return id() == event::id_of<Event>();
+}
+
+template<typename Event>
 inline const Event& alloy::io::event::as()
   const noexcept
 {
@@ -481,6 +509,18 @@ inline const Event& alloy::io::event::as()
   ALLOY_ASSERT(id() == event::id_of<Event>(), "Invalid type conversion");
 
   return reinterpret_cast<const Event&>(m_storage);
+}
+
+template<typename Event>
+inline const Event* alloy::io::event::try_as()
+  const noexcept
+{
+  static_assert(is_valid_event<Event>::value);
+
+  if (id() != event::id_of<Event>()) {
+    return nullptr;
+  }
+  return reinterpret_cast<const Event*>(&m_storage);
 }
 
 //------------------------------------------------------------------------------
