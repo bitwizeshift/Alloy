@@ -1,4 +1,6 @@
-#include "alloy/io/win32_filesystem_monitor.hpp"
+#include "alloy/extra/win32-bindings/win32_filesystem_monitor.hpp"
+#include "alloy/core/intrinsics.hpp"
+
 #include "windows.hpp"
 
 #include <vector>
@@ -23,7 +25,7 @@ namespace {
 // struct : win32_filesystem_monitor::impl
 //==============================================================================
 
-struct alloy::io::win32_filesystem_monitor::impl
+struct alloy::extra::win32_filesystem_monitor::impl
 {
   std::vector<::watch_handle> watch_handles;
   std::map<::HANDLE,::HANDLE> directory_handles;
@@ -37,18 +39,18 @@ struct alloy::io::win32_filesystem_monitor::impl
 // Constructor / Destructor / Assignment
 //------------------------------------------------------------------------------
 
-alloy::io::win32_filesystem_monitor::win32_filesystem_monitor()
+alloy::extra::win32_filesystem_monitor::win32_filesystem_monitor()
   : m_impl{std::make_unique<win32_filesystem_monitor::impl>()}
 {
 
 }
 
-alloy::io::win32_filesystem_monitor
+alloy::extra::win32_filesystem_monitor
   ::win32_filesystem_monitor( win32_filesystem_monitor&& ) noexcept = default;
 
 //------------------------------------------------------------------------------
 
-alloy::io::win32_filesystem_monitor::~win32_filesystem_monitor()
+alloy::extra::win32_filesystem_monitor::~win32_filesystem_monitor()
   noexcept
 {
   // Close the open notification handles
@@ -64,21 +66,21 @@ alloy::io::win32_filesystem_monitor::~win32_filesystem_monitor()
 
 //------------------------------------------------------------------------------
 
-alloy::io::win32_filesystem_monitor& alloy::io::win32_filesystem_monitor
+alloy::extra::win32_filesystem_monitor& alloy::extra::win32_filesystem_monitor
   ::operator=( win32_filesystem_monitor&& ) noexcept = default;
 
 //------------------------------------------------------------------------------
 // Private Hooks
 //------------------------------------------------------------------------------
 
-void alloy::io::win32_filesystem_monitor::do_watch( std::string_view path,
-                                                    bool recursive )
+void alloy::extra::win32_filesystem_monitor::do_watch( std::string_view path,
+                                                       bool recursive )
   noexcept
 {
-  const auto filter = FILE_NOTIFY_CHANGE_FILE_NAME  | \
-                      FILE_NOTIFY_CHANGE_DIR_NAME   | \
-                      FILE_NOTIFY_CHANGE_SIZE       | \
-                      FILE_NOTIFY_CHANGE_LAST_WRITE | \
+  const auto filter = FILE_NOTIFY_CHANGE_FILE_NAME  |
+                      FILE_NOTIFY_CHANGE_DIR_NAME   |
+                      FILE_NOTIFY_CHANGE_SIZE       |
+                      FILE_NOTIFY_CHANGE_LAST_WRITE |
                       FILE_NOTIFY_CHANGE_CREATION;
 
   // TODO(bitwizeshift): Check that 'path' doesn't already exist
@@ -107,7 +109,7 @@ void alloy::io::win32_filesystem_monitor::do_watch( std::string_view path,
 
 //------------------------------------------------------------------------------
 
-void alloy::io::win32_filesystem_monitor::pump( message_pump& p )
+void alloy::extra::win32_filesystem_monitor::pump( io::message_pump& p )
   noexcept
 {
   static constexpr auto file_count = 128;
@@ -157,21 +159,21 @@ void alloy::io::win32_filesystem_monitor::pump( message_pump& p )
 
     switch (notify_info->Action) {
       case FILE_ACTION_ADDED: {
-        auto event = file_creation_event {
+        auto event = io::file_creation_event {
           std::move(filename)
         };
         p.post_event(event);
         break;
       }
       case FILE_ACTION_REMOVED: {
-        auto event = file_removal_event {
+        auto event = io::file_removal_event {
           std::move(filename)
         };
         p.post_event(event);
         break;
       }
       case FILE_ACTION_MODIFIED: {
-        auto event = file_update_event {
+        auto event = io::file_update_event {
           std::move(filename)
         };
         p.post_event(event);
@@ -179,14 +181,14 @@ void alloy::io::win32_filesystem_monitor::pump( message_pump& p )
       }
       // Renaming a file is considered a deletion and addition
       case FILE_ACTION_RENAMED_OLD_NAME: {
-        auto event = file_removal_event {
+        auto event = io::file_removal_event {
           std::move(filename)
         };
         p.post_event(event);
         break;
       }
       case FILE_ACTION_RENAMED_NEW_NAME: {
-        auto event = file_creation_event {
+        auto event = io::file_creation_event {
           std::move(filename)
         };
         p.post_event(event);

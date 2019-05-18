@@ -50,17 +50,6 @@ if (ALLOY_COMPILE_SELF_CONTAINMENT_TESTS)
   )
 endif ()
 
-# Extras
-include(CMakeDependentOption)
-cmake_dependent_option(ALLOY_COMPILE_EXTRAS_IO_WIN32
-  "Compiles the Win32 implementation of the 'io' library" ON
-  "ALLOY_COMPILE_EXTRAS;WIN32" OFF
-)
-
-if (ALLOY_COMPILE_EXTRAS_IO_WIN32)
-  add_subdirectory("extra/win32")
-endif ()
-
 # Unit Tests
 
 if (ALLOY_COMPILE_TESTS)

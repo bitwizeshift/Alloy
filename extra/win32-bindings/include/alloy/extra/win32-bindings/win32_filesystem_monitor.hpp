@@ -40,13 +40,14 @@
 #include <string_view> // std::string_view
 #include <memory>      // std::unique_ptr
 
-namespace alloy::io {
+namespace alloy::extra {
 
   //////////////////////////////////////////////////////////////////////////////
   ///
   ///
   //////////////////////////////////////////////////////////////////////////////
-  class win32_filesystem_monitor : public filesystem_monitor
+  class win32_filesystem_monitor
+    : public io::filesystem_monitor
   {
     //--------------------------------------------------------------------------
     // Constructors / Destructor / Assignment
@@ -76,7 +77,7 @@ namespace alloy::io {
     /// \brief Virtual hook for handling the message pump
     ///
     /// \param p the message_pump to handle the message
-    void pump(message_pump& p) noexcept override;
+    void pump(io::message_pump& p) noexcept override;
 
     //--------------------------------------------------------------------------
     // Private Members
