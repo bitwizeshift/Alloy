@@ -35,13 +35,13 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "alloy/core/utilities/not_null.hpp"
-#include "alloy/io/sdl2_window.hpp"
+#include "alloy/extra/sdl2-bindings/sdl2_window.hpp"
 
 #include <SDL2/SDL.h>
 
 #include <cstdint> // std::uint32_t
 
-namespace alloy::io {
+namespace alloy::extra {
 
   //============================================================================
   // struct : sdl2_gl_version
@@ -63,7 +63,8 @@ namespace alloy::io {
   //////////////////////////////////////////////////////////////////////////////
   /// \brief A concrete instance of an OpenGL Window
   //////////////////////////////////////////////////////////////////////////////
-  class sdl2_gl_window final : public sdl2_window
+  class sdl2_gl_window final
+    : public sdl2_window
   {
     //--------------------------------------------------------------------------
     // Public Member Types

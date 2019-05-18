@@ -1,4 +1,4 @@
-#include "alloy/io/sdl2_window.hpp"
+#include "alloy/extra/sdl2-bindings/sdl2_window.hpp"
 
 #include "alloy/core/assert.hpp"
 
@@ -10,7 +10,7 @@
 // Protected Constructors / Destructor
 //------------------------------------------------------------------------------
 
-alloy::io::sdl2_window::sdl2_window( core::not_null<::SDL_Window*> window )
+alloy::extra::sdl2_window::sdl2_window( core::not_null<::SDL_Window*> window )
   noexcept
   : m_window{window.get()}
 {
@@ -19,7 +19,7 @@ alloy::io::sdl2_window::sdl2_window( core::not_null<::SDL_Window*> window )
 
 //------------------------------------------------------------------------------
 
-alloy::io::sdl2_window::~sdl2_window()
+alloy::extra::sdl2_window::~sdl2_window()
   noexcept
 {
   ALLOY_ASSERT(m_window != nullptr);
@@ -31,8 +31,8 @@ alloy::io::sdl2_window::~sdl2_window()
 // Observers
 //------------------------------------------------------------------------------
 
-alloy::io::sdl2_window::window_handle_type
-  alloy::io::sdl2_window::window_handle()
+alloy::extra::sdl2_window::window_handle_type
+  alloy::extra::sdl2_window::window_handle()
   const noexcept
 {
   return m_window;
@@ -42,7 +42,7 @@ alloy::io::sdl2_window::window_handle_type
 // Hooks : Observers
 //------------------------------------------------------------------------------
 
-int alloy::io::sdl2_window::do_width()
+int alloy::extra::sdl2_window::do_width()
   const
 {
   ALLOY_ASSERT(m_window != nullptr);
@@ -52,7 +52,7 @@ int alloy::io::sdl2_window::do_width()
   return width;
 }
 
-int alloy::io::sdl2_window::do_height()
+int alloy::extra::sdl2_window::do_height()
   const
 {
   ALLOY_ASSERT(m_window != nullptr);
@@ -62,7 +62,7 @@ int alloy::io::sdl2_window::do_height()
   return height;
 }
 
-bool alloy::io::sdl2_window::do_is_fullscreen()
+bool alloy::extra::sdl2_window::do_is_fullscreen()
   const
 {
   ALLOY_ASSERT(m_window != nullptr);
@@ -72,7 +72,7 @@ bool alloy::io::sdl2_window::do_is_fullscreen()
   return static_cast<bool>(flags & SDL_WINDOW_FULLSCREEN);
 }
 
-bool alloy::io::sdl2_window::do_is_focused()
+bool alloy::extra::sdl2_window::do_is_focused()
   const
 {
   ALLOY_ASSERT(m_window != nullptr);
@@ -85,7 +85,7 @@ bool alloy::io::sdl2_window::do_is_focused()
   return static_cast<bool>(flags & mask);
 }
 
-bool alloy::io::sdl2_window::do_is_shown()
+bool alloy::extra::sdl2_window::do_is_shown()
   const
 {
   ALLOY_ASSERT(m_window != nullptr);
@@ -95,7 +95,7 @@ bool alloy::io::sdl2_window::do_is_shown()
   return static_cast<bool>(flags & SDL_WINDOW_SHOWN);
 }
 
-bool alloy::io::sdl2_window::do_is_hidden()
+bool alloy::extra::sdl2_window::do_is_hidden()
   const
 {
   ALLOY_ASSERT(m_window != nullptr);
@@ -109,14 +109,14 @@ bool alloy::io::sdl2_window::do_is_hidden()
 // Hooks : Modifiers
 //------------------------------------------------------------------------------
 
-void alloy::io::sdl2_window::do_set_dimensions( int width, int height )
+void alloy::extra::sdl2_window::do_set_dimensions( int width, int height )
 {
   ALLOY_ASSERT(m_window != nullptr);
 
   ::SDL_SetWindowSize(m_window, width, height);
 }
 
-void alloy::io::sdl2_window::do_set_position( int x, int y )
+void alloy::extra::sdl2_window::do_set_position( int x, int y )
 {
   ALLOY_ASSERT(m_window != nullptr);
 
@@ -127,28 +127,28 @@ void alloy::io::sdl2_window::do_set_position( int x, int y )
 // Hooks : Access
 //------------------------------------------------------------------------------
 
-void alloy::io::sdl2_window::do_fullscreen()
+void alloy::extra::sdl2_window::do_fullscreen()
 {
   ALLOY_ASSERT(m_window != nullptr);
 
   ::SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
 }
 
-void alloy::io::sdl2_window::do_focus()
+void alloy::extra::sdl2_window::do_focus()
 {
   ALLOY_ASSERT(m_window != nullptr);
 
   ::SDL_SetWindowInputFocus(m_window);
 }
 
-void alloy::io::sdl2_window::do_show()
+void alloy::extra::sdl2_window::do_show()
 {
   ALLOY_ASSERT(m_window != nullptr);
 
   ::SDL_ShowWindow(m_window);
 }
 
-void alloy::io::sdl2_window::do_hide()
+void alloy::extra::sdl2_window::do_hide()
 {
   ALLOY_ASSERT(m_window != nullptr);
 

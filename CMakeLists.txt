@@ -116,7 +116,7 @@ add_subdirectory("bin/scene-editor")
 # Extras
 
 if (ALLOY_COMPILE_EXTRAS)
-  add_subdirectory("extra/use-discrete-gpu")
+  add_subdirectory("extra")
 endif ()
 
 # Examples

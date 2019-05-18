@@ -40,7 +40,7 @@
 #include <SDL2/SDL.h>
 #include <map>
 
-namespace alloy::io {
+namespace alloy::extra {
 
   class sdl2_window;
 
@@ -60,7 +60,7 @@ namespace alloy::io {
   /// - window_maximize_event
   //////////////////////////////////////////////////////////////////////////////
   class sdl2_pump_source final
-    : public message_pump::source
+    : public alloy::io::message_pump::source
   {
     //--------------------------------------------------------------------------
     // Static Functions
@@ -83,14 +83,14 @@ namespace alloy::io {
     /// are pumped.
     ///
     /// \param window the window to attach
-    void attach_window( core::not_null<sdl2_window*> window );
+    void attach_window(core::not_null<sdl2_window*> window);
 
     /// \brief Detaches an sdl2_window from this pump source
     ///
     /// Removed windows have their events discarded during pumping.
     ///
     /// \param window the window to attach
-    void detach_window( core::not_null<sdl2_window*> window );
+    void detach_window(core::not_null<sdl2_window*> window);
 
     //--------------------------------------------------------------------------
     // Private Constructors / Assignment
@@ -98,13 +98,13 @@ namespace alloy::io {
   private:
 
     sdl2_pump_source() noexcept = default;
-    sdl2_pump_source( sdl2_pump_source&& other ) = delete;
-    sdl2_pump_source( const sdl2_pump_source& other ) = delete;
+    sdl2_pump_source(sdl2_pump_source&& other) = delete;
+    sdl2_pump_source(const sdl2_pump_source& other) = delete;
 
     //--------------------------------------------------------------------------
 
-    sdl2_pump_source& operator=( sdl2_pump_source&& other ) = delete;
-    sdl2_pump_source& operator=( const sdl2_pump_source& other ) = delete;
+    sdl2_pump_source& operator=(sdl2_pump_source&& other) = delete;
+    sdl2_pump_source& operator=(const sdl2_pump_source& other) = delete;
 
     //--------------------------------------------------------------------------
     // Hooks
@@ -119,14 +119,14 @@ namespace alloy::io {
     ///       pump, the event will not propagate.
     ///
     /// \param p the message_pump to handle the message
-    void pump(message_pump& p) noexcept override;
+    void pump(io::message_pump& p) noexcept override;
 
     /// \brief Handles a window event
     ///
     /// \param event the SDL_Event to handle
     /// \param p the message pump to pump events back into
-    void handle_window_event( const ::SDL_Event& event,
-                              message_pump& p ) noexcept;
+    void handle_window_event(const ::SDL_Event& event,
+                             io::message_pump& p) noexcept;
 
     //--------------------------------------------------------------------------
     // Private Members

@@ -52,20 +52,10 @@ endif ()
 
 # Extras
 include(CMakeDependentOption)
-find_package(SDL2 QUIET)
-
-cmake_dependent_option(ALLOY_COMPILE_EXTRAS_IO_SDL2
-  "Compiles the SDL implementation of the 'io' library" ON
-  "ALLOY_COMPILE_EXTRAS;SDL2_FOUND" OFF
-)
 cmake_dependent_option(ALLOY_COMPILE_EXTRAS_IO_WIN32
   "Compiles the Win32 implementation of the 'io' library" ON
   "ALLOY_COMPILE_EXTRAS;WIN32" OFF
 )
-
-if (ALLOY_COMPILE_EXTRAS_IO_SDL2)
-  add_subdirectory("extra/sdl2")
-endif ()
 
 if (ALLOY_COMPILE_EXTRAS_IO_WIN32)
   add_subdirectory("extra/win32")

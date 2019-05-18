@@ -1,4 +1,4 @@
-#include "alloy/io/sdl2_gl_window.hpp"
+#include "alloy/extra/sdl2-bindings/sdl2_gl_window.hpp"
 
 #include "alloy/core/assert.hpp"
 
@@ -10,10 +10,10 @@
 // Public Static Factories
 //------------------------------------------------------------------------------
 
-alloy::io::sdl2_gl_window
-  alloy::io::sdl2_gl_window::from_window_data( const char* title,
-                                               int width, int height,
-                                               sdl_gl_version version )
+alloy::extra::sdl2_gl_window
+  alloy::extra::sdl2_gl_window::from_window_data( const char* title,
+                                                  int width, int height,
+                                                  sdl_gl_version version )
 {
   return from_window_data(
     title,
@@ -23,11 +23,11 @@ alloy::io::sdl2_gl_window
   );
 }
 
-alloy::io::sdl2_gl_window
-  alloy::io::sdl2_gl_window::from_window_data( const char* title,
-                                               int x, int y,
-                                               int width, int height,
-                                               sdl_gl_version version )
+alloy::extra::sdl2_gl_window
+  alloy::extra::sdl2_gl_window::from_window_data( const char* title,
+                                                  int x, int y,
+                                                  int width, int height,
+                                                  sdl_gl_version version )
 {
   const auto flags = SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_OPENGL;
 
@@ -62,8 +62,9 @@ alloy::io::sdl2_gl_window
 // Public Constructors / Destructor
 //------------------------------------------------------------------------------
 
-alloy::io::sdl2_gl_window::sdl2_gl_window( core::not_null<::SDL_Window*> window,
-                                           ::SDL_GLContext context )
+alloy::extra::sdl2_gl_window
+  ::sdl2_gl_window( core::not_null<::SDL_Window*> window,
+                    ::SDL_GLContext context )
   noexcept
   : sdl2_window{window.get()},
     m_gl_context{context}
@@ -73,7 +74,7 @@ alloy::io::sdl2_gl_window::sdl2_gl_window( core::not_null<::SDL_Window*> window,
 
 //------------------------------------------------------------------------------
 
-alloy::io::sdl2_gl_window::~sdl2_gl_window()
+alloy::extra::sdl2_gl_window::~sdl2_gl_window()
   noexcept
 {
   ALLOY_ASSERT(m_gl_context != nullptr);
@@ -85,8 +86,8 @@ alloy::io::sdl2_gl_window::~sdl2_gl_window()
 // Observers
 //------------------------------------------------------------------------------
 
-alloy::io::sdl2_gl_window::context_handle_type
-  alloy::io::sdl2_gl_window::context_handle()
+alloy::extra::sdl2_gl_window::context_handle_type
+  alloy::extra::sdl2_gl_window::context_handle()
   const noexcept
 {
   return m_gl_context;
@@ -96,7 +97,8 @@ alloy::io::sdl2_gl_window::context_handle_type
 // Modifiers
 //------------------------------------------------------------------------------
 
-void alloy::io::sdl2_gl_window::set_swap_interval( swap_interval interval )
+void
+  alloy::extra::sdl2_gl_window::set_swap_interval( swap_interval interval )
 {
   auto value = int{};
 
@@ -122,7 +124,7 @@ void alloy::io::sdl2_gl_window::set_swap_interval( swap_interval interval )
 // Hooks : Modifiers
 //------------------------------------------------------------------------------
 
-void alloy::io::sdl2_gl_window::do_update()
+void alloy::extra::sdl2_gl_window::do_update()
 {
   ::SDL_GL_SwapWindow(sdl2_window::window_handle());
 }
