@@ -150,54 +150,64 @@ void alloy::extra::win32_filesystem_monitor::pump( io::message_pump& p )
     using converter_type = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<converter_type, wchar_t> converter;
 
-    auto notify_info = reinterpret_cast<::FILE_NOTIFY_INFORMATION*>(&buffer);
-    auto wfilename = std::wstring{
-      notify_info->FileName,
-      notify_info->FileNameLength / sizeof(::WCHAR)
-    };
-    auto filename = converter.to_bytes(wfilename);
+    const auto* current = reinterpret_cast<const unsigned char*>(&buffer);
+    const auto* prev = current;
+    do {
+      const auto* notify_info = reinterpret_cast<const ::FILE_NOTIFY_INFORMATION*>(current);
+      const auto wfilename = std::wstring{
+        notify_info->FileName,
+        notify_info->FileNameLength / sizeof(::WCHAR)
+      };
+      auto filename = converter.to_bytes(wfilename);
 
-    switch (notify_info->Action) {
-      case FILE_ACTION_ADDED: {
-        auto event = io::file_creation_event {
-          std::move(filename)
-        };
-        p.post_event(event);
+      switch (notify_info->Action) {
+        case FILE_ACTION_ADDED: {
+          auto event = io::file_creation_event {
+            std::move(filename)
+          };
+          p.post_event(event);
+          break;
+        }
+        case FILE_ACTION_REMOVED: {
+          auto event = io::file_removal_event {
+            std::move(filename)
+          };
+          p.post_event(event);
+          break;
+        }
+        case FILE_ACTION_MODIFIED: {
+          auto event = io::file_update_event {
+            std::move(filename)
+          };
+          p.post_event(event);
+          break;
+        }
+        // Renaming a file is considered a deletion and addition
+        case FILE_ACTION_RENAMED_OLD_NAME: {
+          auto event = io::file_removal_event {
+            std::move(filename)
+          };
+          p.post_event(event);
+          break;
+        }
+        case FILE_ACTION_RENAMED_NEW_NAME: {
+          auto event = io::file_creation_event {
+            std::move(filename)
+          };
+          p.post_event(event);
+          break;
+        }
+        default:
+          ALLOY_UNREACHABLE();
+          break;
+      }
+
+      if (notify_info->NextEntryOffset==0U) {
         break;
       }
-      case FILE_ACTION_REMOVED: {
-        auto event = io::file_removal_event {
-          std::move(filename)
-        };
-        p.post_event(event);
-        break;
-      }
-      case FILE_ACTION_MODIFIED: {
-        auto event = io::file_update_event {
-          std::move(filename)
-        };
-        p.post_event(event);
-        break;
-      }
-      // Renaming a file is considered a deletion and addition
-      case FILE_ACTION_RENAMED_OLD_NAME: {
-        auto event = io::file_removal_event {
-          std::move(filename)
-        };
-        p.post_event(event);
-        break;
-      }
-      case FILE_ACTION_RENAMED_NEW_NAME: {
-        auto event = io::file_creation_event {
-          std::move(filename)
-        };
-        p.post_event(event);
-        break;
-      }
-      default:
-        ALLOY_UNREACHABLE();
-        break;
-    }
+      prev = current;
+      current += notify_info->NextEntryOffset;
+    } while (current != prev);
 
     // Keep waiting for the next notification
     ::FindNextChangeNotification( handle.handle );
