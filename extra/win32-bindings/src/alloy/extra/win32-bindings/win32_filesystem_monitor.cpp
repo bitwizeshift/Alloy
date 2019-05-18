@@ -112,9 +112,9 @@ void alloy::extra::win32_filesystem_monitor::do_watch( std::string_view path,
 void alloy::extra::win32_filesystem_monitor::pump( io::message_pump& p )
   noexcept
 {
-  static constexpr auto file_count = 128;
+  static constexpr auto buffer_size = 256;
 
-  using storage_type = std::aligned_storage_t<256,alignof(::FILE_NOTIFY_INFORMATION)>;
+  using storage_type = std::aligned_storage_t<buffer_size,alignof(::FILE_NOTIFY_INFORMATION)>;
 
   auto buffer = storage_type{};
 
@@ -134,7 +134,7 @@ void alloy::extra::win32_filesystem_monitor::pump( io::message_pump& p )
     ::ReadDirectoryChangesW(
       directory_handle,
       static_cast<void*>(&buffer),
-      file_count,
+      buffer_size,
       static_cast<::WINBOOL>(handle.recursive),
       handle.notification_filter,
       &bytes_read,
