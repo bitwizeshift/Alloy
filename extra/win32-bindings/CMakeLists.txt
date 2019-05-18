@@ -46,3 +46,9 @@ if (ALLOY_COMPILE_SELF_CONTAINMENT_TESTS)
     HEADERS ${header_files}
   )
 endif ()
+
+# Examples
+
+if (ALLOY_COMPILE_EXAMPLES)
+  add_subdirectory("example/filesystem-watcher")
+endif ()
