@@ -1,7 +1,7 @@
 # Alloy Style-Guide
 
 This document describes the C++ coding standards that all contributors are
-expected to adhere to when presenting contributions to the Alloy project.
+expected to adhere to when presenting contributions to the **Alloy** project.
 
 This guide is not meant to be the strict set of definitive rules about
 where to put braces, or how many blank lines to leave between functions.
