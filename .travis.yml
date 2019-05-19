@@ -124,25 +124,27 @@ jobs:
     # Validate
     ############################################################################
 
-    - <<: *linux_clang_agent
-      stage: validate
-      name: "Undefined Behavior Sanitizer (linux-clang++-6.0)"
-      script: ./.travis/validate-sanitize.sh ubsan
+    # Sanitizers disabled from CI until they are added to the CMakeLists.txt
 
-    - <<: *linux_clang_agent
-      stage: validate
-      name: "Address Sanitizer (linux-clang++-6.0)"
-      script: ./.travis/validate-sanitize.sh asan
+    # - <<: *linux_clang_agent
+    #   stage: validate
+    #   name: "Undefined Behavior Sanitizer (linux-clang++-6.0)"
+    #   script: ./.travis/validate-sanitize.sh ubsan
 
-    - <<: *linux_clang_agent
-      stage: validate
-      name: "Memory Sanitizer (linux-clang++-6.0)"
-      script: ./.travis/validate-sanitize.sh msan
+    # - <<: *linux_clang_agent
+    #   stage: validate
+    #   name: "Address Sanitizer (linux-clang++-6.0)"
+    #   script: ./.travis/validate-sanitize.sh asan
 
-    - <<: *linux_gcc_agent
-      stage: validate
-      name: "Code Coverage (linux-g++-8)"
-      script: ./.travis/validate-coverage.sh
+    # - <<: *linux_clang_agent
+    #   stage: validate
+    #   name: "Memory Sanitizer (linux-clang++-6.0)"
+    #   script: ./.travis/validate-sanitize.sh msan
+
+    # - <<: *linux_gcc_agent
+    #   stage: validate
+    #   name: "Code Coverage (linux-g++-8)"
+    #   script: ./.travis/validate-coverage.sh
 
     # TODO(bitwizeshift): Add valgrind agent
 
