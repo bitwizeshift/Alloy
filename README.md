@@ -1,8 +1,8 @@
 ![Alloy Engine](doc/src/images/alloy-logo.png)
 
-[![Release](https://img.shields.io/github/release/bitwizeshift/alloy.svg)](https://github.com/bitwizeshift/alloy/releases/latest)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/bitwizeshift/alloy/master/LICENSE)
-[![Github Issues](https://img.shields.io/github/issues/bitwizeshift/alloy.svg)](http://github.com/bitwizeshift/alloy/issues)
+[![Release](https://img.shields.io/github/release/bitwizeshift/Alloy.svg)](https://github.com/bitwizeshift/Alloy/releases/latest)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/bitwizeshift/Alloy/master/LICENSE)
+[![Github Issues](https://img.shields.io/github/issues/bitwizeshift/Alloy.svg)](https://github.com/bitwizeshift/Alloy/issues)
 
 ## <a name="summary"></a>Summary
 
@@ -102,8 +102,8 @@ already doing.
 
 The following compilers are currently being tested through
 [continuous integration](#continuous-integration) with
-[Travis](https://travis-ci.org/bitwizeshift/alloy) and
-[AppVeyor](https://ci.appveyor.com/project/bitwizeshift/alloy/)
+[Travis](https://travis-ci.com/bitwizeshift/Alloy) and
+[AppVeyor](https://ci.appveyor.com/project/bitwizeshift/Alloy/)
 
 | Compiler              | Operating System                   |
 |-----------------------|------------------------------------|
@@ -119,16 +119,18 @@ The following compilers are currently being tested through
 
 | **Build**     | **Status**      |
 |---------------|-----------------|
-| Ubuntu, macOS | [![Build Status](https://travis-ci.org/bitwizeshift/alloy.svg?branch=master)](https://travis-ci.org/bitwizeshift/alloy) |
+| Ubuntu, macOS | [![Build Status](https://travis-ci.com/bitwizeshift/Alloy.svg?branch=master)](https://travis-ci.com/bitwizeshift/Alloy) |
 | MSVC          | [![Build status](https://ci.appveyor.com/api/projects/status/ou5sraydky6tjxv9?svg=true)](https://ci.appveyor.com/project/bitwizeshift/alloy) |
+| Coverage      | [![Coverage Status](https://coveralls.io/repos/github/bitwizeshift/Alloy/badge.svg?branch=master)](https://coveralls.io/github/bitwizeshift/Alloy?branch=master)
+ |
 
 
 ## <a name="packaging"></a>Current Releases
 
 | **Host**            | **Release**      |
 |---------------------|------------------|
-| Github              | [![Release](https://img.shields.io/github/release/bitwizeshift/alloy.svg)](https://github.com/bitwizeshift/alloy/releases/latest) |
-| Conan               | [![Release](https://img.shields.io/github/release/bitwizeshift/alloy.svg)](#)
+| Github              | [![Release](https://img.shields.io/github/release/bitwizeshift/Alloy.svg)](https://github.com/bitwizeshift/Alloy/releases/latest) |
+| Conan               | [![Release](https://img.shields.io/github/release/bitwizeshift/Alloy.svg)](#)
 
 ## <a name="license"></a>License
 
