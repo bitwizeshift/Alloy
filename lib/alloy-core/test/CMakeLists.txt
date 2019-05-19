@@ -34,6 +34,4 @@ set_target_properties(${PROJECT_NAME}CoreTest
 ##############################################################################
 
 include(Catch)
-catch_discover_tests(${PROJECT_NAME}CoreTest
-  WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}"
-)
+catch_discover_tests(${PROJECT_NAME}CoreTest)
