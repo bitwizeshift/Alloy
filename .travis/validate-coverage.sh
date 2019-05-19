@@ -19,7 +19,7 @@ conan install ..
 cmake .. \
   -G"Ninja" \
   -DALLOY_COMPILE_TESTS=On \
-  -DALLOY_COMPILE_HEADER_SELF_CONTAINMENT_TESTS=On \
+  -DALLOY_COMPILE_SELF_CONTAINMENT_TESTS=On \
   -DALLOY_ENABLE_COVERAGE=On
 
 cmake --build . --config Release
