@@ -74,6 +74,7 @@ set(header_files
   include/alloy/core/math/vector/vector4.hpp
 
   # Geometry
+  include/alloy/core/geometry/axis_aligned_box.hpp
   include/alloy/core/geometry/line.hpp
   include/alloy/core/geometry/line_segment.hpp
   include/alloy/core/geometry/plane.hpp
@@ -114,6 +115,7 @@ set(source_files
   src/alloy/core/math/quaternion.cpp
 
   # Geometry
+  src/alloy/core/geometry/axis_aligned_box.cpp
   src/alloy/core/geometry/line.cpp
   src/alloy/core/geometry/line_segment.cpp
   src/alloy/core/geometry/plane.cpp
