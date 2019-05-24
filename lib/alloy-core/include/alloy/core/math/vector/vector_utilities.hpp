@@ -30,127 +30,9 @@
 #ifndef ALLOY_CORE_MATH_VECTOR_VECTOR_UTILITIES_HPP
 #define ALLOY_CORE_MATH_VECTOR_VECTOR_UTILITIES_HPP
 
-#include "alloy/core/math/vector/vector2.hpp"
-#include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/math/vector/vector4.hpp"
-
 #include <type_traits> // std::true_type, std::false_type
 
 namespace alloy::core {
-
-  //----------------------------------------------------------------------------
-  // Casting
-  //----------------------------------------------------------------------------
-
-  inline namespace casts {
-
-    /// \brief Casts from one vector type to another
-    ///
-    /// \param from the vector to cast from
-    /// \return the vector to cast to
-    template<typename To, typename From>
-    constexpr To vector_cast( const From& from ) noexcept;
-
-  } // inline namespace casts
-
-  //============================================================================
-  // struct : vector2_constants
-  //============================================================================
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief A collection of vector2 constants
-  //////////////////////////////////////////////////////////////////////////////
-  struct vector2_constants
-  {
-    //--------------------------------------------------------------------------
-    // Public Constants
-    //--------------------------------------------------------------------------
-
-    static inline constexpr auto zero = vector2{
-      real{0}, real{0}
-    };
-    static inline constexpr auto unit_x = vector2{
-      real{1}, real{0}
-    };
-    static inline constexpr auto unit_y = vector2{
-      real{0}, real{1}
-    };
-    static inline constexpr auto neg_unit_x = -unit_x;
-    static inline constexpr auto neg_unit_y = -unit_y;
-  };
-
-  //============================================================================
-  // struct : vector3_constants
-  //============================================================================
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief A collection of vector3 constants
-  //////////////////////////////////////////////////////////////////////////////
-
-  struct vector3_constants
-  {
-    //--------------------------------------------------------------------------
-    // Public Constants
-    //--------------------------------------------------------------------------
-
-    static inline constexpr auto zero = vector3{
-      real{0},  real{0},  real{0}
-    };
-    static inline constexpr auto unit_x = vector3{
-      real{1}, real{0}, real{0}
-    };
-    static inline constexpr auto unit_y = vector3{
-      real{0}, real{1}, real{0}
-    };
-    static inline constexpr auto unit_z = vector3{
-      real{0}, real{0}, real{1}
-    };
-    static inline constexpr auto neg_unit_x = -unit_x;
-    static inline constexpr auto neg_unit_y = -unit_y;
-    static inline constexpr auto neg_unit_z = -unit_z;
-  };
-
-  //============================================================================
-  // struct : vector4_constants
-  //============================================================================
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief A collection of vector4 constants
-  //////////////////////////////////////////////////////////////////////////////
-  struct vector4_constants
-  {
-    //--------------------------------------------------------------------------
-    // Public Constants
-    //--------------------------------------------------------------------------
-
-    static inline constexpr auto zero = vector4{
-      real{0}, real{0}, real{0}, real{0}
-    };
-    static inline constexpr auto unit_x = vector4{
-      real{1}, real{0}, real{0}, real{0}
-    };
-    static inline constexpr auto unit_y = vector4{
-      real{0}, real{1}, real{0}, real{0}
-    };
-    static inline constexpr auto unit_z = vector4{
-      real{0}, real{0}, real{1}, real{0}
-    };
-    static inline constexpr auto unit_w = vector4{
-      real{0}, real{0}, real{0}, real{1}
-    };
-    static inline constexpr auto neg_unit_x = -unit_x;
-    static inline constexpr auto neg_unit_y = -unit_y;
-    static inline constexpr auto neg_unit_z = -unit_z;
-    static inline constexpr auto neg_unit_w = -unit_w;
-  };
-
-  //============================================================================
-  // aliases
-  //============================================================================
-
-  using vec2_constants = vector2_constants;
-  using vec3_constants = vector3_constants;
-  using vec4_constants = vector4_constants;
 
   //============================================================================
   // trait : is_vector
@@ -160,10 +42,6 @@ namespace alloy::core {
   ///
   /// The result is aliased as \c ::value
   template<typename T> struct is_vector : std::false_type{};
-
-  template<> struct is_vector<vector2> : std::true_type{};
-  template<> struct is_vector<vector3> : std::true_type{};
-  template<> struct is_vector<vector4> : std::true_type{};
 
   /// \brief Convenience template variable to extract out
   ///        \c is_vector<T>::value
@@ -175,22 +53,111 @@ namespace alloy::core {
   //============================================================================
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief Traits for accessing vector types
+  /// \brief Traits for accessing vector members
+  ///
+  /// For vectors that are shorter than 4 components, any accesses outside of
+  /// the range will be treated as '0'
+  ///
+  /// This trait is intended to be used to accept arbitrary vector types in
+  /// order to access up to 4 components in a generic manner.
+  ///
+  /// \note To extend which types are usable by \c vector_traits, explicit
+  ///       specializations of \c is_vector is necessary.
   //////////////////////////////////////////////////////////////////////////////
   template<typename T>
   struct vector_traits
   {
+    static_assert(is_vector<T>::value);
     vector_traits() = delete;
     ~vector_traits() = delete;
 
-    static constexpr real x( const T& x ) noexcept;
-    static constexpr real y( const T& y ) noexcept;
-    static constexpr real z( const T& z ) noexcept;
-    static constexpr real w( const T& w ) noexcept;
+    static constexpr real x( const T& vec ) noexcept;
+    static constexpr real y( const T& vec ) noexcept;
+    static constexpr real z( const T& vec ) noexcept;
+    static constexpr real w( const T& vec ) noexcept;
   };
 
 } // namespace alloy::core
 
-#include "detail/vector_utilities.inl"
+
+//==============================================================================
+// trait : vector_traits<T>
+//==============================================================================
+
+namespace alloy::core::detail {
+
+  template<typename T, typename=std::void_t<>>
+  struct vector_has_x : std::false_type{};
+  template<typename T>
+  struct vector_has_x<T,std::void_t<decltype(std::declval<const T&>().x())>>
+    : alloy::core::is_vector<T>{};
+
+  template<typename T, typename=std::void_t<>>
+  struct vector_has_y : std::false_type{};
+  template<typename T>
+  struct vector_has_y<T,std::void_t<decltype(std::declval<const T&>().y())>>
+    : alloy::core::is_vector<T>{};
+
+  template<typename T, typename=std::void_t<>>
+  struct vector_has_z : std::false_type{};
+  template<typename T>
+  struct vector_has_z<T,std::void_t<decltype(std::declval<const T&>().z())>>
+    : alloy::core::is_vector<T>{};
+
+  template<typename T, typename=std::void_t<>>
+  struct vector_has_w : std::false_type{};
+  template<typename T>
+  struct vector_has_w<T,std::void_t<decltype(std::declval<const T&>().w())>>
+    : alloy::core::is_vector<T>{};
+
+} // namespace alloy::core::detail
+
+template<typename T>
+inline constexpr alloy::core::real
+  alloy::core::vector_traits<T>::x( const T& vec )
+  noexcept
+{
+  if constexpr (detail::vector_has_x<T>::value) {
+    return vec.x();
+  } else {
+    return real{0};
+  }
+}
+
+template<typename T>
+inline constexpr alloy::core::real
+  alloy::core::vector_traits<T>::y( const T& vec )
+  noexcept
+{
+  if constexpr (detail::vector_has_y<T>::value) {
+    return vec.y();
+  } else {
+    return real{0};
+  }
+}
+
+template<typename T>
+inline constexpr alloy::core::real
+  alloy::core::vector_traits<T>::z( const T& vec )
+  noexcept
+{
+  if constexpr (detail::vector_has_z<T>::value) {
+    return vec.z();
+  } else {
+    return real{0};
+  }
+}
+
+template<typename T>
+inline constexpr alloy::core::real
+  alloy::core::vector_traits<T>::w( const T& vec )
+  noexcept
+{
+  if constexpr (detail::vector_has_w<T>::value) {
+    return vec.w();
+  } else {
+    return real{0};
+  }
+}
 
 #endif /* ALLOY_CORE_MATH_VECTOR_VECTOR_UTILITIES_HPP */

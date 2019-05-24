@@ -98,10 +98,6 @@ set(inline_header_files
   include/alloy/core/math/angle/detail/degree.inl
   include/alloy/core/math/angle/detail/gradian.inl
   include/alloy/core/math/angle/detail/radian.inl
-  include/alloy/core/math/vector/detail/vector_utilities.inl
-  include/alloy/core/math/vector/detail/vector2.inl
-  include/alloy/core/math/vector/detail/vector3.inl
-  include/alloy/core/math/vector/detail/vector4.inl
   include/alloy/core/math/matrix/detail/matrix_utilities.inl
   include/alloy/core/math/matrix/detail/matrix2.inl
   include/alloy/core/math/matrix/detail/matrix3.inl
@@ -113,6 +109,9 @@ set(source_files
   src/alloy/core/math/simplex.cpp
   src/alloy/core/math/trigonometry.cpp
   src/alloy/core/math/quaternion.cpp
+  src/alloy/core/math/vector/vector2.cpp
+  src/alloy/core/math/vector/vector3.cpp
+  src/alloy/core/math/vector/vector4.cpp
 
   # Geometry
   src/alloy/core/geometry/axis_aligned_box.cpp

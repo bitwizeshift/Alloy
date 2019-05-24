@@ -207,7 +207,7 @@ TEST_CASE("vector2::reflection( const vector2& vec )", "[quantifiers]")
 {
   SECTION("Reflects over x-axis")
   {
-    const auto x_axis = alloy::core::vector2_constants::unit_y;
+    const auto x_axis = alloy::core::vector2::unit_y;
     const auto vector = alloy::core::vector2{1.0,1.0};
 
     const auto result = vector.reflection( x_axis );
@@ -217,7 +217,7 @@ TEST_CASE("vector2::reflection( const vector2& vec )", "[quantifiers]")
 
   SECTION("Reflects over y-axis")
   {
-    const auto x_axis = alloy::core::vector2_constants::unit_x;
+    const auto x_axis = alloy::core::vector2::unit_x;
     const auto vector = alloy::core::vector2{1.0,1.0};
 
     const auto result = vector.reflection( x_axis );
@@ -242,7 +242,7 @@ TEST_CASE("vector2::projection( const vector2& vec )", "[quantifiers]")
 {
   SECTION("Projection onto x-axis")
   {
-//    const auto axis = alloy::core::vector2_constants::unit_y;
+//    const auto axis = alloy::core::vector2::unit_y;
 
     SECTION("Vector is parallel to axis")
     {
@@ -262,7 +262,7 @@ TEST_CASE("vector2::projection( const vector2& vec )", "[quantifiers]")
 
   SECTION("Projection onto y-axis")
   {
-//    const auto axis = alloy::core::vector2_constants::unit_x;
+//    const auto axis = alloy::core::vector2::unit_x;
 
     SECTION("Vector is parallel to axis")
     {
@@ -335,8 +335,8 @@ TEST_CASE("vector2::angle_between( const vector2& )", "[quantifiers]")
 {
   SECTION("Vectors are parallel")
   {
-    const auto vec1 = alloy::core::vector2_constants::unit_x;
-    const auto vec2 = alloy::core::vector2_constants::unit_x;
+    const auto vec1 = alloy::core::vector2::unit_x;
+    const auto vec2 = alloy::core::vector2::unit_x;
 
     const auto angle = vec1.angle_between( vec2 );
     const auto expected = alloy::core::radian{0};
@@ -346,8 +346,8 @@ TEST_CASE("vector2::angle_between( const vector2& )", "[quantifiers]")
 
   SECTION("Vectors are perpendicular")
   {
-    const auto vec1 = alloy::core::vector2_constants::unit_x;
-    const auto vec2 = alloy::core::vector2_constants::unit_y;
+    const auto vec1 = alloy::core::vector2::unit_x;
+    const auto vec2 = alloy::core::vector2::unit_y;
 
     const auto angle = vec1.angle_between( vec2 );
     const auto expected = alloy::core::radian_constants::quarter_revolution;
@@ -357,7 +357,7 @@ TEST_CASE("vector2::angle_between( const vector2& )", "[quantifiers]")
 
   SECTION("Vectors are opposite")
   {
-    const auto vec1 = alloy::core::vector2_constants::unit_x;
+    const auto vec1 = alloy::core::vector2::unit_x;
     const auto vec2 = -vec1;
 
     const auto angle = vec1.angle_between( vec2 );

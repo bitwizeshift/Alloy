@@ -34,16 +34,17 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/assert.hpp" // ALLOY_ASSERT
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/utilities/piecewise_compare.hpp" // core::piecewise_compare
 #include "alloy/core/math/angle/radian.hpp" // core::radian
+#include "alloy/core/math/vector/vector_utilities.hpp" // core::is_vector
 #include "alloy/core/math/trigonometry.hpp" // core::cos, core::sin, etc
 #include "alloy/core/math/math.hpp"         // core::sqrt
 
 #include <type_traits> // std::true_type, std::false_type, std::common_type
 #include <cstddef>     // std::size_t, std::ptrdiff_t
 #include <stdexcept>   // std::out_of_range
-#include <cassert>     // assert
 
 namespace alloy::core {
 
@@ -62,6 +63,17 @@ namespace alloy::core {
   //////////////////////////////////////////////////////////////////////////////
   class vector2
   {
+    //--------------------------------------------------------------------------
+    // Static Constants
+    //--------------------------------------------------------------------------
+  public:
+
+    static const vector2 zero;
+    static const vector2 unit_x;
+    static const vector2 unit_y;
+    static const vector2 neg_unit_x;
+    static const vector2 neg_unit_y;
+
     //--------------------------------------------------------------------------
     // Public Types
     //--------------------------------------------------------------------------
@@ -308,6 +320,29 @@ namespace alloy::core {
   };
 
   //============================================================================
+  // trait : is_vector2
+  //============================================================================
+
+  /// \brief Trait to detect whether \p T is a \ref vector2
+  ///
+  /// The result is aliased as \c ::value
+  template<typename T>
+  struct is_vector2 : std::false_type{};
+  template<>
+  struct is_vector2<vector2> : std::true_type{};
+
+  /// \brief Convenience template variable to extract out
+  ///        \c is_vector2<T>::value
+  template<typename T>
+  inline constexpr bool is_vector2_v = is_vector2<T>::value;
+
+  //============================================================================
+  // trait : is_vector<vector2>
+  //============================================================================
+
+  template<> struct is_vector<vector2> : std::true_type{};
+
+  //============================================================================
   // non-member functions : class : vector2
   //============================================================================
 
@@ -388,6 +423,22 @@ namespace alloy::core {
   /// \return the magnitude
   real magnitude( const vector2& vec ) noexcept;
 
+  //----------------------------------------------------------------------------
+  // Casting
+  //----------------------------------------------------------------------------
+
+  inline namespace casts {
+
+    /// \brief Converts a vector to a vector2
+    ///
+    /// \param vec the vector to convert to a vector2
+    /// \return the vector2
+    template<typename Vector,
+        typename=std::enable_if_t<is_vector<Vector>::value>>
+    vector2 to_vector2( const Vector& vec ) noexcept;
+
+  } // inline namespace casts
+
   //============================================================================
   // struct : piecewise_compare<vector2>
   //============================================================================
@@ -400,23 +451,6 @@ namespace alloy::core {
   };
 
   //============================================================================
-  // trait : is_vector2
-  //============================================================================
-
-  /// \brief Trait to detect whether \p T is a \ref vector2
-  ///
-  /// The result is aliased as \c ::value
-  template<typename T>
-  struct is_vector2 : std::false_type{};
-  template<>
-  struct is_vector2<vector2> : std::true_type{};
-
-  /// \brief Convenience template variable to extract out
-  ///        \c is_vector2<T>::value
-  template<typename T>
-  inline constexpr bool is_vector2_v = is_vector2<T>::value;
-
-  //============================================================================
   // aliases
   //============================================================================
 
@@ -424,6 +458,537 @@ namespace alloy::core {
 
 } // namespace alloy::core
 
-#include "detail/vector2.inl"
+//==============================================================================
+// class : vector2
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Constructors
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::vector2::vector2()
+  noexcept
+  : m_data{
+      real{0},
+      real{0}
+    }
+{
+
+}
+
+inline alloy::core::vector2::vector2( real magnitude, radian direction )
+  noexcept
+  : m_data{
+      magnitude * trigonometry::cos(direction),
+      magnitude * trigonometry::sin(direction)
+    }
+{
+
+}
+
+inline constexpr alloy::core::vector2::vector2( real x, real y )
+  noexcept
+  : m_data{x,y}
+{
+
+}
+
+//------------------------------------------------------------------------------
+// Observers
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::vector2::size_type
+  alloy::core::vector2::size()
+  const noexcept
+{
+  return 2;
+}
+
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::vector2::reference
+  alloy::core::vector2::x()
+  noexcept
+{
+  return m_data[0];
+}
+
+inline constexpr alloy::core::vector2::const_reference
+  alloy::core::vector2::x()
+  const noexcept
+{
+  return m_data[0];
+}
+
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::vector2::reference
+  alloy::core::vector2::y()
+  noexcept
+{
+  return m_data[1];
+}
+
+inline constexpr alloy::core::vector2::const_reference
+  alloy::core::vector2::y()
+  const noexcept
+{
+  return m_data[1];
+}
+
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::vector2::pointer
+  alloy::core::vector2::data()
+  noexcept
+{
+  return &m_data[0];
+}
+
+inline constexpr alloy::core::vector2::const_pointer
+  alloy::core::vector2::data()
+  const noexcept
+{
+  return &m_data[0];
+}
+
+//------------------------------------------------------------------------------
+// Element Access
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::vector2::reference
+  alloy::core::vector2::at( index_type n )
+{
+#if ALLOY_ENABLE_EXCEPTIONS
+  if (n >= 2 || n < 0) {
+    throw std::out_of_range("alloy::core::vector2::at: index out of range");
+  }
+#else
+  assert( n < 2 && n >= 0 );
+#endif
+  return m_data[n];
+}
+
+inline constexpr alloy::core::vector2::const_reference
+  alloy::core::vector2::at( index_type n )
+  const
+{
+#if ALLOY_ENABLE_EXCEPTIONS
+  if (n >= 2 || n < 0) {
+    throw std::out_of_range("alloy::core::vector2::at: index out of range");
+  }
+#else
+  ALLOY_ASSERT( n < 2 && n >= 0 );
+#endif
+  return m_data[n];
+}
+
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::vector2::reference
+  alloy::core::vector2::operator[]( index_type n )
+  noexcept
+{
+  ALLOY_ASSERT( n < 2 && n >= 0 );
+  return m_data[n];
+}
+
+inline constexpr alloy::core::vector2::const_reference
+  alloy::core::vector2::operator[]( index_type n )
+  const noexcept
+{
+  ALLOY_ASSERT( n < 2 && n >= 0 );
+  return m_data[n];
+}
+
+//------------------------------------------------------------------------------
+// Quantifiers
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::real
+  alloy::core::vector2::dot( const vector2& other )
+  const noexcept
+{
+  return (x() * other.x()) + (y() * other.y());
+}
+
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::real
+  alloy::core::vector2::cross( const vector2& other )
+  const noexcept
+{
+  return (x() * other.y()) - (y() * other.x());
+}
+
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::real
+  alloy::core::vector2::square_magnitude()
+  const noexcept
+{
+  return dot(*this);
+}
+
+inline alloy::core::real
+  alloy::core::vector2::magnitude()
+  const noexcept
+{
+  return sqrt( (x()*x()) + (y()*y()) );
+}
+
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::midpoint( const vector2& rhs )
+  const noexcept
+{
+  return vector2{
+    ((x() + rhs.x()) * real{0.5}),
+    ((y() + rhs.y()) * real{0.5})
+  };
+}
+
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::reflection( const vector2& normal )
+  const noexcept
+{
+  return (*this) - (normal * (real{2} * dot(normal)));
+}
+
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::projection( const vector2& vector )
+  const noexcept
+{
+  const auto multiplier = dot(vector) / dot(*this);
+
+  return vector2{
+    multiplier * vector.x(),
+    multiplier * vector.y()
+  };
+}
+
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::rejection( const vector2& vector )
+  const noexcept
+{
+  return (*this) - projection(vector);
+}
+
+
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::perpendicular()
+  const noexcept
+{
+  return vector2{ -y(), x() };
+}
+
+inline alloy::core::vector2
+  alloy::core::vector2::normalized()
+  const noexcept
+{
+  return vector2{*this}.normalize();
+}
+
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::inverse()
+  const noexcept
+{
+  return vector2{ -x(), -y() };
+}
+
+//------------------------------------------------------------------------------
+
+inline alloy::core::radian
+  alloy::core::vector2::angle_between( const vector2& other )
+  const noexcept
+{
+  auto mag_product = magnitude() * other.magnitude();
+
+  if( almost_equal( mag_product, real{0} ) ){
+    mag_product = default_tolerance;
+  }
+
+  auto f = dot(other) / mag_product;
+
+  f = clamp( f, real{-1.0}, real{1.0} );
+  return trigonometry::arccos( f );
+}
+
+inline alloy::core::radian
+  alloy::core::vector2::angle_to( const vector2& other )
+  const noexcept
+{
+  auto angle = angle_between( other );
+
+  if( cross(other) < real{0} ) {
+    return radian_constants::revolution - angle;
+  }
+
+  return angle;
+}
+
+inline constexpr bool
+  alloy::core::vector2::is_normalized()
+  const noexcept
+{
+  return almost_equal(square_magnitude(), real{1});
+}
+
+//------------------------------------------------------------------------------
+// Modifiers
+//------------------------------------------------------------------------------
+
+inline alloy::core::vector2&
+  alloy::core::vector2::normalize()
+  noexcept
+{
+  const auto square_mag = square_magnitude();
+
+  if (almost_equal(square_mag, real{1})) {
+    return (*this);
+  }
+
+  if (square_mag > real{0}) {
+    const auto mag_inv = real{1} / sqrt(square_mag);
+
+    x() *= mag_inv;
+    y() *= mag_inv;
+  }
+
+  return (*this);
+}
+
+inline constexpr alloy::core::vector2&
+  alloy::core::vector2::invert()
+  noexcept
+{
+  x() = -x();
+  y() = -y();
+
+  return (*this);
+}
+
+//------------------------------------------------------------------------------
+// Unary Operators
+//------------------------------------------------------------------------------
+
+inline constexpr const alloy::core::vector2&
+  alloy::core::vector2::operator+()
+  const noexcept
+{
+  return (*this);
+}
+
+inline constexpr alloy::core::vector2
+  alloy::core::vector2::operator-()
+  const noexcept
+{
+  return vector2{ -x(), -y() };
+}
+
+//------------------------------------------------------------------------------
+// Compound Operators
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::vector2&
+  alloy::core::vector2::operator+=( const vector2& rhs )
+  noexcept
+{
+  x() += rhs.x();
+  y() += rhs.y();
+  return (*this);
+}
+
+inline constexpr alloy::core::vector2&
+  alloy::core::vector2::operator-=( const vector2& rhs )
+  noexcept
+{
+  x() -= rhs.x();
+  y() -= rhs.y();
+  return (*this);
+}
+
+inline constexpr alloy::core::vector2&
+  alloy::core::vector2::operator*=( real scalar )
+  noexcept
+{
+  x() *= scalar;
+  y() *= scalar;
+  return (*this);
+}
+
+inline constexpr alloy::core::vector2&
+  alloy::core::vector2::operator/=( real scalar )
+  noexcept
+{
+  const auto inv = real{1} / scalar;
+
+  x() *= inv;
+  y() *= inv;
+  return (*this);
+}
+
+//==============================================================================
+// non-member functions : class : vector2
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Arithmetic Operators
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::vector2
+  alloy::core::operator+( const vector2& lhs, const vector2& rhs )
+  noexcept
+{
+  return vector2{lhs}+=rhs;
+}
+
+inline constexpr alloy::core::vector2
+  alloy::core::operator-( const vector2& lhs, const vector2& rhs )
+  noexcept
+{
+  return vector2{lhs}-=rhs;
+}
+
+inline constexpr alloy::core::vector2
+  alloy::core::operator*( const vector2& lhs, real scalar )
+  noexcept
+{
+  return vector2{lhs}*=scalar;
+}
+
+inline constexpr alloy::core::vector2
+  alloy::core::operator*( real scalar, const vector2& lhs )
+  noexcept
+{
+  return vector2{lhs}*=scalar;
+}
+
+inline constexpr alloy::core::vector2
+  alloy::core::operator/( const vector2& lhs, real scalar )
+  noexcept
+{
+  return vector2{lhs}/=scalar;
+}
+
+//------------------------------------------------------------------------------
+// Comparisons
+//------------------------------------------------------------------------------
+
+inline constexpr bool
+  alloy::core::operator==( const vector2& lhs, const vector2& rhs )
+  noexcept
+{
+  for (auto i=0; i<2; ++i) {
+    if (lhs[i]!=rhs[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+inline constexpr bool
+  alloy::core::operator!=( const vector2& lhs, const vector2& rhs )
+  noexcept
+{
+  return !(lhs==rhs);
+}
+
+//------------------------------------------------------------------------------
+
+inline constexpr bool
+  alloy::core::almost_equal( const vector2& lhs, const vector2& rhs )
+  noexcept
+{
+  for (auto i=0; i<2; ++i) {
+    if (!almost_equal(lhs[i], rhs[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+inline constexpr bool
+  alloy::core::almost_equal( const vector2& lhs,
+                             const vector2& rhs,
+                             real tolerance )
+  noexcept
+{
+  for (auto i=0; i<2; ++i) {
+    if (!almost_equal(lhs[i], rhs[i], tolerance)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+inline constexpr bool
+  alloy::core::are_linearly_independent( const vector2& v1,
+                                         const vector2& v2 )
+  noexcept
+{
+  // linear-independence tested by checking if the determinant of a produced
+  // 2x2 matrix is non-zero
+
+  const auto determinant = v1.x() * v2.y() - v1.y() * v2.x();
+  return !almost_equal( real{0}, determinant );
+}
+
+//------------------------------------------------------------------------------
+// Quantifiers
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::real
+  alloy::core::dot( const vector2& lhs, const vector2& rhs )
+  noexcept
+{
+  return lhs.dot(rhs);
+}
+
+inline constexpr alloy::core::real
+  alloy::core::cross( const vector2& lhs, const vector2& rhs )
+  noexcept
+{
+  return lhs.cross(rhs);
+}
+
+inline alloy::core::real
+  alloy::core::magnitude( const vector2& vec )
+  noexcept
+{
+  return vec.magnitude();
+}
+
+//------------------------------------------------------------------------------
+// Casting
+//------------------------------------------------------------------------------
+
+template<typename Vector, typename>
+inline alloy::core::vector2
+  alloy::core::casts::to_vector2( const Vector& vec )
+  noexcept
+{
+  return vector2{
+    vector_traits<Vector>::x(vec),
+    vector_traits<Vector>::y(vec)
+  };
+}
+
+//==============================================================================
+// struct : piecewise_compare<vector2>
+//==============================================================================
+
+inline constexpr bool
+  alloy::core::piecewise_compare<alloy::core::vector2>
+  ::operator()( const vector2& lhs, const vector2& rhs )
+  noexcept
+{
+  return (lhs.x() == rhs.x()) ?
+           (lhs.y() < rhs.y()) :
+         (lhs.x() < rhs.x());
+}
 
 #endif /* ALLOY_CORE_MATH_VECTOR_VECTOR2_HPP */
