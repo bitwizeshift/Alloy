@@ -15,12 +15,16 @@ configure_file(
 
 set(ALLOY_PRECISION "ALLOY_PRECISION_${ALLOY_PRECISION}")
 string(TOUPPER "${ALLOY_PRECISION}" ALLOY_PRECISION)
+set(ALLOY_CORE_PRECISION "ALLOY_CORE_PRECISION_${ALLOY_PRECISION}")
+string(TOUPPER "${ALLOY_CORE_PRECISION}" ALLOY_CORE_PRECISION)
 
+set(ALLOY_CORE_EXCEPTIONS_ENABLED ${ALLOY_ENABLE_EXCEPTIONS})
 configure_file(
-  "${ALLOY_MODULE_PATH}/config.hpp.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.hpp.in"
   "${CMAKE_CURRENT_BINARY_DIR}/include/alloy/core/config.hpp"
   @ONLY
 )
+unset(ALLOY_CORE_EXCEPTIONS_ENABLED)
 
 ##############################################################################
 # Target
@@ -131,6 +135,15 @@ set_target_properties(${PROJECT_NAME}Core
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
 )
+if (BUILD_SHARED_LIBS)
+  target_compile_definitions(${PROJECT_NAME}Core
+    PRIVATE ALLOY_CORE_EXPORT=1
+  )
+else()
+  target_compile_definitions(${PROJECT_NAME}Core
+    PRIVATE ALLOY_CORE_STATIC=1
+  )
+endif()
 
 target_include_directories(${PROJECT_NAME}Core
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
