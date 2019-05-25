@@ -163,7 +163,7 @@ endif ()
 # Installation
 ##############################################################################
 
-if (NOT NOT_SUBPROJECT)
+if (ALLOY_IS_SUBPROJECT)
   return()
 endif ()
 

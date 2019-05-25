@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
-if (NOT PROJECT_NAME)
-  set(NOT_SUBPROJECT TRUE)
+if (PROJECT_NAME)
+  set(ALLOY_IS_SUBPROJECT TRUE)
 endif ()
 
 set(ALLOY_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
@@ -101,7 +101,7 @@ add_library(${PROJECT_NAME} INTERFACE)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME}
   INTERFACE Alloy::Core
-# INTERFACE Alloy::IO
+  INTERFACE Alloy::IO
 # INTERFACE Alloy::Render
 # INTERFACE Alloy::Audio
 # INTERFACE Alloy::Engine
@@ -129,7 +129,7 @@ endif ()
 # Installation
 ##############################################################################
 
-if (NOT NOT_SUBPROJECT)
+if (ALLOY_IS_SUBPROJECT)
   return()
 endif ()
 
