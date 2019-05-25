@@ -94,10 +94,6 @@ set(inline_header_files
   include/alloy/core/precision/detail/real.inl
 
   # Math
-  include/alloy/core/math/angle/detail/basic_angle.inl
-  include/alloy/core/math/angle/detail/degree.inl
-  include/alloy/core/math/angle/detail/gradian.inl
-  include/alloy/core/math/angle/detail/radian.inl
   include/alloy/core/math/matrix/detail/matrix_utilities.inl
   include/alloy/core/math/matrix/detail/matrix2.inl
   include/alloy/core/math/matrix/detail/matrix3.inl

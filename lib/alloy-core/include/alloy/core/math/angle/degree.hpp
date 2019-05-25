@@ -65,12 +65,16 @@ namespace alloy::core {
   // Utilities : Casting
   //---------------------------------------------------------------------------
 
-  /// \brief Converts the given \p angle to a degree
-  ///
-  /// \param angle the angle to convert
-  /// \return the angle in degrees
-  template<typename AngleUnit>
-  constexpr degree to_degree( basic_angle<AngleUnit> angle ) noexcept;
+  inline namespace casts {
+
+    /// \brief Converts the given \p angle to a degree
+    ///
+    /// \param angle the angle to convert
+    /// \return the angle in degrees
+    template<typename AngleUnit>
+    constexpr degree to_degree( basic_angle<AngleUnit> angle ) noexcept;
+
+  } // inline namespace casts
 
   //============================================================================
   // trait : is_degree
@@ -105,6 +109,42 @@ namespace alloy::core {
   } // inline namespace literals
 } // namespace alloy::core
 
-#include "detail/degree.inl"
+
+//==============================================================================
+// struct : degree_unit
+//==============================================================================
+
+inline constexpr alloy::core::real alloy::core::degree_unit::revolution()
+  noexcept
+{
+  return static_cast<real>(360);
+}
+
+//==============================================================================
+// non-member functions : class : degree
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Utilities : Casting
+//------------------------------------------------------------------------------
+
+template<typename AngleUnit>
+inline constexpr alloy::core::degree
+  alloy::core::casts::to_degree( basic_angle<AngleUnit> angle )
+  noexcept
+{
+  return to_angle<degree>(angle);
+}
+
+//==============================================================================
+// Literals
+//==============================================================================
+
+inline constexpr alloy::core::degree
+  alloy::core::literals::operator ""_deg( long double x )
+  noexcept
+{
+  return degree{ static_cast<real>(x) };
+}
 
 #endif /* ALLOY_CORE_MATH_ANGLE_DEGREE_HPP */

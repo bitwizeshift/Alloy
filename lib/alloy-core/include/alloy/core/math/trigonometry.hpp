@@ -162,7 +162,7 @@ inline alloy::core::real
   alloy::core::trigonometry::cos( basic_angle<AngleUnit> angle )
   noexcept
 {
-  return cos( angle_cast<radian>(angle) );
+  return cos( to_radian(angle) );
 }
 
 //------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ inline alloy::core::real
   alloy::core::trigonometry::sin( basic_angle<AngleUnit> angle )
   noexcept
 {
-  return sin( angle_cast<radian>(angle) );
+  return sin( to_radian(angle) );
 }
 
 //------------------------------------------------------------------------------
@@ -182,7 +182,7 @@ inline alloy::core::real
   alloy::core::trigonometry::tan( basic_angle<AngleUnit> angle )
   noexcept
 {
-  return tan( angle_cast<radian>(angle) );
+  return tan( to_radian(angle) );
 }
 
 //------------------------------------------------------------------------------

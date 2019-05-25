@@ -65,12 +65,16 @@ namespace alloy::core {
   // Utilities : Casting
   //---------------------------------------------------------------------------
 
-  /// \brief Converts the given \p angle to a gradian
-  ///
-  /// \param angle the angle to convert
-  /// \return the angle in gradians
-  template<typename AngleUnit>
-  constexpr gradian to_gradian( basic_angle<AngleUnit> angle ) noexcept;
+  inline namespace casts {
+
+    /// \brief Converts the given \p angle to a gradian
+    ///
+    /// \param angle the angle to convert
+    /// \return the angle in gradians
+    template<typename AngleUnit>
+    constexpr gradian to_gradian( basic_angle<AngleUnit> angle ) noexcept;
+
+  } // inline namespace casts
 
   //============================================================================
   // trait : is_gradian
@@ -105,6 +109,42 @@ namespace alloy::core {
   } // inline namespace literals
 } // namespace alloy::core
 
-#include "detail/gradian.inl"
+
+//==============================================================================
+// struct : gradian_unit
+//==============================================================================
+
+inline constexpr alloy::core::real alloy::core::gradian_unit::revolution()
+  noexcept
+{
+  return static_cast<real>(400);
+}
+
+//==============================================================================
+// non-member functions : class : gradian
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Utilities : Casting
+//------------------------------------------------------------------------------
+
+template<typename AngleUnit>
+inline constexpr alloy::core::gradian
+  alloy::core::casts::to_gradian( basic_angle<AngleUnit> angle )
+  noexcept
+{
+  return to_angle<gradian>(angle);
+}
+
+//==============================================================================
+// Literals
+//==============================================================================
+
+inline constexpr alloy::core::gradian
+  alloy::core::literals::operator ""_grad( long double x )
+  noexcept
+{
+  return gradian{ static_cast<real>(x) };
+}
 
 #endif /* ALLOY_CORE_MATH_ANGLE_GRADIAN_HPP */

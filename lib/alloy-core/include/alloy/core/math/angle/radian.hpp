@@ -66,12 +66,16 @@ namespace alloy::core {
   // Utilities : Casting
   //---------------------------------------------------------------------------
 
-  /// \brief Converts the given \p angle to a radian
-  ///
-  /// \param angle the angle to convert
-  /// \return the angle in radians
-  template<typename AngleUnit>
-  constexpr radian to_radian( basic_angle<AngleUnit> angle ) noexcept;
+  inline namespace casts {
+
+    /// \brief Converts the given \p angle to a radian
+    ///
+    /// \param angle the angle to convert
+    /// \return the angle in radians
+    template<typename AngleUnit>
+    constexpr radian to_radian( basic_angle<AngleUnit> angle ) noexcept;
+
+  } // inline namespace casts
 
   //============================================================================
   // trait : is_radian
@@ -106,6 +110,42 @@ namespace alloy::core {
   } // inline namespace literals
 } // namespace alloy::core
 
-#include "detail/radian.inl"
+
+//==============================================================================
+// struct : radian_unit
+//==============================================================================
+
+inline constexpr alloy::core::real alloy::core::radian_unit::revolution()
+  noexcept
+{
+  return static_cast<real>(math_constants::two_pi());
+}
+
+//==============================================================================
+// non-member functions : class : radian
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Utilities : Casting
+//------------------------------------------------------------------------------
+
+template<typename AngleUnit>
+inline constexpr alloy::core::radian
+  alloy::core::casts::to_radian( basic_angle<AngleUnit> angle )
+  noexcept
+{
+  return to_angle<radian>(angle);
+}
+
+//==============================================================================
+// Literals
+//==============================================================================
+
+inline constexpr alloy::core::radian
+  alloy::core::literals::operator ""_rad( long double x )
+  noexcept
+{
+  return radian{ static_cast<real>(x) };
+}
 
 #endif /* ALLOY_CORE_MATH_ANGLE_RADIAN_HPP */
