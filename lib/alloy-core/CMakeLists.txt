@@ -6,15 +6,6 @@
 file(READ "${PROJECT_SOURCE_DIR}/LICENSE" license_text)
 string(REPLACE "\n" "\n  " LICENSE_TEXT "  ${license_text}")
 
-# Generate Files
-configure_file(
-  "${ALLOY_MODULE_PATH}/version.hpp.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/include/alloy/core/version.hpp"
-  @ONLY
-)
-
-set(ALLOY_PRECISION "ALLOY_PRECISION_${ALLOY_PRECISION}")
-string(TOUPPER "${ALLOY_PRECISION}" ALLOY_PRECISION)
 set(ALLOY_CORE_PRECISION "ALLOY_CORE_PRECISION_${ALLOY_PRECISION}")
 string(TOUPPER "${ALLOY_CORE_PRECISION}" ALLOY_CORE_PRECISION)
 
@@ -31,7 +22,6 @@ unset(ALLOY_CORE_EXCEPTIONS_ENABLED)
 ##############################################################################
 
 set(generated_header_files
-  ${CMAKE_CURRENT_BINARY_DIR}/include/alloy/core/version.hpp
   ${CMAKE_CURRENT_BINARY_DIR}/include/alloy/core/config.hpp
 )
 
