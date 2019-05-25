@@ -91,12 +91,6 @@ set(inline_header_files
   include/alloy/core/intrinsics/clang.hpp
   include/alloy/core/intrinsics/gcc.hpp
   include/alloy/core/intrinsics/msvc.hpp
-
-  # Math
-  include/alloy/core/math/matrix/detail/matrix_utilities.inl
-  include/alloy/core/math/matrix/detail/matrix2.inl
-  include/alloy/core/math/matrix/detail/matrix3.inl
-  include/alloy/core/math/matrix/detail/matrix4.inl
 )
 
 set(source_files
