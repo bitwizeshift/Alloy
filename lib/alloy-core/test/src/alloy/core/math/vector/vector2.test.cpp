@@ -48,7 +48,7 @@ TEST_CASE("vector2::size()", "[observers]")
 // Element Access
 //-----------------------------------------------------------------------------
 
-#if ALLOY_ENABLE_EXCEPTIONS
+#if ALLOY_CORE_EXCEPTIONS_ENABLED
 TEST_CASE("vector2::at( index_type )", "[observers]")
 {
   const auto vec = alloy::core::vector2{42,1024};
@@ -76,7 +76,7 @@ TEST_CASE("vector2::at( index_type )", "[observers]")
     }
   }
 }
-#endif // ALLOY_ENABLE_EXCEPTIONS
+#endif // ALLOY_CORE_EXCEPTIONS_ENABLED
 
 TEST_CASE("vector2::operator[]( index_type )", "[observers]")
 {

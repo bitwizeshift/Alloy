@@ -35,6 +35,7 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "alloy/core/assert.hpp" // ALLOY_ASSERT
+#include "alloy/core/config.hpp" // ALLOY_CORE_EXCEPTIONS_ENABLED
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/utilities/piecewise_compare.hpp" // core::piecewise_compare
 #include "alloy/core/math/angle/radian.hpp" // core::radian
@@ -577,7 +578,7 @@ inline constexpr alloy::core::vector3::const_pointer
 inline constexpr alloy::core::vector3::reference
   alloy::core::vector3::at( index_type n )
 {
-#if ALLOY_ENABLE_EXCEPTIONS
+#if ALLOY_CORE_EXCEPTIONS_ENABLED
   if( n >= 3 || n < 0 ) {
     throw std::out_of_range("alloy::core::vector3::at: index out of range");
   }
@@ -591,7 +592,7 @@ inline constexpr alloy::core::vector3::const_reference
   alloy::core::vector3::at( index_type n )
   const
 {
-#if ALLOY_ENABLE_EXCEPTIONS
+#if ALLOY_CORE_EXCEPTIONS_ENABLED
   if( n >= 3 || n < 0 ) {
     throw std::out_of_range("alloy::core::vector3::at: index out of range");
   }

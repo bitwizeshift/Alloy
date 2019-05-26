@@ -145,7 +145,7 @@
 //!                  assertion or throws an exception
 //! \param exception the exception to throw
 //! \param message   the message for the failure
-#if ALLOY_EXCEPTIONS_ENABLED
+#if ALLOY_CORE_EXCEPTIONS_ENABLED
 # define ALLOY_THROW_IF(condition,exception,message) \
   static_assert( std::is_constructible<exception,decltype(message)>::value, \
                  ALLOY_STRINGIZE(exception) " is not constructible from the given message" ); \
