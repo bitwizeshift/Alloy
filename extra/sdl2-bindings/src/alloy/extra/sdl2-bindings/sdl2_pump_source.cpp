@@ -71,35 +71,12 @@ void alloy::extra::sdl2_pump_source
   const auto window = it->second;
 
   switch (event.window.event) {
-    case SDL_WINDOWEVENT_SHOWN: {
-      p.post_event( io::window_show_event{window} );
-      break;
-    }
-    case SDL_WINDOWEVENT_HIDDEN: {
-      p.post_event( io::window_hide_event{window} );
-      break;
-    }
-    case SDL_WINDOWEVENT_MOVED: {
-      const auto x = event.window.data1;
-      const auto y = event.window.data2;
 
-      p.post_event( io::window_move_event{window, x, y} );
+    case SDL_WINDOWEVENT_CLOSE: {
+      p.post_event( io::window_close_event{window} );
       break;
     }
-    case SDL_WINDOWEVENT_RESIZED: {
-      const auto width = event.window.data1;
-      const auto height = event.window.data2;
 
-      p.post_event( io::window_move_event{window, width, height} );
-      break;
-    }
-    case SDL_WINDOWEVENT_SIZE_CHANGED: {
-      const auto width = event.window.data1;
-      const auto height = event.window.data2;
-
-      p.post_event( io::window_move_event{window, width, height} );
-      break;
-    }
     case SDL_WINDOWEVENT_MINIMIZED: {
       p.post_event( io::window_minimize_event{window} );
       break;
@@ -108,8 +85,49 @@ void alloy::extra::sdl2_pump_source
       p.post_event( io::window_maximize_event{window} );
       break;
     }
-    case SDL_WINDOWEVENT_CLOSE: {
-      // TODO: find and unbind window event
+    case SDL_WINDOWEVENT_RESTORED: {
+      p.post_event( io::window_restore_event{window} );
+      break;
+    }
+
+    case SDL_WINDOWEVENT_HIDDEN: {
+      p.post_event( io::window_hide_event{window} );
+      break;
+    }
+    case SDL_WINDOWEVENT_EXPOSED: {
+      // TODO(bitwizeshift):
+      //   only fire this event if window was hidden before this change
+      p.post_event( io::window_show_event{window} );
+      break;
+    }
+
+    case SDL_WINDOWEVENT_MOVED: {
+      const auto x = event.window.data1;
+      const auto y = event.window.data2;
+
+      p.post_event( io::window_move_event{window, x, y} );
+      break;
+    }
+    case SDL_WINDOWEVENT_SIZE_CHANGED: {
+      const auto width = event.window.data1;
+      const auto height = event.window.data2;
+
+      p.post_event( io::window_resize_event{window, width, height} );
+      break;
+    }
+
+    case SDL_WINDOWEVENT_FOCUS_GAINED: {
+      p.post_event( io::window_focus_event{window} );
+      break;
+    }
+#if SDL_VERSION_ATLEAST(2, 0, 5)
+    case SDL_WINDOWEVENT_TAKE_FOCUS: {
+      p.post_event( io::window_focus_event{window} );
+      break;
+    }
+#endif
+    case SDL_WINDOWEVENT_FOCUS_LOST: {
+      p.post_event( io::window_unfocus_event{window} );
       break;
     }
     default: {
