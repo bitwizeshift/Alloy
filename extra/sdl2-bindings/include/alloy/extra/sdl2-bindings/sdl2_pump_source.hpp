@@ -27,8 +27,8 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-#ifndef ALLOY_IO_SDL2_GL_WINDOW_HPP
-#define ALLOY_IO_SDL2_GL_WINDOW_HPP
+#ifndef ALLOY_IO_SDL2_PUMP_SOURCE_HPP
+#define ALLOY_IO_SDL2_PUMP_SOURCE_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
 # pragma once
@@ -140,4 +140,4 @@ namespace alloy::extra {
 
 } // namespace alloy::io
 
-#endif /* ALLOY_IO_SDL2_GL_WINDOW_HPP */
+#endif /* ALLOY_IO_SDL2_PUMP_SOURCE_HPP */
