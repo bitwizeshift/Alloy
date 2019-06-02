@@ -51,4 +51,9 @@ if (ALLOY_COMPILE_SELF_CONTAINMENT_TESTS)
     TARGET ${PROJECT_NAME}ExtraSDL2Bindings
     HEADERS ${header_files}
   )
+
+# Examples
+
+if (ALLOY_COMPILE_EXAMPLES)
+  add_subdirectory("example/sdl2-window")
 endif ()
