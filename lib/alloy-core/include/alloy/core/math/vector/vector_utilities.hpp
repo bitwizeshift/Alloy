@@ -1,5 +1,5 @@
 /******************************************************************************
- * \file vector4.hpp
+ * \file vector_utilities.hpp
  *
  * \brief This header contains the definition of a 4d vector class
  ******************************************************************************/
@@ -29,6 +29,8 @@
 */
 #ifndef ALLOY_CORE_MATH_VECTOR_VECTOR_UTILITIES_HPP
 #define ALLOY_CORE_MATH_VECTOR_VECTOR_UTILITIES_HPP
+
+#include "alloy/core/precision.hpp" // core::real
 
 #include <type_traits> // std::true_type, std::false_type
 
