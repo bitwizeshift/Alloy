@@ -9,7 +9,3 @@ add_library(${PROJECT_NAME}DiscreteGPU STATIC
 )
 
 add_library(${PROJECT_NAME}::DiscreteGPU ALIAS ${PROJECT_NAME}DiscreteGPU)
-
-target_link_libraries(${PROJECT_NAME}DiscreteGPU
-  PRIVATE ${PROJECT_NAME}::${PROJECT_NAME}
-)
