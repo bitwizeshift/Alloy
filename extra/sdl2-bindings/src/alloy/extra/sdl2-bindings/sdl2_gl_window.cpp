@@ -17,7 +17,7 @@ alloy::extra::sdl2_gl_window
 {
   return from_window_data(
     title,
-    SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+    SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
     width, height,
     version
   );
@@ -29,7 +29,7 @@ alloy::extra::sdl2_gl_window
                                                   int width, int height,
                                                   sdl_gl_version version )
 {
-  const auto flags = SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_OPENGL;
+  const auto flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL;
 
   auto window = ::SDL_CreateWindow(title, x, y, width, height, flags);
 
