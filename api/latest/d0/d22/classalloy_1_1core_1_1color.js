@@ -21,7 +21,7 @@ var classalloy_1_1core_1_1color =
     [ "g", "d0/d22/classalloy_1_1core_1_1color.html#a5d6cce3579d461592993805566831626", null ],
     [ "invert", "d0/d22/classalloy_1_1core_1_1color.html#a542fb3b6dbd968a990772712cf207970", null ],
     [ "inverted", "d0/d22/classalloy_1_1core_1_1color.html#a0f99ee3dc254be8e4ada25058baca478", null ],
-    [ "operator *=", "d0/d22/classalloy_1_1core_1_1color.html#aa63f3763bdf18d140c87a587a6cdcb81", null ],
+    [ "operator*=", "d0/d22/classalloy_1_1core_1_1color.html#a9b12c3b13bbcc07e5fbe272d2f66ff87", null ],
     [ "operator+=", "d0/d22/classalloy_1_1core_1_1color.html#a3e5d87adb69cbf10ebb1d74d2825e026", null ],
     [ "operator-=", "d0/d22/classalloy_1_1core_1_1color.html#af206e774799b45112bc65aa231f29092", null ],
     [ "operator/=", "d0/d22/classalloy_1_1core_1_1color.html#affa39a0b421e285af4dc28f89128005e", null ],

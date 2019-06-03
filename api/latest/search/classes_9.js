@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['piecewise_5fcompare',['piecewise_compare',['../d1/d93/structalloy_1_1core_1_1piecewise__compare.html',1,'alloy::core']]],
-  ['piecewise_5fcompare_3c_20point_20_3e',['piecewise_compare&lt; point &gt;',['../db/d2c/structalloy_1_1core_1_1piecewise__compare_3_01point_01_4.html',1,'alloy::core']]],
-  ['piecewise_5fcompare_3c_20vector2_20_3e',['piecewise_compare&lt; vector2 &gt;',['../d1/df7/structalloy_1_1core_1_1piecewise__compare_3_01vector2_01_4.html',1,'alloy::core']]],
-  ['piecewise_5fcompare_3c_20vector3_20_3e',['piecewise_compare&lt; vector3 &gt;',['../db/d64/structalloy_1_1core_1_1piecewise__compare_3_01vector3_01_4.html',1,'alloy::core']]],
-  ['piecewise_5fcompare_3c_20vector4_20_3e',['piecewise_compare&lt; vector4 &gt;',['../de/d14/structalloy_1_1core_1_1piecewise__compare_3_01vector4_01_4.html',1,'alloy::core']]],
-  ['plane',['plane',['../d1/d99/classalloy_1_1core_1_1plane.html',1,'alloy::core']]],
-  ['point',['point',['../d3/da9/classalloy_1_1core_1_1point.html',1,'alloy::core']]]
+  ['math_5fconstants',['math_constants',['../d1/d75/structalloy_1_1core_1_1math__constants.html',1,'alloy::core']]],
+  ['matrix2',['matrix2',['../d4/d89/classalloy_1_1core_1_1matrix2.html',1,'alloy::core']]],
+  ['matrix2_5fconstants',['matrix2_constants',['../da/d5b/structalloy_1_1core_1_1matrix2__constants.html',1,'alloy::core']]],
+  ['matrix3',['matrix3',['../d6/dbc/classalloy_1_1core_1_1matrix3.html',1,'alloy::core']]],
+  ['matrix3_5fconstants',['matrix3_constants',['../d6/d31/structalloy_1_1core_1_1matrix3__constants.html',1,'alloy::core']]],
+  ['matrix4',['matrix4',['../df/da7/classalloy_1_1core_1_1matrix4.html',1,'alloy::core']]],
+  ['matrix4_5fconstants',['matrix4_constants',['../d4/d8a/structalloy_1_1core_1_1matrix4__constants.html',1,'alloy::core']]]
 ];

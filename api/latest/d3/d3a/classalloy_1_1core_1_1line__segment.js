@@ -5,6 +5,8 @@ var classalloy_1_1core_1_1line__segment =
     [ "line_segment", "d3/d3a/classalloy_1_1core_1_1line__segment.html#a833ec021cc5426f8547c87fdec5b7133", null ],
     [ "line_segment", "d3/d3a/classalloy_1_1core_1_1line__segment.html#af94eb10645835b928f05aeb18a390942", null ],
     [ "line_segment", "d3/d3a/classalloy_1_1core_1_1line__segment.html#a7db5b0ca2fffe2e769888e2f01093c1c", null ],
+    [ "contains", "d3/d3a/classalloy_1_1core_1_1line__segment.html#affebea8830f1e0d06d0afc791bd0e95d", null ],
+    [ "contains", "d3/d3a/classalloy_1_1core_1_1line__segment.html#a3be1fb1b2b98f48d30c81874fa6de1c6", null ],
     [ "direction", "d3/d3a/classalloy_1_1core_1_1line__segment.html#a91d2c6300719e9aa08905d0ccb2867d4", null ],
     [ "end_point", "d3/d3a/classalloy_1_1core_1_1line__segment.html#a94c18174004baa583a7042a0597828bb", null ],
     [ "magnitude", "d3/d3a/classalloy_1_1core_1_1line__segment.html#a353e1182d54af9949668d374126cd184", null ],

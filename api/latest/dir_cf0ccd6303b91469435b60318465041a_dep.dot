@@ -1,0 +1,13 @@
+digraph "lib/alloy-core" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_5f23d6bb187d2e6e7a8717403dec43ef {
+    graph [ bgcolor="#ddddee", pencolor="black", label="lib" fontname="Helvetica", fontsize="10", URL="dir_5f23d6bb187d2e6e7a8717403dec43ef.html"]
+  subgraph clusterdir_cf0ccd6303b91469435b60318465041a {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_cf0ccd6303b91469435b60318465041a.html"];
+    dir_cf0ccd6303b91469435b60318465041a [shape=plaintext label="alloy-core"];
+    dir_9a3ddf74f28783844d2bc93817b68b45 [shape=box label="include" color="red" fillcolor="white" style="filled" URL="dir_9a3ddf74f28783844d2bc93817b68b45.html"];
+  }
+  }
+}

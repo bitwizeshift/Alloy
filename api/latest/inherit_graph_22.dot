@@ -1,0 +1,7 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="alloy::core::matrix4",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$df/da7/classalloy_1_1core_1_1matrix4.html",tooltip="Defines a 4x4 Matrix. "];
+}

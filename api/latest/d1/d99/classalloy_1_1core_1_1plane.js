@@ -8,6 +8,8 @@ var classalloy_1_1core_1_1plane =
     [ "a", "d1/d99/classalloy_1_1core_1_1plane.html#abea14c10cb0fede02da18c07c865d0fa", null ],
     [ "b", "d1/d99/classalloy_1_1core_1_1plane.html#a25bf454119fec5e497edc7528c30c3e6", null ],
     [ "c", "d1/d99/classalloy_1_1core_1_1plane.html#afcec73badb97c1098f703d02b51bcce7", null ],
+    [ "contains", "d1/d99/classalloy_1_1core_1_1plane.html#ad3762b1804d7ba7c338dfa9868b041f0", null ],
+    [ "contains", "d1/d99/classalloy_1_1core_1_1plane.html#a399ec055e0e2d9a40045e0c240191fcf", null ],
     [ "d", "d1/d99/classalloy_1_1core_1_1plane.html#a1acdc3c8b4bc77b2d74229cd05bd6f81", null ],
     [ "distance_to", "d1/d99/classalloy_1_1core_1_1plane.html#a994c48641b978e49186de42be2e2208b", null ],
     [ "invert", "d1/d99/classalloy_1_1core_1_1plane.html#a26bbcebd1be3e2f8728f759ae83f23f4", null ],

@@ -1,0 +1,16 @@
+digraph "lib/alloy-core/include/alloy/core/math" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_e47f71b7a3b9692047cafd017e754db6 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="core" fontname="Helvetica", fontsize="10", URL="dir_e47f71b7a3b9692047cafd017e754db6.html"]
+  subgraph clusterdir_77286322d8e3f78665ede88d5b926e25 {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_77286322d8e3f78665ede88d5b926e25.html"];
+    dir_77286322d8e3f78665ede88d5b926e25 [shape=plaintext label="math"];
+    dir_dd05257982c2059f1a8079d59a1002bf [shape=box label="angle" color="black" fillcolor="white" style="filled" URL="dir_dd05257982c2059f1a8079d59a1002bf.html"];
+    dir_029449e3160675726ec92061f4864bfa [shape=box label="basis" color="black" fillcolor="white" style="filled" URL="dir_029449e3160675726ec92061f4864bfa.html"];
+    dir_cff401d89997a66a88628f1cdf6dd81b [shape=box label="matrix" color="black" fillcolor="white" style="filled" URL="dir_cff401d89997a66a88628f1cdf6dd81b.html"];
+    dir_55bdb392c515caa6e9c23d23a4dc98c4 [shape=box label="vector" color="black" fillcolor="white" style="filled" URL="dir_55bdb392c515caa6e9c23d23a4dc98c4.html"];
+  }
+  }
+}

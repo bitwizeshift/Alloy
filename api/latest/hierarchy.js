@@ -1,5 +1,6 @@
 var hierarchy =
 [
+    [ "alloy::core::axis_aligned_box", "d5/dcb/classalloy_1_1core_1_1axis__aligned__box.html", null ],
     [ "alloy::core::basic_angle< AngleUnit >", "d7/d2e/classalloy_1_1core_1_1basic__angle.html", null ],
     [ "alloy::core::basic_angle< radian_unit >", "d7/d2e/classalloy_1_1core_1_1basic__angle.html", null ],
     [ "alloy::core::basic_angle_constants< AngleUnit >", "db/d1f/structalloy_1_1core_1_1basic__angle__constants.html", null ],
@@ -27,6 +28,7 @@ var hierarchy =
     [ "alloy::core::gradian_unit", "df/d9a/structalloy_1_1core_1_1gradian__unit.html", null ],
     [ "alloy::core::hsb", "de/dd5/structalloy_1_1core_1_1hsb.html", null ],
     [ "alloy::core::interpolation", "db/d92/structalloy_1_1core_1_1interpolation.html", null ],
+    [ "alloy::core::line", "d4/d23/classalloy_1_1core_1_1line.html", null ],
     [ "alloy::core::line_segment", "d3/d3a/classalloy_1_1core_1_1line__segment.html", null ],
     [ "alloy::core::math_constants", "d1/d75/structalloy_1_1core_1_1math__constants.html", null ],
     [ "alloy::core::matrix2", "d4/d89/classalloy_1_1core_1_1matrix2.html", null ],
@@ -35,6 +37,7 @@ var hierarchy =
     [ "alloy::core::matrix3_constants", "d6/d31/structalloy_1_1core_1_1matrix3__constants.html", null ],
     [ "alloy::core::matrix4", "df/da7/classalloy_1_1core_1_1matrix4.html", null ],
     [ "alloy::core::matrix4_constants", "d4/d8a/structalloy_1_1core_1_1matrix4__constants.html", null ],
+    [ "alloy::core::not_null< T >", "d8/dfb/classalloy_1_1core_1_1not__null.html", null ],
     [ "alloy::core::piecewise_compare< T >", "d1/d93/structalloy_1_1core_1_1piecewise__compare.html", null ],
     [ "alloy::core::piecewise_compare< point >", "db/d2c/structalloy_1_1core_1_1piecewise__compare_3_01point_01_4.html", null ],
     [ "alloy::core::piecewise_compare< vector2 >", "d1/df7/structalloy_1_1core_1_1piecewise__compare_3_01vector2_01_4.html", null ],
@@ -45,6 +48,7 @@ var hierarchy =
     [ "alloy::core::quaternion_constants", "db/d94/structalloy_1_1core_1_1quaternion__constants.html", null ],
     [ "alloy::core::radian_unit", "d8/d9b/structalloy_1_1core_1_1radian__unit.html", null ],
     [ "alloy::core::ray", "d1/dea/classalloy_1_1core_1_1ray.html", null ],
+    [ "alloy::core::scope_guard< Fn >", "d1/db1/classalloy_1_1core_1_1scope__guard.html", null ],
     [ "alloy::core::simplex", "dc/d90/structalloy_1_1core_1_1simplex.html", null ],
     [ "alloy::core::sphere", "d5/d2f/classalloy_1_1core_1_1sphere.html", null ],
     [ "alloy::core::trigonometry", "d7/d1b/structalloy_1_1core_1_1trigonometry.html", null ],
@@ -68,10 +72,7 @@ var hierarchy =
       [ "alloy::core::is_vector< vector4 >", "dd/da7/structalloy_1_1core_1_1is__vector_3_01vector4_01_4.html", null ]
     ] ],
     [ "alloy::core::vector2", "dc/dcf/classalloy_1_1core_1_1vector2.html", null ],
-    [ "alloy::core::vector2_constants", "d7/d9e/structalloy_1_1core_1_1vector2__constants.html", null ],
     [ "alloy::core::vector3", "d3/ded/classalloy_1_1core_1_1vector3.html", null ],
-    [ "alloy::core::vector3_constants", "d0/ded/structalloy_1_1core_1_1vector3__constants.html", null ],
     [ "alloy::core::vector4", "dc/d54/classalloy_1_1core_1_1vector4.html", null ],
-    [ "alloy::core::vector4_constants", "d3/d5a/structalloy_1_1core_1_1vector4__constants.html", null ],
     [ "alloy::core::vector_traits< T >", "d2/d0a/structalloy_1_1core_1_1vector__traits.html", null ]
 ];

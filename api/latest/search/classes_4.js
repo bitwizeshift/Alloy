@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['gradian_5funit',['gradian_unit',['../df/d9a/structalloy_1_1core_1_1gradian__unit.html',1,'alloy::core']]]
+  ['euler_5fangles',['euler_angles',['../d9/dce/classalloy_1_1core_1_1euler__angles.html',1,'alloy::core']]]
 ];

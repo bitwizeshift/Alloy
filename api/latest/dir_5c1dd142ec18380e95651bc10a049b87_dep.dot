@@ -1,0 +1,9 @@
+digraph "lib/alloy-core/include/alloy/core/precision" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_e47f71b7a3b9692047cafd017e754db6 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="core" fontname="Helvetica", fontsize="10", URL="dir_e47f71b7a3b9692047cafd017e754db6.html"]
+  dir_5c1dd142ec18380e95651bc10a049b87 [shape=box, label="precision", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_5c1dd142ec18380e95651bc10a049b87.html"];
+  }
+}
