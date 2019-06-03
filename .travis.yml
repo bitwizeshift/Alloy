@@ -68,6 +68,18 @@ linux_clang_agent: &linux_clang_agent
       sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-8']
       packages: ['g++-8', 'clang-8', 'ninja-build']
 
+linux_doxygen_agent: &linux_doxygen_agent
+  os: linux
+  compiler: gcc
+  addons:
+  env:
+    - C_COMPILER=gcc-8
+    - CXX_COMPILER=g++-8
+  addons:
+    apt:
+      sources: ['ubuntu-toolchain-r-test']
+      packages: ['doxygen', 'g++-8', 'ninja-build']
+
 # Stages
 ################################################################################
 
@@ -156,13 +168,13 @@ jobs:
     # Deploy
     ############################################################################
 
-    - <<: *linux_gcc_agent
+    - <<: *linux_doxygen_agent
       stage: deploy
       name: "Deploy tag (doxygen)"
       if: (tag =~ ^v) AND (type = push)
       script: ./.travis/deploy-doxygen.sh
 
-    - <<: *linux_gcc_agent
+    - <<: *linux_doxygen_agent
       stage: deploy
       name: "Deploy latest (doxygen)"
       if: (branch = master) AND (type = push)
