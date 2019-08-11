@@ -132,6 +132,29 @@ namespace alloy::io {
   class window
   {
     //--------------------------------------------------------------------------
+    // Public Member Types
+    //--------------------------------------------------------------------------
+  public:
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief A semantic type indicating the dimensions of the given window.
+    ////////////////////////////////////////////////////////////////////////////
+    struct dimensions
+    {
+      int width;  ///< The width of the window. Must be positive.
+      int height; ///< The height of the window. Must be positive.
+    };
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief A semantic type indicating the position of the given window.
+    ////////////////////////////////////////////////////////////////////////////
+    struct position
+    {
+      int x; ///< The x-position of the window
+      int y; ///< The y-position of the window
+    };
+
+    //--------------------------------------------------------------------------
     // Destructor
     //--------------------------------------------------------------------------
   public:
@@ -192,11 +215,24 @@ namespace alloy::io {
     /// \param height the height of the window
     void set_dimensions( int width, int height );
 
+    /// \brief Sets the dimension of the window
+    ///
+    /// \note The \p dimensions may not be honored -- this is subject
+    ///       to the underlying window systems minimums and maximums
+    ///
+    /// \param dimensions the dimension of the window
+    void set_dimensions( const dimensions& dimensions );
+
     /// \brief Sets the position of this window
     ///
     /// \param x the x pixel coordinate
     /// \param y the y pixel coordinate
     void set_position( int x, int y );
+
+    /// \brief Sets the position of this window
+    ///
+    /// \param position the position of the window
+    void set_position( const position& position );
 
     //--------------------------------------------------------------------------
     // Access
@@ -264,5 +300,20 @@ namespace alloy::io {
   };
 
 } // namespace alloy::io
+
+//==============================================================================
+// inline definitions : class : window
+//==============================================================================
+
+inline void alloy::io::window::set_dimensions(const dimensions& dimensions)
+{
+  set_dimensions(dimensions.width, dimensions.height);
+}
+
+inline void alloy::io::window::set_position(const position& position)
+{
+  set_position(position.x, position.y);
+}
+
 
 #endif /* ALLOY_IO_WINDOW_HPP */
