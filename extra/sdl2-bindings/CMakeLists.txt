@@ -51,6 +51,7 @@ if (ALLOY_COMPILE_SELF_CONTAINMENT_TESTS)
     TARGET ${PROJECT_NAME}ExtraSDL2Bindings
     HEADERS ${header_files}
   )
+endif ()
 
 # Examples
 
