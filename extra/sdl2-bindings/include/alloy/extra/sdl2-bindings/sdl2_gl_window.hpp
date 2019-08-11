@@ -88,24 +88,21 @@ namespace alloy::extra {
     /// \brief Constructs a window from the specified window data
     ///
     /// \param title the window title
-    /// \param width the width of the window
-    /// \param height the height of the window
+    /// \param dimensions the dimensions of the window
     /// \param version the GL version
     static sdl2_gl_window from_window_data( const char* title,
-                                            int width, int height,
+                                            const dimensions& dimensions,
                                             sdl_gl_version version );
 
     /// \brief Constructs a window from the specified window data
     ///
     /// \param title the window title
-    /// \param x the x-position
-    /// \param y the y-position
-    /// \param width the width of the window
-    /// \param height the height of the window
+    /// \param position the position of the window
+    /// \param dimensions the dimensions of the window
     /// \param version the GL version
     static sdl2_gl_window from_window_data( const char* title,
-                                            int x, int y,
-                                            int width, int height,
+                                            const position& position,
+                                            const dimensions& dimensions,
                                             sdl_gl_version version );
 
     //--------------------------------------------------------------------------

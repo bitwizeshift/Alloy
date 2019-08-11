@@ -12,26 +12,31 @@
 
 alloy::extra::sdl2_gl_window
   alloy::extra::sdl2_gl_window::from_window_data( const char* title,
-                                                  int width, int height,
+                                                  const dimensions& dimensions,
                                                   sdl_gl_version version )
 {
   return from_window_data(
     title,
-    SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-    width, height,
+    position{SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED},
+    dimensions,
     version
   );
 }
 
 alloy::extra::sdl2_gl_window
   alloy::extra::sdl2_gl_window::from_window_data( const char* title,
-                                                  int x, int y,
-                                                  int width, int height,
+                                                  const position& position,
+                                                  const dimensions& dimensions,
                                                   sdl_gl_version version )
 {
   const auto flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL;
 
-  auto window = ::SDL_CreateWindow(title, x, y, width, height, flags);
+  auto window = ::SDL_CreateWindow(
+    title,
+    position.x, position.y,
+    dimensions.width, dimensions.height,
+    flags
+  );
 
   if (window == nullptr) {
     auto message = std::string{::SDL_GetError()};

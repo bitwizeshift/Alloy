@@ -13,7 +13,7 @@
 namespace {
 
   // Flag to keep the application running
-  bool keep_running = true;
+  bool g_keep_running = true;
 
   //////////////////////////////////////////////////////////////////////////////
   /// A simple listener that handles window events
@@ -42,7 +42,7 @@ namespace {
       std::cout << "window_maximize_event{}" << std::endl;
     } else if (e.is<alloy::io::window_close_event>()) {
       std::cout << "window_close_event{}" << std::endl;
-      ::keep_running = false;
+      ::g_keep_running = false;
     }
   }
 }
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
   auto& sdl2_pump_source = alloy::extra::sdl2_pump_source::instance();
   auto window = alloy::extra::sdl2_gl_window::from_window_data(
     "Hello World",
-    640, 480,
+    alloy::io::window::dimensions{640, 480},
     alloy::extra::sdl_gl_version{3,2}
   );
 
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
   using std::literals::chrono_literals::operator""s;
 
   auto last_frame = clock::now();
-  while (::keep_running) {
+  while (::g_keep_running) {
     message_pump.pump();
 
     const auto now = clock::now();
