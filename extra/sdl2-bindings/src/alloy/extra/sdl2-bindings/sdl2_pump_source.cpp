@@ -43,7 +43,7 @@ void alloy::extra::sdl2_pump_source
 // Hooks
 //------------------------------------------------------------------------------
 
-void alloy::extra::sdl2_pump_source::pump(io::message_pump& p)
+void alloy::extra::sdl2_pump_source::pump( io::message_pump& p )
   noexcept
 {
   auto event = ::SDL_Event{};
@@ -63,7 +63,9 @@ void alloy::extra::sdl2_pump_source
   const auto id = event.window.windowID;
   const auto it = m_windows.find(id);
 
-  // Ignore this?
+  ALLOY_ASSERT(event.type == SDL_WINDOWEVENT);
+
+  // Ignore windows that aren't attached; no reason to fire these events.
   if (it == m_windows.end()) {
     return;
   }
@@ -73,7 +75,9 @@ void alloy::extra::sdl2_pump_source
   switch (event.window.event) {
 
     case SDL_WINDOWEVENT_CLOSE: {
-      p.post_event( io::window_close_event{window} );
+      // Close events should be listened to as soon as possible;
+      // so this is posted as a high-priority event
+      p.post_immediate_event( io::window_close_event{window} );
       break;
     }
 
