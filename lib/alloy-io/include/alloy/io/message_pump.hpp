@@ -400,7 +400,7 @@ namespace alloy::io {
     //--------------------------------------------------------------------------
   private:
 
-    virtual void handle_message(const event& e) noexcept;
+    virtual void handle_message(const event& e) noexcept = 0;
     virtual void handle_immediate_message(const event& e) noexcept;
   };
 

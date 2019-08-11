@@ -153,6 +153,8 @@ void alloy::io::message_pump::do_post_event( const event& e )
 {
   // TODO(bitwizeshift): Handle concurrency
   for (auto& listener : m_listeners) {
+    ALLOY_ASSERT_AND_ASSUME(listener != nullptr);
+
     listener->handle_message(e);
   }
 }
@@ -161,6 +163,8 @@ void alloy::io::message_pump::do_post_immediate_event( const event& e )
 {
   // TODO(bitwizeshift): Handle concurrency
   for (auto& listener : m_listeners) {
+    ALLOY_ASSERT_AND_ASSUME(listener != nullptr);
+
     listener->handle_immediate_message(e);
   }
 }
@@ -173,14 +177,8 @@ void alloy::io::message_pump::do_post_immediate_event( const event& e )
 // Hooks
 //------------------------------------------------------------------------------
 
-void alloy::io::message_pump::listener::handle_message(const event& e)
-  noexcept
-{
-  (void) e;
-}
-
 void alloy::io::message_pump::listener::handle_immediate_message(const event& e)
   noexcept
 {
-  (void) e;
+  handle_message(e);
 }
