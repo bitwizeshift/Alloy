@@ -6,9 +6,11 @@ set(header_files
   include/alloy/engine/component.hpp
   include/alloy/engine/entity.hpp
   include/alloy/engine/signature.hpp
+  include/alloy/engine/entity_manager.hpp
 )
 
 set(source_files
+  src/alloy/engine/entity_manager.cpp
 )
 
 add_library(${PROJECT_NAME}Engine
