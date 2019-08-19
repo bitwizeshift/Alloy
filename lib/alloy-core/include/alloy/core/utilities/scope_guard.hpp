@@ -30,6 +30,10 @@
 #ifndef ALLOY_CORE_UTILITIES_SCOPE_GUARD_HPP
 #define ALLOY_CORE_UTILITIES_SCOPE_GUARD_HPP
 
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+# pragma once
+#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+
 #include "alloy/core/macros.hpp" // ALLOY_UNIQUE_NAME
 
 #include <utility>     // std::move

@@ -30,6 +30,10 @@
 #ifndef ALLOY_CORE_MATH_VECTOR_VECTOR_UTILITIES_HPP
 #define ALLOY_CORE_MATH_VECTOR_VECTOR_UTILITIES_HPP
 
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+# pragma once
+#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+
 #include "alloy/core/precision.hpp" // core::real
 
 #include <type_traits> // std::true_type, std::false_type

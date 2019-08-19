@@ -31,6 +31,10 @@
 #ifndef ALLOY_CORE_MATH_TRIGONOMETRY_HPP
 #define ALLOY_CORE_MATH_TRIGONOMETRY_HPP
 
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+# pragma once
+#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+
 #include "alloy/core/precision.hpp"
 #include "alloy/core/math/angle/basic_angle.hpp"
 #include "alloy/core/math/angle/radian.hpp"
