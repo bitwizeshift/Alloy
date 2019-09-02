@@ -17,10 +17,10 @@ alloy::core::color alloy::core::color::from_rgba32( rgba32 c )
   static constexpr auto radix = real{255};
 
   const auto hex = static_cast<std::uint32_t>(c);
-  const auto r = static_cast<real>((hex & 0xFF000000) >> 24) / radix;
-  const auto g = static_cast<real>((hex & 0x00FF0000) >> 16) / radix;
-  const auto b = static_cast<real>((hex & 0x0000FF00) >>  8) / radix;
-  const auto a = static_cast<real>((hex & 0x000000FF)      ) / radix;
+  const auto r = static_cast<real>((hex & 0xFF000000u) >> 24u) / radix;
+  const auto g = static_cast<real>((hex & 0x00FF0000u) >> 16u) / radix;
+  const auto b = static_cast<real>((hex & 0x0000FF00u) >>  8u) / radix;
+  const auto a = static_cast<real>((hex & 0x000000FFu)       ) / radix;
 
   return {r,g,b,a};
 }
@@ -31,10 +31,10 @@ alloy::core::color alloy::core::color::from_argb32( argb32 c )
   static constexpr auto radix = real{255};
 
   const auto hex = static_cast<std::uint32_t>(c);
-  const auto a = static_cast<real>((hex & 0xFF000000) >> 24) / radix;
-  const auto r = static_cast<real>((hex & 0x00FF0000) >> 16) / radix;
-  const auto g = static_cast<real>((hex & 0x0000FF00) >>  8) / radix;
-  const auto b = static_cast<real>((hex & 0x000000FF)      ) / radix;
+  const auto a = static_cast<real>((hex & 0xFF000000u) >> 24u) / radix;
+  const auto r = static_cast<real>((hex & 0x00FF0000u) >> 16u) / radix;
+  const auto g = static_cast<real>((hex & 0x0000FF00u) >>  8u) / radix;
+  const auto b = static_cast<real>((hex & 0x000000FFu)       ) / radix;
 
   return {r,g,b,a};
 }
@@ -45,10 +45,10 @@ alloy::core::color alloy::core::color::from_abgr32( abgr32 c )
   static constexpr auto radix = real{255};
 
   const auto hex = static_cast<std::uint32_t>(c);
-  const auto a = static_cast<real>((hex & 0xFF000000) >> 24) / radix;
-  const auto b = static_cast<real>((hex & 0x00FF0000) >> 16) / radix;
-  const auto g = static_cast<real>((hex & 0x0000FF00) >>  8) / radix;
-  const auto r = static_cast<real>((hex & 0x000000FF)      ) / radix;
+  const auto a = static_cast<real>((hex & 0xFF000000u) >> 24u) / radix;
+  const auto b = static_cast<real>((hex & 0x00FF0000u) >> 16u) / radix;
+  const auto g = static_cast<real>((hex & 0x0000FF00u) >>  8u) / radix;
+  const auto r = static_cast<real>((hex & 0x000000FFu)       ) / radix;
 
   return {r,g,b,a};
 }
@@ -59,10 +59,10 @@ alloy::core::color alloy::core::color::from_rgba64( rgba64 c )
   static constexpr auto radix = real{65535};
 
   const auto hex = static_cast<std::uint64_t>(c);
-  const auto r = static_cast<real>((hex & 0xFFFF000000000000) >> 48) / radix;
-  const auto g = static_cast<real>((hex & 0x0000FFFF00000000) >> 32) / radix;
-  const auto b = static_cast<real>((hex & 0x00000000FFFF0000) >> 16) / radix;
-  const auto a = static_cast<real>((hex & 0x000000000000FFFF)      ) / radix;
+  const auto r = static_cast<real>((hex & 0xFFFF000000000000u) >> 48u) / radix;
+  const auto g = static_cast<real>((hex & 0x0000FFFF00000000u) >> 32u) / radix;
+  const auto b = static_cast<real>((hex & 0x00000000FFFF0000u) >> 16u) / radix;
+  const auto a = static_cast<real>((hex & 0x000000000000FFFFu)       ) / radix;
 
   return {r,g,b,a};
 }
@@ -73,10 +73,10 @@ alloy::core::color alloy::core::color::from_argb64(argb64 c)
   static constexpr auto radix = real{65535};
 
   const auto hex = static_cast<std::uint64_t>(c);
-  const auto a = static_cast<real>((hex & 0xFFFF000000000000) >> 48) / radix;
-  const auto r = static_cast<real>((hex & 0x0000FFFF00000000) >> 32) / radix;
-  const auto g = static_cast<real>((hex & 0x00000000FFFF0000) >> 16) / radix;
-  const auto b = static_cast<real>((hex & 0x000000000000FFFF)      ) / radix;
+  const auto a = static_cast<real>((hex & 0xFFFF000000000000u) >> 48u) / radix;
+  const auto r = static_cast<real>((hex & 0x0000FFFF00000000u) >> 32u) / radix;
+  const auto g = static_cast<real>((hex & 0x00000000FFFF0000u) >> 16u) / radix;
+  const auto b = static_cast<real>((hex & 0x000000000000FFFFu)       ) / radix;
 
   return {r,g,b,a};
 }
@@ -87,10 +87,10 @@ alloy::core::color alloy::core::color::from_abgr64(abgr64 c)
   static constexpr auto radix = real{65535};
 
   const auto hex = static_cast<std::uint64_t>(c);
-  const auto a = static_cast<real>((hex & 0xFFFF000000000000) >> 48) / radix;
-  const auto b = static_cast<real>((hex & 0x0000FFFF00000000) >> 32) / radix;
-  const auto g = static_cast<real>((hex & 0x00000000FFFF0000) >> 16) / radix;
-  const auto r = static_cast<real>((hex & 0x000000000000FFFF)      ) / radix;
+  const auto a = static_cast<real>((hex & 0xFFFF000000000000u) >> 48u) / radix;
+  const auto b = static_cast<real>((hex & 0x0000FFFF00000000u) >> 32u) / radix;
+  const auto g = static_cast<real>((hex & 0x00000000FFFF0000u) >> 16u) / radix;
+  const auto r = static_cast<real>((hex & 0x000000000000FFFFu)       ) / radix;
 
   return {r,g,b,a};
 }
@@ -129,9 +129,10 @@ alloy::core::color alloy::core::color::from_hsb(hsb c)
   }
 
   const auto domain = static_cast<unsigned short>(hue_domain);
+  const auto fdomain = static_cast<real>(domain);
   const auto f1 = brightness * (1 - saturation);
-  const auto f2 = brightness * (1 - saturation * (hue_domain - domain));
-  const auto f3 = brightness * (1 - saturation * (1 - (hue_domain - domain)));
+  const auto f2 = brightness * (1 - saturation * (hue_domain - fdomain));
+  const auto f3 = brightness * (1 - saturation * (1 - (hue_domain - fdomain)));
 
   switch (domain) {
     case red_domain: {
@@ -208,67 +209,67 @@ void alloy::core::color::brighten( real percent )
 alloy::core::rgba32 alloy::core::color::to_rgba32()
   const noexcept
 {
-  const auto br = static_cast<std::uint32_t>(r() * 255);
-  const auto bg = static_cast<std::uint32_t>(g() * 255);
-  const auto bb = static_cast<std::uint32_t>(b() * 255);
-  const auto ba = static_cast<std::uint32_t>(a() * 255);
+  const auto br = static_cast<std::uint32_t>(r() * 255u);
+  const auto bg = static_cast<std::uint32_t>(g() * 255u);
+  const auto bb = static_cast<std::uint32_t>(b() * 255u);
+  const auto ba = static_cast<std::uint32_t>(a() * 255u);
 
-  return static_cast<rgba32>((br << 24) | (bg << 16) | (bb << 8) | (ba));
+  return static_cast<rgba32>((br << 24u) | (bg << 16u) | (bb << 8u) | (ba));
 }
 
 alloy::core::argb32 alloy::core::color::to_argb32()
   const noexcept
 {
-  const auto br = static_cast<std::uint32_t>(r() * 255);
-  const auto bg = static_cast<std::uint32_t>(g() * 255);
-  const auto bb = static_cast<std::uint32_t>(b() * 255);
-  const auto ba = static_cast<std::uint32_t>(a() * 255);
+  const auto br = static_cast<std::uint32_t>(r() * 255u);
+  const auto bg = static_cast<std::uint32_t>(g() * 255u);
+  const auto bb = static_cast<std::uint32_t>(b() * 255u);
+  const auto ba = static_cast<std::uint32_t>(a() * 255u);
 
-  return static_cast<argb32>((ba << 24) | (br << 16) | (bg << 8) | (bb));
+  return static_cast<argb32>((ba << 24u) | (br << 16u) | (bg << 8u) | (bb));
 }
 
 alloy::core::abgr32 alloy::core::color::to_abgr32()
   const noexcept
 {
-  const auto br = static_cast<std::uint32_t>(r() * 255);
-  const auto bg = static_cast<std::uint32_t>(g() * 255);
-  const auto bb = static_cast<std::uint32_t>(b() * 255);
-  const auto ba = static_cast<std::uint32_t>(a() * 255);
+  const auto br = static_cast<std::uint32_t>(r() * 255u);
+  const auto bg = static_cast<std::uint32_t>(g() * 255u);
+  const auto bb = static_cast<std::uint32_t>(b() * 255u);
+  const auto ba = static_cast<std::uint32_t>(a() * 255u);
 
-  return static_cast<abgr32>((ba << 24) | (bb << 16) | (bg << 8) | (br));
+  return static_cast<abgr32>((ba << 24u) | (bb << 16u) | (bg << 8u) | (br));
 }
 
 alloy::core::rgba64 alloy::core::color::to_rgba64()
   const noexcept
 {
-  const auto br = static_cast<std::uint64_t>(r() * 65535);
-  const auto bg = static_cast<std::uint64_t>(g() * 65535);
-  const auto bb = static_cast<std::uint64_t>(b() * 65535);
-  const auto ba = static_cast<std::uint64_t>(a() * 65535);
+  const auto br = static_cast<std::uint64_t>(r() * 65535u);
+  const auto bg = static_cast<std::uint64_t>(g() * 65535u);
+  const auto bb = static_cast<std::uint64_t>(b() * 65535u);
+  const auto ba = static_cast<std::uint64_t>(a() * 65535u);
 
-  return static_cast<rgba64>((br << 48) | (bg << 32) | (bb << 16) | (ba));
+  return static_cast<rgba64>((br << 48u) | (bg << 32u) | (bb << 16u) | (ba));
 }
 
 alloy::core::argb64 alloy::core::color::to_argb64()
   const noexcept
 {
-  const auto br = static_cast<std::uint64_t>(r() * 65535);
-  const auto bg = static_cast<std::uint64_t>(g() * 65535);
-  const auto bb = static_cast<std::uint64_t>(b() * 65535);
-  const auto ba = static_cast<std::uint64_t>(a() * 65535);
+  const auto br = static_cast<std::uint64_t>(r() * 65535u);
+  const auto bg = static_cast<std::uint64_t>(g() * 65535u);
+  const auto bb = static_cast<std::uint64_t>(b() * 65535u);
+  const auto ba = static_cast<std::uint64_t>(a() * 65535u);
 
-  return static_cast<argb64>((ba << 48) | (br << 32) | (bg << 16) | (bb));
+  return static_cast<argb64>((ba << 48u) | (br << 32u) | (bg << 16u) | (bb));
 }
 
 alloy::core::abgr64 alloy::core::color::to_abgr64()
   const noexcept
 {
-  const auto br = static_cast<std::uint64_t>(r() * 65535);
-  const auto bg = static_cast<std::uint64_t>(g() * 65535);
-  const auto bb = static_cast<std::uint64_t>(b() * 65535);
-  const auto ba = static_cast<std::uint64_t>(a() * 65535);
+  const auto br = static_cast<std::uint64_t>(r() * 65535u);
+  const auto bg = static_cast<std::uint64_t>(g() * 65535u);
+  const auto bb = static_cast<std::uint64_t>(b() * 65535u);
+  const auto ba = static_cast<std::uint64_t>(a() * 65535u);
 
-  return static_cast<abgr64>((ba << 48) | (bb << 32) | (bg << 16) | (br));
+  return static_cast<abgr64>((ba << 48u) | (bb << 32u) | (bg << 16u) | (br));
 }
 
 //------------------------------------------------------------------------------
