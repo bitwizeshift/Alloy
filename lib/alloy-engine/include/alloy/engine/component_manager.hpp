@@ -37,6 +37,7 @@
 #include "alloy/engine/component.hpp"
 #include "alloy/engine/entity.hpp"
 #include "alloy/core/assert.hpp"
+#include "alloy/core/type_index.hpp"
 
 #include <cstddef>       // std::size_t
 #include <unordered_map> // std::unordered_map
@@ -130,57 +131,16 @@ namespace alloy::engine {
     //--------------------------------------------------------------------------
   private:
 
-    class component_info;
-
     class storage_base;
 
     template <typename Component>
     class storage;
 
     template <typename Component>
-    storage<Component> get_storage();
+    storage<Component>& get_storage();
 
-    ///<
-    std::vector<std::size_t> m_component_ids;
+    std::vector<core::type_index::index_type> m_component_ids;
     std::vector<std::unique_ptr<storage_base>> m_component_storages;
-  };
-
-  //============================================================================
-  // class : component_manager::component_info
-  //============================================================================
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief Information about a given component
-  //////////////////////////////////////////////////////////////////////////////
-  class component_manager::component_info
-  {
-    //--------------------------------------------------------------------------
-    // Public Member Types
-    //--------------------------------------------------------------------------
-  public:
-
-    using id_type = std::size_t;
-
-    //--------------------------------------------------------------------------
-    // Static Member Functions
-    //--------------------------------------------------------------------------
-  public:
-
-    /// \brief Gets a unique ID for a given component
-    ///
-    /// \pre Component must be a non-cv-qualified, non-reference/pointer type.
-    ///
-    /// \tparam Component the type to get the id of
-    /// \return the id
-    template <typename Component>
-    static id_type id() noexcept;
-
-    //--------------------------------------------------------------------------
-    // Private Static Members
-    //--------------------------------------------------------------------------
-  private:
-
-    static std::size_t s_current_id;
   };
 
   //============================================================================
@@ -330,27 +290,6 @@ namespace alloy::engine {
 } // namespace alloy::engine
 
 //==============================================================================
-// class : component_manager::component_info
-//==============================================================================
-
-template <typename Component>
-inline alloy::engine::component_manager::component_info::id_type
-  alloy::engine::component_manager::component_info::id()
-  noexcept
-{
-  // Must be a value type
-  static_assert( !std::is_reference<Component>::value );
-  static_assert( !std::is_pointer<Component>::value );
-  static_assert( !std::is_const<Component>::value );
-  static_assert( !std::is_volatile<Component>::value );
-  static_assert( !std::is_void<Component>::value );
-
-  static const auto s_id = s_current_id++;
-
-  return s_id;
-}
-
-//==============================================================================
 // class : component_manager::storage
 //==============================================================================
 
@@ -444,19 +383,19 @@ inline alloy::engine::component
   static_assert( !std::is_volatile<Component>::value );
   static_assert( !std::is_void<Component>::value );
 
-  const auto id = component_info::id<Component>();
+  const auto id = core::type_index::get<Component>();
 
   ALLOY_ASSERT(
     std::find(
       m_component_ids.begin(),
       m_component_ids.end(),
-      id
+      id.value()
     ) == m_component_ids.end(),
     "Component must not have already been registered"
   );
 
   const auto component_index = m_component_ids.size();
-  m_component_ids.push_back(id);
+  m_component_ids.push_back(id.value());
 
   return component{static_cast<component::id_type>(component_index)};
 }
@@ -504,22 +443,37 @@ inline alloy::engine::component
   static_assert( !std::is_volatile<Component>::value );
   static_assert( !std::is_void<Component>::value );
 
-  const auto id = component_info::id<Component>();
+  const auto id = core::type_index::get<Component>();
 
   auto it = std::find(
     m_component_ids.begin(),
     m_component_ids.end(),
-    id
+    id.value()
   );
 
   ALLOY_ASSERT(it != m_component_ids.end(), "Component not registered");
 
   const auto diff = std::distance(
     m_component_ids.begin(),
-    id
+    it
   );
 
   return component{static_cast<component::id_type>(diff)};
+}
+
+template <typename Component>
+inline alloy::engine::component_manager::storage<Component>&
+  alloy::engine::component_manager::get_storage()
+{
+  const auto component = get_component_index<Component>();
+
+  ALLOY_ASSERT(component.index < m_component_storages.size());
+
+  const auto& storage = m_component_storages[component.index];
+
+  using storage_type = component_manager::storage<Component>;
+
+  return static_cast<storage_type&>(*storage);
 }
 
 #endif /* ALLOY_ENGINE_COMPONENT_MANAGER_HPP */
