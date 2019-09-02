@@ -3,5 +3,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node1 [label="alloy::core::math_constants",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d1/d75/structalloy_1_1core_1_1math__constants.html",tooltip="A pure static-class that contains functions for receiving mathematical constants. ..."];
+  Node1 [label="alloy::core::line",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d4/d23/classalloy_1_1core_1_1line.html",tooltip="A representation of an unbounded line. "];
 }

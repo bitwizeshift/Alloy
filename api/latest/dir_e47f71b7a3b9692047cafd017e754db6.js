@@ -10,5 +10,6 @@ var dir_e47f71b7a3b9692047cafd017e754db6 =
     [ "assert.hpp", "d2/d54/assert_8hpp_source.html", null ],
     [ "intrinsics.hpp", "d7/d65/intrinsics_8hpp_source.html", null ],
     [ "macros.hpp", "db/dbe/macros_8hpp_source.html", null ],
-    [ "precision.hpp", "da/d94/precision_8hpp_source.html", null ]
+    [ "precision.hpp", "da/d94/precision_8hpp_source.html", null ],
+    [ "type_index.hpp", "df/d46/type__index_8hpp_source.html", null ]
 ];

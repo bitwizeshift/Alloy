@@ -3,5 +3,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node1 [label="alloy::core::scope\l_guard\< Fn \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d1/db1/classalloy_1_1core_1_1scope__guard.html",tooltip="An RAII wrapper used for dispatching arbitrary functionality for external resource cleanup..."];
+  Node1 [label="alloy::core::radian_unit",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d8/d9b/structalloy_1_1core_1_1radian__unit.html"];
 }

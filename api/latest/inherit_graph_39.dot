@@ -3,5 +3,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node1 [label="alloy::core::vector2",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$dc/dcf/classalloy_1_1core_1_1vector2.html",tooltip="This object represents a 2-component vector in linear algebra. "];
+  Node1 [label="alloy::core::simplex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$dc/d90/structalloy_1_1core_1_1simplex.html"];
 }

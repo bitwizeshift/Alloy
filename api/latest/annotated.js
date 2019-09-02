@@ -69,9 +69,20 @@ var annotated =
         [ "hsb", "de/dd5/structalloy_1_1core_1_1hsb.html", "de/dd5/structalloy_1_1core_1_1hsb" ],
         [ "color", "d0/d22/classalloy_1_1core_1_1color.html", "d0/d22/classalloy_1_1core_1_1color" ],
         [ "basic_fixed", "d7/db1/classalloy_1_1core_1_1basic__fixed.html", null ],
+        [ "type_index", "d4/da3/classalloy_1_1core_1_1type__index.html", "d4/da3/classalloy_1_1core_1_1type__index" ],
+        [ "unexpected", "d3/d38/classalloy_1_1core_1_1unexpected.html", "d3/d38/classalloy_1_1core_1_1unexpected" ],
+        [ "expected", "d7/d33/classalloy_1_1core_1_1expected.html", "d7/d33/classalloy_1_1core_1_1expected" ],
+        [ "is_unexpected", "d5/dc5/structalloy_1_1core_1_1is__unexpected.html", null ],
+        [ "is_unexpected< unexpected< E > >", "df/d19/structalloy_1_1core_1_1is__unexpected_3_01unexpected_3_01_e_01_4_01_4.html", null ],
+        [ "is_expected", "d2/df7/structalloy_1_1core_1_1is__expected.html", null ],
+        [ "is_expected< expected< T, E > >", "d3/d27/structalloy_1_1core_1_1is__expected_3_01expected_3_01_t_00_01_e_01_4_01_4.html", null ],
+        [ "expected< void, E >", "d4/db8/classalloy_1_1core_1_1expected_3_01void_00_01_e_01_4.html", "d4/db8/classalloy_1_1core_1_1expected_3_01void_00_01_e_01_4" ],
         [ "not_null", "d8/dfb/classalloy_1_1core_1_1not__null.html", "d8/dfb/classalloy_1_1core_1_1not__null" ],
         [ "piecewise_compare", "d1/d93/structalloy_1_1core_1_1piecewise__compare.html", "d1/d93/structalloy_1_1core_1_1piecewise__compare" ],
-        [ "scope_guard", "d1/db1/classalloy_1_1core_1_1scope__guard.html", "d1/db1/classalloy_1_1core_1_1scope__guard" ]
+        [ "scope_guard", "d1/db1/classalloy_1_1core_1_1scope__guard.html", "d1/db1/classalloy_1_1core_1_1scope__guard" ],
+        [ "semantic_type", "d8/d0b/classalloy_1_1core_1_1semantic__type.html", "d8/d0b/classalloy_1_1core_1_1semantic__type" ],
+        [ "is_semantic_type", "d9/d16/structalloy_1_1core_1_1is__semantic__type.html", null ],
+        [ "is_semantic_type< semantic_type< T, Tag > >", "d6/dff/structalloy_1_1core_1_1is__semantic__type_3_01semantic__type_3_01_t_00_01_tag_01_4_01_4.html", null ]
       ] ]
     ] ]
 ];
