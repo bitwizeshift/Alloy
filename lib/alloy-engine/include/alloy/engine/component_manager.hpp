@@ -36,6 +36,7 @@
 
 #include "alloy/engine/component.hpp"
 #include "alloy/engine/entity.hpp"
+#include "alloy/core/assert.hpp"
 
 #include <cstddef>       // std::size_t
 #include <unordered_map> // std::unordered_map
@@ -406,11 +407,12 @@ inline typename alloy::engine::component_manager::storage<Component>::component_
   ::get_component(entity e)
   const
 {
+  const auto it = m_entity_to_index.find(e);
   ALLOY_ASSERT(
-    m_entity_to_index.find(e) != m_entity_to_index.end(),
+    it != m_entity_to_index.end(),
     "Component was never attached to entity"
   );
-  const auto index = m_entity_to_index[e];
+  const auto index = *it;
 
   return m_components[index];
 }
