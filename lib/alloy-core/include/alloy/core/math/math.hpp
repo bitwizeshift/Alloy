@@ -352,7 +352,7 @@ inline constexpr alloy::core::real
   alloy::core::saturate( real val )
   noexcept
 {
-    return clamp( val, real{1}, real{0} );
+    return clamp( val, real{0}, real{1} );
 }
 
 //-----------------------------------------------------------------------------
