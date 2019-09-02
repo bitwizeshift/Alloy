@@ -31,6 +31,7 @@ set(header_files
   include/alloy/core/assert.hpp
   include/alloy/core/intrinsics.hpp
   include/alloy/core/macros.hpp
+  include/alloy/core/type_index.hpp
   include/alloy/core/precision.hpp
   include/alloy/core/precision/fixed.hpp
   include/alloy/core/precision/half.hpp
@@ -90,6 +91,8 @@ set(inline_header_files
 )
 
 set(source_files
+  src/alloy/core/type_index.cpp
+
   # Math
   src/alloy/core/math/simplex.cpp
   src/alloy/core/math/trigonometry.cpp
