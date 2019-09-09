@@ -111,7 +111,7 @@ namespace alloy::io {
     /// \brief Virtual hook for handling the message pump
     ///
     /// \param p the message_pump to handle the message
-    virtual void pump(message_pump& p) noexcept = 0;
+    virtual void poll(message_pump& p) noexcept = 0;
   };
 
 } // namespace alloy::io

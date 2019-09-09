@@ -43,7 +43,7 @@ void alloy::extra::sdl2_pump_source
 // Hooks
 //------------------------------------------------------------------------------
 
-void alloy::extra::sdl2_pump_source::pump( io::message_pump& p )
+void alloy::extra::sdl2_pump_source::poll( io::message_pump& p )
   noexcept
 {
   auto event = ::SDL_Event{};

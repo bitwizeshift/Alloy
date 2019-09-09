@@ -111,15 +111,18 @@ namespace alloy::extra {
     //--------------------------------------------------------------------------
   private:
 
-    /// \brief Virtual hook for handling the message pump
+    /// \brief Hook for the message pump source to implement
+    ///
+    /// This will poll the current source for events, pushing events back to the
+    /// message_pump \p p
     ///
     /// \note When pumping messages from SDL, any message created for a device
     ///       that is not attached to this pump source will be lost. For
     ///       example, if a window event occurs but is not attached to this
     ///       pump, the event will not propagate.
     ///
-    /// \param p the message_pump to handle the message
-    void pump(io::message_pump& p) noexcept override;
+    /// \param p the message_pump to push new messages to
+    void poll(io::message_pump& p) noexcept override;
 
     /// \brief Handles a window event
     ///

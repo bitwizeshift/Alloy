@@ -108,11 +108,49 @@ alloy::io::message_pump::message_pump()
 // Modifiers
 //------------------------------------------------------------------------------
 
-void alloy::io::message_pump::pump()
+void alloy::io::message_pump::poll()
 {
   for (auto& source : m_sources) {
-    source->pump(*this);
+    source->poll(*this);
   }
+}
+
+void alloy::io::message_pump::pump()
+{
+  poll();
+  dispatch();
+}
+
+void alloy::io::message_pump::dispatch()
+{
+  // The event queues are moved and cleared prior to dispatching the events
+  // to avoid any listener from pushing a new event, and corrupting the queue
+  // during iteration.
+  //
+  // The 'clear' call is necessary to put the vectors into a valid state after
+  // being moved-from -- otherwise it would be undefined behavior.
+
+  auto normal_events = std::move(m_normal_events);
+  auto immediate_events = std::move(m_immediate_events);
+  m_normal_events.clear();
+  m_immediate_events.clear();
+
+  for (const auto& e : normal_events) {
+    for (auto& listener : m_listeners) {
+      ALLOY_ASSERT_AND_ASSUME(listener != nullptr);
+
+      listener->handle_immediate_message(e);
+    }
+  }
+
+  for (const auto& e : immediate_events) {
+    for (auto& listener : m_listeners) {
+      ALLOY_ASSERT_AND_ASSUME(listener != nullptr);
+
+      listener->handle_message(e);
+    }
+  }
+
 }
 
 //------------------------------------------------------------------------------
@@ -149,24 +187,14 @@ void alloy::io::message_pump::unregister_pump_source( core::not_null<source*> s 
 // Event Posting
 //------------------------------------------------------------------------------
 
-void alloy::io::message_pump::do_post_event( const event& e )
+void alloy::io::message_pump::do_post_event( event e )
 {
-  // TODO(bitwizeshift): Handle concurrency
-  for (auto& listener : m_listeners) {
-    ALLOY_ASSERT_AND_ASSUME(listener != nullptr);
-
-    listener->handle_message(e);
-  }
+  m_normal_events.emplace_back(std::move(e));
 }
 
-void alloy::io::message_pump::do_post_immediate_event( const event& e )
+void alloy::io::message_pump::do_post_immediate_event( event e )
 {
-  // TODO(bitwizeshift): Handle concurrency
-  for (auto& listener : m_listeners) {
-    ALLOY_ASSERT_AND_ASSUME(listener != nullptr);
-
-    listener->handle_immediate_message(e);
-  }
+  m_immediate_events.emplace_back(std::move(e));
 }
 
 //==============================================================================

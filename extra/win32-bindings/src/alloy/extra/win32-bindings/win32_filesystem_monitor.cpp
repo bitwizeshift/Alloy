@@ -109,7 +109,7 @@ void alloy::extra::win32_filesystem_monitor::do_watch( std::string_view path,
 
 //------------------------------------------------------------------------------
 
-void alloy::extra::win32_filesystem_monitor::pump( io::message_pump& p )
+void alloy::extra::win32_filesystem_monitor::poll( io::message_pump& p )
   noexcept
 {
   static constexpr auto buffer_size = 256;

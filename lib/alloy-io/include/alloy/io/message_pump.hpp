@@ -309,8 +309,18 @@ namespace alloy::io {
 
     //--------------------------------------------------------------------------
 
-    /// \brief Pumps for an event from all pump-sources
+    /// \brief Polls for events and dispatches accumulated events to all
+    ///        listeners
     void pump();
+
+    /// \brief Polls for events from all message_pump event sources
+    ///
+    /// Events are accumulated, but will not be dispatched until \c dispatch
+    /// is called
+    void poll();
+
+    /// \brief Dispatches all accumulated events
+    void dispatch();
 
     //--------------------------------------------------------------------------
 
@@ -350,20 +360,29 @@ namespace alloy::io {
     /// \brief Posts an event to all listeners
     ///
     /// \param e the event
-    void do_post_event(const event& e);
+    void do_post_event(event e);
 
     /// \brief Posts an immediate event to all listeners
     ///
     /// \param e the event
-    void do_post_immediate_event(const event& e);
+    void do_post_immediate_event(event e);
 
     //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------
   private:
 
+    // TODO(bitwizeshift):
+    //   Consider replacing these vectors with fixed sized containers which
+    //   use circular buffers
+
     std::vector<listener*> m_listeners;
     std::vector<source*> m_sources;
+
+    // This could also be done with a priority queue, but that introduces
+    // logarithmic comparisons on pushing -- and this would be unnecessary
+    std::vector<event> m_normal_events;
+    std::vector<event> m_immediate_events;
   };
 
   //============================================================================
@@ -438,10 +457,13 @@ namespace alloy::io {
     //--------------------------------------------------------------------------
   private:
 
-    /// \brief Virtual hook for handling the message pump
+    /// \brief Hook for the message pump source to implement
     ///
-    /// \param p the message_pump to handle the message
-    virtual void pump(message_pump& p) noexcept = 0;
+    /// This will poll the current source for events, pushing events back to the
+    /// message_pump \p p
+    ///
+    /// \param p the message_pump to push new messages to
+    virtual void poll(message_pump& p) noexcept = 0;
   };
 
 } // namespace alloy::io
@@ -590,17 +612,21 @@ alloy::io::event::id_type alloy::io::event::handler(operation op,
 template<typename Event>
 inline void alloy::io::message_pump::post_event(Event&& e)
 {
-  const auto erased_event = event::make_event<std::decay_t<Event>>( std::forward<Event>(e) );
+  auto erased_event = event::make_event<std::decay_t<Event>>(
+    std::forward<Event>(e)
+  );
 
-  do_post_event(erased_event);
+  do_post_event(std::move(erased_event));
 }
 
 template<typename Event>
 inline void alloy::io::message_pump::post_immediate_event(Event&& e)
 {
-  const auto erased_event = event::make_event<std::decay_t<Event>>( std::forward<Event>(e) );
+  auto erased_event = event::make_event<std::decay_t<Event>>(
+    std::forward<Event>(e)
+  );
 
-  do_post_immediate_event(erased_event);
+  do_post_immediate_event(std::move(erased_event));
 }
 
 //==============================================================================

@@ -74,10 +74,13 @@ namespace alloy::extra {
 
     void do_watch(std::string_view path, bool recursive) noexcept override;
 
-    /// \brief Virtual hook for handling the message pump
+    /// \brief Hook for the message pump source to implement
     ///
-    /// \param p the message_pump to handle the message
-    void pump(io::message_pump& p) noexcept override;
+    /// This will poll the current source for events, pushing events back to the
+    /// message_pump \p p
+    ///
+    /// \param p the message_pump to push new messages to
+    void poll(io::message_pump& p) noexcept override;
 
     //--------------------------------------------------------------------------
     // Private Members
