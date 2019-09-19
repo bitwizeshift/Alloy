@@ -395,9 +395,9 @@ namespace alloy::core {
     >;
 
     template <typename U>
-    static U& reference_to(U& ref);
+    static constexpr U& reference_to(U& ref);
     template <typename U>
-    static U& reference_to(std::reference_wrapper<U> ref);
+    static constexpr U& reference_to(std::reference_wrapper<U> ref);
 
     std::variant<underlying_type,E> m_state;
   };
@@ -688,14 +688,15 @@ inline void alloy::core::expected<T,E>::swap(expected<T,E>& other)
 
 template <typename T, typename E>
 template <typename U>
-inline U& alloy::core::expected<T,E>::reference_to(U& ref)
+inline constexpr U& alloy::core::expected<T,E>::reference_to(U& ref)
 {
   return ref;
 }
 
 template <typename T, typename E>
 template <typename U>
-inline U& alloy::core::expected<T,E>::reference_to(std::reference_wrapper<U> ref)
+inline constexpr U&
+  alloy::core::expected<T,E>::reference_to(std::reference_wrapper<U> ref)
 {
   return ref.get();
 }
