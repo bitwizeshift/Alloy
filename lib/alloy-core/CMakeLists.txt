@@ -37,6 +37,24 @@ set(header_files
   include/alloy/core/precision/half.hpp
   include/alloy/core/precision/real.hpp
 
+  # Containers
+  include/alloy/core/containers/deque.hpp
+  include/alloy/core/containers/forward_list.hpp
+  include/alloy/core/containers/hash_map.hpp
+  include/alloy/core/containers/hash_multimap.hpp
+  include/alloy/core/containers/hash_multiset.hpp
+  include/alloy/core/containers/hash_set.hpp
+  include/alloy/core/containers/list.hpp
+  include/alloy/core/containers/map.hpp
+  include/alloy/core/containers/multimap.hpp
+  include/alloy/core/containers/multiset.hpp
+  include/alloy/core/containers/priority_queue.hpp
+  include/alloy/core/containers/queue.hpp
+  include/alloy/core/containers/set.hpp
+  include/alloy/core/containers/stack.hpp
+  include/alloy/core/containers/string.hpp
+  include/alloy/core/containers/vector.hpp
+
   # Utilities
   include/alloy/core/utilities/expected.hpp
   include/alloy/core/utilities/explicitly_copyable.hpp
