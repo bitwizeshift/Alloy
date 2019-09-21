@@ -39,9 +39,11 @@ set(header_files
 
   # Utilities
   include/alloy/core/utilities/expected.hpp
+  include/alloy/core/utilities/explicitly_copyable.hpp
   include/alloy/core/utilities/not_null.hpp
   include/alloy/core/utilities/piecewise_compare.hpp
   include/alloy/core/utilities/scope_guard.hpp
+  include/alloy/core/utilities/semantic_type.hpp
 
   # Math
   include/alloy/core/math/angle.hpp
