@@ -56,6 +56,7 @@ set(header_files
   include/alloy/core/containers/vector.hpp
 
   # Utilities
+  include/alloy/core/utilities/delegate.hpp
   include/alloy/core/utilities/expected.hpp
   include/alloy/core/utilities/explicitly_copyable.hpp
   include/alloy/core/utilities/not_null.hpp
