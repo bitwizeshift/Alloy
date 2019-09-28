@@ -308,7 +308,7 @@ inline constexpr typename alloy::core::not_null<T>::reference
   alloy::core::not_null<T>::operator*()
   const noexcept
 {
-  return m_pointer;
+  return (*m_pointer);
 }
 
 //==============================================================================
