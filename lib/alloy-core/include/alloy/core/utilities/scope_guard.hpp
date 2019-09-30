@@ -66,12 +66,8 @@ namespace alloy::core {
     scope_guard(Fn fn)
       noexcept(std::is_nothrow_move_constructible<Fn>::value);
 
-    /// \brief Moves the contents of one scope_guard to this scope_guard
-    ///
-    /// \param other the other scope_guard to move
-    scope_guard(scope_guard&& other)
-      noexcept(std::is_nothrow_move_constructible<Fn>::value);
-    scope_guard( const scope_guard& other ) = delete;
+    scope_guard(scope_guard&&) = delete;
+    scope_guard(const scope_guard&) = delete;
 
     //--------------------------------------------------------------------------
 
@@ -79,12 +75,8 @@ namespace alloy::core {
 
     //--------------------------------------------------------------------------
 
-    /// \brief Assigns the contents of one scope_guard to this scope_guard
-    ///
-    /// \param other the other scope_guard to move
-    /// \return reference to \c (*this)
-    scope_guard& operator=( scope_guard&& other ) = delete;
-    scope_guard& operator=( const scope_guard& other ) = delete;
+    scope_guard& operator=(scope_guard&&) = delete;
+    scope_guard& operator=(const scope_guard&) = delete;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -92,7 +84,6 @@ namespace alloy::core {
   private:
 
     Fn m_fn;              ///< The function to invoke
-    bool m_should_engage; ///< Whether or not the function should be invoked
   };
 
   //============================================================================
@@ -127,19 +118,9 @@ namespace alloy::core {
 template<typename Fn>
 inline alloy::core::scope_guard<Fn>::scope_guard( Fn fn )
   noexcept(std::is_nothrow_move_constructible<Fn>::value)
-  : m_fn{std::move(fn)},
-    m_should_engage{true}
+  : m_fn{std::move(fn)}
 {
 
-}
-
-template<typename Fn>
-inline alloy::core::scope_guard<Fn>::scope_guard( scope_guard&& other )
-  noexcept(std::is_nothrow_move_constructible<Fn>::value)
-  : m_fn{std::move(other.m_fn)},
-    m_should_engage{other.m_should_engage}
-{
-  other.m_should_engage = false;
 }
 
 //------------------------------------------------------------------------------
@@ -148,9 +129,7 @@ template<typename Fn>
 inline alloy::core::scope_guard<Fn>::~scope_guard()
   noexcept
 {
-  if (m_should_engage) {
-    m_fn();
-  }
+  m_fn();
 }
 
 //==============================================================================
