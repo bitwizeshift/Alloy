@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 
 #include <forward_list> // std::forward_list
@@ -42,7 +43,7 @@
 
 namespace alloy::core {
 
-  template <typename T, typename Allocator = std::allocator<T>>
+  template <typename T, typename Allocator = stl_allocator_adapter<T>>
   using forward_list = explicitly_copyable<std::forward_list<T,Allocator>>;
 
 } // namespace alloy::core

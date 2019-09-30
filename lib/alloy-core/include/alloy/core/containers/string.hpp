@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 
 #include <string>
@@ -43,7 +44,7 @@ namespace alloy::core {
 
   template <typename CharT,
             typename Traits = std::char_traits<CharT>,
-            typename Allocator = std::allocator<CharT>>
+            typename Allocator = stl_allocator_adapter<CharT>>
   using basic_string = explicitly_copyable<std::basic_string<CharT,Traits,Allocator>>;
 
 } // namespace alloy::core

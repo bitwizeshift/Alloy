@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 
 #include <unordered_set> // std::unordered_multiset
@@ -45,7 +46,7 @@ namespace alloy::core {
   template <typename Key,
             typename Hash = std::hash<Key>,
             typename KeyEqual = std::equal_to<Key>,
-            typename Allocator = std::allocator<Key>>
+            typename Allocator = stl_allocator_adapter<Key>>
   using hash_multiset = explicitly_copyable<std::unordered_multiset<Key,Hash,KeyEqual,Allocator>>;
 
 } // namespace alloy::core

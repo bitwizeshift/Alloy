@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 
 #include <set>        // std::multiset
@@ -44,7 +45,7 @@ namespace alloy::core {
 
   template <typename Key,
             typename Compare = std::less<Key>,
-            typename Allocator = std::allocator<Key>>
+            typename Allocator = stl_allocator_adapter<Key>>
   using multiset = explicitly_copyable<std::multiset<Key,Compare,Allocator>>;
 
 } // namespace alloy::core

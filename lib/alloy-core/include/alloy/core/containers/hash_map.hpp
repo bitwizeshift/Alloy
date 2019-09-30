@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 
 #include <unordered_map> // std::map
@@ -47,7 +48,7 @@ namespace alloy::core {
             typename T,
             typename Hash = std::hash<Key>,
             typename KeyEqual = std::equal_to<Key>,
-            typename Allocator = std::allocator<std::pair<const Key, T>>>
+            typename Allocator = stl_allocator_adapter<std::pair<const Key, T>>>
   using hash_map = explicitly_copyable<std::unordered_map<Key,Hash,KeyEqual,Allocator>>;
 
 } // namespace alloy::core

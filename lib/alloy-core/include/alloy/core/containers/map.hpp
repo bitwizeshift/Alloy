@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 
 #include <map>        // std::map
@@ -46,7 +47,7 @@ namespace alloy::core {
   template <typename Key,
             typename T,
             typename Compare = std::less<Key>,
-            typename Allocator = std::allocator<std::pair<const Key, T>>>
+            typename Allocator = stl_allocator_adapter<std::pair<const Key, T>>>
   using map = explicitly_copyable<std::map<Key,T,Compare,Allocator>>;
 
 } // namespace alloy::core
