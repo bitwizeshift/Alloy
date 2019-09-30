@@ -64,6 +64,10 @@ set(header_files
   include/alloy/core/utilities/scope_guard.hpp
   include/alloy/core/utilities/semantic_type.hpp
 
+  # Memory
+  include/alloy/core/memory/memory_resource.hpp
+  include/alloy/core/memory/allocator.hpp
+
   # Math
   include/alloy/core/math/angle.hpp
   include/alloy/core/math/angle/basic_angle.hpp
