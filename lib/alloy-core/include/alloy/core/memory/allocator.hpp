@@ -481,6 +481,8 @@ inline T* alloy::core::allocator::make(Args&&...args)
   static_assert(!std::is_void<T>::value);
   static_assert(!std::is_const<T>::value);
   static_assert(!std::is_volatile<T>::value);
+  static_assert(!std::is_array<T>::value);
+  static_assert(!std::is_reference<T>::value);
 
   return aligned_make<T>(
     std::align_val_t{alignof(T)},
@@ -497,6 +499,8 @@ inline T* alloy::core::allocator::make_array(std::size_t n)
   static_assert(!std::is_void<T>::value);
   static_assert(!std::is_const<T>::value);
   static_assert(!std::is_volatile<T>::value);
+  static_assert(!std::is_array<T>::value);
+  static_assert(!std::is_reference<T>::value);
 
   return aligned_make_array<T>(std::align_val_t{alignof(T)}, n);
 }
@@ -510,6 +514,8 @@ inline T* alloy::core::allocator::make_array(std::size_t n, const U& u)
   static_assert(!std::is_void<T>::value);
   static_assert(!std::is_const<T>::value);
   static_assert(!std::is_volatile<T>::value);
+  static_assert(!std::is_array<T>::value);
+  static_assert(!std::is_reference<T>::value);
 
   return aligned_make_array<T>(n, std::align_val_t{alignof(T)}, u);
 }
@@ -523,6 +529,8 @@ inline void alloy::core::allocator::dispose(not_null<T*> p)
   static_assert(!std::is_void<T>::value);
   static_assert(!std::is_const<T>::value);
   static_assert(!std::is_volatile<T>::value);
+  static_assert(!std::is_array<T>::value);
+  static_assert(!std::is_reference<T>::value);
 
   aligned_dispose<T>(p, std::align_val_t{alignof(T)});
 }
@@ -537,6 +545,8 @@ inline void alloy::core::allocator::dispose_array(not_null<T*> p,
   static_assert(!std::is_void<T>::value);
   static_assert(!std::is_const<T>::value);
   static_assert(!std::is_volatile<T>::value);
+  static_assert(!std::is_array<T>::value);
+  static_assert(!std::is_reference<T>::value);
 
   aligned_dispose_array<T>(p, n, std::align_val_t{alignof(T)});
 }
@@ -553,6 +563,8 @@ inline T* alloy::core::allocator::aligned_make(std::align_val_t align, Args&&...
   static_assert(!std::is_void<T>::value);
   static_assert(!std::is_const<T>::value);
   static_assert(!std::is_volatile<T>::value);
+  static_assert(!std::is_array<T>::value);
+  static_assert(!std::is_reference<T>::value);
 
   ALLOY_ASSERT(
     align >= std::align_val_t{alignof(T)},
@@ -589,6 +601,8 @@ inline T* alloy::core::allocator::aligned_make_array(std::size_t n,
   static_assert(!std::is_void<T>::value);
   static_assert(!std::is_const<T>::value);
   static_assert(!std::is_volatile<T>::value);
+  static_assert(!std::is_array<T>::value);
+  static_assert(!std::is_reference<T>::value);
 
   ALLOY_ASSERT(
     align >= std::align_val_t{alignof(T)},
@@ -652,6 +666,8 @@ inline T* alloy::core::allocator::aligned_make_array(std::size_t n,
   static_assert(!std::is_void<T>::value);
   static_assert(!std::is_const<T>::value);
   static_assert(!std::is_volatile<T>::value);
+  static_assert(!std::is_array<T>::value);
+  static_assert(!std::is_reference<T>::value);
 
   ALLOY_ASSERT(
     align >= std::align_val_t{alignof(T)},
@@ -715,6 +731,8 @@ inline void alloy::core::allocator::aligned_dispose(not_null<T*> p,
   static_assert(!std::is_void<T>::value);
   static_assert(!std::is_const<T>::value);
   static_assert(!std::is_volatile<T>::value);
+  static_assert(!std::is_array<T>::value);
+  static_assert(!std::is_reference<T>::value);
 
   ALLOY_ASSERT(
     align >= std::align_val_t{alignof(T)},
@@ -738,6 +756,8 @@ inline void alloy::core::allocator::aligned_dispose_array(not_null<T*> p,
   static_assert(!std::is_void<T>::value);
   static_assert(!std::is_const<T>::value);
   static_assert(!std::is_volatile<T>::value);
+  static_assert(!std::is_array<T>::value);
+  static_assert(!std::is_reference<T>::value);
 
   ALLOY_ASSERT(
     align >= std::align_val_t{alignof(T)},
