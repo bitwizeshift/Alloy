@@ -69,7 +69,7 @@ namespace alloy::core {
     /// \param size the vector that determines the x, y, z size
     /// \return the created box
     static axis_aligned_box from_point_and_size( const point& p,
-                                                 const vector3 size ) noexcept;
+                                                 const vector3& size ) noexcept;
 
     /// \brief Constructs an aligned box constrainted between the two points
     ///        \p p0 and \p p1

@@ -12,7 +12,7 @@
 
 alloy::core::axis_aligned_box
   alloy::core::axis_aligned_box::from_point_and_size( const point& p,
-                                                      const vector3 size )
+                                                      const vector3& size )
   noexcept
 {
   return from_points(p, p + size);
