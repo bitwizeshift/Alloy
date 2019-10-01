@@ -67,6 +67,7 @@ set(header_files
   # Memory
   include/alloy/core/memory/memory_resource.hpp
   include/alloy/core/memory/allocator.hpp
+  include/alloy/core/memory/observer_ptr.hpp
 
   # Math
   include/alloy/core/math/angle.hpp
