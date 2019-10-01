@@ -101,6 +101,7 @@ namespace alloy::core {
     /// \param bytes the number of bytes to allocate
     /// \param align the alignment of the allocation
     /// \return a pointer to the allocated bytes on success, nullptr on failure
+    [[nodiscard]]
     void* allocate_bytes(std::size_t bytes,
                          std::align_val_t align = default_align) noexcept;
 
@@ -135,6 +136,7 @@ namespace alloy::core {
     /// \param new_size the new size that has been requested
     /// \param align the alignment previously requested when allocating
     /// \return a pointer to the allocated bytes
+    [[nodiscard]]
     void* reallocate_bytes(void* p,
                            std::size_t old_size,
                            std::size_t new_size,
@@ -153,6 +155,7 @@ namespace alloy::core {
     /// \return a pointer to a constructed T on success, nullptr on failure
     template <typename T, typename...Args,
               typename = std::enable_if_t<std::is_constructible<T,Args...>::value>>
+    [[nodiscard]]
     T* make(Args&&...args)
       noexcept(std::is_nothrow_constructible<T,Args...>::value);
 
@@ -165,6 +168,7 @@ namespace alloy::core {
     ///         nullptr on failure
     template <typename T,
               typename = std::enable_if_t<std::is_constructible<T>::value>>
+    [[nodiscard]]
     T* make_array(std::size_t n)
       noexcept(std::is_nothrow_constructible<T>::value);
 
@@ -177,6 +181,7 @@ namespace alloy::core {
     /// \return a pointer to a constructed T array on success, nullptr on failure
     template <typename T, typename U,
               typename = std::enable_if_t<std::is_constructible<T,const U&>::value>>
+    [[nodiscard]]
     T* make_array(std::size_t n, const U& u)
       noexcept(std::is_nothrow_constructible<T, const U&>::value);
 
@@ -214,6 +219,7 @@ namespace alloy::core {
     /// \return a pointer to a constructed T on success, nullptr on failure
     template <typename T, typename...Args,
               typename = std::enable_if_t<std::is_constructible<T,Args...>::value>>
+    [[nodiscard]]
     T* aligned_make(std::align_val_t align, Args&&...args)
       noexcept(std::is_nothrow_constructible<T,Args...>::value);
 
@@ -230,6 +236,7 @@ namespace alloy::core {
     ///         nullptr on failure
     template <typename T,
               typename = std::enable_if_t<std::is_constructible<T>::value>>
+    [[nodiscard]]
     T* aligned_make_array(std::size_t n, std::align_val_t align)
       noexcept(std::is_nothrow_constructible<T>::value);
 
@@ -248,6 +255,7 @@ namespace alloy::core {
     ///         nullptr on failure
     template <typename T, typename U,
               typename = std::enable_if_t<std::is_constructible<T,const U&>::value>>
+    [[nodiscard]]
     T* aligned_make_array(std::size_t n, std::align_val_t align, const U& u)
       noexcept(std::is_nothrow_constructible<T,const U&>::value);
 

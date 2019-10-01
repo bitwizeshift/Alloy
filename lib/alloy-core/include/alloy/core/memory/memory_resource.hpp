@@ -102,6 +102,7 @@ namespace alloy::core {
     /// \param bytes the number of bytes to allocate
     /// \param align the alignment for the memory to be aligned to
     /// \return a pointer to memory of size \p bytes aligned to \p align
+    [[nodiscard]]
     void* allocate(std::size_t bytes,
                    std::align_val_t align = default_align) noexcept;
 
@@ -156,6 +157,7 @@ namespace alloy::core {
     /// \param bytes the number of bytes being requested
     /// \param align the default alignment
     /// \return the optimal number of bytes to request
+    [[nodiscard]]
     std::size_t recommended_allocation_size_for(std::size_t bytes,
                                                 std::align_val_t align = default_align) const noexcept;
 
@@ -165,6 +167,7 @@ namespace alloy::core {
     /// \note The default for this is '1'
     ///
     /// \return the minimum size
+    [[nodiscard]]
     std::size_t min_allocation_size() const noexcept;
 
     /// \brief Returns the maximum size allocation that this memory resource
@@ -173,6 +176,7 @@ namespace alloy::core {
     /// \note The default for this is std::numeric_limits<std::size_t>::max()
     ///
     /// \return the maximum size
+    [[nodiscard]]
     std::size_t max_allocation_size() const noexcept;
 
     //-------------------------------------------------------------------------
