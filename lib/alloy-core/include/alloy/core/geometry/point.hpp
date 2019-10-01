@@ -1,7 +1,8 @@
 /******************************************************************************
  * \file point.hpp
  *
- * \brief This header contains an implementation of a 3d point location
+ * \brief This header contains an implementation of a point in 3 dimensional
+ *        space
  ******************************************************************************/
 
 /*

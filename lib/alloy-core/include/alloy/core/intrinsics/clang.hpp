@@ -9,10 +9,7 @@
 /*
   The MIT License (MIT)
 
-  Bit Standard Template Library.
-  https://github.com/bitwizeshift/bit-stl
-
-  Copyright (c) 2018 Matthew Rodusek
+  Copyright (c) 2018 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal

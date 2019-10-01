@@ -1,7 +1,8 @@
 /******************************************************************************
- * \file point.hpp
+ * \file sphere.hpp
  *
- * \brief This header contains an implementation of a 3d point location
+ * \brief This header contains an implementation of a 3d sphere geometric
+ *        object
  ******************************************************************************/
 
 /*

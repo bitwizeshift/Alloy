@@ -1,5 +1,5 @@
 /*****************************************************************************
- * \file piecewise_compare.hpp
+ * \file scope_guard.hpp
  *
  * \brief This header defines a comparator for piecewise-based comparisons
  *****************************************************************************/
