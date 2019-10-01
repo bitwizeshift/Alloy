@@ -45,14 +45,13 @@ namespace alloy::core {
   /// \brief An RAII wrapper used for dispatching arbitrary functionality for
   ///        external resource cleanup
   ///
-  /// \tparam Fn the function to invoke. Must not be a reference type, moveable,
-  ///            and invocable without any arguments.
+  /// \tparam Fn the function to invoke. Must not be a reference type,
+  ///            and must be invocable without any arguments.
   //////////////////////////////////////////////////////////////////////////////
   template<typename Fn>
   class scope_guard
   {
     static_assert(!std::is_reference<Fn>::value);
-    static_assert(std::is_move_constructible<Fn>::value);
     static_assert(std::is_invocable<Fn>::value);
 
     //--------------------------------------------------------------------------
@@ -63,7 +62,7 @@ namespace alloy::core {
     /// \brief Constructs a scope_guard from a function
     ///
     /// \param fn the function to invoke
-    scope_guard(Fn fn)
+    explicit scope_guard(Fn fn)
       noexcept(std::is_nothrow_move_constructible<Fn>::value);
 
     scope_guard(scope_guard&&) = delete;
@@ -83,7 +82,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   private:
 
-    Fn m_fn;              ///< The function to invoke
+    Fn m_fn; ///< The function to invoke
   };
 
   //============================================================================
