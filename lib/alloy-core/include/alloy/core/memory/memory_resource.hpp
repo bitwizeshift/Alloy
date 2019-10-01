@@ -39,6 +39,7 @@
 #include <cstddef> // std::max_align_t, std::size_t, etc
 #include <limits>  // std::numeric_limits
 #include <new>     // std::align_val_t
+#include <string_view> // std::string_view
 
 namespace alloy::core {
 
@@ -179,6 +180,12 @@ namespace alloy::core {
     [[nodiscard]]
     std::size_t max_allocation_size() const noexcept;
 
+    /// \brief Retrieves the name of this resource
+    ///
+    /// \return The name of this resource
+    [[nodiscard]]
+    std::string_view name() const noexcept;
+
     //-------------------------------------------------------------------------
     // Protected Destructor
     //-------------------------------------------------------------------------
@@ -207,14 +214,16 @@ namespace alloy::core {
   private:
 
     virtual std::size_t
-      do_recommended_allocation_size_for(std::size_t bytes,
-                                         std::align_val_t align) const noexcept;
+      get_recommended_allocation_size_for(std::size_t bytes,
+                                          std::align_val_t align) const noexcept;
 
     virtual std::size_t
-      do_min_allocation_size() const noexcept;
+      get_min_allocation_size() const noexcept;
 
     virtual std::size_t
-      do_max_allocation_size() const noexcept;
+      get_max_allocation_size() const noexcept;
+
+    virtual std::string_view get_name() const noexcept;
   };
 
 } // namespace alloy::core
@@ -282,7 +291,7 @@ inline std::size_t
                                                                 std::align_val_t align)
   const noexcept
 {
-  return do_recommended_allocation_size_for(bytes, align);
+  return get_recommended_allocation_size_for(bytes, align);
 }
 
 
@@ -290,7 +299,7 @@ inline std::size_t
   alloy::core::memory_resource::min_allocation_size()
   const noexcept
 {
-  return do_min_allocation_size();
+  return get_min_allocation_size();
 }
 
 
@@ -298,7 +307,15 @@ inline std::size_t
   alloy::core::memory_resource::max_allocation_size()
   const noexcept
 {
-  return do_max_allocation_size();
+  return get_max_allocation_size();
+}
+
+
+inline std::string_view
+  alloy::core::memory_resource::name()
+  const noexcept
+{
+  return get_name();
 }
 
 
@@ -325,8 +342,8 @@ inline bool
 
 
 inline std::size_t
-  alloy::core::memory_resource::do_recommended_allocation_size_for(std::size_t bytes,
-                                                                   std::align_val_t align)
+  alloy::core::memory_resource::get_recommended_allocation_size_for(std::size_t bytes,
+                                                                    std::align_val_t align)
   const noexcept
 {
   const auto step = bytes + static_cast<std::size_t>(align) - 1;
@@ -336,7 +353,7 @@ inline std::size_t
 
 
 inline std::size_t
-  alloy::core::memory_resource::do_min_allocation_size()
+  alloy::core::memory_resource::get_min_allocation_size()
   const noexcept
 {
   return 1u;
@@ -344,10 +361,19 @@ inline std::size_t
 
 
 inline std::size_t
-  alloy::core::memory_resource::do_max_allocation_size()
+  alloy::core::memory_resource::get_max_allocation_size()
   const noexcept
 {
   return std::numeric_limits<std::size_t>::max();
+}
+
+inline std::string_view
+  alloy::core::memory_resource::get_name()
+  const noexcept
+{
+  using std::literals::string_view_literals::operator""sv;
+
+  return "unnamed memory resource"sv;
 }
 
 #endif /* ALLOY_CORE_MEMORY_MEMORY_RESOURCE_HPP */
