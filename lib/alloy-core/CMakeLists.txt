@@ -107,6 +107,7 @@ set(header_files
 
   # Model
   include/alloy/core/model/color.hpp
+  include/alloy/core/model/image.hpp
 )
 
 set(inline_header_files
@@ -137,6 +138,7 @@ set(source_files
 
   # Model
   src/alloy/core/model/color.cpp
+  src/alloy/core/model/image.cpp
 )
 
 add_library(${PROJECT_NAME}Core
