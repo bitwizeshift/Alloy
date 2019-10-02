@@ -92,7 +92,7 @@ namespace alloy::core {
     allocator& operator=(const allocator&) = default;
 
     //-------------------------------------------------------------------------
-    // Allocation
+    // Allocation : Bytes
     //-------------------------------------------------------------------------
   public:
 
@@ -123,7 +123,7 @@ namespace alloy::core {
     /// \param p pointer to memory to attempt to resize
     /// \param bytes the new byte size
     /// \return \c true if the memory was able to be resized
-    bool resize_allocation(void* p, std::size_t bytes) noexcept;
+    bool resize_bytes(void* p, std::size_t bytes) noexcept;
 
     /// \brief Attempts to resize memory previously allocated, and falls back
     ///        to allocating new memory instead
@@ -417,7 +417,7 @@ inline alloy::core::allocator::allocator(not_null<memory_resource*> resource)
 }
 
 //-----------------------------------------------------------------------------
-// Allocation
+// Allocation : Bytes
 //-----------------------------------------------------------------------------
 
 inline void* alloy::core::allocator::allocate_bytes(std::size_t bytes,
@@ -437,8 +437,8 @@ inline void alloy::core::allocator::deallocate_bytes(void* p,
 }
 
 
-inline bool alloy::core::allocator::resize_allocation(void* p,
-                                                      std::size_t bytes)
+inline bool alloy::core::allocator::resize_bytes(void* p,
+                                                 std::size_t bytes)
   noexcept
 {
   return m_resource->resize_allocation(p, bytes);
@@ -454,7 +454,7 @@ inline void* alloy::core::allocator::reallocate_bytes(void* p,
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 
   // Attempt to just resize first
-  if (resize_allocation(p, new_size)) {
+  if (resize_bytes(p, new_size)) {
     return p;
   }
 
