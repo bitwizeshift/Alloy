@@ -42,7 +42,8 @@
 #include <cstddef>     // std::size_t, std::max_align_t
 #include <type_traits> // std::enable_if, etc
 #include <cstdlib>     // std::aligned_alloc, std::free
-#include <new>         // std::launder
+#include <new>         // ::operator new, ::operator delete
+#include <algorithm>   // std::copy
 
 namespace alloy::core {
 
@@ -141,6 +142,64 @@ namespace alloy::core {
                            std::size_t old_size,
                            std::size_t new_size,
                            std::align_val_t align = default_align) noexcept;
+
+    //-------------------------------------------------------------------------
+    // Allocation : Object
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \brief Allocates n objects from the underlying memory resource
+    ///
+    /// \param n the number of objects to allocate
+    /// \param align the alignment of the allocation
+    /// \return a pointer to the allocated objects on success, nullptr on failure
+    template <typename T>
+    [[nodiscard]]
+    T* allocate_objects(std::size_t n = 1u,
+                        std::align_val_t align = std::align_val_t{alignof(T)}) noexcept;
+
+    /// \brief Deallocates memory pointed to by \p p of size \p n
+    ///
+    /// The \p n and \p align parameters must be the same size as was
+    /// requested of the original allocate_objects, resize_objects,
+    /// or reallocate reallocate_objects functions.
+    ///
+    /// \note No destructors are called from this function; only the memory
+    ///       for the objects are deallocated.
+    ///
+    /// \param p pointer to the memory to deallocate
+    /// \param n the number of objects to deallocate
+    /// \param align the alignment of the allocation
+    template <typename T>
+    void deallocate_objects(not_null<T*> p,
+                            std::size_t n = 1u,
+                            std::align_val_t align = std::align_val_t{alignof(T)}) noexcept;
+
+    /// \brief Attempts to resizes memory previously allocated
+    ///
+    /// \param p pointer to memory to attempt to resize
+    /// \param n the new number of objects to resize to
+    /// \return \c true if the memory was able to be resized
+    template <typename T>
+    bool resize_objects(not_null<T*> p,
+                        std::size_t n) noexcept;
+
+    /// \brief Attempts to resize memory previously allocated, and falls back
+    ///        to allocating new memory instead
+    ///
+    /// \note T must be a trivially-copyable type
+    ///
+    /// \param p pointer to the memory to attempt to resize
+    /// \param old_size the size that was previously requested
+    /// \param new_size the new size that has been requested
+    /// \param align the alignment previously requested when allocating
+    /// \return a pointer to the allocated bytes
+    template <typename T>
+    [[nodiscard]]
+    T* reallocate_objects(not_null<T*> p,
+                          std::size_t old_size,
+                          std::size_t new_size,
+                          std::align_val_t align = std::align_val_t{alignof(T)}) noexcept;
 
     //-------------------------------------------------------------------------
     // Make / Dispose
@@ -476,6 +535,59 @@ inline void* alloy::core::allocator::reallocate_bytes(void* p,
   return new_p;
 }
 
+
+//-----------------------------------------------------------------------------
+// Allocation : Objects
+//-----------------------------------------------------------------------------
+
+template <typename T>
+inline T* alloy::core::allocator::allocate_objects(std::size_t n,
+                                                   std::align_val_t align)
+  noexcept
+{
+  return static_cast<T*>(allocate_bytes(sizeof(T) * n, align));
+}
+
+
+template <typename T>
+inline void alloy::core::allocator::deallocate_objects(not_null<T*> p,
+                                                       std::size_t n,
+                                                       std::align_val_t align)
+  noexcept
+{
+  deallocate_bytes(p.get(), sizeof(T) * n, align);
+}
+
+
+template <typename T>
+inline bool alloy::core::allocator::resize_objects(not_null<T*> p,
+                                                   std::size_t n)
+  noexcept
+{
+  return m_resource->resize_allocation(p.get(), sizeof(T) * n);
+}
+
+
+template <typename T>
+inline T* alloy::core::allocator::reallocate_objects(not_null<T*> p,
+                                                     std::size_t old_size,
+                                                     std::size_t new_size,
+                                                     std::align_val_t align)
+  noexcept
+{
+  static_assert(
+    std::is_trivially_copyable_v<T>,
+    "T must be trivially copyable to be reallocated!"
+  );
+  auto* const result = reallocate_bytes(
+    p.get(),
+    sizeof(T) * old_size,
+    sizeof(T) * new_size,
+    align
+  );
+
+  return static_cast<T*>(result);
+}
 
 //-----------------------------------------------------------------------------
 // Make / Dispose
