@@ -38,6 +38,8 @@
 
 #include "alloy/core/config.hpp"
 
+#include <cstdlib> // std::abort
+
 // Macros defined in this header:
 
 // compiler details
@@ -203,5 +205,118 @@
 #   define ALLOY_BREAKPOINT() ::std::raise(SIGABRT)
 # endif
 #endif
+
+namespace alloy::core {
+
+  struct compiler final
+  {
+    compiler() = delete;
+    ~compiler() = delete;
+
+    /// \brief A meta function to indicate to the compiler that a sequence
+    ///        of types is not used
+    ///
+    /// This is used to suppress 'unused template argument' warnings, and
+    /// to indicate to the reader that a type is intentionally unused
+    template <typename...>
+    static constexpr void unused() noexcept{}
+
+    /// \brief A meta function to indicate to the compiler that a sequence
+    ///        of values is unused
+    ///
+    /// This is used to suppress 'unused variable' warnings, and to indicate
+    /// to the reader that a variable is intentionally unused
+    template <typename T>
+    static constexpr void unused(const T&) noexcept{}
+
+    /// \brief A meta function to indicate to the compiler that a static value
+    ///        is unused
+    ///
+    /// This is used to suppress 'unused variable' warnings, and to indicate
+    /// to the reader that a variable is intentionally unused
+    template <auto>
+    static constexpr void unused() noexcept{}
+
+    /// \brief Provides a hint to the compiler that the pointer \p p is aligned
+    ///        to the \p N boundary
+    ///
+    /// \note The returned pointer is the only pointer known to the compiler to
+    ///       be aligned; the input should be discarded.
+    ///
+    /// \tparam N the alignment boundary of the pointer
+    /// \param p the pointer to indicate alignment of
+    /// \return a pointer that the compiler knows is aligned
+    template <std::size_t N, typename T>
+    [[nodiscard]]
+    static constexpr T* assume_aligned(T* p) noexcept;
+
+    /// \brief Provides a hint to the compiler that the code path after this
+    ///        function is not reachable
+    static void unreachable() noexcept;
+
+    /// \brief Produces a breakpoint and crashes the application when invoked
+    [[noreturn]]
+    static void breakpoint() noexcept;
+  };
+
+} // namespace alloy::core
+
+template <std::size_t N, typename T>
+ALLOY_FORCE_INLINE constexpr T* alloy::core::compiler::assume_aligned(T* p)
+  noexcept
+{
+#if defined(__clang__) || (defined(__GNUC__) && !defined(__ICC))
+  return static_cast<T*>(__builtin_assume_aligned(p, N));
+#elif defined(_MSC_VER)
+  if ((reinterpret_cast<std::uintptr_t>(p) & ((1 << N) - 1)) == 0) {
+    return p;
+  } else {
+    __assume(0);
+  }
+#elif defined(__ICC)
+  switch (N) {
+    case 2:
+      __assume_aligned(p, 2);
+      break;
+    case 4:
+      __assume_aligned(p, 4);
+      break;
+    case 8:
+      __assume_aligned(p, 8);
+      break;
+    case 16:
+      __assume_aligned(p, 16);
+      break;
+    case 32:
+      __assume_aligned(p, 32);
+      break;
+    case 64:
+      __assume_aligned(p, 64);
+      break;
+    case 128:
+      __assume_aligned(p, 128);
+      break;
+  }
+  return ptr;
+#else // Unknown compiler — do nothing
+  return ptr;
+#endif
+}
+
+ALLOY_FORCE_INLINE void alloy::core::compiler::unreachable()
+  noexcept
+{
+  ALLOY_UNREACHABLE();
+}
+
+ALLOY_FORCE_INLINE void alloy::core::compiler::breakpoint()
+  noexcept
+{
+  ALLOY_BREAKPOINT();
+
+  // Breakpoints should not even exist in production code.
+  // Hopefully crashing will get someone's attention
+  std::abort();
+}
 
 #endif /* ALLOY_CORE_INTRINSICS_HPP */
