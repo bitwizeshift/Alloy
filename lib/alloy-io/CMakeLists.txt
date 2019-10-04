@@ -11,6 +11,7 @@ set(header_files
   include/alloy/io/filesystem/file_stream.hpp
   include/alloy/io/filesystem/file_stream_finalizer.hpp
   include/alloy/io/filesystem/file.hpp
+  include/alloy/io/filesystem/null_filesystem.hpp
 )
 
 set(source_files
@@ -18,6 +19,7 @@ set(source_files
   src/alloy/io/message_pump.cpp
   src/alloy/io/filesystem/filesystem_monitor.cpp
   src/alloy/io/filesystem/file.cpp
+  src/alloy/io/filesystem/null_filesystem.cpp
 )
 
 add_library(${PROJECT_NAME}IO
