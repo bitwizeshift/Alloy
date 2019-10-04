@@ -373,6 +373,19 @@ namespace alloy::core {
     constexpr const E& error() const;
     /// \}
 
+    /// \brief Convertable to \c true if this has a value
+    constexpr explicit operator bool() const noexcept;
+
+    /// \brief Returns whether this expected contains a value
+    ///
+    /// \return \c true if this contains a value
+    constexpr bool has_value() const noexcept;
+
+    /// \brief Returns whether this expected contains an error
+    ///
+    /// \return \c true if this contains an error
+    constexpr bool has_error() const noexcept;
+
     //--------------------------------------------------------------------------
     // Modifiers
     //--------------------------------------------------------------------------
@@ -481,6 +494,19 @@ namespace alloy::core {
     constexpr E& error();
     constexpr const E& error() const;
     /// \}
+
+    /// \brief Convertable to \c true if this has a value
+    constexpr explicit operator bool() const noexcept;
+
+    /// \brief Returns whether this expected contains a value
+    ///
+    /// \return \c true if this contains a value
+    constexpr bool has_value() const noexcept;
+
+    /// \brief Returns whether this expected contains an error
+    ///
+    /// \return \c true if this contains an error
+    constexpr bool has_error() const noexcept;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -666,6 +692,28 @@ inline constexpr const E& alloy::core::expected<T,E>::error()
   return std::get<E>(m_state);
 }
 
+template <typename T, typename E>
+inline constexpr alloy::core::expected<T,E>::operator bool()
+  const noexcept
+{
+  return has_value();
+}
+
+template <typename T, typename E>
+inline constexpr bool alloy::core::expected<T,E>::has_value()
+  const noexcept
+{
+  return std::holds_alternative<underlying_type>(m_state);
+}
+
+template <typename T, typename E>
+inline constexpr bool alloy::core::expected<T,E>::has_error()
+  const noexcept
+{
+  return !has_value();
+}
+
+
 //------------------------------------------------------------------------------
 // Modifiers
 //------------------------------------------------------------------------------
@@ -760,6 +808,27 @@ inline constexpr const E& alloy::core::expected<void,E>::error()
   ALLOY_ASSERT(m_state.has_value());
 #endif
   return (*m_state);
+}
+
+template <typename E>
+inline constexpr alloy::core::expected<void,E>::operator bool()
+  const noexcept
+{
+  return has_value();
+}
+
+template <typename E>
+inline constexpr bool alloy::core::expected<void,E>::has_value()
+  const noexcept
+{
+  return !m_state.has_value();
+}
+
+template <typename E>
+inline constexpr bool alloy::core::expected<void,E>::has_error()
+  const noexcept
+{
+  return !has_value();
 }
 
 //------------------------------------------------------------------------------
