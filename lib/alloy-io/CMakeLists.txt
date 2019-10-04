@@ -8,6 +8,7 @@ set(header_files
   include/alloy/io/window.hpp
   include/alloy/io/message_pump.hpp
   include/alloy/io/filesystem/filesystem_monitor.hpp
+  include/alloy/io/filesystem/file_adapter.hpp
   include/alloy/io/filesystem/file_stream.hpp
   include/alloy/io/filesystem/file_stream_finalizer.hpp
   include/alloy/io/filesystem/file.hpp
