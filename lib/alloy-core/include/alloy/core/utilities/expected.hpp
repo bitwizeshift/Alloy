@@ -353,6 +353,16 @@ namespace alloy::core {
     expected& operator=(const expected& other) = default;
 
     //--------------------------------------------------------------------------
+    // Element Access
+    //--------------------------------------------------------------------------
+  public:
+
+    constexpr T* operator->() noexcept;
+    constexpr const T* operator->() const noexcept;
+    constexpr T& operator*() noexcept;
+    constexpr const T& operator*() const noexcept;
+
+    //--------------------------------------------------------------------------
     // Observers
     //--------------------------------------------------------------------------
   public:
@@ -526,6 +536,60 @@ namespace alloy::core {
     std::optional<E> m_state;
   };
 
+  //===========================================================================
+  // Non Member Functions : class : expected<T,E>
+  //===========================================================================
+
+  //---------------------------------------------------------------------------
+  // Comparison
+  //---------------------------------------------------------------------------
+
+  template<typename T, typename U, typename E1, typename E2>
+  constexpr bool operator==(const expected<T,E1>& lhs,
+                            const expected<U,E2>& rhs) noexcept;
+  template<typename T, typename U, typename E1, typename E2>
+  constexpr bool operator!=(const expected<T,E1>& lhs,
+                            const expected<U,E2>& rhs) noexcept;
+  template<typename T, typename U, typename E1, typename E2>
+  constexpr bool operator<(const expected<T,E1>& lhs,
+                           const expected<U,E2>& rhs) noexcept;
+  template<typename T, typename U, typename E1, typename E2>
+  constexpr bool operator<=(const expected<T,E1>& lhs,
+                            const expected<U,E2>& rhs) noexcept;
+  template<typename T, typename U, typename E1, typename E2>
+  constexpr bool operator>(const expected<T,E1>& lhs,
+                           const expected<U,E2>& rhs) noexcept;
+  template<typename T, typename U, typename E1, typename E2>
+  constexpr bool operator>=(const expected<T,E1>& lhs,
+                            const expected<U,E2>& rhs) noexcept;
+
+  //---------------------------------------------------------------------------
+
+  template<typename T, typename U, typename E>
+  constexpr bool operator==(const expected<T,E>& lhs, const U& rhs) noexcept;
+  template<typename T, typename U, typename E>
+  constexpr bool operator==(const T& lhs, const expected<U,E>& rhs) noexcept;
+  template<typename T, typename U, typename E>
+  constexpr bool operator!=(const expected<T,E>& lhs, const U& rhs) noexcept;
+  template<typename T, typename U, typename E>
+  constexpr bool operator!=(const T& lhs, const expected<U,E>& rhs) noexcept;
+  template<typename T, typename U, typename E>
+  constexpr bool operator<(const expected<T,E>& lhs, const U& rhs) noexcept;
+  template<typename T, typename U, typename E>
+  constexpr bool operator<(const T& lhs, const expected<U,E>& rhs) noexcept;
+  template<typename T, typename U, typename E>
+  constexpr bool operator<=(const expected<T,E>& lhs, const U& rhs) noexcept;
+  template<typename T, typename U, typename E>
+  constexpr bool operator<=(const T& lhs, const expected<U,E>& rhs) noexcept;
+  template<typename T, typename U, typename E>
+  constexpr bool operator>(const expected<T,E>& lhs, const U& rhs) noexcept;
+  template<typename T, typename U, typename E>
+  constexpr bool operator>(const T& lhs, const expected<U,E>& rhs) noexcept;
+  template<typename T, typename U, typename E>
+  constexpr bool operator>=(const expected<T,E>& lhs, const U& rhs) noexcept;
+  template<typename T, typename U, typename E>
+  constexpr bool operator>=(const T& lhs, const expected<U,E>& rhs) noexcept;
+
 } // namespace alloy::core
 
 //==============================================================================
@@ -631,65 +695,101 @@ inline constexpr alloy::core::expected<T,E>::expected(unexpected<E2> e)
 }
 
 //------------------------------------------------------------------------------
+// Element Access
+//------------------------------------------------------------------------------
+
+template <typename T, typename E>
+inline constexpr T* alloy::core::expected<T,E>::operator->()
+  noexcept
+{
+  return std::get_if<0>(&m_state);
+}
+
+template <typename T, typename E>
+inline constexpr const T* alloy::core::expected<T,E>::operator->()
+  const noexcept
+{
+  return std::get_if<0>(&m_state);
+}
+
+template <typename T, typename E>
+inline constexpr T& alloy::core::expected<T,E>::operator*()
+  noexcept
+{
+  return (*std::get_if<0>(&m_state));
+}
+
+template <typename T, typename E>
+inline constexpr const T& alloy::core::expected<T,E>::operator*()
+  const noexcept
+{
+  return (*std::get_if<0>(&m_state));
+}
+
+//------------------------------------------------------------------------------
 // Observers
 //------------------------------------------------------------------------------
 
 template <typename T, typename E>
 inline constexpr T& alloy::core::expected<T,E>::value()
 {
+  auto* const p = std::get_if<0>(&m_state);
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
-  if (!std::holds_alternative<underlying_type>(m_state)) {
+  if (p == nullptr) {
     throw bad_expected_access{};
   }
 #else
-  ALLOY_ASSERT(std::holds_alternative<underlying_type>(m_state));
+  ALLOY_ASSERT(p != nullptr);
 #endif
 
-  return reference_to(std::get<underlying_type>(m_state));
+  return reference_to(*p);
 }
 
 template <typename T, typename E>
 inline constexpr const T& alloy::core::expected<T,E>::value()
   const
 {
+  auto* const p = std::get_if<0>(&m_state);
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
-  if (!std::holds_alternative<underlying_type>(m_state)) {
+  if (p == nullptr) {
     throw bad_expected_access{};
   }
 #else
-  ALLOY_ASSERT(std::holds_alternative<underlying_type>(m_state));
+  ALLOY_ASSERT(p != nullptr);
 #endif
 
-  return reference_to(std::get<underlying_type>(m_state));
+  return reference_to(*p);
 }
 
 template <typename T, typename E>
 inline constexpr E& alloy::core::expected<T,E>::error()
 {
+  auto* const p = std::get_if<1>(&m_state);
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
-  if (!std::holds_alternative<E>(m_state)) {
+  if (p == nullptr) {
     throw bad_expected_access{};
   }
 #else
-  ALLOY_ASSERT(std::holds_alternative<E>(m_state));
+  ALLOY_ASSERT(p != nullptr);
 #endif
 
-  return std::get<E>(m_state);
+  return *p;
 }
 
 template <typename T, typename E>
 inline constexpr const E& alloy::core::expected<T,E>::error()
   const
 {
+  auto* const p = std::get_if<1>(&m_state);
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
-  if (!std::holds_alternative<E>(m_state)) {
+  if (p == nullptr) {
     throw bad_expected_access{};
   }
 #else
-  ALLOY_ASSERT(std::holds_alternative<E>(m_state));
+  ALLOY_ASSERT(p != nullptr);
 #endif
 
-  return std::get<E>(m_state);
+  return *p;
 }
 
 template <typename T, typename E>
@@ -703,7 +803,7 @@ template <typename T, typename E>
 inline constexpr bool alloy::core::expected<T,E>::has_value()
   const noexcept
 {
-  return std::holds_alternative<underlying_type>(m_state);
+  return std::get_if<0>(&m_state) == nullptr;
 }
 
 template <typename T, typename E>
@@ -842,6 +942,206 @@ void alloy::core::expected<void,E>::swap(expected<void,E>& other)
   using std::swap;
 
   swap(m_state,other.m_state);
+}
+
+//=============================================================================
+// Non Member Functions : class : expected<T,E>
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// Comparison
+//-----------------------------------------------------------------------------
+
+template<typename T, typename U, typename E1, typename E2>
+inline constexpr bool
+  alloy::core::operator==(const expected<T,E1>& lhs, const expected<U,E2>& rhs)
+  noexcept
+{
+  if (lhs.has_value() != rhs.has_value()) {
+    return false;
+  }
+  return lhs.has_value() ? ((*lhs) == (*rhs)) : lhs.error() == rhs.error();
+}
+
+
+template<typename T, typename U, typename E1, typename E2>
+inline constexpr bool
+  alloy::core::operator!=(const expected<T,E1>& lhs, const expected<U,E2>& rhs)
+  noexcept
+{
+  if (lhs.has_value() != rhs.has_value()) {
+    return true;
+  }
+  return lhs.has_value() ? ((*lhs) != (*rhs)) : lhs.error() != rhs.error();
+}
+
+
+template<typename T, typename U, typename E1, typename E2>
+inline constexpr bool
+  alloy::core::operator<(const expected<T,E1>& lhs, const expected<U,E2>& rhs)
+  noexcept
+{
+  if (!rhs.has_value()) {
+    return false;
+  }
+  if (!lhs.has_value()) {
+    return true;
+  }
+  return (*lhs) < (*rhs);
+}
+
+
+template<typename T, typename U, typename E1, typename E2>
+inline constexpr bool
+  alloy::core::operator<=(const expected<T,E1>& lhs, const expected<U,E2>& rhs)
+  noexcept
+{
+  if (!lhs.has_value()) {
+    return true;
+  }
+  if (!rhs.has_value()) {
+    return false;
+  }
+  return (*lhs) <= (*rhs);
+}
+
+
+template<typename T, typename U, typename E1, typename E2>
+inline constexpr bool
+  alloy::core::operator>(const expected<T,E1>& lhs, const expected<U,E2>& rhs)
+  noexcept
+{
+  if (!lhs.has_value()) {
+    return false;
+  }
+  if (!rhs.has_value()) {
+    return true;
+  }
+  return (*lhs) > (*rhs);
+}
+
+
+template<typename T, typename U, typename E1, typename E2>
+inline constexpr bool
+  alloy::core::operator>=(const expected<T,E1>& lhs, const expected<U,E2>& rhs)
+  noexcept
+{
+  if (!rhs.has_value()) {
+    return true;
+  }
+  if (!lhs.has_value()) {
+    return false;
+  }
+  return (*lhs) >= (*rhs);
+}
+
+//---------------------------------------------------------------------------
+
+template<typename T, typename U, typename E>
+inline constexpr bool
+  alloy::core::operator==(const expected<T,E>& lhs, const U& rhs)
+  noexcept
+{
+  return lhs.has_value() ? (*lhs) == rhs : false;
+}
+
+
+template<typename T, typename U, typename E>
+inline constexpr bool
+  alloy::core::operator==(const T& lhs, const expected<U,E>& rhs)
+  noexcept
+{
+  return rhs.has_value() ? lhs == (*rhs) : false;
+}
+
+
+template<typename T, typename U, typename E>
+inline constexpr bool
+  alloy::core::operator!=(const expected<T,E>& lhs, const U& rhs)
+  noexcept
+{
+  return lhs.has_value() ? (*lhs) != rhs : true;
+}
+
+
+template<typename T, typename U, typename E>
+inline constexpr bool
+  alloy::core::operator!=(const T& lhs, const expected<U,E>& rhs)
+  noexcept
+{
+  return rhs.has_value() ? lhs != (*rhs) : true;
+}
+
+
+template<typename T, typename U, typename E>
+inline constexpr bool
+  alloy::core::operator<(const expected<T,E>& lhs, const U& rhs)
+  noexcept
+{
+  return lhs.has_value() ? (*lhs) < rhs : true;
+}
+
+
+template<typename T, typename U, typename E>
+inline constexpr bool
+  alloy::core::operator<(const T& lhs, const expected<U,E>& rhs)
+  noexcept
+{
+  return rhs.has_value() ? lhs < (*rhs) : false;
+}
+
+
+template<typename T, typename U, typename E>
+inline constexpr bool
+  alloy::core::operator<=(const expected<T,E>& lhs, const U& rhs)
+  noexcept
+{
+  return lhs.has_value() ? (*lhs) <= rhs : true;
+}
+
+
+template<typename T, typename U, typename E>
+inline constexpr bool
+  alloy::core::operator<=(const T& lhs, const expected<U,E>& rhs)
+  noexcept
+{
+  return rhs.has_value() ? lhs <= (*rhs) : false;
+}
+
+
+template<typename T, typename U, typename E>
+inline constexpr bool
+  alloy::core::operator>(const expected<T,E>& lhs, const U& rhs)
+  noexcept
+{
+  return lhs.has_value() ? (*lhs) > rhs : false;
+}
+
+
+template<typename T, typename U, typename E>
+inline constexpr bool
+  alloy::core::operator>(const T& lhs, const expected<U,E>& rhs)
+  noexcept
+{
+  return rhs.has_value() ? lhs > (*rhs) : true;
+}
+
+
+template<typename T, typename U, typename E>
+inline constexpr bool
+  alloy::core::operator>=(const expected<T,E>& lhs, const U& rhs)
+  noexcept
+{
+  return lhs.has_value() ? (*lhs) >= rhs : false;
+}
+
+
+template<typename T, typename U, typename E>
+inline constexpr bool
+  alloy::core::operator>=(const T& lhs, const expected<U,E>& rhs)
+  noexcept
+{
+  return rhs.has_value() ? lhs >= (*rhs) : true;
 }
 
 #endif /* ALLOY_CORE_UTILITIES_EXPECTED_HPP */
