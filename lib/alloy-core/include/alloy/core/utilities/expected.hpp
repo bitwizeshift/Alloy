@@ -375,13 +375,10 @@ namespace alloy::core {
     constexpr const T& value() const;
     /// \}
 
-    /// \{
     /// \brief Gets the underlying error from this expected
     ///
     /// \return reference to the underlying error
-    constexpr E& error();
-    constexpr const E& error() const;
-    /// \}
+    constexpr E error() const noexcept;
 
     /// \brief Convertable to \c true if this has a value
     constexpr explicit operator bool() const noexcept;
@@ -497,13 +494,10 @@ namespace alloy::core {
     /// This function is here for symmetry with the non-void specialization
     void value() const;
 
-    /// \{
     /// \brief Gets the underlying error from this expected
     ///
     /// \return reference to the underlying error
-    constexpr E& error();
-    constexpr const E& error() const;
-    /// \}
+    constexpr E error() const noexcept;
 
     /// \brief Convertable to \c true if this has a value
     constexpr explicit operator bool() const noexcept;
@@ -762,32 +756,13 @@ inline constexpr const T& alloy::core::expected<T,E>::value()
 }
 
 template <typename T, typename E>
-inline constexpr E& alloy::core::expected<T,E>::error()
+inline constexpr E alloy::core::expected<T,E>::error()
+  const noexcept
 {
   auto* const p = std::get_if<1>(&m_state);
-#if ALLOY_CORE_EXCEPTIONS_ENABLED
   if (p == nullptr) {
-    throw bad_expected_access{};
+    return E{};
   }
-#else
-  ALLOY_ASSERT(p != nullptr);
-#endif
-
-  return *p;
-}
-
-template <typename T, typename E>
-inline constexpr const E& alloy::core::expected<T,E>::error()
-  const
-{
-  auto* const p = std::get_if<1>(&m_state);
-#if ALLOY_CORE_EXCEPTIONS_ENABLED
-  if (p == nullptr) {
-    throw bad_expected_access{};
-  }
-#else
-  ALLOY_ASSERT(p != nullptr);
-#endif
 
   return *p;
 }
@@ -884,29 +859,13 @@ inline void alloy::core::expected<void,E>::value()
 }
 
 template <typename E>
-inline constexpr E& alloy::core::expected<void,E>::error()
+inline constexpr E alloy::core::expected<void,E>::error()
+  const noexcept
 {
-#if ALLOY_CORE_EXCEPTIONS_ENABLED
   if (!m_state.has_value()) {
-    throw bad_expected_access{};
+    return E{};
   }
-#else
-  ALLOY_ASSERT(m_state.has_value());
-#endif
-  return (*m_state);
-}
 
-template <typename E>
-inline constexpr const E& alloy::core::expected<void,E>::error()
-  const
-{
-#if ALLOY_CORE_EXCEPTIONS_ENABLED
-  if (!m_state.has_value()) {
-    throw bad_expected_access{};
-  }
-#else
-  ALLOY_ASSERT(m_state.has_value());
-#endif
   return (*m_state);
 }
 
