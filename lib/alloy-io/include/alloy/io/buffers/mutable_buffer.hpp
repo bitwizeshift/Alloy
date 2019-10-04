@@ -116,7 +116,7 @@ namespace alloy::io {
     ///
     /// \param other the other buffer to copy
     /// \return reference to \c (*this)
-    mutable_buffer& operator=(const mutable_buffer&) = delete;
+    mutable_buffer& operator=(const mutable_buffer&) = default;
 
     //-------------------------------------------------------------------------
     // Observers
