@@ -13,6 +13,7 @@ set(header_files
   include/alloy/io/filesystem/file.hpp
   include/alloy/io/filesystem/null_filesystem.hpp
   include/alloy/io/filesystem/random_filesystem.hpp
+  include/alloy/io/filesystem/memory_filesystem.hpp
 )
 
 set(source_files
@@ -22,6 +23,7 @@ set(source_files
   src/alloy/io/filesystem/file.cpp
   src/alloy/io/filesystem/null_filesystem.cpp
   src/alloy/io/filesystem/random_filesystem.cpp
+  src/alloy/io/filesystem/memory_filesystem.cpp
 )
 
 add_library(${PROJECT_NAME}IO
