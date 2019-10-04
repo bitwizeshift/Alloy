@@ -47,6 +47,11 @@ namespace {
     /// This just passes through to the adapted file
     void close() noexcept override;
 
+    /// \brief Resets the file cursor back to the start position
+    ///
+    /// \return void on success
+    alloy::core::expected<void> reset() noexcept override;
+
     /// \brief Skips the next \p offset bytes
     ///
     /// This just passes through to the adapted file
@@ -118,6 +123,12 @@ namespace {
     noexcept
   {
     m_file.close();
+  }
+
+  alloy::core::expected<void> xor_file_stream::reset()
+    noexcept
+  {
+    return m_file.reset();
   }
 
   alloy::core::expected<void>

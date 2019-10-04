@@ -79,6 +79,11 @@ namespace {
     /// This is a no-op for null files
     void close() noexcept override;
 
+    /// \brief Resets the file cursor back to the start position
+    ///
+    /// \return void on success
+    alloy::core::expected<void> reset() noexcept override;
+
     /// \brief Skips the next \p offset bytes from this file
     ///
     /// This is a no-op for null files
@@ -136,6 +141,12 @@ namespace {
     noexcept
   {
     // Nothing to do
+  }
+
+  alloy::core::expected<void> null_file_stream::reset()
+    noexcept
+  {
+    return {};
   }
 
   alloy::core::expected<void>

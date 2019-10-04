@@ -142,6 +142,11 @@ namespace alloy::io {
     /// \return void on success
     core::expected<void> close() noexcept;
 
+    /// \brief Resets the file cursor back to the start position
+    ///
+    /// \return void on success
+    core::expected<void> reset() noexcept;
+
     /// \brief Skips up to the next N bytes of the file
     ///
     /// \param offset the number of bytes to skip

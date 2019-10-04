@@ -138,6 +138,17 @@ alloy::core::expected<void> alloy::io::file::close()
 }
 
 
+alloy::core::expected<void> alloy::io::file::reset()
+  noexcept
+{
+  if (ALLOY_UNLIKELY(m_stream == nullptr)) {
+    return core::unexpected(error_code::closed);
+  }
+
+  return m_stream->reset();
+}
+
+
 alloy::core::expected<void> alloy::io::file::skip(offset_type offset)
   noexcept
 {
