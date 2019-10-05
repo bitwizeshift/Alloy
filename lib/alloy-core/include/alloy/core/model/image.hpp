@@ -72,10 +72,10 @@ namespace alloy::core {
     };
 
     enum class error_code {
-      invalid_pixel_format, ///< Pixel format is not correct
-      bad_width,            ///< Width specified as 0
-      bad_height,           ///< Height specified as 0
-      incorrect_dimensions, ///< Dimensions do not match buffer size
+      invalid_pixel_format = 1, ///< Pixel format is not correct
+      bad_width = 2,            ///< Width specified as 0
+      bad_height = 3,           ///< Height specified as 0
+      incorrect_dimensions = 4, ///< Dimensions do not match buffer size
     };
 
     //--------------------------------------------------------------------------
