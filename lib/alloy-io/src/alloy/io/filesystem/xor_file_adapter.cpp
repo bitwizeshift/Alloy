@@ -1,5 +1,7 @@
 #include "alloy/io/filesystem/xor_file_adapter.hpp"
 
+#include "alloy/io/filesystem/file_stream_handle.hpp"
+
 #include <array>     // std::array
 #include <algorithm> // std::min
 
@@ -23,7 +25,7 @@ namespace {
     /// \param file the file to adapt
     /// \param b0 the first byte to XOR
     /// \param b1 the second byte to XOR
-    explicit xor_file_stream(alloy::io::file file,
+    explicit xor_file_stream(alloy::io::file_stream_handle file,
                              std::byte b0,
                              std::byte b1) noexcept;
 
@@ -80,7 +82,7 @@ namespace {
     //-------------------------------------------------------------------------
   private:
 
-    alloy::io::file m_file;
+    alloy::io::file_stream_handle m_handle;
     std::byte m_byte0;
     std::byte m_byte1;
   };
@@ -93,11 +95,11 @@ namespace {
   // Constructors
   //---------------------------------------------------------------------------
 
-  xor_file_stream::xor_file_stream(alloy::io::file file,
+  xor_file_stream::xor_file_stream(alloy::io::file_stream_handle file,
                                    std::byte b0,
                                    std::byte b1)
     noexcept
-    : m_file{std::move(file)},
+    : m_handle{std::move(file)},
       m_byte0{b0},
       m_byte1{b1}
   {
@@ -112,7 +114,7 @@ namespace {
     xor_file_stream::bytes()
     const noexcept
   {
-    return m_file.bytes();
+    return m_handle->bytes();
   }
 
   //---------------------------------------------------------------------------
@@ -122,27 +124,27 @@ namespace {
   void xor_file_stream::close()
     noexcept
   {
-    m_file.close();
+    m_handle->close();
   }
 
   alloy::core::expected<void> xor_file_stream::reset()
     noexcept
   {
-    return m_file.reset();
+    return m_handle->reset();
   }
 
   alloy::core::expected<void>
     xor_file_stream::skip(offset_type offset)
     noexcept
   {
-    return m_file.skip(offset);
+    return m_handle->skip(offset);
   }
 
   alloy::core::expected<alloy::io::mutable_buffer>
     xor_file_stream::read(alloy::io::mutable_buffer buffer)
     noexcept
   {
-    auto result = m_file.read(buffer);
+    auto result = m_handle->read(buffer);
     if (!result) {
       return result;
     }
@@ -187,7 +189,7 @@ namespace {
         s_buffer.data(),
         to_write
       };
-      auto result = m_file.write(new_buffer);
+      auto result = m_handle->write(new_buffer);
 
       if (!result) {
         return result;
@@ -263,7 +265,7 @@ alloy::io::file alloy::io::xor_file_adapter::do_adapt(file f)
   noexcept
 {
   auto* stream = m_allocator.make<::xor_file_stream>(
-    std::move(f),
+    f.release(),
     m_byte0,
     m_byte1
   );

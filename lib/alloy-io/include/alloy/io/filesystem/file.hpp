@@ -30,8 +30,7 @@
 #ifndef ALLOY_IO_FILESYSTEM_FILE_HPP
 #define ALLOY_IO_FILESYSTEM_FILE_HPP
 
-#include "alloy/io/filesystem/file_stream.hpp"
-#include "alloy/io/filesystem/file_stream_finalizer.hpp"
+#include "alloy/io/filesystem/file_stream_handle.hpp"
 #include "alloy/io/buffers/const_buffer.hpp"
 #include "alloy/io/buffers/mutable_buffer.hpp"
 
@@ -93,10 +92,15 @@ namespace alloy::io {
     file(core::not_null<file_stream*> stream,
          core::not_null<file_stream_finalizer*> finalizer) noexcept;
 
+    /// \brief Constructs a file that owns the specified file_stream_handle
+    ///
+    /// \param handle the handle to own
+    explicit file(file_stream_handle handle) noexcept;
+
     /// \brief Constructs this file by moving the contents of \p other
     ///
     /// \param other the other file to move
-    file(file&& other) noexcept;
+    file(file&& other) noexcept = default;
     file(const file&) = delete;
 
     //-------------------------------------------------------------------------
@@ -129,6 +133,19 @@ namespace alloy::io {
     /// \return the size of this file in bytes, on success
     core::expected<size_type>
       bytes() const noexcept;
+
+    //-------------------------------------------------------------------------
+    // Modifiers
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \brief Releases the underlying stream handle
+    ///
+    /// \note The underlying stream will not have resources managed; they need
+    ///       to be handled by the underlying manager
+    ///
+    /// \return the handle
+    file_stream_handle release() noexcept;
 
     //-------------------------------------------------------------------------
     // File API
@@ -172,8 +189,7 @@ namespace alloy::io {
     //-------------------------------------------------------------------------
   private:
 
-    file_stream* m_stream;
-    file_stream_finalizer* m_finalizer;
+    file_stream_handle m_handle;
   };
 
   //===========================================================================

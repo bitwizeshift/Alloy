@@ -1,6 +1,7 @@
 #include "alloy/io/filesystem/file.hpp"
 
 #include <string>
+#include <utility>
 
 namespace {
 
@@ -48,8 +49,7 @@ namespace {
 
 alloy::io::file::file()
   noexcept
-  : m_stream{nullptr},
-    m_finalizer{nullptr}
+  : m_handle{}
 {
 
 }
@@ -58,28 +58,24 @@ alloy::io::file::file()
 alloy::io::file::file(core::not_null<file_stream*> stream,
                       core::not_null<file_stream_finalizer*> finalizer)
   noexcept
-  : m_stream{stream.get()},
-    m_finalizer{finalizer.get()}
+  : m_handle{stream, finalizer}
 {
 
 }
 
 
-alloy::io::file::file(file&& other)
+alloy::io::file::file(file_stream_handle handle)
   noexcept
-  : m_stream{other.m_stream},
-    m_finalizer(other.m_finalizer)
+  : m_handle{std::move(handle)}
 {
-  other.m_stream = nullptr;
+
 }
 
 //-----------------------------------------------------------------------------
 
 alloy::io::file::~file()
 {
-  if (is_open()) {
-    close();
-  }
+  close();
 }
 
 //-----------------------------------------------------------------------------
@@ -87,13 +83,9 @@ alloy::io::file::~file()
 alloy::io::file& alloy::io::file::operator=(file&& other)
   noexcept
 {
-  if (is_open()) {
-    close();
-  }
+  close();
 
-  m_stream = other.m_stream;
-  m_finalizer = other.m_finalizer;
-  other.m_stream = nullptr;
+  m_handle = std::move(other.m_handle);
 
   return (*this);
 }
@@ -105,18 +97,28 @@ alloy::io::file& alloy::io::file::operator=(file&& other)
 bool alloy::io::file::is_open()
   const noexcept
 {
-  return m_stream != nullptr;
+  return m_handle.get() != nullptr;
 }
 
 
 alloy::core::expected<alloy::io::file::size_type> alloy::io::file::bytes()
   const noexcept
 {
-  if (ALLOY_UNLIKELY(m_stream == nullptr)) {
+  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
     return core::unexpected(error_code::closed);
   }
 
-  return m_stream->bytes();
+  return m_handle->bytes();
+}
+
+//-----------------------------------------------------------------------------
+// Modifiers
+//-----------------------------------------------------------------------------
+
+alloy::io::file_stream_handle alloy::io::file::release()
+  noexcept
+{
+  return std::move(m_handle);
 }
 
 //-----------------------------------------------------------------------------
@@ -126,13 +128,12 @@ alloy::core::expected<alloy::io::file::size_type> alloy::io::file::bytes()
 alloy::core::expected<void> alloy::io::file::close()
   noexcept
 {
-  if (ALLOY_UNLIKELY(m_stream == nullptr)) {
+  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
     return core::unexpected(error_code::closed);
   }
 
-  m_stream->close();
-  m_finalizer->finalize(m_stream);
-  m_stream = nullptr;
+  m_handle->close();
+  m_handle.reset();
 
   return {};
 }
@@ -141,22 +142,22 @@ alloy::core::expected<void> alloy::io::file::close()
 alloy::core::expected<void> alloy::io::file::reset()
   noexcept
 {
-  if (ALLOY_UNLIKELY(m_stream == nullptr)) {
+  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
     return core::unexpected(error_code::closed);
   }
 
-  return m_stream->reset();
+  return m_handle->reset();
 }
 
 
 alloy::core::expected<void> alloy::io::file::skip(offset_type offset)
   noexcept
 {
-  if (ALLOY_UNLIKELY(m_stream == nullptr)) {
+  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
     return core::unexpected(error_code::closed);
   }
 
-  return m_stream->skip(offset);
+  return m_handle->skip(offset);
 }
 
 
@@ -164,11 +165,11 @@ alloy::core::expected<alloy::io::mutable_buffer>
   alloy::io::file::read(mutable_buffer buffer)
   noexcept
 {
-  if (ALLOY_UNLIKELY(m_stream == nullptr)) {
+  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
     return core::unexpected(error_code::closed);
   }
 
-  return m_stream->read(buffer);
+  return m_handle->read(buffer);
 }
 
 
@@ -176,11 +177,11 @@ alloy::core::expected<alloy::io::const_buffer>
   alloy::io::file::write(const_buffer buffer)
   noexcept
 {
-  if (ALLOY_UNLIKELY(m_stream == nullptr)) {
+  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
     return core::unexpected(error_code::closed);
   }
 
-  return m_stream->write(buffer);
+  return m_handle->write(buffer);
 }
 
 //=============================================================================
