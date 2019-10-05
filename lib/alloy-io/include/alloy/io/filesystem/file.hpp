@@ -39,6 +39,8 @@
 
 #include <system_error>
 #include <type_traits>
+#include <array>   // std::array
+#include <cstdint> // std::uint8_t
 
 namespace alloy::io {
 
@@ -185,6 +187,44 @@ namespace alloy::io {
     core::expected<const_buffer> write(const_buffer buffer) noexcept;
 
     //-------------------------------------------------------------------------
+
+    /// \brief Reads an object from this file
+    ///
+    /// This uses the file_serializer<T> customization point to read arbitrary
+    /// types.
+    ///
+    /// \note Reading objects directly from the file is meant to not only
+    ///       provide a means of reading stronger data-types, but also provide
+    ///       a portable API for reading from files on systems that might
+    ///       otherwise have different endiannesses. Using 'read_object'
+    ///       guarantees that integral values read will be written in a
+    ///       consistent manner that can be read across systems that might have
+    ///       different endiannesses.
+    ///
+    /// \tparam T the type to read
+    /// \return T on success
+    template <typename T>
+    core::expected<T> read_object() noexcept;
+
+    /// \brief Writes an object to this file
+    ///
+    /// This uses the file_serializer<T> customization point to write arbitrary
+    /// types.
+    ///
+    /// \note Writing objects directly from the file is meant to not only
+    ///       provide a means of reading stronger data-types, but also provide
+    ///       a portable API for reading from files on systems that might
+    ///       otherwise have different endiannesses. Using 'read_object'
+    ///       guarantees that integral values read will be written in a
+    ///       consistent manner that can be read across systems that might have
+    ///       different endiannesses.
+    ///
+    /// \param v the value to write
+    /// \return void on success
+    template <typename T>
+    core::expected<void> write_object(const T& v) noexcept;
+
+    //-------------------------------------------------------------------------
     // Private Members
     //-------------------------------------------------------------------------
   private:
@@ -205,11 +245,461 @@ namespace alloy::io {
   /// \param ec the file error code
   /// \return the std::error_code of the file error
   std::error_code make_error_code(file::error_code ec) noexcept;
+
+  //===========================================================================
+  // struct : file_serializer
+  //===========================================================================
+
+  /////////////////////////////////////////////////////////////////////////////
+  /// \brief A customization point for allowing template specializations to
+  ///        enable object serialization and deserialization to files
+  ///
+  /// This is a user customization point that allows consumers to specialize
+  /// this structure for user-defined types, so that file::read_object
+  /// and file::write_object may interpret how to serialize and deserialize
+  /// these types.
+  ///
+  /// \tparam T the type to serialize
+  /////////////////////////////////////////////////////////////////////////////
+  template <typename T>
+  struct file_serializer
+  {
+    /// \brief Writes the arbitrary object \p in to the file \p f
+    ///
+    /// \param f the file to write to
+    /// \param in the value to write
+    /// \return \c void on success
+    static core::expected<void> serialize(file& f, const T& in) noexcept;
+
+    /// \brief Reads from the file \p f to \p out
+    ///
+    /// \param f the file to read from
+    /// \param out the output file
+    /// \return \c void on success
+    static core::expected<T> deserialize(file& f) noexcept;
+  };
+
 } // namespace alloy::io
 
 namespace std {
   template <>
   struct is_error_code_enum<alloy::io::file::error_code> : std::true_type{};
 } // namespace std
+
+//=============================================================================
+// inline definitions : class : file
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// File API
+//-----------------------------------------------------------------------------
+
+template <typename T>
+inline alloy::core::expected<T> alloy::io::file::read_object()
+  noexcept
+{
+  static_assert(
+    noexcept(file_serializer<T>::read(*this)),
+    "user-defined file_serializer<T>::read requests must be non-throwing. "
+    "Please ensure your implementation translates all errors to an "
+    "expected<T> type and returns them accordingly, then mark the function "
+    "'noexcept'."
+  );
+
+  return file_serializer<T>::read(*this);
+}
+
+template <typename T>
+inline alloy::core::expected<void> alloy::io::file::write_object(const T& v)
+  noexcept
+{
+  static_assert(
+    noexcept(file_serializer<T>::serialize(*this, v)),
+    "user-defined file_serializer<T>::serialize requests must be non-throwing. "
+    "Please ensure your implementation translates all errors to an "
+    "expected<void> type and returns them accordingly, then mark the function "
+    "'noexcept'."
+  );
+
+  return file_serializer<T>::serialize(*this, v);
+}
+
+//=============================================================================
+// inline definitions : struct : file_serializer<T>
+//=============================================================================
+
+template <typename T>
+inline alloy::core::expected<void>
+  alloy::io::file_serializer<T>::serialize(file& f, const T& in)
+  noexcept
+{
+  static_assert(
+    std::is_trivially_copyable_v<T>,
+    "Only trivially copyable types are serializable by default. "
+    "Please define a custom ADL-overload instead"
+  );
+
+  // Handle 'enum' as a special case; should be treated like integers
+  if constexpr (std::is_enum_v<T>) {
+    using underlying_type = std::underlying_type_t<T>;
+
+    return file_serializer<underlying_type>::serialize(
+      f,
+      static_cast<underlying_type>(in)
+    );
+  } else {
+    auto result = f.write(const_buffer::from_object(in));
+    if (!result) {
+      return core::unexpected(result.error());
+    }
+    return {};
+  }
+}
+
+
+template <typename T>
+inline alloy::core::expected<T>
+  alloy::io::file_serializer<T>::deserialize(file& f)
+  noexcept
+{
+  static_assert(
+    std::is_trivially_copyable_v<T> &&
+    std::is_trivially_default_constructible_v<T>,
+    "Only trivially copyable and default-constructible types are "
+    "deserializable by default. "
+    "Please define a custom ADL-overload instead"
+  );
+
+  // Handle 'enum' as a special case; should be treated like integers
+  if constexpr (std::is_enum_v<T>) {
+    using underlying_type = std::underlying_type_t<T>;
+
+    auto result = file_serializer<underlying_type>::deserialize(f);
+    if (!result) {
+      return core::unexpected(result.error());
+    }
+    return static_cast<T>(*result);
+  } else {
+    auto object = T{};
+    auto result = f.read(mutable_buffer::from_object(object));
+    if (!result) {
+      return core::unexpected(result.error());
+    }
+
+    return object;
+  }
+}
+
+//=============================================================================
+// inline definitions : specializations : struct : file_serializer
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// bool
+//-----------------------------------------------------------------------------
+
+template <>
+struct alloy::io::file_serializer<bool>
+{
+  static core::expected<void> serialize(file& f, bool in)
+    noexcept
+  {
+    auto result = f.write(const_buffer::from_object(in));
+    if (!result) {
+      return core::unexpected(result.error());
+    }
+    return {};
+  }
+
+  static core::expected<bool> deserialize(file& f)
+    noexcept
+  {
+    auto object = bool{};
+    auto result = f.read(mutable_buffer::from_object(object));
+    if (!result) {
+      return core::unexpected(result.error());
+    }
+
+    return object;
+  }
+};
+
+//-----------------------------------------------------------------------------
+// std::uint8_t
+//-----------------------------------------------------------------------------
+
+template <>
+struct alloy::io::file_serializer<std::uint8_t>
+{
+  static core::expected<void> serialize(file& f, std::uint8_t in)
+    noexcept
+  {
+    auto result = f.write(const_buffer::from_object(in));
+    if (!result) {
+      return core::unexpected(result.error());
+    }
+    return {};
+  }
+
+  static core::expected<std::uint8_t> deserialize(file& f)
+    noexcept
+  {
+    auto object = std::uint8_t{};
+    auto result = f.read(mutable_buffer::from_object(object));
+    if (!result) {
+      return core::unexpected(result.error());
+    }
+
+    return object;
+  }
+};
+
+//-----------------------------------------------------------------------------
+// std::int8_t
+//-----------------------------------------------------------------------------
+
+template <>
+struct alloy::io::file_serializer<std::int8_t>
+{
+  static core::expected<void> serialize(file& f, std::int8_t in)
+    noexcept
+  {
+    return file_serializer<std::uint8_t>::serialize(
+      f,
+      static_cast<std::uint8_t>(in)
+    );
+  }
+
+  static core::expected<std::int16_t> deserialize(file& f)
+    noexcept
+  {
+    auto r = file_serializer<std::uint8_t>::deserialize(f);
+
+    if (!r) {
+      return core::unexpected(r.error());
+    }
+    return static_cast<std::int8_t>(*r);
+  }
+};
+
+//-----------------------------------------------------------------------------
+// std::uint16_t
+//-----------------------------------------------------------------------------
+
+template <>
+struct alloy::io::file_serializer<std::uint16_t>
+{
+  static core::expected<void> serialize(file& f, std::uint16_t in)
+    noexcept
+  {
+    // Create an array of the byte-sequence in a consistent order
+    auto bytes = std::array {
+      static_cast<std::byte>((0xff00 & in) >> 8),
+      static_cast<std::byte>((0x00ff & in)),
+    };
+    auto result = f.write(const_buffer::from_container(bytes));
+    if (!result) {
+      return core::unexpected(result.error());
+    }
+    return {};
+  }
+
+  static core::expected<std::uint16_t> deserialize(file& f)
+    noexcept
+  {
+    auto bytes = std::array<std::byte,sizeof(std::uint16_t)>{};
+    auto result = f.read(mutable_buffer::from_object(bytes));
+    if (!result) {
+      return core::unexpected(result.error());
+    }
+
+    // Rebuild the result from the byte sequence
+    auto object = std::uint16_t(
+      static_cast<std::uint16_t>(bytes[0] << 8) |
+      static_cast<std::uint16_t>(bytes[1])
+    );
+    return object;
+  }
+};
+
+//-----------------------------------------------------------------------------
+// std::int16_t
+//-----------------------------------------------------------------------------
+
+template <>
+struct alloy::io::file_serializer<std::int16_t>
+{
+  static core::expected<void> serialize(file& f, std::int16_t in)
+    noexcept
+  {
+    return file_serializer<std::uint16_t>::serialize(
+      f,
+      static_cast<std::uint16_t>(in)
+    );
+  }
+
+  static core::expected<std::int16_t> deserialize(file& f)
+    noexcept
+  {
+    auto r = file_serializer<std::uint16_t>::deserialize(f);
+
+    if (!r) {
+      return core::unexpected(r.error());
+    }
+    return static_cast<std::int16_t>(*r);
+  }
+};
+
+//-----------------------------------------------------------------------------
+// std::uint32_t
+//-----------------------------------------------------------------------------
+
+template <>
+struct alloy::io::file_serializer<std::uint32_t>
+{
+  static core::expected<void> serialize(file& f, std::uint32_t in)
+    noexcept
+  {
+    // Create an array of the byte-sequence in a consistent order
+    auto bytes = std::array {
+      static_cast<std::byte>((0xff000000 & in) >> 24),
+      static_cast<std::byte>((0x00ff0000 & in) >> 16),
+      static_cast<std::byte>((0x0000ff00 & in) >> 8),
+      static_cast<std::byte>((0x000000ff & in)),
+    };
+    auto result = f.write(const_buffer::from_container(bytes));
+    if (!result) {
+      return core::unexpected(result.error());
+    }
+    return {};
+  }
+
+  static core::expected<std::uint32_t> deserialize(file& f)
+    noexcept
+  {
+    auto bytes = std::array<std::byte,sizeof(std::uint32_t)>{};
+    auto result = f.read(mutable_buffer::from_object(bytes));
+    if (!result) {
+      return core::unexpected(result.error());
+    }
+
+    // Rebuild the result from the byte sequence
+    auto object = std::uint32_t(
+      static_cast<std::uint32_t>(bytes[0] << 24) |
+      static_cast<std::uint32_t>(bytes[1] << 16) |
+      static_cast<std::uint32_t>(bytes[2] << 8)  |
+      static_cast<std::uint32_t>(bytes[3])
+    );
+    return object;
+  }
+};
+
+//-----------------------------------------------------------------------------
+// std::int32_t
+//-----------------------------------------------------------------------------
+
+template <>
+struct alloy::io::file_serializer<std::int32_t>
+{
+  static core::expected<void> serialize(file& f, std::int16_t in)
+    noexcept
+  {
+    return file_serializer<std::uint32_t>::serialize(
+      f,
+      static_cast<std::uint32_t>(in)
+    );
+  }
+
+  static core::expected<std::int32_t> deserialize(file& f)
+    noexcept
+  {
+    auto r = file_serializer<std::uint32_t>::deserialize(f);
+
+    if (!r) {
+      return core::unexpected(r.error());
+    }
+    return static_cast<std::int32_t>(*r);
+  }
+};
+
+//-----------------------------------------------------------------------------
+// std::uint64_t
+//-----------------------------------------------------------------------------
+
+template <>
+struct alloy::io::file_serializer<std::uint64_t>
+{
+  static core::expected<void> serialize(file& f, std::uint64_t in)
+    noexcept
+  {
+    // Create an array of the byte-sequence in a consistent order
+    auto bytes = std::array {
+      static_cast<std::byte>((0xff00000000000000 & in) >> 56),
+      static_cast<std::byte>((0x00ff000000000000 & in) >> 48),
+      static_cast<std::byte>((0x0000ff0000000000 & in) >> 40),
+      static_cast<std::byte>((0x000000ff00000000 & in) >> 32),
+      static_cast<std::byte>((0x00000000ff000000 & in) >> 24),
+      static_cast<std::byte>((0x0000000000ff0000 & in) >> 16),
+      static_cast<std::byte>((0x000000000000ff00 & in) >> 8),
+      static_cast<std::byte>((0x00000000000000ff & in)),
+    };
+    auto result = f.write(const_buffer::from_container(bytes));
+    if (!result) {
+      return core::unexpected(result.error());
+    }
+    return {};
+  }
+
+  static core::expected<std::uint64_t> deserialize(file& f)
+    noexcept
+  {
+    auto bytes = std::array<std::byte,sizeof(std::uint64_t)>{};
+    auto result = f.read(mutable_buffer::from_object(bytes));
+    if (!result) {
+      return core::unexpected(result.error());
+    }
+
+    // Rebuild the result from the byte sequence
+    auto object = std::uint64_t(
+      static_cast<std::uint64_t>(bytes[0] << 56) |
+      static_cast<std::uint64_t>(bytes[1] << 48) |
+      static_cast<std::uint64_t>(bytes[2] << 40) |
+      static_cast<std::uint64_t>(bytes[3] << 32) |
+      static_cast<std::uint64_t>(bytes[4] << 24) |
+      static_cast<std::uint64_t>(bytes[5] << 16) |
+      static_cast<std::uint64_t>(bytes[6] << 8)  |
+      static_cast<std::uint64_t>(bytes[7])
+    );
+    return object;
+  }
+};
+
+//-----------------------------------------------------------------------------
+// std::int64_t
+//-----------------------------------------------------------------------------
+
+template <>
+struct alloy::io::file_serializer<std::int64_t>
+{
+  static core::expected<void> serialize(file& f, std::int16_t in)
+    noexcept
+  {
+    return file_serializer<std::uint64_t>::serialize(
+      f,
+      static_cast<std::uint64_t>(in)
+    );
+  }
+
+  static core::expected<std::int64_t> deserialize(file& f)
+    noexcept
+  {
+    auto r = file_serializer<std::uint64_t>::deserialize(f);
+
+    if (!r) {
+      return core::unexpected(r.error());
+    }
+    return static_cast<std::int64_t>(*r);
+  }
+};
 
 #endif /* ALLOY_IO_FILESYSTEM_FILE_HPP */
