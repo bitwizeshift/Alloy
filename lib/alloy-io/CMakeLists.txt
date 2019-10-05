@@ -16,7 +16,6 @@ set(header_files
   include/alloy/io/filesystem/random_filesystem.hpp
   include/alloy/io/filesystem/memory_filesystem.hpp
   include/alloy/io/filesystem/xor_file_adapter.hpp
-  include/alloy/io/filesystem/crc16_file_adapter.hpp
 )
 
 set(source_files
@@ -28,7 +27,6 @@ set(source_files
   src/alloy/io/filesystem/random_filesystem.cpp
   src/alloy/io/filesystem/memory_filesystem.cpp
   src/alloy/io/filesystem/xor_file_adapter.cpp
-  src/alloy/io/filesystem/crc16_file_adapter.cpp
 )
 
 add_library(${PROJECT_NAME}IO
