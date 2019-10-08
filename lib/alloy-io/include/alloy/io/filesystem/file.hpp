@@ -166,6 +166,11 @@ namespace alloy::io {
     /// \return void on success
     core::expected<void> reset() noexcept;
 
+    /// \brief Flushes the contents to the file, if buffered
+    ///
+    /// \return void on success
+    core::expected<void> flush() noexcept;
+
     /// \brief Skips up to the next N bytes of the file
     ///
     /// \param offset the number of bytes to skip

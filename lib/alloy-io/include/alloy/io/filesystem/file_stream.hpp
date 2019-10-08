@@ -103,6 +103,11 @@ namespace alloy::io {
     /// \return void on success
     virtual core::expected<void> reset() noexcept = 0;
 
+    /// \brief Flushes the contents of the stream to storage
+    ///
+    /// \return void on success
+    virtual core::expected<void> flush() noexcept;
+
     /// \brief Skips up to the next N bytes of the file
     ///
     /// \param offset the number of bytes to skip
@@ -128,5 +133,19 @@ namespace alloy::io {
   };
 
 } // namespace alloy::io
+
+//=============================================================================
+// inline definitions : class : file_stream
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// File Access
+//-----------------------------------------------------------------------------
+
+inline alloy::core::expected<void> alloy::io::file_stream::flush()
+  noexcept
+{
+  return {};
+}
 
 #endif /* ALLOY_IO_FILESYSTEM_FILE_STREAM_HPP */

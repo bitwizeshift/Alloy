@@ -150,6 +150,17 @@ alloy::core::expected<void> alloy::io::file::reset()
 }
 
 
+alloy::core::expected<void> alloy::io::file::flush()
+  noexcept
+{
+  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
+    return core::unexpected(error_code::closed);
+  }
+
+  return m_handle->flush();
+}
+
+
 alloy::core::expected<void> alloy::io::file::skip(offset_type offset)
   noexcept
 {
