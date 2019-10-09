@@ -7,6 +7,7 @@ set(header_files
   include/alloy/io/buffers/const_buffer.hpp
   include/alloy/io/window.hpp
   include/alloy/io/message_pump.hpp
+  include/alloy/io/filesystem/disk_filesystem.hpp
   include/alloy/io/filesystem/filesystem_monitor.hpp
   include/alloy/io/filesystem/file_adapter.hpp
   include/alloy/io/filesystem/file_stream.hpp
@@ -21,6 +22,7 @@ set(header_files
 set(source_files
   src/alloy/io/window.cpp
   src/alloy/io/message_pump.cpp
+  src/alloy/io/filesystem/disk_filesystem.cpp
   src/alloy/io/filesystem/filesystem_monitor.cpp
   src/alloy/io/filesystem/file.cpp
   src/alloy/io/filesystem/null_filesystem.cpp
