@@ -47,6 +47,11 @@ namespace alloy::core {
             typename Allocator = stl_allocator_adapter<CharT>>
   using basic_string = explicitly_copyable<std::basic_string<CharT,Traits,Allocator>>;
 
+  using string = basic_string<char>;
+  using wstring = basic_string<wchar_t>;
+  using u16string = basic_string<char16_t>;
+  using u32string = basic_string<char32_t>;
+
 } // namespace alloy::core
 
 #endif /* ALLOY_CORE_CONTAINERS_STRING_HPP */
