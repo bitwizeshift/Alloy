@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/io/event.hpp"
 #include "alloy/io/message_pump.hpp"
 
 #include <string>      // std::string
@@ -115,5 +116,17 @@ namespace alloy::io {
   };
 
 } // namespace alloy::io
+
+// Window events reserve a block of 8 IDS, from 0x10 -> 0x17
+
+ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::file_creation_event, 0x0010);
+ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::file_removal_event, 0x0011);
+ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::file_update_event, 0x0012);
+// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x0013);
+// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x0014);
+// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x0015);
+// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x0016);
+// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x0017);
+
 
 #endif /* ALLOY_IO_FILESYSTEM_FILESYSTEM_MONITOR_HPP */

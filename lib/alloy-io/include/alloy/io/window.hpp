@@ -34,6 +34,8 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/io/event.hpp"
+
 namespace alloy::io {
 
   class window;
@@ -300,6 +302,26 @@ namespace alloy::io {
   };
 
 } // namespace alloy::io
+
+// Window events reserve a block of 15 IDS, from 0x1 -> 0xF
+
+// close event is high priority, since an attempt to exit an application should
+// take priority over first resizing/moving/refocusing a window.
+ALLOY_DEFINE_HIGH_PRIORITY_SYSTEM_EVENT(::alloy::io::window_close_event, 0x0001);
+ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::window_show_event, 0x0002);
+ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::window_hide_event, 0x0003);
+ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::window_move_event, 0x0004);
+ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::window_resize_event, 0x0005);
+ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::window_minimize_event, 0x0006);
+ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::window_maximize_event, 0x0007);
+ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::window_restore_event, 0x0008);
+ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::window_focus_event, 0x0009);
+ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::window_unfocus_event, 0x000A);
+// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x000B);
+// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x000C);
+// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x000D);
+// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x000E);
+// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x000F);
 
 //==============================================================================
 // inline definitions : class : window
