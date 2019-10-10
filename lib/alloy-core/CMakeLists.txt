@@ -57,7 +57,7 @@ set(header_files
 
   # Utilities
   include/alloy/core/utilities/delegate.hpp
-  include/alloy/core/utilities/event.hpp
+  include/alloy/core/utilities/signal.hpp
   include/alloy/core/utilities/expected.hpp
   include/alloy/core/utilities/explicitly_copyable.hpp
   include/alloy/core/utilities/not_null.hpp

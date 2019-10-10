@@ -27,8 +27,8 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-#ifndef ALLOY_CORE_UTILITIES_EVENT_HPP
-#define ALLOY_CORE_UTILITIES_EVENT_HPP
+#ifndef ALLOY_CORE_UTILITIES_SIGNAL_HPP
+#define ALLOY_CORE_UTILITIES_SIGNAL_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
 # pragma once
@@ -49,7 +49,7 @@ namespace alloy::core {
   //===========================================================================
 
   template <typename Fn>
-  class event;
+  class signal;
 
   /////////////////////////////////////////////////////////////////////////////
   /// \brief A class for encapsulating an event emitting system.
@@ -70,7 +70,7 @@ namespace alloy::core {
   /// Example usage:
   ///
   /// \code
-  /// using example_event = alloy::core::event<void(std::string_view)>;
+  /// using example_event = alloy::core::signal<void(std::string_view)>;
   ///
   /// class example
   /// {
@@ -112,7 +112,7 @@ namespace alloy::core {
   /// \tparam Args the argument types
   /////////////////////////////////////////////////////////////////////////////
   template <typename R, typename...Args>
-  class event<R(Args...)>
+  class signal<R(Args...)>
   {
     template <typename F, typename...Ts>
     using enable_if_invocable_t = std::enable_if_t<
@@ -140,14 +140,14 @@ namespace alloy::core {
   public:
 
     /// \brief Constructs a event that does not have a bound function
-    event() noexcept;
-    event(event&&) = delete;
-    event(const event&) = delete;
+    signal() noexcept;
+    signal(signal&&) = delete;
+    signal(const signal&) = delete;
 
     //-------------------------------------------------------------------------
 
-    event& operator=(event&&) = delete;
-    event& operator=(const event&) = delete;
+    signal& operator=(signal&&) = delete;
+    signal& operator=(const signal&) = delete;
 
     //-------------------------------------------------------------------------
     // Modifiers
@@ -208,11 +208,11 @@ namespace alloy::core {
     sink* m_sink;
     bool m_trigger_acquired;
 
-    friend class event<R(Args...)>::trigger;
+    friend class signal<R(Args...)>::trigger;
   };
 
   //===========================================================================
-  // class : event<R(Args...)>::sink
+  // class : signal<R(Args...)>::sink
   //===========================================================================
 
   /////////////////////////////////////////////////////////////////////////////
@@ -235,7 +235,7 @@ namespace alloy::core {
   ///       This is a concern that is to be managed by the consumer directly.
   /////////////////////////////////////////////////////////////////////////////
   template <typename R, typename...Args>
-  class event<R(Args...)>::sink
+  class signal<R(Args...)>::sink
   {
     template <typename F, typename...Ts>
     using enable_if_invocable_t = std::enable_if_t<
@@ -415,16 +415,16 @@ namespace alloy::core {
     std::size_t m_capacity;
     std::size_t m_size;
 
-    friend class event<R(Args...)>;
+    friend class signal<R(Args...)>;
   };
 
   //===========================================================================
-  // class : event<R(Args...)>::trigger
+  // class : signal<R(Args...)>::trigger
   //===========================================================================
 
   /////////////////////////////////////////////////////////////////////////////
   /// \brief A disjoint class that can be used to trigger events from an
-  ///        \c event<R(Args...)>
+  ///        \c signal<R(Args...)>
   ///
   /// This decomposition is to prevent types from being able to trigger events
   /// that otherwise should not. This is typically an inherent problem in the
@@ -445,7 +445,7 @@ namespace alloy::core {
   ///       public member.
   /////////////////////////////////////////////////////////////////////////////
   template <typename R, typename...Args>
-  class event<R(Args...)>::trigger
+  class signal<R(Args...)>::trigger
   {
     template <typename F, typename...Ts>
     using enable_if_invocable_t = std::enable_if_t<
@@ -493,15 +493,15 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   private:
 
-    event<R(Args...)>* m_source;
+    signal<R(Args...)>* m_source;
 
-    friend class event<R(Args...)>;
+    friend class signal<R(Args...)>;
   };
 
 } // namespace alloy::core
 
 //=============================================================================
-// inline definition : class : event<R(Args...)>
+// inline definition : class : signal<R(Args...)>
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -509,7 +509,7 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-inline alloy::core::event<R(Args...)>::event()
+inline alloy::core::signal<R(Args...)>::signal()
   noexcept
   : m_sink{nullptr},
     m_trigger_acquired{false}
@@ -522,8 +522,8 @@ inline alloy::core::event<R(Args...)>::event()
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-inline typename alloy::core::event<R(Args...)>::sink*
-  alloy::core::event<R(Args...)>::bind(not_null<sink*> s)
+inline typename alloy::core::signal<R(Args...)>::sink*
+  alloy::core::signal<R(Args...)>::bind(not_null<sink*> s)
   noexcept
 {
   auto* result = m_sink;
@@ -533,8 +533,8 @@ inline typename alloy::core::event<R(Args...)>::sink*
 
 
 template <typename R, typename...Args>
-inline typename alloy::core::event<R(Args...)>::sink*
-  alloy::core::event<R(Args...)>::unbind()
+inline typename alloy::core::signal<R(Args...)>::sink*
+  alloy::core::signal<R(Args...)>::unbind()
   noexcept
 {
   auto* result = m_sink;
@@ -545,7 +545,7 @@ inline typename alloy::core::event<R(Args...)>::sink*
 
 template <typename R, typename...Args>
 inline void
-  alloy::core::event<R(Args...)>::acquire_trigger(not_null<trigger*> t)
+  alloy::core::signal<R(Args...)>::acquire_trigger(not_null<trigger*> t)
   noexcept
 {
   if (m_trigger_acquired) {
@@ -560,7 +560,7 @@ inline void
 
 template <typename R, typename...Args>
 template <typename...UArgs, typename>
-inline void alloy::core::event<R(Args...)>::emit(UArgs&&...args)
+inline void alloy::core::signal<R(Args...)>::emit(UArgs&&...args)
 {
   ALLOY_ASSERT(m_sink != nullptr);
 
@@ -570,7 +570,7 @@ inline void alloy::core::event<R(Args...)>::emit(UArgs&&...args)
 
 template <typename R, typename...Args>
 template <typename CollectorFn, typename...UArgs, typename, typename, typename>
-inline void alloy::core::event<R(Args...)>::emit(CollectorFn&& collector,
+inline void alloy::core::signal<R(Args...)>::emit(CollectorFn&& collector,
                                                    UArgs&&...args)
 {
   ALLOY_ASSERT(m_sink != nullptr);
@@ -582,7 +582,7 @@ inline void alloy::core::event<R(Args...)>::emit(CollectorFn&& collector,
 }
 
 //=============================================================================
-// inline definition : class : event<R(Args...)>::sink
+// inline definition : class : signal<R(Args...)>::sink
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -590,7 +590,7 @@ inline void alloy::core::event<R(Args...)>::emit(CollectorFn&& collector,
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-inline alloy::core::event<R(Args...)>::sink::sink(std::size_t size,
+inline alloy::core::signal<R(Args...)>::sink::sink(std::size_t size,
                                                   allocator alloc)
   noexcept
   : m_handlers{alloc.make_array<event_handler>(size)},
@@ -605,7 +605,7 @@ inline alloy::core::event<R(Args...)>::sink::sink(std::size_t size,
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-inline alloy::core::event<R(Args...)>::sink::~sink()
+inline alloy::core::signal<R(Args...)>::sink::~sink()
 {
   m_allocator.dispose_array<event_handler>(m_handlers, m_capacity);
 }
@@ -616,7 +616,7 @@ inline alloy::core::event<R(Args...)>::sink::~sink()
 
 template <typename R, typename...Args>
 template <auto Fn, typename>
-inline void alloy::core::event<R(Args...)>::sink::add_listener()
+inline void alloy::core::signal<R(Args...)>::sink::add_listener()
   noexcept
 {
   ALLOY_ASSERT(m_handlers != nullptr);
@@ -628,7 +628,7 @@ inline void alloy::core::event<R(Args...)>::sink::add_listener()
 
 template <typename R, typename...Args>
 template <auto MemberFn, typename C, typename>
-inline void alloy::core::event<R(Args...)>::sink::add_listener(C* c)
+inline void alloy::core::signal<R(Args...)>::sink::add_listener(C* c)
   noexcept
 {
   ALLOY_ASSERT(m_handlers != nullptr);
@@ -640,7 +640,7 @@ inline void alloy::core::event<R(Args...)>::sink::add_listener(C* c)
 
 template <typename R, typename...Args>
 template <auto MemberFn, typename C, typename>
-inline void alloy::core::event<R(Args...)>::sink::add_listener(const C* c)
+inline void alloy::core::signal<R(Args...)>::sink::add_listener(const C* c)
   noexcept
 {
   ALLOY_ASSERT(m_handlers != nullptr);
@@ -652,7 +652,7 @@ inline void alloy::core::event<R(Args...)>::sink::add_listener(const C* c)
 
 template <typename R, typename...Args>
 template <typename Callable, typename>
-inline void alloy::core::event<R(Args...)>::sink::add_listener(Callable* callable)
+inline void alloy::core::signal<R(Args...)>::sink::add_listener(Callable* callable)
   noexcept
 {
   ALLOY_ASSERT(m_handlers != nullptr);
@@ -664,7 +664,7 @@ inline void alloy::core::event<R(Args...)>::sink::add_listener(Callable* callabl
 
 template <typename R, typename...Args>
 template <typename Callable, typename>
-inline void alloy::core::event<R(Args...)>::sink::add_listener(const Callable* callable)
+inline void alloy::core::signal<R(Args...)>::sink::add_listener(const Callable* callable)
   noexcept
 {
   ALLOY_ASSERT(m_handlers != nullptr);
@@ -677,7 +677,7 @@ inline void alloy::core::event<R(Args...)>::sink::add_listener(const Callable* c
 
 template <typename R, typename...Args>
 template <auto Fn, typename>
-inline void alloy::core::event<R(Args...)>::sink::remove_listener()
+inline void alloy::core::signal<R(Args...)>::sink::remove_listener()
   noexcept
 {
   const auto val = event_handler::template bind<Fn>();
@@ -696,7 +696,7 @@ inline void alloy::core::event<R(Args...)>::sink::remove_listener()
 
 template <typename R, typename...Args>
 template <auto MemberFn, typename C, typename>
-inline void alloy::core::event<R(Args...)>::sink::remove_listener(C* c)
+inline void alloy::core::signal<R(Args...)>::sink::remove_listener(C* c)
   noexcept
 {
   const auto val = event_handler::bind<MemberFn>(c);
@@ -715,7 +715,7 @@ inline void alloy::core::event<R(Args...)>::sink::remove_listener(C* c)
 
 template <typename R, typename...Args>
 template <auto MemberFn, typename C, typename>
-inline void alloy::core::event<R(Args...)>::sink::remove_listener(const C* c)
+inline void alloy::core::signal<R(Args...)>::sink::remove_listener(const C* c)
   noexcept
 {
   const auto val = event_handler::bind<MemberFn>(c);
@@ -734,7 +734,7 @@ inline void alloy::core::event<R(Args...)>::sink::remove_listener(const C* c)
 
 template <typename R, typename...Args>
 template <typename Callable, typename>
-inline void alloy::core::event<R(Args...)>::sink::remove_listener(Callable* callable)
+inline void alloy::core::signal<R(Args...)>::sink::remove_listener(Callable* callable)
   noexcept
 {
   const auto val = event_handler::bind(callable);
@@ -753,7 +753,7 @@ inline void alloy::core::event<R(Args...)>::sink::remove_listener(Callable* call
 
 template <typename R, typename...Args>
 template <typename Callable, typename>
-inline void alloy::core::event<R(Args...)>::sink::remove_listener(const Callable* callable)
+inline void alloy::core::signal<R(Args...)>::sink::remove_listener(const Callable* callable)
   noexcept
 {
   const auto val = event_handler::bind(callable);
@@ -775,7 +775,7 @@ inline void alloy::core::event<R(Args...)>::sink::remove_listener(const Callable
 
 template <typename R, typename...Args>
 template <typename...UArgs, typename>
-inline void alloy::core::event<R(Args...)>::sink::emit(UArgs&&...args)
+inline void alloy::core::signal<R(Args...)>::sink::emit(UArgs&&...args)
 {
   const auto* begin = &m_handlers[0];
   const auto* end   = &m_handlers[m_size];
@@ -790,7 +790,7 @@ inline void alloy::core::event<R(Args...)>::sink::emit(UArgs&&...args)
 
 template <typename R, typename...Args>
 template <typename CollectorFn, typename...UArgs, typename, typename, typename>
-inline void alloy::core::event<R(Args...)>::sink::emit(CollectorFn&& collector,
+inline void alloy::core::signal<R(Args...)>::sink::emit(CollectorFn&& collector,
                                                          UArgs&&...args)
 {
   const auto* begin = &m_handlers[0];
@@ -810,7 +810,7 @@ inline void alloy::core::event<R(Args...)>::sink::emit(CollectorFn&& collector,
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-inline std::size_t alloy::core::event<R(Args...)>::sink::capacity()
+inline std::size_t alloy::core::signal<R(Args...)>::sink::capacity()
   const noexcept
 {
   return m_capacity;
@@ -818,7 +818,7 @@ inline std::size_t alloy::core::event<R(Args...)>::sink::capacity()
 
 
 template <typename R, typename...Args>
-inline std::size_t alloy::core::event<R(Args...)>::sink::size()
+inline std::size_t alloy::core::signal<R(Args...)>::sink::size()
   const noexcept
 {
   return m_size;
@@ -826,14 +826,14 @@ inline std::size_t alloy::core::event<R(Args...)>::sink::size()
 
 
 template <typename R, typename...Args>
-inline bool alloy::core::event<R(Args...)>::sink::empty()
+inline bool alloy::core::signal<R(Args...)>::sink::empty()
   const noexcept
 {
   return m_size == 0u;
 }
 
 //=============================================================================
-// inline definition : class : event<R(Args...)>::trigger
+// inline definition : class : signal<R(Args...)>::trigger
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -841,7 +841,7 @@ inline bool alloy::core::event<R(Args...)>::sink::empty()
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-inline alloy::core::event<R(Args...)>::trigger::trigger()
+inline alloy::core::signal<R(Args...)>::trigger::trigger()
   noexcept
   : m_source{nullptr}
 {
@@ -854,7 +854,7 @@ inline alloy::core::event<R(Args...)>::trigger::trigger()
 
 template <typename R, typename...Args>
 template <typename...UArgs, typename>
-inline void alloy::core::event<R(Args...)>::trigger::emit(UArgs&&...args)
+inline void alloy::core::signal<R(Args...)>::trigger::emit(UArgs&&...args)
 {
   ALLOY_ASSERT(m_source != nullptr);
 
@@ -864,7 +864,7 @@ inline void alloy::core::event<R(Args...)>::trigger::emit(UArgs&&...args)
 
 template <typename R, typename...Args>
 template <typename CollectorFn, typename...UArgs, typename, typename, typename>
-inline void alloy::core::event<R(Args...)>::trigger::emit(CollectorFn&& collector,
+inline void alloy::core::signal<R(Args...)>::trigger::emit(CollectorFn&& collector,
                                                             UArgs&&...args)
 {
   ALLOY_ASSERT(m_source != nullptr);
@@ -875,4 +875,4 @@ inline void alloy::core::event<R(Args...)>::trigger::emit(CollectorFn&& collecto
   );
 }
 
-#endif /* ALLOY_CORE_UTILITIES_EVENT_HPP */
+#endif /* ALLOY_CORE_UTILITIES_SIGNAL_HPP */
