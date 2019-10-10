@@ -134,7 +134,7 @@ inline alloy::io::file_stream_handle::file_stream_handle(file_stream_handle&& ot
   : m_stream{other.m_stream},
     m_finalizer{other.m_finalizer}
 {
-  other.m_finalizer = nullptr;
+  other.m_stream = nullptr;
 }
 
 //-----------------------------------------------------------------------------
