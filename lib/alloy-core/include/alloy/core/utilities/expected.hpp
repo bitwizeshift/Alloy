@@ -778,7 +778,7 @@ template <typename T, typename E>
 inline constexpr bool alloy::core::expected<T,E>::has_value()
   const noexcept
 {
-  return std::get_if<0>(&m_state) == nullptr;
+  return std::get_if<0>(&m_state) != nullptr;
 }
 
 template <typename T, typename E>
