@@ -156,8 +156,8 @@ namespace {
 
     // Run the XOR pass
     for (; it != end; ++it) {
-      *it ^= m_byte0;
       *it ^= m_byte1;
+      *it ^= m_byte0;
     }
 
     return new_buffer;
@@ -175,14 +175,21 @@ namespace {
     const auto* const data = buffer.data();
 
     auto remaining = buffer.size();
+    auto total_written = 0u;
     auto i = 0u;
 
+    // Writing requires a mutable buffer, but file::write only exposes const
+    // buffers. Internally, this uses a thread-local buffer of 128 bytes, and
+    // writes are done in chunks as a result. This gets rebuilt at the end
+    // to provide a seamless result to the consumer.
     while (remaining > 0) {
       const auto to_write = std::min(remaining, buffer_size);
 
+      // Translate buffers by running XOR pass over bytes
       for (auto j = 0u; j < to_write && i < size; ++i, ++j) {
-        s_buffer[j] = data[i] ^ m_byte1;
-        s_buffer[j] = data[i] ^ m_byte0;
+        s_buffer[j] = data[i];
+        s_buffer[j] ^= m_byte0;
+        s_buffer[j] ^= m_byte1;
       }
 
       auto new_buffer = alloy::io::const_buffer{
@@ -194,9 +201,17 @@ namespace {
       if (!result) {
         return result;
       }
-      remaining -= to_write;
+      remaining -= result->size();
+      total_written += result->size();
+
+      // If we somehow don't write the entire thing, return the total amount
+      // that was written.
+      if (ALLOY_UNLIKELY(result->size() < to_write)) {
+        return alloy::io::const_buffer{buffer.data(), total_written};
+      }
     }
 
+    // If we get this far, we wrote the whole buffer!
     return buffer;
   }
 } // namespace <anonymous>
