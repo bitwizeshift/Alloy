@@ -76,6 +76,8 @@ namespace alloy::io {
       not_readable  = 2, ///< The file is not able to be read
       not_writeable = 3, ///< The file is not able to be written to
       closed        = 4, ///< The file is already closed
+      system_error  = 5, ///< An internal error prevented the operation from
+                         ///< completing
     };
 
     //-------------------------------------------------------------------------

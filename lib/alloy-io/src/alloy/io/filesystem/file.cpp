@@ -30,6 +30,8 @@ namespace {
           return "file is not able to be read"s;
         case error_code::not_writeable:
           return "file is not able to be written to"s;
+        case error_code::system_error:
+          return "An error occurred while operating on the file"s;
         default:
           break;
       }
@@ -104,7 +106,7 @@ bool alloy::io::file::is_open()
 alloy::core::expected<alloy::io::file::size_type> alloy::io::file::bytes()
   const noexcept
 {
-  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
+  if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::unexpected(error_code::closed);
   }
 
@@ -128,7 +130,7 @@ alloy::io::file_stream_handle alloy::io::file::release()
 alloy::core::expected<void> alloy::io::file::close()
   noexcept
 {
-  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
+  if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::unexpected(error_code::closed);
   }
 
@@ -142,7 +144,7 @@ alloy::core::expected<void> alloy::io::file::close()
 alloy::core::expected<void> alloy::io::file::reset()
   noexcept
 {
-  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
+  if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::unexpected(error_code::closed);
   }
 
@@ -153,7 +155,7 @@ alloy::core::expected<void> alloy::io::file::reset()
 alloy::core::expected<void> alloy::io::file::flush()
   noexcept
 {
-  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
+  if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::unexpected(error_code::closed);
   }
 
@@ -164,7 +166,7 @@ alloy::core::expected<void> alloy::io::file::flush()
 alloy::core::expected<void> alloy::io::file::skip(offset_type offset)
   noexcept
 {
-  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
+  if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::unexpected(error_code::closed);
   }
 
@@ -176,7 +178,7 @@ alloy::core::expected<alloy::io::mutable_buffer>
   alloy::io::file::read(mutable_buffer buffer)
   noexcept
 {
-  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
+  if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::unexpected(error_code::closed);
   }
 
@@ -188,7 +190,7 @@ alloy::core::expected<alloy::io::const_buffer>
   alloy::io::file::write(const_buffer buffer)
   noexcept
 {
-  if (ALLOY_UNLIKELY(m_handle.get() != nullptr)) {
+  if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::unexpected(error_code::closed);
   }
 
