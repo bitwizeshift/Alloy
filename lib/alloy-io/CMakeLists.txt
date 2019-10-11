@@ -5,6 +5,8 @@
 set(header_files
   include/alloy/io/buffers/mutable_buffer.hpp
   include/alloy/io/buffers/const_buffer.hpp
+  include/alloy/io/events/window_events.hpp
+  include/alloy/io/events/filesystem_events.hpp
   include/alloy/io/event.hpp
   include/alloy/io/window.hpp
   include/alloy/io/message_pump.hpp

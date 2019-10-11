@@ -43,36 +43,6 @@
 namespace alloy::io {
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief An event signifying the creation of a file
-  ///
-  /// The event contains the name of the file that was created
-  //////////////////////////////////////////////////////////////////////////////
-  struct file_creation_event
-  {
-    std::string name;
-  };
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief An event signifying the removal of a file
-  ///
-  /// The event contains the name of the file that was removed
-  //////////////////////////////////////////////////////////////////////////////
-  struct file_removal_event
-  {
-    std::string name;
-  };
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief An event signifying that a file has been updated
-  ///
-  /// The event contains the name of the file that was updated
-  //////////////////////////////////////////////////////////////////////////////
-  struct file_update_event
-  {
-    std::string name;
-  };
-
-  //////////////////////////////////////////////////////////////////////////////
   /// \brief A monitor that watches filesystem changes, and signals events as
   ///        a pump source.
   ///
@@ -117,16 +87,6 @@ namespace alloy::io {
 
 } // namespace alloy::io
 
-// Window events reserve a block of 8 IDS, from 0x10 -> 0x17
-
-ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::file_creation_event, 0x0010);
-ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::file_removal_event, 0x0011);
-ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::file_update_event, 0x0012);
-// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x0013);
-// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x0014);
-// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x0015);
-// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x0016);
-// ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x0017);
 
 
 #endif /* ALLOY_IO_FILESYSTEM_FILESYSTEM_MONITOR_HPP */
