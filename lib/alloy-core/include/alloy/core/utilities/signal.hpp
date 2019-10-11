@@ -58,11 +58,6 @@ namespace alloy::core {
   /// to be event::sink instances, which are effectively arrays of handlers
   /// supplied by the client.
   ///
-  /// Events are triggered by a 3rd type, event::trigger -- which enables
-  /// encapsulating the source of the event better than the typical
-  /// slots/signals approach (wherein a public signal can be emitted by anyone
-  /// with an instance to the type that exposes the signal).
-  ///
   /// Instances of this type are immovable and uncopyable. Consumers of this
   /// type are expected to define their own semantics for copying and moving,
   /// if this is desired.
@@ -70,42 +65,48 @@ namespace alloy::core {
   /// Example usage:
   ///
   /// \code
-  /// using example_event = alloy::core::signal<void(std::string_view)>;
   ///
   /// class example
   /// {
   /// public:
   ///
-  ///   example_event file_event; // used to watch events
+  ///   using example_event = alloy::core::signal<void(std::string_view)>;
   ///
   ///   example()
-  ///     : event{},
-  ///       m_trigger{}
+  ///     : file_event{}
   ///   {
-  ///      // uniquely acquire the trigger
-  ///      event.acquire_trigger(&m_trigger);
+  ///   }
+  ///
+  ///   void bind(alloy::core::not_null<example_event::sink*> sink)
+  ///   {
+  ///     m_file_event.bind(sink);
+  ///   }
+  ///
+  ///   void unbind()
+  ///   {
+  ///     m_file_event.unbind();
   ///   }
   ///
   ///   void emit(std::string_view x)
   ///   {
-  ///     m_trigger.emit(x);
+  ///     m_file_event.emit(x);
   ///   }
   ///
   /// private:
-  ///   example_event::trigger m_trigger; // used to trigger events
+  ///   example_event m_file_event; // used to watch events
   /// };
   ///
   /// auto e = example{};
-  /// auto sink = example_event::sink{2u, allocator{}};
+  /// auto sink = example::example_event::sink{2u, allocator{}};
   ///
   /// sink.add_listener<&::some_event_handler>();
   /// sink.add_listener<&::some_other_event_handler>();
-  /// e.file_event.bind(&sink);
+  /// e.bind(&sink);
   ///
   /// // emit "hello world" to 'some_event_handler' and 'some_other_event_handler'
   /// e.emit("hello world");
   ///
-  /// e.file_event.unbind(); // events will no longer be handled
+  /// e.unbind(); // events will no longer be handled
   /// \endcode
   ///
   /// \tparam R the result type
@@ -131,8 +132,6 @@ namespace alloy::core {
   public:
 
     class sink;
-
-    class trigger;
 
     //-------------------------------------------------------------------------
     // Constructors / Destructor / Assignment
@@ -168,18 +167,10 @@ namespace alloy::core {
     /// \return the pointer to the previously bound sink
     sink* unbind() noexcept;
 
-    /// \brief Acquires the trigger for this event
-    ///
-    /// \note This action is transactional; the first invocation to call this
-    ///       will be assigned the trigger, and future invocations will not
-    ///
-    /// \param t the pointer to the trigger to be associated with this event
-    void acquire_trigger(not_null<trigger*> t) noexcept;
-
     //-------------------------------------------------------------------------
-    // Private Friend Hooks
+    // Emition
     //-------------------------------------------------------------------------
-  private:
+  public:
 
     /// \brief Emits a signal to all handlers of the event sink
     ///
@@ -206,9 +197,6 @@ namespace alloy::core {
   private:
 
     sink* m_sink;
-    bool m_trigger_acquired;
-
-    friend class signal<R(Args...)>::trigger;
   };
 
   //===========================================================================
@@ -418,86 +406,6 @@ namespace alloy::core {
     friend class signal<R(Args...)>;
   };
 
-  //===========================================================================
-  // class : signal<R(Args...)>::trigger
-  //===========================================================================
-
-  /////////////////////////////////////////////////////////////////////////////
-  /// \brief A disjoint class that can be used to trigger events from an
-  ///        \c signal<R(Args...)>
-  ///
-  /// This decomposition is to prevent types from being able to trigger events
-  /// that otherwise should not. This is typically an inherent problem in the
-  /// 'slot-signal' approach, wherein any public 'signal' is capable of
-  /// being emitted by any consumer of the class, even if the class itself is
-  /// meant to be the sole emitter of that event.
-  ///
-  /// By decoupling it here in this manner, the trigger can be encapsulated
-  /// in the class that does the signal emition. This comes at the cost of two
-  /// separate pointers; one in the 'event' class to keep track of the trigger
-  /// (necessary for rebinding on moves and copies), and one in this trigger
-  /// class to keep track of the original event.
-  ///
-  /// \note No effort has been made to ensure that triggers cannot outlive
-  ///       the event in which they are associated to. This is a concern that
-  ///       should be managed by the consumer. Typical usage is for the trigger
-  ///       to be a private member of the same class in which 'event' is a
-  ///       public member.
-  /////////////////////////////////////////////////////////////////////////////
-  template <typename R, typename...Args>
-  class signal<R(Args...)>::trigger
-  {
-    template <typename F, typename...Ts>
-    using enable_if_invocable_t = std::enable_if_t<
-      std::conjunction_v<
-        std::is_invocable<F, Ts...>,
-        std::disjunction<
-          std::is_void<R>,
-          std::is_convertible<std::invoke_result_t<F, Ts...>,R>
-        >
-      >
-    >;
-
-    //-------------------------------------------------------------------------
-    // Constructor / Assignment
-    //-------------------------------------------------------------------------
-  public:
-
-    trigger() noexcept;
-    trigger(trigger&& other) = default;
-    trigger(const trigger& other) = default;
-
-    //-------------------------------------------------------------------------
-
-    trigger& operator=(trigger&& other) = default;
-    trigger& operator=(const trigger& other) = default;
-
-    //-------------------------------------------------------------------------
-    // Emition
-    //-------------------------------------------------------------------------
-  public:
-
-    template <typename...UArgs,
-              typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>>
-    void emit(UArgs&&...args);
-
-    template <typename CollectorFn,
-              typename...UArgs,
-              typename R2=R,
-              typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>,
-              typename=std::enable_if_t<!std::is_void_v<R2>>>
-    void emit(CollectorFn&& collector, UArgs&&...args);
-
-    //-------------------------------------------------------------------------
-    // Private Members
-    //-------------------------------------------------------------------------
-  private:
-
-    signal<R(Args...)>* m_source;
-
-    friend class signal<R(Args...)>;
-  };
-
 } // namespace alloy::core
 
 //=============================================================================
@@ -511,8 +419,7 @@ namespace alloy::core {
 template <typename R, typename...Args>
 inline alloy::core::signal<R(Args...)>::signal()
   noexcept
-  : m_sink{nullptr},
-    m_trigger_acquired{false}
+  : m_sink{nullptr}
 {
 
 }
@@ -540,18 +447,6 @@ inline typename alloy::core::signal<R(Args...)>::sink*
   auto* result = m_sink;
   m_sink = nullptr;
   return result;
-}
-
-
-template <typename R, typename...Args>
-inline void
-  alloy::core::signal<R(Args...)>::acquire_trigger(not_null<trigger*> t)
-  noexcept
-{
-  if (m_trigger_acquired) {
-    t->m_source = this;
-    m_trigger_acquired = true;
-  }
 }
 
 //-----------------------------------------------------------------------------
@@ -830,49 +725,6 @@ inline bool alloy::core::signal<R(Args...)>::sink::empty()
   const noexcept
 {
   return m_size == 0u;
-}
-
-//=============================================================================
-// inline definition : class : signal<R(Args...)>::trigger
-//=============================================================================
-
-//-----------------------------------------------------------------------------
-// Constructor
-//-----------------------------------------------------------------------------
-
-template <typename R, typename...Args>
-inline alloy::core::signal<R(Args...)>::trigger::trigger()
-  noexcept
-  : m_source{nullptr}
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Emition
-//-----------------------------------------------------------------------------
-
-template <typename R, typename...Args>
-template <typename...UArgs, typename>
-inline void alloy::core::signal<R(Args...)>::trigger::emit(UArgs&&...args)
-{
-  ALLOY_ASSERT(m_source != nullptr);
-
-  m_source->emit(std::forward<UArgs>(args)...);
-}
-
-
-template <typename R, typename...Args>
-template <typename CollectorFn, typename...UArgs, typename, typename, typename>
-inline void alloy::core::signal<R(Args...)>::trigger::emit(CollectorFn&& collector,
-                                                            UArgs&&...args)
-{
-  ALLOY_ASSERT(m_source != nullptr);
-
-  m_source->emit(
-    std::forward<CollectorFn>(collector),
-    std::forward<UArgs>(args)...
-  );
 }
 
 #endif /* ALLOY_CORE_UTILITIES_SIGNAL_HPP */
