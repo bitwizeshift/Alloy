@@ -455,6 +455,11 @@ namespace alloy::core {
 
     void deallocate(T* p, std::size_t n) noexcept;
 
+    /// \brief Gets a reference to the underlying Alloy allocator
+    ///
+    /// \return a reference to the underlying allocator
+    const allocator& underlying() const noexcept;
+
     //-------------------------------------------------------------------------
     // Private Members
     //-------------------------------------------------------------------------
@@ -464,6 +469,22 @@ namespace alloy::core {
 
     template<typename> friend class stl_allocator_adapter;
   };
+
+  //===========================================================================
+  // non-member functions : class : stl_allocator_adapter
+  //===========================================================================
+
+  //---------------------------------------------------------------------------
+  // Equality
+  //---------------------------------------------------------------------------
+
+  template <typename T, typename U>
+  bool operator==(const stl_allocator_adapter<T>& lhs,
+                  const stl_allocator_adapter<U>& rhs) noexcept;
+
+  template <typename T, typename U>
+  bool operator!=(const stl_allocator_adapter<T>& lhs,
+                  const stl_allocator_adapter<U>& rhs) noexcept;
 
 } // namespace alloy::core
 
@@ -1022,6 +1043,42 @@ inline void alloy::core::stl_allocator_adapter<T>::deallocate(T* p,
   noexcept
 {
   return m_allocator.deallocate_bytes(p, sizeof(T) * n);
+}
+
+
+template <typename T>
+inline const alloy::core::allocator&
+  alloy::core::stl_allocator_adapter<T>::underlying()
+  const noexcept
+{
+  return m_allocator;
+}
+
+
+//=============================================================================
+// non-member functions : class : stl_allocator_adapter
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// Equality
+//-----------------------------------------------------------------------------
+
+
+template <typename T, typename U>
+inline bool alloy::core::operator==(const stl_allocator_adapter<T>& lhs,
+                                    const stl_allocator_adapter<U>& rhs)
+  noexcept
+{
+  return lhs.underlying().resource() == rhs.underlying().resource();
+}
+
+
+template <typename T, typename U>
+inline bool alloy::core::operator!=(const stl_allocator_adapter<T>& lhs,
+                                    const stl_allocator_adapter<U>& rhs)
+  noexcept
+{
+  return lhs.underlying().resource() != rhs.underlying().resource();
 }
 
 
