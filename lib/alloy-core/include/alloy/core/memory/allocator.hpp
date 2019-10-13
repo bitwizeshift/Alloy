@@ -37,6 +37,7 @@
 #include "alloy/core/memory/memory_resource.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/scope_guard.hpp"
+#include "alloy/core/intrinsics.hpp"
 
 #include <cstring>     // std::memcpy
 #include <cstddef>     // std::size_t, std::max_align_t
@@ -84,13 +85,13 @@ namespace alloy::core {
     /// \param resource the resource to use for allocation
     explicit allocator(not_null<memory_resource*> resource) noexcept;
 
-    allocator(allocator&&) = default;
-    allocator(const allocator&) = default;
+    allocator(allocator&&) noexcept = default;
+    allocator(const allocator&) noexcept = default;
 
     //-------------------------------------------------------------------------
 
-    allocator& operator=(allocator&&) = default;
-    allocator& operator=(const allocator&) = default;
+    allocator& operator=(allocator&&) noexcept = default;
+    allocator& operator=(const allocator&) noexcept = default;
 
     //-------------------------------------------------------------------------
     // Allocation : Bytes
@@ -412,8 +413,23 @@ namespace alloy::core {
   public:
 
     using value_type = T;
+    using pointer = T*;
+    using const_pointer = const T*;
+    using reference = T&;
+    using const_reference = const T&;
     using size_type = std::size_t;
     using difference_type = std::ptrdiff_t;
+
+    template <typename U>
+    struct rebind
+    {
+      using other = stl_allocator_adapter<U>;
+    };
+
+    using propagate_on_container_move_assignment = std::true_type;
+    using propagate_on_container_copy_assignment = std::true_type;
+    using propagate_on_container_swap = std::true_type;
+    using is_always_equal = std::false_type;
 
     //-------------------------------------------------------------------------
     // Constructors / Assignment
@@ -422,14 +438,14 @@ namespace alloy::core {
     stl_allocator_adapter() noexcept = default;
     explicit stl_allocator_adapter(allocator alloc) noexcept;
 
-    stl_allocator_adapter(stl_allocator_adapter&&) = default;
-    stl_allocator_adapter(const stl_allocator_adapter&) = default;
+    stl_allocator_adapter(stl_allocator_adapter&&) noexcept = default;
+    stl_allocator_adapter(const stl_allocator_adapter&) noexcept = default;
 
     template <typename U>
     stl_allocator_adapter(const stl_allocator_adapter<U>& other) noexcept;
 
-    stl_allocator_adapter& operator=(stl_allocator_adapter&&) = default;
-    stl_allocator_adapter& operator=(const stl_allocator_adapter&) = default;
+    stl_allocator_adapter& operator=(stl_allocator_adapter&&) noexcept = default;
+    stl_allocator_adapter& operator=(const stl_allocator_adapter&) noexcept = default;
 
     //-------------------------------------------------------------------------
     // Allocation
@@ -949,7 +965,8 @@ inline void
                                                           std::align_val_t align)
   noexcept
 {
-  ::operator delete(p, bytes, align);
+  compiler::unused(bytes);
+  ::operator delete(p, align);
 }
 
 //=============================================================================
