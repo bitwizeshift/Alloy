@@ -185,7 +185,7 @@ namespace alloy::extra {
   class logger final
   {
     //--------------------------------------------------------------------------
-    // Constructor / Assignment
+    // Constructor / Destructor / Assignment
     //--------------------------------------------------------------------------
   public:
 
@@ -198,8 +198,12 @@ namespace alloy::extra {
     /// \brief Move constructor
     ///
     /// \param other the other logger to move
-    logger(logger&& other) noexcept = default;
+    logger(logger&& other) noexcept;
     logger(const logger&) = delete;
+
+    //--------------------------------------------------------------------------
+
+    ~logger();
 
     //--------------------------------------------------------------------------
 
@@ -207,7 +211,7 @@ namespace alloy::extra {
     ///
     /// \param other the other logger to move
     /// \return reference to \c (*this)
-    logger& operator=(logger&& other) = default;
+    logger& operator=(logger&& other) noexcept;
     logger& operator=(const logger&) = delete;
 
     //--------------------------------------------------------------------------
@@ -221,14 +225,17 @@ namespace alloy::extra {
     /// logger messages are posted
     ///
     /// \param log the log stream to attach
-    void attach(core::not_null<log_stream*> log);
+    void attach(core::not_null<log_stream*> log) noexcept;
 
     /// \brief Detaches a log stream from this logger
     ///
     /// \pre \p log must have already been attached
     ///
     /// \param log the log to detach
-    void detach(core::not_null<log_stream*> log);
+    void detach(core::not_null<log_stream*> log) noexcept;
+
+    /// \brief Detaches all log streams from this logger
+    void detach_all() noexcept;
 
     //--------------------------------------------------------------------------
     // Logging
