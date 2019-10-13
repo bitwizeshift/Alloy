@@ -100,7 +100,7 @@ namespace alloy::extra {
     /// \param time the time that the logging occurred at
     /// \param level the log level of this message
     /// \param message the message itself
-    virtual void log_message(std::chrono::steady_clock::time_point time,
+    virtual void log_message(std::chrono::system_clock::time_point time,
                              log_level level,
                              std::string_view message) = 0;
 
@@ -223,6 +223,7 @@ namespace alloy::extra {
   private:
 
     log_stream* m_head;
+    io::mutable_buffer m_buffer;
   };
 } // namespace alloy::extra
 
@@ -256,7 +257,7 @@ void alloy::extra::logger::log(log_level level,
                                std::string_view format,
                                Args&&...args)
 {
-  const auto time = std::chrono::steady_clock::now();
+  const auto time = std::chrono::system_clock::now();
 
   auto buffer = std::array<char,max_message_length>{};
 
