@@ -33,6 +33,7 @@
 #include "alloy/io/buffers/mutable_buffer.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/delegate.hpp"
+#include "alloy/core/intrinsics.hpp"
 
 #include <fmt/format.h>
 
@@ -132,8 +133,6 @@ namespace alloy::extra {
   //////////////////////////////////////////////////////////////////////////////
   class logger final
   {
-    static constexpr auto max_message_length = 256;
-
     //--------------------------------------------------------------------------
     // Constructor / Assignment
     //--------------------------------------------------------------------------
@@ -228,23 +227,6 @@ namespace alloy::extra {
 } // namespace alloy::extra
 
 //==============================================================================
-// macros : logging
-//==============================================================================
-
-#define ALLOY_INTERNAL_LOG(l,lvl,...) \
-  l.log( \
-    ALLOY_CURRENT_SOURCE_LOCATION(), \
-    ::alloy::extra::log_level::lvl, \
-    __VA_ARGS__ \
-  )
-
-#define ALLOY_LOG_DEBUG(l,...) ALLOY_INTERNAL_LOG(l, debug, __VA_ARGS__)
-#define ALLOY_LOG_INFO(l,...) ALLOY_INTERNAL_LOG(l, info, __VA_ARGS__)
-#define ALLOY_LOG_WARN(l,...) ALLOY_INTERNAL_LOG(l, warn, __VA_ARGS__)
-#define ALLOY_LOG_ERROR(l,...) ALLOY_INTERNAL_LOG(l, error, __VA_ARGS__)
-#define ALLOY_LOG_SEVERE(l,...) ALLOY_INTERNAL_LOG(l, fatal, __VA_ARGS__)
-
-//==============================================================================
 // class : logger
 //==============================================================================
 
@@ -259,19 +241,18 @@ void alloy::extra::logger::log(log_level level,
 {
   const auto time = std::chrono::system_clock::now();
 
-  auto buffer = std::array<char,max_message_length>{};
-
   // use 'fmt' library for log formatting
-  const auto it = fmt::format_to_n(
-    buffer.data(),
-    buffer.size(),
+  const auto [it,size] = fmt::format_to_n(
+    reinterpret_cast<char*>(m_buffer.data()),
+    m_buffer.size(),
     format,
     std::forward<Args>(args)...
   );
+  core::compiler::unused(it);
 
   const auto message = std::string_view{
-    buffer.data(),
-    it - buffer.data()
+    reinterpret_cast<const char*>(m_buffer.data()),
+    size
   };
 
   auto* current = m_head;
