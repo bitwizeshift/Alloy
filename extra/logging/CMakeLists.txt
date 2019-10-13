@@ -59,5 +59,5 @@ endif ()
 # Examples
 
 if (ALLOY_COMPILE_EXAMPLES)
-
+  add_subdirectory("example")
 endif ()
