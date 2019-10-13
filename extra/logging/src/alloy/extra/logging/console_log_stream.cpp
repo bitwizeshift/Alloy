@@ -45,22 +45,24 @@ void alloy::extra::console_log_stream
   const auto tm = *std::localtime(&t);
   auto buffer = std::array<char,32>{};
 
-  const auto byte = std::strftime(
+  const auto bytes = std::strftime(
     buffer.data(),
     buffer.size(),
     "%Y-%m-%d %H:%M:%S",
     &tm
   );
-  buffer[byte] = '\0';
+  const auto time_string = std::string_view{buffer.data(), bytes};
   const auto level_string = ::to_string(level);
 
   // print format is:
   // time | level | message
   std::printf(
-    "%s | %-7s | %.*s\n",
-    buffer.data(),
+    "%.*s | %-7s | %.*s\n",
+    static_cast<int>(time_string.size()),
+    time_string.data(),
     level_string.data(),
     static_cast<int>(message.size()),
     message.data()
   );
+  std::fflush(stdout);
 }
