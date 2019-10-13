@@ -47,6 +47,9 @@ class AlloyConan(ConanFile):
     build_requires = ("Catch2/2.7.1@catchorg/stable")
     # requires = ("SDL/2.0.9@/stable")
 
+    def requirements(self):
+        if self.options.extras:
+            self.requires("fmt/5.3.0@bincrafters/stable", "private")
 
     def imports(self):
         # Puts the licenses of all dependencies into the install directory
