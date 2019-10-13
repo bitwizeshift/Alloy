@@ -329,6 +329,12 @@ void alloy::extra::logger::log(log_level level,
                                std::string_view format,
                                Args&&...args)
 {
+  // If we don't have any log streams attached, don't bother formatting the
+  // log statement.
+  if (m_head == nullptr) {
+    return;
+  }
+
   const auto time = std::chrono::system_clock::now();
 
   // use 'fmt' library for log formatting
