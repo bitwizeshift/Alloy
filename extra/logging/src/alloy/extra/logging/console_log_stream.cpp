@@ -57,7 +57,7 @@ void alloy::extra::console_log_stream
   // print format is:
   // time | level | message
   std::printf(
-    "%s | %s | %.*s",
+    "%s | %-7s | %.*s\n",
     buffer.data(),
     level_string.data(),
     static_cast<int>(message.size()),
