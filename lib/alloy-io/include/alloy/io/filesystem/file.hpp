@@ -500,7 +500,7 @@ struct alloy::io::file_serializer<std::uint16_t>
     noexcept
   {
     // Create an array of the byte-sequence in a consistent order
-    auto bytes = std::array {
+    auto bytes = std::array<std::byte,sizeof(std::uint16_t)> {
       static_cast<std::byte>((0xff00 & in) >> 8),
       static_cast<std::byte>((0x00ff & in)),
     };
@@ -568,7 +568,7 @@ struct alloy::io::file_serializer<std::uint32_t>
     noexcept
   {
     // Create an array of the byte-sequence in a consistent order
-    auto bytes = std::array {
+    auto bytes = std::array<std::byte,sizeof(std::uint32_t)> {
       static_cast<std::byte>((0xff000000 & in) >> 24),
       static_cast<std::byte>((0x00ff0000 & in) >> 16),
       static_cast<std::byte>((0x0000ff00 & in) >> 8),
@@ -640,7 +640,7 @@ struct alloy::io::file_serializer<std::uint64_t>
     noexcept
   {
     // Create an array of the byte-sequence in a consistent order
-    auto bytes = std::array {
+    auto bytes = std::array<std::byte,sizeof(std::uint64_t)> {
       static_cast<std::byte>((0xff00000000000000 & in) >> 56),
       static_cast<std::byte>((0x00ff000000000000 & in) >> 48),
       static_cast<std::byte>((0x0000ff0000000000 & in) >> 40),
