@@ -67,6 +67,27 @@ namespace alloy::extra {
 
   //////////////////////////////////////////////////////////////////////////////
   /// \brief A stream that is logged to
+  ///
+  /// Log streams are not useful on their own; they should be bound to a logger
+  /// instance.
+  ///
+  /// Example:
+  /// \code
+  /// auto format_buffer = std::array<char,256>{};
+  /// auto buffer = alloy::io::mutable_buffer::from_container(format_buffer);
+  ///
+  /// auto log = alloy::extra::console_log_stream{};
+  /// auto logger = alloy::extra::logger{buffer};
+  ///
+  /// logger.attach(&log); // attach this log stream to the logger
+  ///
+  /// logger.warn(...); // logging to the logger logs to the log stream
+  /// \endcode
+  ///
+  /// All log streams will use RAII to automatically detach from the connected
+  /// logger on completion.
+  ///
+  /// \note It is an error to attach a log stream to multiple loggers.
   //////////////////////////////////////////////////////////////////////////////
   class log_stream
   {
@@ -126,10 +147,40 @@ namespace alloy::extra {
   /// \brief The main logger class
   ///
   /// The logger will format entries and log messages back to any attached
-  /// log streams
+  /// log streams. Since log streams use RAII, this allows log stream
+  /// destinations to be temporarily added to given scopes -- allowing for
+  /// better debugability.
+  ///
+  /// Example:
+  /// \code
+  /// auto logger = alloy::extra::logger{...};
+  /// { // first log scope
+  ///   auto log = ... some log stream type ...
+  ///   logger.attach(&log);
+  ///
+  ///   logger.info(...); // logs to only attached log stream
+  ///
+  ///   { // second log scope
+  ///     auto log = ... some other log stream type for this scope
+  ///     logger.attach(&log);
+  ///
+  ///     logger.error(...); // logs to both attached logs
+  ///   } // scope ends, no more log
+  ///
+  ///   logger.info(...); // logs to first attached log stream only
+  /// }
+  ///
+  /// \endcode
   ///
   /// The log streams are intrinsically linked together, so that the overhead
   /// of connecting arbitrary loggers is minimal.
+  ///
+  /// This logger uses the C++ 'fmt' library to provide python-style format
+  /// strings with minimal overhead and type-safety/flexibility. For more
+  /// information on the formatting, please refer to their documentation at
+  /// https://fmt.dev/5.3.0/
+  ///
+  /// \note It is an error to attach a log stream to multiple logger instances
   //////////////////////////////////////////////////////////////////////////////
   class logger final
   {
@@ -186,6 +237,8 @@ namespace alloy::extra {
 
     /// \brief Logs a formatted message
     ///
+    /// The syntax of the format strings can be found at https://fmt.dev/5.3.0/
+    ///
     /// \param level the log level
     /// \param format the format string for the log
     /// \param args the arguments for formatting
@@ -196,22 +249,52 @@ namespace alloy::extra {
 
     //--------------------------------------------------------------------------
 
+    /// \brief Logs a formatted debug message
+    ///
+    /// The syntax of the format strings can be found at https://fmt.dev/5.3.0/
+    ///
+    /// \param format the format of the string
+    /// \param args the arguments for formatting
     template <typename...Args>
     void debug(std::string_view format,
                Args&&...args);
 
+    /// \brief Logs a formatted info message
+    ///
+    /// The syntax of the format strings can be found at https://fmt.dev/5.3.0/
+    ///
+    /// \param format the format of the string
+    /// \param args the arguments for formatting
     template <typename...Args>
     void info(std::string_view format,
               Args&&...args);
 
+    /// \brief Logs a formatted warning message
+    ///
+    /// The syntax of the format strings can be found at https://fmt.dev/5.3.0/
+    ///
+    /// \param format the format of the string
+    /// \param args the arguments for formatting
     template <typename...Args>
     void warn(std::string_view format,
               Args&&...args);
 
+    /// \brief Logs a formatted error message
+    ///
+    /// The syntax of the format strings can be found at https://fmt.dev/5.3.0/
+    ///
+    /// \param format the format of the string
+    /// \param args the arguments for formatting
     template <typename...Args>
     void error(std::string_view format,
                Args&&...args);
 
+    /// \brief Logs a formatted fatal message
+    ///
+    /// The syntax of the format strings can be found at https://fmt.dev/5.3.0/
+    ///
+    /// \param format the format of the string
+    /// \param args the arguments for formatting
     template <typename...Args>
     void fatal(std::string_view format,
                Args&&...args);
@@ -221,8 +304,8 @@ namespace alloy::extra {
     //--------------------------------------------------------------------------
   private:
 
-    log_stream* m_head;
-    io::mutable_buffer m_buffer;
+    log_stream* m_head;          ///< The head of the intrinsic logger list
+    io::mutable_buffer m_buffer; ///< The buffer to use for formatted strings
   };
 } // namespace alloy::extra
 
