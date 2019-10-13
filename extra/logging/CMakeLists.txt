@@ -5,11 +5,13 @@
 set(header_files
   include/alloy/extra/logging/logger.hpp
   include/alloy/extra/logging/console_log_stream.hpp
+  include/alloy/extra/logging/file_log_stream.hpp
 )
 
 set(source_files
   src/alloy/extra/logging/logger.cpp
   src/alloy/extra/logging/console_log_stream.cpp
+  src/alloy/extra/logging/file_log_stream.cpp
 )
 
 add_library(${PROJECT_NAME}ExtraLogging
