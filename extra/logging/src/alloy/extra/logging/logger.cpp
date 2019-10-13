@@ -51,6 +51,11 @@ alloy::extra::logger::logger(alloy::io::mutable_buffer buffer)
 
 void alloy::extra::logger::attach(core::not_null<log_stream*> log)
 {
+  ALLOY_ASSERT(
+    log->m_detach == log_stream::detach_function{},
+    "log_stream cannot be attached to multiple logger instances!"
+  );
+
   if (m_head == nullptr) {
     m_head = log.get();
   } else {
@@ -59,19 +64,25 @@ void alloy::extra::logger::attach(core::not_null<log_stream*> log)
     new_link->m_next = m_head;
     m_head = new_link;
   }
+
   log->m_detach = log_stream::detach_function::bind<&logger::detach>(this);
 }
 
 
 void alloy::extra::logger::detach(core::not_null<log_stream*> log)
 {
+  ALLOY_ASSERT(
+    log->m_detach != log_stream::detach_function{},
+    "log_stream must be attached to logger before detaching!"
+  );
+
   log->m_detach = log_stream::detach_function{};
   if (log.get() == m_head) {
     m_head = log->m_next;
     return;
   }
   auto* prev = m_head;
-  auto* current = prev + 1;
+  auto* current = prev->m_next;
 
   while (current != nullptr) {
     if (current == log.get()) {
@@ -80,7 +91,7 @@ void alloy::extra::logger::detach(core::not_null<log_stream*> log)
     prev = current;
     current = current->m_next;
   }
-  ALLOY_ASSERT(current != nullptr);
+  ALLOY_ASSERT(current != nullptr); // invariant
 
   prev->m_next = current->m_next;
 }
