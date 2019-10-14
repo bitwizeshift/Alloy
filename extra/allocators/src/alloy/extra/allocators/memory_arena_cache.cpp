@@ -38,7 +38,9 @@ std::size_t alloy::extra::memory_arena_cache::size()
   auto result = std::size_t{0u};
 
   for_each_arena([&](const memory_arena& arena){
-    result += arena.size();
+    core::compiler::unused(arena);
+
+    ++result;
   });
 
   return result;
@@ -51,9 +53,7 @@ std::size_t alloy::extra::memory_arena_cache::size_bytes()
   auto result = std::size_t{0u};
 
   for_each_arena([&](const memory_arena& arena){
-    core::compiler::unused(arena);
-
-    ++result;
+    result += arena.size();
   });
 
   return result;
@@ -90,7 +90,6 @@ alloy::extra::memory_arena alloy::extra::memory_arena_cache::request()
 {
   auto arena = m_head;
   if (m_head.data() != nullptr) {
-
     auto* p = arena.data();
     p = core::compiler::assume_aligned<alignof(memory_arena)>(p);
 
