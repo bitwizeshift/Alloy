@@ -6,5 +6,6 @@ var searchData=
   ['matrix3',['matrix3',['../d6/dbc/classalloy_1_1core_1_1matrix3.html',1,'alloy::core']]],
   ['matrix3_5fconstants',['matrix3_constants',['../d6/d31/structalloy_1_1core_1_1matrix3__constants.html',1,'alloy::core']]],
   ['matrix4',['matrix4',['../df/da7/classalloy_1_1core_1_1matrix4.html',1,'alloy::core']]],
-  ['matrix4_5fconstants',['matrix4_constants',['../d4/d8a/structalloy_1_1core_1_1matrix4__constants.html',1,'alloy::core']]]
+  ['matrix4_5fconstants',['matrix4_constants',['../d4/d8a/structalloy_1_1core_1_1matrix4__constants.html',1,'alloy::core']]],
+  ['memory_5fresource',['memory_resource',['../d9/d0b/classalloy_1_1core_1_1memory__resource.html',1,'alloy::core']]]
 ];

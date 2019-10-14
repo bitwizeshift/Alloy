@@ -80,6 +80,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_type.html"><span>Typedefs</span></a></li>
+      <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
@@ -108,6 +110,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_x.html#index_x"><span>x</span></a></li>
       <li><a href="functions_y.html#index_y"><span>y</span></a></li>
       <li><a href="functions_z.html#index_z"><span>z</span></a></li>
+      <li><a href="functions_~.html#index_~"><span>~</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -130,7 +133,7 @@ $(document).ready(function(){initNavTree('functions_u.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -143,11 +146,23 @@ $(document).ready(function(){initNavTree('functions_u.html','');});
 <div class="textblock">Here is a list of all documented class members with links to the class documentation for each member:</div>
 
 <h3><a class="anchor" id="index_u"></a>- u -</h3><ul>
+<li>unbind()
+: <a class="el" href="d9/d91/classalloy_1_1core_1_1signal_3_01_r_07_args_8_8_8_08_4.html#abc0444ce91d1859865facaa56520d981">alloy::core::signal&lt; R(Args...)&gt;</a>
+</li>
 <li>unbox()
 : <a class="el" href="d8/d0b/classalloy_1_1core_1_1semantic__type.html#a43af175762e597e02a8027781fbc8851">alloy::core::semantic_type&lt; typename, typename &gt;</a>
 </li>
+<li>underlying()
+: <a class="el" href="db/d28/classalloy_1_1core_1_1stl__allocator__adapter.html#a518e448e031d6975f60c641b377a1b3c">alloy::core::stl_allocator_adapter&lt; T &gt;</a>
+</li>
 <li>unexpected()
-: <a class="el" href="d3/d38/classalloy_1_1core_1_1unexpected.html#a666bbd6f70d46a63aeab4ab1604bf8df">alloy::core::unexpected&lt; E &gt;</a>
+: <a class="el" href="d3/d38/classalloy_1_1core_1_1unexpected.html#ac9f23478c635e46f166b734606ec7bb1">alloy::core::unexpected&lt; E &gt;</a>
+</li>
+<li>unreachable()
+: <a class="el" href="d8/dbb/structalloy_1_1core_1_1compiler.html#a1497f87f0d8889a59e8625994ed261d3">alloy::core::compiler</a>
+</li>
+<li>unused()
+: <a class="el" href="d8/dbb/structalloy_1_1core_1_1compiler.html#a835f534a121f9d6ff0ba411a29bd5ba8">alloy::core::compiler</a>
 </li>
 <li>up()
 : <a class="el" href="d4/d54/classalloy_1_1core_1_1basis2.html#ada2c60f789d4df7e4cfeca03a2ff8636">alloy::core::basis2</a>
@@ -159,7 +174,7 @@ $(document).ready(function(){initNavTree('functions_u.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Sep 2 2019 20:49:11 for Alloy by
+    <li class="footer">Generated on Mon Oct 14 2019 00:19:46 for Alloy by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

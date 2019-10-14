@@ -1,0 +1,7 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="alloy::core::stl_allocator\l_adapter\< T \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$db/d28/classalloy_1_1core_1_1stl__allocator__adapter.html",tooltip="Adapts an alloy::core::allocator into a standard C++ allocator, for use with standard containers..."];
+}

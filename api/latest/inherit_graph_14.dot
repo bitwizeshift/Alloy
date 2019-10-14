@@ -3,5 +3,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node1 [label="alloy::core::interpolation",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$db/d92/structalloy_1_1core_1_1interpolation.html",tooltip="A pure static-class that contains interpolation functions. "];
+  Node1 [label="alloy::core::expected\l\< T, E \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d7/d33/classalloy_1_1core_1_1expected.html",tooltip="A semantic type for handling error conditions on an API. "];
 }

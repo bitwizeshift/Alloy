@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('d7/d33/classalloy_1_1core_1_1expected.
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -162,6 +162,31 @@ constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 <tr class="memitem:ace4d406d7b4c05d04f7cb91f7ee8d099"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html">expected</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html#ace4d406d7b4c05d04f7cb91f7ee8d099">operator=</a> (const <a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html">expected</a> &amp;other)=default</td></tr>
 <tr class="memdesc:ace4d406d7b4c05d04f7cb91f7ee8d099"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assigns the contents of <code>other</code> to this through copy-assignment.  <a href="#ace4d406d7b4c05d04f7cb91f7ee8d099">More...</a><br/></td></tr>
 <tr class="separator:ace4d406d7b4c05d04f7cb91f7ee8d099"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3247c13ddb636d7ac246059897e64d0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac3247c13ddb636d7ac246059897e64d0"></a>
+constexpr T *&#160;</td><td class="memItemRight" valign="bottom"><b>operator-&gt;</b> () noexcept</td></tr>
+<tr class="separator:ac3247c13ddb636d7ac246059897e64d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5179036e99a167152504c8ed4b42c17"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab5179036e99a167152504c8ed4b42c17"></a>
+constexpr const T *&#160;</td><td class="memItemRight" valign="bottom"><b>operator-&gt;</b> () const noexcept</td></tr>
+<tr class="separator:ab5179036e99a167152504c8ed4b42c17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89f89e6ff4e37f474c01316ec23a22f5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a89f89e6ff4e37f474c01316ec23a22f5"></a>
+constexpr T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> () noexcept</td></tr>
+<tr class="separator:a89f89e6ff4e37f474c01316ec23a22f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a038fa4767f3cb07aedfd13e209024c08"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a038fa4767f3cb07aedfd13e209024c08"></a>
+constexpr const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> () const noexcept</td></tr>
+<tr class="separator:a038fa4767f3cb07aedfd13e209024c08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46dbcbe6e4efb99637248b207843f30a"><td class="memItemLeft" align="right" valign="top">constexpr E&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html#a46dbcbe6e4efb99637248b207843f30a">error</a> () const noexcept</td></tr>
+<tr class="memdesc:a46dbcbe6e4efb99637248b207843f30a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the underlying error from this expected.  <a href="#a46dbcbe6e4efb99637248b207843f30a">More...</a><br/></td></tr>
+<tr class="separator:a46dbcbe6e4efb99637248b207843f30a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b27e8a3650ed2e6f2f1e7a698818b24"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4b27e8a3650ed2e6f2f1e7a698818b24"></a>
+constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html#a4b27e8a3650ed2e6f2f1e7a698818b24">operator bool</a> () const noexcept</td></tr>
+<tr class="memdesc:a4b27e8a3650ed2e6f2f1e7a698818b24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convertable to <code>true</code> if this has a value. <br/></td></tr>
+<tr class="separator:a4b27e8a3650ed2e6f2f1e7a698818b24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91720db30d9b13afdc27ebd45dd67edd"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html#a91720db30d9b13afdc27ebd45dd67edd">has_value</a> () const noexcept</td></tr>
+<tr class="memdesc:a91720db30d9b13afdc27ebd45dd67edd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether this expected contains a value.  <a href="#a91720db30d9b13afdc27ebd45dd67edd">More...</a><br/></td></tr>
+<tr class="separator:a91720db30d9b13afdc27ebd45dd67edd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67131748284fe3d0dcf13bd154ffa038"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html#a67131748284fe3d0dcf13bd154ffa038">has_error</a> () const noexcept</td></tr>
+<tr class="memdesc:a67131748284fe3d0dcf13bd154ffa038"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether this expected contains an error.  <a href="#a67131748284fe3d0dcf13bd154ffa038">More...</a><br/></td></tr>
+<tr class="separator:a67131748284fe3d0dcf13bd154ffa038"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bf2ec316e30990ee341d41bef48ee7b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html#a1bf2ec316e30990ee341d41bef48ee7b">swap</a> (<a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html">expected</a>&lt; T, E &gt; &amp;other) noexcept</td></tr>
 <tr class="memdesc:a1bf2ec316e30990ee341d41bef48ee7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swaps the contents of this with <code>other</code>.  <a href="#a1bf2ec316e30990ee341d41bef48ee7b">More...</a><br/></td></tr>
 <tr class="separator:a1bf2ec316e30990ee341d41bef48ee7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -172,13 +197,6 @@ constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 <tr class="memitem:ab29efc3d31abbcaa0683f44695ee96fd"><td class="memItemLeft" align="right" valign="top">constexpr const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html#ab29efc3d31abbcaa0683f44695ee96fd">value</a> () const </td></tr>
 <tr class="memdesc:ab29efc3d31abbcaa0683f44695ee96fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the underlying value from this expected.  <a href="#ab29efc3d31abbcaa0683f44695ee96fd">More...</a><br/></td></tr>
 <tr class="separator:ab29efc3d31abbcaa0683f44695ee96fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader"></div></td></tr>
-<tr class="memitem:a248223039fddd7c3d22c4dd89d599793"><td class="memItemLeft" align="right" valign="top">constexpr E &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html#a248223039fddd7c3d22c4dd89d599793">error</a> ()</td></tr>
-<tr class="memdesc:a248223039fddd7c3d22c4dd89d599793"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the underlying error from this expected.  <a href="#a248223039fddd7c3d22c4dd89d599793">More...</a><br/></td></tr>
-<tr class="separator:a248223039fddd7c3d22c4dd89d599793"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3673c336b11569ff60cddcdd8c28744"><td class="memItemLeft" align="right" valign="top">constexpr const E &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html#ab3673c336b11569ff60cddcdd8c28744">error</a> () const </td></tr>
-<tr class="memdesc:ab3673c336b11569ff60cddcdd8c28744"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the underlying error from this expected.  <a href="#ab3673c336b11569ff60cddcdd8c28744">More...</a><br/></td></tr>
-<tr class="separator:ab3673c336b11569ff60cddcdd8c28744"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T, typename E&gt;<br/>
@@ -247,7 +265,7 @@ template&lt;typename... Args&gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00568">568</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
+<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00652">652</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
 
 </div>
 </div>
@@ -302,7 +320,7 @@ template&lt;typename... Args, typename U &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00578">578</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
+<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00662">662</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
 
 </div>
 </div>
@@ -340,7 +358,7 @@ template&lt;typename U, typename &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00591">591</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
+<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00675">675</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
 
 </div>
 </div>
@@ -378,7 +396,7 @@ template&lt;typename E2, typename &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00600">600</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
+<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00684">684</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
 
 </div>
 </div>
@@ -451,7 +469,7 @@ template&lt;typename T, typename E&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a248223039fddd7c3d22c4dd89d599793"></a>
+<a class="anchor" id="a46dbcbe6e4efb99637248b207843f30a"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -461,37 +479,7 @@ template&lt;typename T , typename E &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr E &amp; <a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html">alloy::core::expected</a>&lt; T, E &gt;::error </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Gets the underlying error from this expected. </p>
-<dl class="section return"><dt>Returns</dt><dd>reference to the underlying error </dd></dl>
-
-<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00641">641</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ab3673c336b11569ff60cddcdd8c28744"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , typename E &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr const E &amp; <a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html">alloy::core::expected</a>&lt; T, E &gt;::error </td>
+          <td class="memname">constexpr E <a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html">alloy::core::expected</a>&lt; T, E &gt;::error </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -499,7 +487,7 @@ template&lt;typename T , typename E &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -507,7 +495,67 @@ template&lt;typename T , typename E &gt; </div>
 <p>Gets the underlying error from this expected. </p>
 <dl class="section return"><dt>Returns</dt><dd>reference to the underlying error </dd></dl>
 
-<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00655">655</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
+<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00759">759</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a67131748284fe3d0dcf13bd154ffa038"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename E &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool <a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html">alloy::core::expected</a>&lt; T, E &gt;::has_error </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns whether this expected contains an error. </p>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if this contains an error </dd></dl>
+
+<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00785">785</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a91720db30d9b13afdc27ebd45dd67edd"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename E &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool <a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html">alloy::core::expected</a>&lt; T, E &gt;::has_value </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns whether this expected contains a value. </p>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if this contains a value </dd></dl>
+
+<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00778">778</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
 
 </div>
 </div>
@@ -613,7 +661,7 @@ template&lt;typename T , typename E &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00677">677</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
+<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00800">800</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
 
 </div>
 </div>
@@ -643,7 +691,7 @@ template&lt;typename T , typename E &gt; </div>
 <p>Gets the underlying value from this expected. </p>
 <dl class="section return"><dt>Returns</dt><dd>reference to the underlying value </dd></dl>
 
-<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00612">612</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
+<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00728">728</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
 
 </div>
 </div>
@@ -673,7 +721,7 @@ template&lt;typename T , typename E &gt; </div>
 <p>Gets the underlying value from this expected. </p>
 <dl class="section return"><dt>Returns</dt><dd>reference to the underlying value </dd></dl>
 
-<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00626">626</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
+<p>Definition at line <a class="el" href="../../d3/d77/expected_8hpp_source.html#l00743">743</a> of file <a class="el" href="../../d3/d77/expected_8hpp_source.html">expected.hpp</a>.</p>
 
 </div>
 </div>
@@ -686,7 +734,7 @@ template&lt;typename T , typename E &gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>alloy</b></li><li class="navelem"><b>core</b></li><li class="navelem"><a class="el" href="../../d7/d33/classalloy_1_1core_1_1expected.html">expected</a></li>
-    <li class="footer">Generated on Mon Sep 2 2019 20:49:11 for Alloy by
+    <li class="footer">Generated on Mon Oct 14 2019 00:19:46 for Alloy by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

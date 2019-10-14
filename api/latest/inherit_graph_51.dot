@@ -1,0 +1,7 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="alloy::core::signal\l\< R(Args...)\>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d9/d91/classalloy_1_1core_1_1signal_3_01_r_07_args_8_8_8_08_4.html",tooltip="A class for encapsulating an event emitting system. "];
+}

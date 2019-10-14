@@ -3,5 +3,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node1 [label="alloy::core::semantic\l_type\< typename, typename \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d8/d0b/classalloy_1_1core_1_1semantic__type.html",tooltip="A semantic type used for adding type-safety around underlying types. "];
+  Node1 [label="alloy::core::piecewise\l_compare\< point \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$db/d2c/structalloy_1_1core_1_1piecewise__compare_3_01point_01_4.html"];
 }

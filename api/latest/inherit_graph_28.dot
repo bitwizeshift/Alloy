@@ -3,5 +3,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node1 [label="alloy::core::piecewise\l_compare\< T \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d1/d93/structalloy_1_1core_1_1piecewise__compare.html",tooltip="A comparator type that is specialized for piecewise comparisons. "];
+  Node1 [label="alloy::core::matrix2",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d4/d89/classalloy_1_1core_1_1matrix2.html",tooltip="Defines a 2x2 Matrix. "];
 }

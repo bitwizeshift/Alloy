@@ -80,6 +80,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_type.html"><span>Typedefs</span></a></li>
+      <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
@@ -108,6 +110,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_x.html#index_x"><span>x</span></a></li>
       <li><a href="functions_y.html#index_y"><span>y</span></a></li>
       <li><a href="functions_z.html#index_z"><span>z</span></a></li>
+      <li><a href="functions_~.html#index_~"><span>~</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -130,7 +133,7 @@ $(document).ready(function(){initNavTree('functions_e.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -143,6 +146,13 @@ $(document).ready(function(){initNavTree('functions_e.html','');});
 <div class="textblock">Here is a list of all documented class members with links to the class documentation for each member:</div>
 
 <h3><a class="anchor" id="index_e"></a>- e -</h3><ul>
+<li>emit()
+: <a class="el" href="d9/d91/classalloy_1_1core_1_1signal_3_01_r_07_args_8_8_8_08_4.html#aa2d7a02ff2f113b0178d56831d753520">alloy::core::signal&lt; R(Args...)&gt;</a>
+, <a class="el" href="d8/d09/classalloy_1_1core_1_1signal_3_01_r_07_args_8_8_8_08_4_1_1sink.html#adf3f728616115390cf113e3a58fed359">alloy::core::signal&lt; R(Args...)&gt;::sink</a>
+</li>
+<li>empty()
+: <a class="el" href="d8/d09/classalloy_1_1core_1_1signal_3_01_r_07_args_8_8_8_08_4_1_1sink.html#a001c53897575c2404fee4d9c21a1bc11">alloy::core::signal&lt; R(Args...)&gt;::sink</a>
+</li>
 <li>encloses()
 : <a class="el" href="d5/dcb/classalloy_1_1core_1_1axis__aligned__box.html#a615170b1d604c2ee287dac00382466a4">alloy::core::axis_aligned_box</a>
 </li>
@@ -150,15 +160,18 @@ $(document).ready(function(){initNavTree('functions_e.html','');});
 : <a class="el" href="d3/d3a/classalloy_1_1core_1_1line__segment.html#a94c18174004baa583a7042a0597828bb">alloy::core::line_segment</a>
 </li>
 <li>error()
-: <a class="el" href="d7/d33/classalloy_1_1core_1_1expected.html#a248223039fddd7c3d22c4dd89d599793">alloy::core::expected&lt; T, E &gt;</a>
-, <a class="el" href="d4/db8/classalloy_1_1core_1_1expected_3_01void_00_01_e_01_4.html#a298c02728d4520722c96aa1c301d8732">alloy::core::expected&lt; void, E &gt;</a>
-, <a class="el" href="d3/d38/classalloy_1_1core_1_1unexpected.html#a18e458d2a24f02bbd9dc45b70c61fda1">alloy::core::unexpected&lt; E &gt;</a>
+: <a class="el" href="d7/d33/classalloy_1_1core_1_1expected.html#a46dbcbe6e4efb99637248b207843f30a">alloy::core::expected&lt; T, E &gt;</a>
+, <a class="el" href="d4/db8/classalloy_1_1core_1_1expected_3_01void_00_01_e_01_4.html#a913f50ba8b8710783a9723c20ca285e7">alloy::core::expected&lt; void, E &gt;</a>
+, <a class="el" href="d3/d38/classalloy_1_1core_1_1unexpected.html#ae9a2077719ec9006e730ca647d34723f">alloy::core::unexpected&lt; E &gt;</a>
+</li>
+<li>error_code
+: <a class="el" href="d9/d8f/classalloy_1_1core_1_1image.html#a66bca0f6a58af3bfbfd5119234742890">alloy::core::image</a>
 </li>
 <li>euler_angles()
-: <a class="el" href="d9/dce/classalloy_1_1core_1_1euler__angles.html#a49e9af8e11f1094be450f045759f6142">alloy::core::euler_angles</a>
+: <a class="el" href="d9/dce/classalloy_1_1core_1_1euler__angles.html#a055c1dfc23b55a29b03dee2331f45e6b">alloy::core::euler_angles</a>
 </li>
 <li>expected()
-: <a class="el" href="d7/d33/classalloy_1_1core_1_1expected.html#ad738cb78117e75367a7aea47748b73bf">alloy::core::expected&lt; T, E &gt;</a>
+: <a class="el" href="d7/d33/classalloy_1_1core_1_1expected.html#afa6f34b38063330f91b22860e8935a92">alloy::core::expected&lt; T, E &gt;</a>
 , <a class="el" href="d4/db8/classalloy_1_1core_1_1expected_3_01void_00_01_e_01_4.html#a8e88d9c20261d36ca85681e6f00fb6ee">alloy::core::expected&lt; void, E &gt;</a>
 </li>
 </ul>
@@ -167,7 +180,7 @@ $(document).ready(function(){initNavTree('functions_e.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Sep 2 2019 20:49:11 for Alloy by
+    <li class="footer">Generated on Mon Oct 14 2019 00:19:46 for Alloy by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

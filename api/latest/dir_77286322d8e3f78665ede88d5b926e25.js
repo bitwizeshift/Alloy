@@ -14,5 +14,5 @@ var dir_77286322d8e3f78665ede88d5b926e25 =
     [ "quaternion.hpp", "db/d65/quaternion_8hpp_source.html", null ],
     [ "simplex.hpp", "d9/d17/simplex_8hpp_source.html", null ],
     [ "trigonometry.hpp", "d5/ded/trigonometry_8hpp_source.html", null ],
-    [ "vector.hpp", "da/d16/vector_8hpp_source.html", null ]
+    [ "vector.hpp", "df/d03/math_2vector_8hpp_source.html", null ]
 ];

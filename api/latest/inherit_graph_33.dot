@@ -3,5 +3,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node1 [label="alloy::core::point",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d3/da9/classalloy_1_1core_1_1point.html",tooltip="This class represents a coordinate in 3d space. "];
+  Node1 [label="alloy::core::matrix4\l_constants",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d4/d8a/structalloy_1_1core_1_1matrix4__constants.html",tooltip="A collection of matrix4 constants. "];
 }

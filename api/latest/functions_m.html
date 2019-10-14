@@ -80,6 +80,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_type.html"><span>Typedefs</span></a></li>
+      <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
@@ -108,6 +110,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_x.html#index_x"><span>x</span></a></li>
       <li><a href="functions_y.html#index_y"><span>y</span></a></li>
       <li><a href="functions_z.html#index_z"><span>z</span></a></li>
+      <li><a href="functions_~.html#index_~"><span>~</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -130,7 +133,7 @@ $(document).ready(function(){initNavTree('functions_m.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -149,19 +152,37 @@ $(document).ready(function(){initNavTree('functions_m.html','');});
 , <a class="el" href="d3/ded/classalloy_1_1core_1_1vector3.html#aec04be7dd2839ea3094c502a4d1d37ed">alloy::core::vector3</a>
 , <a class="el" href="dc/d54/classalloy_1_1core_1_1vector4.html#a719dfb73341a9ba79e64b93d4827d037">alloy::core::vector4</a>
 </li>
+<li>make()
+: <a class="el" href="d8/d5a/classalloy_1_1core_1_1allocator.html#a2a6e762868f8b3964b53ee2aa9cc2187">alloy::core::allocator</a>
+</li>
+<li>make_array()
+: <a class="el" href="d8/d5a/classalloy_1_1core_1_1allocator.html#a8fcb026b6c985091a3b6c4709211925d">alloy::core::allocator</a>
+</li>
+<li>make_blank_image()
+: <a class="el" href="d9/d8f/classalloy_1_1core_1_1image.html#a5e0664051e8a7af7b7780ab291f6a85b">alloy::core::image</a>
+</li>
+<li>make_image_from_buffer()
+: <a class="el" href="d9/d8f/classalloy_1_1core_1_1image.html#af766e408acf578995c3961b16f1210a4">alloy::core::image</a>
+</li>
 <li>matrix2()
-: <a class="el" href="d4/d89/classalloy_1_1core_1_1matrix2.html#a3e1fbb4d2bda18389235cb98d24185c1">alloy::core::matrix2</a>
+: <a class="el" href="d4/d89/classalloy_1_1core_1_1matrix2.html#a6d3817d8dd8662527b2f25376092bf9c">alloy::core::matrix2</a>
 </li>
 <li>matrix3()
-: <a class="el" href="d6/dbc/classalloy_1_1core_1_1matrix3.html#af18bb02bbbd1139f36d63caff361b738">alloy::core::matrix3</a>
+: <a class="el" href="d6/dbc/classalloy_1_1core_1_1matrix3.html#a4b07ad7e0b983a60892ab98c1d307fe8">alloy::core::matrix3</a>
 </li>
 <li>matrix4()
-: <a class="el" href="df/da7/classalloy_1_1core_1_1matrix4.html#a8befa29d0b2aa688c489be2b29e4b473">alloy::core::matrix4</a>
+: <a class="el" href="df/da7/classalloy_1_1core_1_1matrix4.html#a2402a930f64fa38ef85b83de65c0852d">alloy::core::matrix4</a>
+</li>
+<li>max_allocation_size()
+: <a class="el" href="d9/d0b/classalloy_1_1core_1_1memory__resource.html#a5ce396b0cf35d9288ad6bec80789a8a2">alloy::core::memory_resource</a>
 </li>
 <li>midpoint()
 : <a class="el" href="dc/dcf/classalloy_1_1core_1_1vector2.html#ae374eb57235bf57eb03fa001dd26b3e4">alloy::core::vector2</a>
 , <a class="el" href="d3/ded/classalloy_1_1core_1_1vector3.html#a12963e6df28222901ace4649d17f9c8f">alloy::core::vector3</a>
 , <a class="el" href="dc/d54/classalloy_1_1core_1_1vector4.html#aa1d707f41d97167ae4db7b3f3757bdc5">alloy::core::vector4</a>
+</li>
+<li>min_allocation_size()
+: <a class="el" href="d9/d0b/classalloy_1_1core_1_1memory__resource.html#a90882a9aafc7d140d7885cc8d9f65a47">alloy::core::memory_resource</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -169,7 +190,7 @@ $(document).ready(function(){initNavTree('functions_m.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Sep 2 2019 20:49:11 for Alloy by
+    <li class="footer">Generated on Mon Oct 14 2019 00:19:46 for Alloy by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

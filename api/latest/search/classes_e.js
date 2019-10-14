@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['scope_5fguard',['scope_guard',['../d1/db1/classalloy_1_1core_1_1scope__guard.html',1,'alloy::core']]],
-  ['semantic_5ftype',['semantic_type',['../d8/d0b/classalloy_1_1core_1_1semantic__type.html',1,'alloy::core']]],
-  ['simplex',['simplex',['../dc/d90/structalloy_1_1core_1_1simplex.html',1,'alloy::core']]],
-  ['sphere',['sphere',['../d5/d2f/classalloy_1_1core_1_1sphere.html',1,'alloy::core']]]
+  ['radian_5funit',['radian_unit',['../d8/d9b/structalloy_1_1core_1_1radian__unit.html',1,'alloy::core']]],
+  ['ray',['ray',['../d1/dea/classalloy_1_1core_1_1ray.html',1,'alloy::core']]],
+  ['rebind',['rebind',['../db/d28/classalloy_1_1core_1_1stl__allocator__adapter.html#df/d69/structalloy_1_1core_1_1stl__allocator__adapter_1_1rebind',1,'alloy::core::stl_allocator_adapter']]]
 ];

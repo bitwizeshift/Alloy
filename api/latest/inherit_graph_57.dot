@@ -1,0 +1,7 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="alloy::core::trigonometry",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d7/d1b/structalloy_1_1core_1_1trigonometry.html",tooltip="A static class that contains the standard trigonometric functions. "];
+}

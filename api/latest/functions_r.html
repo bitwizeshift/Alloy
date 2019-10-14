@@ -80,6 +80,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_type.html"><span>Typedefs</span></a></li>
+      <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
@@ -108,6 +110,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_x.html#index_x"><span>x</span></a></li>
       <li><a href="functions_y.html#index_y"><span>y</span></a></li>
       <li><a href="functions_z.html#index_z"><span>z</span></a></li>
+      <li><a href="functions_~.html#index_~"><span>~</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -130,7 +133,7 @@ $(document).ready(function(){initNavTree('functions_r.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -155,6 +158,18 @@ $(document).ready(function(){initNavTree('functions_r.html','');});
 <li>ray()
 : <a class="el" href="d1/dea/classalloy_1_1core_1_1ray.html#a744a6522b3c38892f76e2f029013eff5">alloy::core::ray</a>
 </li>
+<li>reallocate_bytes()
+: <a class="el" href="d8/d5a/classalloy_1_1core_1_1allocator.html#ac7fcc5b99c611ae480cea35fcfacd3c5">alloy::core::allocator</a>
+</li>
+<li>reallocate_objects()
+: <a class="el" href="d8/d5a/classalloy_1_1core_1_1allocator.html#a6a8ef93d09167a81be222e0eff1e26e7">alloy::core::allocator</a>
+</li>
+<li>rebind_references()
+: <a class="el" href="df/db4/classalloy_1_1core_1_1observable.html#ac6c57462952849f266ebf653e0031a03">alloy::core::observable</a>
+</li>
+<li>recommended_allocation_size_for()
+: <a class="el" href="d9/d0b/classalloy_1_1core_1_1memory__resource.html#a82bf41794dfb529c0d31775476e39a06">alloy::core::memory_resource</a>
+</li>
 <li>reference
 : <a class="el" href="d9/dce/classalloy_1_1core_1_1euler__angles.html#a74600eeab088fc7fe79b9151c791b838">alloy::core::euler_angles</a>
 </li>
@@ -167,6 +182,24 @@ $(document).ready(function(){initNavTree('functions_r.html','');});
 , <a class="el" href="dc/dcf/classalloy_1_1core_1_1vector2.html#a88477fe1a14d90103c12702a7ae2b66f">alloy::core::vector2</a>
 , <a class="el" href="d3/ded/classalloy_1_1core_1_1vector3.html#af3eb7e7aac5893bef62471d74549319a">alloy::core::vector3</a>
 , <a class="el" href="dc/d54/classalloy_1_1core_1_1vector4.html#a61d626f3e4919246329823d26ea9a765">alloy::core::vector4</a>
+</li>
+<li>remove_listener()
+: <a class="el" href="d8/d09/classalloy_1_1core_1_1signal_3_01_r_07_args_8_8_8_08_4_1_1sink.html#a546f66069c68bc09c868e88992cef908">alloy::core::signal&lt; R(Args...)&gt;::sink</a>
+</li>
+<li>reset()
+: <a class="el" href="de/d3c/classalloy_1_1core_1_1observer__ptr.html#ab754afcf9c3913cf133cf7fae0c8e911">alloy::core::observer_ptr&lt; T &gt;</a>
+</li>
+<li>resize_allocation()
+: <a class="el" href="d9/d0b/classalloy_1_1core_1_1memory__resource.html#aafca24030745addab04d6ae94969a345">alloy::core::memory_resource</a>
+</li>
+<li>resize_bytes()
+: <a class="el" href="d8/d5a/classalloy_1_1core_1_1allocator.html#ad3092158f429bc3d2de87b716216f515">alloy::core::allocator</a>
+</li>
+<li>resize_objects()
+: <a class="el" href="d8/d5a/classalloy_1_1core_1_1allocator.html#a9682bdef8b7cafed73353fa28c3f44bf">alloy::core::allocator</a>
+</li>
+<li>resource()
+: <a class="el" href="d8/d5a/classalloy_1_1core_1_1allocator.html#a2cfb31e94e0329215a0fbb04f495b2e2">alloy::core::allocator</a>
 </li>
 <li>revolutions()
 : <a class="el" href="d7/d2e/classalloy_1_1core_1_1basic__angle.html#a6ebeeef968e2d4fcd17949e75c25ef7d">alloy::core::basic_angle&lt; AngleUnit &gt;</a>
@@ -182,7 +215,7 @@ $(document).ready(function(){initNavTree('functions_r.html','');});
 : <a class="el" href="d5/dcb/classalloy_1_1core_1_1axis__aligned__box.html#a96948eb0f03f41f55f5bdd06e5648087">alloy::core::axis_aligned_box</a>
 </li>
 <li>roll()
-: <a class="el" href="d9/dce/classalloy_1_1core_1_1euler__angles.html#a59134e0c16cebec9c4b476cf0400b449">alloy::core::euler_angles</a>
+: <a class="el" href="d9/dce/classalloy_1_1core_1_1euler__angles.html#a20c74b88d3f299b2b39ef159a0f89a27">alloy::core::euler_angles</a>
 </li>
 <li>row()
 : <a class="el" href="d4/d89/classalloy_1_1core_1_1matrix2.html#adcfe3b9650ec3392e808d7ee27debcaa">alloy::core::matrix2</a>
@@ -195,7 +228,7 @@ $(document).ready(function(){initNavTree('functions_r.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Sep 2 2019 20:49:11 for Alloy by
+    <li class="footer">Generated on Mon Oct 14 2019 00:19:46 for Alloy by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

@@ -3,5 +3,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node1 [label="alloy::core::ray",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d1/dea/classalloy_1_1core_1_1ray.html",tooltip="A geometric primitive of a ray. "];
+  Node1 [label="alloy::core::observable",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$df/db4/classalloy_1_1core_1_1observable.html",tooltip="An object in the system that may be observed by an observer_ptr. "];
 }

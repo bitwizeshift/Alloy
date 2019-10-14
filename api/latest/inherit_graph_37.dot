@@ -3,5 +3,7 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node1 [label="alloy::core::scope\l_guard\< Fn \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d1/db1/classalloy_1_1core_1_1scope__guard.html",tooltip="An RAII wrapper used for dispatching arbitrary functionality for external resource cleanup..."];
+  Node1 [label="alloy::core::detail\l::observer_ptr_base",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip="A non-templated base class for the observer_ptr. "];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="alloy::core::observer\l_ptr\< T \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$de/d3c/classalloy_1_1core_1_1observer__ptr.html",tooltip="observer_ptr is a simple, lightweight, non-thread-safe solution to viewing pointers that might dangle..."];
 }

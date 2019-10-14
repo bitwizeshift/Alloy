@@ -92,7 +92,7 @@ $(document).ready(function(){initNavTree('d1/dc9/not__null_8hpp_source.html','..
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -383,7 +383,7 @@ $(document).ready(function(){initNavTree('d1/dc9/not__null_8hpp_source.html','..
 <div class="line"><a name="l00308"></a><span class="lineno"><a class="line" href="../../d8/dfb/classalloy_1_1core_1_1not__null.html#ae30073783d13b3378beaee8896578746">  308</a></span>&#160;  <a class="code" href="../../d8/dfb/classalloy_1_1core_1_1not__null.html#ae30073783d13b3378beaee8896578746">alloy::core::not_null&lt;T&gt;::operator*</a>()</div>
 <div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;  const noexcept</div>
 <div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;{</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;  <span class="keywordflow">return</span> m_pointer;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;  <span class="keywordflow">return</span> (*m_pointer);</div>
 <div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;}</div>
 <div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;</div>
 <div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;<span class="comment">//==============================================================================</span></div>
@@ -409,7 +409,7 @@ $(document).ready(function(){initNavTree('d1/dc9/not__null_8hpp_source.html','..
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_5f23d6bb187d2e6e7a8717403dec43ef.html">lib</a></li><li class="navelem"><a class="el" href="../../dir_cf0ccd6303b91469435b60318465041a.html">alloy-core</a></li><li class="navelem"><a class="el" href="../../dir_9a3ddf74f28783844d2bc93817b68b45.html">include</a></li><li class="navelem"><a class="el" href="../../dir_72a492c1b8d037de1c250eb3f605116a.html">alloy</a></li><li class="navelem"><a class="el" href="../../dir_e47f71b7a3b9692047cafd017e754db6.html">core</a></li><li class="navelem"><a class="el" href="../../dir_7247433dcf8bda9f3fb8e17ba337d79a.html">utilities</a></li><li class="navelem"><b>not_null.hpp</b></li>
-    <li class="footer">Generated on Mon Sep 2 2019 20:49:10 for Alloy by
+    <li class="footer">Generated on Mon Oct 14 2019 00:19:46 for Alloy by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

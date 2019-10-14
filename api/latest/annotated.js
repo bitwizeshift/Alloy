@@ -10,6 +10,7 @@ var annotated =
         [ "piecewise_compare< point >", "db/d2c/structalloy_1_1core_1_1piecewise__compare_3_01point_01_4.html", "db/d2c/structalloy_1_1core_1_1piecewise__compare_3_01point_01_4" ],
         [ "ray", "d1/dea/classalloy_1_1core_1_1ray.html", "d1/dea/classalloy_1_1core_1_1ray" ],
         [ "sphere", "d5/d2f/classalloy_1_1core_1_1sphere.html", "d5/d2f/classalloy_1_1core_1_1sphere" ],
+        [ "compiler", "d8/dbb/structalloy_1_1core_1_1compiler.html", "d8/dbb/structalloy_1_1core_1_1compiler" ],
         [ "basic_angle", "d7/d2e/classalloy_1_1core_1_1basic__angle.html", "d7/d2e/classalloy_1_1core_1_1basic__angle" ],
         [ "is_angle", "dd/d5f/structalloy_1_1core_1_1is__angle.html", null ],
         [ "is_angle< basic_angle< AngleUnit > >", "dc/d5f/structalloy_1_1core_1_1is__angle_3_01basic__angle_3_01_angle_unit_01_4_01_4.html", null ],
@@ -66,10 +67,18 @@ var annotated =
         [ "piecewise_compare< vector4 >", "de/d14/structalloy_1_1core_1_1piecewise__compare_3_01vector4_01_4.html", "de/d14/structalloy_1_1core_1_1piecewise__compare_3_01vector4_01_4" ],
         [ "is_vector", "d8/da2/structalloy_1_1core_1_1is__vector.html", null ],
         [ "vector_traits", "d2/d0a/structalloy_1_1core_1_1vector__traits.html", "d2/d0a/structalloy_1_1core_1_1vector__traits" ],
+        [ "allocator", "d8/d5a/classalloy_1_1core_1_1allocator.html", "d8/d5a/classalloy_1_1core_1_1allocator" ],
+        [ "stl_allocator_adapter", "db/d28/classalloy_1_1core_1_1stl__allocator__adapter.html", "db/d28/classalloy_1_1core_1_1stl__allocator__adapter" ],
+        [ "memory_resource", "d9/d0b/classalloy_1_1core_1_1memory__resource.html", "d9/d0b/classalloy_1_1core_1_1memory__resource" ],
+        [ "observer_ptr", "de/d3c/classalloy_1_1core_1_1observer__ptr.html", "de/d3c/classalloy_1_1core_1_1observer__ptr" ],
+        [ "observable", "df/db4/classalloy_1_1core_1_1observable.html", "df/db4/classalloy_1_1core_1_1observable" ],
         [ "hsb", "de/dd5/structalloy_1_1core_1_1hsb.html", "de/dd5/structalloy_1_1core_1_1hsb" ],
         [ "color", "d0/d22/classalloy_1_1core_1_1color.html", "d0/d22/classalloy_1_1core_1_1color" ],
+        [ "image", "d9/d8f/classalloy_1_1core_1_1image.html", "d9/d8f/classalloy_1_1core_1_1image" ],
         [ "basic_fixed", "d7/db1/classalloy_1_1core_1_1basic__fixed.html", null ],
         [ "type_index", "d4/da3/classalloy_1_1core_1_1type__index.html", "d4/da3/classalloy_1_1core_1_1type__index" ],
+        [ "delegate", "d4/ddd/classalloy_1_1core_1_1delegate.html", null ],
+        [ "delegate< R(Args...)>", "db/d76/classalloy_1_1core_1_1delegate_3_01_r_07_args_8_8_8_08_4.html", "db/d76/classalloy_1_1core_1_1delegate_3_01_r_07_args_8_8_8_08_4" ],
         [ "unexpected", "d3/d38/classalloy_1_1core_1_1unexpected.html", "d3/d38/classalloy_1_1core_1_1unexpected" ],
         [ "expected", "d7/d33/classalloy_1_1core_1_1expected.html", "d7/d33/classalloy_1_1core_1_1expected" ],
         [ "is_unexpected", "d5/dc5/structalloy_1_1core_1_1is__unexpected.html", null ],
@@ -77,12 +86,18 @@ var annotated =
         [ "is_expected", "d2/df7/structalloy_1_1core_1_1is__expected.html", null ],
         [ "is_expected< expected< T, E > >", "d3/d27/structalloy_1_1core_1_1is__expected_3_01expected_3_01_t_00_01_e_01_4_01_4.html", null ],
         [ "expected< void, E >", "d4/db8/classalloy_1_1core_1_1expected_3_01void_00_01_e_01_4.html", "d4/db8/classalloy_1_1core_1_1expected_3_01void_00_01_e_01_4" ],
+        [ "explicitly_copyable", "de/ddc/classalloy_1_1core_1_1explicitly__copyable.html", "de/ddc/classalloy_1_1core_1_1explicitly__copyable" ],
         [ "not_null", "d8/dfb/classalloy_1_1core_1_1not__null.html", "d8/dfb/classalloy_1_1core_1_1not__null" ],
         [ "piecewise_compare", "d1/d93/structalloy_1_1core_1_1piecewise__compare.html", "d1/d93/structalloy_1_1core_1_1piecewise__compare" ],
         [ "scope_guard", "d1/db1/classalloy_1_1core_1_1scope__guard.html", "d1/db1/classalloy_1_1core_1_1scope__guard" ],
         [ "semantic_type", "d8/d0b/classalloy_1_1core_1_1semantic__type.html", "d8/d0b/classalloy_1_1core_1_1semantic__type" ],
         [ "is_semantic_type", "d9/d16/structalloy_1_1core_1_1is__semantic__type.html", null ],
-        [ "is_semantic_type< semantic_type< T, Tag > >", "d6/dff/structalloy_1_1core_1_1is__semantic__type_3_01semantic__type_3_01_t_00_01_tag_01_4_01_4.html", null ]
+        [ "is_semantic_type< semantic_type< T, Tag > >", "d6/dff/structalloy_1_1core_1_1is__semantic__type_3_01semantic__type_3_01_t_00_01_tag_01_4_01_4.html", null ],
+        [ "signal", "df/d96/classalloy_1_1core_1_1signal.html", null ],
+        [ "signal< R(Args...)>", "d9/d91/classalloy_1_1core_1_1signal_3_01_r_07_args_8_8_8_08_4.html", "d9/d91/classalloy_1_1core_1_1signal_3_01_r_07_args_8_8_8_08_4" ]
       ] ]
+    ] ],
+    [ "std", null, [
+      [ "is_error_code_enum<::alloy::core::image::error_code >", "d7/dd3/structstd_1_1is__error__code__enum_3_1_1alloy_1_1core_1_1image_1_1error__code_01_4.html", null ]
     ] ]
 ];

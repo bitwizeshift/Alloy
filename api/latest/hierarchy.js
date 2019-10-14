@@ -1,5 +1,6 @@
 var hierarchy =
 [
+    [ "alloy::core::allocator", "d8/d5a/classalloy_1_1core_1_1allocator.html", null ],
     [ "alloy::core::axis_aligned_box", "d5/dcb/classalloy_1_1core_1_1axis__aligned__box.html", null ],
     [ "alloy::core::basic_angle< AngleUnit >", "d7/d2e/classalloy_1_1core_1_1basic__angle.html", null ],
     [ "alloy::core::basic_angle< radian_unit >", "d7/d2e/classalloy_1_1core_1_1basic__angle.html", null ],
@@ -7,8 +8,15 @@ var hierarchy =
     [ "alloy::core::basic_fixed< MantissaBits, ExponentBits >", "d7/db1/classalloy_1_1core_1_1basic__fixed.html", null ],
     [ "alloy::core::basis2", "d4/d54/classalloy_1_1core_1_1basis2.html", null ],
     [ "alloy::core::basis3", "dd/d90/classalloy_1_1core_1_1basis3.html", null ],
+    [ "byte", null, [
+      [ "alloy::core::explicitly_copyable< std::byte >", "de/ddc/classalloy_1_1core_1_1explicitly__copyable.html", null ]
+    ] ],
     [ "alloy::core::color", "d0/d22/classalloy_1_1core_1_1color.html", null ],
+    [ "alloy::core::compiler", "d8/dbb/structalloy_1_1core_1_1compiler.html", null ],
     [ "alloy::core::degree_unit", "d8/d65/structalloy_1_1core_1_1degree__unit.html", null ],
+    [ "alloy::core::delegate< Fn >", "d4/ddd/classalloy_1_1core_1_1delegate.html", null ],
+    [ "alloy::core::delegate< R(Args...)>", "db/d76/classalloy_1_1core_1_1delegate_3_01_r_07_args_8_8_8_08_4.html", null ],
+    [ "alloy::core::image::dimensions", "d9/d8f/classalloy_1_1core_1_1image.html#d8/d33/structalloy_1_1core_1_1image_1_1dimensions", null ],
     [ "alloy::core::euler_angles", "d9/dce/classalloy_1_1core_1_1euler__angles.html", null ],
     [ "alloy::core::expected< T, E >", "d7/d33/classalloy_1_1core_1_1expected.html", null ],
     [ "alloy::core::expected< void, E >", "d4/db8/classalloy_1_1core_1_1expected_3_01void_00_01_e_01_4.html", null ],
@@ -32,6 +40,7 @@ var hierarchy =
     ] ],
     [ "alloy::core::gradian_unit", "df/d9a/structalloy_1_1core_1_1gradian__unit.html", null ],
     [ "alloy::core::hsb", "de/dd5/structalloy_1_1core_1_1hsb.html", null ],
+    [ "alloy::core::image", "d9/d8f/classalloy_1_1core_1_1image.html", null ],
     [ "alloy::core::interpolation", "db/d92/structalloy_1_1core_1_1interpolation.html", null ],
     [ "alloy::core::line", "d4/d23/classalloy_1_1core_1_1line.html", null ],
     [ "alloy::core::line_segment", "d3/d3a/classalloy_1_1core_1_1line__segment.html", null ],
@@ -42,7 +51,14 @@ var hierarchy =
     [ "alloy::core::matrix3_constants", "d6/d31/structalloy_1_1core_1_1matrix3__constants.html", null ],
     [ "alloy::core::matrix4", "df/da7/classalloy_1_1core_1_1matrix4.html", null ],
     [ "alloy::core::matrix4_constants", "d4/d8a/structalloy_1_1core_1_1matrix4__constants.html", null ],
+    [ "alloy::core::memory_resource", "d9/d0b/classalloy_1_1core_1_1memory__resource.html", [
+      [ "alloy::core::allocator::default_resource", "df/db5/classalloy_1_1core_1_1allocator_1_1default__resource.html", null ]
+    ] ],
     [ "alloy::core::not_null< T >", "d8/dfb/classalloy_1_1core_1_1not__null.html", null ],
+    [ "alloy::core::observable", "df/db4/classalloy_1_1core_1_1observable.html", null ],
+    [ "alloy::core::detail::observer_ptr_base", null, [
+      [ "alloy::core::observer_ptr< T >", "de/d3c/classalloy_1_1core_1_1observer__ptr.html", null ]
+    ] ],
     [ "alloy::core::piecewise_compare< T >", "d1/d93/structalloy_1_1core_1_1piecewise__compare.html", null ],
     [ "alloy::core::piecewise_compare< point >", "db/d2c/structalloy_1_1core_1_1piecewise__compare_3_01point_01_4.html", null ],
     [ "alloy::core::piecewise_compare< vector2 >", "d1/df7/structalloy_1_1core_1_1piecewise__compare_3_01vector2_01_4.html", null ],
@@ -53,10 +69,15 @@ var hierarchy =
     [ "alloy::core::quaternion_constants", "db/d94/structalloy_1_1core_1_1quaternion__constants.html", null ],
     [ "alloy::core::radian_unit", "d8/d9b/structalloy_1_1core_1_1radian__unit.html", null ],
     [ "alloy::core::ray", "d1/dea/classalloy_1_1core_1_1ray.html", null ],
+    [ "alloy::core::stl_allocator_adapter< T >::rebind< U >", "db/d28/classalloy_1_1core_1_1stl__allocator__adapter.html#df/d69/structalloy_1_1core_1_1stl__allocator__adapter_1_1rebind", null ],
     [ "alloy::core::scope_guard< Fn >", "d1/db1/classalloy_1_1core_1_1scope__guard.html", null ],
     [ "alloy::core::semantic_type< typename, typename >", "d8/d0b/classalloy_1_1core_1_1semantic__type.html", null ],
+    [ "alloy::core::signal< Fn >", "df/d96/classalloy_1_1core_1_1signal.html", null ],
+    [ "alloy::core::signal< R(Args...)>", "d9/d91/classalloy_1_1core_1_1signal_3_01_r_07_args_8_8_8_08_4.html", null ],
     [ "alloy::core::simplex", "dc/d90/structalloy_1_1core_1_1simplex.html", null ],
+    [ "alloy::core::signal< R(Args...)>::sink", "d8/d09/classalloy_1_1core_1_1signal_3_01_r_07_args_8_8_8_08_4_1_1sink.html", null ],
     [ "alloy::core::sphere", "d5/d2f/classalloy_1_1core_1_1sphere.html", null ],
+    [ "alloy::core::stl_allocator_adapter< T >", "db/d28/classalloy_1_1core_1_1stl__allocator__adapter.html", null ],
     [ "alloy::core::trigonometry", "d7/d1b/structalloy_1_1core_1_1trigonometry.html", null ],
     [ "true_type", null, [
       [ "alloy::core::is_angle< basic_angle< AngleUnit > >", "dc/d5f/structalloy_1_1core_1_1is__angle_3_01basic__angle_3_01_angle_unit_01_4_01_4.html", null ],
@@ -78,12 +99,16 @@ var hierarchy =
       [ "alloy::core::is_vector4< vector4 >", "d2/dde/structalloy_1_1core_1_1is__vector4_3_01vector4_01_4.html", null ],
       [ "alloy::core::is_vector< vector2 >", "dc/d6c/structalloy_1_1core_1_1is__vector_3_01vector2_01_4.html", null ],
       [ "alloy::core::is_vector< vector3 >", "da/dd5/structalloy_1_1core_1_1is__vector_3_01vector3_01_4.html", null ],
-      [ "alloy::core::is_vector< vector4 >", "dd/da7/structalloy_1_1core_1_1is__vector_3_01vector4_01_4.html", null ]
+      [ "alloy::core::is_vector< vector4 >", "dd/da7/structalloy_1_1core_1_1is__vector_3_01vector4_01_4.html", null ],
+      [ "std::is_error_code_enum<::alloy::core::image::error_code >", "d7/dd3/structstd_1_1is__error__code__enum_3_1_1alloy_1_1core_1_1image_1_1error__code_01_4.html", null ]
     ] ],
     [ "alloy::core::type_index", "d4/da3/classalloy_1_1core_1_1type__index.html", null ],
     [ "alloy::core::unexpected< E >", "d3/d38/classalloy_1_1core_1_1unexpected.html", null ],
     [ "alloy::core::vector2", "dc/dcf/classalloy_1_1core_1_1vector2.html", null ],
     [ "alloy::core::vector3", "d3/ded/classalloy_1_1core_1_1vector3.html", null ],
     [ "alloy::core::vector4", "dc/d54/classalloy_1_1core_1_1vector4.html", null ],
-    [ "alloy::core::vector_traits< T >", "d2/d0a/structalloy_1_1core_1_1vector__traits.html", null ]
+    [ "alloy::core::vector_traits< T >", "d2/d0a/structalloy_1_1core_1_1vector__traits.html", null ],
+    [ "T", null, [
+      [ "alloy::core::explicitly_copyable< T >", "de/ddc/classalloy_1_1core_1_1explicitly__copyable.html", null ]
+    ] ]
 ];

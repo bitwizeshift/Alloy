@@ -3,5 +3,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node1 [label="alloy::core::line_segment",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d3/d3a/classalloy_1_1core_1_1line__segment.html",tooltip="A representation of a line segment enclosed between two points. "];
+  Node1 [label="alloy::core::gradian_unit",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$df/d9a/structalloy_1_1core_1_1gradian__unit.html"];
 }

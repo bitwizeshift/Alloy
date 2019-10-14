@@ -1,10 +1,12 @@
 var searchData=
 [
+  ['image',['image',['../d9/d8f/classalloy_1_1core_1_1image.html',1,'alloy::core']]],
   ['interpolation',['interpolation',['../db/d92/structalloy_1_1core_1_1interpolation.html',1,'alloy::core']]],
   ['is_5fangle',['is_angle',['../dd/d5f/structalloy_1_1core_1_1is__angle.html',1,'alloy::core']]],
   ['is_5fangle_3c_20basic_5fangle_3c_20angleunit_20_3e_20_3e',['is_angle&lt; basic_angle&lt; AngleUnit &gt; &gt;',['../dc/d5f/structalloy_1_1core_1_1is__angle_3_01basic__angle_3_01_angle_unit_01_4_01_4.html',1,'alloy::core']]],
   ['is_5fdegree',['is_degree',['../d9/d94/structalloy_1_1core_1_1is__degree.html',1,'alloy::core']]],
   ['is_5fdegree_3c_20degree_20_3e',['is_degree&lt; degree &gt;',['../d5/dfc/structalloy_1_1core_1_1is__degree_3_01degree_01_4.html',1,'alloy::core']]],
+  ['is_5ferror_5fcode_5fenum_3c_3a_3aalloy_3a_3acore_3a_3aimage_3a_3aerror_5fcode_20_3e',['is_error_code_enum&lt;::alloy::core::image::error_code &gt;',['../d7/dd3/structstd_1_1is__error__code__enum_3_1_1alloy_1_1core_1_1image_1_1error__code_01_4.html',1,'std']]],
   ['is_5fexpected',['is_expected',['../d2/df7/structalloy_1_1core_1_1is__expected.html',1,'alloy::core']]],
   ['is_5fexpected_3c_20expected_3c_20t_2c_20e_20_3e_20_3e',['is_expected&lt; expected&lt; T, E &gt; &gt;',['../d3/d27/structalloy_1_1core_1_1is__expected_3_01expected_3_01_t_00_01_e_01_4_01_4.html',1,'alloy::core']]],
   ['is_5fgradian',['is_gradian',['../dd/de0/structalloy_1_1core_1_1is__gradian.html',1,'alloy::core']]],

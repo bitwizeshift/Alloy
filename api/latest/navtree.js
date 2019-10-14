@@ -12,7 +12,9 @@ var NAVTREE =
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", "functions_func" ],
-        [ "Typedefs", "functions_type.html", null ]
+        [ "Typedefs", "functions_type.html", null ],
+        [ "Enumerations", "functions_enum.html", null ],
+        [ "Enumerator", "functions_eval.html", null ]
       ] ]
     ] ],
     [ "Files", null, [
@@ -24,9 +26,10 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"d4/d89/classalloy_1_1core_1_1matrix2.html#a11681401895b3192922017620b3047d2",
-"d8/dfb/classalloy_1_1core_1_1not__null.html#adc2b894e8865b6661154158b9c834c0b",
-"dir_5c1dd142ec18380e95651bc10a049b87.html"
+"d4/d54/classalloy_1_1core_1_1basis2.html#ada2c60f789d4df7e4cfeca03a2ff8636",
+"d8/d09/classalloy_1_1core_1_1signal_3_01_r_07_args_8_8_8_08_4_1_1sink.html#adf3f728616115390cf113e3a58fed359",
+"dc/d1d/list_8hpp_source.html",
+"files.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
