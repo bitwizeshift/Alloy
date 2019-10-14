@@ -6,10 +6,11 @@ set(header_files
   include/alloy/extra/allocators/pointer_util.hpp
   include/alloy/extra/allocators/memory_arena.hpp
   include/alloy/extra/allocators/freelist.hpp
+  include/alloy/extra/allocators/memory_arena_cache.hpp
 )
 
 set(source_files
-  src/alloy/extra/allocators/dummy.cpp
+  src/alloy/extra/allocators/memory_arena_cache.cpp
 )
 
 add_library(${PROJECT_NAME}ExtraAllocators
