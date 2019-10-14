@@ -5,6 +5,7 @@
 set(header_files
   include/alloy/extra/allocators/pointer_util.hpp
   include/alloy/extra/allocators/memory_arena.hpp
+  include/alloy/extra/allocators/freelist.hpp
 )
 
 set(source_files
