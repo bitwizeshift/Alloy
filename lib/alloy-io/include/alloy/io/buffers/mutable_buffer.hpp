@@ -207,7 +207,7 @@ inline alloy::io::mutable_buffer
 {
   return from_data(
     std::addressof(object),
-    sizeof(T)
+    1u
   );
 }
 

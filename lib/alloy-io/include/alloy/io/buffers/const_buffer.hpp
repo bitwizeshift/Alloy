@@ -207,7 +207,7 @@ inline alloy::io::const_buffer
 {
   return from_data(
     std::addressof(object),
-    sizeof(T)
+    1u
   );
 }
 
