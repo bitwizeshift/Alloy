@@ -19,6 +19,10 @@ cmake_dependent_option(ALLOY_COMPILE_EXTRAS_IO_WIN32
   "Compiles the Win32 implementation of the 'io' library" ON
   "ALLOY_COMPILE_EXTRAS;WIN32" OFF
 )
+cmake_dependent_option(ALLOY_COMPILE_EXTRAS_ALLOCATORS
+  "Compiles the Allocators extension" ON
+  "ALLOY_COMPILE_EXTRAS" OFF
+)
 
 if (ALLOY_COMPILE_EXTRAS_USE_DISCRETE_GPU)
   add_subdirectory("use-discrete-gpu")
@@ -26,6 +30,10 @@ endif ()
 
 if (ALLOY_COMPILE_EXTRAS_LOGGING)
   add_subdirectory("logging")
+endif ()
+
+if (ALLOY_COMPILE_EXTRAS_ALLOCATORS)
+  add_subdirectory("allocators")
 endif ()
 
 if (ALLOY_COMPILE_EXTRAS_SDL2)
