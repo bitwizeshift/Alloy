@@ -109,6 +109,11 @@ set(header_files
   # Model
   include/alloy/core/model/color.hpp
   include/alloy/core/model/image.hpp
+  include/alloy/core/model/light/light.hpp
+  include/alloy/core/model/light/direction_light.hpp
+  include/alloy/core/model/light/global_light.hpp
+  include/alloy/core/model/light/point_light.hpp
+  include/alloy/core/model/light/spot_light.hpp
 )
 
 set(inline_header_files
