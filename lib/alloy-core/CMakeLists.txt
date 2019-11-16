@@ -55,6 +55,10 @@ set(header_files
   include/alloy/core/containers/string.hpp
   include/alloy/core/containers/vector.hpp
 
+  # Traits
+  include/alloy/core/traits/select_nth.hpp
+  include/alloy/core/traits/function_traits.hpp
+
   # Utilities
   include/alloy/core/utilities/delegate.hpp
   include/alloy/core/utilities/signal.hpp
