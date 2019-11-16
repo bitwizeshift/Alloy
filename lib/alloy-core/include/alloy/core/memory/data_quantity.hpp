@@ -257,25 +257,6 @@ namespace alloy::core {
   using pebibits  = data_quantity<std::uint32_t, std::ratio<si::pebi::num, CHAR_BIT>::type>;
 
   //---------------------------------------------------------------------------
-  // Octet Units
-  //---------------------------------------------------------------------------
-
-  using octets = data_quantity<std::uint64_t, std::ratio<4,CHAR_BIT>>;
-  using kilooctets = data_quantity<std::uint64_t, std::ratio<4 * si::kilo::num, CHAR_BIT>::type>;
-  using megaoctets = data_quantity<std::uint64_t, std::ratio<4 * si::mega::num, CHAR_BIT>::type>;
-  using gigaoctets = data_quantity<std::uint64_t, std::ratio<4 * si::giga::num, CHAR_BIT>::type>;
-  using teraoctets = data_quantity<std::uint32_t, std::ratio<4 * si::tera::num, CHAR_BIT>::type>;
-  using petaoctets = data_quantity<std::uint32_t, std::ratio<4 * si::peta::num, CHAR_BIT>::type>;
-
-  //---------------------------------------------------------------------------
-
-  using kibioctets = data_quantity<std::uint64_t, std::ratio<4 * si::kibi::num, CHAR_BIT>::type>;
-  using mebioctets = data_quantity<std::uint64_t, std::ratio<4 * si::mebi::num, CHAR_BIT>::type>;
-  using gibioctets = data_quantity<std::uint64_t, std::ratio<4 * si::gibi::num, CHAR_BIT>::type>;
-  using tebioctets = data_quantity<std::uint32_t, std::ratio<4 * si::tebi::num, CHAR_BIT>::type>;
-  using pebioctets = data_quantity<std::uint32_t, std::ratio<4 * si::pebi::num, CHAR_BIT>::type>;
-
-  //---------------------------------------------------------------------------
   // Non-standard units
   //---------------------------------------------------------------------------
 
