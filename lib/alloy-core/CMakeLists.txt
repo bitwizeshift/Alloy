@@ -72,7 +72,7 @@ set(header_files
 
   # Memory
   include/alloy/core/memory/memory_resource.hpp
-  include/alloy/core/memory/capacity.hpp
+  include/alloy/core/memory/data_quantity.hpp
   include/alloy/core/memory/allocator.hpp
   include/alloy/core/memory/observer_ptr.hpp
 
