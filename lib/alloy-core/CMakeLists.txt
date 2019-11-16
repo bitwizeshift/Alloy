@@ -66,6 +66,7 @@ set(header_files
   include/alloy/core/utilities/explicitly_copyable.hpp
   include/alloy/core/utilities/not_null.hpp
   include/alloy/core/utilities/piecewise_compare.hpp
+  include/alloy/core/utilities/source_location.hpp
   include/alloy/core/utilities/scope_guard.hpp
   include/alloy/core/utilities/semantic_type.hpp
 
