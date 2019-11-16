@@ -33,6 +33,7 @@
 #include <ratio>   // std::ratio
 #include <cstdint> // std::uint64_t, etc
 #include <climits> // CHAR_BIT
+#include <cstddef> // std::byte
 #include <type_traits> // std::enable_if, std::common_type
 #include <limits> // std::numeric_limits
 
@@ -493,6 +494,34 @@ namespace alloy::core {
 
     } // inline namespace capacity_literals
   } // inline namespace literals
+
+  //===========================================================================
+  // non-member functions : alias : capacity
+  //===========================================================================
+
+  //---------------------------------------------------------------------------
+  // Arithmetic Operators
+  //---------------------------------------------------------------------------
+
+  template <typename Rep, typename Base,
+            typename = std::enable_if_t<Base::den == 1>>
+  constexpr std::byte* operator+(std::byte* p, capacity<Rep,Base> offset)
+    noexcept;
+
+  template <typename Rep, typename Base,
+            typename = std::enable_if_t<Base::den == 1>>
+  constexpr const std::byte* operator+(const std::byte* p, capacity<Rep,Base> offset)
+    noexcept;
+
+  template <typename Rep, typename Base,
+            typename = std::enable_if_t<Base::den == 1>>
+  constexpr std::byte* operator-(std::byte* p, capacity<Rep,Base> offset)
+    noexcept;
+
+  template <typename Rep, typename Base,
+            typename = std::enable_if_t<Base::den == 1>>
+  constexpr const std::byte* operator-(const std::byte* p, capacity<Rep,Base> offset)
+    noexcept;
 
 } // namespace alloy::core
 
@@ -1240,6 +1269,43 @@ inline constexpr alloy::core::pebibits
   noexcept
 {
   return pebibits{static_cast<pebibits::rep>(x)};
+}
+
+template <typename Rep, typename Base, typename>
+inline constexpr std::byte*
+  alloy::core::operator+(std::byte* p, capacity<Rep,Base> offset)
+  noexcept
+{
+  const auto b = bytes{offset};
+  return p + b.count();
+}
+
+template <typename Rep, typename Base, typename>
+inline constexpr const std::byte*
+  alloy::core::operator+(const std::byte* p, capacity<Rep,Base> offset)
+  noexcept
+{
+  const auto b = bytes{offset};
+  return p + b.count();
+}
+
+
+template <typename Rep, typename Base, typename>
+inline constexpr std::byte*
+  alloy::core::operator-(std::byte* p, capacity<Rep,Base> offset)
+  noexcept
+{
+  const auto b = bytes{offset};
+  return p - b.count();
+}
+
+template <typename Rep, typename Base, typename>
+inline constexpr const std::byte*
+  alloy::core::operator-(const std::byte* p, capacity<Rep,Base> offset)
+  noexcept
+{
+  const auto b = bytes{offset};
+  return p - b.count();
 }
 
 #endif /* ALLOY_CORE_CAPACITY_HPP */
