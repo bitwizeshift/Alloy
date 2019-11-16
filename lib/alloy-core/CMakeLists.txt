@@ -69,6 +69,7 @@ set(header_files
   include/alloy/core/utilities/source_location.hpp
   include/alloy/core/utilities/scope_guard.hpp
   include/alloy/core/utilities/semantic_type.hpp
+  include/alloy/core/utilities/string_view.hpp
 
   # Memory
   include/alloy/core/memory/memory_resource.hpp
