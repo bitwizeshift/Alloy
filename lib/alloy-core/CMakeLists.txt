@@ -58,6 +58,7 @@ set(header_files
   # Traits
   include/alloy/core/traits/select_nth.hpp
   include/alloy/core/traits/function_traits.hpp
+  include/alloy/core/traits/is_function_pointer.hpp
 
   # Utilities
   include/alloy/core/utilities/delegate.hpp

@@ -36,6 +36,8 @@
 
 #include "alloy/core/assert.hpp" // ALLOY_ASSERT
 #include "alloy/core/config.hpp" // ALLOY_CORE_EXCEPTIONS_ENABLE
+#include "alloy/core/traits/function_traits.hpp" // function_traits
+#include "alloy/core/traits/is_function_pointer.hpp"
 
 #include <type_traits> // std::true_type
 #include <functional>  // std::invoke
@@ -234,6 +236,48 @@ namespace alloy::core {
   template <typename R, typename...Args>
   constexpr bool operator!=(const delegate<R(Args...)>& lhs,
                             const delegate<R(Args...)>& rhs) noexcept;
+
+  //---------------------------------------------------------------------------
+  // Utility
+  //---------------------------------------------------------------------------
+
+  namespace detail {
+
+    template <auto Fn>
+    struct enable_make_delegate_function : is_function_pointer<decltype(Fn)>{};
+
+    template <auto MemberFn, typename C, typename = void>
+    struct enable_make_delegate_member : std::false_type{};
+
+    template <auto MemberFn, typename C>
+    struct enable_make_delegate_member<MemberFn,C,std::void_t<
+      decltype(delegate<typename function_traits<MemberFn>::signature_type>::template bind<MemberFn>(std::declval<C*>()))
+    >> : std::true_type{};
+  }
+
+  /// \brief Makes a delegate from a function pointer
+  ///
+  /// \return a delegate from a function pointer
+  template <auto Fn,
+            typename = std::enable_if_t<detail::enable_make_delegate_function<Fn>::value>>
+  constexpr delegate<typename function_traits<Fn>::signature_type>
+    make_delegate() noexcept;
+
+  /// \{
+  /// \brief Makes a delegate from a member function pointer and a bound class
+  ///
+  /// \return a delegate from a function pointer
+  template <auto MemberFn, typename C,
+            typename = std::enable_if_t<detail::enable_make_delegate_member<MemberFn,C>::value>>
+  constexpr delegate<typename function_traits<MemberFn>::signature_type>
+    make_delegate(C* c) noexcept;
+  template <auto MemberFn, typename C,
+            typename = std::enable_if_t<detail::enable_make_delegate_member<MemberFn,const C>::value>>
+  constexpr delegate<typename function_traits<MemberFn>::signature_type>
+    make_delegate(const C* c) noexcept;
+  /// \}
+  template <auto MemberFn>
+  void make_delegate(std::nullptr_t) = delete;
 
 } // namespace alloy::core
 
@@ -484,6 +528,40 @@ inline constexpr bool
   noexcept
 {
   return !(lhs == rhs);
+}
+
+//-----------------------------------------------------------------------------
+// Utilities
+//-----------------------------------------------------------------------------
+
+template <auto Fn, typename>
+inline constexpr alloy::core::delegate<typename alloy::core::function_traits<Fn>::signature_type>
+  alloy::core::make_delegate()
+  noexcept
+{
+  using delegate_type = delegate<typename function_traits<Fn>::signature_type>;
+
+  return delegate_type::template bind<Fn>();
+}
+
+template <auto MemberFn, typename C, typename>
+inline constexpr alloy::core::delegate<typename alloy::core::function_traits<MemberFn>::signature_type>
+  alloy::core::make_delegate(C* c)
+  noexcept
+{
+  using delegate_type = delegate<typename function_traits<MemberFn>::signature_type>;
+
+  return delegate_type::template bind<MemberFn>(c);
+}
+
+template <auto MemberFn, typename C, typename>
+inline constexpr alloy::core::delegate<typename alloy::core::function_traits<MemberFn>::signature_type>
+  alloy::core::make_delegate(const C* c)
+  noexcept
+{
+  using delegate_type = delegate<typename function_traits<MemberFn>::signature_type>;
+
+  return delegate_type::template bind<MemberFn>(c);
 }
 
 #endif /* ALLOY_CORE_UTILITIES_DELEGATE_HPP */
