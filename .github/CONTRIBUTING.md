@@ -28,6 +28,8 @@
 ## Are you opening a pull-request?
 
 * The pull request should have a useful title
+* Please make sure your commits follow **Alloy**'s
+  [commit standards](../doc/commit-standards.md)
 * Please follow the existing conventions of the library for new contributions
 * Keep descriptions short and simple, but descriptive.
 * Start the description with a capital and end with a full stop/period.
