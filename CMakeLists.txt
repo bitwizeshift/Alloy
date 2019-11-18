@@ -26,11 +26,21 @@ set(ALLOY_PRECISION_VALUES "float" "double")
 set_property(CACHE ALLOY_PRECISION PROPERTY STRINGS ${ALLOY_PRECISION_VALUES})
 mark_as_advanced(ALLOY_PRECISION)
 
+set(ALLOY_ENTITY_TYPE "std::uint32_t" CACHE STRING "Underlying type for entities")
+set(ALLOY_ENTITY_TYPE_VALUES "std::uint16_t" "std::uint32_t" "std::uint64_t")
+set_property(CACHE ALLOY_ENTITY_TYPE PROPERTY STRINGS ${ALLOY_ENTITY_TYPE_VALUES})
+mark_as_advanced(ALLOY_ENTITY_TYPE)
+
 # Validation
 
 if (NOT ALLOY_PRECISION IN_LIST ALLOY_PRECISION_VALUES)
   message(FATAL_ERROR "Invalid ALLOY_PRECISION '${ALLOY_PRECISION}'."
                       "Precision must be one of: " ${ALLOY_PRECISION_VALUES})
+endif ()
+
+if (NOT ALLOY_ENTITY_TYPE IN_LIST ALLOY_ENTITY_TYPE_VALUES)
+  message(FATAL_ERROR "Invalid ALLOY_ENTITY_TYPE '${ALLOY_ENTITY_TYPE}'."
+                      "Entity type must be one of: " ${ALLOY_ENTITY_TYPE_VALUES})
 endif ()
 
 ##############################################################################

@@ -34,7 +34,8 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include <cstdint> // std::uint16_t
+#include "alloy/engine/config.hpp"
+
 #include <cstddef> // std::size_T
 #include <functional> // std::hash
 
@@ -53,7 +54,7 @@ namespace alloy::engine {
     // Public Member Types
     //--------------------------------------------------------------------------
 
-    using id_type = std::uint16_t;
+    using id_type = ALLOY_ENGINE_ENTITY_TYPE;
 
     //--------------------------------------------------------------------------
     // Members

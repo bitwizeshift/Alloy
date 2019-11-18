@@ -1,6 +1,26 @@
 ##############################################################################
+# Configured Files
+##############################################################################
+
+# read license, indent each line by 2 spaces
+file(READ "${PROJECT_SOURCE_DIR}/LICENSE" license_text)
+string(REPLACE "\n" "\n  " LICENSE_TEXT "  ${license_text}")
+
+set(ALLOY_ENGINE_ENTITY_TYPE ${ALLOY_ENTITY_TYPE})
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.hpp.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/alloy/engine/config.hpp"
+  @ONLY
+)
+unset(ALLOY_ENGINE_ENTITY_TYPE)
+
+##############################################################################
 # Target
 ##############################################################################
+
+set(generated_header_files
+  ${CMAKE_CURRENT_BINARY_DIR}/include/alloy/engine/config.hpp
+)
 
 set(header_files
   include/alloy/engine/component.hpp
@@ -17,6 +37,7 @@ set(source_files
 
 add_library(${PROJECT_NAME}Engine
   ${header_files}
+  ${generated_header_files}
   ${source_files}
 )
 add_library(${PROJECT_NAME}::Engine ALIAS ${PROJECT_NAME}Engine)
