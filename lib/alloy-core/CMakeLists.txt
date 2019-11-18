@@ -65,6 +65,8 @@ set(header_files
   include/alloy/core/utilities/signal.hpp
   include/alloy/core/utilities/expected.hpp
   include/alloy/core/utilities/explicitly_copyable.hpp
+  include/alloy/core/utilities/fnv1a_hash.hpp
+  include/alloy/core/utilities/hashed_string_view.hpp
   include/alloy/core/utilities/not_null.hpp
   include/alloy/core/utilities/piecewise_compare.hpp
   include/alloy/core/utilities/source_location.hpp
