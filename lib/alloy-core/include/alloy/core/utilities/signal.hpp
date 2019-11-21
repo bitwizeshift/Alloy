@@ -36,27 +36,39 @@
 
 #include "alloy/core/assert.hpp" // ALLOY_ASSERT
 #include "alloy/core/memory/allocator.hpp"
+#include "alloy/core/containers/vector.hpp"
 #include "alloy/core/utilities/delegate.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 #include <type_traits> // std::enable_if_t, etc
-#include <algorithm>   // std::find, std::iter_swap
+#include <algorithm>   // std::remove
 
 namespace alloy::core {
 
   //===========================================================================
-  // class : event
+  // forward-declarations
   //===========================================================================
 
   template <typename Fn>
   class signal;
 
+  template <typename Fn>
+  class sink;
+
+  class connection;
+
+  class scoped_connection;
+
+  //===========================================================================
+  // class : signal
+  //===========================================================================
+
   /////////////////////////////////////////////////////////////////////////////
   /// \brief A class for encapsulating an event emitting system.
   ///
   /// This type is used for the primary event source, which will be subscribed
-  /// to be event::sink instances, which are effectively arrays of handlers
-  /// supplied by the client.
+  /// to through sink instances -- which is effectively the registrar for
+  /// signals.
   ///
   /// Instances of this type are immovable and uncopyable. Consumers of this
   /// type are expected to define their own semantics for copying and moving,
@@ -70,43 +82,35 @@ namespace alloy::core {
   /// {
   /// public:
   ///
-  ///   using example_event = alloy::core::signal<void(std::string_view)>;
-  ///
   ///   example()
-  ///     : file_event{}
+  ///     : m_signal{}
   ///   {
   ///   }
   ///
-  ///   void bind(alloy::core::not_null<example_event::sink*> sink)
+  ///   sink<void(std::string_view)> on_string_event()
   ///   {
-  ///     m_file_event.bind(sink);
+  ///     return sink{&m_signal};
   ///   }
   ///
-  ///   void unbind()
+  ///   void something_that_emits()
   ///   {
-  ///     m_file_event.unbind();
-  ///   }
-  ///
-  ///   void emit(std::string_view x)
-  ///   {
-  ///     m_file_event.emit(x);
+  ///     m_file_event.emit("hello world");
   ///   }
   ///
   /// private:
-  ///   example_event m_file_event; // used to watch events
+  ///   signal<void(std::string_view)> m_signal;
   /// };
   ///
   /// auto e = example{};
-  /// auto sink = example::example_event::sink{2u, allocator{}};
   ///
-  /// sink.add_listener<&::some_event_handler>();
-  /// sink.add_listener<&::some_other_event_handler>();
-  /// e.bind(&sink);
+  /// auto conn1 = e.on_string_event.connect<&::some_event_handler>();
+  /// auto conn2 = e.on_string_event.connect<&::some_other_event_handler>();
   ///
   /// // emit "hello world" to 'some_event_handler' and 'some_other_event_handler'
-  /// e.emit("hello world");
+  /// e.something_that_emits();
   ///
-  /// e.unbind(); // events will no longer be handled
+  /// conn2.disconnect();
+  /// conn1.disconnect();
   /// \endcode
   ///
   /// \tparam R the result type
@@ -131,7 +135,10 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   public:
 
-    class sink;
+    using callback_type = delegate<R(Args...)>;
+    using connection_type = connection;
+    using sink_type = sink<R(Args...)>;
+    using size_type = std::size_t;
 
     //-------------------------------------------------------------------------
     // Constructors / Destructor / Assignment
@@ -140,6 +147,12 @@ namespace alloy::core {
 
     /// \brief Constructs a event that does not have a bound function
     signal() noexcept;
+
+    /// \brief Constructs a signal that can hold at least \p size listeners
+    ///
+    /// \param size the number of listeners to be lsitened to
+    /// \param alloc the allocator to use for the listeners
+    signal(size_type size, allocator alloc) noexcept;
     signal(signal&&) = delete;
     signal(const signal&) = delete;
 
@@ -147,25 +160,6 @@ namespace alloy::core {
 
     signal& operator=(signal&&) = delete;
     signal& operator=(const signal&) = delete;
-
-    //-------------------------------------------------------------------------
-    // Modifiers
-    //-------------------------------------------------------------------------
-  public:
-
-    /// \brief Binds a new sink to this event, returning the previous event
-    ///
-    /// \pre \p s cannot be \c nullptr
-    ///
-    /// \param s the sink to bind
-    /// \return the pointer to the previously bound sink
-    sink* bind(not_null<sink*> s) noexcept;
-
-    /// \brief Unbinds the currently active sink, returning a pointer to the
-    ///        previous sink
-    ///
-    /// \return the pointer to the previously bound sink
-    sink* unbind() noexcept;
 
     //-------------------------------------------------------------------------
     // Emition
@@ -187,8 +181,7 @@ namespace alloy::core {
     template <typename CollectorFn,
               typename...UArgs,
               typename R2=R,
-              typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>,
-              typename=std::enable_if_t<!std::is_void_v<R2>>>
+              typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>>
     void emit(CollectorFn&& collector, UArgs&&...args);
 
     //-------------------------------------------------------------------------
@@ -196,11 +189,13 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   private:
 
-    sink* m_sink;
+    vector<callback_type> m_callbacks;
+
+    friend class sink<R(Args...)>;
   };
 
   //===========================================================================
-  // class : signal<R(Args...)>::sink
+  // class : sink<R(Args...)>
   //===========================================================================
 
   /////////////////////////////////////////////////////////////////////////////
@@ -223,7 +218,7 @@ namespace alloy::core {
   ///       This is a concern that is to be managed by the consumer directly.
   /////////////////////////////////////////////////////////////////////////////
   template <typename R, typename...Args>
-  class signal<R(Args...)>::sink
+  class sink<R(Args...)>
   {
     template <typename F, typename...Ts>
     using enable_if_invocable_t = std::enable_if_t<
@@ -237,27 +232,30 @@ namespace alloy::core {
     >;
 
     //-------------------------------------------------------------------------
-    // Constructors / Destructor / Assignment
+    // Public Member Types
     //-------------------------------------------------------------------------
   public:
 
-    /// \brief Constructs a sink of the specified \p size using the underlying
-    ///        \p alloc
+    using callback_type = delegate<R(Args...)>;
+    using connection_type = connection;
+    using signal_type = signal<R(Args...)>;
+    using size_type = std::size_t;
+
+    //-------------------------------------------------------------------------
+    // Constructors / Assignment
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \brief Constructs a sink that connects to the specified \p signal
     ///
-    /// \pre \p size is non-zero
-    /// \pre \p alloc has storage for \p size handlers
+    /// \pre signal is not null
     ///
-    /// \param size the number of handlers this sink can manage
-    /// \param alloc the allocator
-    sink(std::size_t size, allocator alloc) noexcept;
+    /// \param signal a pointer ot the signal that this sink connects to
+    explicit sink(signal_type* signal) noexcept;
 
     sink() = delete;
     sink(sink&&) = delete;
     sink(const sink&) = delete;
-
-    //-------------------------------------------------------------------------
-
-    ~sink();
 
     //-------------------------------------------------------------------------
 
@@ -272,104 +270,60 @@ namespace alloy::core {
     /// \brief Adds a non-member function pointer listener to this event
     ///
     /// \tparam Fn the function pointer to bind
+    /// \return a connection object
     template <auto Fn,
               typename=enable_if_invocable_t<decltype(Fn),Args...>>
-    void add_listener() noexcept;
+    connection connect() noexcept;
 
     /// \brief Adds a member function pointer listener to this event
     ///
+    /// \pre c must not be null
+    ///
     /// \tparam MemberFn the member function pointer to bind
+    /// \param c a pointer to the underlying instance
+    /// \return a connection object
     template <auto MemberFn, typename C,
               typename=enable_if_invocable_t<decltype(MemberFn),C*,Args...>>
-    void add_listener(C* c) noexcept;
+    connection connect(C* c) noexcept;
 
     /// \brief Adds a const member function pointer listener to this event
     ///
+    /// \pre c must not be null
+    ///
     /// \tparam MemberFn the const member function pointer to bind
+    /// \param c a pointer to the underlying instance
+    /// \return a connection object
     template <auto MemberFn, typename C,
               typename=enable_if_invocable_t<decltype(MemberFn),const C*,Args...>>
-    void add_listener(const C* c) noexcept;
+    connection connect(const C* c) noexcept;
 
     /// \{
     /// \brief Adds a callable listener to this event
     ///
     /// \param callable the callable to bind
+    /// \return a connection object
     template <typename Callable,
               typename=enable_if_invocable_t<Callable&,Args...>>
-    void add_listener(Callable* callable) noexcept;
+    connection connect(Callable* callable) noexcept;
     template <typename Callable,
               typename=enable_if_invocable_t<const Callable&,Args...>>
-    void add_listener(const Callable* callable) noexcept;
+    connection connect(const Callable* callable) noexcept;
     /// \}
 
     // Disallow binding nulls
     template <auto MemberFn>
-    void add_listener(std::nullptr_t) = delete;
-    void add_listener(std::nullptr_t) = delete;
+    connection connect(std::nullptr_t) = delete;
+    connection connect(std::nullptr_t) = delete;
 
     //-------------------------------------------------------------------------
-
-    /// \brief Adds a non-member function pointer listener to this event
-    ///
-    /// \tparam Fn the function pointer to bind
-    template <auto Fn,
-              typename=enable_if_invocable_t<decltype(Fn),Args...>>
-    void remove_listener() noexcept;
-
-    /// \brief Adds a member function pointer listener to this event
-    ///
-    /// \tparam MemberFn the member function pointer to bind
-    template <auto MemberFn, typename C,
-              typename=enable_if_invocable_t<decltype(MemberFn),C*,Args...>>
-    void remove_listener(C* c) noexcept;
-
-    /// \brief Adds a const member function pointer listener to this event
-    ///
-    /// \tparam MemberFn the const member function pointer to bind
-    template <auto MemberFn, typename C,
-              typename=enable_if_invocable_t<decltype(MemberFn),const C*,Args...>>
-    void remove_listener(const C* c) noexcept;
-
-    /// \{
-    /// \brief Adds a callable listener to this event
-    ///
-    /// \param callable the callable to bind
-    template <typename Callable,
-              typename=enable_if_invocable_t<Callable&,Args...>>
-    void remove_listener(Callable* callable) noexcept;
-    template <typename Callable,
-              typename=enable_if_invocable_t<const Callable&,Args...>>
-    void remove_listener(const Callable* callable) noexcept;
-    /// \}
-
-    // Disallow binding nulls
-    template <auto MemberFn>
-    void remove_listener(std::nullptr_t) = delete;
-    void remove_listener(std::nullptr_t) = delete;
-
-    //-------------------------------------------------------------------------
-    // Triggers
+    // Modifiers
     //-------------------------------------------------------------------------
   public:
 
-    /// \brief Emits a signal to all handlers of the event sink
+    /// \brief Reserves space for \p size handlers
     ///
-    /// \param args the arguments to forward to the handlers
-    template <typename...UArgs,
-              typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>>
-    void emit(UArgs&&...args);
-
-    /// \brief Emits a signal to all handlers of the event sink, collecting the
-    ///        results
-    ///
-    /// \param collector a function to invoke on each return argument
-    /// \param args the arguments to forward to the handlers
-    template <typename CollectorFn,
-              typename...UArgs,
-              typename R2=R,
-              typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>,
-              typename=std::enable_if_t<!std::is_void_v<R2>>>
-    void emit(CollectorFn&& collector, UArgs&&...args);
+    /// \param size the number of handlers to reserve space for
+    void reserve(size_type size);
 
     //-------------------------------------------------------------------------
     // Observers
@@ -379,12 +333,12 @@ namespace alloy::core {
     /// \brief Gets the capacity of this event sink
     ///
     /// \return the number of entries this sink can store
-    std::size_t capacity() const noexcept;
+    size_type capacity() const noexcept;
 
     /// \brief Gets the current number of entries this sink stores
     ///
     /// \return the number of entries this sink stores
-    std::size_t size() const noexcept;
+    size_type size() const noexcept;
 
     /// \brief Queries whether this sink has any handlers stored
     ///
@@ -392,24 +346,192 @@ namespace alloy::core {
     bool empty() const noexcept;
 
     //-------------------------------------------------------------------------
+    // Private Static Functions
+    //-------------------------------------------------------------------------
+  private:
+
+    template <auto Fn>
+    static void disconnect(void* signal) noexcept;
+
+    template <auto MemberFn, typename C>
+    static void disconnect(C* c, void* signal) noexcept;
+
+    template <typename Callable>
+    static void disconnect(Callable* callable, void* signal) noexcept;
+
+    //-------------------------------------------------------------------------
     // Private Members
     //-------------------------------------------------------------------------
   private:
 
-    using event_handler = delegate<R(Args...)>;
+    signal_type* m_signal;
+  };
 
-    event_handler* m_handlers;
-    allocator m_allocator;
-    std::size_t m_capacity;
-    std::size_t m_size;
+  template <typename R, typename...Args>
+  sink(signal<R(Args...)>*) -> sink<R(Args...)>;
 
-    friend class signal<R(Args...)>;
+  //===========================================================================
+  // class : connection
+  //===========================================================================
+
+  /////////////////////////////////////////////////////////////////////////////
+  /// \brief An object that represents the connection between a signal and a
+  ///        handler.
+  ///
+  /// This object can be used to monitor or disconnect a connection.
+  ///
+  /// \note The connection object is only useful for indicating whether a
+  ///       connection to a signal that is within scope is alive. If a signal
+  ///       has left the connection scope, then attempting to disconnect will
+  ///       result in undefined behavior.
+  /////////////////////////////////////////////////////////////////////////////
+  class connection final
+  {
+    //-------------------------------------------------------------------------
+    // Constructors / Assignment
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \brief Constructs a null connection
+    connection() noexcept;
+
+    /// \brief Constructs a connection by moving \p other to this
+    ///
+    /// \param other the other connection to move
+    connection(connection&& other) noexcept;
+    connection(const connection&) = delete;
+
+    //-------------------------------------------------------------------------
+
+    /// \brief Move-assigns a connection by moving \p other to this
+    ///
+    /// \param other the other connection to move
+    /// \return reference to this
+    connection& operator=(connection&& other) noexcept;
+    connection& operator=(const connection&) = delete;
+
+    //-------------------------------------------------------------------------
+    // Observers
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \{
+    /// \brief Queries whether the associated slot is still connected
+    ///
+    /// \return \c true if connected
+    bool connected() const noexcept;
+    explicit operator bool() const noexcept;
+    /// \}
+
+    //-------------------------------------------------------------------------
+    // Modifiers
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \brief Disconnects the sink from the signal
+    void disconnect() noexcept;
+
+    //-------------------------------------------------------------------------
+    // Private Member Types
+    //-------------------------------------------------------------------------
+  private:
+
+    using disconnect_callback = delegate<void(void*)>;
+
+    //-------------------------------------------------------------------------
+    // Private Constructors
+    //-------------------------------------------------------------------------
+  private:
+
+    /// \brief Creates a connection that uses the specified disconnect_callback
+    ///        to disconnect
+    ///
+    /// \param disconnect the callback to do the disconnecting
+    /// \param signal the signal to connect
+    template <typename R, typename...Args>
+    connection(disconnect_callback disconnect,
+               signal<R(Args...)>* signal) noexcept;
+
+    //-------------------------------------------------------------------------
+    // Private Members
+    //-------------------------------------------------------------------------
+  private:
+
+    disconnect_callback m_disconnect;
+    void* m_signal;
+
+    template <typename Fn>
+    friend class sink;
+  };
+
+  //===========================================================================
+  // class : scoped_connection
+  //===========================================================================
+
+  /////////////////////////////////////////////////////////////////////////////
+  /// \brief An RAII wrapper around a connection object.
+  ///
+  /// This type will automatically disconnect a connection at the end of the
+  /// scope.
+  /////////////////////////////////////////////////////////////////////////////
+  class scoped_connection final
+  {
+    //-------------------------------------------------------------------------
+    // Constructors / Destructors / Assignment
+    //-------------------------------------------------------------------------
+  public:
+
+    scoped_connection() = delete;
+
+    /// \brief Creates a scoped connection from the underlying connection
+    ///
+    /// \param conn the connection to scope
+    scoped_connection(connection conn) noexcept;
+    scoped_connection(scoped_connection&&) = delete;
+    scoped_connection(const scoped_connection&) = delete;
+
+    //-------------------------------------------------------------------------
+
+    ~scoped_connection();
+
+    //-------------------------------------------------------------------------
+
+    scoped_connection& operator=(scoped_connection&&) = delete;
+    scoped_connection& operator=(const scoped_connection&) = delete;
+
+    //-------------------------------------------------------------------------
+    // Observers
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \{
+    /// \brief Queries whether the associated slot is still connected
+    ///
+    /// \return \c true if connected
+    bool connected() const noexcept;
+    explicit operator bool() const noexcept;
+    /// \}
+
+    //-------------------------------------------------------------------------
+    // Modifiers
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \brief Disconnects the sink from the signal
+    void disconnect() noexcept;
+
+    //-------------------------------------------------------------------------
+    // Private Members
+    //-------------------------------------------------------------------------
+  private:
+
+    connection m_connection;
   };
 
 } // namespace alloy::core
 
 //=============================================================================
-// inline definition : class : signal<R(Args...)>
+// definition : class : signal<R(Args...)>
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -419,34 +541,17 @@ namespace alloy::core {
 template <typename R, typename...Args>
 inline alloy::core::signal<R(Args...)>::signal()
   noexcept
-  : m_sink{nullptr}
+  : m_callbacks{}
 {
 
 }
 
-//-----------------------------------------------------------------------------
-// Modifiers
-//-----------------------------------------------------------------------------
-
 template <typename R, typename...Args>
-inline typename alloy::core::signal<R(Args...)>::sink*
-  alloy::core::signal<R(Args...)>::bind(not_null<sink*> s)
+inline alloy::core::signal<R(Args...)>::signal(size_type size, allocator alloc)
   noexcept
+  : m_callbacks{size, alloc}
 {
-  auto* result = m_sink;
-  m_sink = s.get();
-  return result;
-}
 
-
-template <typename R, typename...Args>
-inline typename alloy::core::signal<R(Args...)>::sink*
-  alloy::core::signal<R(Args...)>::unbind()
-  noexcept
-{
-  auto* result = m_sink;
-  m_sink = nullptr;
-  return result;
 }
 
 //-----------------------------------------------------------------------------
@@ -457,52 +562,59 @@ template <typename R, typename...Args>
 template <typename...UArgs, typename>
 inline void alloy::core::signal<R(Args...)>::emit(UArgs&&...args)
 {
-  ALLOY_ASSERT(m_sink != nullptr);
-
-  m_sink->emit(std::forward<UArgs>(args)...);
+  for (const auto& callback : m_callbacks) {
+    callback(std::forward<UArgs>(args)...);
+  }
 }
 
 
 template <typename R, typename...Args>
-template <typename CollectorFn, typename...UArgs, typename, typename, typename>
+template <typename CollectorFn, typename...UArgs, typename, typename>
 inline void alloy::core::signal<R(Args...)>::emit(CollectorFn&& collector,
-                                                   UArgs&&...args)
+                                                  UArgs&&...args)
 {
-  ALLOY_ASSERT(m_sink != nullptr);
-
-  m_sink->emit(
-    std::forward<CollectorFn>(collector),
-    std::forward<UArgs>(args)...
-  );
+  for (const auto& callback : m_callbacks) {
+    if constexpr (std::is_void_v<R>) {
+      if constexpr (std::is_invocable_r_v<bool, CollectorFn>) {
+        callback(std::forward<UArgs>(args)...);
+        if (std::forward<CollectorFn>(collector)()) {
+          return;
+        }
+      } else {
+        callback(std::forward<UArgs>(args)...);
+        std::forward<CollectorFn>(collector)();
+      }
+    } else {
+      if constexpr (std::is_invocable_r_v<bool, CollectorFn, R>) {
+        const auto r = std::forward<CollectorFn>(collector)(
+          callback(std::forward<UArgs>(args)...)
+        );
+        if (r) {
+          return;
+        }
+      } else {
+        std::forward<CollectorFn>(collector)(
+          callback(std::forward<UArgs>(args)...)
+        );
+      }
+    }
+  }
 }
 
 //=============================================================================
-// inline definition : class : signal<R(Args...)>::sink
+// inline definition : class : sink<R(Args...)>
 //=============================================================================
 
 //-----------------------------------------------------------------------------
-// Constructor / Destructor
+// Constructor
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-inline alloy::core::signal<R(Args...)>::sink::sink(std::size_t size,
-                                                  allocator alloc)
+inline alloy::core::sink<R(Args...)>::sink(signal_type* signal)
   noexcept
-  : m_handlers{alloc.make_array<event_handler>(size)},
-    m_allocator{alloc},
-    m_capacity{size},
-    m_size{0u}
+  : m_signal{signal}
 {
-  ALLOY_ASSERT(size != 0u);
-  ALLOY_ASSERT(m_handlers != nullptr);
-}
-
-//-----------------------------------------------------------------------------
-
-template <typename R, typename...Args>
-inline alloy::core::signal<R(Args...)>::sink::~sink()
-{
-  m_allocator.dispose_array<event_handler>(m_handlers, m_capacity);
+  ALLOY_ASSERT(signal != nullptr);
 }
 
 //-----------------------------------------------------------------------------
@@ -511,193 +623,132 @@ inline alloy::core::signal<R(Args...)>::sink::~sink()
 
 template <typename R, typename...Args>
 template <auto Fn, typename>
-inline void alloy::core::signal<R(Args...)>::sink::add_listener()
+inline alloy::core::connection
+  alloy::core::sink<R(Args...)>::connect()
   noexcept
 {
-  ALLOY_ASSERT(m_handlers != nullptr);
-  ALLOY_ASSERT(m_size < m_capacity);
+  ALLOY_ASSERT(m_signal != nullptr);
 
-  m_handlers[m_size++] = event_handler::template bind<Fn>();
+  using disconnect_type = connection::disconnect_callback;
+
+  auto& callbacks = m_signal->m_callbacks;
+
+  callbacks.emplace_back(
+    callback_type::template make<Fn>()
+  );
+
+  return connection{
+    disconnect_type::template make<&disconnect<Fn>>(),
+    m_signal
+  };
 }
 
 
 template <typename R, typename...Args>
 template <auto MemberFn, typename C, typename>
-inline void alloy::core::signal<R(Args...)>::sink::add_listener(C* c)
+inline alloy::core::connection
+  alloy::core::sink<R(Args...)>::connect(C* c)
   noexcept
 {
-  ALLOY_ASSERT(m_handlers != nullptr);
-  ALLOY_ASSERT(m_size < m_capacity);
+  ALLOY_ASSERT(c != nullptr);
+  ALLOY_ASSERT(m_signal != nullptr);
 
-  m_handlers[m_size++] = event_handler::bind<MemberFn>(c);
+  using disconnect_type = connection::disconnect_callback;
+
+  auto& callbacks = m_signal->m_callbacks;
+
+  callbacks.emplace_back(
+    callback_type::template make<MemberFn>(c)
+  );
+
+  return connection{
+    disconnect_type::make<&disconnect<MemberFn, C>>(c),
+    m_signal
+  };
 }
 
 
 template <typename R, typename...Args>
 template <auto MemberFn, typename C, typename>
-inline void alloy::core::signal<R(Args...)>::sink::add_listener(const C* c)
+inline alloy::core::connection
+  alloy::core::sink<R(Args...)>::connect(const C* c)
   noexcept
 {
-  ALLOY_ASSERT(m_handlers != nullptr);
-  ALLOY_ASSERT(m_size < m_capacity);
+  ALLOY_ASSERT(c != nullptr);
+  ALLOY_ASSERT(m_signal != nullptr);
 
-  m_handlers[m_size++] = event_handler::bind<MemberFn>(c);
+  using disconnect_type = connection::disconnect_callback;
+
+  auto& callbacks = m_signal->m_callbacks;
+
+  callbacks.emplace_back(
+    callback_type::template make<MemberFn>(c)
+  );
+
+  return connection{
+    disconnect_type::make<&disconnect<MemberFn, const C>>(c),
+    m_signal
+  };
 }
 
 
 template <typename R, typename...Args>
 template <typename Callable, typename>
-inline void alloy::core::signal<R(Args...)>::sink::add_listener(Callable* callable)
+inline alloy::core::connection
+  alloy::core::sink<R(Args...)>::connect(Callable* callable)
   noexcept
 {
-  ALLOY_ASSERT(m_handlers != nullptr);
-  ALLOY_ASSERT(m_size < m_capacity);
+  ALLOY_ASSERT(callable != nullptr);
+  ALLOY_ASSERT(m_signal != nullptr);
 
-  m_handlers[m_size++] = event_handler::bind(callable);
+  using disconnect_type = connection::disconnect_callback;
+
+  auto& callbacks = m_signal->m_callbacks;
+
+  callbacks.emplace_back(
+    callback_type::make(callable)
+  );
+
+  return connection{
+    disconnect_type::make<&disconnect<Callable>>(callable),
+    m_signal
+  };
 }
 
 
 template <typename R, typename...Args>
 template <typename Callable, typename>
-inline void alloy::core::signal<R(Args...)>::sink::add_listener(const Callable* callable)
+inline alloy::core::connection
+  alloy::core::sink<R(Args...)>::connect(const Callable* callable)
   noexcept
 {
-  ALLOY_ASSERT(m_handlers != nullptr);
-  ALLOY_ASSERT(m_size < m_capacity);
+  using disconnect_type = connection::disconnect_callback;
 
-  m_handlers[m_size++] = event_handler::bind(callable);
+  ALLOY_ASSERT(callable != nullptr);
+  ALLOY_ASSERT(m_signal != nullptr);
+  auto& callbacks = m_signal->m_callbacks;
+
+  callbacks.emplace_back(
+    callback_type::make(callable)
+  );
+
+  return connection{
+    disconnect_type::make<&disconnect<const Callable>>(callable),
+    m_signal
+  };
 }
 
 //-----------------------------------------------------------------------------
-
-template <typename R, typename...Args>
-template <auto Fn, typename>
-inline void alloy::core::signal<R(Args...)>::sink::remove_listener()
-  noexcept
-{
-  const auto val = event_handler::template bind<Fn>();
-  const auto* begin = &m_handlers[0];
-  const auto* end   = &m_handlers[m_size];
-  const auto* last  = &m_handlers[m_size-1];
-
-  const auto* it = std::find(begin, end, val);
-
-  ALLOY_ASSERT(it != end, "Listener was never registered");
-
-  std::iter_swap(it, last);
-  --m_size;
-}
-
-
-template <typename R, typename...Args>
-template <auto MemberFn, typename C, typename>
-inline void alloy::core::signal<R(Args...)>::sink::remove_listener(C* c)
-  noexcept
-{
-  const auto val = event_handler::bind<MemberFn>(c);
-  const auto* begin = &m_handlers[0];
-  const auto* end   = &m_handlers[m_size];
-  const auto* last  = &m_handlers[m_size-1];
-
-  const auto* it = std::find(begin, end, val);
-
-  ALLOY_ASSERT(it != end, "Listener was never registered");
-
-  std::iter_swap(it, last);
-  --m_size;
-}
-
-
-template <typename R, typename...Args>
-template <auto MemberFn, typename C, typename>
-inline void alloy::core::signal<R(Args...)>::sink::remove_listener(const C* c)
-  noexcept
-{
-  const auto val = event_handler::bind<MemberFn>(c);
-  const auto* begin = &m_handlers[0];
-  const auto* end   = &m_handlers[m_size];
-  const auto* last  = &m_handlers[m_size-1];
-
-  const auto* it = std::find(begin, end, val);
-
-  ALLOY_ASSERT(it != end, "Listener was never registered");
-
-  std::iter_swap(it, last);
-  --m_size;
-}
-
-
-template <typename R, typename...Args>
-template <typename Callable, typename>
-inline void alloy::core::signal<R(Args...)>::sink::remove_listener(Callable* callable)
-  noexcept
-{
-  const auto val = event_handler::bind(callable);
-  const auto* begin = &m_handlers[0];
-  const auto* end   = &m_handlers[m_size];
-  const auto* last  = &m_handlers[m_size-1];
-
-  const auto* it = std::find(begin, end, val);
-
-  ALLOY_ASSERT(it != end, "Listener was never registered");
-
-  std::iter_swap(it, last);
-  --m_size;
-}
-
-
-template <typename R, typename...Args>
-template <typename Callable, typename>
-inline void alloy::core::signal<R(Args...)>::sink::remove_listener(const Callable* callable)
-  noexcept
-{
-  const auto val = event_handler::bind(callable);
-  const auto* begin = &m_handlers[0];
-  const auto* end   = &m_handlers[m_size];
-  const auto* last  = &m_handlers[m_size-1];
-
-  const auto* it = std::find(begin, end, val);
-
-  ALLOY_ASSERT(it != end, "Listener was never registered");
-
-  std::iter_swap(it, last);
-  --m_size;
-}
-
-//-----------------------------------------------------------------------------
-// Triggers
+// Modifiers
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-template <typename...UArgs, typename>
-inline void alloy::core::signal<R(Args...)>::sink::emit(UArgs&&...args)
+inline void alloy::core::sink<R(Args...)>::reserve(size_type size)
 {
-  const auto* begin = &m_handlers[0];
-  const auto* end   = &m_handlers[m_size];
+  ALLOY_ASSERT(m_signal != nullptr);
+  auto& callbacks = m_signal->m_callbacks;
 
-  for (const auto* current = begin; begin < end; ++begin) {
-    const auto& handler = *current;
-
-    handler(std::forward<UArgs>(args)...);
-  }
-}
-
-
-template <typename R, typename...Args>
-template <typename CollectorFn, typename...UArgs, typename, typename, typename>
-inline void alloy::core::signal<R(Args...)>::sink::emit(CollectorFn&& collector,
-                                                         UArgs&&...args)
-{
-  const auto* begin = &m_handlers[0];
-  const auto* end   = &m_handlers[m_size];
-
-  for (const auto* current = begin; begin < end; ++begin) {
-    const auto& handler = *current;
-
-    std::forward<CollectorFn>(collector)(
-      handler(std::forward<UArgs>(args)...)
-    );
-  }
+  callbacks.reserve(size);
 }
 
 //-----------------------------------------------------------------------------
@@ -705,26 +756,218 @@ inline void alloy::core::signal<R(Args...)>::sink::emit(CollectorFn&& collector,
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-inline std::size_t alloy::core::signal<R(Args...)>::sink::capacity()
+inline typename alloy::core::sink<R(Args...)>::size_type
+  alloy::core::sink<R(Args...)>::capacity()
   const noexcept
 {
-  return m_capacity;
+  ALLOY_ASSERT(m_signal != nullptr);
+  return m_signal->m_callbacks.capacity();
 }
 
 
 template <typename R, typename...Args>
-inline std::size_t alloy::core::signal<R(Args...)>::sink::size()
+inline typename alloy::core::sink<R(Args...)>::size_type
+  alloy::core::sink<R(Args...)>::size()
   const noexcept
 {
-  return m_size;
+  ALLOY_ASSERT(m_signal != nullptr);
+  return m_signal->m_callbacks.size();
 }
 
 
 template <typename R, typename...Args>
-inline bool alloy::core::signal<R(Args...)>::sink::empty()
+inline bool alloy::core::sink<R(Args...)>::empty()
   const noexcept
 {
-  return m_size == 0u;
+  ALLOY_ASSERT(m_signal != nullptr);
+  return m_signal->m_callbacks.empty();
+}
+
+//-----------------------------------------------------------------------------
+// Private Static Functions
+//-----------------------------------------------------------------------------
+
+template <typename R, typename...Args>
+template <auto Fn>
+inline void alloy::core::sink<R(Args...)>::disconnect(void* signal)
+  noexcept
+{
+  ALLOY_ASSERT(signal != nullptr);
+  auto& callbacks = static_cast<signal_type*>(signal)->m_callbacks;
+
+  const auto it = std::remove(
+    callbacks.begin(),
+    callbacks.end(),
+    callback_type::template make<Fn>()
+  );
+  callbacks.erase(it, callbacks.cend());
+}
+
+
+template <typename R, typename...Args>
+template <auto MemberFn, typename C>
+inline void alloy::core::sink<R(Args...)>::disconnect(C* c, void* signal)
+  noexcept
+{
+  ALLOY_ASSERT(c != nullptr);
+  ALLOY_ASSERT(signal != nullptr);
+  auto& callbacks = static_cast<signal_type*>(signal)->m_callbacks;
+
+  const auto it = std::remove(
+    callbacks.begin(),
+    callbacks.end(),
+    callback_type::template make<MemberFn>(c)
+  );
+  callbacks.erase(it, callbacks.cend());
+}
+
+
+template <typename R, typename...Args>
+template <typename Callable>
+inline void alloy::core::sink<R(Args...)>::disconnect(Callable* callable, void* signal)
+  noexcept
+{
+  ALLOY_ASSERT(callable != nullptr);
+  ALLOY_ASSERT(signal != nullptr);
+  auto& callbacks = static_cast<signal_type*>(signal)->m_callbacks;
+
+  const auto it = std::remove(
+    callbacks.begin(),
+    callbacks.end(),
+    callback_type::template make(callable)
+  );
+  callbacks.erase(it, callbacks.cend());
+}
+
+//=============================================================================
+// definitions : class : connection
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// Constructor
+//-----------------------------------------------------------------------------
+
+inline alloy::core::connection::connection()
+  noexcept
+  : m_disconnect{},
+    m_signal{nullptr}
+{
+
+}
+
+
+inline alloy::core::connection::connection(connection&& other)
+  noexcept
+  : m_disconnect{other.m_disconnect},
+    m_signal{other.m_signal}
+{
+  other.m_disconnect.reset();
+}
+
+
+inline alloy::core::connection&
+  alloy::core::connection::operator=(connection&& other)
+  noexcept
+{
+  m_disconnect = other.m_disconnect;
+  m_signal = other.m_signal;
+
+  other.m_disconnect.reset();
+
+  return (*this);
+}
+
+//-----------------------------------------------------------------------------
+// Observers
+//-----------------------------------------------------------------------------
+
+inline bool alloy::core::connection::connected()
+  const noexcept
+{
+  return static_cast<bool>(m_disconnect);
+}
+
+
+inline alloy::core::connection::operator bool()
+  const noexcept
+{
+  return connected();
+}
+
+//-----------------------------------------------------------------------------
+// Modifiers
+//-----------------------------------------------------------------------------
+
+inline void alloy::core::connection::disconnect()
+  noexcept
+{
+  if (m_disconnect) {
+    m_disconnect(m_signal);
+    m_disconnect.reset();
+  }
+}
+
+//-----------------------------------------------------------------------------
+// Private Constructors
+//-----------------------------------------------------------------------------
+
+template <typename R, typename...Args>
+inline alloy::core::connection::connection(disconnect_callback disconnect,
+                                           signal<R(Args...)>* signal)
+  noexcept
+  : m_disconnect{disconnect},
+    m_signal{signal}
+{
+
+}
+
+//=============================================================================
+// definitions : class : scoped_connection
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// Constructor
+//-----------------------------------------------------------------------------
+
+inline alloy::core::scoped_connection::scoped_connection(connection conn)
+  noexcept
+  : m_connection{std::move(conn)}
+{
+
+}
+
+//-----------------------------------------------------------------------------
+
+inline alloy::core::scoped_connection::~scoped_connection()
+{
+  m_connection.disconnect();
+}
+
+//-----------------------------------------------------------------------------
+// Observers
+//-----------------------------------------------------------------------------
+
+inline bool alloy::core::scoped_connection::connected()
+  const noexcept
+{
+  return m_connection.connected();
+}
+
+
+inline alloy::core::scoped_connection::operator bool()
+  const noexcept
+{
+  return connected();
+}
+
+//-----------------------------------------------------------------------------
+// Modifiers
+//-----------------------------------------------------------------------------
+
+inline void alloy::core::scoped_connection::disconnect()
+  noexcept
+{
+  m_connection.disconnect();
 }
 
 #endif /* ALLOY_CORE_UTILITIES_SIGNAL_HPP */
