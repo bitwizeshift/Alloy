@@ -171,7 +171,7 @@ namespace alloy::core {
     /// \param args the arguments to forward to the handlers
     template <typename...UArgs,
               typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>>
-    void emit(UArgs&&...args);
+    void emit(UArgs&&...args) const;
 
     /// \brief Emits a signal to all handlers of the event sink, collecting the
     ///        results
@@ -182,7 +182,7 @@ namespace alloy::core {
               typename...UArgs,
               typename R2=R,
               typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>>
-    void emit(CollectorFn&& collector, UArgs&&...args);
+    void emit(CollectorFn&& collector, UArgs&&...args) const;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -561,6 +561,7 @@ inline alloy::core::signal<R(Args...)>::signal(size_type size, allocator alloc)
 template <typename R, typename...Args>
 template <typename...UArgs, typename>
 inline void alloy::core::signal<R(Args...)>::emit(UArgs&&...args)
+  const
 {
   for (const auto& callback : m_callbacks) {
     callback(std::forward<UArgs>(args)...);
@@ -572,6 +573,7 @@ template <typename R, typename...Args>
 template <typename CollectorFn, typename...UArgs, typename, typename>
 inline void alloy::core::signal<R(Args...)>::emit(CollectorFn&& collector,
                                                   UArgs&&...args)
+  const
 {
   for (const auto& callback : m_callbacks) {
     if constexpr (std::is_void_v<R>) {
