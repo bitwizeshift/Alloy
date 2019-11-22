@@ -94,7 +94,7 @@ namespace alloy::core {
   ///
   ///   void something_that_emits()
   ///   {
-  ///     m_file_event.emit("hello world");
+  ///     m_signal.emit("hello world");
   ///   }
   ///
   /// private:
@@ -150,7 +150,7 @@ namespace alloy::core {
 
     /// \brief Constructs a signal that can hold at least \p size listeners
     ///
-    /// \param size the number of listeners to be lsitened to
+    /// \param size the number of listeners to be listened to
     /// \param alloc the allocator to use for the listeners
     signal(size_type size, allocator alloc) noexcept;
     signal(signal&&) = delete;
@@ -162,7 +162,7 @@ namespace alloy::core {
     signal& operator=(const signal&) = delete;
 
     //-------------------------------------------------------------------------
-    // Emition
+    // Emission
     //-------------------------------------------------------------------------
   public:
 
@@ -175,6 +175,15 @@ namespace alloy::core {
 
     /// \brief Emits a signal to all handlers of the event sink, collecting the
     ///        results
+    ///
+    /// If the signal function returns a value, then the collector function
+    /// must be invocable with the return of that function. If the signal does
+    /// not return, the collector must be invocable without arguments.
+    ///
+    /// The collector function may also optionally return a value convertible
+    /// to bool -- in which case a value convertible to 'true' will cause
+    /// early termination of the signal emission. This provides a mechanism
+    /// for emitting only to a number of required signal handlers
     ///
     /// \param collector a function to invoke on each return argument
     /// \param args the arguments to forward to the handlers
@@ -199,23 +208,16 @@ namespace alloy::core {
   //===========================================================================
 
   /////////////////////////////////////////////////////////////////////////////
-  /// \brief A sink which holds all listeners for a given event
+  /// \brief A connector that binds a signal to listeners.
   ///
-  /// The sink acts as the storage container to house all event listeners for
-  /// a given event. Sinks are allocator-aware, and store a fixed container
-  /// of all possible event handlers.
+  /// This type acts as the gateway for consumers to register handlers to.
+  /// The typical usage is to return this from a function / member function
+  /// as a way to allow the consumer to register callback functions.
   ///
-  /// This inversion of control allows for the consumer, who is more aware of
-  /// the lifetime concerns, to be in control of the allocation mechanism for
-  /// the given listeners.
-  ///
-  /// Currently, an event can only bind a single event sink. This topic may be
-  /// revisited in the future if it is deemed that more than one event sink is
-  /// necessary for a given event.
-  ///
-  /// \note The lifetime of a given sink must outlive the length of time in
-  ///       which it is bound to a given event.
-  ///       This is a concern that is to be managed by the consumer directly.
+  /// The separation of concerns created with this type allows signals to be
+  /// encapsulated and insulated inside of classes, without leaking the
+  /// ability to emit events (which is typically the case with the
+  /// slots-signals approach when the signal is public).
   /////////////////////////////////////////////////////////////////////////////
   template <typename R, typename...Args>
   class sink<R(Args...)>
@@ -555,7 +557,7 @@ inline alloy::core::signal<R(Args...)>::signal(size_type size, allocator alloc)
 }
 
 //-----------------------------------------------------------------------------
-// Private Friend Hooks
+// Emission
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
