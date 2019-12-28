@@ -37,6 +37,8 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/assert.hpp"
 
+#include "alloy/io/config.hpp"
+
 #include <cstdint>     // std::uint32_t
 #include <cstddef>     // std::size_t
 #include <type_traits> // std::enable_if
@@ -116,8 +118,8 @@ namespace alloy::io {
     //--------------------------------------------------------------------------
   public:
 
-    static constexpr std::size_t max_size = 64;
-    static constexpr std::size_t max_align = 64;
+    static constexpr std::size_t max_size = ALLOY_IO_EVENT_SIZE;
+    static constexpr std::size_t max_align = ALLOY_IO_EVENT_ALIGN;
 
     //--------------------------------------------------------------------------
     // Public Static Functions
