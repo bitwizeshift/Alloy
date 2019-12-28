@@ -47,7 +47,7 @@ void alloy::io::message_pump::dispatch()
   m_normal_events.clear();
   m_immediate_events.clear();
 
-  for (const auto& e : normal_events) {
+  for (const auto& e : immediate_events) {
     for (auto& listener : m_listeners) {
       ALLOY_ASSERT_AND_ASSUME(listener != nullptr);
 
@@ -55,7 +55,7 @@ void alloy::io::message_pump::dispatch()
     }
   }
 
-  for (const auto& e : immediate_events) {
+  for (const auto& e : normal_events) {
     for (auto& listener : m_listeners) {
       ALLOY_ASSERT_AND_ASSUME(listener != nullptr);
 
