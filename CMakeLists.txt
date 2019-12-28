@@ -21,22 +21,38 @@ option(ALLOY_COMPILE_EXAMPLES "Compiles example programs that use this library" 
 option(ALLOY_ENABLE_CLANG_TIDY "Enables clang-tidy integration" OFF)
 option(ALLOY_ENABLE_EXCEPTIONS "Enable exception handling" ON)
 
+# Core settings
+
 set(ALLOY_PRECISION "float" CACHE STRING "Precision level for floating point")
 set(ALLOY_PRECISION_VALUES "float" "double")
 set_property(CACHE ALLOY_PRECISION PROPERTY STRINGS ${ALLOY_PRECISION_VALUES})
 mark_as_advanced(ALLOY_PRECISION)
 
-set(ALLOY_ENTITY_TYPE "std::uint32_t" CACHE STRING "Underlying type for entities")
-set(ALLOY_ENTITY_TYPE_VALUES "std::uint16_t" "std::uint32_t" "std::uint64_t")
-set_property(CACHE ALLOY_ENTITY_TYPE PROPERTY STRINGS ${ALLOY_ENTITY_TYPE_VALUES})
-mark_as_advanced(ALLOY_ENTITY_TYPE)
-
-# Validation
-
 if (NOT ALLOY_PRECISION IN_LIST ALLOY_PRECISION_VALUES)
   message(FATAL_ERROR "Invalid ALLOY_PRECISION '${ALLOY_PRECISION}'."
                       "Precision must be one of: " ${ALLOY_PRECISION_VALUES})
 endif ()
+
+# IO settings
+
+set(ALLOY_EVENT_SIZE 64 CACHE STRING "Event size for alloy::io::event objects")
+set(ALLOY_EVENT_ALIGN 32 CACHE STRING "Event alignment for alloy::io::event objects")
+
+if (NOT ALLOY_EVENT_SIZE MATCHES "[0-9]+")
+  message(FATAL_ERROR "Invalid ALLOY_EVENT_SIZE '${ALLOY_EVENT_SIZE}'."
+                      "Event size must be positive integral value")
+endif ()
+if (NOT ALLOY_EVENT_ALIGN MATCHES "[0-9]+")
+  message(FATAL_ERROR "Invalid ALLOY_EVENT_ALIGN '${ALLOY_EVENT_ALIGN}'."
+                      "Event alignment must be positive integral value")
+endif ()
+
+# System settings
+
+set(ALLOY_ENTITY_TYPE "std::uint32_t" CACHE STRING "Underlying type for entities")
+set(ALLOY_ENTITY_TYPE_VALUES "std::uint16_t" "std::uint32_t" "std::uint64_t")
+set_property(CACHE ALLOY_ENTITY_TYPE PROPERTY STRINGS ${ALLOY_ENTITY_TYPE_VALUES})
+mark_as_advanced(ALLOY_ENTITY_TYPE)
 
 if (NOT ALLOY_ENTITY_TYPE IN_LIST ALLOY_ENTITY_TYPE_VALUES)
   message(FATAL_ERROR "Invalid ALLOY_ENTITY_TYPE '${ALLOY_ENTITY_TYPE}'."
