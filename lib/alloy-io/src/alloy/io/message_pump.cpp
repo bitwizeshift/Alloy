@@ -35,19 +35,7 @@ void alloy::io::message_pump::pump()
 
 void alloy::io::message_pump::dispatch()
 {
-  // The event queues are moved and cleared prior to dispatching the events
-  // to avoid any listener from pushing a new event, and corrupting the queue
-  // during iteration.
-  //
-  // The 'clear' call is necessary to put the vectors into a valid state after
-  // being moved-from -- otherwise it would be undefined behavior.
-
-  auto normal_events = std::move(m_normal_events);
-  auto immediate_events = std::move(m_immediate_events);
-  m_normal_events.clear();
-  m_immediate_events.clear();
-
-  for (const auto& e : immediate_events) {
+  for (const auto& e : m_immediate_events) {
     for (auto& listener : m_listeners) {
       ALLOY_ASSERT_AND_ASSUME(listener != nullptr);
 
@@ -55,7 +43,7 @@ void alloy::io::message_pump::dispatch()
     }
   }
 
-  for (const auto& e : normal_events) {
+  for (const auto& e : m_normal_events) {
     for (auto& listener : m_listeners) {
       ALLOY_ASSERT_AND_ASSUME(listener != nullptr);
 
@@ -63,16 +51,19 @@ void alloy::io::message_pump::dispatch()
     }
   }
 
+  // Reset events to prevent duplicate dispatching
+  m_normal_events.clear();
+  m_immediate_events.clear();
 }
 
 //------------------------------------------------------------------------------
 
-void alloy::io::message_pump::register_listener( core::not_null<listener*> l )
+void alloy::io::message_pump::register_listener(core::not_null<listener*> l)
 {
   m_listeners.push_back(l.get());
 }
 
-void alloy::io::message_pump::unregister_listener( core::not_null<listener*> l )
+void alloy::io::message_pump::unregister_listener(core::not_null<listener*> l)
 {
   auto it = std::find(m_listeners.begin(),m_listeners.end(),l.get());
 
@@ -81,12 +72,12 @@ void alloy::io::message_pump::unregister_listener( core::not_null<listener*> l )
   m_listeners.erase(it);
 }
 
-void alloy::io::message_pump::register_pump_source( core::not_null<source*> s )
+void alloy::io::message_pump::register_pump_source(core::not_null<source*> s)
 {
   m_sources.push_back(s.get());
 }
 
-void alloy::io::message_pump::unregister_pump_source( core::not_null<source*> s )
+void alloy::io::message_pump::unregister_pump_source(core::not_null<source*> s)
 {
   auto it = std::find(m_sources.begin(),m_sources.end(),s.get());
 
@@ -99,12 +90,17 @@ void alloy::io::message_pump::unregister_pump_source( core::not_null<source*> s 
 // Event Posting
 //------------------------------------------------------------------------------
 
-void alloy::io::message_pump::do_post_event( event e )
+void alloy::io::message_pump::do_post_event(event&& e)
 {
-  m_normal_events.emplace_back(std::move(e));
+  // always dispatch high-priority events as immediate events
+  if (e.priority() == event_priority::high) {
+    m_immediate_events.emplace_back(std::move(e));
+  } else {
+    m_normal_events.emplace_back(std::move(e));
+  }
 }
 
-void alloy::io::message_pump::do_post_immediate_event( event e )
+void alloy::io::message_pump::do_post_immediate_event(event&& e)
 {
   m_immediate_events.emplace_back(std::move(e));
 }

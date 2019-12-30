@@ -56,11 +56,8 @@ namespace alloy::io {
   ///
   /// The message pump communicates with other listeners through event objects.
   ///
-  /// The pump does not store event state directly -- it's forwarded on to
-  /// all listeners, if any exist at the time of the event being pushed.
-  ///
-  /// Subsystems are responsible for storing events if handling of the event
-  /// is deferred.
+  /// Event dispatching is deferred to when message_pump::dispatch is invoked;
+  /// this requires the message_pump to be stateful.
   //////////////////////////////////////////////////////////////////////////////
   class message_pump final
   {
@@ -104,12 +101,19 @@ namespace alloy::io {
 
     /// \brief Pushes an event into the end of the message pump
     ///
+    /// This function will honor the priority of the underlying event. High
+    /// priority events will be dispatched as immediate events, whereas normal
+    /// priority events will be dispatched as normal events.
+    ///
     /// \param e the event to push
     template<typename Event>
     void post_event(Event&& e);
 
     /// \brief Pushes an immediate event into the end of the message pump
     ///
+    /// This will always push immediate events regardless of the underyling
+    /// priority of the event
+    ///-
     /// \param e the event to push
     template<typename Event>
     void post_immediate_event(Event&& e);
@@ -118,15 +122,19 @@ namespace alloy::io {
 
     /// \brief Polls for events and dispatches accumulated events to all
     ///        listeners
+    ///
+    /// This is equivalent to calling 'poll' followed by 'dispatch'
     void pump();
 
     /// \brief Polls for events from all message_pump event sources
     ///
     /// Events are accumulated, but will not be dispatched until \c dispatch
     /// is called
+    ///
+    /// \note Polling must **not** be done from a dispatched event handler
     void poll();
 
-    /// \brief Dispatches all accumulated events
+    /// \brief Dispatches all accumulated events to listeners
     void dispatch();
 
     //--------------------------------------------------------------------------
@@ -141,21 +149,21 @@ namespace alloy::io {
     /// \brief Unregisters a listener to handle the message pump
     ///
     /// \note \p l is not owned by this message_pump
-    /// \pre l is not-null
+    /// \pre \p l is not-null
     /// \param l the listener to unregister
     void unregister_listener(core::not_null<listener*> l);
 
     /// \brief Registers a message pump source
     ///
-    /// \note \p l is not owned by this message_pump
-    /// \pre s is not-null
+    /// \note \p s is not owned by this message_pump
+    /// \pre \p s is not-null
     /// \param l the pump source to register
     void register_pump_source(core::not_null<source*> s);
 
     /// \brief Unregisters a message pump source
     ///
-    /// \note \p l is not owned by this message_pump
-    /// \pre s is not-null
+    /// \note \p s is not owned by this message_pump
+    /// \pre \p s is not-null
     /// \param l the pump source to unregister
     void unregister_pump_source(core::not_null<source*> s);
 
@@ -166,13 +174,21 @@ namespace alloy::io {
 
     /// \brief Posts an event to all listeners
     ///
-    /// \param e the event
-    void do_post_event(event e);
+    /// \note This is an rvalue since it's an internal API to the message_pump.
+    ///       This reduces the overhead of calling the event's type-erased
+    ///       move-constructor.
+    ///
+    /// \param e an rvalue of the event
+    void do_post_event(event&& e);
 
     /// \brief Posts an immediate event to all listeners
     ///
-    /// \param e the event
-    void do_post_immediate_event(event e);
+    /// \note This is an rvalue since it's an internal API to the message_pump.
+    ///       This reduces the overhead of calling the event's type-erased
+    ///       move-constructor.
+    ///
+    /// \param e an rvalue of the event
+    void do_post_immediate_event(event&& e);
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -187,7 +203,8 @@ namespace alloy::io {
     std::vector<source*> m_sources;
 
     // This could also be done with a priority queue, but that introduces
-    // logarithmic comparisons on pushing -- and this would be unnecessary
+    // logarithmic comparisons on insertion, and degrades in-order iteration
+    // performance
     std::vector<event> m_normal_events;
     std::vector<event> m_immediate_events;
   };
@@ -198,6 +215,9 @@ namespace alloy::io {
 
   //////////////////////////////////////////////////////////////////////////////
   /// \brief A listener for a message_pump
+  ///
+  /// This class gets registered to the message_pump and will listen to events
+  /// dispatched through the pump.
   //////////////////////////////////////////////////////////////////////////////
   class message_pump::listener
   {
@@ -214,7 +234,7 @@ namespace alloy::io {
 
     //--------------------------------------------------------------------------
 
-    virtual ~listener() noexcept = 0;
+    virtual ~listener() noexcept = default;
 
     //--------------------------------------------------------------------------
 
@@ -236,6 +256,9 @@ namespace alloy::io {
 
   //////////////////////////////////////////////////////////////////////////////
   /// \brief A source for a message_pump
+  ///
+  /// Sources produce the events that will be dispatched through the
+  /// message_pump and listened to by listeners
   //////////////////////////////////////////////////////////////////////////////
   class message_pump::source
   {
@@ -302,11 +325,5 @@ inline void alloy::io::message_pump::post_immediate_event(Event&& e)
 
   do_post_immediate_event(std::move(erased_event));
 }
-
-//==============================================================================
-// definitions : class : message_pump::listener
-//==============================================================================
-
-inline alloy::io::message_pump::listener::~listener() noexcept = default;
 
 #endif /* ALLOY_IO_MESSAGE_PUMP_HPP */
