@@ -75,6 +75,7 @@ set_target_properties(${PROJECT_NAME}IO
 
 target_include_directories(${PROJECT_NAME}IO
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
   PUBLIC $<INSTALL_INTERFACE:include>
 )
 

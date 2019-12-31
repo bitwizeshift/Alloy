@@ -12,6 +12,8 @@ set(source_files
   src/alloy/core/math/vector/vector2.test.cpp
   src/alloy/core/math/vector/vector3.test.cpp
 
+  src/alloy/core/utilities/signal.test.cpp
+
   src/main.cpp
 )
 
