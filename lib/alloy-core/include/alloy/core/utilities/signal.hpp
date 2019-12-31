@@ -968,7 +968,10 @@ inline alloy::core::connection
 
   auto& listeners = m_signal->m_listeners;
 
-  ALLOY_ASSERT(std::find(listeners.begin(), listeners.end(), listener) != listeners.end());
+  ALLOY_ASSERT(
+    std::find(listeners.begin(), listeners.end(), listener) == listeners.end(),
+    "Listener must not already be registered"
+  );
 
   listeners.emplace_back(listener);
 
