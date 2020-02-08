@@ -1,3 +1,4 @@
+#include <alloy/core/utilities/signal.hpp>
 #include <alloy/io/message_pump.hpp>
 #include <alloy/io/filesystem/filesystem_monitor.hpp>
 #include <alloy/extra/win32-bindings/win32_filesystem_monitor.hpp>
@@ -56,17 +57,19 @@ int main(int argc, char** argv)
   auto fs_monitor = alloy::extra::win32_filesystem_monitor{};
   auto message_pump = alloy::io::message_pump{};
 
-  message_pump.register_pump_source(&fs_monitor);
-  message_pump.register_listener(&listener);
+  const auto source_conn = alloy::core::scoped_connection{
+    message_pump.on_poll().connect(&fs_monitor)
+  };
+  const auto listener_conn = alloy::core::scoped_connection{
+    message_pump.on_event().connect(&listener)
+  };
+
   fs_monitor.watch(directory);
 
   // pump exactly 10 events (count is incremented by listener)
   while (count < 10){
     message_pump.pump();
   }
-
-  message_pump.unregister_listener(&listener);
-  message_pump.unregister_pump_source(&fs_monitor);
 
   return 0;
 }

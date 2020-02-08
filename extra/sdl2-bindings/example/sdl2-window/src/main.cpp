@@ -1,3 +1,4 @@
+#include <alloy/core/utilities/signal.hpp>
 #include <alloy/io/message_pump.hpp>
 #include <alloy/io/window.hpp>
 #include <alloy/extra/sdl2-bindings/sdl2_gl_window.hpp>
@@ -69,8 +70,14 @@ int main(int argc, char** argv)
   // allow the window to produce events
   sdl2_pump_source.attach_window(&window);
 
-  message_pump.register_pump_source(&sdl2_pump_source);
-  message_pump.register_listener(&listener);
+  // Ensure that the pump source and event source are removed at the end of
+  // this scope
+  const auto source_conn = alloy::core::scoped_connection{
+    message_pump.on_poll().connect(&sdl2_pump_source)
+  };
+  const auto listener_conn = alloy::core::scoped_connection{
+    message_pump.on_event().connect(&listener)
+  };
 
   // update loop:
   // * handle i/o by pumping event sources
@@ -96,9 +103,6 @@ int main(int argc, char** argv)
       window.update();
     }
   }
-
-  message_pump.unregister_listener(&listener);
-  message_pump.unregister_pump_source(&sdl2_pump_source);
 
   sdl2_pump_source.detach_window(&window);
 

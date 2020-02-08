@@ -38,6 +38,7 @@
 
 #include "alloy/core/utilities/not_null.hpp" // core::not_null
 #include "alloy/core/assert.hpp"             // ALLOY_ASSERT
+#include "alloy/core/utilities/signal.hpp"
 
 #include <vector>      // std::vector
 #include <cstddef>     // std::size_t
@@ -139,33 +140,21 @@ namespace alloy::io {
 
     //--------------------------------------------------------------------------
 
-    /// \brief Registers a listener to handle the message pump
+    /// \brief Retrieves a sink for the on-event handler
     ///
-    /// \note \p l is not owned by this message_pump
-    /// \pre \p l is not-null
-    /// \param l the listener to register
-    void register_listener(core::not_null<listener*> l);
+    /// This event is invoked any time 'dispatch' is invoked. This is used to
+    /// notify any attached listeners that an event has occurred.
+    ///
+    /// \return a sink for registering to the on-event handler
+    core::sink<listener> on_event() noexcept;
 
-    /// \brief Unregisters a listener to handle the message pump
+    /// \brief Retrieves a sink for the on-poll handler
     ///
-    /// \note \p l is not owned by this message_pump
-    /// \pre \p l is not-null
-    /// \param l the listener to unregister
-    void unregister_listener(core::not_null<listener*> l);
-
-    /// \brief Registers a message pump source
+    /// This event is invoked any time 'poll' is invoked. This is used to
+    /// retrieve any event notifications, and push it back to the message_pump
     ///
-    /// \note \p s is not owned by this message_pump
-    /// \pre \p s is not-null
-    /// \param l the pump source to register
-    void register_pump_source(core::not_null<source*> s);
-
-    /// \brief Unregisters a message pump source
-    ///
-    /// \note \p s is not owned by this message_pump
-    /// \pre \p s is not-null
-    /// \param l the pump source to unregister
-    void unregister_pump_source(core::not_null<source*> s);
+    /// \return a sink for registering to the on-poll handler
+    core::sink<source> on_poll() noexcept;
 
     //--------------------------------------------------------------------------
     // Event Posting
@@ -199,8 +188,8 @@ namespace alloy::io {
     //   Consider replacing these vectors with fixed sized containers which
     //   use circular buffers
 
-    std::vector<listener*> m_listeners;
-    std::vector<source*> m_sources;
+    core::signal<listener> m_listeners;
+    core::signal<source> m_sources;
 
     // This could also be done with a priority queue, but that introduces
     // logarithmic comparisons on insertion, and degrades in-order iteration
