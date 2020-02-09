@@ -180,11 +180,6 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Gets the area of this box
-    ///
-    /// \return the area
-    real area() const noexcept;
-
     /// \brief Gets an array containing the 6 normals
     ///
     /// \return the normals
