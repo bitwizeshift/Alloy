@@ -8,6 +8,9 @@ set(source_files
   # Utilities
   src/alloy/core/utilities/scope_guard.test.cpp
 
+  # Traits
+  src/alloy/core/traits/function_traits.test.cpp
+
   # Math
   src/alloy/core/math/vector/vector2.test.cpp
   src/alloy/core/math/vector/vector3.test.cpp

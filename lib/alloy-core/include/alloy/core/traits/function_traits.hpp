@@ -69,7 +69,7 @@ namespace alloy::core {
   template <typename R, typename...Args>
   struct function_type_traits<R(Args...) noexcept>
   {
-    static inline constexpr bool is_noexcept = false;
+    static inline constexpr bool is_noexcept = true;
 
     static inline constexpr auto arity = sizeof...(Args);
 
@@ -78,7 +78,7 @@ namespace alloy::core {
     using signature_type = R(Args...) noexcept;
 
     template <std::size_t N>
-    using param_type = typename select_nth<N>::type;
+    using param_type = typename select_nth<N,Args...>::type;
   };
 
   template <typename R, typename...Args>
