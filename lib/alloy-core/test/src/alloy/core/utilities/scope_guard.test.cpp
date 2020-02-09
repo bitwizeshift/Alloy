@@ -2,14 +2,16 @@
 
 #include <catch2/catch.hpp>
 
-TEST_CASE("alloy::core::on_scope_exit( Fn&& fn )", "[raii]")
+namespace alloy::core::test {
+
+TEST_CASE("on_scope_exit( Fn&& fn )", "[raii]")
 {
   bool flag = false;
 
   SECTION("Executes on clean scope exit")
   {
     {
-      auto scope = alloy::core::on_scope_exit([&]()
+      auto scope = on_scope_exit([&]()
       {
         flag = true;
       });
@@ -21,7 +23,7 @@ TEST_CASE("alloy::core::on_scope_exit( Fn&& fn )", "[raii]")
   SECTION("Executes on exception scope exit")
   {
     try {
-      auto scope = alloy::core::on_scope_exit([&]()
+      auto scope = on_scope_exit([&]()
       {
         flag = true;
       });
@@ -65,3 +67,5 @@ TEST_CASE("ALLOY_ON_SCOPE_EXIT(x)", "[raii]")
     REQUIRE( flag == true );
   }
 }
+
+} // namespace alloy::core::test

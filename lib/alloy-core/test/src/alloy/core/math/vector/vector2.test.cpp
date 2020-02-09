@@ -5,7 +5,7 @@
 
 #include <catch2/catch.hpp>
 
-using alloy::core::almost_equal;
+namespace alloy::core::test {
 
 //-----------------------------------------------------------------------------
 // Constructors
@@ -570,3 +570,4 @@ TEST_CASE("operator*( vector2, real )", "[arithmetic]")
     REQUIRE( (a * identity) == (a) );
   }
 }
+} // namespace alloy::core::test
