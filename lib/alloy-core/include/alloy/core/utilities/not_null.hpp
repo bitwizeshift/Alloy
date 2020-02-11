@@ -241,20 +241,6 @@ namespace alloy::core {
 
     //--------------------------------------------------------------------------
 
-    /// \brief Converts to the underlying nullable pointer implicitly
-    constexpr /* IMPLICIT */ operator const T&() const & noexcept;
-
-    /// \brief Converts to a mutable underlying nullable pointer implicitly
-    ///
-    /// \note This overload allows for stealing the underlying nullable pointer.
-    ///       In doing so, the invariant of this class may intentionally be
-    ///       violated (subject to the underlying pointer).
-    ///       Care needs to be taken to avoid potentially reusing this not_null
-    ///       after moving.
-    constexpr /* IMPLICIT */ operator T&&() && noexcept;
-
-    //--------------------------------------------------------------------------
-
     /// \brief Extracts the underlying nullable pointer from not_null
     ///
     /// \return the underlying nullable pointer
@@ -513,22 +499,6 @@ inline constexpr alloy::core::not_null<T>::operator bool()
   const noexcept
 {
   return true;
-}
-
-//------------------------------------------------------------------------------
-
-template<typename T>
-inline constexpr alloy::core::not_null<T>::operator const T&()
-  const & noexcept
-{
-  return m_pointer;
-}
-
-template<typename T>
-inline constexpr alloy::core::not_null<T>::operator T&&()
-  && noexcept
-{
-  return std::move(m_pointer);
 }
 
 //------------------------------------------------------------------------------
