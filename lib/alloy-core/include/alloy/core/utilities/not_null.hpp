@@ -300,7 +300,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   private:
 
-    pointer m_pointer;
+    T m_pointer;
 
     // Recursively call 'operator->()' to eventually get a pointer
     template <typename Ptr>
