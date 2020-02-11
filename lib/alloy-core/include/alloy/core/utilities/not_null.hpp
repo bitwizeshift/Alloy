@@ -95,6 +95,16 @@ namespace alloy::core {
     static_assert(!std::is_same<T,std::nullptr_t>::value);
     static_assert(!is_not_null<T>::value);
 
+    template <typename U>
+    using enable_if_convertible = std::enable_if_t<
+      std::conjunction<
+        std::negation<is_not_null<std::decay_t<U>>>,
+        std::negation<std::is_null_pointer<std::decay_t<U>>>,
+        std::negation<std::is_same<std::decay_t<U>,T>>,
+        std::is_convertible<U,T>
+      >::value
+    >;
+
     //--------------------------------------------------------------------------
     // Public Member Types
     //--------------------------------------------------------------------------
@@ -130,7 +140,7 @@ namespace alloy::core {
     /// \pre \p p != nullptr
     /// \param p the type to instantiate the not_null from
     template<typename U,
-             typename = std::enable_if_t<(std::is_convertible_v<U, T> && !is_not_null_v<U>)>>
+             typename = enable_if_convertible<U>>
     constexpr /* IMPLICIT */ not_null(U&& p) noexcept;
 
     /// \brief Move-converts a not_null from another one of covariant type
@@ -189,7 +199,7 @@ namespace alloy::core {
     /// \param other the other pointer to assign
     /// \return reference to \c (*this)
     template<typename U,
-             typename = std::enable_if_t<(std::is_convertible_v<U, T> && !is_not_null_v<U>)>>
+             typename = enable_if_convertible<U>>
     not_null& operator=(U&& other) noexcept;
 
     /// \brief Move-assigns the contents from \p other to the underlying pointer
@@ -314,50 +324,68 @@ namespace alloy::core {
   constexpr bool operator==(const not_null<T>& lhs, std::nullptr_t) noexcept;
   template <typename T>
   constexpr bool operator==(std::nullptr_t, const not_null<T>& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() == std::declval<const U&>())>
   constexpr bool operator==(const not_null<T>& lhs, const not_null<U>& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() == std::declval<const U&>())>
   constexpr bool operator==(const not_null<T>& lhs, const U& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() == std::declval<const U&>())>
   constexpr bool operator==(const T& lhs, const not_null<U>& rhs) noexcept;
 
   template <typename T>
   constexpr bool operator!=(const not_null<T>& lhs, std::nullptr_t) noexcept;
   template <typename T>
   constexpr bool operator!=(std::nullptr_t, const not_null<T>& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() != std::declval<const U&>())>
   constexpr bool operator!=(const not_null<T>& lhs, const not_null<U>& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() != std::declval<const U&>())>
   constexpr bool operator!=(const not_null<T>& lhs, const U& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() != std::declval<const U&>())>
   constexpr bool operator!=(const T& lhs, const not_null<U>& rhs) noexcept;
 
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() < std::declval<const U&>())>
   constexpr bool operator<(const not_null<T>& lhs, const not_null<U>& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() < std::declval<const U&>())>
   constexpr bool operator<(const not_null<T>& lhs, const U& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() < std::declval<const U&>())>
   constexpr bool operator<(const T& lhs, const not_null<U>& rhs) noexcept;
 
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() > std::declval<const U&>())>
   constexpr bool operator>(const not_null<T>& lhs, const not_null<U>& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() > std::declval<const U&>())>
   constexpr bool operator>(const not_null<T>& lhs, const U& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() > std::declval<const U&>())>
   constexpr bool operator>(const T& lhs, const not_null<U>& rhs) noexcept;
 
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() <= std::declval<const U&>())>
   constexpr bool operator<=(const not_null<T>& lhs, const not_null<U>& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() <= std::declval<const U&>())>
   constexpr bool operator<=(const not_null<T>& lhs, const U& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() <= std::declval<const U&>())>
   constexpr bool operator<=(const T& lhs, const not_null<U>& rhs) noexcept;
 
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() >= std::declval<const U&>())>
   constexpr bool operator>=(const not_null<T>& lhs, const not_null<U>& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() >= std::declval<const U&>())>
   constexpr bool operator>=(const not_null<T>& lhs, const U& rhs) noexcept;
-  template <typename T, typename U>
+  template <typename T, typename U,
+            typename = decltype(std::declval<const T&>() >= std::declval<const U&>())>
   constexpr bool operator>=(const T& lhs, const not_null<U>& rhs) noexcept;
 
 } // namespace alloy::core
@@ -584,7 +612,7 @@ inline constexpr bool
   return false;
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator==(const not_null<T>& lhs, const not_null<U>& rhs)
   noexcept
@@ -592,7 +620,7 @@ inline constexpr bool
   return lhs.as_nullable() == rhs.as_nullable();
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator==(const not_null<T>& lhs, const U& rhs)
   noexcept
@@ -600,7 +628,7 @@ inline constexpr bool
   return lhs.as_nullable() == rhs;
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator==(const T& lhs, const not_null<U>& rhs)
   noexcept
@@ -627,7 +655,7 @@ inline constexpr bool
   return true;
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator!=(const not_null<T>& lhs, const not_null<U>& rhs)
   noexcept
@@ -635,7 +663,7 @@ inline constexpr bool
   return lhs.as_nullable() != rhs.as_nullable();
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator!=(const not_null<T>& lhs, const U& rhs)
   noexcept
@@ -643,7 +671,7 @@ inline constexpr bool
   return rhs.as_nullable() != rhs;
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator!=(const T& lhs, const not_null<U>& rhs)
   noexcept
@@ -652,7 +680,7 @@ inline constexpr bool
 }
 
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator<(const not_null<T>& lhs, const not_null<U>& rhs)
   noexcept
@@ -660,7 +688,7 @@ inline constexpr bool
   return lhs.as_nullable() < rhs.as_nullable();
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator<(const not_null<T>& lhs, const U& rhs)
   noexcept
@@ -668,7 +696,7 @@ inline constexpr bool
   return lhs.as_nullable() < rhs;
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator<(const T& lhs, const not_null<U>& rhs)
   noexcept
@@ -677,7 +705,7 @@ inline constexpr bool
 }
 
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator>(const not_null<T>& lhs, const not_null<U>& rhs)
   noexcept
@@ -685,7 +713,7 @@ inline constexpr bool
   return lhs.as_nullable() > rhs.as_nullable();
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator>(const not_null<T>& lhs, const U& rhs)
   noexcept
@@ -693,7 +721,7 @@ inline constexpr bool
   return lhs.as_nullable() > rhs;
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator>(const T& lhs, const not_null<U>& rhs)
   noexcept
@@ -702,7 +730,7 @@ inline constexpr bool
 }
 
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator<=(const not_null<T>& lhs, const not_null<U>& rhs)
   noexcept
@@ -710,7 +738,7 @@ inline constexpr bool
   return lhs.as_nullable() <= rhs.as_nullable();
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator<=(const not_null<T>& lhs, const U& rhs)
   noexcept
@@ -718,7 +746,7 @@ inline constexpr bool
   return lhs.as_nullable() <= rhs;
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator<=(const T& lhs, const not_null<U>& rhs)
   noexcept
@@ -727,7 +755,7 @@ inline constexpr bool
 }
 
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator>=(const not_null<T>& lhs, const not_null<U>& rhs)
   noexcept
@@ -735,7 +763,7 @@ inline constexpr bool
   return lhs.as_nullable() >= rhs.as_nullable();
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator>=(const not_null<T>& lhs, const U& rhs)
   noexcept
@@ -743,7 +771,7 @@ inline constexpr bool
   return lhs.as_nullable() >= rhs;
 }
 
-template <typename T, typename U>
+template <typename T, typename U, typename>
 inline constexpr bool
   alloy::core::operator>=(const T& lhs, const not_null<U>& rhs)
   noexcept
