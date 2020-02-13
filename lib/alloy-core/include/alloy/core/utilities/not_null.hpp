@@ -94,6 +94,8 @@ namespace alloy::core {
     static_assert(std::is_assignable<T&, std::nullptr_t>::value);
     static_assert(!std::is_same<T,std::nullptr_t>::value);
     static_assert(!is_not_null<T>::value);
+    static_assert(!std::is_const<T>::value);
+    static_assert(!std::is_volatile<T>::value);
 
     template <typename U>
     using enable_if_convertible = std::enable_if_t<
