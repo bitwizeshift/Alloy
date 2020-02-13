@@ -126,13 +126,15 @@ namespace alloy::core {
     ///
     /// \pre \p p != nullptr
     /// \param p the pointer to move
-    constexpr /* IMPLICIT */ not_null(T&& p) noexcept;
+    constexpr /* IMPLICIT */ not_null(T&& p)
+      noexcept(std::is_nothrow_move_constructible<T>::value);
 
     /// \brief Constructs a not_null from a const l-value of the underlying pointer
     ///
     /// \pre \p p != nullptr
     /// \param p the pointer to copy
-    constexpr /* IMPLICIT */ not_null(const T& p) noexcept;
+    constexpr /* IMPLICIT */ not_null(const T& p)
+      noexcept(std::is_nothrow_copy_constructible<T>::value);
 
     /// \brief Constructs a not_null from any type convertible to the pointer
     ///        type
@@ -141,7 +143,8 @@ namespace alloy::core {
     /// \param p the type to instantiate the not_null from
     template<typename U,
              typename = enable_if_convertible<U>>
-    constexpr /* IMPLICIT */ not_null(U&& p) noexcept;
+    constexpr /* IMPLICIT */ not_null(U&& p)
+      noexcept(std::is_nothrow_constructible<T, U>::value);
 
     /// \brief Move-converts a not_null from another one of covariant type
     ///
@@ -149,14 +152,16 @@ namespace alloy::core {
     /// \param other the other not_null to move
     template<typename U,
              typename = std::enable_if_t<std::is_convertible_v<U, T>>>
-    constexpr not_null(not_null<U>&& other) noexcept;
+    constexpr not_null(not_null<U>&& other)
+      noexcept(std::is_nothrow_constructible<T, U&&>::value);
 
     /// \brief Copy-converts a not_null from another one of covariant type
     ///
     /// \param other the other not_null to copy
     template<typename U,
              typename = std::enable_if_t<std::is_convertible_v<U, T>>>
-    constexpr not_null(const not_null<U>& other) noexcept;
+    constexpr not_null(const not_null<U>& other)
+      noexcept(std::is_nothrow_constructible<T,const U&>::value);
 
     /// \brief Constructs the underlying pointer type in place with \p args
     ///
@@ -185,13 +190,15 @@ namespace alloy::core {
     ///
     /// \pre \p p != nullptr
     /// \param p the pointer to move
-    not_null& operator=(T&& p) noexcept;
+    not_null& operator=(T&& p)
+      noexcept(std::is_nothrow_move_assignable<T>::value);
 
     /// \brief Assigns \p p to the underlying pointer to copy
     ///
     /// \pre \p p != nullptr
     /// \param p the pointer to move
-    not_null& operator=(const T& p) noexcept;
+    not_null& operator=(const T& p)
+      noexcept(std::is_nothrow_copy_assignable<T>::value);
 
     /// \brief Assigns \p other to the underlying pointer
     ///
@@ -200,7 +207,8 @@ namespace alloy::core {
     /// \return reference to \c (*this)
     template<typename U,
              typename = enable_if_convertible<U>>
-    not_null& operator=(U&& other) noexcept;
+    not_null& operator=(U&& other)
+      noexcept(std::is_nothrow_assignable<T, U>::value);
 
     /// \brief Move-assigns the contents from \p other to the underlying pointer
     ///
@@ -209,7 +217,8 @@ namespace alloy::core {
     /// \return reference to \c (*this)
     template<typename U,
              typename = std::enable_if_t<std::is_convertible_v<U, T>>>
-    not_null& operator=(not_null<U>&& other) noexcept;
+    not_null& operator=(not_null<U>&& other)
+      noexcept(std::is_nothrow_assignable<T, U&&>::value);
 
     /// \brief Copy-assigns the contents from \p other to the underlying pointer
     ///
@@ -217,20 +226,21 @@ namespace alloy::core {
     /// \return reference to \c (*this)
     template<typename U,
              typename = std::enable_if_t<std::is_convertible_v<U, T>>>
-    not_null& operator=(const not_null<U>& other) noexcept;
+    not_null& operator=(const not_null<U>& other)
+      noexcept(std::is_nothrow_assignable<T, const U&>::value);
 
     /// \brief Move-assigns the contents from \p other to the underlying pointer
     ///
     /// \post \p other is left in a valid, but unspecified state.
     /// \param other the other pointer to move
     /// \return reference to \c (*this)
-    not_null& operator=(not_null&& other) noexcept = default;
+    not_null& operator=(not_null&& other) = default;
 
     /// \brief Copy-assigns the contents from \p other to the underlying pointer
     ///
     /// \param other the other pointer to copy
     /// \return reference to \c (*this)
-    not_null& operator=(const not_null& other) noexcept = default;
+    not_null& operator=(const not_null& other) = default;
 
     not_null& operator=(std::nullptr_t) = delete;
 
@@ -314,7 +324,8 @@ namespace alloy::core {
   //----------------------------------------------------------------------------
 
   template<typename T>
-  constexpr not_null<std::decay_t<T>> make_not_null(T&& t) noexcept;
+  constexpr not_null<std::decay_t<T>> make_not_null(T&& t)
+    noexcept(std::is_nothrow_constructible<std::decay_t<T>,T>::value);
 
   //----------------------------------------------------------------------------
   // Comparisons
@@ -400,7 +411,7 @@ namespace alloy::core {
 
 template<typename T>
 inline constexpr alloy::core::not_null<T>::not_null(T&& p)
-  noexcept
+  noexcept(std::is_nothrow_move_constructible<T>::value)
   : m_pointer{std::move(p)}
 {
   ALLOY_ASSERT(m_pointer != nullptr);
@@ -408,7 +419,7 @@ inline constexpr alloy::core::not_null<T>::not_null(T&& p)
 
 template<typename T>
 inline constexpr alloy::core::not_null<T>::not_null(const T& p)
-  noexcept
+  noexcept(std::is_nothrow_copy_constructible<T>::value)
   : m_pointer{p}
 {
   ALLOY_ASSERT(m_pointer != nullptr);
@@ -417,7 +428,7 @@ inline constexpr alloy::core::not_null<T>::not_null(const T& p)
 template<typename T>
 template<typename U, typename>
 inline constexpr alloy::core::not_null<T>::not_null(U&& u)
-  noexcept
+  noexcept(std::is_nothrow_constructible<T,U>::value)
   : m_pointer{std::forward<U>(u)}
 {
   ALLOY_ASSERT(m_pointer != nullptr);
@@ -426,7 +437,7 @@ inline constexpr alloy::core::not_null<T>::not_null(U&& u)
 template<typename T>
 template<typename U, typename>
 inline constexpr alloy::core::not_null<T>::not_null(not_null<U>&& other)
-  noexcept
+  noexcept(std::is_nothrow_constructible<T,U&&>::value)
   : m_pointer{std::move(other).as_nullable()}
 {
   // No assertion; moves of not_null are assumed to uphold invariant
@@ -435,7 +446,7 @@ inline constexpr alloy::core::not_null<T>::not_null(not_null<U>&& other)
 template<typename T>
 template<typename U, typename>
 inline constexpr alloy::core::not_null<T>::not_null(const not_null<U>& other)
-  noexcept
+  noexcept(std::is_nothrow_constructible<T,const U&>::value)
   : m_pointer{other.as_nullable()}
 {
   // No assertion; copies of not_null are assumed to uphold invariants
@@ -455,7 +466,7 @@ inline constexpr alloy::core::not_null<T>::not_null(std::in_place_t, Args&&...ar
 template<typename T>
 inline alloy::core::not_null<T>&
   alloy::core::not_null<T>::operator=(T&& p)
-  noexcept
+  noexcept(std::is_nothrow_move_assignable<T>::value)
 {
   m_pointer = std::move(p);
 
@@ -466,7 +477,7 @@ inline alloy::core::not_null<T>&
 template<typename T>
 inline alloy::core::not_null<T>&
   alloy::core::not_null<T>::operator=(const T& p)
-  noexcept
+  noexcept(std::is_nothrow_copy_assignable<T>::value)
 {
   m_pointer = p;
 
@@ -478,7 +489,7 @@ template<typename T>
 template<typename U, typename>
 inline alloy::core::not_null<T>&
   alloy::core::not_null<T>::operator=(U&& other)
-  noexcept
+  noexcept(std::is_nothrow_assignable<T, U>::value)
 {
   m_pointer = std::forward<U>(other);
 
@@ -490,7 +501,7 @@ template<typename T>
 template<typename U, typename>
 inline alloy::core::not_null<T>&
   alloy::core::not_null<T>::operator=(not_null<U>&& other)
-  noexcept
+  noexcept(std::is_nothrow_assignable<T, U&&>::value)
 {
   m_pointer = std::move(other).as_nullable();
 
@@ -502,7 +513,7 @@ template<typename T>
 template<typename U, typename>
 inline alloy::core::not_null<T>&
   alloy::core::not_null<T>::operator=(const not_null<U>& other)
-  noexcept
+  noexcept(std::is_nothrow_assignable<T, const U&>::value)
 {
   m_pointer = other.as_nullable();
 
@@ -565,7 +576,8 @@ inline constexpr typename alloy::core::not_null<T>::reference
 
 template <typename T>
 template <typename Ptr>
-constexpr auto alloy::core::not_null<T>::to_address(const Ptr& p) noexcept
+constexpr auto alloy::core::not_null<T>::to_address(const Ptr& p)
+  noexcept
 {
   return to_address(p.operator->());
 }
@@ -585,7 +597,7 @@ constexpr U* alloy::core::not_null<T>::to_address(U* p)
 template<typename T>
 inline constexpr alloy::core::not_null<std::decay_t<T>>
   alloy::core::make_not_null(T&& t)
-  noexcept
+  noexcept(std::is_nothrow_constructible<std::decay_t<T>,T>::value)
 {
   return not_null<std::decay_t<T>>{std::forward<T>(t)};
 }
