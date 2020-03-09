@@ -1,0 +1,119 @@
+name: build-windows
+
+on: [push, pull_request]
+
+jobs:
+  ci:
+    name: Windows ${{ matrix.compiler }} ${{ matrix.arch }} ${{ matrix.build_type }}
+    runs-on: ${{ matrix.os }}
+
+    env:
+      CMAKE_GENERATOR: Ninja
+      CTEST_OUTPUT_ON_FAILURE: ON
+      CTEST_PARALLEL_LEVEL: 2
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+        compiler: [cl, clang-cl, clang]
+        arch: [x86_64]
+        build_type: [Release]
+
+        include:
+          - compiler: cl
+            version: 16
+
+          - compiler: clang-cl
+            version: 9
+
+          - compiler: clang
+            version: 9
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+
+      - name: Install
+        shell: powershell
+        run: |
+          Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+          scoop install ninja --global
+          if ("${{ matrix.compiler }}".StartsWith("clang")) {
+            scoop install llvm --global
+          }
+          if ("${{ matrix.compiler }}" -eq "clang") {
+            echo "::set-env name=CC::clang"
+            echo "::set-env name=CXX::clang++"
+          } else {
+            echo "::set-env name=CC::${{ matrix.compiler }}"
+            echo "::set-env name=CXX::${{ matrix.compiler }}"
+          }
+          # Scoop modifies the PATH so we make the modified PATH global.
+          echo "::set-env name=PATH::$env:PATH"
+          & python -m pip install --upgrade pip
+          & pip install conan
+          & conan --version
+
+      - name: Prepare Architecture
+        shell: powershell
+        run: |
+          if ("${{ matrix.arch }}" -eq "x86_64") {
+            & .github\workflows\vsenv.bat -arch=x64 -host_arch=x64
+          } else {
+            & .github\workflows\vsenv.bat -arch=x86 -host_arch=x64
+            if ("${{ matrix.compiler }}" -notcontains "cl") {
+              echo "::set-env name=CXXFLAGS::$env:CXXFLAGS -m32"
+            }
+          }
+
+      - name: Create Conan Profile (MSVC)
+        if: matrix.compiler == 'cl'
+        run: |
+          conan profile new default
+          conan profile update settings.compiler="Visual Studio" default
+          conan profile update settings.compiler.version=${{ matrix.version }} default
+          if ("${{ matrix.build_type }}" -eq "Release") {
+            conan profile update settings.compiler.runtime=MD default
+          } else {
+            conan profile update settings.compiler.runtime=MDd default
+          }
+          conan profile update settings.arch=${{ matrix.arch }} default
+          conan profile update settings.os=Windows default
+
+      - name: Create Conan Profile (other)
+        if: matrix.compiler != 'cl'
+        run: |
+          conan profile new --detect default
+          conan profile update settings.arch=${{ matrix.arch }} default
+
+      - name: Configure
+        run: |
+          cmake -E remove_directory build
+          mkdir build
+          cd build
+          conan install .. -s build_type=${{ matrix.build_type }}
+
+          cmake ..                                         `
+             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}   `
+             -DALLOY_COMPILE_SELF_CONTAINMENT_TESTS=On     `
+             -DALLOY_COMPILE_TESTS=On                      `
+             -DALLOY_COMPILE_EXTRAS=On                     `
+             -DALLOY_COMPILE_EXAMPLES=On                   `
+             -DALLOY_ENABLE_EXCEPTIONS=On
+
+      - name: Build
+        run: |
+          cd build
+          cmake --build .
+
+      - name: Test
+        run: |
+          cd build
+          ctest --output-on-failure
