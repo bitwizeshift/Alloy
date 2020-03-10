@@ -34,6 +34,7 @@
 #include "alloy/core/utilities/string_view.hpp"
 
 #include <utility> // std::hash
+#include <climits> // CHAR_BIT
 
 namespace alloy::core {
 
