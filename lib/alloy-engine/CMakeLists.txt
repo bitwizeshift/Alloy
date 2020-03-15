@@ -54,6 +54,7 @@ set_target_properties(${PROJECT_NAME}Engine
 
 target_include_directories(${PROJECT_NAME}Engine
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
   PUBLIC $<INSTALL_INTERFACE:include>
 )
 
