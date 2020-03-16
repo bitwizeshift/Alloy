@@ -99,12 +99,15 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
   # so this case needs to be handled specifically
   add_compile_options(-Wall -Werror -Wextra)
 
-  # Disable the ridiculous compatibility warnings, since it fails on files not
-  # ending in newlines
-  add_compile_options(-Wno-c++98-compat -Wno-c++98-compat-pedantic)
+  # Disable unnecessary compatibility and 'newline-eof'. This is a modern C++
+  # library.
+  add_compile_options(-Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-newline-eof)
 elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
         "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   add_compile_options(-Wall -Werror -Wextra -pedantic -pedantic-errors)
+
+  # Disable the 'newline-eof' error, which isn't required in C++11 and above
+  add_compile_options(-Wno-newline-eof)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   # TODO: Determine MSVC necessary compiler flags
 endif ()
