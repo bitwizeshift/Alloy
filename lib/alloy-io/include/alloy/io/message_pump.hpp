@@ -80,20 +80,13 @@ namespace alloy::io {
     /// \brief Constructs a message_pump with a default allocator
     message_pump() noexcept;
 
-    /// \brief Constructs a message_pump by moving the contents from \p other
-    ///
-    /// \param other the other message_pump to move
-    message_pump(message_pump&& other) noexcept = default;
-    message_pump(const message_pump& other) = delete;
+    message_pump(message_pump&&) = delete;
+    message_pump(const message_pump&) = delete;
 
     //--------------------------------------------------------------------------
 
-    /// \brief Move-assigns the contents from \p other to this message_pump
-    ///
-    /// \param other the other message_pump to move
-    /// \return reference to \c (*this)
-    message_pump& operator=(message_pump&& other) noexcept = default;
-    message_pump& operator=(const message_pump& other) = delete;
+    message_pump& operator=(message_pump&&) = delete;
+    message_pump& operator=(const message_pump&) = delete;
 
     //--------------------------------------------------------------------------
     // Modifiers
