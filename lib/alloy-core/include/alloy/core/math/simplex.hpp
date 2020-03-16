@@ -214,7 +214,8 @@ inline alloy::core::real
 
   const auto c1 = ((high - low) * 0.5);
   const auto c2 = ((high + low) * 0.5);
-  return c1 * raw_noise(x, y) + c2;
+  const auto result = c1 * raw_noise(x, y) + c2;
+  return static_cast<real>(result);
 }
 
 //----------------------------------------------------------------------------
@@ -231,7 +232,8 @@ inline alloy::core::real
 
   const auto c1 = ((high - low) * 0.5);
   const auto c2 = ((high + low) * 0.5);
-  return c1 * raw_noise(x, y, z) + c2;
+  const auto result = c1 * raw_noise(x, y, z) + c2;
+  return static_cast<real>(result);
 }
 
 //----------------------------------------------------------------------------
@@ -301,7 +303,8 @@ inline alloy::core::real
 
   const auto c1 = ((high - low) * 0.5);
   const auto c2 = ((high + low) * 0.5);
-  return c1 * octave_noise( octaves, persistence, scale, x, y ) + c2;
+  const auto result = c1 * octave_noise( octaves, persistence, scale, x, y ) + c2;
+  return static_cast<real>(result);
 }
 
 //----------------------------------------------------------------------------
@@ -321,7 +324,8 @@ inline alloy::core::real
 
   const auto c1 = ((high - low) * 0.5);
   const auto c2 = ((high + low) * 0.5);
-  return c1 * octave_noise( octaves, persistence, scale, x, y, z ) + c2;
+  const auto result = c1 * octave_noise( octaves, persistence, scale, x, y, z ) + c2;
+  return static_cast<real>(result);
 }
 
 //----------------------------------------------------------------------------

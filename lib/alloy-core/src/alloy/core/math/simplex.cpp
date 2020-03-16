@@ -152,7 +152,8 @@ alloy::core::real
 
   // Add contributions from each corner to get the final noise value.
   // The result is scaled to return values in the interval [-1,1].
-  return 70.0 * (n0 + n1 + n2);
+  const auto result = 70.0 * (n0 + n1 + n2);;
+  return static_cast<real>(result);
 }
 
 alloy::core::real
@@ -160,7 +161,7 @@ alloy::core::real
   noexcept
 {
   // TODO(matthew rodusek) 2017-04-22: Implement
-  return x+y+z;
+  return static_cast<real>(x+y+z);
 }
 
 //------------------------------------------------------------------------------
@@ -190,7 +191,7 @@ alloy::core::real
       amplitude *= persistence;
     }
 
-    return total / max_amplitude;
+    return static_cast<real>(total / max_amplitude);
 }
 
 alloy::core::real
@@ -217,5 +218,5 @@ alloy::core::real
       amplitude *= persistence;
     }
 
-    return total / max_amplitude;
+    return static_cast<real>(total / max_amplitude);
 }
