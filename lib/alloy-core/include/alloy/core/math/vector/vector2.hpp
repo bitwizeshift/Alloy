@@ -254,7 +254,7 @@ namespace alloy::core {
 
     /// \brief Gets the normalized vector2 of \c this
     ///
-    /// \param the normalized vector2 of \c this
+    /// \return the normalized vector2 of \c this
     vector2 normalized() const noexcept;
 
     /// \brief Gets the inverse of \c this vector2

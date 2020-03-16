@@ -99,7 +99,22 @@ namespace alloy::core {
                                                   dimensions d,
                                                   pixel_format format);
 
-    /// \{
+    /// \brief Makes an image with a solid color
+    ///
+    /// \pre \p buffer must be of n * d.width * d.height size, where n is the
+    ///         number of bytes specified in the pixel_format
+    /// \pre \c d.width must be greater than 0
+    /// \pre \c d.height must be greater than 0
+    ///
+    /// \param d the dimensions of the image
+    /// \param format the pixel format of the image
+    /// \param background the color to set the background of the image
+    ///
+    /// \return an image on success, an error_code on failure
+    static expected<image> make_blank_image(dimensions d,
+                                            pixel_format format,
+                                            color background);
+
     /// \brief Makes an image with a solid color
     ///
     /// \pre \p buffer must be of n * d.width * d.height size, where n is the
@@ -115,12 +130,8 @@ namespace alloy::core {
     /// \return an image on success, an error_code on failure
     static expected<image> make_blank_image(dimensions d,
                                             pixel_format format,
-                                            color background);
-    static expected<image> make_blank_image(dimensions d,
-                                            pixel_format format,
                                             color background,
                                             allocator alloc);
-    /// \}
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment

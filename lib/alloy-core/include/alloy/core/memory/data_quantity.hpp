@@ -53,7 +53,7 @@ namespace alloy::core {
   /// Capacity uses the underlying 'Base' unit for handling
   ///
   /// \tparam Rep the underlying representation of this data_quantity
-  /// \tparam The SI base unit value
+  /// \tparam Base The SI base unit value
   /////////////////////////////////////////////////////////////////////////////
   template <typename Rep, typename Base = std::ratio<1>>
   class data_quantity

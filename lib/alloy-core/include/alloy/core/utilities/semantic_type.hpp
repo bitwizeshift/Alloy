@@ -326,7 +326,7 @@ namespace alloy::core {
     /// type to another
     ///
     /// \tparam SemanticType the semantic type being cast to
-    /// \param the other type to cast from
+    /// \param other the other type to cast from
     /// \return the new semantic type
     template <typename SemanticType, typename T, typename Tag,
               typename = std::enable_if_t<is_semantic_type_v<SemanticType>>,

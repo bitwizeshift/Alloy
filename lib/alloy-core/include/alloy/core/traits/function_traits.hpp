@@ -191,7 +191,7 @@ namespace alloy::core {
 
   /// \brief Extracts function traits for a given function non-type argument
   ///
-  /// \param Fn the function argument (pointer or pointer-to-member-function)
+  /// \tparam Fn the function argument (pointer or pointer-to-member-function)
   template <auto Fn>
   using function_traits = function_type_traits<decltype(Fn)>;
 

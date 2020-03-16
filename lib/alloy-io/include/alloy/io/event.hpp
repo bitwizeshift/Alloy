@@ -142,7 +142,7 @@ namespace alloy::io {
 
     /// \brief Constructs an \p Event from the given \p args
     ///
-    /// \param args... the arguments to forward to Event's constructor
+    /// \param args the arguments to forward to Event's constructor
     /// \return an event that contains the type-erased Event
     template<typename Event, typename...Args>
     static event make_event( Args&&...args )
@@ -280,7 +280,7 @@ namespace alloy::io {
 
   /// \brief A simple trait for checking if the type T is a valid event type
   ///
-  /// The result is aliased as \c ::value
+  /// The result is aliased as ::value
   ///
   /// \tparam T the type to check
   template<typename T>
@@ -295,9 +295,7 @@ namespace alloy::io {
   )>{};
 
   /// \brief A convenience template variable for extracting is_valid_event's
-  ///        \c ::value parameter
-  ///
-  /// \tparam T the type to check is_valid_event
+  ///        ::value parameter
   template <typename T>
   inline constexpr bool is_valid_event_v = is_valid_event<T>::value;
 

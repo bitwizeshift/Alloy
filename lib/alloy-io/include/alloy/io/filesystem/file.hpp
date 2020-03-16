@@ -281,7 +281,6 @@ namespace alloy::io {
     /// \brief Reads from the file \p f to \p out
     ///
     /// \param f the file to read from
-    /// \param out the output file
     /// \return \c void on success
     static core::expected<T> deserialize(file& f) noexcept;
   };

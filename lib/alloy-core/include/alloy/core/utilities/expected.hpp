@@ -296,7 +296,7 @@ namespace alloy::core {
     /// \brief Constructs the underlying value of this expected by calling
     ///        T's constructor with the given args
     ///
-    /// \param args... the arguments to forward to T's constructor
+    /// \param args the arguments to forward to T's constructor
     template <typename...Args>
     constexpr expected(std::in_place_t, Args&&...args)
       noexcept(std::is_nothrow_constructible<T,Args...>::value);
@@ -304,7 +304,7 @@ namespace alloy::core {
     /// \brief Constructs the underlying value of this expected by calling
     ///        T's constructor with the given args
     ///
-    /// \param args... the arguments to forward to T's constructor
+    /// \param args the arguments to forward to T's constructor
     /// \param ilist the initializer list
     template <typename...Args, typename U>
     constexpr expected(std::in_place_t,

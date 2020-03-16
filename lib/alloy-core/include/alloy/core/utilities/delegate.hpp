@@ -184,7 +184,6 @@ namespace alloy::core {
     /// \brief Binds a non-member function pointer to this delegate
     ///
     /// \tparam Fn the function pointer to bind
-    /// \return the bound delegate
     template <auto Fn,
               typename=enable_if_invocable_t<decltype(Fn),Args...>>
     void bind() noexcept;
@@ -192,7 +191,6 @@ namespace alloy::core {
     /// \brief Binds a member function pointer to this delegate
     ///
     /// \tparam MemberFn the member function pointer to bind
-    /// \return the bound delegate
     template <auto MemberFn, typename C,
               typename=enable_if_invocable_t<decltype(MemberFn),C*,Args...>>
     void bind(C* c) noexcept;
@@ -200,7 +198,6 @@ namespace alloy::core {
     /// \brief Binds a const member function pointer to this delegate
     ///
     /// \tparam MemberFn the const member function pointer to bind
-    /// \return the bound delegate
     template <auto MemberFn, typename C,
               typename=enable_if_invocable_t<decltype(MemberFn),const C*,Args...>>
     void bind(const C* c) noexcept;
@@ -209,7 +206,6 @@ namespace alloy::core {
     /// \brief Binds a callable to this delegate
     ///
     /// \param callable the callable to bind
-    /// \return the bound delegate
     template <typename Callable,
               typename=enable_if_invocable_t<Callable&,Args...>>
     void bind(Callable* callable) noexcept;

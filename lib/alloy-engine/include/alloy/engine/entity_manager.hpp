@@ -94,8 +94,6 @@ namespace alloy::engine {
     entity create() noexcept;
 
     /// \brief Destroys a given entity
-    ///
-    /// \return the entity
     void destroy(entity e) noexcept;
 
     /// \brief Sets the signature of a given entity \p e

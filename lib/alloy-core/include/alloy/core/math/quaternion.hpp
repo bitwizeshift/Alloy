@@ -301,7 +301,7 @@ namespace alloy::core {
 
     /// \brief Gets the normalized quaternion of \c this
     ///
-    /// \param the normalized quaternion of \c this
+    /// \return the normalized quaternion of \c this
     quaternion normalized() const noexcept;
 
     /// \brief Gets the inverse of \c this quaternion

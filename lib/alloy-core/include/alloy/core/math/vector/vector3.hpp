@@ -260,7 +260,7 @@ namespace alloy::core {
 
     /// \brief Gets the normalized vector3 of \c this
     ///
-    /// \param the normalized vector3 of \c this
+    /// \return the normalized vector3 of \c this
     vector3 normalized() const noexcept;
 
     /// \brief Gets the inverse of \c this vector3
@@ -418,7 +418,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left vector3
   /// \param rhs the right vector3
-  /// \return
+  /// \return the result of the dot product
   constexpr real dot( const vector3& lhs, const vector3& rhs ) noexcept;
 
   /// \brief Performs the cross product between \p lhs and \p rhs

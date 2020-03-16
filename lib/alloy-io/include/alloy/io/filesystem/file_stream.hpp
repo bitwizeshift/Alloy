@@ -94,8 +94,6 @@ namespace alloy::io {
   public:
 
     /// \brief Closes the file stream for future access
-    ///
-    /// \return void on success
     virtual void close() noexcept = 0;
 
     /// \brief Resets the file cursor back to the start position

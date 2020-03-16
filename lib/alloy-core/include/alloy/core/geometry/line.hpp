@@ -115,10 +115,10 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Gets the point at distance \p percent from the origin of this
+    /// \brief Gets the point at distance \p dt from the origin of this
     ///        line
     ///
-    /// \param percent the distance to get this point at
+    /// \param dt the distance to get this point at
     /// \return the point at the distance
     point point_at_distance( real dt ) const noexcept;
 
