@@ -63,7 +63,7 @@ endif ()
 # Project
 ##############################################################################
 
-if (NOT CMAKE_TESTING_ENABLED AND ALLOY_COMPILE_TESTS)
+if (ALLOY_COMPILE_TESTS)
   enable_testing()
 endif ()
 
