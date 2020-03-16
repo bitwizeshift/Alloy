@@ -1,3 +1,10 @@
+
+// Visual Studios requires this define before including cstdio in order to be
+// allowed to use 'std::fopen', which Microsoft decided to deprecate.
+#if defined(_MSC_VER)
+# define _CRT_SECURE_NO_DEPRECATE 1
+#endif
+
 #include "alloy/io/filesystem/disk_filesystem.hpp"
 #include "alloy/io/filesystem/file_stream.hpp"
 #include "alloy/io/filesystem/file_stream_finalizer.hpp"
