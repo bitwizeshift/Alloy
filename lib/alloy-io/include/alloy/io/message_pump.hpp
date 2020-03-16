@@ -42,7 +42,6 @@
 
 #include <vector>      // std::vector
 #include <cstddef>     // std::size_t
-#include <type_traits> // std::aligned_storage_t
 #include <utility>     // std::forward
 #include <new>         // placement new
 

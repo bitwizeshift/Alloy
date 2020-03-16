@@ -34,8 +34,15 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+// MSVC doesn't define 'aligned_storage' correctly for custom alignments above
+// alignof(max_align_t) unless this is defined.
+#if defined(_MSC_VER)
+#define _ENABLE_EXTENDED_ALIGNED_STORAGE 1
+#endif
+
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/assert.hpp"
+#include "alloy/core/utilities/aligned_storage.hpp"
 
 #include "alloy/io/config.hpp"
 
@@ -257,7 +264,7 @@ namespace alloy::io {
       priority, ///< Operation for retrieving the priority of the event
     };
 
-    using storage_type    = std::aligned_storage_t<max_size, max_align>;
+    using storage_type    = core::aligned_storage<max_size, max_align>;
     using storage_handler = std::uint32_t(*)(operation, const storage_type*,const storage_type*);
 
     storage_type    m_storage;

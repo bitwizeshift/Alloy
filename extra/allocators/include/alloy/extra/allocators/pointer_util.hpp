@@ -36,6 +36,7 @@
 
 #include "alloy/core/assert.hpp"
 #include "alloy/core/utilities/not_null.hpp"
+#include "alloy/core/utilities/aligned_storage.hpp"
 
 #include <cstddef>     // std::size_t, std::ptrdiff_t
 #include <cstdint>     // std::uint8_t, std::uint16_t, etc
@@ -657,7 +658,7 @@ inline T alloy::extra::pointer_util::load_unaligned(const void* p)
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
   static_assert(std::is_trivially_copyable<T>::value);
 
-  std::aligned_storage_t<sizeof(T),alignof(T)> result;
+  core::aligned_storage<sizeof(T),alignof(T)> result;
 
   std::memcpy(&result, p, sizeof(T));
 

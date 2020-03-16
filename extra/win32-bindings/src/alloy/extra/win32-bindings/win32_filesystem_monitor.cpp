@@ -1,4 +1,5 @@
 #include "alloy/extra/win32-bindings/win32_filesystem_monitor.hpp"
+#include "alloy/core/utilities/aligned_storage.hpp"
 #include "alloy/core/intrinsics.hpp"
 
 #include "windows.hpp"
@@ -114,7 +115,7 @@ void alloy::extra::win32_filesystem_monitor::poll( io::message_pump& p )
 {
   static constexpr auto buffer_size = 256;
 
-  using storage_type = std::aligned_storage_t<buffer_size,alignof(::FILE_NOTIFY_INFORMATION)>;
+  using storage_type = core::aligned_storage<buffer_size, alignof(::FILE_NOTIFY_INFORMATION)>;
 
   auto buffer = storage_type{};
 

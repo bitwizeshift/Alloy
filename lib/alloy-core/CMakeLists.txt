@@ -61,6 +61,7 @@ set(header_files
   include/alloy/core/traits/is_function_pointer.hpp
 
   # Utilities
+  include/alloy/core/utilities/aligned_storage.hpp
   include/alloy/core/utilities/delegate.hpp
   include/alloy/core/utilities/signal.hpp
   include/alloy/core/utilities/expected.hpp
