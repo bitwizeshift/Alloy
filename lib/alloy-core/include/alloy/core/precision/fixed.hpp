@@ -121,6 +121,7 @@ inline bool
   alloy::core::is_nan( const basic_fixed<MantissaBits,ExponentBits>& f )
   noexcept
 {
+  (void) f;
   assert( false && "not implemented" );
   return false;
 }
@@ -130,6 +131,7 @@ inline bool
   alloy::core::is_finite( const basic_fixed<MantissaBits,ExponentBits>& f )
   noexcept
 {
+  (void) f;
   assert( false && "not implemented" );
   return false;
 }
@@ -139,6 +141,7 @@ inline bool
   alloy::core::is_infinite( const basic_fixed<MantissaBits,ExponentBits>& f )
   noexcept
 {
+  (void) f;
   assert( false && "not implemented" );
   return false;
 }
@@ -148,6 +151,7 @@ inline bool
   alloy::core::is_normal( const basic_fixed<MantissaBits,ExponentBits>& f )
   noexcept
 {
+  (void) f;
   assert( false && "not implemented" );
   return false;
 }
@@ -157,6 +161,7 @@ inline bool
   alloy::core::is_subnormal( const basic_fixed<MantissaBits,ExponentBits>& f )
   noexcept
 {
+  (void) f;
   assert( false && "not implemented" );
   return false;
 }

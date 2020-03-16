@@ -744,7 +744,7 @@ inline constexpr bool
 {
   for (auto r = 0; r < matrix2::rows; ++r) {
     for (auto c = 0; c < matrix2::columns; ++c) {
-      if (!almost_equal(rhs.get(r,c), rhs.get(r,c))) {
+      if (!almost_equal(lhs.get(r,c), rhs.get(r,c))) {
         return false;
       }
     }
@@ -760,7 +760,7 @@ inline constexpr bool
 {
   for (auto r = 0; r < matrix2::rows; ++r) {
     for (auto c = 0; c < matrix2::columns; ++c) {
-      if (!almost_equal(rhs.get(r,c), rhs.get(r,c), tolerance)) {
+      if (!almost_equal(lhs.get(r,c), rhs.get(r,c), tolerance)) {
         return false;
       }
     }

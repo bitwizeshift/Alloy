@@ -682,7 +682,7 @@ inline constexpr bool
   alloy::core::operator!=(const not_null<T>& lhs, const U& rhs)
   noexcept
 {
-  return rhs.as_nullable() != rhs;
+  return lhs.as_nullable() != rhs;
 }
 
 template <typename T, typename U, typename>

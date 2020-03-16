@@ -445,7 +445,7 @@ inline constexpr alloy::core::matrix4
   : m_matrix {
       {m00, m01, m02, m03},
       {m10, m11, m12, m13},
-      {m20, m21, m23, m23},
+      {m20, m21, m22, m23},
       {m30, m31, m32, m33}
     }
 {
@@ -939,7 +939,7 @@ inline constexpr bool
 {
   for(auto r = 0; r < matrix4::rows; ++r) {
     for(auto c = 0; c < matrix4::columns; ++c) {
-      if( !almost_equal(rhs.get(r,c), rhs.get(r,c)) ) {
+      if( !almost_equal(lhs.get(r,c), rhs.get(r,c)) ) {
         return false;
       }
     }
@@ -955,7 +955,7 @@ inline constexpr bool
 {
   for(auto r = 0; r < matrix4::rows; ++r) {
     for(auto c = 0; c < matrix4::columns; ++c) {
-      if( !almost_equal(rhs.get(r,c), rhs.get(r,c), tolerance) ) {
+      if( !almost_equal(lhs.get(r,c), rhs.get(r,c), tolerance) ) {
         return false;
       }
     }

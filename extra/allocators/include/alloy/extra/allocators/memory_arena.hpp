@@ -301,7 +301,7 @@ inline constexpr std::size_t alloy::extra::memory_arena::size()
 inline bool alloy::extra::memory_arena::contains(const void* ptr)
   const noexcept
 {
-  return (m_data < end_address() && m_data >= start_address());
+  return (ptr < end_address() && ptr >= start_address());
 }
 
 

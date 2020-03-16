@@ -433,7 +433,7 @@ alloy::core::quaternion::value_type alloy::core::quaternion::magnitude()
 
 //----------------------------------------------------------------------------
 
-alloy::core::radian alloy::core::quaternion::roll( reproject_axis_t reproject )
+alloy::core::radian alloy::core::quaternion::roll( reproject_axis_t )
   const noexcept
 {
   const auto ty  = 2 * y();

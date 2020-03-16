@@ -108,6 +108,7 @@ inline bool alloy::core::is_nan( const half& f )
   noexcept
 {
   assert( false && "not implemented" );
+  (void) f;
   return false;
 }
 
@@ -115,6 +116,7 @@ inline bool alloy::core::is_finite( const half& f )
   noexcept
 {
   assert( false && "not implemented" );
+  (void) f;
   return false;
 }
 
@@ -122,6 +124,7 @@ inline bool alloy::core::is_infinite( const half& f )
   noexcept
 {
   assert( false && "not implemented" );
+  (void) f;
   return false;
 }
 
@@ -129,6 +132,7 @@ inline bool alloy::core::is_normal( const half& f )
   noexcept
 {
   assert( false && "not implemented" );
+  (void) f;
   return false;
 }
 
@@ -136,6 +140,7 @@ inline bool alloy::core::is_subnormal( const half& f )
   noexcept
 {
   assert( false && "not implemented" );
+  (void) f;
   return false;
 }
 
