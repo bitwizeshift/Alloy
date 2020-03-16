@@ -37,10 +37,6 @@
 #include <type_traits> // std::enable_if, std::common_type
 #include <limits> // std::numeric_limits
 
-#if __cpp_lib_hardware_interference_size >= 201703
-#include <new> // std::hardware_destructive_interference_size
-#endif
-
 namespace alloy::core {
 
   //===========================================================================
@@ -209,10 +205,7 @@ namespace alloy::core {
   struct is_data_quantity<data_quantity<Rep,Base>> : std::true_type{};
 
   template <typename T>
-#if __cpp_inline_variables >= 201606
-  inline
-#endif
-  constexpr bool is_data_quantity_v = is_data_quantity<T>::value;
+  inline constexpr bool is_data_quantity_v = is_data_quantity<T>::value;
 
   //===========================================================================
   // aliases : class : data_quantity
@@ -263,10 +256,6 @@ namespace alloy::core {
   // A nibble is defined as half of a byte (irrespective of the number of bits
   // in a byte)
   using nibbles = data_quantity<std::uint64_t, std::ratio<1,2>>;
-
-#if __cpp_lib_hardware_interference_size >= 201703
-  using cachelines = data_quantity<std::size_t, std::ratio<std::hardware_destructive_interference_size()>>;
-#endif
 
   //===========================================================================
   // non-member functions : class : data_quantity
