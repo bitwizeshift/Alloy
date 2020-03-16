@@ -7,6 +7,7 @@
 #include <cstddef> // std::byte
 #include <random>  // std::random_device
 #include <mutex>   // std::mutex
+#include <cstdint> // std::uint16_t
 
 namespace {
 
@@ -61,7 +62,7 @@ namespace {
 
     using seed_type = std::random_device::result_type;
     using engine_type = std::mt19937;
-    using distribution_type = std::uniform_int_distribution<unsigned char>;
+    using distribution_type = std::uniform_int_distribution<std::uint16_t>;
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -204,7 +205,7 @@ namespace {
     // Generate random numbers and writes them into the mutable buffer
     for (auto* it = begin; it != end; ++it) {
       const auto v = m_distribution(m_engine);
-      *it = std::byte{v};
+      *it = std::byte{static_cast<std::uint8_t>(v)};
     }
 
     return buffer;
