@@ -49,7 +49,7 @@ namespace alloy::core {
   struct direction_light
   {
     vector3 direction;
-    color color;
+    class color color;
     light::attenuation attenuation;
     light::intensity intensity;
   };

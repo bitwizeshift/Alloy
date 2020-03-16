@@ -46,7 +46,7 @@ namespace alloy::core {
   //////////////////////////////////////////////////////////////////////////////
   struct global_light
   {
-    color color;
+    class color color;
     light::attenuation attenuation;
     light::intensity intensity;
   };

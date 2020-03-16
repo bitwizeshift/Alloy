@@ -51,7 +51,7 @@ namespace alloy::core {
   struct point_light
   {
     point source;
-    color color;
+    class color color;
     light::attenuation attenuation;
     light::intensity intensity;
   };

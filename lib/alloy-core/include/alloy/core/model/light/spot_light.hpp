@@ -53,7 +53,7 @@ namespace alloy::core {
     point source;
     vector3 direction;
     real cutoff;
-    color color;
+    class color color;
     light::attenuation attenuation;
     light::intensity intensity;
   };
