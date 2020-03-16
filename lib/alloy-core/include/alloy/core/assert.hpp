@@ -74,7 +74,7 @@
           "assertion failure: condition '" \
           ALLOY_STRINGIZE(condition) \
           "' failed.", \
-          file_name, line_number, function_name \
+          file_name, static_cast<std::size_t>(line_number), function_name \
         ); \
       }( __FILE__, __LINE__, __func__ ) )
 
@@ -90,7 +90,7 @@
           ALLOY_STRINGIZE(condition) \
           "' failed with message \"" \
           message "\"", \
-          file_name, line_number, function_name \
+          file_name, static_cast<std::size_t>(line_number), function_name \
         ); \
       }( __FILE__, __LINE__, __func__ ) )
 
