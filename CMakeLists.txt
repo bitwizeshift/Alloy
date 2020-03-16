@@ -93,10 +93,19 @@ endif ()
 
 #-----------------------------------------------------------------------------
 
-if ( "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
-     "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" )
-  add_compile_options(-Wall -Werror -pedantic)
-elseif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" )
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
+    "${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC")
+  # clang-cl does not appear to implement '-pedantic' or 'pedantic-errors',
+  # so this case needs to be handled specifically
+  add_compile_options(-Wall -Werror -Wextra)
+
+  # Disable the ridiculous compatibility warnings, since it fails on files not
+  # ending in newlines
+  add_compile_options(-Wno-c++98-compat -Wno-c++98-compat-pedantic)
+elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
+        "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  add_compile_options(-Wall -Werror -Wextra -pedantic -pedantic-errors)
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   # TODO: Determine MSVC necessary compiler flags
 endif ()
 
