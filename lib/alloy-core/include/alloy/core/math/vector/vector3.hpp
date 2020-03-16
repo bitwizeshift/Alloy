@@ -703,9 +703,6 @@ inline alloy::core::vector3
   alloy::core::vector3::perpendicular()
   const noexcept
 {
-  constexpr auto unit_x = vector3{ real{1}, real{0}, real{0} };
-  constexpr auto unit_y = vector3{ real{0}, real{1}, real{0} };
-
   // Try perpendicular to x-axis
   // if result is 0, try y-axis
   auto perp = cross( unit_x );
