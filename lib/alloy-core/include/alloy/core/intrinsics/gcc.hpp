@@ -77,6 +77,7 @@
 //-----------------------------------------------------------------------------
 
 #define ALLOY_RESTRICT __restrict__
+#define ALLOY_ASSUME(x)
 #define ALLOY_LIKELY(x) __builtin_expect(!!(x), 1)
 #define ALLOY_UNLIKELY(x) __builtin_expect(!!(x), 0)
 #if (__GNUC__ >= 4)
