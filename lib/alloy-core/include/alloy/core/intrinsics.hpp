@@ -252,6 +252,7 @@ namespace alloy::core {
 
     /// \brief Provides a hint to the compiler that the code path after this
     ///        function is not reachable
+    [[noreturn]]
     static void unreachable() noexcept;
 
     /// \brief Produces a breakpoint and crashes the application when invoked
