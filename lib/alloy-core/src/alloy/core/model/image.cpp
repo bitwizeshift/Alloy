@@ -3,7 +3,8 @@
 #include "alloy/core/intrinsics.hpp"
 
 #include <utility> // std::move
-#include <string>
+#include <string>  // std::string
+#include <cstdint> // std::uint8_t
 
 namespace {
 
@@ -194,6 +195,12 @@ namespace {
     }
     ALLOY_UNREACHABLE();
   }
+
+  template <typename T>
+  std::byte to_byte(T v)
+  {
+    return static_cast<std::byte>(static_cast<std::uint8_t>(v));
+  }
 } // namespace <anonymous>
 
 //=============================================================================
@@ -258,16 +265,16 @@ alloy::core::expected<alloy::core::image>
 
     switch (color_segment) {
     case rgba::r:
-      v = static_cast<std::byte>(255u * background.r());
+      v = ::to_byte(255u * background.r());
       break;
     case rgba::g:
-      v = static_cast<std::byte>(255u * background.g());
+      v = ::to_byte(255u * background.g());
       break;
     case rgba::b:
-      v = static_cast<std::byte>(255u * background.b());
+      v = ::to_byte(255u * background.b());
       break;
     case rgba::a:
-      v = static_cast<std::byte>(255u * background.a());
+      v = ::to_byte(255u * background.a());
       break;
     }
 
@@ -310,16 +317,16 @@ void alloy::core::image::set_pixel(std::size_t x, std::size_t y, color c)
 
     switch (color_component) {
     case rgba::r:
-      m_bytes[index + i] = static_cast<std::byte>(255u * c.r());
+      m_bytes[index + i] = ::to_byte(255u * c.r());
       break;
     case rgba::g:
-      m_bytes[index + i] = static_cast<std::byte>(255u * c.g());
+      m_bytes[index + i] = ::to_byte(255u * c.g());
       break;
     case rgba::b:
-      m_bytes[index + i] = static_cast<std::byte>(255u * c.b());
+      m_bytes[index + i] = ::to_byte(255u * c.b());
       break;
     case rgba::a:
-      m_bytes[index + i] = static_cast<std::byte>(255u * c.a());
+      m_bytes[index + i] = ::to_byte(255u * c.a());
       break;
     }
   }
