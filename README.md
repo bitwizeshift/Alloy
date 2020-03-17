@@ -105,24 +105,22 @@ The following compilers are currently being tested through
 [Travis](https://travis-ci.com/bitwizeshift/Alloy) and
 [AppVeyor](https://ci.appveyor.com/project/bitwizeshift/Alloy/)
 
-| Compiler              | Operating System                   |
-|-----------------------|------------------------------------|
-| g++ 7.3.0             | Ubuntu 14.04.1                     |
-| g++ 8.1.0             | Ubuntu 14.04.1                     |
-| clang++ 5.0.2         | Ubuntu 14.04.1                     |
-| clang++ 6.0.1         | Ubuntu 14.04.1                     |
-| clang xcode 10        | Darwin Kernel 17.7.0               |
-| Visual Studio 2017    | Windows Server 2016 (x86)          |
-| Visual Studio 2017    | Windows Server 2016 (x64)          |
+| Compiler              | Operating System  | Architectures |
+|-----------------------|-------------------|---------------|
+| g++-9                 | Ubuntu 18.04      | x86, x86_64   |
+| clang++-9             | Ubuntu 18.04      | x86, x86_64   |
+| clang xcode 11.3      | macOS (Latest)    | x86_64        |
+| Visual Studio 2019    | Windows (Latest)  | x86, x86_64   |
+| clang-cl              | Windows (Latest)  | x86, x86_64   |
+| clang++-9             | Windows (Latest)  | x86, x86_64   |
 
 ## <a name="continuous-integration"></a>Continuous Integration
 
 | **Build**     | **Status**      |
 |---------------|-----------------|
-| Ubuntu, macOS | [![Build Status](https://travis-ci.com/bitwizeshift/Alloy.svg?branch=master)](https://travis-ci.com/bitwizeshift/Alloy) |
-| MSVC          | [![Build status](https://ci.appveyor.com/api/projects/status/ou5sraydky6tjxv9?svg=true)](https://ci.appveyor.com/project/bitwizeshift/alloy) |
-| Coverage      | [![Coverage Status](https://coveralls.io/repos/github/bitwizeshift/Alloy/badge.svg?branch=master)](https://coveralls.io/github/bitwizeshift/Alloy?branch=master)
- |
+| Windows       | [![Windows Build Status](![build-windows](https://github.com/bitwizeshift/Alloy/workflows/build-windows/badge.svg))](https://github.com/bitwizeshift/Alloy/actions?query=workflow%3Abuild-windows) |
+| Linux        | [![Linux Build Status](![build-windows](https://github.com/bitwizeshift/Alloy/workflows/build-linux/badge.svg))](https://github.com/bitwizeshift/Alloy/actions?query=workflow%3Abuild-linux) |
+| macOS         | [![macOS Build Status](![build-windows](https://github.com/bitwizeshift/Alloy/workflows/build-macos/badge.svg))](https://github.com/bitwizeshift/Alloy/actions?query=workflow%3Abuild-macos) |
 
 
 ## <a name="packaging"></a>Current Releases
