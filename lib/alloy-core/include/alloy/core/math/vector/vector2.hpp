@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/api.hpp"    // ALLOY_CORE_API
 #include "alloy/core/assert.hpp" // ALLOY_ASSERT
 #include "alloy/core/config.hpp" // ALLOY_CORE_EXCEPTIONS_ENABLED
 #include "alloy/core/precision.hpp" // core::real
@@ -69,11 +70,11 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    static const vector2 zero;
-    static const vector2 unit_x;
-    static const vector2 unit_y;
-    static const vector2 neg_unit_x;
-    static const vector2 neg_unit_y;
+    ALLOY_CORE_API static const vector2 zero;
+    ALLOY_CORE_API static const vector2 unit_x;
+    ALLOY_CORE_API static const vector2 unit_y;
+    ALLOY_CORE_API static const vector2 neg_unit_x;
+    ALLOY_CORE_API static const vector2 neg_unit_y;
 
     //--------------------------------------------------------------------------
     // Public Types

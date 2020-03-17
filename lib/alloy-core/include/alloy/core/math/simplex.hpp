@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/api.hpp"
 #include "alloy/core/precision.hpp"
 #include "alloy/core/math/vector/vector2.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
@@ -58,6 +59,7 @@ namespace alloy::core {
     /// \param x the x-coordinate
     /// \param y the y-coordinate
     /// \return the result of the raw noise
+    ALLOY_CORE_API
     static core::real raw_noise( core::real x,
                                  core::real y ) noexcept;
 
@@ -67,6 +69,7 @@ namespace alloy::core {
     /// \param y the y-coordinate
     /// \param z the z-coordinate
     /// \return the result of the raw noise
+    ALLOY_CORE_API
     static core::real raw_noise( core::real x,
                                  core::real y,
                                  core::real z ) noexcept;
@@ -112,12 +115,14 @@ namespace alloy::core {
     // Octave Noise
     //----------------------------------------------------------------------
 
+    ALLOY_CORE_API
     static core::real octave_noise( core::real octaves,
                                     core::real persistence,
                                     core::real scale,
                                     core::real x,
                                     core::real y ) noexcept;
 
+    ALLOY_CORE_API
     static core::real octave_noise( core::real octaves,
                                     core::real persistence,
                                     core::real scale,

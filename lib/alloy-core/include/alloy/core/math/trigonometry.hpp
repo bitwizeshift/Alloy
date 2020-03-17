@@ -35,6 +35,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/api.hpp"
 #include "alloy/core/precision.hpp"
 #include "alloy/core/math/angle/basic_angle.hpp"
 #include "alloy/core/math/angle/radian.hpp"
@@ -61,6 +62,7 @@ namespace alloy::core {
     ///
     /// \param rad the angle
     /// \return the result of \c cos(rad)
+    ALLOY_CORE_API
     static core::real cos( radian rad ) noexcept;
 
     /// \brief Calculates the cosine of the given \p angle
@@ -79,6 +81,7 @@ namespace alloy::core {
     ///
     /// \param rad the angle
     /// \return the result of \c sin(rad)
+    ALLOY_CORE_API
     static core::real sin( radian rad ) noexcept;
 
     /// \brief Calculates the sine of the given \p angle
@@ -97,6 +100,7 @@ namespace alloy::core {
     ///
     /// \param rad the angle
     /// \return the result of \c tan(rad)
+    ALLOY_CORE_API
     static core::real tan( radian rad ) noexcept;
 
     /// \brief Calculates the tangent of the given \ref gradian angle, \p grad
@@ -145,10 +149,33 @@ namespace alloy::core {
     // Inverse Trig
     //--------------------------------------------------------------------------
 
-    /// \brief Calculates the inverse cosine of the given
+    /// \brief Calculates the inverse cosine
+    ///
+    /// \param f the value
+    /// \return the inverse cosine
+    ALLOY_CORE_API
     static radian arccos( core::real f ) noexcept;
+
+    /// \brief Calculates the inverse sine
+    ///
+    /// \param f the value
+    /// \return the inverse sine
+    ALLOY_CORE_API
     static radian arcsin( core::real f ) noexcept;
+
+    /// \brief Calculates the inverse tangent
+    ///
+    /// \param f the value
+    /// \return the inverse tangent
+    ALLOY_CORE_API
     static radian arctan( core::real f ) noexcept;
+
+    /// \brief Calculates the inverse tangent 2
+    ///
+    /// \param f1 the first value
+    /// \param f2 the second value
+    /// \return the inverse tangent 2
+    ALLOY_CORE_API
     static radian arctan2( core::real f1, core::real f2 ) noexcept;
 
   };

@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/api.hpp"                 // ALLOY_CORE_API
 #include "alloy/core/precision.hpp"           // core::real
 #include "alloy/core/math/vector/vector2.hpp" // vector2
 
@@ -76,8 +77,8 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-  static inline constexpr auto rows    = index_type{2};
-  static inline constexpr auto columns = index_type{2};
+    static inline constexpr auto rows    = index_type{2};
+    static inline constexpr auto columns = index_type{2};
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment

@@ -34,7 +34,8 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "alloy/core/precision.hpp"      // core::real
+#include "alloy/core/api.hpp"                 // ALLOY_CORE_API
+#include "alloy/core/precision.hpp"           // core::real
 #include "alloy/core/math/vector/vector3.hpp" // vector3
 #include "alloy/core/math/matrix/matrix3.hpp" // matrix3
 #include "alloy/core/math/matrix/matrix4.hpp" // matrix4
@@ -101,6 +102,7 @@ namespace alloy::core {
     /// \param angle the angle
     /// \param axis the axis
     /// \return the constructed quaternion
+    ALLOY_CORE_API
     static quaternion from_angle_axis( radian angle,
                                        const vector3& axis ) noexcept;
 
@@ -111,6 +113,7 @@ namespace alloy::core {
     /// \param pitch the pitch angle
     /// \param roll the roll angle
     /// \return the constructed quaternion
+    ALLOY_CORE_API
     static quaternion from_angles( radian yaw,
                                    radian pitch,
                                    radian roll ) noexcept;
@@ -119,12 +122,14 @@ namespace alloy::core {
     ///
     /// \param rot the rotation matrix
     /// \return the constructed quaternion
+    ALLOY_CORE_API
     static quaternion from_rotation_matrix( const matrix3& rot ) noexcept;
 
     /// \brief Constructs a quaternion from a 4x4 rotation matrix
     ///
     /// \param rot the rotation matrix
     /// \return the constructed quaternion
+    ALLOY_CORE_API
     static quaternion from_rotation_matrix( const matrix4& rot ) noexcept;
 
     /// \brief Constructs a quaternion from 3 axes forming a 3x3 rotation
@@ -134,6 +139,7 @@ namespace alloy::core {
     /// \param y_axis the vector representing the y-axis
     /// \param z_axis the vector representing the z-axis
     /// \return the constructed quaternion
+    ALLOY_CORE_API
     static quaternion from_rotation_axes( const vector3& x_axis,
                                           const vector3& y_axis,
                                           const vector3& z_axis ) noexcept;
@@ -248,7 +254,9 @@ namespace alloy::core {
     ///
     /// \param n the element index
     /// \return a reference to the entry
+    ALLOY_CORE_API
     reference at( index_type n );
+    ALLOY_CORE_API
     const_reference at( index_type n ) const;
     /// \}
 
@@ -268,16 +276,19 @@ namespace alloy::core {
     /// \brief Retrieves the x-axis from this quaternion
     ///
     /// \return the x-axis
+    ALLOY_CORE_API
     vector3 x_axis() const noexcept;
 
     /// \brief Retrieves the y-axis from this quaternion
     ///
     /// \return the y-axis
+    ALLOY_CORE_API
     vector3 y_axis() const noexcept;
 
     /// \brief Retrieves the z-axis from this quaternion
     ///
     /// \return the z-axis
+    ALLOY_CORE_API
     vector3 z_axis() const noexcept;
 
     //--------------------------------------------------------------------------
@@ -317,11 +328,13 @@ namespace alloy::core {
     /// \brief Extracts a 3x3 rotation matrix from this quaternion
     ///
     /// \param rot pointer to the rotation matrix to extract into
+    ALLOY_CORE_API
     void extract_rotation_matrix( matrix3* rot ) const noexcept;
 
     /// \brief Extracts a 4x4 rotation matrix from this quaternion
     ///
     /// \param rot pointer to the rotation matrix to extract into
+    ALLOY_CORE_API
     void extract_rotation_matrix( matrix4* rot ) const noexcept;
 
     //--------------------------------------------------------------------------
@@ -330,6 +343,7 @@ namespace alloy::core {
     ///
     /// \param angle the angle to extract into
     /// \param axis the vector to extract into
+    ALLOY_CORE_API
     void extract_angle_axis( radian* angle, vector3* axis ) const noexcept;
 
     //--------------------------------------------------------------------------
@@ -339,6 +353,7 @@ namespace alloy::core {
     /// \param x_axis pointer to the x-axis vector
     /// \param y_axis pointer to the y-axis vector
     /// \param z_axis pointer to the z-axis vector
+    ALLOY_CORE_API
     void extract_axes( vector3* x_axis,
                        vector3* y_axis,
                        vector3* z_axis ) const noexcept;
@@ -351,11 +366,13 @@ namespace alloy::core {
     /// \brief Normalizes this quaternion and returns a reference to \c (*this)
     ///
     /// \return the reference to \c (*this)
+    ALLOY_CORE_API
     quaternion& normalize() noexcept;
 
     /// \brief Inverts this quaternion and returns a reference to \c (*this)
     ///
     /// \return the reference to \c (*this)
+    ALLOY_CORE_API
     quaternion& invert() noexcept;
 
     //--------------------------------------------------------------------------
@@ -367,11 +384,13 @@ namespace alloy::core {
     ///
     /// \param rhs the quaternion to perform the dot product with
     /// \return the result of the dot product
+    ALLOY_CORE_API
     core::real dot( const quaternion& rhs ) const noexcept;
 
     /// \brief Computes the magnitude of this quaternion
     ///
     /// \return the magnitude
+    ALLOY_CORE_API
     core::real magnitude() const noexcept;
 
     //--------------------------------------------------------------------------
@@ -380,11 +399,13 @@ namespace alloy::core {
     ///
     /// \param reproject tag used for tag dispatch
     /// \return the roll angle
+    ALLOY_CORE_API
     radian roll( reproject_axis_t reproject ) const noexcept;
 
     /// \brief Computes the roll angle by reprojecting the axis
     ///
     /// \return the roll angle
+    ALLOY_CORE_API
     radian roll() const noexcept;
 
     //--------------------------------------------------------------------------
@@ -393,11 +414,13 @@ namespace alloy::core {
     ///
     /// \param reproject tag used for tag dispatch
     /// \return the pitch angle
+    ALLOY_CORE_API
     radian pitch( reproject_axis_t reproject ) const noexcept;
 
     /// \brief Computes the pitch angle by reprojecting the axis
     ///
     /// \return the pitch angle
+    ALLOY_CORE_API
     radian pitch() const noexcept;
 
     //--------------------------------------------------------------------------
@@ -406,11 +429,13 @@ namespace alloy::core {
     ///
     /// \param reproject tag used for tag dispatch
     /// \return the yaw angle
+    ALLOY_CORE_API
     radian yaw( reproject_axis_t reproject ) const noexcept;
 
     /// \brief Computes the yaw angle by reprojecting the axis
     ///
     /// \return the yaw angle
+    ALLOY_CORE_API
     radian yaw() const noexcept;
 
     //--------------------------------------------------------------------------
@@ -426,11 +451,17 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
+    ALLOY_CORE_API
     quaternion& operator+=( const quaternion& rhs ) noexcept;
+    ALLOY_CORE_API
     quaternion& operator-=( const quaternion& rhs ) noexcept;
+    ALLOY_CORE_API
     quaternion& operator*=( const quaternion& rhs ) noexcept;
+    ALLOY_CORE_API
     quaternion& operator*=( value_type rhs ) noexcept;
+    ALLOY_CORE_API
     quaternion& operator/=( value_type rhs ) noexcept;
+    ALLOY_CORE_API
     quaternion& operator/=( const quaternion& rhs ) noexcept;
 
     //--------------------------------------------------------------------------
