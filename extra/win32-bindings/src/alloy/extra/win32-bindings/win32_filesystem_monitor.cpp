@@ -20,6 +20,39 @@ namespace {
     ::DWORD     notification_filter;
   };
 
+  std::string encode_utf8(const std::wstring& wstr)
+  {
+    if (wstr.empty()) {
+      return std::string{};
+    }
+
+    const auto needed = static_cast<std::size_t>(::WideCharToMultiByte(
+      CP_UTF8,
+      0,
+      &wstr[0],
+      static_cast<int>(wstr.size()),
+      nullptr,
+      0,
+      nullptr,
+      nullptr
+    ));
+
+    auto result = std::string{};
+    result.resize(needed);
+
+    ::WideCharToMultiByte(
+      CP_UTF8,
+      0,
+      &wstr[0],
+      static_cast<int>(wstr.size()),
+      &result[0],
+      needed,
+      nullptr,
+      nullptr
+    );
+    return result;
+  }
+
 } // anonymous namespace
 
 //==============================================================================
@@ -142,7 +175,7 @@ void alloy::extra::win32_filesystem_monitor::poll( io::message_pump& p )
       directory_handle,
       static_cast<void*>(&buffer),
       buffer_size,
-      static_cast<::WINBOOL>(handle.recursive),
+      static_cast<WINBOOL>(handle.recursive),
       handle.notification_filter,
       &bytes_read,
       nullptr,
@@ -154,8 +187,6 @@ void alloy::extra::win32_filesystem_monitor::poll( io::message_pump& p )
       continue;
     }
 
-    using converter_type = std::codecvt_utf8<wchar_t>;
-    std::wstring_convert<converter_type, wchar_t> converter;
 
     const auto* current = reinterpret_cast<const unsigned char*>(&buffer);
     const auto* prev = current;
@@ -165,7 +196,7 @@ void alloy::extra::win32_filesystem_monitor::poll( io::message_pump& p )
         notify_info->FileName,
         notify_info->FileNameLength / sizeof(::WCHAR)
       };
-      auto filename = converter.to_bytes(wfilename);
+      auto filename = ::encode_utf8(wfilename);
 
       switch (notify_info->Action) {
         case FILE_ACTION_ADDED: {
