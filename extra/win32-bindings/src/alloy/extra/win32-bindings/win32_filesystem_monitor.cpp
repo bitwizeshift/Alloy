@@ -175,7 +175,7 @@ void alloy::extra::win32_filesystem_monitor::poll( io::message_pump& p )
       directory_handle,
       static_cast<void*>(&buffer),
       buffer_size,
-      static_cast<WINBOOL>(handle.recursive),
+      static_cast<BOOL>(handle.recursive),
       handle.notification_filter,
       &bytes_read,
       nullptr,
