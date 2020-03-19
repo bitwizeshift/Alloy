@@ -118,9 +118,10 @@ The following compilers are currently being tested through
 
 | **Build**     | **Status**      |
 |---------------|-----------------|
-| Windows       | [![Windows Build Status](![build-windows](https://github.com/bitwizeshift/Alloy/workflows/build-windows/badge.svg))](https://github.com/bitwizeshift/Alloy/actions?query=workflow%3Abuild-windows) |
-| Linux        | [![Linux Build Status](![build-windows](https://github.com/bitwizeshift/Alloy/workflows/build-linux/badge.svg))](https://github.com/bitwizeshift/Alloy/actions?query=workflow%3Abuild-linux) |
-| macOS         | [![macOS Build Status](![build-windows](https://github.com/bitwizeshift/Alloy/workflows/build-macos/badge.svg))](https://github.com/bitwizeshift/Alloy/actions?query=workflow%3Abuild-macos) |
+| Windows       | [![Windows Build Status](https://github.com/bitwizeshift/Alloy/workflows/build-windows/badge.svg)](https://github.com/bitwizeshift/Alloy/actions?query=workflow%3Abuild-windows) |
+| Linux        | [![Linux Build Status](https://github.com/bitwizeshift/Alloy/workflows/build-linux/badge.svg)](https://github.com/bitwizeshift/Alloy/actions?query=workflow%3Abuild-linux) |
+| macOS         | [![macOS Build Status](https://github.com/bitwizeshift/Alloy/workflows/build-macos/badge.svg)](https://github.com/bitwizeshift/Alloy/actions?query=workflow%3Abuild-macos) |
+
 
 
 ## <a name="packaging"></a>Current Releases
