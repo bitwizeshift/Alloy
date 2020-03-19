@@ -159,6 +159,14 @@
 
 namespace alloy::core::detail {
 
+// I do not know why clang claims that 'fprintf' is marked 'unused'.
+// This may be worth revisiting later on -- but for now, lets hide this
+// error
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wused-but-marked-unused"
+#endif
+
   // Note: This function is defined inline intentionally.
   //
   // For GCC/Clang, ALLOY_BREAKPOINT does not trigger the debugger if this
@@ -187,6 +195,10 @@ namespace alloy::core::detail {
     ALLOY_BREAKPOINT();
     ::std::terminate();
   }
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#endif
 
 } // alloy::core::detail
 
