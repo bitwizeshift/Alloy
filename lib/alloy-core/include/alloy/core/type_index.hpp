@@ -34,6 +34,8 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/api.hpp"
+
 #include <type_traits> // std::is_const, std::is_reference, etc
 #include <cstdint>     // std::uint32_t
 
@@ -128,6 +130,7 @@ namespace alloy::core {
 
     index_type m_index = index_type{-1};
 
+    ALLOY_CORE_API
     static index_type s_index;
   };
 

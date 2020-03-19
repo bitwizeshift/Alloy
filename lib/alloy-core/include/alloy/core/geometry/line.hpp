@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/api.hpp"
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/math/vector/vector3.hpp" // core::vector3
 #include "alloy/core/geometry/point.hpp" // core::point
@@ -120,12 +121,14 @@ namespace alloy::core {
     ///
     /// \param dt the distance to get this point at
     /// \return the point at the distance
+    ALLOY_CORE_API
     point point_at_distance( real dt ) const noexcept;
 
     /// \brief Checks if this line intersects the given point \p p
     ///
     /// \param p the point to check for intersection
     /// \return \c true if \p p is in the line
+    ALLOY_CORE_API
     bool contains( const point& p ) const noexcept;
 
     /// \brief Checks if this line intersects the given point \p p
@@ -134,6 +137,7 @@ namespace alloy::core {
     /// \param p the point to check for intersection
     /// \param tolerance the tolerance for accepting the containment
     /// \return \c true if \p p is in the line
+    ALLOY_CORE_API
     bool contains( const point& p, real tolerance ) const noexcept;
 
     //--------------------------------------------------------------------------
@@ -153,6 +157,7 @@ namespace alloy::core {
   // Equality
   //----------------------------------------------------------------------------
 
+  ALLOY_CORE_API
   bool operator==( const line& lhs, const line& rhs ) noexcept;
   bool operator!=( const line& lhs, const line& rhs ) noexcept;
 
@@ -164,6 +169,7 @@ namespace alloy::core {
   /// \param lhs the left line
   /// \param rhs the right line
   /// \return \c true if the two lines contain almost equal values
+  ALLOY_CORE_API
   bool almost_equal( const line& lhs, const line& rhs ) noexcept;
 
   /// \brief Determines equality between two lines relative to
@@ -172,6 +178,7 @@ namespace alloy::core {
   /// \param lhs the left line
   /// \param rhs the right line
   /// \return \c true if the two lines contain almost equal values
+  ALLOY_CORE_API
   bool almost_equal( const line& lhs, const line& rhs, real tolerance ) noexcept;
 
 } // namespace alloy::core

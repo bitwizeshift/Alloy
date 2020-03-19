@@ -35,6 +35,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/api.hpp"
 #include "alloy/core/assert.hpp"    // ALLOY_ASSERT
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/math/math.hpp" // core::almost_equal
@@ -115,6 +116,7 @@ namespace alloy::core {
     ///
     /// \param p the point to check
     /// \return \c true if the point is contained in this sphere
+    ALLOY_CORE_API
     bool contains( const point& p ) const noexcept;
 
     /// \brief Checks whether a given point \p p is contained within this
@@ -123,6 +125,7 @@ namespace alloy::core {
     /// \param p the point to check
     /// \param tolerance the error tolerance to accept
     /// \return \c true if the point is contained in this sphere
+    ALLOY_CORE_API
     bool contains( const point& p, real tolerance ) const noexcept;
 
     //--------------------------------------------------------------------------

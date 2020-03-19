@@ -548,7 +548,10 @@ namespace alloy::core {
   {
     ~quaternion_constants() = delete;
 
+    ALLOY_CORE_API
     static const quaternion zero;
+
+    ALLOY_CORE_API
     static const quaternion identity;
   };
 

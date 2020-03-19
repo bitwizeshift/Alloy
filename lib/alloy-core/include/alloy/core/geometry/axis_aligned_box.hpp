@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/api.hpp"
 #include "alloy/core/precision.hpp"
 #include "alloy/core/assert.hpp"
 #include "alloy/core/math/math.hpp"
@@ -68,6 +69,7 @@ namespace alloy::core {
     /// \param p the point
     /// \param size the vector that determines the x, y, z size
     /// \return the created box
+    ALLOY_CORE_API
     static axis_aligned_box from_point_and_size( const point& p,
                                                  const vector3& size ) noexcept;
 
@@ -80,6 +82,7 @@ namespace alloy::core {
     /// \param p0 the first point
     /// \param p1 the second point
     /// \return the created box
+    ALLOY_CORE_API
     static axis_aligned_box from_points( const point& p0,
                                          const point& p1 ) noexcept;
 
@@ -152,12 +155,12 @@ namespace alloy::core {
     /// \brief Get the plane that defines the specified side
     ///
     /// \return the plane that define sthe specified side
-    plane top_plane() const noexcept;
-    plane bottom_plane() const noexcept;
-    plane front_plane() const noexcept;
-    plane back_plane() const noexcept;
-    plane left_plane() const noexcept;
-    plane right_plane() const noexcept;
+    ALLOY_CORE_API plane top_plane() const noexcept;
+    ALLOY_CORE_API plane bottom_plane() const noexcept;
+    ALLOY_CORE_API plane front_plane() const noexcept;
+    ALLOY_CORE_API plane back_plane() const noexcept;
+    ALLOY_CORE_API plane left_plane() const noexcept;
+    ALLOY_CORE_API plane right_plane() const noexcept;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -183,12 +186,12 @@ namespace alloy::core {
     /// \brief Gets an array containing the 6 normals
     ///
     /// \return the normals
-    std::array<vector3,6> normals() const noexcept;
+    ALLOY_CORE_API std::array<vector3,6> normals() const noexcept;
 
     /// \brief Gets an array containing the 6 planes that encompass this box
     ///
     /// \return the planes
-    std::array<plane,6> planes() const noexcept;
+    ALLOY_CORE_API std::array<plane,6> planes() const noexcept;
 
     /// \brief Gets the distance between this box and the specified \p point
     ///
@@ -200,7 +203,7 @@ namespace alloy::core {
     ///
     /// \param p the point to check for intersection
     /// \return \c true if \p p is in the box
-    bool contains( const point& p ) const noexcept;
+    ALLOY_CORE_API bool contains( const point& p ) const noexcept;
 
     /// \brief Checks if this box contains the given point \p p
     ///        relative to the given \p tolerance
@@ -208,17 +211,17 @@ namespace alloy::core {
     /// \param p the point to check for intersection
     /// \param tolerance the tolerance for accepting the containment
     /// \return \c true if \p p is in the box
-    bool contains( const point& p, real tolerance ) const noexcept;
+    ALLOY_CORE_API bool contains( const point& p, real tolerance ) const noexcept;
 
     /// \brief Checks if this box intersect another box
     ///
     /// \return \c true if this box intersects another box
-    bool intersects( const axis_aligned_box& other ) const noexcept;
+    ALLOY_CORE_API bool intersects( const axis_aligned_box& other ) const noexcept;
 
     /// \brief Checks if this box completely encloses another box
     ///
     /// \return \c true if this box completely encloses another box
-    bool encloses( const axis_aligned_box& other ) const noexcept;
+    ALLOY_CORE_API bool encloses( const axis_aligned_box& other ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -237,8 +240,10 @@ namespace alloy::core {
   // Equality
   //----------------------------------------------------------------------------
 
+  ALLOY_CORE_API
   bool operator==(const axis_aligned_box& lhs,
                   const axis_aligned_box& rhs) noexcept;
+  ALLOY_CORE_API
   bool operator!=(const axis_aligned_box& lhs,
                   const axis_aligned_box& rhs) noexcept;
 
@@ -250,6 +255,7 @@ namespace alloy::core {
   /// \param lhs the left plane
   /// \param rhs the right plane
   /// \return \c true if the two planes contain almost equal values
+  ALLOY_CORE_API
   bool almost_equal(const axis_aligned_box& lhs,
                     const axis_aligned_box& rhs) noexcept;
 
@@ -259,6 +265,7 @@ namespace alloy::core {
   /// \param rhs the right plane
   /// \param tolerance the tolerance for the comparison
   /// \return \c true if the two planes contain almost equal values
+  ALLOY_CORE_API
   bool almost_equal(const axis_aligned_box& lhs,
                     const axis_aligned_box& rhs,
                     real tolerance) noexcept;

@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/api.hpp"
 #include "alloy/core/precision.hpp"
 #include "alloy/core/assert.hpp"
 #include "alloy/core/math/math.hpp"
@@ -90,19 +91,19 @@ namespace alloy::core {
     ///
     /// \param c the color to convert
     /// \return a color instance
-    static color from_rgba32(rgba32 c) noexcept;
-    static color from_argb32(argb32 c) noexcept;
-    static color from_abgr32(abgr32 c) noexcept;
-    static color from_rgba64(rgba64 c) noexcept;
-    static color from_argb64(argb64 c) noexcept;
-    static color from_abgr64(abgr64 c) noexcept;
+    ALLOY_CORE_API static color from_rgba32(rgba32 c) noexcept;
+    ALLOY_CORE_API static color from_argb32(argb32 c) noexcept;
+    ALLOY_CORE_API static color from_abgr32(abgr32 c) noexcept;
+    ALLOY_CORE_API static color from_rgba64(rgba64 c) noexcept;
+    ALLOY_CORE_API static color from_argb64(argb64 c) noexcept;
+    ALLOY_CORE_API static color from_abgr64(abgr64 c) noexcept;
     /// \}
 
     /// \brief Converts a {hue,saturation,brightness} triple into a color
     ///
     /// \note the alpha component is always '1.0' for this function
     /// \return the color denoted by te triple
-    static color from_hsb(hsb c) noexcept;
+    ALLOY_CORE_API static color from_hsb(hsb c) noexcept;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -157,9 +158,11 @@ namespace alloy::core {
   public:
 
     /// \brief Inverts this color
+    ALLOY_CORE_API
     void invert() noexcept;
 
     /// \brief Contrasts this color
+    ALLOY_CORE_API
     void contrast() noexcept;
 
     /// \brief Darkens this color by \p percent
@@ -167,6 +170,7 @@ namespace alloy::core {
     /// A value of \c 1 darkens this to be black
     ///
     /// \param percent the percentage to darken this by
+    ALLOY_CORE_API
     void darken( real percent ) noexcept;
 
     /// \brief Brightens this color by \p percent
@@ -174,6 +178,7 @@ namespace alloy::core {
     /// A value of \c 1 brightens this to be white
     ///
     /// \param percent the percentage to brighten this by
+    ALLOY_CORE_API
     void brighten( real percent ) noexcept;
 
     //--------------------------------------------------------------------------
@@ -238,17 +243,18 @@ namespace alloy::core {
     /// \brief Converts this color to an integral representation
     ///
     /// \return the integral representation of the color
-    rgba32 to_rgba32() const noexcept;
-    argb32 to_argb32() const noexcept;
-    abgr32 to_abgr32() const noexcept;
-    rgba64 to_rgba64() const noexcept;
-    argb64 to_argb64() const noexcept;
-    abgr64 to_abgr64() const noexcept;
+    ALLOY_CORE_API rgba32 to_rgba32() const noexcept;
+    ALLOY_CORE_API argb32 to_argb32() const noexcept;
+    ALLOY_CORE_API abgr32 to_abgr32() const noexcept;
+    ALLOY_CORE_API rgba64 to_rgba64() const noexcept;
+    ALLOY_CORE_API argb64 to_argb64() const noexcept;
+    ALLOY_CORE_API abgr64 to_abgr64() const noexcept;
     /// \}
 
     /// \brief Converts this color to a {hue,saturation,brightness} triple
     ///
     /// \return the triple
+    ALLOY_CORE_API
     hsb to_hsb() const noexcept;
 
     //--------------------------------------------------------------------------

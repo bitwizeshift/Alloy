@@ -30,6 +30,7 @@
 #ifndef ALLOY_CORE_MODEL_IMAGE_HPP
 #define ALLOY_CORE_MODEL_IMAGE_HPP
 
+#include "alloy/core/api.hpp"
 #include "alloy/core/model/color.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/containers/vector.hpp"
@@ -41,7 +42,6 @@
 #include <type_traits>  // std::true_type
 
 namespace alloy::core {
-
 
   /////////////////////////////////////////////////////////////////////////////
   /// \brief A general image abstraction
@@ -95,6 +95,7 @@ namespace alloy::core {
     /// \param format the pixel format of the image
     ///
     /// \return an image on success, an error_code on failure
+    ALLOY_CORE_API
     static expected<image> make_image_from_buffer(vector<std::byte> buffer,
                                                   dimensions d,
                                                   pixel_format format);
@@ -111,6 +112,7 @@ namespace alloy::core {
     /// \param background the color to set the background of the image
     ///
     /// \return an image on success, an error_code on failure
+    ALLOY_CORE_API
     static expected<image> make_blank_image(dimensions d,
                                             pixel_format format,
                                             color background);
@@ -128,6 +130,7 @@ namespace alloy::core {
     /// \param alloc the allocator to use for constructing the image
     ///
     /// \return an image on success, an error_code on failure
+    ALLOY_CORE_API
     static expected<image> make_blank_image(dimensions d,
                                             pixel_format format,
                                             color background,
@@ -139,6 +142,7 @@ namespace alloy::core {
   public:
 
     /// \brief Constructs an image of 0 size
+    ALLOY_CORE_API
     image() noexcept;
     image(image&& other) noexcept = default;
     image(const image&) = delete;
@@ -161,6 +165,7 @@ namespace alloy::core {
     /// \param x the x position
     /// \param y the y position
     /// \param c the color
+    ALLOY_CORE_API
     void set_pixel(std::size_t x, std::size_t y, color c) noexcept;
 
     //--------------------------------------------------------------------------
@@ -176,6 +181,7 @@ namespace alloy::core {
     /// \param x the x coordinate
     /// \param y the y coordinate
     /// \return the color at image coordinate (x,y)
+    ALLOY_CORE_API
     color get_pixel(std::size_t x, std::size_t y) const noexcept;
 
     //--------------------------------------------------------------------------
@@ -186,12 +192,14 @@ namespace alloy::core {
     /// \brief Returns a copy of this image
     ///
     /// \return the copy of the image
+    ALLOY_CORE_API
     image copy() const;
 
     /// \brief Returns a copy of this image allocated using \p alloc
     ///
     /// \param alloc the allocator to use
     /// \return the new image
+    ALLOY_CORE_API
     image copy(allocator alloc) const;
 
     //--------------------------------------------------------------------------
@@ -249,6 +257,7 @@ namespace alloy::core {
   ///
   /// \param ec the error code
   /// \return the error code
+  ALLOY_CORE_API
   std::error_code make_error_code(image::error_code ec) noexcept;
 
 } // namespace alloy::core
