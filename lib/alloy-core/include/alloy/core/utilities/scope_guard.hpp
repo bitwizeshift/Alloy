@@ -102,7 +102,7 @@ namespace alloy::core {
 
 #define ALLOY_ON_SCOPE_EXIT(fn) \
   const auto ALLOY_UNIQUE_NAME(scope_guard_on_exit_) \
-    = ::alloy::core::on_scope_exit(fn);
+    = ::alloy::core::on_scope_exit(fn)
 
 } // namespace alloy::core
 
