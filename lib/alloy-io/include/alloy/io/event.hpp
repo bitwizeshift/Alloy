@@ -34,12 +34,6 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-// MSVC doesn't define 'aligned_storage' correctly for custom alignments above
-// alignof(max_align_t) unless this is defined.
-#if defined(_MSC_VER)
-#define _ENABLE_EXTENDED_ALIGNED_STORAGE 1
-#endif
-
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/assert.hpp"
 #include "alloy/core/utilities/aligned_storage.hpp"
