@@ -3,7 +3,20 @@
 #include <string>
 #include <utility>
 
+// Disable this warning for the error_category message function.
+// It is legal for enums to take on values outside of the switch case, and
+// in this case the input can be any numeric value (due to the way that
+// std::error_category works)
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wcovered-switch-default"
+#endif
+
 namespace {
+
+  //===========================================================================
+  // class : error_category
+  //===========================================================================
 
   class error_category final
     : public std::error_category
@@ -40,6 +53,10 @@ namespace {
   };
 
 } // namespace <anonymous>
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#endif
 
 //=============================================================================
 // definitions : class : file
