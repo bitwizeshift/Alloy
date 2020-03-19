@@ -123,6 +123,10 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
 elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
         "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   add_compile_options(-Wall -Werror -Wextra -pedantic -pedantic-errors)
+
+  # Xcode 11.2 seems to enable -Wnewline-eof with '-Wextra'. Disable this,
+  # since it's a legacy requirement not needed in C++11 onward.
+  add_compile_options(-Wno-newline-eof)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   # TODO: Determine MSVC necessary compiler flags
 endif ()
