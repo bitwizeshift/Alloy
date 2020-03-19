@@ -164,6 +164,9 @@ namespace alloy::core {
     E m_error;
   };
 
+  template <typename E>
+  unexpected(E) -> unexpected<E>;
+
   //============================================================================
   // class : bad_expected_access
   //============================================================================
