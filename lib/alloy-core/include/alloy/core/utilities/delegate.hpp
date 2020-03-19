@@ -308,7 +308,7 @@ namespace alloy::core {
   /// \return a delegate from a function pointer
   template <auto Fn,
             typename = std::enable_if_t<detail::enable_make_delegate_function<Fn>::value>>
-  constexpr delegate<typename function_traits<Fn>::signature_type>
+  constexpr delegate<typename alloy::core::function_traits<Fn>::signature_type>
     make_delegate() noexcept;
 
   /// \{
@@ -317,11 +317,11 @@ namespace alloy::core {
   /// \return a delegate from a function pointer
   template <auto MemberFn, typename C,
             typename = std::enable_if_t<detail::enable_make_delegate_member<MemberFn,C>::value>>
-  constexpr delegate<typename function_traits<MemberFn>::signature_type>
+  constexpr delegate<typename alloy::core::function_traits<MemberFn>::signature_type>
     make_delegate(C* c) noexcept;
   template <auto MemberFn, typename C,
             typename = std::enable_if_t<detail::enable_make_delegate_member<MemberFn,const C>::value>>
-  constexpr delegate<typename function_traits<MemberFn>::signature_type>
+  constexpr delegate<typename alloy::core::function_traits<MemberFn>::signature_type>
     make_delegate(const C* c) noexcept;
   /// \}
   template <auto MemberFn>
