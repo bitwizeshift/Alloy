@@ -394,7 +394,7 @@ alloy::core::quaternion& alloy::core::quaternion::invert()
   noexcept
 {
   const auto mag = magnitude();
-  if (mag > 0.0){
+  if (mag > real{0}){
     const auto mag_inv = real{1} / mag;
     w() *=  mag_inv;
     x() *= -mag_inv;

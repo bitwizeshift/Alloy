@@ -119,6 +119,14 @@ namespace alloy::core {
 // Equality
 //------------------------------------------------------------------------------
 
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wfloat-equal"
+#elif defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
+
 inline constexpr bool alloy::core::operator==(const light::attenuation& lhs,
                                               const light::attenuation& rhs)
   noexcept
@@ -136,6 +144,11 @@ inline constexpr bool alloy::core::operator!=(const light::attenuation& lhs,
   return !(lhs == rhs);
 }
 
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#elif defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
 
 inline constexpr bool alloy::core::almost_equal(const light::attenuation& lhs,
                                                 const light::attenuation& rhs)
@@ -163,6 +176,14 @@ inline constexpr bool alloy::core::almost_equal(const light::attenuation& lhs,
 // Equality
 //------------------------------------------------------------------------------
 
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wfloat-equal"
+#elif defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
+
 inline constexpr bool alloy::core::operator==(const light::intensity& lhs,
                                               const light::intensity& rhs)
   noexcept
@@ -178,6 +199,11 @@ inline constexpr bool alloy::core::operator!=(const light::intensity& lhs,
   return !(lhs == rhs);
 }
 
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#elif defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
 
 inline constexpr bool alloy::core::almost_equal(const light::intensity& lhs,
                                                 const light::intensity& rhs)

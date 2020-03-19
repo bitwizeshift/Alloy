@@ -524,7 +524,7 @@ inline constexpr alloy::core::matrix2
 {
   const auto det = determinant();
 
-  if (det == real{0}) {
+  if (almost_equal(det, real{0})) {
     return matrix2{};
   }
 
@@ -716,6 +716,14 @@ inline alloy::core::matrix2
 // Comparisons
 //------------------------------------------------------------------------------
 
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wfloat-equal"
+#elif defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
+
 inline constexpr bool
   alloy::core::operator==( const matrix2& lhs, const matrix2& rhs )
   noexcept
@@ -736,6 +744,12 @@ inline constexpr bool
 {
   return !(lhs==rhs);
 }
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#elif defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
 
 //------------------------------------------------------------------------------
 

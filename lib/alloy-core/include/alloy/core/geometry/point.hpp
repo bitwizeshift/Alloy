@@ -391,6 +391,14 @@ inline constexpr alloy::core::point
 // Comparisons
 //------------------------------------------------------------------------------
 
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wfloat-equal"
+#elif defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
+
 inline constexpr bool alloy::core::operator==( const point& lhs,
                                                const point& rhs )
   noexcept
@@ -409,6 +417,12 @@ inline constexpr bool alloy::core::operator!=( const point& lhs,
 {
   return !(lhs==rhs);
 }
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#elif defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
 
 //------------------------------------------------------------------------------
 
@@ -451,6 +465,14 @@ inline constexpr alloy::core::vector3 alloy::core::to_vector( const point& p )
 // struct : piecewise_compare<point>
 //==============================================================================
 
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wfloat-equal"
+#elif defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
+
 inline constexpr bool
   alloy::core::piecewise_compare<alloy::core::point>
   ::operator()( const point& lhs, const point& rhs )
@@ -462,5 +484,11 @@ inline constexpr bool
            (lhs.y() < rhs.y()) :
          (lhs.x() < rhs.x());
 }
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#elif defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
 
 #endif /* ALLOY_CORE_GEOMETRY_POINT_POINT_HPP */

@@ -37,6 +37,14 @@ bool alloy::core::line::contains( const point& p, real tolerance )
 // Equality
 //------------------------------------------------------------------------------
 
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wfloat-equal"
+#elif defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
+
 bool alloy::core::operator==( const line& lhs, const line& rhs )
   noexcept
 {
@@ -62,6 +70,12 @@ bool alloy::core::operator==( const line& lhs, const line& rhs )
   return (lhs_origin.y() - lhs_ty) == (rhs_origin.y() - rhs_ty) &&
          (lhs_origin.z() - lhs_tz) == (rhs_origin.z() - rhs_tz);
 }
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#elif defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
 
 //------------------------------------------------------------------------------
 

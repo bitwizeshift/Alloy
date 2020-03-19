@@ -880,6 +880,14 @@ inline constexpr alloy::core::vector2
 // Comparisons
 //------------------------------------------------------------------------------
 
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wfloat-equal"
+#elif defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
+
 inline constexpr bool
   alloy::core::operator==( const vector2& lhs, const vector2& rhs )
   noexcept
@@ -898,6 +906,12 @@ inline constexpr bool
 {
   return !(lhs==rhs);
 }
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#elif defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
 
 //------------------------------------------------------------------------------
 
@@ -983,6 +997,14 @@ inline alloy::core::vector2
 // struct : piecewise_compare<vector2>
 //==============================================================================
 
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wfloat-equal"
+#elif defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
+
 inline constexpr bool
   alloy::core::piecewise_compare<alloy::core::vector2>
   ::operator()( const vector2& lhs, const vector2& rhs )
@@ -992,5 +1014,11 @@ inline constexpr bool
            (lhs.y() < rhs.y()) :
          (lhs.x() < rhs.x());
 }
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#elif defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
 
 #endif /* ALLOY_CORE_MATH_VECTOR_VECTOR2_HPP */

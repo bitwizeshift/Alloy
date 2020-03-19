@@ -206,6 +206,14 @@ inline constexpr alloy::core::basis2::const_reference
 // Comparisons
 //------------------------------------------------------------------------------
 
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wfloat-equal"
+#elif defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
+
 inline constexpr bool alloy::core::operator==( const basis2& lhs,
                                                const basis2& rhs )
   noexcept
@@ -220,6 +228,12 @@ inline constexpr bool alloy::core::operator!=( const basis2& lhs,
 {
   return !(lhs==rhs);
 }
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#elif defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
 
 //------------------------------------------------------------------------------
 

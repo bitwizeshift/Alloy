@@ -217,6 +217,14 @@ inline constexpr const alloy::core::real& alloy::core::sphere::radius()
 // Equality
 //------------------------------------------------------------------------------
 
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wfloat-equal"
+#elif defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
+
 inline constexpr bool alloy::core::operator==( const sphere& lhs,
                                                const sphere& rhs )
   noexcept
@@ -230,6 +238,12 @@ inline constexpr bool alloy::core::operator!=( const sphere& lhs,
 {
   return !(lhs==rhs);
 }
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#elif defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
 
 //------------------------------------------------------------------------------
 

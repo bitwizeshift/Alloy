@@ -659,7 +659,7 @@ inline alloy::core::matrix4&
              get(0,3) * inv[3][0];
 
   // If determinant is zero, just return the identity matrix
-  if (det == real{0}) {
+  if (almost_equal(det, real{0})) {
     (*this) = matrix4{
       real{1}, real{0}, real{0}, real{0},
       real{0}, real{1}, real{0}, real{0},
@@ -911,6 +911,14 @@ inline alloy::core::matrix4
 // Comparisons
 //------------------------------------------------------------------------------
 
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wfloat-equal"
+#elif defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
+
 inline constexpr bool
   alloy::core::operator==( const matrix4& lhs, const matrix4& rhs )
   noexcept
@@ -931,6 +939,12 @@ inline constexpr bool
 {
   return !(lhs==rhs);
 }
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#elif defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
 
 //----------------------------------------------------------------------------
 

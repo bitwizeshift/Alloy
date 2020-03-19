@@ -64,7 +64,7 @@ namespace alloy::core {
   //===========================================================================
 
   /// The tolerance to use for floating-point equality
-  inline constexpr auto default_tolerance = real{1e-6};
+  inline constexpr auto default_tolerance = real{1e-6f};
 
   //===========================================================================
   // non-member functions

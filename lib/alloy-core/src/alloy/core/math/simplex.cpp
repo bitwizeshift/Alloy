@@ -38,13 +38,6 @@ namespace {
     138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
   };
 
-  const auto g_sqrt3 = alloy::core::sqrt( 3.0 );
-  const auto g_sqrt5 = alloy::core::sqrt( 5.0 );
-
-  const auto g_skew
-    = alloy::core::real{0.5} * (g_sqrt3 - alloy::core::real{1});
-  const auto g_unskew
-    = (alloy::core::real{3.0} - g_sqrt5) / alloy::core::real{6.0};
 
   constexpr alloy::core::real dot2( const int* a,
                                     alloy::core::real x,
@@ -75,18 +68,24 @@ namespace {
 //------------------------------------------------------------------------------
 
 alloy::core::real
-  alloy::core::simplex::raw_noise( core::real x, core::real y )
+  alloy::core::simplex::raw_noise(real x, real y)
   noexcept
 {
+  static const auto s_sqrt3 = static_cast<real>(sqrt( 3.0 ));
+  static const auto s_skew  = real{0.5} * (s_sqrt3 - real{1});
+
+  static const auto s_sqrt5 = static_cast<real>(sqrt( 5.0 ));
+  static const auto s_unskew = (real{3} - s_sqrt5) / real{6};
+
   // Noise contributions from the three corners
   core::real n0, n1, n2;
 
   // Hairy factor for 2D
-  auto s = (x + y) * g_skew;
+  auto s = (x + y) * s_skew;
   auto i = floor_f_to_i( x + s );
   auto j = floor_f_to_i( y + s );
 
-  auto t = (i + j) * g_unskew;
+  auto t = (i + j) * s_unskew;
 
   // Unskew the cell origin back to (x,y) space
   const auto x_unskew = i - t;
@@ -112,10 +111,10 @@ alloy::core::real
   // A step of (1,0) in (i,j) means a step of (1-c,-c) in (x,y), and
   // a step of (0,1) in (i,j) means a step of (-c,1-c) in (x,y), where
   // c = (3-sqrt(3))/6
-  auto x1 = x0 - i1 + g_unskew; // Offsets for middle corner in (x,y) unskewed coords
-  auto y1 = y0 - j1 + g_unskew;
-  auto x2 = x0 - 1.0 + 2.0 * g_unskew; // Offsets for last corner in (x,y) unskewed coords
-  auto y2 = y0 - 1.0 + 2.0 * g_unskew;
+  auto x1 = x0 - i1 + s_unskew; // Offsets for middle corner in (x,y) unskewed coords
+  auto y1 = y0 - j1 + s_unskew;
+  auto x2 = x0 - real{1} + real{2} * s_unskew; // Offsets for last corner in (x,y) unskewed coords
+  auto y2 = y0 - real{1} + real{2} * s_unskew;
 
   // Work out the hashed gradient indices of the three simplex corners
   auto ii = i & 255;
@@ -125,26 +124,26 @@ alloy::core::real
   auto gi2 = g_permutation_table[ ii + 1  + g_permutation_table[jj + 1] ] % 12;
 
   // Calculate the contribution from the three corners
-  auto t0 = 0.5 - (x0*x0) - (y0*y0);
+  auto t0 = real{0.5} - (x0*x0) - (y0*y0);
 
-  if(t0<0){
-    n0 = 0.0;
-  }else{
+  if (t0 < 0) {
+    n0 = real{0.0};
+  } else {
     t0 *= t0;
     n0 = t0 * t0 * ::dot2( g_grad[gi0], x0, y0 );
   }
 
-  auto t1 = 0.5 - x1*x1-y1*y1;
-  if(t1<0){
-    n1 = 0.0;
+  auto t1 = real{0.5} - x1*x1-y1*y1;
+  if (t1 < 0) {
+    n1 = real{0.0};
   } else {
     t1 *= t1;
     n1 = t1 * t1 * ::dot2( g_grad[gi1], x1, y1 );
   }
 
-  auto t2 = 0.5 - x2*x2-y2*y2;
-  if(t2<0){
-    n2 = 0.0;
+  auto t2 = real{0.5} - x2*x2-y2*y2;
+  if (t2 < 0){
+    n2 = real{0.0};
   } else {
     t2 *= t2;
     n2 = t2 * t2 * ::dot2( g_grad[gi2], x2, y2 );
@@ -152,12 +151,12 @@ alloy::core::real
 
   // Add contributions from each corner to get the final noise value.
   // The result is scaled to return values in the interval [-1,1].
-  const auto result = 70.0 * (n0 + n1 + n2);;
+  const auto result = real{70} * (n0 + n1 + n2);
   return static_cast<real>(result);
 }
 
 alloy::core::real
-  alloy::core::simplex::raw_noise( core::real x, core::real y, core::real z )
+  alloy::core::simplex::raw_noise(real x, real y, real z )
   noexcept
 {
   // TODO(matthew rodusek) 2017-04-22: Implement
@@ -169,19 +168,19 @@ alloy::core::real
 //------------------------------------------------------------------------------
 
 alloy::core::real
-  alloy::core::simplex::octave_noise( core::real octaves,
-                                      core::real persistence,
-                                      core::real scale,
-                                      core::real x,
-                                      core::real y )
+  alloy::core::simplex::octave_noise(real octaves,
+                                     real persistence,
+                                     real scale,
+                                     real x,
+                                     real y)
   noexcept
 {
 
     auto frequency = scale;
-    auto total     = core::real(0.0);
-    auto amplitude = core::real(1.0);
+    auto total     = real{0};
+    auto amplitude = real{1};
 
-    auto max_amplitude = core::real(0);
+    auto max_amplitude = real{0};
 
     for( auto i = 0; i < int(octaves); ++i ) {
       total += raw_noise( x * frequency, y * frequency ) * amplitude;
@@ -195,20 +194,20 @@ alloy::core::real
 }
 
 alloy::core::real
-  alloy::core::simplex::octave_noise( core::real octaves,
-                                      core::real persistence,
-                                      core::real scale,
-                                      core::real x,
-                                      core::real y,
-                                      core::real z )
+  alloy::core::simplex::octave_noise(real octaves,
+                                     real persistence,
+                                     real scale,
+                                     real x,
+                                     real y,
+                                     real z)
   noexcept
 {
 
     auto frequency = scale;
-    auto total     = core::real(0.0);
-    auto amplitude = core::real(1.0);
+    auto total     = real{0};
+    auto amplitude = real{1};
 
-    auto max_amplitude = core::real(0);
+    auto max_amplitude = real(0);
 
     for( int i = 0; i < int(octaves); ++i ) {
       total += raw_noise( x*frequency, y*frequency, z*frequency ) * amplitude;
