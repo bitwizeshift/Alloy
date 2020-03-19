@@ -46,7 +46,7 @@ namespace {
       &wstr[0],
       static_cast<int>(wstr.size()),
       &result[0],
-      needed,
+      static_cast<int>(needed),
       nullptr,
       nullptr
     );
@@ -79,8 +79,6 @@ alloy::extra::win32_filesystem_monitor::win32_filesystem_monitor()
 
 }
 
-alloy::extra::win32_filesystem_monitor
-  ::win32_filesystem_monitor( win32_filesystem_monitor&& ) noexcept = default;
 
 //------------------------------------------------------------------------------
 
@@ -97,11 +95,6 @@ alloy::extra::win32_filesystem_monitor::~win32_filesystem_monitor()
     ::CloseHandle( pair.second );
   }
 }
-
-//------------------------------------------------------------------------------
-
-alloy::extra::win32_filesystem_monitor& alloy::extra::win32_filesystem_monitor
-  ::operator=( win32_filesystem_monitor&& ) noexcept = default;
 
 //------------------------------------------------------------------------------
 // Private Hooks
@@ -134,7 +127,7 @@ void alloy::extra::win32_filesystem_monitor::do_watch( std::string_view path,
     path.data(),
     FILE_LIST_DIRECTORY,
     FILE_SHARE_WRITE | FILE_SHARE_READ | FILE_SHARE_DELETE,
-    0,
+    nullptr,
     OPEN_EXISTING,
     FILE_FLAG_BACKUP_SEMANTICS,
     nullptr
@@ -237,7 +230,6 @@ void alloy::extra::win32_filesystem_monitor::poll( io::message_pump& p )
         }
         default:
           ALLOY_UNREACHABLE();
-          break;
       }
 
       if (notify_info->NextEntryOffset==0U) {

@@ -62,16 +62,14 @@ namespace alloy::extra {
     ALLOY_EXTRA_WIN32_API
     win32_filesystem_monitor();
 
-    ALLOY_EXTRA_WIN32_API
-    win32_filesystem_monitor( win32_filesystem_monitor&& other ) noexcept;
-    win32_filesystem_monitor( const win32_filesystem_monitor& other ) = delete;
+    win32_filesystem_monitor( win32_filesystem_monitor&& ) = delete;
+    win32_filesystem_monitor( const win32_filesystem_monitor& ) = delete;
 
     ALLOY_EXTRA_WIN32_API
-    virtual ~win32_filesystem_monitor() noexcept;
+    ~win32_filesystem_monitor() noexcept override;
 
-    ALLOY_EXTRA_WIN32_API
-    win32_filesystem_monitor& operator=( win32_filesystem_monitor&& other ) noexcept;
-    win32_filesystem_monitor& operator=( const win32_filesystem_monitor& other ) = delete;
+    win32_filesystem_monitor& operator=( win32_filesystem_monitor&& ) = delete;
+    win32_filesystem_monitor& operator=( const win32_filesystem_monitor& ) = delete;
 
     //--------------------------------------------------------------------------
     // Hooks

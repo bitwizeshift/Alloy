@@ -623,7 +623,7 @@ std::uint32_t alloy::io::event::handler(operation op,
       auto* const mself = const_cast<storage_type*>(self);
       auto* const t = reinterpret_cast<T*>(mself);
       t->~T();
-      break;
+      return 0u;
     }
 
     case operation::copy: {
@@ -633,7 +633,7 @@ std::uint32_t alloy::io::event::handler(operation op,
       auto* const mself = const_cast<storage_type*>(self);
       const auto* const t = reinterpret_cast<const T*>(other);
       ::new(static_cast<void*>(mself)) T(*t);
-      break;
+      return 0u;
     }
 
     case operation::move: {
@@ -646,7 +646,7 @@ std::uint32_t alloy::io::event::handler(operation op,
       auto* const mt = const_cast<T*>(t);
 
       ::new(static_cast<void*>(mself)) T(std::move(*mt));
-      break;
+      return 0u;
     }
 
     case operation::id: {
@@ -662,11 +662,8 @@ std::uint32_t alloy::io::event::handler(operation op,
 
       return static_cast<std::uint32_t>(priority_of<T>());
     }
-
-    default:
-      core::compiler::unreachable();
   }
-  return 0u;
+  core::compiler::unreachable();
 }
 
 

@@ -300,9 +300,6 @@ alloy::io::file alloy::io::disk_filesystem::open(std::string_view path,
       str_mode = "a+b";
       break;
     }
-    default: {
-      core::compiler::unreachable();
-    }
   }
   auto zpath = core::string{
     path,
