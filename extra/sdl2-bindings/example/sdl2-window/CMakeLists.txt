@@ -24,3 +24,11 @@ set_target_properties(${PROJECT_NAME}SDL2WindowExample
   PROPERTIES
     OUTPUT_NAME "sdl2-window-example"
 )
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
+    "${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC")
+
+  # clang-cl is complaining that 'event' is shadowed in each if/else ladder
+  target_compile_options(${PROJECT_NAME}SDL2WindowExample
+    PRIVATE "-Wno-shadow"
+  )
+endif ()
