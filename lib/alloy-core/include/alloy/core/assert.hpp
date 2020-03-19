@@ -120,7 +120,7 @@
 #if !defined(NDEBUG)
 # define ALLOY_ASSERT(...) ALLOY_ALWAYS_ASSERT(__VA_ARGS__)
 #else
-# define ALLOY_ASSERT(...)
+# define ALLOY_ASSERT(...) (void) 0
 #endif
 
 //! \def ALLOY_ASSERT_AND_ASSUME(condition, message, ...)
