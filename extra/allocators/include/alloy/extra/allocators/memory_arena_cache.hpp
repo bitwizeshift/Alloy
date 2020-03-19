@@ -101,10 +101,10 @@ namespace alloy::extra {
     /// \return the size in bytes
     std::size_t size_bytes() const noexcept;
 
-    /// \brief Evaluates whether \p ptr exists within this memory_arena_cache
+    /// \brief Evaluates whether \p p exists within this memory_arena_cache
     ///
-    /// \param ptr the pointer to evaluate
-    /// \return \c true whether \p ptr
+    /// \param p the pointer to evaluate
+    /// \return true whether \p p
     bool contains(const void* p) const noexcept;
 
     //--------------------------------------------------------------------------

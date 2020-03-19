@@ -78,18 +78,34 @@ namespace alloy::extra {
     /// \brief Calculates the forward-offset required to align \p ptr to
     ///        \p align alignment
     ///
-    /// \param ptr The pointer to align
+    /// \param p The pointer to align
+    /// \param align The alignment to calculate
+    /// \return the amount of bytes required to align to the next aligned
+    ///         address
+    static std::size_t align_forward_offset(const void* p,
+                                            std::size_t align) noexcept;
+
+    /// \brief Calculates the forward-offset required to align \p ptr to
+    ///        \p align alignment
+    ///
+    /// \param p The pointer to align
     /// \param align The alignment to calculate
     /// \param offset The amount of offset to leave prior to alignment
     /// \return the amount of bytes required to align to the next aligned
     ///         address
-    /// \{
-    static std::size_t align_forward_offset(const void* ptr,
-                                            std::size_t align) noexcept;
-    static std::size_t align_forward_offset(const void* ptr,
+    static std::size_t align_forward_offset(const void* p,
                                             std::size_t align,
                                             std::size_t offset) noexcept;
-    /// \}
+
+    /// \brief Calculates the backward-offset required to align \p ptr to
+    ///        \p align alignment
+    ///
+    /// \param ptr The pointer to align
+    /// \param align The alignment to calculate
+    /// \return the amount of bytes required to align to the next aligned
+    ///         address
+    static std::size_t align_backward_offset(const void* ptr,
+                                             std::size_t align) noexcept;
 
     /// \brief Calculates the backward-offset required to align \p ptr to
     ///        \p align alignment
@@ -99,13 +115,9 @@ namespace alloy::extra {
     /// \param offset The amount of offset to leave prior to alignment
     /// \return the amount of bytes required to align to the next aligned
     ///         address
-    /// \{
-    static std::size_t align_backward_offset(const void* ptr,
-                                             std::size_t align) noexcept;
     static std::size_t align_backward_offset(const void* ptr,
                                              std::size_t align,
                                              std::size_t offset) noexcept;
-    /// \}
 
     //-------------------------------------------------------------------------
     // Align
@@ -115,7 +127,7 @@ namespace alloy::extra {
     /// \brief Aligns memory to a higher memory address at an alignment boundary
     ///        of \p align
     ///
-    /// \param p the pointer to align
+    /// \param ptr the pointer to align
     /// \param align the alignment
     /// \param adjust [out] the amount the pointer is allocated by
     /// \return the aligned pointer
