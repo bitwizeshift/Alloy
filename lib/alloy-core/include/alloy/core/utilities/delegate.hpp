@@ -232,6 +232,14 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   public:
 
+    // Some versions of clang using '-Wdocumentation' seem to not understand
+    // that the following template, with R = void, still has correct
+    // documentation.
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wdocumentation"
+#endif
+
     /// \brief Invokes the underlying delegate with the specified \p args
     ///
     /// \param args the arguments
@@ -239,6 +247,10 @@ namespace alloy::core {
     template <typename...UArgs,
               typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>>
     R operator()(UArgs&&...args) const;
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#endif
 
     /// \brief Returns \c true if this delegate contains a function
     constexpr explicit operator bool() const noexcept;
