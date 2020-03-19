@@ -31,6 +31,12 @@ set_target_properties(${PROJECT_NAME}CoreTest
   PROPERTIES
     OUTPUT_NAME "alloy-core-test"
 )
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
+    "${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC")
+  target_compile_options(${PROJECT_NAME}CoreTest
+    PRIVATE -Wno-float-equal
+  )
+endif ()
 
 ##############################################################################
 # CTest
