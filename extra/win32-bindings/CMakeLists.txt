@@ -3,6 +3,7 @@
 ##############################################################################
 
 set(header_files
+  include/alloy/extra/win32-bindings/api.hpp
   include/alloy/extra/win32-bindings/win32_filesystem_monitor.hpp
 )
 
@@ -26,6 +27,15 @@ set_target_properties(${PROJECT_NAME}ExtraWin32Bindings
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
 )
+if (BUILD_SHARED_LIBS)
+  target_compile_definitions(${PROJECT_NAME}ExtraWin32Bindings
+    PRIVATE ALLOY_EXTRA_WIN32_EXPORT=1
+  )
+else()
+  target_compile_definitions(${PROJECT_NAME}ExtraWin32Bindings
+    PRIVATE ALLOY_EXTRA_WIN32_STATIC=1
+  )
+endif()
 
 target_include_directories(${PROJECT_NAME}ExtraWin32Bindings
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>

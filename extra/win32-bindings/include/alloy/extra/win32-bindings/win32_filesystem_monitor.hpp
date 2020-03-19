@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/extra/win32-bindings/api.hpp"
 #include "alloy/io/events/filesystem_events.hpp"
 #include "alloy/io/filesystem/filesystem_monitor.hpp"
 #include "alloy/io/message_pump.hpp"
@@ -58,13 +59,17 @@ namespace alloy::extra {
     // TODO(bitwizeshift): Add allocator support
 
     /// \brief Constructs a win32_filesystem_monitor
+    ALLOY_EXTRA_WIN32_API
     win32_filesystem_monitor();
 
+    ALLOY_EXTRA_WIN32_API
     win32_filesystem_monitor( win32_filesystem_monitor&& other ) noexcept;
     win32_filesystem_monitor( const win32_filesystem_monitor& other ) = delete;
 
+    ALLOY_EXTRA_WIN32_API
     virtual ~win32_filesystem_monitor() noexcept;
 
+    ALLOY_EXTRA_WIN32_API
     win32_filesystem_monitor& operator=( win32_filesystem_monitor&& other ) noexcept;
     win32_filesystem_monitor& operator=( const win32_filesystem_monitor& other ) = delete;
 
