@@ -117,6 +117,11 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
   # This is erroring on valid uses of the standard library, like std::lock_guard.
   add_compile_options(-Wno-ctad-maybe-unsupported)
 
+  # This is a good warning *in general*, but not when using MSVC's standard
+  # library, which requires defining "_" prefixed macros just to have it operate
+  # like the C++ standard dictates.
+  add_compile_options(-Wno-reserved-id-macro)
+
   # TODO(#4): Undo once this no longer produces errors
   add_compile_options(-Wno-weak-vtables)
 
