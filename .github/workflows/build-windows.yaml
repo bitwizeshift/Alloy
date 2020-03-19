@@ -17,8 +17,8 @@ jobs:
       matrix:
         os: [windows-latest]
         compiler: [cl, clang-cl, clang]
-        arch: [x86_64]
-        build_type: [Release]
+        arch: [x86, x86_64]
+        build_type: [Debug, Release]
 
         include:
           - compiler: cl

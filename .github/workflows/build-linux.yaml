@@ -17,8 +17,8 @@ jobs:
       matrix:
         os: [ubuntu-18.04]
         compiler: [gcc, clang]
-        arch: [x86_64]
-        build_type: [Release]
+        arch: [x86, x86_64]
+        build_type: [Debug, Release]
 
         include:
 
@@ -75,7 +75,7 @@ jobs:
       - name: Prepare Architecture
         run: |
           if [ "${{ matrix.arch }}" = "x86" ]; then
-            echo "::set-env name=CXXFLAGS::$env:CXXFLAGS -m32"
+            echo "::set-env name=CXXFLAGS::${CXXFLAGS} -m32"
           fi
 
       - name: Create Conan Profile
