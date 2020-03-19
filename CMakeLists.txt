@@ -99,15 +99,30 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
   # so this case needs to be handled specifically
   add_compile_options(-Wall -Werror -Wextra)
 
+  # clang-cl treats '-Wall' like '-Weverything' currently; so there are a few
+  # warnings we need to manually disable.
+
   # Disable unnecessary compatibility and 'newline-eof'. This is a modern C++
-  # library.
+  # library -- so these serve no purpose
   add_compile_options(-Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-newline-eof)
+
+  # Disable warnings on padding. This is a great warning, but not good when
+  # coupled with -Werror
+  add_compile_options(-Wno-padded)
+
+  # Several utilities require static objects that have exit-time destructors,
+  # including 'error_category' types from the standard.
+  add_compile_options(-Wno-exit-time-destructors)
+
+  # This is erroring on valid uses of the standard library, like std::lock_guard.
+  add_compile_options(-Wno-ctad-maybe-unsupported)
+
+  # TODO(#4): Undo once this no longer produces errors
+  add_compile_options(-Wno-weak-vtables)
+
 elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
         "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   add_compile_options(-Wall -Werror -Wextra -pedantic -pedantic-errors)
-
-  # Disable the 'newline-eof' error, which isn't required in C++11 and above
-  add_compile_options(-Wno-newline-eof)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   # TODO: Determine MSVC necessary compiler flags
 endif ()
