@@ -98,6 +98,7 @@ namespace alloy::extra {
     /// \brief Accesses the underlying window handle
     ///
     /// \return the underlying window handle
+    ALLOY_EXTRA_SDL2_API
     window_handle_type window_handle() const noexcept;
 
     //--------------------------------------------------------------------------

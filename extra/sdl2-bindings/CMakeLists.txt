@@ -3,6 +3,7 @@
 ##############################################################################
 
 set(header_files
+  include/alloy/extra/sdl2-bindings/api.hpp
   include/alloy/extra/sdl2-bindings/sdl2_window.hpp
   include/alloy/extra/sdl2-bindings/sdl2_gl_window.hpp
   include/alloy/extra/sdl2-bindings/sdl2_pump_source.hpp
@@ -31,6 +32,15 @@ set_target_properties(${PROJECT_NAME}ExtraSDL2Bindings
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
 )
+if (BUILD_SHARED_LIBS)
+  target_compile_definitions(${PROJECT_NAME}ExtraSDL2Bindings
+          PRIVATE ALLOY_EXTRA_SDL2_EXPORT=1
+          )
+else()
+  target_compile_definitions(${PROJECT_NAME}ExtraSDL2Bindings
+          PRIVATE ALLOY_EXTRA_SDL2_STATIC=1
+          )
+endif()
 
 target_include_directories(${PROJECT_NAME}ExtraSDL2Bindings
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>

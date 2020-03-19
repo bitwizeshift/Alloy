@@ -71,6 +71,7 @@ namespace alloy::extra {
     /// \brief Gets the static instance
     ///
     /// \return a reference to the static pump source
+    ALLOY_EXTRA_SDL2_API
     static sdl2_pump_source& instance();
 
     //--------------------------------------------------------------------------
@@ -84,6 +85,7 @@ namespace alloy::extra {
     /// are pumped.
     ///
     /// \param window the window to attach
+    ALLOY_EXTRA_SDL2_API
     void attach_window(core::not_null<sdl2_window*> window);
 
     /// \brief Detaches an sdl2_window from this pump source
@@ -91,6 +93,7 @@ namespace alloy::extra {
     /// Removed windows have their events discarded during pumping.
     ///
     /// \param window the window to attach
+    ALLOY_EXTRA_SDL2_API
     void detach_window(core::not_null<sdl2_window*> window);
 
     //--------------------------------------------------------------------------

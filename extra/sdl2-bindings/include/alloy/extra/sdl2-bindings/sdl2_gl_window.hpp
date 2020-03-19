@@ -90,6 +90,7 @@ namespace alloy::extra {
     /// \param title the window title
     /// \param dimensions the dimensions of the window
     /// \param version the GL version
+    ALLOY_EXTRA_SDL2_API
     static sdl2_gl_window from_window_data( const char* title,
                                             const dimensions& dimensions,
                                             sdl_gl_version version );
@@ -100,6 +101,7 @@ namespace alloy::extra {
     /// \param position the position of the window
     /// \param dimensions the dimensions of the window
     /// \param version the GL version
+    ALLOY_EXTRA_SDL2_API
     static sdl2_gl_window from_window_data( const char* title,
                                             const position& position,
                                             const dimensions& dimensions,
@@ -119,6 +121,7 @@ namespace alloy::extra {
     /// \pre \p context is not null
     /// \param window the window handle
     /// \param context the opengl context
+    ALLOY_EXTRA_SDL2_API
     sdl2_gl_window( core::not_null<::SDL_Window*> window,
                     ::SDL_GLContext context ) noexcept;
 
@@ -130,6 +133,7 @@ namespace alloy::extra {
 
     //--------------------------------------------------------------------------
 
+    ALLOY_EXTRA_SDL2_API
     ~sdl2_gl_window() noexcept;
 
     //--------------------------------------------------------------------------
@@ -148,6 +152,7 @@ namespace alloy::extra {
     /// \brief Accesses the underlying window handle
     ///
     /// \return the underlying window handle
+    ALLOY_EXTRA_SDL2_API
     context_handle_type context_handle() const noexcept;
 
     //--------------------------------------------------------------------------
@@ -158,6 +163,7 @@ namespace alloy::extra {
     /// \brief Sets the swap interval for this window
     ///
     /// \param interval the interval for doing framerate swaps
+    ALLOY_EXTRA_SDL2_API
     void set_swap_interval( swap_interval interval );
 
     //--------------------------------------------------------------------------
