@@ -71,11 +71,11 @@
 
 // IWYU pragma: begin_exports
 #include <wctype.h>
-#include <windows.h>
+#include <Windows.h>
 #include <windef.h>
 #include <dinput.h>
-#include <xinput.h>
-#include <dbt.h>
+#include <Xinput.h>
+#include <Dbt.h>
 // IWYU pragma: end_exports
 
 #endif /* ALLOY_EXTRA_WIN32_BINDINGS_WINDOWS_HPP */
