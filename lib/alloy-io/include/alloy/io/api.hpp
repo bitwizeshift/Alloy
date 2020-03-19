@@ -1,0 +1,83 @@
+/*****************************************************************************
+ * \file api.hpp
+ *
+ * \brief This header contains the import/export API macro guards for the
+ *        Alloy::IO library
+ *****************************************************************************/
+
+/*
+  The MIT License (MIT)
+
+  Copyright (c) 2020 Matthew Rodusek All rights reserved.
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+*/
+#ifndef ALLOY_IO_API_HPP
+#define ALLOY_IO_API_HPP
+
+#ifdef ALLOY_IO_API_EXPORT
+# error "ALLOY_IO_API_EXPORT defined before inclusion of the config header"
+#endif
+#ifdef ALLOY_IO_API_IMPORT
+# error "ALLOY_IO_API_IMPORT defined before inclusion of the config header"
+#endif
+#ifdef ALLOY_IO_API
+# error "ALLOY_IO_API defined before inclusion of the config header"
+#endif
+
+#if defined(ALLOY_IO_EXPORT) && defined(ALLOY_IO_STATIC)
+# error "ALLOY_IO_EXPORT and ALLOY_IO_STATIC cannot both be set"
+#endif
+
+//! \def ALLOY_IO_API_EXPORT
+//!
+//! \brief Portable symbol for exporting a symbol during build/link.
+
+//! \def ALLOY_IO_API_IMPORT
+//!
+//! \brief Portable symbol for importing a symbol during consumption.
+
+//! \def ALLOY_IO_API
+//!
+//! \brief Portable export/import macros used for building/consuming the
+//!        library respectively.
+
+#if defined(ALLOY_IO_STATIC)
+# define ALLOY_IO_API_EXPORT
+# define ALLOY_IO_API_IMPORT
+#else
+# if defined(WIN32) || defined(_WIN32)
+#   define ALLOY_IO_API_EXPORT __declspec(dllexport)
+#   define ALLOY_IO_API_IMPORT __declspec(dllimport)
+#   ifdef _MSC_VER
+#     pragma warning(disable: 4251)
+#   endif
+# elif defined(__GNUC__)
+#   define ALLOY_IO_API_EXPORT __attribute__ ((__visibility__ ("default")))
+#   define ALLOY_IO_API_IMPORT __attribute__ ((__visibility__ ("default")))
+# endif
+#endif
+
+#if defined(ALLOY_IO_EXPORT)
+# define ALLOY_IO_API ALLOY_IO_API_EXPORT
+#else
+# define ALLOY_IO_API ALLOY_IO_API_IMPORT
+#endif
+
+#endif /* ALLOY_IO_API_HPP */

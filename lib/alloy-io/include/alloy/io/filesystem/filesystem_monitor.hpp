@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/event.hpp"
 #include "alloy/io/message_pump.hpp"
 
@@ -66,6 +67,7 @@ namespace alloy::io {
     /// \param path the path to watch
     /// \param recursive boolean to determine whether this should be done
     ///                  recursively to all subdirectories/files
+    ALLOY_IO_API
     void watch(std::string_view path, bool recursive = true) noexcept;
 
     //--------------------------------------------------------------------------

@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/event.hpp"
 
 namespace alloy::io {
@@ -75,6 +76,7 @@ namespace alloy::io {
     //--------------------------------------------------------------------------
   public:
 
+    ALLOY_IO_API
     virtual ~window() noexcept;
 
     //--------------------------------------------------------------------------
@@ -85,31 +87,37 @@ namespace alloy::io {
     /// \brief Gets the width of this window
     ///
     /// \return the width of this window
+    ALLOY_IO_API
     int width() const;
 
     /// \brief Gets the height of this window
     ///
     /// \return the height of this window
+    ALLOY_IO_API
     int height() const;
 
     /// \brief Checks whether this window is fullscreen
     ///
     /// \return \c true if the window is fullscreen
+    ALLOY_IO_API
     bool is_fullscreen() const;
 
     /// \brief Checks whether this window is focused
     ///
     /// \return \c true if the window is focused
+    ALLOY_IO_API
     bool is_focused() const;
 
     /// \brief Checks whether this window is currently shown
     ///
     /// \return \c true if the window is shown
+    ALLOY_IO_API
     bool is_shown() const;
 
     /// \brief Checks whether this window is hidden
     ///
     /// \return \c true if the window is hidden
+    ALLOY_IO_API
     bool is_hidden() const;
 
     //--------------------------------------------------------------------------
@@ -118,6 +126,7 @@ namespace alloy::io {
   public:
 
     /// \brief Updates the underlying window
+    ALLOY_IO_API
     void update();
 
     /// \brief Sets the dimensions of this window
@@ -129,6 +138,7 @@ namespace alloy::io {
     /// \pre \p height must be positive
     /// \param width the width of the window
     /// \param height the height of the window
+    ALLOY_IO_API
     void set_dimensions( int width, int height );
 
     /// \brief Sets the dimension of the window
@@ -143,6 +153,7 @@ namespace alloy::io {
     ///
     /// \param x the x pixel coordinate
     /// \param y the y pixel coordinate
+    ALLOY_IO_API
     void set_position( int x, int y );
 
     /// \brief Sets the position of this window
@@ -156,15 +167,19 @@ namespace alloy::io {
   public:
 
     /// \brief Sets the window fullscreen
+    ALLOY_IO_API
     void fullscreen();
 
     /// \brief Focuses the window
+    ALLOY_IO_API
     void focus();
 
     /// \brief Shows the window if hidden
+    ALLOY_IO_API
     void show();
 
     /// \brief Hides the window if shown
+    ALLOY_IO_API
     void hide();
 
     //--------------------------------------------------------------------------

@@ -25,6 +25,7 @@ set(generated_header_files
 )
 
 set(header_files
+  include/alloy/io/api.hpp
   include/alloy/io/buffers/mutable_buffer.hpp
   include/alloy/io/buffers/const_buffer.hpp
   include/alloy/io/events/window_events.hpp
@@ -72,6 +73,15 @@ set_target_properties(${PROJECT_NAME}IO
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
 )
+if (BUILD_SHARED_LIBS)
+  target_compile_definitions(${PROJECT_NAME}IO
+    PRIVATE ALLOY_IO_EXPORT=1
+  )
+else()
+  target_compile_definitions(${PROJECT_NAME}IO
+    PRIVATE ALLOY_IO_STATIC=1
+  )
+endif()
 
 target_include_directories(${PROJECT_NAME}IO
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>

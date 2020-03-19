@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/event.hpp"
 
 #include "alloy/core/utilities/not_null.hpp" // core::not_null
@@ -77,6 +78,7 @@ namespace alloy::io {
   public:
 
     /// \brief Constructs a message_pump with a default allocator
+    ALLOY_IO_API
     message_pump() noexcept;
 
     message_pump(message_pump&&) = delete;
@@ -117,6 +119,7 @@ namespace alloy::io {
     ///        listeners
     ///
     /// This is equivalent to calling 'poll' followed by 'dispatch'
+    ALLOY_IO_API
     void pump();
 
     /// \brief Polls for events from all message_pump event sources
@@ -125,9 +128,11 @@ namespace alloy::io {
     /// is called
     ///
     /// \note Polling must **not** be done from a dispatched event handler
+    ALLOY_IO_API
     void poll();
 
     /// \brief Dispatches all accumulated events to listeners
+    ALLOY_IO_API
     void dispatch();
 
     //--------------------------------------------------------------------------
@@ -138,6 +143,7 @@ namespace alloy::io {
     /// notify any attached listeners that an event has occurred.
     ///
     /// \return a sink for registering to the on-event handler
+    ALLOY_IO_API
     core::sink<listener> on_event() noexcept;
 
     /// \brief Retrieves a sink for the on-poll handler
@@ -146,6 +152,7 @@ namespace alloy::io {
     /// retrieve any event notifications, and push it back to the message_pump
     ///
     /// \return a sink for registering to the on-poll handler
+    ALLOY_IO_API
     core::sink<source> on_poll() noexcept;
 
     //--------------------------------------------------------------------------
@@ -160,6 +167,7 @@ namespace alloy::io {
     ///       move-constructor.
     ///
     /// \param e an rvalue of the event
+    ALLOY_IO_API
     void do_post_event(event&& e);
 
     /// \brief Posts an immediate event to all listeners
@@ -169,6 +177,7 @@ namespace alloy::io {
     ///       move-constructor.
     ///
     /// \param e an rvalue of the event
+    ALLOY_IO_API
     void do_post_immediate_event(event&& e);
 
     //--------------------------------------------------------------------------
@@ -228,6 +237,7 @@ namespace alloy::io {
   private:
 
     virtual void handle_message(const event& e) noexcept = 0;
+    ALLOY_IO_API
     virtual void handle_immediate_message(const event& e) noexcept;
   };
 
