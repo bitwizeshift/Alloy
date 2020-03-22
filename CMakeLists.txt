@@ -67,6 +67,15 @@ if (ALLOY_COMPILE_TESTS)
   enable_testing()
 endif ()
 
+# Builds on Windows using Ninja seem to cause issues where unit tests are
+# unable to link to the *.dlls, seemingly due to the Path environmen variable
+# not being updated. This forces the binaries to all be in the same directory
+# which ensures that they link correctly
+if (WIN32 AND BUILD_SHARED_LIBS)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/product")
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/product")
+endif ()
+
 project(Alloy
   VERSION "0.0.1"
   LANGUAGES CXX
