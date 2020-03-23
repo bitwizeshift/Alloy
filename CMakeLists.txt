@@ -146,6 +146,35 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif ()
 
 ##############################################################################
+# Build Configurations
+##############################################################################
+
+# Add 'Coverage' build type
+if (NOT ALLOY_IS_SUBPROJECT AND ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
+                                 "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"))
+
+  set(CMAKE_CONFIGURATION_TYPES Coverage ${CMAKE_CONFIGURATION_TYPES})
+  add_compile_options(
+    $<$<CONFIG:Coverage>:-O0>
+    $<$<CONFIG:Coverage>:-fprofile-arcs>
+    $<$<CONFIG:Coverage>:-ftest-coverage>
+    $<$<CONFIG:Coverage>:--coverage>
+  )
+  set(CMAKE_EXE_LINKER_FLAGS_COVERAGE
+    ${CMAKE_EXE_LINKER_FLAGS_DEBUG}
+    --coverage
+    CACHE STRING "Flags used by the linker for executables during coverage builds"
+    FORCE
+  )
+  set(CMAKE_SHARED_LINKER_FLAGS_COVERAGE
+    ${CMAKE_SHARED_LINKER_FLAGS_DEBUG}
+    --coverage
+    CACHE STRING "Flags used by the linker for libraries during coverage builds"
+    FORCE
+  )
+endif ()
+
+##############################################################################
 # Clang Tidy
 ##############################################################################
 
