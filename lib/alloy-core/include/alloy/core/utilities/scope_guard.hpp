@@ -34,118 +34,295 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/config.hpp" // ALLOY_CORE_EXCEPTIONS_ENABLED
 #include "alloy/core/macros.hpp" // ALLOY_UNIQUE_NAME
 
+#include <exception>   // std::uncaught_exceptions
 #include <utility>     // std::move
 #include <type_traits> // std::is_nothrow_move_constructible, std::decay_t
+#include <limits>
 
 namespace alloy::core {
+  namespace detail {
 
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief An RAII wrapper used for dispatching arbitrary functionality for
-  ///        external resource cleanup
+    //==========================================================================
+    // internal class : on_exit_policy
+    //==========================================================================
+
+    class on_exit_policy
+    {
+    public:
+      on_exit_policy() noexcept
+        : m_should_execute{true}
+      {
+
+      }
+      on_exit_policy(on_exit_policy&&) = default;
+      on_exit_policy(const on_exit_policy&) = default;
+      on_exit_policy& operator=(on_exit_policy&&) = default;
+      on_exit_policy& operator=(const on_exit_policy&) = default;
+
+      void release() noexcept
+      {
+        m_should_execute = false;
+      }
+
+      bool should_execute() const noexcept
+      {
+        return m_should_execute;
+      }
+
+    private:
+
+      bool m_should_execute;
+    };
+
+    //==========================================================================
+    // internal class : on_fail_policy
+    //==========================================================================
+
+    class on_fail_policy
+    {
+    public:
+      on_fail_policy() noexcept
+        : m_exception_count{std::uncaught_exceptions()}
+      {
+
+      }
+      on_fail_policy(on_fail_policy&&) = default;
+      on_fail_policy(const on_fail_policy&) = default;
+      on_fail_policy& operator=(on_fail_policy&&) = default;
+      on_fail_policy& operator=(const on_fail_policy&) = default;
+
+      void release() noexcept
+      {
+        m_exception_count = std::numeric_limits<int>::max();
+      }
+
+      bool should_execute() const noexcept
+      {
+        return m_exception_count < std::uncaught_exceptions();
+      }
+
+    private:
+
+      int m_exception_count;
+    };
+
+    //==========================================================================
+    // internal class : on_success_policy
+    //==========================================================================
+
+    class on_success_policy
+    {
+    public:
+      on_success_policy() noexcept
+        : m_exception_count{std::uncaught_exceptions()}
+      {
+
+      }
+
+      on_success_policy(on_success_policy&&) = default;
+      on_success_policy(const on_success_policy&) = default;
+      on_success_policy& operator=(on_success_policy&&) = default;
+      on_success_policy& operator=(const on_success_policy&) = default;
+
+      void release() noexcept
+      {
+        m_exception_count = -1;
+      }
+
+      bool should_execute() const noexcept
+      {
+        return m_exception_count == std::uncaught_exceptions();
+      }
+
+    private:
+
+      int m_exception_count;
+    };
+
+    //==========================================================================
+    // internal class : basic_scope_guard
+    //==========================================================================
+
+    template <typename Fn, typename ExitPolicy>
+    class basic_scope_guard : public ExitPolicy
+    {
+    public:
+      template <typename ExitFunction>
+      explicit basic_scope_guard(ExitFunction&& fn)
+        noexcept(std::is_nothrow_move_constructible<Fn>::value)
+        : ExitPolicy{},
+          m_function{std::forward<ExitFunction>(fn)}
+      {
+
+      }
+
+      basic_scope_guard(basic_scope_guard&& other)
+        noexcept(std::is_nothrow_move_constructible<Fn>::value)
+        : ExitPolicy{other},
+          m_function{std::move(other)}
+      {
+
+      }
+
+      ~basic_scope_guard()
+        noexcept(noexcept(std::declval<Fn&>()()))
+      {
+        if (should_execute()) {
+          m_function();
+        }
+      }
+
+      basic_scope_guard(const basic_scope_guard&) = delete;
+      basic_scope_guard& operator=(const basic_scope_guard&) = delete;
+      basic_scope_guard& operator=(basic_scope_guard&&) = delete;
+
+      //----------------------------------------------------------------------
+      // Modifiers
+      //----------------------------------------------------------------------
+    public:
+
+      using ExitPolicy::release;
+
+      //----------------------------------------------------------------------
+      // Observers
+      //----------------------------------------------------------------------
+    public:
+
+      using ExitPolicy::should_execute;
+
+    private:
+
+      Fn m_function;
+    };
+  } // namespace detail
+
+
+  //==========================================================================
+  // class : scope_exit<Fn>
+  //==========================================================================
+
+  ////////////////////////////////////////////////////////////////////////////
+  /// \brief An exit handler for handling both sucess an error cases
   ///
-  /// \tparam Fn the function to invoke. Must not be a reference type,
-  ///            and must be invocable without any arguments.
-  //////////////////////////////////////////////////////////////////////////////
-  template<typename Fn>
-  class scope_guard
+  /// This will always execute the stored function unless 'release' has been
+  /// called.
+  ///
+  /// \code
+  /// auto guard = scope::scope_exit{[&]{
+  ///   ...
+  /// }};
+  /// \endcode
+  ///
+  /// \tparam Fn the function type for the scope to execute
+  ////////////////////////////////////////////////////////////////////////////
+  template <typename Fn>
+  class scope_exit
+    : private detail::basic_scope_guard<Fn,detail::on_exit_policy>
   {
-    static_assert(!std::is_reference<Fn>::value);
-    static_assert(std::is_invocable<Fn>::value);
+    using base_type = detail::basic_scope_guard<Fn,detail::on_exit_policy>;
 
-    //--------------------------------------------------------------------------
-    // Constructor / Destructor / Assignment
-    //--------------------------------------------------------------------------
   public:
 
-    /// \brief Constructs a scope_guard from a function
-    ///
-    /// \param fn the function to invoke
-    explicit scope_guard(Fn fn)
-      noexcept(std::is_nothrow_move_constructible<Fn>::value);
+    using base_type::base_type;
 
-    scope_guard(scope_guard&&) = delete;
-    scope_guard(const scope_guard&) = delete;
+    using base_type::release;
 
-    //--------------------------------------------------------------------------
-
-    ~scope_guard() noexcept;
-
-    //--------------------------------------------------------------------------
-
-    scope_guard& operator=(scope_guard&&) = delete;
-    scope_guard& operator=(const scope_guard&) = delete;
-
-    //--------------------------------------------------------------------------
-    // Private Members
-    //--------------------------------------------------------------------------
-  private:
-
-    Fn m_fn; ///< The function to invoke
+    using base_type::should_execute;
   };
 
-  //============================================================================
-  // non-member functions : class : scope_guard
-  //============================================================================
+  template <typename Fn>
+  scope_exit(Fn) -> scope_exit<std::decay_t<Fn>>;
 
-  //----------------------------------------------------------------------------
-  // Utilities
-  //----------------------------------------------------------------------------
+  //==========================================================================
+  // class : scope_success<Fn>
+  //==========================================================================
 
-  /// \brief Creates a scope guard that executes at the end of the scope
+  ////////////////////////////////////////////////////////////////////////////
+  /// \brief An exit handler for handling non-throwing cases
   ///
-  /// \param fn the function to execute when a scope is exited
-  template<typename Fn>
-  scope_guard<std::decay_t<Fn>> on_scope_exit( Fn&& fn )
-    noexcept(std::is_nothrow_move_constructible<std::decay_t<Fn>>::value);
+  /// This will execute as long as an exception has not been thrown in the
+  /// same frame the scope was created in. You can manually disengage
+  /// executing this handler by calling \c release.
+  ///
+  /// \code
+  /// auto guard = scope::scope_success{[&]{
+  ///   ...
+  /// }};
+  /// \endcode
+  ///
+  /// \tparam Fn the function type for the scope to execute
+  ////////////////////////////////////////////////////////////////////////////
+  template <typename Fn>
+  class scope_success
+    : private detail::basic_scope_guard<Fn,detail::on_success_policy>
+  {
+    using base_type = detail::basic_scope_guard<Fn,detail::on_success_policy>;
+
+  public:
+
+    using base_type::base_type;
+
+    using base_type::release;
+
+    using base_type::should_execute;
+  };
+
+  template <typename Fn>
+  scope_success(Fn) -> scope_success<std::decay_t<Fn>>;
+
+
+  //==========================================================================
+  // class : scope_fail<Fn>
+  //==========================================================================
+
+  ////////////////////////////////////////////////////////////////////////////
+  /// \brief An exit handler for handling throwing cases
+  ///
+  /// This will execute when an exception has been thrown in the same frame
+  /// the scope was created in. You can manually disengage executing this
+  /// handler by calling \c release.
+  ///
+  /// \code
+  /// auto guard = scope::scope_fail{[&]{
+  ///   ...
+  /// }};
+  /// \endcode
+  ///
+  /// \tparam Fn the function type for the scope to execute
+  ////////////////////////////////////////////////////////////////////////////
+  template <typename Fn>
+  class scope_fail
+    : private detail::basic_scope_guard<Fn,detail::on_fail_policy>
+  {
+    using base_type = detail::basic_scope_guard<Fn,detail::on_fail_policy>;
+
+  public:
+
+    using base_type::base_type;
+
+    using base_type::release;
+
+    using base_type::should_execute;
+  };
+
+  template <typename Fn>
+  scope_fail(Fn) -> scope_fail<std::decay_t<Fn>>;
 
 #define ALLOY_ON_SCOPE_EXIT(fn) \
   const auto ALLOY_UNIQUE_NAME(scope_guard_on_exit_) \
-    = ::alloy::core::on_scope_exit(fn)
+    = ::alloy::core::scope_exit(fn)
+
+#define ALLOY_ON_SCOPE_SUCCESS(fn) \
+  const auto ALLOY_UNIQUE_NAME(scope_guard_on_success_) \
+    = ::alloy::core::scope_success(fn)
+
+#define ALLOY_ON_SCOPE_FAIL(fn) \
+  const auto ALLOY_UNIQUE_NAME(scope_guard_on_fail_) \
+    = ::alloy::core::scope_fail(fn)
 
 } // namespace alloy::core
-
-//==============================================================================
-// class : scope_guard
-//==============================================================================
-
-//------------------------------------------------------------------------------
-// Constructors / Destructor
-//------------------------------------------------------------------------------
-
-template<typename Fn>
-inline alloy::core::scope_guard<Fn>::scope_guard( Fn fn )
-  noexcept(std::is_nothrow_move_constructible<Fn>::value)
-  : m_fn{std::move(fn)}
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-template<typename Fn>
-inline alloy::core::scope_guard<Fn>::~scope_guard()
-  noexcept
-{
-  m_fn();
-}
-
-//==============================================================================
-// non-member functions : class : scope_guard
-//==============================================================================
-
-//------------------------------------------------------------------------------
-// Utilities
-//------------------------------------------------------------------------------
-
-template<typename Fn>
-inline alloy::core::scope_guard<std::decay_t<Fn>>
-  alloy::core::on_scope_exit( Fn&& fn )
-  noexcept(std::is_nothrow_move_constructible<std::decay_t<Fn>>::value)
-{
-  return scope_guard<std::decay_t<Fn>>{std::forward<Fn>(fn)};
-}
-
 
 #endif /* ALLOY_CORE_UTILITIES_SCOPE_GUARD_HPP */

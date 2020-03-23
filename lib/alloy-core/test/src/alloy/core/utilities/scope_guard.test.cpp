@@ -4,17 +4,17 @@
 
 namespace alloy::core::test {
 
-TEST_CASE("on_scope_exit( Fn&& fn )", "[raii]")
+TEST_CASE("scope_exit( Fn&& fn )", "[raii]")
 {
   bool flag = false;
 
   SECTION("Executes on clean scope exit")
   {
     {
-      auto scope = on_scope_exit([&]()
+      auto scope = scope_exit{[&]()
       {
         flag = true;
-      });
+      }};
     }
 
     REQUIRE( flag == true );
@@ -23,10 +23,10 @@ TEST_CASE("on_scope_exit( Fn&& fn )", "[raii]")
   SECTION("Executes on exception scope exit")
   {
     try {
-      auto scope = on_scope_exit([&]()
+      auto scope = scope_exit{[&]()
       {
         flag = true;
-      });
+      }};
       throw std::exception{};
     } catch (...) {
       // do nothing

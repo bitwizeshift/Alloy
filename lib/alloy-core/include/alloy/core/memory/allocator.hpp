@@ -557,9 +557,9 @@ inline void* alloy::core::allocator::reallocate_bytes(void* p,
   auto* const new_p = allocate_bytes(new_size, align);
 
   // Ensure we remember to delete the old allocation on scope exit
-  auto guard = on_scope_exit([&]{
+  auto guard = scope_exit{[&]{
     deallocate_bytes(p, old_size, align);
-  });
+  }};
   (void) guard;
 
   if (ALLOY_UNLIKELY(new_p == nullptr)) {
