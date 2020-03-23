@@ -18,7 +18,7 @@ jobs:
         os: [ubuntu-18.04]
         compiler: [gcc, clang]
         arch: [x86, x86_64]
-        build_type: [Debug, Release]
+        build_type: [Coverage, Debug, Release]
 
         include:
 
@@ -29,6 +29,14 @@ jobs:
           - os: ubuntu-18.04
             compiler: clang
             version: "9"
+
+        exclude:
+
+          - build_type: Coverage
+            arch: x86
+
+          - build_type: Coverage
+            arch: clang
 
     steps:
 
@@ -58,7 +66,7 @@ jobs:
             sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main"
           fi
           sudo apt-get update
-          sudo apt-get install -y ninja-build
+          sudo apt-get install -y ninja-build gcovr lcov
           if [ "${{ matrix.compiler }}" = "gcc" ]; then
             sudo apt-get install -y g++-${{ matrix.version }} g++-${{ matrix.version }}-multilib
             echo "::set-env name=CC::gcc-${{ matrix.version }}"
@@ -68,7 +76,7 @@ jobs:
             echo "::set-env name=CC::clang-${{ matrix.version }}"
             echo "::set-env name=CXX::clang++-${{ matrix.version }}"
           fi
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip cpp-coveralls
           pip install conan
           conan --version
 
@@ -88,7 +96,11 @@ jobs:
           cmake -E remove_directory build
           mkdir build
           cd build
-          conan install .. -s build_type=${{ matrix.build_type }}
+          build_type=${{ matrix.build_type }}
+          if [ ${{ matrix.build_type }} = "Coverage" ]; then
+            build_type=Debug # Coverage builds use 'Debug'
+          fi
+          conan install .. -s build_type=${build_type}
           cmake ..                                         \
              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}   \
              -DALLOY_COMPILE_SELF_CONTAINMENT_TESTS=On     \
@@ -106,3 +118,15 @@ jobs:
         run: |
           cd build
           ctest --output-on-failure
+
+      - name: Generate Coverage Report
+        if: ${{ matrix.build_type }} == 'Coverage' && ${{ matrix.build_type }} == 'gcc'
+        run: |
+          gcov --long-file-names --preserve-paths --relative-only $(find build -name '*.o')
+          lcov --capture --directory build --no-external --output-file build/coverage.info
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          path-to-lcov: build/coverage.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
