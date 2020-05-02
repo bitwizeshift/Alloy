@@ -35,6 +35,9 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "alloy/core/precision.hpp" // core::real
+#include "alloy/core/math/vector/vector2.hpp"
+#include "alloy/core/math/vector/vector3.hpp"
+#include "alloy/core/math/vector/vector4.hpp"
 
 #include <type_traits> // std::true_type, std::false_type
 
@@ -48,6 +51,10 @@ namespace alloy::core {
   ///
   /// The result is aliased as \c ::value
   template<typename T> struct is_vector : std::false_type{};
+
+  template<> struct is_vector<vector2> : std::true_type{};
+  template<> struct is_vector<vector3> : std::true_type{};
+  template<> struct is_vector<vector4> : std::true_type{};
 
   /// \brief Convenience template variable to extract out
   ///        \c is_vector<T>::value
@@ -82,6 +89,35 @@ namespace alloy::core {
     static constexpr real z( const T& vec ) noexcept;
     static constexpr real w( const T& vec ) noexcept;
   };
+
+
+  inline namespace casts {
+
+    /// \brief Converts a vector to a vector2
+    ///
+    /// \param vec the vector to convert to a vector2
+    /// \return the vector2
+    template<typename Vector,
+        typename=std::enable_if_t<is_vector<Vector>::value>>
+    vector2 to_vector2( const Vector& vec ) noexcept;
+
+    /// \brief Converts a vector to a vector3
+    ///
+    /// \param vec the vector to convert to a vector3
+    /// \return the vector3
+    template<typename Vector,
+        typename=std::enable_if_t<is_vector<Vector>::value>>
+    vector3 to_vector3( const Vector& vec ) noexcept;
+
+    /// \brief Converts a vector to a vector3
+    ///
+    /// \param vec the vector to convert to a vector3
+    /// \return the vector3
+    template<typename Vector,
+        typename=std::enable_if_t<is_vector<Vector>::value>>
+    vector4 to_vector4( const Vector& vec ) noexcept;
+
+  } // inline namespace casts
 
 } // namespace alloy::core
 
@@ -164,6 +200,47 @@ inline constexpr alloy::core::real
   } else {
     return real{0};
   }
+}
+
+
+//------------------------------------------------------------------------------
+// Casting
+//------------------------------------------------------------------------------
+
+template<typename Vector, typename>
+inline alloy::core::vector2
+  alloy::core::casts::to_vector2( const Vector& vec )
+  noexcept
+{
+  return vector2{
+      vector_traits<Vector>::x(vec),
+      vector_traits<Vector>::y(vec)
+  };
+}
+
+template<typename Vector, typename>
+inline alloy::core::vector3
+  alloy::core::casts::to_vector3( const Vector& vec )
+  noexcept
+{
+  return vector3{
+      vector_traits<Vector>::x(vec),
+      vector_traits<Vector>::y(vec),
+      vector_traits<Vector>::z(vec)
+  };
+}
+
+template<typename Vector, typename>
+inline alloy::core::vector4
+  alloy::core::casts::to_vector4( const Vector& vec )
+  noexcept
+{
+  return vector4{
+      vector_traits<Vector>::x(vec),
+      vector_traits<Vector>::y(vec),
+      vector_traits<Vector>::z(vec),
+      vector_traits<Vector>::w(vec)
+  };
 }
 
 #endif /* ALLOY_CORE_MATH_VECTOR_VECTOR_UTILITIES_HPP */

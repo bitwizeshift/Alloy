@@ -40,7 +40,6 @@
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/utilities/piecewise_compare.hpp" // core::piecewise_compare
 #include "alloy/core/math/angle/radian.hpp" // core::radian
-#include "alloy/core/math/vector/vector_utilities.hpp" // core::is_vector
 #include "alloy/core/math/trigonometry.hpp" // core::cos, core::sin, etc
 #include "alloy/core/math/math.hpp"         // core::sqrt
 
@@ -338,12 +337,6 @@ namespace alloy::core {
   constexpr bool is_vector4_v = is_vector4<T>::value;
 
   //============================================================================
-  // trait : is_vector<vector4>
-  //============================================================================
-
-  template<> struct is_vector<vector4> : std::true_type{};
-
-  //============================================================================
   // non-member functions : class : vector4
   //============================================================================
 
@@ -414,22 +407,6 @@ namespace alloy::core {
   /// \param vec the vector4 to calculate the magnitude from
   /// \return the magnitude
   real magnitude( const vector4& vec ) noexcept;
-
-  //----------------------------------------------------------------------------
-  // Casting
-  //----------------------------------------------------------------------------
-
-  inline namespace casts {
-
-    /// \brief Converts a vector to a vector3
-    ///
-    /// \param vec the vector to convert to a vector3
-    /// \return the vector3
-    template<typename Vector,
-             typename=std::enable_if_t<is_vector<Vector>::value>>
-    vector4 to_vector4( const Vector& vec ) noexcept;
-
-  } // inline namespace casts
 
   //============================================================================
   // struct : piecewise_compare<vector4>
@@ -958,23 +935,6 @@ inline alloy::core::real
   noexcept
 {
   return vec.magnitude();
-}
-
-//------------------------------------------------------------------------------
-// Casting
-//------------------------------------------------------------------------------
-
-template<typename Vector, typename>
-inline alloy::core::vector4
-  alloy::core::casts::to_vector4( const Vector& vec )
-  noexcept
-{
-  return vector4{
-    vector_traits<Vector>::x(vec),
-    vector_traits<Vector>::y(vec),
-    vector_traits<Vector>::z(vec),
-    vector_traits<Vector>::w(vec)
-  };
 }
 
 //==============================================================================
