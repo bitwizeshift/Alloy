@@ -1,4 +1,5 @@
 #include <alloy/core/utilities/signal.hpp>
+#include <alloy/core/intrinsics.hpp>
 #include <alloy/io/message_pump.hpp>
 #include <alloy/io/window.hpp>
 #include <alloy/extra/sdl2-bindings/sdl2_gl_window.hpp>
@@ -50,6 +51,8 @@ namespace {
 
 int main(int argc, char** argv)
 {
+  alloy::core::compiler::unused(argc);
+  alloy::core::compiler::unused(argv);
   ::SDL_Init(0);
   ::SDL_InitSubSystem( SDL_INIT_VIDEO );
 
