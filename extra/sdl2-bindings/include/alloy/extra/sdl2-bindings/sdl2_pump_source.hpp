@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/extra/sdl2-bindings/api.hpp"
 #include "alloy/io/events/window_events.hpp"
 #include "alloy/io/message_pump.hpp"
 #include "alloy/core/utilities/not_null.hpp"
