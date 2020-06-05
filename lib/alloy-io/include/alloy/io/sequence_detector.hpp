@@ -82,14 +82,14 @@ namespace alloy::io {
     /// \brief Constructs this sequence_detector from a \p container of the
     ///        desired sequence
     ///
-    /// \param container the container to copy
+    /// \param sequence the container to copy
     constexpr sequence_detector(const container& sequence)
       noexcept(std::is_nothrow_copy_constructible<Container>::value);
 
     /// \brief Constructs this sequence_detector from a \p container of the
     ///        desired sequence
     ///
-    /// \param container the container to move
+    /// \param sequence the container to move
     constexpr sequence_detector(container&& sequence)
       noexcept(std::is_nothrow_move_constructible<Container>::value);
 
