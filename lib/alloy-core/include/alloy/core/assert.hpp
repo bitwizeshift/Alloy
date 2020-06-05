@@ -63,6 +63,20 @@
 # error ALLOY_ALWAYS_ASSERT defined before assert.hpp included
 #endif
 
+// Assertions should always be compiled into the consuming binary, rather than
+// having the handler be visible
+#if !defined(ALLOY_ASSERT_VISIBILITY)
+# if defined(__clang__)
+#   define ALLOY_ASSERT_VISIBILITY __attribute__((visibility("hidden"), internal_linkage, no_instrument_function))
+# elif defined(__GNUC__)
+#   define ALLOY_ASSERT_VISIBILITY __attribute__((visibility("hidden"), always_inline, no_instrument_function))
+# elif defined(_MSC_VER)
+#   define ALLOY_ASSERT_VISIBILITY __forceinline
+# else
+#   define ALLOY_ASSERT_VISIBILITY
+# endif
+#endif
+
 #define ALLOY_INTERNAL_ASSERT_1(condition) \
   ((ALLOY_LIKELY(condition)) \
     ? ((void)0) \
@@ -165,6 +179,7 @@ namespace alloy::core::detail {
 #if defined(__clang__)
 # pragma clang diagnostic push
 # pragma clang diagnostic ignored "-Wused-but-marked-unused"
+# pragma clang diagnostic ignored "-Wunused-function"
 #endif
 
   // Note: This function is defined inline intentionally.
@@ -178,18 +193,21 @@ namespace alloy::core::detail {
   // here since it's required in order to use this with two of the target
   // compilers.
   [[noreturn]]
-  inline void assert_internal( const char* message,
-                               const char* file_name,
-                               std::size_t line,
-                               const char* function_name )
+  inline ALLOY_ASSERT_VISIBILITY
+  void assert_internal(const char* message,
+                       const char* file_name,
+                       std::size_t line,
+                       const char* function_name)
   {
-    ::std::fprintf(stderr, "[assertion] %s (%zu)::%s\n"
-                           "            %s\n",
-                           file_name,
-                           line,
-                           function_name,
-                           message );
-    std::fflush(stderr);
+    ::std::fprintf(stderr,
+      "[assertion] %s (%zu)::%s\n"
+      "            %s\n",
+      file_name,
+      line,
+      function_name,
+      message
+    );
+    ::std::fflush(stderr);
     // TODO(bitwizeshift): print out stack-trace on assertion failure
 
     ALLOY_BREAKPOINT();
