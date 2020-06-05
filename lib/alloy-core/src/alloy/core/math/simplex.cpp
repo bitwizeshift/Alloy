@@ -44,7 +44,8 @@ namespace {
                                     alloy::core::real y )
     noexcept
   {
-    return a[0]*x + a[1]*y;
+    return static_cast<alloy::core::real>(a[0]) * x +
+           static_cast<alloy::core::real>(a[1]) * y;
   }
 
   // constexpr alloy::core::real dot3( const int* a,
@@ -78,18 +79,20 @@ alloy::core::real
   static const auto s_unskew = (real{3} - s_sqrt5) / real{6};
 
   // Noise contributions from the three corners
-  core::real n0, n1, n2;
+  auto n0 = real{};
+  auto n1 = real{};
+  auto n2 = real{};
 
   // Hairy factor for 2D
   auto s = (x + y) * s_skew;
   auto i = floor_f_to_i( x + s );
   auto j = floor_f_to_i( y + s );
 
-  auto t = (i + j) * s_unskew;
+  auto t = static_cast<real>(i + j) * s_unskew;
 
   // Unskew the cell origin back to (x,y) space
-  const auto x_unskew = i - t;
-  const auto y_unskew = j - t;
+  const auto x_unskew = static_cast<real>(i) - t;
+  const auto y_unskew = static_cast<real>(j) - t;
 
   // The x,y distances from the cell origin
   auto x0 = x - x_unskew;
@@ -98,12 +101,14 @@ alloy::core::real
   // For the 2D case, the simplex shape is an equilateral triangle.
   // Determine which simplex we are in.
 
-  int i1, j1; // Offsets for second (middle) corner of simplex in (i,j) coords
+  // Offsets for second (middle) corner of simplex in (i,j) coords
+  auto i1 = int{};
+  auto j1 = int{};
 
-  if(x0>y0){
+  if (x0 > y0) {
     i1 = 1;
     j1 = 0;
-  }else{ // lower triangle, XY order: (0,0)->(1,0)->(1,1)
+  } else { // lower triangle, XY order: (0,0)->(1,0)->(1,1)
     i1 = 0;
     j1 = 1;
   }      // upper triangle, YX order: (0,0)->(0,1)->(1,1)
@@ -111,9 +116,13 @@ alloy::core::real
   // A step of (1,0) in (i,j) means a step of (1-c,-c) in (x,y), and
   // a step of (0,1) in (i,j) means a step of (-c,1-c) in (x,y), where
   // c = (3-sqrt(3))/6
-  auto x1 = x0 - i1 + s_unskew; // Offsets for middle corner in (x,y) unskewed coords
-  auto y1 = y0 - j1 + s_unskew;
-  auto x2 = x0 - real{1} + real{2} * s_unskew; // Offsets for last corner in (x,y) unskewed coords
+
+  // Offsets for middle corner in (x,y) unskewed coords
+  auto x1 = x0 - static_cast<real>(i1) + s_unskew;
+  auto y1 = y0 - static_cast<real>(j1) + s_unskew;
+
+  // Offsets for last corner in (x,y) unskewed coords
+  auto x2 = x0 - real{1} + real{2} * s_unskew;
   auto y2 = y0 - real{1} + real{2} * s_unskew;
 
   // Work out the hashed gradient indices of the three simplex corners
@@ -138,7 +147,7 @@ alloy::core::real
     n1 = real{0.0};
   } else {
     t1 *= t1;
-    n1 = t1 * t1 * ::dot2( g_grad[gi1], x1, y1 );
+    n1 = static_cast<real>(t1 * t1) * ::dot2( g_grad[gi1], x1, y1 );
   }
 
   auto t2 = real{0.5} - x2*x2-y2*y2;
@@ -146,12 +155,13 @@ alloy::core::real
     n2 = real{0.0};
   } else {
     t2 *= t2;
-    n2 = t2 * t2 * ::dot2( g_grad[gi2], x2, y2 );
+    n2 = static_cast<real>(t2 * t2) * ::dot2( g_grad[gi2], x2, y2 );
   }
 
   // Add contributions from each corner to get the final noise value.
   // The result is scaled to return values in the interval [-1,1].
-  const auto result = real{70} * (n0 + n1 + n2);
+  const auto result = real{70} * static_cast<real>(n0 + n1 + n2);
+
   return static_cast<real>(result);
 }
 
