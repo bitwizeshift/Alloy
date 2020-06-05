@@ -34,6 +34,8 @@
 #include <alloy/core/assert.hpp>
 #include <alloy/core/containers/vector.hpp>
 
+#include <type_traits> // std::is_same, std::is_nothrow_copy_constructible, etc
+
 namespace alloy::io {
 
   //===========================================================================
