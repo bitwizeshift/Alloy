@@ -155,10 +155,10 @@ namespace alloy::io {
   };
 
   template <typename Container>
-  sequence_detector(Container) -> sequence_detector<typename Container::value_type, Container>;
-
-  template <typename T>
-  sequence_detector(std::initializer_list<T>) -> sequence_detector<T>;
+  sequence_detector(Container&&) -> sequence_detector<
+    typename std::decay_t<Container>::value_type,
+    std::decay_t<Container>
+  >;
 
 } // namespace alloy::io
 
