@@ -29,6 +29,7 @@ set(header_files
   # Core
   include/alloy/core/api.hpp
   include/alloy/core/assert.hpp
+  include/alloy/core/clamped.hpp
   include/alloy/core/intrinsics.hpp
   include/alloy/core/macros.hpp
   include/alloy/core/type_index.hpp
