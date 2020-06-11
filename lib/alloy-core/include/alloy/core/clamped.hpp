@@ -32,6 +32,7 @@
 #define ALLOY_CORE_CLAMPED_HPP
 
 #include "alloy/core/assert.hpp"
+#include "alloy/core/saturated.hpp"
 #include "alloy/core/precision/real.hpp"
 
 #include <type_traits> // std::is_floating_point
@@ -93,9 +94,28 @@ namespace alloy::core {
     /// \param other the other object to copy
     constexpr clamped(const clamped& other) noexcept = default;
 
+    /// \brief Convert-constructs this clamped from a clamped of a different
+    ///        underlying float
+    ///
+    /// \param other the other object to copy
+    template <typename UFloat,
+              typename = std::enable_if_t<std::is_convertible<UFloat, Float>::value>>
+    constexpr explicit clamped(const saturated<UFloat>& other) noexcept;
+
+    /// \brief Convert-constructs this clamped from a clamped of a different
+    ///        underlying float
+    ///
+    /// \param other the other object to copy
+    template <typename UFloat,
+              typename = std::enable_if_t<std::is_convertible<UFloat, Float>::value>>
+    constexpr explicit clamped(const clamped<UFloat>& other) noexcept;
+
     //-------------------------------------------------------------------------
 
-    /// \brief
+    /// \brief Copies the value of \p other
+    ///
+    /// \param other the other clamped to copy
+    /// \return reference to (*this)
     constexpr clamped& operator=(const clamped& other) noexcept = default;
 
     //-------------------------------------------------------------------------
@@ -168,7 +188,7 @@ namespace alloy::core {
   /// \brief Determines relative equality between \p lhs and \p rhs relative
   ///        to the specified \p tolerance
   ///
-  ///
+  /// A tolerance of '1' or greater will always return 'true'
   ///
   /// \param lhs the value on the left of the equation
   /// \param rhs the value on the right of the equation
@@ -261,6 +281,28 @@ inline constexpr alloy::core::clamped<Float>
 }
 
 //-----------------------------------------------------------------------------
+// Constructors / Assignment
+//-----------------------------------------------------------------------------
+
+template <typename Float>
+template <typename UFloat, typename>
+inline constexpr alloy::core::clamped<Float>::clamped(const saturated<UFloat>& other)
+  noexcept
+  : m_value{static_cast<Float>(other.value())}
+{
+
+}
+
+template <typename Float>
+template <typename UFloat, typename>
+inline constexpr alloy::core::clamped<Float>::clamped(const clamped<UFloat>& other)
+  noexcept
+  : m_value{static_cast<Float>(other.value())}
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Observers
 //-----------------------------------------------------------------------------
 
@@ -283,7 +325,6 @@ inline constexpr alloy::core::clamped<Float>::clamped(element_type value)
 {
 
 }
-
 
 //=============================================================================
 // non-member functions : class : clamped
