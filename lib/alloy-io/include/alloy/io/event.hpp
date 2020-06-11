@@ -468,7 +468,7 @@ inline alloy::io::event::event(Event&& e)
 {
   static_assert(is_valid_event<std::decay_t<Event>>::value);
 
-  ::new (&e.m_storage) std::decay_t<Event>(std::forward<Event>(e));
+  ::new(&e.m_storage) std::decay_t<Event>(std::forward<Event>(e));
 }
 
 
@@ -506,7 +506,7 @@ inline alloy::io::event& alloy::io::event::operator=(event&& other)
 
   if (other.m_handler != nullptr) {
     m_handler = other.m_handler;
-    m_handler( operation::move, &m_storage, &other.m_storage );
+    m_handler(operation::move, &m_storage, &other.m_storage);
   }
 
   return (*this);
@@ -520,7 +520,7 @@ inline alloy::io::event& alloy::io::event::operator=(const event& other)
 
   if (other.m_handler != nullptr) {
     m_handler = other.m_handler;
-    m_handler(operation::move, &m_storage, &other.m_storage);
+    m_handler(operation::copy, &m_storage, &other.m_storage);
   }
 
   return (*this);
