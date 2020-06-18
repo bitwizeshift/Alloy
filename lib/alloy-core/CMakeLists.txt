@@ -112,6 +112,7 @@ set(header_files
 
   # Geometry
   include/alloy/core/geometry/axis_aligned_box.hpp
+  include/alloy/core/geometry/intersection.hpp
   include/alloy/core/geometry/line.hpp
   include/alloy/core/geometry/line_segment.hpp
   include/alloy/core/geometry/plane.hpp
