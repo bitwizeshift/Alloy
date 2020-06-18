@@ -298,9 +298,9 @@ ALLOY_FORCE_INLINE constexpr T* alloy::core::compiler::assume_aligned(T* p)
       __assume_aligned(p, 128);
       break;
   }
-  return ptr;
+  return p;
 #else // Unknown compiler — do nothing
-  return ptr;
+  return p;
 #endif
 }
 
