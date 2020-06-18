@@ -90,8 +90,7 @@ namespace alloy::core {
 
     /// \brief Constructs an intersection with the given type
     ///
-    /// \param p0 the start point
-    /// \param p1 the end point
+    /// \param type the type of intersection
     template <typename Type,
               typename = std::enable_if_t<std::is_constructible<std::variant<Types...>,Type>::value>>
     constexpr intersection(Type&& type) noexcept;
