@@ -277,6 +277,18 @@ namespace alloy::core {
     const void*   m_instance;
     function_type m_function;
 
+    //-------------------------------------------------------------------------
+    // Private Static Functions
+    //-------------------------------------------------------------------------
+  private:
+
+    /// \brief The default function bound to the delegate
+    ///
+    /// If exceptions are enabled, this will always throw an exception. If they
+    /// are disabled, this will call the assertion handler.
+    [[noreturn]]
+    static R default_function(const void* instance, Args...);
+
     template <typename R2, typename...Args2>
     friend constexpr bool operator==(const delegate<R2(Args2...)>&,
                                      const delegate<R2(Args2...)>&) noexcept;
@@ -516,7 +528,7 @@ inline constexpr alloy::core::delegate<R(Args...)>
 template <typename R, typename...Args>
 inline constexpr alloy::core::delegate<R(Args...)>::delegate()
   noexcept
-  : delegate{nullptr,nullptr}
+  : delegate{nullptr, &default_function}
 {
 
 }
@@ -575,7 +587,7 @@ template <typename R, typename...Args>
 inline void alloy::core::delegate<R(Args...)>::reset()
   noexcept
 {
-  m_function = nullptr;
+  m_function = &default_function;
   m_instance = nullptr;
 }
 
@@ -588,14 +600,6 @@ template <typename...UArgs, typename>
 inline R alloy::core::delegate<R(Args...)>::operator()(UArgs&&...args)
   const
 {
-#if ALLOY_CORE_EXCEPTIONS_ENABLED
-  if (m_function == nullptr) {
-    throw bad_delegate_call{};
-  }
-#else
-  ALLOY_ASSERT(m_function != nullptr);
-#endif
-
   return m_function(m_instance, std::forward<UArgs>(args)...);
 }
 
@@ -604,7 +608,7 @@ template <typename R, typename...Args>
 inline constexpr alloy::core::delegate<R(Args...)>::operator bool()
   const noexcept
 {
-  return m_function != nullptr;
+  return m_function != &default_function;
 }
 
 //-----------------------------------------------------------------------------
@@ -619,6 +623,21 @@ inline constexpr alloy::core::delegate<R(Args...)>
     m_function{function}
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Private Static Functions
+//-----------------------------------------------------------------------------
+
+template<typename R, typename... Args>
+R alloy::core::delegate<R(Args...)>::default_function(const void*, Args...)
+{
+#if ALLOY_CORE_EXCEPTIONS_ENABLED
+  throw bad_delegate_call{};
+#else
+  ALLOY_ASSERT(false, "no function bound to delegate");
+  std::terminate();
+#endif
 }
 
 //=============================================================================
