@@ -226,8 +226,8 @@ namespace alloy::core {
     ///
     /// This is used to suppress 'unused variable' warnings, and to indicate
     /// to the reader that a variable is intentionally unused
-    template <typename T>
-    static constexpr void unused(const T&) noexcept{}
+    template <typename...Types>
+    static constexpr void unused(const Types&...) noexcept{}
 
     /// \brief A meta function to indicate to the compiler that a static value
     ///        is unused
