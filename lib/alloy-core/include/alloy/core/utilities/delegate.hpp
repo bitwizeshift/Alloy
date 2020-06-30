@@ -278,7 +278,7 @@ namespace alloy::core {
     function_type m_function;
 
     //-------------------------------------------------------------------------
-    // Private Static Functions
+    // Private Function Stubs
     //-------------------------------------------------------------------------
   private:
 
@@ -287,7 +287,24 @@ namespace alloy::core {
     /// If exceptions are enabled, this will always throw an exception. If they
     /// are disabled, this will call the assertion handler.
     [[noreturn]]
-    static R default_function(const void* instance, Args...);
+    static R default_stub(const void* p, Args... args);
+
+    template <auto Fn>
+    static R function_stub(const void* p, Args... args);
+
+    template <auto MemberFn, typename C>
+    static R member_function_stub(const void* p, Args...args);
+
+    template <auto MemberFn, typename C>
+    static R const_member_function_stub(const void* p, Args...args);
+
+    template <typename Callable>
+    static R callable_stub(const void* p, Args...args);
+
+    template <typename Callable>
+    static R const_callable_stub(const void* p, Args...args);
+
+    //-------------------------------------------------------------------------
 
     template <typename R2, typename...Args2>
     friend constexpr bool operator==(const delegate<R2(Args2...)>&,
@@ -410,19 +427,10 @@ inline constexpr alloy::core::delegate<R(Args...)>
   alloy::core::delegate<R(Args...)>::make()
   noexcept
 {
-  const auto ptr = static_cast<const void*>(nullptr);
-  const auto fn  = [](const void* p, Args...args) -> R
-  {
-    (void) p;
+  const auto p  = static_cast<const void*>(nullptr);
+  const auto fn = &function_stub<Fn>;
 
-    if constexpr (std::is_void<R>::value) {
-      std::invoke(Fn, detail::delegate_forward<Args>(args)...);
-    } else {
-      return std::invoke(Fn, detail::delegate_forward<Args>(args)...);
-    }
-  };
-
-  return delegate{ptr, static_cast<function_type>(fn)};
+  return delegate{p, fn};
 }
 
 
@@ -434,19 +442,10 @@ inline constexpr alloy::core::delegate<R(Args...)>
 {
   ALLOY_ASSERT(c != nullptr);
 
-  const auto ptr = static_cast<const void*>(c);
-  const auto fn  = [](const void* p, Args...args) -> R
-  {
-    auto* pc = static_cast<C*>(const_cast<void*>(p));
+  const auto p  = static_cast<const void*>(c);
+  const auto fn = &member_function_stub<MemberFn, C>;
 
-    if constexpr (std::is_void<R>::value) {
-      std::invoke(MemberFn, pc, detail::delegate_forward<Args>(args)...);
-    } else {
-      return std::invoke(MemberFn, pc, detail::delegate_forward<Args>(args)...);
-    }
-  };
-
-  return delegate{ptr, static_cast<function_type>(fn)};
+  return delegate{p, fn};
 }
 
 
@@ -458,19 +457,10 @@ inline constexpr alloy::core::delegate<R(Args...)>
 {
   ALLOY_ASSERT(c != nullptr);
 
-  const auto ptr = static_cast<const void*>(c);
-  const auto fn  = [](const void* p, Args...args) -> R
-  {
-    auto* pc = static_cast<const C*>(p);
+  const auto p  = static_cast<const void*>(c);
+  const auto fn = &const_member_function_stub<MemberFn, C>;
 
-    if constexpr (std::is_void<R>::value) {
-      std::invoke(MemberFn, pc, detail::delegate_forward<Args>(args)...);
-    } else {
-      return std::invoke(MemberFn, pc, detail::delegate_forward<Args>(args)...);
-    }
-  };
-
-  return delegate{ptr, static_cast<function_type>(fn)};
+  return delegate{p, fn};
 }
 
 
@@ -483,16 +473,7 @@ inline constexpr alloy::core::delegate<R(Args...)>
   ALLOY_ASSERT(callable != nullptr);
 
   const auto ptr = static_cast<const void*>(callable);
-  const auto fn  = [](const void* p, Args...args) -> R
-  {
-    auto* pc = static_cast<Callable*>(const_cast<void*>(p));
-
-    if constexpr (std::is_void<R>::value) {
-      std::invoke(*pc, detail::delegate_forward<Args>(args)...);
-    } else {
-      return std::invoke(*pc, detail::delegate_forward<Args>(args)...);
-    }
-  };
+  const auto fn  = &callable_stub<Callable>;
 
   return delegate{ptr, static_cast<function_type>(fn)};
 }
@@ -506,19 +487,10 @@ inline constexpr alloy::core::delegate<R(Args...)>
 {
   ALLOY_ASSERT(callable != nullptr);
 
-  const auto ptr = static_cast<const void*>(callable);
-  const auto fn  = [](const void* p, Args...args) -> R
-  {
-    const auto* pc = static_cast<const Callable*>(p);
+  const auto p  = static_cast<const void*>(callable);
+  const auto fn = &const_callable_stub<Callable>;
 
-    if constexpr (std::is_void<R>::value) {
-      std::invoke(*pc, detail::delegate_forward<Args>(args)...);
-    } else {
-      return std::invoke(*pc, detail::delegate_forward<Args>(args)...);
-    }
-  };
-
-  return delegate{ptr, static_cast<function_type>(fn)};
+  return delegate{p, fn};
 }
 
 //-----------------------------------------------------------------------------
@@ -528,7 +500,7 @@ inline constexpr alloy::core::delegate<R(Args...)>
 template <typename R, typename...Args>
 inline constexpr alloy::core::delegate<R(Args...)>::delegate()
   noexcept
-  : delegate{nullptr, &default_function}
+  : delegate{nullptr, &default_stub}
 {
 
 }
@@ -587,7 +559,7 @@ template <typename R, typename...Args>
 inline void alloy::core::delegate<R(Args...)>::reset()
   noexcept
 {
-  m_function = &default_function;
+  m_function = &default_stub;
   m_instance = nullptr;
 }
 
@@ -608,7 +580,7 @@ template <typename R, typename...Args>
 inline constexpr alloy::core::delegate<R(Args...)>::operator bool()
   const noexcept
 {
-  return m_function != &default_function;
+  return m_function != &default_stub;
 }
 
 //-----------------------------------------------------------------------------
@@ -629,9 +601,10 @@ inline constexpr alloy::core::delegate<R(Args...)>
 // Private Static Functions
 //-----------------------------------------------------------------------------
 
-template<typename R, typename... Args>
-R alloy::core::delegate<R(Args...)>::default_function(const void*, Args...)
+template <typename R, typename...Args>
+inline R alloy::core::delegate<R(Args...)>::default_stub(const void* p, Args...args)
 {
+  compiler::unused(p, args...);
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
   throw bad_delegate_call{};
 #else
@@ -639,6 +612,79 @@ R alloy::core::delegate<R(Args...)>::default_function(const void*, Args...)
   std::terminate();
 #endif
 }
+
+template <typename R, typename...Args>
+template <auto Fn>
+inline R
+  alloy::core::delegate<R(Args...)>::function_stub(const void* p, Args...args)
+{
+  compiler::unused(p);
+
+  if constexpr (std::is_void<R>::value) {
+    std::invoke(Fn, detail::delegate_forward<Args>(args)...);
+  } else {
+    return std::invoke(Fn, detail::delegate_forward<Args>(args)...);
+  }
+}
+
+template <typename R, typename...Args>
+template <auto MemberFn, typename C>
+inline R
+  alloy::core::delegate<R(Args...)>::member_function_stub(const void* p, Args...args )
+{
+  auto* pc = static_cast<C*>(const_cast<void*>(compiler::assume_not_null(p)));
+
+  if constexpr (std::is_void<R>::value) {
+    std::invoke(MemberFn, pc, detail::delegate_forward<Args>(args)...);
+  } else {
+    return std::invoke(MemberFn, pc, detail::delegate_forward<Args>(args)...);
+  }
+}
+
+
+template <typename R, typename...Args>
+template <auto MemberFn, typename C>
+inline R
+  alloy::core::delegate<R(Args...)>::const_member_function_stub(const void* p, Args... args )
+{
+  const auto* pc = static_cast<const C*>(compiler::assume_not_null(p));
+
+  if constexpr (std::is_void<R>::value) {
+    std::invoke(MemberFn, pc, detail::delegate_forward<Args>(args)...);
+  } else {
+    return std::invoke(MemberFn, pc, detail::delegate_forward<Args>(args)...);
+  }
+}
+
+template <typename R, typename...Args>
+template <typename Callable>
+inline R
+  alloy::core::delegate<R(Args...)>::callable_stub(const void* p, Args...args)
+{
+  auto* pc = static_cast<Callable*>(const_cast<void*>(compiler::assume_not_null(p)));
+
+  if constexpr (std::is_void<R>::value) {
+    std::invoke(*pc, detail::delegate_forward<Args>(args)...);
+  } else {
+    return std::invoke(*pc, detail::delegate_forward<Args>(args)...);
+  }
+}
+
+template <typename R, typename...Args>
+template <typename Callable>
+inline R
+  alloy::core::delegate<R(Args...)>::const_callable_stub(const void* p, Args...args)
+{
+  auto* pc = static_cast<const Callable*>(compiler::assume_not_null(p));
+
+  if constexpr (std::is_void<R>::value) {
+    std::invoke(*pc, detail::delegate_forward<Args>(args)...);
+  } else {
+    return std::invoke(*pc, detail::delegate_forward<Args>(args)...);
+  }
+
+}
+
 
 //=============================================================================
 // inline definitions : non-member functions
