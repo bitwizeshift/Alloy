@@ -7,6 +7,7 @@ find_package(Catch2 REQUIRED)
 set(source_files
   # Utilities
   src/alloy/core/utilities/scope_guard.test.cpp
+  src/alloy/core/utilities/delegate.test.cpp
 
   # Traits
   src/alloy/core/traits/function_traits.test.cpp

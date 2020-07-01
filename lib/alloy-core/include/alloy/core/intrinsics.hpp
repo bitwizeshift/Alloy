@@ -226,8 +226,8 @@ namespace alloy::core {
     ///
     /// This is used to suppress 'unused variable' warnings, and to indicate
     /// to the reader that a variable is intentionally unused
-    template <typename T>
-    static constexpr void unused(const T&) noexcept{}
+    template <typename...Types>
+    static constexpr void unused(const Types&...) noexcept{}
 
     /// \brief A meta function to indicate to the compiler that a static value
     ///        is unused
@@ -249,6 +249,21 @@ namespace alloy::core {
     template <std::size_t N, typename T>
     [[nodiscard]]
     static constexpr T* assume_aligned(T* p) noexcept;
+
+    /// \brief Provides a hint to the compiler that the pointer \p p is not null
+    ///
+    /// \note The returned pointer is the only pointer known to the compiler to
+    ///        be not-null; the input should be discarded
+    ///
+    /// This may help to avoid certain generated assemblies which make
+    /// assumptions on the result of a pointer being null by allowing any
+    /// related code paths to be completely optimized out.
+    ///
+    /// \param p the pointer to indicate is not-null
+    /// \return a pointer that the compiler knows is not null
+    template <typename T>
+    [[gnu::returns_nonnull]]
+    static constexpr T* assume_not_null(T* p) noexcept;
 
     /// \brief Provides a hint to the compiler that the code path after this
     ///        function is not reachable
@@ -303,6 +318,24 @@ ALLOY_FORCE_INLINE constexpr T* alloy::core::compiler::assume_aligned(T* p)
   return p;
 #endif
 }
+
+template<typename T>
+ALLOY_FORCE_INLINE constexpr T* alloy::core::compiler::assume_not_null(T* p)
+  noexcept
+{
+#if defined(_MSC_VER)
+  if (p != nullptr) {
+    return p;
+  } else {
+    __assume(0);
+  }
+#else
+  // For gcc / clang, [[gnu::returns_nonnull]] upholds the non-nullability
+  // invariant
+  return p;
+#endif
+}
+
 
 ALLOY_FORCE_INLINE void alloy::core::compiler::unreachable()
   noexcept
