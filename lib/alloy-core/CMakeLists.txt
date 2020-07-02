@@ -78,6 +78,7 @@ set(header_files
   include/alloy/core/utilities/scope_guard.hpp
   include/alloy/core/utilities/semantic_type.hpp
   include/alloy/core/utilities/string_view.hpp
+  include/alloy/core/utilities/quantity.hpp
 
   # Memory
   include/alloy/core/memory/memory_resource.hpp
