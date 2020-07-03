@@ -31,6 +31,7 @@
 #define ALLOY_CORE_UTILITIES_CASTS_HPP
 
 #include "alloy/core/assert.hpp"
+#include "alloy/core/intrinsics.hpp"
 
 #include <type_traits> // std::declval, std::enable_if_t, etc
 #include <utility>     // std::forward
@@ -176,26 +177,17 @@ namespace alloy::core {
 // definitions : non-member functions : casts
 //=============================================================================
 
+ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wconversion)
+ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(-Wimplicit-int-conversion)
+
 template<typename To, typename From, typename>
 inline constexpr To alloy::core::casts::implicit_cast(From&& from)
   noexcept(std::is_nothrow_constructible<To,From>::value)
 {
-#if defined(__clang__)
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wconversion"
-# pragma clang diagnostic ignored "-Wimplicit-int-conversion"
-#elif defined(__GNUC__)
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Wconversion"
-#endif
   return std::forward<From>(from);
-#if defined(__clang__)
-# pragma clang diagnostic pop
-#elif defined(__GNUC__)
-# pragma GCC diagnostic pop
-#endif
 }
-
+ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 template<typename To, typename From, typename>
 inline constexpr To alloy::core::casts::narrow_cast(From from)

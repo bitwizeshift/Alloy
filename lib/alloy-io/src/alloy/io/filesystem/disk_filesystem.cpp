@@ -258,13 +258,8 @@ alloy::io::disk_filesystem::disk_filesystem(core::allocator alloc)
 // Clang has attributes to work around this, but I ignore this error in clang
 // too in case older versions, or different clang implementations (e.g. apple)
 // decide not to implement the specific attribute.
-#if defined(__clang__)
-#  pragma clang diagnostic push
-#  pragma clang diagnostic ignored "-Wswitch"
-#elif defined(__GNUC__)
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wswitch"
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wswitch)
 
 alloy::io::file alloy::io::disk_filesystem::open(std::string_view path,
                                                  open_mode mode)
@@ -316,11 +311,7 @@ alloy::io::file alloy::io::disk_filesystem::open(std::string_view path,
   return file{stream, this};
 }
 
-#if defined(__clang__)
-#  pragma clang diagnostic pop
-#elif defined(__GNUC__)
-#  pragma GCC diagnostic pop
-#endif // __GNUC__
+ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //-----------------------------------------------------------------------------
 // Virtual Hooks : Finalize

@@ -33,6 +33,7 @@
 #include "alloy/core/model/color.hpp"
 #include "alloy/core/model/light/light.hpp"
 #include "alloy/core/math/math.hpp"
+#include "alloy/core/intrinsics.hpp"
 
 namespace alloy::core {
 
@@ -80,13 +81,8 @@ namespace alloy::core {
 // Equality
 //----------------------------------------------------------------------------
 
-#if defined(__clang__)
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wfloat-equal"
-#elif defined(__GNUC__)
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Wfloat-equal"
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr bool alloy::core::operator==(const global_light& lhs,
                                               const global_light& rhs)
@@ -105,11 +101,7 @@ inline constexpr bool alloy::core::operator!=(const global_light& lhs,
   return !(lhs == rhs);
 }
 
-#if defined(__clang__)
-# pragma clang diagnostic pop
-#elif defined(__GNUC__)
-# pragma GCC diagnostic pop
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 inline constexpr bool alloy::core::almost_equal(const global_light& lhs,
                                                 const global_light& rhs)

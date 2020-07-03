@@ -35,6 +35,7 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "alloy/core/api.hpp"
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/assert.hpp"    // ALLOY_ASSERT
 #include "alloy/core/math/vector/vector3.hpp" // core::vector3
@@ -407,13 +408,8 @@ inline alloy::core::plane alloy::core::plane::operator-()
 // Equality
 //------------------------------------------------------------------------------
 
-#if defined(__clang__)
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wfloat-equal"
-#elif defined(__GNUC__)
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Wfloat-equal"
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr bool alloy::core::operator==( const plane& lhs,
                                                const plane& rhs )
@@ -432,11 +428,7 @@ inline constexpr bool alloy::core::operator!=( const plane& lhs,
   return !(lhs==rhs);
 }
 
-#if defined(__clang__)
-# pragma clang diagnostic pop
-#elif defined(__GNUC__)
-# pragma GCC diagnostic pop
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
 

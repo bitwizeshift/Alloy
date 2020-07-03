@@ -36,6 +36,7 @@
 
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/math/math.hpp" // core::almost_equal
+#include "alloy/core/intrinsics.hpp" // ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE
 
 #include <cmath>       // std::fmod
 #include <type_traits> // std::true_type / std::false_type
@@ -536,13 +537,8 @@ inline constexpr alloy::core::basic_angle<AngleUnit>
 // Comparisons
 //------------------------------------------------------------------------------
 
-#if defined(__clang__)
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wfloat-equal"
-#elif defined(__GNUC__)
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Wfloat-equal"
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 template<typename AngleUnit>
 inline constexpr bool
@@ -562,11 +558,7 @@ inline constexpr bool
   return !(lhs==rhs);
 }
 
-#if defined(__clang__)
-# pragma clang diagnostic pop
-#elif defined(__GNUC__)
-# pragma GCC diagnostic pop
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 template<typename AngleUnit>
 inline constexpr bool
