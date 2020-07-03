@@ -278,7 +278,7 @@
 //!
 //! \brief Preserves the current diagnostics state for the msvc compiler on the
 //!        stack, which can be undone by ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP()
-#if defined(_MSVC) && !defined(__clang__)
+#if defined(_MSC_VER) && !defined(__clang__)
 # define ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH() ALLOY_COMPILER_PRAGMA(warning(push))
 #else
 # define ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH()
@@ -287,7 +287,7 @@
 //! \def ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP()
 //!
 //! \brief Recovers the diagnostic state from the stack
-#if defined(_MSVC) && !defined(__clang__)
+#if defined(_MSC_VER) && !defined(__clang__)
 # define ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP() ALLOY_COMPILER_PRAGMA(warning(pop))
 #else
 # define ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP()
@@ -298,7 +298,7 @@
 //! \brief Ignores the specified warning number from MSVC
 //!
 //! \param error the error code to ignore
-#if defined(_MSVC) && !defined(__clang__)
+#if defined(_MSC_VER) && !defined(__clang__)
 # define ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE(error) ALLOY_COMPILER_PRAGMA(warning(disable: error))
 #else
 # define ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE(error)
