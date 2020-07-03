@@ -37,6 +37,7 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "alloy/core/config.hpp"
+#include "alloy/core/macros.hpp"
 
 #include <cstdlib> // std::abort
 
@@ -148,6 +149,216 @@
 # include "intrinsics/msvc.hpp"
 #else
 # error Unknown compiler
+#endif
+
+//------------------------------------------------------------------------------
+// Pragma
+//------------------------------------------------------------------------------
+
+#if defined(ALLOY_COMPILER_PRAGMA)
+# error ALLOY_COMPILER_PRAGMA defined before including intrinsics.hpp
+#endif
+
+//! \def ALLOY_COMPILER_PRAGMA(x)
+//!
+//! \brief Converts any input \p x into a single pragma
+//!
+//! \param x the pragma input
+#define ALLOY_COMPILER_PRAGMA(x) _Pragma(#x)
+
+//------------------------------------------------------------------------------
+// clang : Pragma
+//------------------------------------------------------------------------------
+
+#if defined(ALLOY_COMPILER_CLANG_DIAGNOSTIC_PUSH)
+# error ALLOY_COMPILER_CLANG_DIAGNOSTIC_PUSH defined before including intrunsics.hpp
+#endif
+#if defined(ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP)
+# error ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP defined before including intrunsics.hpp
+#endif
+#if defined(ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE)
+# error ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE defined before including intrunsics.hpp
+#endif
+
+//------------------------------------------------------------------------------
+
+//! \def ALLOY_COMPILER_CLANG_DIAGNOSTIC_PUSH()
+//!
+//! \brief Preserves the current diagnostics state for the clang compiler on the
+//!        stack, which can be undone by ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
+#if defined(__clang__)
+# define ALLOY_COMPILER_CLANG_DIAGNOSTIC_PUSH() ALLOY_COMPILER_PRAGMA(clang diagnostic push)
+#else
+# define ALLOY_COMPILER_CLANG_DIAGNOSTIC_PUSH()
+#endif
+
+//! \def ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
+//!
+//! \brief Recovers the diagnostic state from the stack
+#if defined(__clang__)
+# define ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP() ALLOY_COMPILER_PRAGMA(clang diagnostic pop)
+#else
+# define ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
+#endif
+
+//! \def ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(flag)
+//!
+//! \brief Ignores the specified warning flag to prevent errors
+//!
+//! \param flag the flag to ignore
+#if defined(__clang__)
+# define ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(flag) ALLOY_COMPILER_PRAGMA(clang diagnostic ignored #flag)
+#else
+# define ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(flag)
+#endif
+
+//------------------------------------------------------------------------------
+// GCC : Pragma
+//------------------------------------------------------------------------------
+
+#if defined(ALLOY_COMPILER_GCC_DIAGNOSTIC_PUSH)
+# error ALLOY_COMPILER_GCC_DIAGNOSTIC_PUSH defined before including intrunsics.hpp
+#endif
+#if defined(ALLOY_COMPILER_GCC_DIAGNOSTIC_POP)
+# error ALLOY_COMPILER_GCC_DIAGNOSTIC_POP defined before including intrunsics.hpp
+#endif
+#if defined(ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE)
+# error ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE defined before including intrunsics.hpp
+#endif
+
+//------------------------------------------------------------------------------
+
+//! \def ALLOY_COMPILER_GCC_DIAGNOSTIC_PUSH()
+//!
+//! \brief Preserves the current diagnostics state for the gcc compiler on the
+//!        stack, which can be undone by ALLOY_COMPILER_GCC_DIAGNOSTIC_POP()
+#if defined(__GNUC__) && !defined(__clang__)
+# define ALLOY_COMPILER_GCC_DIAGNOSTIC_PUSH() ALLOY_COMPILER_PRAGMA(GCC diagnostic push)
+#else
+# define ALLOY_COMPILER_GCC_DIAGNOSTIC_PUSH()
+#endif
+
+//! \def ALLOY_COMPILER_GCC_DIAGNOSTIC_POP()
+//!
+//! \brief Recovers the diagnostic state from the stack
+#if defined(__GNUC__) && !defined(__clang__)
+# define ALLOY_COMPILER_GCC_DIAGNOSTIC_POP() ALLOY_COMPILER_PRAGMA(GCC diagnostic pop)
+#else
+# define ALLOY_COMPILER_GCC_DIAGNOSTIC_POP()
+#endif
+
+//! \def ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE(flag)
+//!
+//! \brief Ignores the specified warning flag to prevent errors
+//!
+//! \param flag the flag to ignore
+#if defined(__GNUC__) && !defined(__clang__)
+# define ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE(flag) ALLOY_COMPILER_PRAGMA(GCC diagnostic ignored #flag)
+#else
+# define ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE(flag)
+#endif
+
+//------------------------------------------------------------------------------
+// MSVC : Pragma
+//------------------------------------------------------------------------------
+
+#if defined(ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH)
+# error ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH defined before including intrunsics.hpp
+#endif
+#if defined(ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP)
+# error ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP defined before including intrunsics.hpp
+#endif
+#if defined(ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE)
+# error ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE defined before including intrunsics.hpp
+#endif
+
+//------------------------------------------------------------------------------
+
+//! \def ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH()
+//!
+//! \brief Preserves the current diagnostics state for the msvc compiler on the
+//!        stack, which can be undone by ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP()
+#if defined(_MSVC) && !defined(__clang__)
+# define ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH() ALLOY_COMPILER_PRAGMA(warning(push))
+#else
+# define ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH()
+#endif
+
+//! \def ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP()
+//!
+//! \brief Recovers the diagnostic state from the stack
+#if defined(_MSVC) && !defined(__clang__)
+# define ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP() ALLOY_COMPILER_PRAGMA(warning(pop))
+#else
+# define ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP()
+#endif
+
+//! \def ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE(flag)
+//!
+//! \brief Ignores the specified warning number from MSVC
+//!
+//! \param error the error code to ignore
+#if defined(_MSVC) && !defined(__clang__)
+# define ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE(error) ALLOY_COMPILER_PRAGMA(warning(disable: error))
+#else
+# define ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE(error)
+#endif
+
+//------------------------------------------------------------------------------
+// Generic : Pragma
+//------------------------------------------------------------------------------
+
+#if defined(ALLOY_COMPILER_DIAGNOSTIC_PUSH)
+# error ALLOY_COMPILER_DIAGNOSTIC_PUSH defined before including intrinsics.hpp
+#endif
+#if defined(ALLOY_COMPILER_DIAGNOSTIC_POP)
+# error ALLOY_COMPILER_DIAGNOSTIC_POP defined before including intrinsics.hpp
+#endif
+#if defined(ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE)
+# error ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE defined before including intrinsics.hpp
+#endif
+
+//------------------------------------------------------------------------------
+
+//! \def ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+//!
+//! \brief Preserves the current diagnostics state for the current compiler on
+//!        the stack, which can be undone by ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+#if defined(__clang__)
+# define ALLOY_COMPILER_DIAGNOSTIC_PUSH() ALLOY_COMPILER_CLANG_DIAGNOSTIC_PUSH()
+#elif defined(__GNUC__)
+# define ALLOY_COMPILER_DIAGNOSTIC_PUSH() ALLOY_COMPILER_GCC_DIAGNOSTIC_PUSH()
+#elif defined(_MSC_VER)
+# define ALLOY_COMPILER_DIAGNOSTIC_PUSH() ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH()
+#else
+# define ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+#endif
+
+//! \def ALLOY_COMPILER_DIAGNOSTIC_POP()
+//!
+//! \brief Recovers the diagnostic state from the stack
+#if defined(__clang__)
+# define ALLOY_COMPILER_DIAGNOSTIC_POP() ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
+#elif defined(__GNUC__)
+# define ALLOY_COMPILER_DIAGNOSTIC_POP() ALLOY_COMPILER_GCC_DIAGNOSTIC_POP()
+#elif defined(_MSC_VER)
+# define ALLOY_COMPILER_DIAGNOSTIC_POP() ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP()
+#else
+# define ALLOY_COMPILER_DIAGNOSTIC_POP()
+#endif
+
+//! \def ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(flag)
+//!
+//! \brief Ignores the specified warning number from gnu-like compilers like
+//!        clang and gcc
+//!
+//! \param error the error code to ignore
+#if defined(__clang__)
+# define ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(flag) ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(flag)
+#elif defined(__GNUC__)
+# define ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(flag) ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE(flag)
+#else
+# define ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(flag)
 #endif
 
 //------------------------------------------------------------------------------
