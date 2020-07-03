@@ -8,6 +8,7 @@ set(source_files
   # Utilities
   src/alloy/core/utilities/scope_guard.test.cpp
   src/alloy/core/utilities/delegate.test.cpp
+  src/alloy/core/utilities/casts.test.cpp
 
   # Traits
   src/alloy/core/traits/function_traits.test.cpp

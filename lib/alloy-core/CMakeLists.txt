@@ -64,6 +64,7 @@ set(header_files
 
   # Utilities
   include/alloy/core/utilities/aligned_storage.hpp
+  include/alloy/core/utilities/casts.hpp
   include/alloy/core/utilities/delegate.hpp
   include/alloy/core/utilities/signal.hpp
   include/alloy/core/utilities/expected.hpp
