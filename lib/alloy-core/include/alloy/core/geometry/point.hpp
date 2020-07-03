@@ -36,6 +36,7 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "alloy/core/precision.hpp" // core::real
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/assert.hpp"    // ALLOY_ASSERT
 #include "alloy/core/utilities/piecewise_compare.hpp" // core::piecewise_compare
 #include "alloy/core/math/vector/vector3.hpp" // core::vector3
@@ -391,13 +392,8 @@ inline constexpr alloy::core::point
 // Comparisons
 //------------------------------------------------------------------------------
 
-#if defined(__clang__)
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wfloat-equal"
-#elif defined(__GNUC__)
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Wfloat-equal"
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr bool alloy::core::operator==( const point& lhs,
                                                const point& rhs )
@@ -418,11 +414,7 @@ inline constexpr bool alloy::core::operator!=( const point& lhs,
   return !(lhs==rhs);
 }
 
-#if defined(__clang__)
-# pragma clang diagnostic pop
-#elif defined(__GNUC__)
-# pragma GCC diagnostic pop
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
 
@@ -465,13 +457,8 @@ inline constexpr alloy::core::vector3 alloy::core::to_vector( const point& p )
 // struct : piecewise_compare<point>
 //==============================================================================
 
-#if defined(__clang__)
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wfloat-equal"
-#elif defined(__GNUC__)
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Wfloat-equal"
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr bool
   alloy::core::piecewise_compare<alloy::core::point>
@@ -485,10 +472,6 @@ inline constexpr bool
          (lhs.x() < rhs.x());
 }
 
-#if defined(__clang__)
-# pragma clang diagnostic pop
-#elif defined(__GNUC__)
-# pragma GCC diagnostic pop
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 #endif /* ALLOY_CORE_GEOMETRY_POINT_POINT_HPP */

@@ -35,6 +35,7 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "alloy/core/api.hpp"    // ALLOY_CORE_API
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/assert.hpp" // ALLOY_ASSERT
 #include "alloy/core/config.hpp" // ALLOY_CORE_EXCEPTIONS_ENABLED
 #include "alloy/core/precision.hpp" // core::real
@@ -857,13 +858,8 @@ inline constexpr alloy::core::vector2
 // Comparisons
 //------------------------------------------------------------------------------
 
-#if defined(__clang__)
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wfloat-equal"
-#elif defined(__GNUC__)
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Wfloat-equal"
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr bool
   alloy::core::operator==( const vector2& lhs, const vector2& rhs )
@@ -884,11 +880,7 @@ inline constexpr bool
   return !(lhs==rhs);
 }
 
-#if defined(__clang__)
-# pragma clang diagnostic pop
-#elif defined(__GNUC__)
-# pragma GCC diagnostic pop
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
 
@@ -959,13 +951,8 @@ inline alloy::core::real
 // struct : piecewise_compare<vector2>
 //==============================================================================
 
-#if defined(__clang__)
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wfloat-equal"
-#elif defined(__GNUC__)
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Wfloat-equal"
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr bool
   alloy::core::piecewise_compare<alloy::core::vector2>
@@ -977,10 +964,6 @@ inline constexpr bool
          (lhs.x() < rhs.x());
 }
 
-#if defined(__clang__)
-# pragma clang diagnostic pop
-#elif defined(__GNUC__)
-# pragma GCC diagnostic pop
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 #endif /* ALLOY_CORE_MATH_VECTOR_VECTOR2_HPP */

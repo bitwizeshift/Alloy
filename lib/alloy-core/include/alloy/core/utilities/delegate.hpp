@@ -235,10 +235,8 @@ namespace alloy::core {
     // Some versions of clang using '-Wdocumentation' seem to not understand
     // that the following template, with R = void, still has correct
     // documentation.
-#if defined(__clang__)
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wdocumentation"
-#endif
+    ALLOY_COMPILER_CLANG_DIAGNOSTIC_PUSH()
+    ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(-Wdocumentation)
 
     /// \brief Invokes the underlying delegate with the specified \p args
     ///
@@ -248,9 +246,7 @@ namespace alloy::core {
               typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>>
     R operator()(UArgs&&...args) const;
 
-#if defined(__clang__)
-# pragma clang diagnostic pop
-#endif
+    ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
 
     /// \brief Returns \c true if this delegate contains a function
     constexpr explicit operator bool() const noexcept;

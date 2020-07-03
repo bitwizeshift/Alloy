@@ -1,5 +1,6 @@
 
 #include "alloy/core/geometry/line.hpp"
+#include "alloy/core/intrinsics.hpp"
 
 //------------------------------------------------------------------------------
 // Quantifiers
@@ -37,13 +38,8 @@ bool alloy::core::line::contains( const point& p, real tolerance )
 // Equality
 //------------------------------------------------------------------------------
 
-#if defined(__clang__)
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wfloat-equal"
-#elif defined(__GNUC__)
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Wfloat-equal"
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 bool alloy::core::operator==( const line& lhs, const line& rhs )
   noexcept
@@ -71,11 +67,7 @@ bool alloy::core::operator==( const line& lhs, const line& rhs )
          (lhs_origin.z() - lhs_tz) == (rhs_origin.z() - rhs_tz);
 }
 
-#if defined(__clang__)
-# pragma clang diagnostic pop
-#elif defined(__GNUC__)
-# pragma GCC diagnostic pop
-#endif
+ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
 
