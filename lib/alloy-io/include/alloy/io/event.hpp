@@ -269,10 +269,31 @@ namespace alloy::io {
     //--------------------------------------------------------------------------
   private:
 
+    /// \brief The handler used for managing events with a T instance
+    ///
+    /// \tparam T the type of the handler
+    /// \param op the operation
+    /// \param self the self pointer, used for 'copy', 'move', and 'destroy'
+    /// \param other the other pointer, used for 'copy', and 'move'
+    /// \return an integral value, only valid for "id" and "priority" ops
     template<typename T>
-    static std::uint32_t handler( operation op,
-                                  const storage_type* self,
-                                  const storage_type* other );
+    static std::uint32_t handler(operation op,
+                                 const storage_type* self,
+                                 const storage_type* other);
+
+    /// \brief The handler used for managing events with no instance
+    ///
+    /// This exists to prevent the need to perform branches to check for null
+    /// state, when the common case will never contain a null state.
+    ///
+    /// \param op the operation
+    /// \param self the self pointer (unused)
+    /// \param other the other pointer (unused)
+    /// \return an integral value, only valid for "id" and "priority" ops
+    static std::uint32_t null_handler(operation op,
+                                      const storage_type* self,
+                                      const storage_type* other);
+
   };
 
   //============================================================================
@@ -453,8 +474,7 @@ inline alloy::io::event alloy::io::event::make_event( Args&&...args )
 
 inline alloy::io::event::event()
   noexcept
-  : m_storage{},
-    m_handler{nullptr}
+  : m_handler{&event::null_handler}
 {
 
 }
@@ -463,30 +483,34 @@ inline alloy::io::event::event()
 template <typename Event, typename>
 inline alloy::io::event::event(Event&& e)
   noexcept(std::is_nothrow_constructible<std::decay_t<Event>,Event>::value)
-  : m_storage{},
-    m_handler{&event::handler<std::decay_t<Event>>}
+  : event{}
 {
   static_assert(is_valid_event<std::decay_t<Event>>::value);
 
   ::new(&e.m_storage) std::decay_t<Event>(std::forward<Event>(e));
+  m_handler = &event::handler<std::decay_t<Event>>;
 }
 
 
 inline alloy::io::event::event(event&& other)
   noexcept
-  : m_storage{},
-    m_handler{other.m_handler}
+  : event{}
 {
-  m_handler(operation::move, &m_storage, &other.m_storage);
+  auto* const handler = core::compiler::assume_not_null(other.m_handler);
+
+  (*handler)(operation::move, &m_storage, &other.m_storage);
+  m_handler = handler;
 }
 
 
 inline alloy::io::event::event(const event& other)
   noexcept
-  : m_storage{},
-    m_handler{other.m_handler}
+  : event{}
 {
-  m_handler(operation::copy, &m_storage, &other.m_storage);
+  auto* const handler = core::compiler::assume_not_null(other.m_handler);
+
+  (*handler)(operation::copy, &m_storage, &other.m_storage);
+  m_handler = handler;
 }
 
 //------------------------------------------------------------------------------
@@ -504,10 +528,10 @@ inline alloy::io::event& alloy::io::event::operator=(event&& other)
 {
   reset();
 
-  if (other.m_handler != nullptr) {
-    m_handler = other.m_handler;
-    m_handler(operation::move, &m_storage, &other.m_storage);
-  }
+  auto* const handler = core::compiler::assume_not_null(other.m_handler);
+
+  (*handler)(operation::move, &m_storage, &other.m_storage);
+  m_handler = handler;
 
   return (*this);
 }
@@ -518,10 +542,10 @@ inline alloy::io::event& alloy::io::event::operator=(const event& other)
 {
   reset();
 
-  if (other.m_handler != nullptr) {
-    m_handler = other.m_handler;
-    m_handler(operation::copy, &m_storage, &other.m_storage);
-  }
+  auto* const handler = core::compiler::assume_not_null(other.m_handler);
+
+  (*handler)(operation::copy, &m_storage, &other.m_storage);
+  m_handler = handler;
 
   return (*this);
 }
@@ -534,10 +558,9 @@ inline alloy::io::event::id_type
   alloy::io::event::id()
   const noexcept
 {
-  if (m_handler == nullptr) {
-    return static_cast<id_type>(0u);
-  }
-  const auto value = (*m_handler)(operation::id,nullptr,nullptr);
+  auto* const handler = core::compiler::assume_not_null(m_handler);
+
+  const auto value = (*handler)(operation::id,nullptr,nullptr);
   return static_cast<id_type>(value);
 }
 
@@ -545,10 +568,9 @@ inline alloy::io::event_priority
   alloy::io::event::priority()
   const noexcept
 {
-  if (m_handler == nullptr) {
-    return event_priority::none;
-  }
-  const auto value = (*m_handler)(operation::priority,nullptr,nullptr);
+  auto* const handler = core::compiler::assume_not_null(m_handler);
+
+  const auto value = (*handler)(operation::priority,nullptr,nullptr);
   return static_cast<event_priority>(value);
 }
 
@@ -594,10 +616,10 @@ inline const Event* alloy::io::event::try_as()
 inline void alloy::io::event::reset()
   noexcept
 {
-  if (m_handler != nullptr) {
-    (*m_handler)( operation::destroy, &m_storage, nullptr );
-    m_handler = nullptr;
-  }
+  auto* const handler = core::compiler::assume_not_null(m_handler);
+
+  (*handler)(operation::destroy, &m_storage, nullptr);
+  m_handler = &event::null_handler;
 }
 
 //------------------------------------------------------------------------------
@@ -660,5 +682,37 @@ std::uint32_t alloy::io::event::handler(operation op,
   core::compiler::unreachable();
 }
 
+inline std::uint32_t alloy::io::event::null_handler(operation op,
+                                                    const storage_type* self,
+                                                    const storage_type* other)
+{
+  core::compiler::unused(self, other);
+
+  switch (op) {
+    case operation::destroy: {
+      return 0u;
+    }
+
+    case operation::copy: {
+      // No operation required for 'copy'
+      return 0u;
+    }
+
+    case operation::move: {
+      // No operation required for 'move'
+      return 0u;
+    }
+
+    case operation::id: {
+      // ID of null is '0'
+      return 0u;
+    }
+
+    case operation::priority: {
+      return static_cast<std::uint32_t>(event_priority::none);
+    }
+  }
+  core::compiler::unreachable();
+}
 
 #endif /* ALLOY_IO_EVENT_HPP */
