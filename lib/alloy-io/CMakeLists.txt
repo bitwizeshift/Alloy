@@ -82,7 +82,7 @@ if (BUILD_SHARED_LIBS)
   )
 else()
   target_compile_definitions(${PROJECT_NAME}IO
-    PRIVATE ALLOY_IO_STATIC=1
+    PUBLIC ALLOY_IO_STATIC=1
   )
 endif()
 

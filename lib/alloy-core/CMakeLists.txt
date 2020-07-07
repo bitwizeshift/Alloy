@@ -185,7 +185,7 @@ if (BUILD_SHARED_LIBS)
   )
 else()
   target_compile_definitions(${PROJECT_NAME}Core
-    PRIVATE ALLOY_CORE_STATIC=1
+    PUBLIC ALLOY_CORE_STATIC=1
   )
 endif()
 
