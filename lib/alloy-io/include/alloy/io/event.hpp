@@ -487,7 +487,7 @@ inline alloy::io::event::event(Event&& e)
 {
   static_assert(is_valid_event<std::decay_t<Event>>::value);
 
-  ::new(&e.m_storage) std::decay_t<Event>(std::forward<Event>(e));
+  ::new(&m_storage) std::decay_t<Event>(std::forward<Event>(e));
   m_handler = &event::handler<std::decay_t<Event>>;
 }
 
