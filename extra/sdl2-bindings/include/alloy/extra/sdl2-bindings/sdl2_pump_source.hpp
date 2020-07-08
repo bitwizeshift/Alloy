@@ -40,6 +40,7 @@
 #include "alloy/core/utilities/not_null.hpp"
 
 #include <SDL2/SDL.h>
+#include <alloy/io/keyboard.hpp>
 #include <map>
 
 namespace alloy::extra {
@@ -135,6 +136,15 @@ namespace alloy::extra {
     /// \param p the message pump to pump events back into
     void handle_window_event(const ::SDL_Event& event,
                              io::message_pump& p) noexcept;
+
+    /// \brief Handles a keyboard event
+    ///
+    /// \param event the SDL_Event to handle
+    /// \param state the keyboard state (up or down)
+    /// \param p the message pump to respond to
+    void handle_keyboard_event(const ::SDL_Event& event,
+                               io::keyboard::key_state state,
+                               io::message_pump& p) noexcept;
 
     //--------------------------------------------------------------------------
     // Private Members

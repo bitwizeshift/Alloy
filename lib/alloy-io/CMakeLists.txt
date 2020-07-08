@@ -28,9 +28,11 @@ set(header_files
   include/alloy/io/api.hpp
   include/alloy/io/buffers/mutable_buffer.hpp
   include/alloy/io/buffers/const_buffer.hpp
+  include/alloy/io/events/keyboard_events.hpp
   include/alloy/io/events/window_events.hpp
   include/alloy/io/events/filesystem_events.hpp
   include/alloy/io/event.hpp
+  include/alloy/io/keyboard.hpp
   include/alloy/io/sequence_detector.hpp
   include/alloy/io/window.hpp
   include/alloy/io/message_pump.hpp
@@ -80,7 +82,7 @@ if (BUILD_SHARED_LIBS)
   )
 else()
   target_compile_definitions(${PROJECT_NAME}IO
-    PRIVATE ALLOY_IO_STATIC=1
+    PUBLIC ALLOY_IO_STATIC=1
   )
 endif()
 

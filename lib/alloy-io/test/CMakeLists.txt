@@ -5,6 +5,7 @@ find_package(Catch2)
 ##############################################################################
 
 set(source_files
+  src/alloy/io/event.test.cpp
   src/alloy/io/sequence_detector.test.cpp
   src/main.cpp
 )
