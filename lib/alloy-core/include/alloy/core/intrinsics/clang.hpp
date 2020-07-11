@@ -87,8 +87,8 @@
 #define ALLOY_ASSUME(x) (void) 0
 #define ALLOY_LIKELY(x) __builtin_expect(!!(x), 1)
 #define ALLOY_UNLIKELY(x) __builtin_expect(!!(x), 0)
-#define ALLOY_FORCE_INLINE __attribute__((always_inline)) inline
-#define ALLOY_NO_INLINE __attribute__((__noinline__))
+#define ALLOY_FORCE_INLINE [[gnu::always_inline]] inline
+#define ALLOY_NO_INLINE [[gnu::noinline]]
 #define ALLOY_COMPILER_UNREACHABLE __builtin_unreachable()
 
 //-----------------------------------------------------------------------------
