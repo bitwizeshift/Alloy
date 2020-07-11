@@ -488,7 +488,7 @@ namespace alloy::core {
     ///
     /// This is used to suppress 'unused variable' warnings, and to indicate
     /// to the reader that a variable is intentionally unused
-    template <auto>
+    template <auto...>
     static constexpr void unused() noexcept{}
 
     /// \brief Provides a hint to the compiler that the pointer \p p is aligned
