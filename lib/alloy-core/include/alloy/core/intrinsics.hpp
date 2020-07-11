@@ -417,6 +417,49 @@
 # endif
 #endif
 
+//------------------------------------------------------------------------------
+
+#if defined(ALLOY_COLD)
+# error ALLOY_COLD defined before including intrinsics.hpp
+#endif
+
+//! \def ALLOY_COLD
+//!
+//! \brief A special attribute to indicate functions / handlers that are
+//!        unlikely to be accessed frequently (the "cold" path).
+//!
+//! Functions documented as "cold" will be pushed to their own code section of
+//! "cold" handlers on compatible compilers, and might also hint at better
+//! optimizations by allowing branch-analysis to determine that conditions
+//! reaching such handlers are unlikely.
+#if defined(__GNUC__) || defined(__clang__)
+# define ALLOY_COLD [[gnu::cold]] [[gnu::noinline]]
+#elif defined(_MSC_VER)
+# pragma section("cold",execute)
+# define ALLOY_COLD __declspec(allocate("cold")) __declspec(noinline)
+#else
+# define ALLOY_COLD
+#endif
+
+//------------------------------------------------------------------------------
+
+#if defined(ALLOY_HOT)
+# error ALLOY_HOT defined before including intrinsics.hpp
+#endif
+
+//! \def ALLOY_HOT
+//!
+//! \brief A special attribute to indicate functions / handlers that are
+//!        likely to be accessed frequently (the "hot" path)
+//!
+//! Functions documented as "hot" will be more aggressively optimized for speed
+//! on compatible systems
+#if defined(__GNUC__) || defined(__clang__)
+# define ALLOY_HOT [[gnu::hot]]
+#else
+# define ALLOY_HOT
+#endif
+
 namespace alloy::core {
 
   struct compiler final
