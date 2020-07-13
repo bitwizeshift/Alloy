@@ -139,6 +139,7 @@ set(inline_header_files
 )
 
 set(source_files
+  src/alloy/core/assert.cpp
   src/alloy/core/type_index.cpp
 
   # Math
