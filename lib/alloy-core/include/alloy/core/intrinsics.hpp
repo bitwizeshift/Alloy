@@ -40,6 +40,7 @@
 #include "alloy/core/macros.hpp"
 
 #include <cstdlib> // std::abort
+#include <cstdint> // std::uintptr_t
 #include <type_traits> // std::invoke_result_t
 #include <functional>  // std::invoke
 
