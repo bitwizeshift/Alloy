@@ -395,6 +395,29 @@
 
 //------------------------------------------------------------------------------
 
+#if defined(ALLOY_FORCE_INLINE_LAMBDA)
+# error ALLOY_FORCE_INLINE_LAMBDA defined before including intrinsics.hpp
+#endif
+
+//! \def ALLOY_FORCE_INLINE_LAMBDA
+//!
+//! \brief Attribute for marking lambdas to be forced to inline
+//!
+//! This is defined independently from the ALlOY_FORCE_INLINE symbol, since
+//! different compilers support this through different means. MSVC requires
+//! a new attribute in VS 2019 v16.7, `[[msvc::force_inline]]`, whereas
+//! clang and gcc require the `__attribute__` syntax, since
+//! `[[gnu::always_inline]]` cannot be applied to class types.
+#if defined(__GNUC__) || defined(__clang__)
+# define ALLOY_FORCE_INLINE_LAMBDA __attribute__((always_inline))
+#elif defined(_MSC_VER)
+# define ALLOY_FORCE_INLINE_LAMBDA // VS 2019 v16.7 is set to support [[msvc::force_inline]]
+#else
+# define ALLOY_FORCE_INLINE_LAMBDA
+#endif
+
+//------------------------------------------------------------------------------
+
 #ifdef ALLOY_BREAKPOINT
 # error ALLOY_BREAKPOINT defined before including intrinsics.hpp
 #endif
