@@ -44,114 +44,261 @@
 #include <type_traits> // std::invoke_result_t
 #include <functional>  // std::invoke
 
-// Macros defined in this header:
+//=============================================================================
+// macro definitions
+//=============================================================================
 
-// compiler details
-#ifdef ALLOY_COMPILER_NAME
-# error ALLOY_COMPILER_NAME defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_VERSION_STRING
-# error ALLOY_COMPILER_VERSION_STRING defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_VERSION
-# error ALLOY_COMPILER_VERSION defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_VERSION_MAJOR
-# error ALLOY_COMPILER_VERSION_MAJOR defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_VERSION_MINOR
-# error ALLOY_COMPILER_VERSION_MINOR defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_VERSION_PATCH
-# error ALLOY_COMPILER_VERSION_PATCH defined before including intrinsics.hpp
-#endif
+//-----------------------------------------------------------------------------
+// Keywords
+//-----------------------------------------------------------------------------
 
-// compiler intrinsics
-#ifdef ALLOY_WEAK
-# error ALLOY_WEAK defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_RESTRICT
+#if defined(ALLOY_RESTRICT)
 # error ALLOY_RESTRICT defined before including intrinsics.hpp
 #endif
-#ifdef ALLOY_LIKELY
+#if defined(ALLOY_NOOP)
+# error ALLOY_NOOP defined before including intrinsics.hpp
+#endif
+
+//! \def ALLOY_RESTRICT
+//!
+//! \brief Defines a portable symbol for the C++ extension for "restrict"
+//!        parameters
+#if defined(__GNUC__) || defined(__clang__)
+# define ALLOY_RESTRICT __restrict__
+#elif defined(_MSC_VER)
+# define ALLOY_RESTRICT __restrict
+#else
+# define ALLOY_RESTRICT
+#endif
+
+//! \def ALLOY_NOOP()
+//!
+//! \brief An operation that does nothing (no-op)
+#define ALLOY_NOOP() ((void)0)
+
+//-----------------------------------------------------------------------------
+// Hinting / Path Analysis
+//-----------------------------------------------------------------------------
+
+#if defined(ALLOY_LIKELY)
 # error ALLOY_LIKELY defined before including intrinsics.hpp
 #endif
-#ifdef ALLOY_UNLIKELY
+#if defined(ALLOY_UNLIKELY)
 # error ALLOY_UNLIKELY defined before including intrinsics.hpp
 #endif
-#ifdef ALLOY_FORCE_INLINE
+#if defined(ALLOY_ASSUME)
+# error ALLOY_ASSUME defined before including intrinsics.hpp
+#endif
+#if defined(ALLOY_COLD)
+# error ALLOY_COLD defined before including intrinsics.hpp
+#endif
+#if defined(ALLOY_HOT)
+# error ALLOY_HOT defined before including intrinsics.hpp
+#endif
+#if defined(ALLOY_UNREACHABLE)
+# error ALLOY_UNREACHABLE defined before including intrinsics.hpp
+#endif
+
+//! \def ALLOY_LIKELY(x)
+//!
+//! \brief An intrinsic for hinting to the compiler that condition \p x will
+//!        likely be taken
+//!
+//! \param x the condition to test
+#if defined(__GNUC__) || defined(__clang__)
+# define ALLOY_LIKELY(x) __builtin_expect(!!(x), 1)
+#else
+# define ALLOY_LIKELY(x) x
+#endif
+
+//! \def ALLOY_UNLIKELY(x)
+//!
+//! \brief An intrinsic for hinting to the compiler that condition \p x will
+//!        unlikely be taken
+//!
+//! \param x the condition to test
+#if defined(__GNUC__) || defined(__clang__)
+# define ALLOY_UNLIKELY(x) __builtin_expect(!!(x), 0)
+#else
+# define ALLOY_UNLIKELY(x) x
+#endif
+
+//! \def ALLOY_ASSUME(x)
+//!
+//! \brief An intrinsic for hinting to the compiler that the condition \p x
+//!        will always be true.
+//!
+//! A condition that violates an assumed condition will result in undefined
+//! behavior
+//!
+//! \param x the condition
+#if defined(_MSC_VER)
+# define ALLOY_ASSUME(x) __assume(x)
+#else
+# define ALLOY_ASSUME(x) static_cast<void>(x)
+#endif
+
+//! \def ALLOY_COLD
+//!
+//! \brief A special attribute to indicate functions / handlers that are
+//!        unlikely to be accessed frequently (the "cold" path).
+//!
+//! Functions documented as "cold" will be pushed to their own code section of
+//! "cold" handlers on compatible compilers, and might also hint at better
+//! optimizations by allowing branch-analysis to determine that conditions
+//! reaching such handlers are unlikely.
+#if defined(__GNUC__) || defined(__clang__)
+# define ALLOY_COLD [[gnu::cold]] [[gnu::noinline]]
+#elif defined(_MSC_VER)
+# pragma section("cold",execute)
+# define ALLOY_COLD __declspec(code_seg("cold")) __declspec(noinline)
+#else
+# define ALLOY_COLD
+#endif
+
+//! \def ALLOY_HOT
+//!
+//! \brief A special attribute to indicate functions / handlers that are
+//!        likely to be accessed frequently (the "hot" path)
+//!
+//! Functions documented as "hot" will be more aggressively optimized for speed
+//! on compatible systems
+#if defined(__GNUC__) || defined(__clang__)
+# define ALLOY_HOT [[gnu::hot]]
+#else
+# define ALLOY_HOT
+#endif
+
+//! \def ALLOY_UNREACHABLE()
+//!
+//! \brief Signals to the compiler that the current operation is unreachable
+//!
+//! Using ALLOY_UNREACHABLE provides an optimization hint to the compiler, but
+//! may be dangerous if used in a context that is reachable -- as this will
+//! result in undefined behavior.
+#if defined(__GNUC__) || defined(__clang__)
+# define ALLOY_UNREACHABLE() __builtin_unreachable()
+#elif defined(_MSC_VER)
+# define ALLOY_UNREACHABLE() __assume(0)
+#else
+# define ALLOY_UNREACHABLE() ALLOY_NOOP()
+#endif
+
+//-----------------------------------------------------------------------------
+// Inlining
+//-----------------------------------------------------------------------------
+
+#if defined(ALLOY_FORCE_INLINE)
 # error ALLOY_FORCE_INLINE defined before including intrinsics.hpp
 #endif
-#ifdef ALLOY_NO_INLINE
+#if defined(ALLOY_FORCE_INLINE_LAMBDA)
+# error ALLOY_FORCE_INLINE_LAMBDA defined before including intrinsics.hpp
+#endif
+#if defined(ALLOY_NO_INLINE)
 # error ALLOY_NO_INLINE defined before including intrinsics.hpp
 #endif
-#ifdef ALLOY_COMPILER_UNREACHABLE
-# error ALLOY_COMPILER_UNREACHABLE defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_BREAKPOINT
-# error ALLOY_COMPILER_BREAKPOINT defined before including intrinsics.hpp
+
+//! \def ALLOY_FORCE_INLINE
+//!
+//! \brief An intrinsic for forcing the compiler to inline a function
+#if defined(__GNUC__) || defined(__clang__)
+# define ALLOY_FORCE_INLINE [[gnu::always_inline]] inline
+#elif defined(_MSC_VER)
+# define ALLOY_FORCE_INLINE __forceinline
+#else
+# define ALLOY_FORCE_INLINE inline
 #endif
 
-// extensions
-#ifdef ALLOY_COMPILER_HAS_AVX
-# error ALLOY_COMPILER_HAS_AVX defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_HAS_AVX2
-# error ALLOY_COMPILER_HAS_AVX2 defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_HAS_SSE
-# error ALLOY_COMPILER_HAS_SSE defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_HAS_SSE2
-# error ALLOY_COMPILER_HAS_SSE2 defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_HAS_SSE3
-# error ALLOY_COMPILER_HAS_SSE3 defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_HAS_SSE4_1
-# error ALLOY_COMPILER_HAS_SSE4_1 defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_HAS_SSE4_2
-# error ALLOY_COMPILER_HAS_SSE4_2 defined before including intrinsics.hpp
+//! \def ALLOY_FORCE_INLINE_LAMBDA
+//!
+//! \brief Attribute for marking lambdas to be forced to inline
+//!
+//! This is defined independently from the ALlOY_FORCE_INLINE symbol, since
+//! different compilers support this through different means. MSVC requires
+//! a new attribute in VS 2019 v16.7, `[[msvc::force_inline]]`, whereas
+//! clang and gcc require the `__attribute__` syntax, since
+//! `[[gnu::always_inline]]` cannot be applied to class types.
+#if defined(__GNUC__) || defined(__clang__)
+# define ALLOY_FORCE_INLINE_LAMBDA __attribute__((always_inline))
+#elif defined(_MSC_VER)
+# define ALLOY_FORCE_INLINE_LAMBDA // VS 2019 v16.7 is set to support [[msvc::force_inline]]
+#else
+# define ALLOY_FORCE_INLINE_LAMBDA
 #endif
 
+//! \def ALLOY_NO_INLINE
+//!
+//! \brief An intrinsic for requiring the compiler *not* to inline a function
+#if defined(__GNUC__) || defined(__clang__)
+# define ALLOY_NO_INLINE [[gnu::noinline]]
+#elif defined(_MSC_VER)
+# define ALLOY_NO_INLINE __declspec(noinline)
+#else
+# define ALLOY_NO_INLINE
+#endif
+
+//-----------------------------------------------------------------------------
+// Debugging
+//-----------------------------------------------------------------------------
+
+#if defined(ALLOY_BREAKPOINT)
+# error ALLOY_BREAKPOINT defined before including intrinsics.hpp
+#endif
+
+//! \def ALLOY_BREAKPOINT()
+//!
+//! \brief Create breakpoint to halt code execution.
+//!
+//! This symbol can be redefined by the user by defining it before including any
+//! library functions. This allows breakpoints to function differently if a user
+//! specifies it to, and provides easier portability to other systems.
+#if defined(NDEBUG)
+# define ALLOY_BREAKPOINT() ALLOY_NOOP()
+#elif defined(__GNUC__) || defined(__clang__)
+# define ALLOY_BREAKPOINT() __builtin_trap()
+#elif defined(_MSC_VER)
+# define ALLOY_BREAKPOINT() __debugbreak()
+#else
+# include <csignal>
+# if defined(SIGTRAP)
+#   define ALLOY_BREAKPOINT() ::std::raise(SIGTRAP)
+# else
+#   define ALLOY_BREAKPOINT() ::std::raise(SIGABRT)
+# endif
+#endif
+
+//-----------------------------------------------------------------------------
 // Export Symbols
-#ifdef ALLOY_COMPILER_SYMBOL_EXPORT
+//-----------------------------------------------------------------------------
+
+#if defined(ALLOY_COMPILER_SYMBOL_EXPORT)
 # error ALLOY_COMPILER_SYMBOL_EXPORT defined before including gcc.hpp
 #endif
-#ifdef ALLOY_COMPILER_SYMBOL_IMPORT
+#if defined(ALLOY_COMPILER_SYMBOL_IMPORT)
 # error ALLOY_COMPILER_SYMBOL_IMPORT defined before including gcc.hpp
 #endif
-#ifdef ALLOY_COMPILER_SYMBOL_VISIBLE
+#if defined(ALLOY_COMPILER_SYMBOL_VISIBLE)
 # error ALLOY_COMPILER_SYMBOL_VISIBLE defined before including gcc.hpp
 #endif
-#ifdef ALLOY_COMPILER_SYMBOL_LOCAL
+#if defined(ALLOY_COMPILER_SYMBOL_LOCAL)
 # error ALLOY_COMPILER_SYMBOL_LOCAL defined before including gcc.hpp
 #endif
 
-// enumeration of ASM syntaxes
-#ifdef ALLOY_COMPILER_ASM_SYNTAX_INTEL
-# error ALLOY_COMPILER_ASM_SYNTAX_INTEL defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_ASM_SYNTAX_ATT
-# error ALLOY_COMPILER_ASM_SYNTAX_ATT defined before including intrinsics.hpp
-#endif
-#ifdef ALLOY_COMPILER_ASM_SYNTAX_UNKNOWN
-# error ALLOY_COMPILER_ASM_SYNTAX_UNKNOWN defined before including intrinsics.hpp
-#endif
-
-#define ALLOY_COMPILER_ASM_SYNTAX_INTEL    0
-#define ALLOY_COMPILER_ASM_SYNTAX_ATT      1
-#define ALLOY_COMPILER_ASM_SYNTAX_UNKNOWN -1
-
-#if defined(__clang__)
-# include "intrinsics/clang.hpp"
-#elif defined(__GNUC__)
-# include "intrinsics/gcc.hpp"
+#if defined(__GNUC__) || defined(__clang__)
+# define ALLOY_COMPILER_SYMBOL_EXPORT  __attribute__((visibility("default")))
+# define ALLOY_COMPILER_SYMBOL_IMPORT
+# define ALLOY_COMPILER_SYMBOL_VISIBLE __attribute__((visibility("default")))
+# define ALLOY_COMPILER_SYMBOL_LOCAL   __attribute__((visibility("hidden")))
 #elif defined(_MSC_VER)
-# include "intrinsics/msvc.hpp"
+# define ALLOY_COMPILER_SYMBOL_EXPORT  __declspec((dllexport))
+# define ALLOY_COMPILER_SYMBOL_IMPORT  __declspec((dllimport))
+# define ALLOY_COMPILER_SYMBOL_VISIBLE
+# define ALLOY_COMPILER_SYMBOL_LOCAL
 #else
-# error Unknown compiler
+# define ALLOY_COMPILER_SYMBOL_EXPORT
+# define ALLOY_COMPILER_SYMBOL_IMPORT
+# define ALLOY_COMPILER_SYMBOL_VISIBLE
+# define ALLOY_COMPILER_SYMBOL_LOCAL
 #endif
 
 //------------------------------------------------------------------------------
@@ -364,130 +511,20 @@
 # define ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(flag)
 #endif
 
-//------------------------------------------------------------------------------
-
-#ifdef ALLOY_NOOP
-# error ALLOY_NOOP defined before including intrinsics.hpp
-#endif
-
-//! \def ALLOY_NOOP()
-//!
-//! \brief An operation that does nothing (no-op)
-#define ALLOY_NOOP() ((void)0)
-
-//------------------------------------------------------------------------------
-
-#ifdef ALLOY_UNREACHABLE
-# error ALLOY_UNREACHABLE defined before including intrinsics.hpp
-#endif
-
-//! \def ALLOY_UNREACHABLE()
-//!
-//! \brief Signals to the compiler that the current operation is unreachable
-//!
-//! Using ALLOY_UNREACHABLE provides an optimization hint to the compiler, but
-//! may be dangerous if used in a context that is reachable -- as this will
-//! result in undefined behavior.
-#if !defined(ALLOY_COMPILER_UNREACHABLE)
-# define ALLOY_UNREACHABLE() ALLOY_NOOP()
-#else
-# define ALLOY_UNREACHABLE() ALLOY_COMPILER_UNREACHABLE
-#endif
-
-//------------------------------------------------------------------------------
-
-#if defined(ALLOY_FORCE_INLINE_LAMBDA)
-# error ALLOY_FORCE_INLINE_LAMBDA defined before including intrinsics.hpp
-#endif
-
-//! \def ALLOY_FORCE_INLINE_LAMBDA
-//!
-//! \brief Attribute for marking lambdas to be forced to inline
-//!
-//! This is defined independently from the ALlOY_FORCE_INLINE symbol, since
-//! different compilers support this through different means. MSVC requires
-//! a new attribute in VS 2019 v16.7, `[[msvc::force_inline]]`, whereas
-//! clang and gcc require the `__attribute__` syntax, since
-//! `[[gnu::always_inline]]` cannot be applied to class types.
-#if defined(__GNUC__) || defined(__clang__)
-# define ALLOY_FORCE_INLINE_LAMBDA __attribute__((always_inline))
-#elif defined(_MSC_VER)
-# define ALLOY_FORCE_INLINE_LAMBDA // VS 2019 v16.7 is set to support [[msvc::force_inline]]
-#else
-# define ALLOY_FORCE_INLINE_LAMBDA
-#endif
-
-//------------------------------------------------------------------------------
-
-#ifdef ALLOY_BREAKPOINT
-# error ALLOY_BREAKPOINT defined before including intrinsics.hpp
-#endif
-
-//! \def ALLOY_BREAKPOINT()
-//!
-//! \brief Create breakpoint to halt code execution.
-//!
-//! This symbol can be redefined by the user by defining it before including any
-//! library functions. This allows breakpoints to function differently if a user
-//! specifies it to, and provides easier portability to other systems.
-#if defined(NDEBUG)
-# define ALLOY_BREAKPOINT() ALLOY_NOOP()
-#elif defined(ALLOY_COMPILER_BREAKPOINT)
-# define ALLOY_BREAKPOINT() ALLOY_COMPILER_BREAKPOINT
-#else
-# include <csignal>
-# if defined(SIGTRAP)
-#   define ALLOY_BREAKPOINT() ::std::raise(SIGTRAP)
-# else
-#   define ALLOY_BREAKPOINT() ::std::raise(SIGABRT)
-# endif
-#endif
-
-//------------------------------------------------------------------------------
-
-#if defined(ALLOY_COLD)
-# error ALLOY_COLD defined before including intrinsics.hpp
-#endif
-
-//! \def ALLOY_COLD
-//!
-//! \brief A special attribute to indicate functions / handlers that are
-//!        unlikely to be accessed frequently (the "cold" path).
-//!
-//! Functions documented as "cold" will be pushed to their own code section of
-//! "cold" handlers on compatible compilers, and might also hint at better
-//! optimizations by allowing branch-analysis to determine that conditions
-//! reaching such handlers are unlikely.
-#if defined(__GNUC__) || defined(__clang__)
-# define ALLOY_COLD [[gnu::cold]] [[gnu::noinline]]
-#elif defined(_MSC_VER)
-# pragma section("cold",execute)
-# define ALLOY_COLD __declspec(code_seg("cold")) __declspec(noinline)
-#else
-# define ALLOY_COLD
-#endif
-
-//------------------------------------------------------------------------------
-
-#if defined(ALLOY_HOT)
-# error ALLOY_HOT defined before including intrinsics.hpp
-#endif
-
-//! \def ALLOY_HOT
-//!
-//! \brief A special attribute to indicate functions / handlers that are
-//!        likely to be accessed frequently (the "hot" path)
-//!
-//! Functions documented as "hot" will be more aggressively optimized for speed
-//! on compatible systems
-#if defined(__GNUC__) || defined(__clang__)
-# define ALLOY_HOT [[gnu::hot]]
-#else
-# define ALLOY_HOT
-#endif
-
 namespace alloy::core {
 
+  //===========================================================================
+  // static class : compiler
+  //===========================================================================
+
+  /////////////////////////////////////////////////////////////////////////////
+  /// \brief A collection of compiler intrinsics wrapped into a static class
+  ///
+  /// It is preferable to attempt to use these function wrappers, rather than
+  /// using the macros that have been defined for the same purpose. These
+  /// wrappers help to prevent conditional code by defining things in a
+  /// standard, 0-overhead, reusable manner.
+  /////////////////////////////////////////////////////////////////////////////
   struct compiler final
   {
     compiler() = delete;
@@ -728,8 +765,8 @@ auto alloy::core::compiler::assume_cold(Fn&& fn, Args&&...args)
 }
 
 template<typename Fn, typename...Args>
-ALLOY_HOT
-inline constexpr auto alloy::core::compiler::assume_hot(Fn&& fn, Args&&...args)
+ALLOY_HOT ALLOY_FORCE_INLINE
+constexpr auto alloy::core::compiler::assume_hot(Fn&& fn, Args&&...args)
   noexcept(std::is_nothrow_invocable<Fn, Args...>::value)
   -> std::invoke_result_t<Fn, Args...>
 {
