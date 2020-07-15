@@ -52,6 +52,11 @@ namespace alloy::core {
   using u16string = basic_string<char16_t>;
   using u32string = basic_string<char32_t>;
 
+  // The 'u8' literal prefix in C++17 produces a char literal, but in C++20
+  // will produce a char8_t literal. This is an easy way to toggle between
+  // char and char8_t without requiring #ifdef and feature-test macros
+  using u8string = basic_string<decltype(u8' ')>;
+
 } // namespace alloy::core
 
 #endif /* ALLOY_CORE_CONTAINERS_STRING_HPP */

@@ -59,6 +59,7 @@ namespace alloy::core {
   using wstring_view   = basic_string_view<wchar_t>;
   using u16string_view = basic_string_view<char16_t>;
   using u32string_view = basic_string_view<char32_t>;
+  using u8string_view  = basic_string_view<decltype(u8' ')>;
 
   //===========================================================================
   // class : basic_zstring_view<CharT,Traits>
@@ -229,6 +230,11 @@ namespace alloy::core {
   using zwstring_view   = basic_zstring_view<wchar_t>;
   using zu16string_view = basic_zstring_view<char16_t>;
   using zu32string_view = basic_zstring_view<char32_t>;
+
+  // The 'u8' literal prefix in C++17 produces a char literal, but in C++20
+  // will produce a char8_t literal. This is an easy way to toggle between
+  // char and char8_t without requiring #ifdef and feature-test macros
+  using zu8string_view = basic_string_view<decltype(u8' ')>;
 
 } // namespace alloy::core
 
