@@ -34,14 +34,13 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/api.hpp"
 #include "alloy/core/config.hpp"
 #include "alloy/core/macros.hpp"
 #include "alloy/core/intrinsics.hpp"
 
 #include <cstddef>     // std::size_t
 #include <type_traits> // std::is_constructible
-#include <cstdio>      // std::ptrintf
-#include <exception>   // std::terminate
 
 #ifdef ALLOY_ASSERT
 # error ALLOY_ASSERT defined before assert.hpp included
@@ -63,49 +62,25 @@
 # error ALLOY_ALWAYS_ASSERT defined before assert.hpp included
 #endif
 
-// Assertions should always be compiled into the consuming binary, rather than
-// having the handler be visible
-#if !defined(ALLOY_ASSERT_VISIBILITY)
-# if defined(__clang__)
-#   define ALLOY_ASSERT_VISIBILITY __attribute__((visibility("hidden"), internal_linkage, no_instrument_function))
-# elif defined(__GNUC__)
-#   define ALLOY_ASSERT_VISIBILITY __attribute__((visibility("hidden"), always_inline, no_instrument_function))
-# elif defined(_MSC_VER)
-#   define ALLOY_ASSERT_VISIBILITY __forceinline
-# else
-#   define ALLOY_ASSERT_VISIBILITY
-# endif
-#endif
+#define ALLOY_INTERNAL_ASSERT_1(condition)                                    \
+  ALLOY_INTERNAL_ASSERT_2(condition,nullptr)
 
-#define ALLOY_INTERNAL_ASSERT_1(condition) \
-  ((ALLOY_LIKELY(condition)) \
-    ? ((void)0) \
-    : []( auto file_name, \
-          auto line_number, \
-          auto function_name ) \
-      { \
-        ::alloy::core::detail::assert_internal( \
-          "assertion failure: condition '" \
-          ALLOY_STRINGIZE(condition) \
-          "' failed.", \
-          file_name, static_cast<std::size_t>(line_number), function_name \
-        ); \
-      }( __FILE__, __LINE__, __func__ ) )
-
-#define ALLOY_INTERNAL_ASSERT_2(condition,message) \
-  ((ALLOY_LIKELY(condition)) \
-    ? ((void)0) \
-    : []( auto file_name, \
-          auto line_number, \
-          auto function_name ) \
-      { \
-        ::alloy::core::detail::assert_internal( \
-          "assertion failure: condition '" \
-          ALLOY_STRINGIZE(condition) \
-          "' failed with message \"" \
-          message "\"", \
-          file_name, static_cast<std::size_t>(line_number), function_name \
-        ); \
+#define ALLOY_INTERNAL_ASSERT_2(condition,message)                            \
+  ((ALLOY_LIKELY(condition))                                                  \
+    ? ((void)0)                                                               \
+    : [](const char* file_name,                                               \
+         int line_number,                                                     \
+         const char* function_name)                                           \
+        ALLOY_FORCE_INLINE_LAMBDA                                             \
+      {                                                                       \
+        ALLOY_BREAKPOINT();                                                   \
+        ::alloy::core::detail::assert_internal(                               \
+          ALLOY_STRINGIZE(condition),                                         \
+          message,                                                            \
+          file_name,                                                          \
+          static_cast<std::size_t>(line_number),                              \
+          function_name                                                       \
+        );                                                                    \
       }( __FILE__, __LINE__, __func__ ) )
 
 //! \def ALLOY_ASSERT(condition, message)
@@ -171,49 +146,37 @@
   ALLOY_ASSERT(condition,message)
 #endif
 
-namespace alloy::core::detail {
+namespace alloy::core {
 
-// I do not know why clang claims that 'fprintf' is marked 'unused'.
-// This may be worth revisiting later on -- but for now, lets hide this
-// error
-ALLOY_COMPILER_DIAGNOSTIC_PUSH()
-ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(-Wused-but-marked-unused)
-ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(-Wunused-function)
+  /// \brief A function type that is capable of handling assertions
+  ///
+  /// Assertion handlers are required to be marked `noexcept` since assertions
+  /// are never meant to be testable cases; they are meant to always indicate
+  /// program invariants, and nothing more.
+  ///
+  /// Assertion handlers are meant to be user-configurable functions that may
+  /// provide more input to the failure, such as providing a stack-trace,
+  /// writing out to a log file, etc.
+  using assert_handler_fn = void() noexcept;
 
-  // Note: This function is defined inline intentionally.
-  //
-  // For GCC/Clang, ALLOY_BREAKPOINT does not trigger the debugger if this
-  // definition is compiled into a different shared library than the consuming
-  // binary is. When inline, the breakpoint is visible, and brings up the
-  // debugger as desired.
-  //
-  // This hasn't been tested with MSVC; but the behavior has been normalized
-  // here since it's required in order to use this with two of the target
-  // compilers.
-  [[noreturn]]
-  inline ALLOY_ASSERT_VISIBILITY
-  void assert_internal(const char* message,
-                       const char* file_name,
-                       std::size_t line,
-                       const char* function_name)
-  {
-    ::std::fprintf(stderr,
-      "[assertion] %s (%zu)::%s\n"
-      "            %s\n",
-      file_name,
-      line,
-      function_name,
-      message
-    );
-    ::std::fflush(stderr);
-    // TODO(bitwizeshift): print out stack-trace on assertion failure
+  /// \brief Sets a user-configurable handler for behaviors to connect on
+  ///        assertion failures
+  ///
+  /// If \p handler is `nullptr`, the default assertion handler is installed
+  ///
+  /// \param handler the handler to install
+  /// \return the previously installed handler
+  assert_handler_fn* set_assert_handler(assert_handler_fn* handler) noexcept;
 
-    ALLOY_BREAKPOINT();
-    ::std::terminate();
-  }
+  namespace detail {
 
-ALLOY_COMPILER_DIAGNOSTIC_POP()
-
-} // alloy::core::detail
+    [[noreturn]] ALLOY_COLD ALLOY_CORE_API
+    void assert_internal(const char* condition,
+                         const char* message,
+                         const char* file_name,
+                         std::size_t line,
+                         const char* function_name) noexcept;
+  } // namespace detail
+} // namespace alloy::core
 
 #endif /* ALLOY_CORE_ASSERT_HPP */

@@ -131,14 +131,8 @@ set(header_files
   include/alloy/core/model/light/spot_light.hpp
 )
 
-set(inline_header_files
-  # Core
-  include/alloy/core/intrinsics/clang.hpp
-  include/alloy/core/intrinsics/gcc.hpp
-  include/alloy/core/intrinsics/msvc.hpp
-)
-
 set(source_files
+  src/alloy/core/assert.cpp
   src/alloy/core/type_index.cpp
 
   # Math
@@ -165,7 +159,6 @@ set(source_files
 add_library(${PROJECT_NAME}Core
   ${generated_header_files}
   ${header_files}
-  ${inline_header_files}
   ${source_files}
 )
 add_library(${PROJECT_NAME}::Core ALIAS ${PROJECT_NAME}Core)
@@ -204,7 +197,6 @@ if (ALLOY_COMPILE_SELF_CONTAINMENT_TESTS)
     TARGET ${PROJECT_NAME}Core
     HEADERS ${header_files}
   )
-  target_sources(${PROJECT_NAME}Core.SelfContainmentTest PRIVATE ${inline_header_files})
 endif ()
 
 # Unit Tests
