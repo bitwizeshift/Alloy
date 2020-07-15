@@ -148,7 +148,7 @@
 //! optimizations by allowing branch-analysis to determine that conditions
 //! reaching such handlers are unlikely.
 #if defined(__GNUC__) || defined(__clang__)
-# define ALLOY_COLD [[gnu::cold]] [[gnu::noinline]]
+# define ALLOY_COLD __attribute__((cold, noinline))
 #elif defined(_MSC_VER)
 # pragma section("cold",execute)
 # define ALLOY_COLD __declspec(code_seg("cold")) __declspec(noinline)
@@ -164,7 +164,7 @@
 //! Functions documented as "hot" will be more aggressively optimized for speed
 //! on compatible systems
 #if defined(__GNUC__) || defined(__clang__)
-# define ALLOY_HOT [[gnu::hot]]
+# define ALLOY_HOT __attribute__((hot))
 #else
 # define ALLOY_HOT
 #endif
@@ -202,7 +202,7 @@
 //!
 //! \brief An intrinsic for forcing the compiler to inline a function
 #if defined(__GNUC__) || defined(__clang__)
-# define ALLOY_FORCE_INLINE [[gnu::always_inline]] inline
+# define ALLOY_FORCE_INLINE __attribute__((always_inline)) inline
 #elif defined(_MSC_VER)
 # define ALLOY_FORCE_INLINE __forceinline
 #else
@@ -230,7 +230,7 @@
 //!
 //! \brief An intrinsic for requiring the compiler *not* to inline a function
 #if defined(__GNUC__) || defined(__clang__)
-# define ALLOY_NO_INLINE [[gnu::noinline]]
+# define ALLOY_NO_INLINE __attribute__((noinline))
 #elif defined(_MSC_VER)
 # define ALLOY_NO_INLINE __declspec(noinline)
 #else
@@ -568,7 +568,7 @@ namespace alloy::core {
     /// This is used to suppress 'unused variable' warnings, and to indicate
     /// to the reader that a variable is intentionally unused
     template <typename...Types>
-    static constexpr void unused(const Types&...) noexcept{}
+    static constexpr void unused([[maybe_unused]] const Types&...) noexcept{}
 
     /// \brief A meta function to indicate to the compiler that a static value
     ///        is unused
@@ -607,7 +607,9 @@ namespace alloy::core {
     /// \param p the pointer to indicate is not-null
     /// \return a pointer that the compiler knows is not null
     template <typename T>
+#if defined(__GNUC__) || defined(__clang__)
     [[gnu::returns_nonnull]]
+#endif
     static constexpr T* assume_not_null(T* p) noexcept;
 
     /// \brief Assumes that a given function will be a cold path
