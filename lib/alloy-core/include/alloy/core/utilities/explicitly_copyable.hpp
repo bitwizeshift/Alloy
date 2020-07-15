@@ -34,6 +34,8 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/intrinsics.hpp"
+
 #include <type_traits> // std::is_final, std::is_copy_constructible, etc
 
 namespace alloy::core {
@@ -86,6 +88,16 @@ namespace alloy::core {
     constexpr explicitly_copyable copy()
       const noexcept(std::is_nothrow_copy_constructible<T>::value);
 
+    /// \brief Creates a copy of the underlying type using the specified
+    ///        allocator
+    ///
+    /// \param alloc the allocator to use for the copy
+    /// \return a copy of the underlying type using \p alloc
+    template <typename Alloc = typename T::allocator_type,
+              typename = std::enable_if_t<std::is_constructible<T,const T&, const Alloc&>::value>>
+    constexpr explicitly_copyable copy(const Alloc& alloc)
+     const noexcept(std::is_nothrow_constructible<T, const T&, const Alloc&>::value);
+
     //-------------------------------------------------------------------------
     // Private Constructors / Assignment
     //-------------------------------------------------------------------------
@@ -99,11 +111,21 @@ namespace alloy::core {
 } // namespace alloy::core
 
 template <typename T>
-inline constexpr alloy::core::explicitly_copyable<T>
+ALLOY_FORCE_INLINE
+constexpr alloy::core::explicitly_copyable<T>
   alloy::core::explicitly_copyable<T>::copy()
   const noexcept(std::is_nothrow_copy_constructible<T>::value)
 {
   return (*this);
+}
+template <typename T>
+template <typename Alloc, typename>
+ALLOY_FORCE_INLINE
+constexpr alloy::core::explicitly_copyable<T>
+  alloy::core::explicitly_copyable<T>::copy(const Alloc& alloc)
+  const noexcept(std::is_nothrow_constructible<T, const T&, const Alloc&>::value)
+{
+  return explicitly_copyable<T>{(*this), alloc};
 }
 
 #endif /* ALLOY_CORE_UTILITIES_EXPLICITLY_COPYABLE_HPP */
