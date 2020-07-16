@@ -1,4 +1,5 @@
 #include <alloy/core/math/vector/vector3.hpp>
+#include <alloy/core/math/vector/vector3_constants.hpp>
 #include <alloy/core/math/vector/vector_utilities.hpp>
 #include <alloy/core/math/angle/radian.hpp>
 #include <alloy/core/math/math.hpp>
@@ -245,8 +246,8 @@ TEST_CASE("vector3::angle_between( const vector3& )", "[quantifiers]")
 {
   SECTION("Vectors are parallel")
   {
-    const auto vec1 = vector3::unit_x;
-    const auto vec2 = vector3::unit_x;
+    const auto vec1 = vector3_constants::unit_x;
+    const auto vec2 = vector3_constants::unit_x;
 
     const auto angle = vec1.angle_between( vec2 );
     const auto expected = alloy::core::radian{0};
@@ -256,8 +257,8 @@ TEST_CASE("vector3::angle_between( const vector3& )", "[quantifiers]")
 
   SECTION("Vectors are perpendicular")
   {
-    const auto vec1 = vector3::unit_x;
-    const auto vec2 = vector3::unit_z;
+    const auto vec1 = vector3_constants::unit_x;
+    const auto vec2 = vector3_constants::unit_z;
 
     const auto angle = vec1.angle_between( vec2 );
     const auto expected = alloy::core::radian_constants::quarter_revolution;
@@ -267,7 +268,7 @@ TEST_CASE("vector3::angle_between( const vector3& )", "[quantifiers]")
 
   SECTION("Vectors are opposite")
   {
-    const auto vec1 = vector3::unit_z;
+    const auto vec1 = vector3_constants::unit_z;
     const auto vec2 = -vec1;
 
     const auto angle = vec1.angle_between( vec2 );

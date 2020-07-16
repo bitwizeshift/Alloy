@@ -111,6 +111,7 @@ set(header_files
   include/alloy/core/math/vector/vector3.hpp
   include/alloy/core/math/vector/vector4.hpp
   include/alloy/core/math/vector/vector2_constants.hpp
+  include/alloy/core/math/vector/vector3_constants.hpp
 
   # Geometry
   include/alloy/core/geometry/axis_aligned_box.hpp

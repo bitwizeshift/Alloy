@@ -66,19 +66,6 @@ namespace alloy::core {
   class vector3
   {
     //--------------------------------------------------------------------------
-    // Static Constants
-    //--------------------------------------------------------------------------
-  public:
-
-    ALLOY_CORE_API static const vector3 zero;
-    ALLOY_CORE_API static const vector3 unit_x;
-    ALLOY_CORE_API static const vector3 unit_y;
-    ALLOY_CORE_API static const vector3 unit_z;
-    ALLOY_CORE_API static const vector3 neg_unit_x;
-    ALLOY_CORE_API static const vector3 neg_unit_y;
-    ALLOY_CORE_API static const vector3 neg_unit_z;
-
-    //--------------------------------------------------------------------------
     // Public Types
     //--------------------------------------------------------------------------
   public:
@@ -682,6 +669,12 @@ inline alloy::core::vector3
   alloy::core::vector3::perpendicular()
   const noexcept
 {
+  constexpr auto unit_x = vector3{
+    real{1}, real{0}, real{0},
+  };
+  constexpr auto unit_y = vector3{
+    real{0}, real{1}, real{0},
+  };
   // Try perpendicular to x-axis
   // if result is 0, try y-axis
   auto perp = cross( unit_x );
