@@ -66,17 +66,6 @@ namespace alloy::core {
   class vector2
   {
     //--------------------------------------------------------------------------
-    // Static Constants
-    //--------------------------------------------------------------------------
-  public:
-
-    ALLOY_CORE_API static const vector2 zero;
-    ALLOY_CORE_API static const vector2 unit_x;
-    ALLOY_CORE_API static const vector2 unit_y;
-    ALLOY_CORE_API static const vector2 neg_unit_x;
-    ALLOY_CORE_API static const vector2 neg_unit_y;
-
-    //--------------------------------------------------------------------------
     // Public Types
     //--------------------------------------------------------------------------
   public:
