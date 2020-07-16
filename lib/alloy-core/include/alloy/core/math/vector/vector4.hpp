@@ -66,21 +66,6 @@ namespace alloy::core {
   class vector4
   {
     //--------------------------------------------------------------------------
-    // Static Constants
-    //--------------------------------------------------------------------------
-  public:
-
-    ALLOY_CORE_API static const vector4 zero;
-    ALLOY_CORE_API static const vector4 unit_x;
-    ALLOY_CORE_API static const vector4 unit_y;
-    ALLOY_CORE_API static const vector4 unit_z;
-    ALLOY_CORE_API static const vector4 unit_w;
-    ALLOY_CORE_API static const vector4 neg_unit_x;
-    ALLOY_CORE_API static const vector4 neg_unit_y;
-    ALLOY_CORE_API static const vector4 neg_unit_z;
-    ALLOY_CORE_API static const vector4 neg_unit_w;
-
-    //--------------------------------------------------------------------------
     // Public Types
     //--------------------------------------------------------------------------
   public:
@@ -427,7 +412,6 @@ namespace alloy::core {
   using vec4 = vector4;
 
 } // namespace alloy::core
-
 
 //==============================================================================
 // class : vector4
