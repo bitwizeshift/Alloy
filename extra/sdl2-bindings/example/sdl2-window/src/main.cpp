@@ -87,7 +87,6 @@ int main(int argc, char** argv)
   // * process new frame (1 fps)
   // * update window
   using clock = std::chrono::steady_clock;
-  using std::literals::chrono_literals::operator""s;
 
   auto last_frame = clock::now();
   while (::g_keep_running) {

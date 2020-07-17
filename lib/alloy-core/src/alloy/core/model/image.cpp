@@ -28,25 +28,24 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(-Wcovered-switch-default)
   public:
     std::string message(int ec) const override
     {
-      using std::literals::string_literals::operator""s;
       using error_code = ::alloy::core::image::error_code;
       auto code = static_cast<error_code>(ec);
 
       switch (code) {
         case error_code::invalid_pixel_format: {
-          return "Invalid pixel format value specified"s;
+          return "Invalid pixel format value specified";
         }
         case error_code::bad_width: {
-          return "Invalid width specified. Width must be > 0"s;
+          return "Invalid width specified. Width must be > 0";
         }
         case error_code::bad_height: {
-          return "Invalid height specified. Height must be > 0"s;
+          return "Invalid height specified. Height must be > 0";
         }
         case error_code::incorrect_dimensions: {
-          return "Dimensions don't match the supplied byte buffer"s;
+          return "Dimensions don't match the supplied byte buffer";
         }
         default: {
-          return "Unknown error code"s;
+          return "Unknown error code";
         }
       }
     }

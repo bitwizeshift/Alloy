@@ -27,7 +27,6 @@ namespace {
 
     std::string message(int ec) const override
     {
-      using std::literals::string_literals::operator""s;
       using error_code = alloy::io::file::error_code;
 
       const auto code = static_cast<error_code>(ec);
@@ -36,17 +35,17 @@ namespace {
         case error_code::closed:
           return "file is closed, no result available";
         case error_code::eof:
-          return "end-of-file reached"s;
+          return "end-of-file reached";
         case error_code::not_readable:
-          return "file is not able to be read"s;
+          return "file is not able to be read";
         case error_code::not_writeable:
-          return "file is not able to be written to"s;
+          return "file is not able to be written to";
         case error_code::system_error:
-          return "An error occurred while operating on the file"s;
+          return "An error occurred while operating on the file";
         default:
           break;
       }
-      return "unknown error code"s;
+      return "unknown error code";
     }
   };
 
