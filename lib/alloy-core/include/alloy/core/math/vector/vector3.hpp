@@ -63,7 +63,7 @@ namespace alloy::core {
   /// Operations on this type are able to promote results to reduce loss of
   /// data, depending on what the operands are.
   /////////////////////////////////////////////////////////////////////////////
-  class vector3
+  class ALLOY_CORE_API vector3
   {
     //-------------------------------------------------------------------------
     // Public Types
