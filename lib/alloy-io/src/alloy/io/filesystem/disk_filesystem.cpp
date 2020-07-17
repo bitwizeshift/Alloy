@@ -252,7 +252,7 @@ alloy::io::disk_filesystem::disk_filesystem(core::allocator alloc)
 // Filesystem
 //-----------------------------------------------------------------------------
 
-// GCC incorrectly errors on flag enumerations in switch cases as being
+// GCC and MSVC incorrectly error on flag enumerations in switch cases as being
 // "out of range" for the flag enum -- despite this being valid for enumerators
 // in C++. So we have to silence this error
 // Clang has attributes to work around this, but I ignore this error in clang
@@ -260,6 +260,7 @@ alloy::io::disk_filesystem::disk_filesystem(core::allocator alloc)
 // decide not to implement the specific attribute.
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wswitch)
+ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE(4063)
 
 alloy::io::file alloy::io::disk_filesystem::open(std::string_view path,
                                                  open_mode mode)
