@@ -50,11 +50,11 @@
 
 namespace alloy::core {
 
-  //============================================================================
+  //===========================================================================
   // class : vector2
-  //============================================================================
+  //===========================================================================
 
-  //////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
   /// \brief This object represents a 2-component vector in linear algebra.
   ///
   /// Most operations are marked \c constexpr to allow for compile-time
@@ -62,23 +62,12 @@ namespace alloy::core {
   ///
   /// Operations on this type are able to promote results to reduce loss of
   /// data, depending on what the operands are.
-  //////////////////////////////////////////////////////////////////////////////
-  class vector2
+  /////////////////////////////////////////////////////////////////////////////
+  class ALLOY_CORE_API vector2
   {
-    //--------------------------------------------------------------------------
-    // Static Constants
-    //--------------------------------------------------------------------------
-  public:
-
-    ALLOY_CORE_API static const vector2 zero;
-    ALLOY_CORE_API static const vector2 unit_x;
-    ALLOY_CORE_API static const vector2 unit_y;
-    ALLOY_CORE_API static const vector2 neg_unit_x;
-    ALLOY_CORE_API static const vector2 neg_unit_y;
-
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     // Public Types
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
   public:
 
     using value_type      = real;
@@ -90,56 +79,62 @@ namespace alloy::core {
     using size_type  = std::size_t;
     using index_type = std::ptrdiff_t;
 
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    // Public Static Factories
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \brief Constructs a vector2 with a given \p magnitude and \p direction
+    ///
+    /// \param magnitude the distance of the vector
+    /// \param direction the angle of the vector
+    /// \return a constructed vector
+    static vector2 from_magnitude_direction(real magnitude,
+                                            radian direction) noexcept;
+
+    //-------------------------------------------------------------------------
     // Constructors / Assignment
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
   public:
 
     /// \brief Default constructs a vector2 with 0 values
     constexpr vector2() noexcept;
 
-    /// \brief Constructs a vector2 with a given \p magnitude
-    ///        and \p direction
-    ///
-    /// \param magnitude the distance of the vector
-    /// \param direction the angle of the vector
-    vector2( real magnitude, radian direction ) noexcept;
-
     /// \brief Constructs a vector2 with components \p x and \p y
     ///
     /// \param x the x-component of the vector2
     /// \param y the y-component of the vector2
-    constexpr vector2( real x, real y ) noexcept;
+    constexpr vector2(real x, real y) noexcept;
 
     /// \brief Copy-constructs a vector2 with the value of another
     ///        vector2
     ///
     /// \param other the other vector2 to copy
-    constexpr vector2( const vector2& other ) noexcept = default;
+    constexpr vector2(const vector2& other) noexcept = default;
 
     /// \brief Move-constructs a vector2 with the value of another
     ///        vector2
     ///
     /// \param other the other vector2 to move
-    constexpr vector2( vector2&& other ) noexcept = default;
+    constexpr vector2(vector2&& other) noexcept = default;
 
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
 
     /// \brief Copy-assigns \p other to \c this
     ///
     /// \param other the other vector2 to copy
     /// \return reference to \c (*this)
-    vector2& operator=( const vector2& other ) noexcept = default;
+    vector2& operator=(const vector2& other) noexcept = default;
 
     /// \brief Move-assigns \p other to \c this
     ///
     /// \param other the other vector2 to move
     /// \return reference to \c (*this)
-    vector2& operator=( vector2&& other ) noexcept = default;
+    vector2& operator=(vector2&& other) noexcept = default;
 
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     // Observers
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
   public:
 
     /// \brief Gets the number of components in the vector2
@@ -171,9 +166,9 @@ namespace alloy::core {
     constexpr const_pointer data() const noexcept;
     /// \}
 
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     // Element Access
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
   public:
 
     /// \{
@@ -182,8 +177,8 @@ namespace alloy::core {
     /// \throw std::out_of_range if \p n >= 2 or \p n < 0
     ///
     /// \return reference to the \p n entry
-    constexpr reference at( index_type n );
-    constexpr const_reference at( index_type n ) const;
+    constexpr reference at(index_type n);
+    constexpr const_reference at(index_type n) const;
     /// \}
 
     /// \{
@@ -192,26 +187,26 @@ namespace alloy::core {
     /// \note Undefined behaviour if \p n >= 2 or \p n < 0
     ///
     /// \return reference to the \p n entry
-    constexpr reference operator[]( index_type n ) noexcept;
-    constexpr const_reference operator[]( index_type n ) const noexcept;
+    constexpr reference operator[](index_type n) noexcept;
+    constexpr const_reference operator[](index_type n) const noexcept;
     /// \}
 
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     // Quantifiers
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
   public:
 
     /// \brief Determines the dot-product of \c this and \p rhs
     ///
     /// \param rhs the other vector2 to perform the dot-product with
     /// \return the dot product of \c this and \p rhs
-    constexpr real dot( const vector2& rhs ) const noexcept;
+    constexpr real dot(const vector2& rhs) const noexcept;
 
     /// \brief Calculates the cross-product of \c this and \p rhs
     ///
     /// \param rhs the other vector2 to perform the cross-product with
     /// \return the cross product of \c this and \p rhs
-    constexpr real cross( const vector2& rhs ) const noexcept;
+    constexpr real cross(const vector2& rhs) const noexcept;
 
     /// \brief Gets the square magnitude of this vector2
     ///
@@ -227,26 +222,26 @@ namespace alloy::core {
     ///
     /// \param vec the vector2 to get the midpoint from
     /// \return the midpoint between \c this and \p vec
-    constexpr vector2 midpoint( const vector2& vec ) const noexcept;
+    constexpr vector2 midpoint(const vector2& vec) const noexcept;
 
     /// \brief Gets the reflection vector2 of \c this reflected through the
     ///        \p normal
     ///
     /// \param normal the normal vector2
     /// \return the reflection
-    constexpr vector2 reflection( const vector2& normal ) const noexcept;
+    constexpr vector2 reflection(const vector2& normal) const noexcept;
 
     /// \brief Projects the components of this vector onto \p vector
     ///
     /// \param vector the vector to project onto
     /// \return the projection
-    constexpr vector2 projection( const vector2& vector ) const noexcept;
+    constexpr vector2 projection(const vector2& vector) const noexcept;
 
     /// \brief Projects the components of this vector off of \p vector
     ///
     /// \param vector the vector to project off of
     /// \return the rejection
-    constexpr vector2 rejection( const vector2& vector ) const noexcept;
+    constexpr vector2 rejection(const vector2& vector) const noexcept;
 
     /// \brief Gets the perpendicular of this vector2
     ///
@@ -267,22 +262,22 @@ namespace alloy::core {
     ///
     /// \param other the other vector to determine the angle between
     /// \return the angle between \c this and \p other
-    radian angle_between( const vector2& other ) const noexcept;
+    radian angle_between(const vector2& other) const noexcept;
 
     /// \brief Determines the angle from \p to \p other
     ///
     /// \param other the other vector to get the angle to
     /// \return the angle from \c this to \p other
-    radian angle_to( const vector2& other ) const noexcept;
+    radian angle_to(const vector2& other) const noexcept;
 
     /// \brief Queries whether this vector is normalized
     ///
     /// \return \c true if this vector is normalized
     constexpr bool is_normalized() const noexcept;
 
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     // Modifiers
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
   public:
 
     /// \brief Normalizes this vector2 and returns a reference to \c (*this)
@@ -295,23 +290,23 @@ namespace alloy::core {
     /// \return the reference to \c (*this)
     constexpr vector2& invert() noexcept;
 
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     // Unary Operators
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
   public:
 
     constexpr const vector2& operator+() const noexcept;
     constexpr vector2 operator-() const noexcept;
 
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     // Compound Operators
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
   public:
 
-    constexpr vector2& operator+=( const vector2& rhs ) noexcept;
-    constexpr vector2& operator-=( const vector2& rhs ) noexcept;
-    constexpr vector2& operator*=( real scalar ) noexcept;
-    constexpr vector2& operator/=( real scalar ) noexcept;
+    constexpr vector2& operator+=(const vector2& rhs) noexcept;
+    constexpr vector2& operator-=(const vector2& rhs) noexcept;
+    constexpr vector2& operator*=(real scalar) noexcept;
+    constexpr vector2& operator/=(real scalar) noexcept;
 
     //----------------------------------------------------------------------
     // Private Members
@@ -321,9 +316,9 @@ namespace alloy::core {
     real m_data[2]; ///< The storage data
   };
 
-  //============================================================================
+  //===========================================================================
   // trait : is_vector2
-  //============================================================================
+  //===========================================================================
 
   /// \brief Trait to detect whether \p T is a \ref vector2
   ///
@@ -338,34 +333,34 @@ namespace alloy::core {
   template<typename T>
   inline constexpr bool is_vector2_v = is_vector2<T>::value;
 
-  //============================================================================
+  //===========================================================================
   // non-member functions : class : vector2
-  //============================================================================
+  //===========================================================================
 
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
   // Arithmetic Operators
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  constexpr vector2 operator+( const vector2& lhs,
-                               const vector2& rhs ) noexcept;
-  constexpr vector2 operator-( const vector2& lhs,
-                               const vector2& rhs ) noexcept;
-  constexpr vector2 operator*( const vector2& lhs,
-                               real scalar ) noexcept;
-  constexpr vector2 operator*( real scalar, const vector2& rhs ) noexcept;
-  constexpr vector2 operator/( const vector2& lhs,
-                               real scalar ) noexcept;
+  constexpr vector2 operator+(const vector2& lhs,
+                              const vector2& rhs) noexcept;
+  constexpr vector2 operator-(const vector2& lhs,
+                              const vector2& rhs) noexcept;
+  constexpr vector2 operator*(const vector2& lhs,
+                              real scalar) noexcept;
+  constexpr vector2 operator*(real scalar, const vector2& rhs) noexcept;
+  constexpr vector2 operator/(const vector2& lhs,
+                              real scalar) noexcept;
 
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
   // Comparisons
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  constexpr bool operator==( const vector2& lhs,
-                             const vector2& rhs ) noexcept;
-  constexpr bool operator!=( const vector2& lhs,
-                             const vector2& rhs ) noexcept;
+  constexpr bool operator==(const vector2& lhs,
+                            const vector2& rhs) noexcept;
+  constexpr bool operator!=(const vector2& lhs,
+                            const vector2& rhs) noexcept;
 
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// \brief Determines equality between two vector2 relative to
   ///        \ref default_tolerance
@@ -373,78 +368,80 @@ namespace alloy::core {
   /// \param lhs the left vector2
   /// \param rhs the right vector2
   /// \return \c true if the two vector2 contain almost equal values
-  constexpr bool almost_equal( const vector2& lhs,
-                               const vector2& rhs ) noexcept;
+  constexpr bool almost_equal(const vector2& lhs,
+                              const vector2& rhs) noexcept;
 
   /// \brief Determines equality between two vector2 relative to \p tolerance
   ///
   /// \param lhs the left vector2
   /// \param rhs the right vector2
   /// \return \c true if the two vector2 contain almost equal values
-  constexpr bool almost_equal( const vector2& lhs,
-                               const vector2& rhs,
-                               real tolerance ) noexcept;
+  constexpr bool almost_equal(const vector2& lhs,
+                              const vector2& rhs,
+                              real tolerance) noexcept;
 
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  // Utilities
+  //---------------------------------------------------------------------------
 
   /// \brief Determines if two vector2's are linearly independent
   ///
   /// \param v1 the first vector
   /// \param v2 the second vector
   /// \return \c true if the two vectors are linearly independent
-  constexpr bool are_linearly_independent( const vector2& v1,
-                                           const vector2& v2 ) noexcept;
+  bool are_linearly_independent(const vector2& v1,
+                                const vector2& v2) noexcept;
 
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
   // Quantifiers
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// \brief Performs the dot product between \p lhs and \p rhs
   ///
   /// \param lhs the left vector2
   /// \param rhs the right vector2
   /// \return the result of the dot product
-  constexpr real dot( const vector2& lhs, const vector2& rhs ) noexcept;
+  constexpr real dot(const vector2& lhs, const vector2& rhs) noexcept;
 
   /// \brief Performs the cross product between \p lhs and \p rhs
   ///
   /// \param lhs the left vector2
   /// \param rhs the right vector2
   /// \return the result of the dot product
-  constexpr real cross( const vector2& lhs, const vector2& rhs ) noexcept;
+  constexpr real cross(const vector2& lhs, const vector2& rhs) noexcept;
 
   /// \brief Calculates the magnitude of the vector2 \p vec
   ///
   /// \param vec the vector2 to calculate the magnitude from
   /// \return the magnitude
-  real magnitude( const vector2& vec ) noexcept;
+  real magnitude(const vector2& vec) noexcept;
 
-  //============================================================================
+  //===========================================================================
   // struct : piecewise_compare<vector2>
-  //============================================================================
+  //===========================================================================
 
   template<>
   struct piecewise_compare<vector2>
   {
-    constexpr bool operator()( const vector2& lhs,
-                               const vector2& rhs ) noexcept;
+    constexpr bool operator()(const vector2& lhs,
+                              const vector2& rhs) noexcept;
   };
 
-  //============================================================================
+  //===========================================================================
   // aliases
-  //============================================================================
+  //===========================================================================
 
   using vec2 = vector2;
 
 } // namespace alloy::core
 
-//==============================================================================
+//=============================================================================
 // class : vector2
-//==============================================================================
+//=============================================================================
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Constructors
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::vector2::vector2()
   noexcept
@@ -456,26 +453,16 @@ inline constexpr alloy::core::vector2::vector2()
 
 }
 
-inline alloy::core::vector2::vector2( real magnitude, radian direction )
-  noexcept
-  : m_data{
-      magnitude * trigonometry::cos(direction),
-      magnitude * trigonometry::sin(direction)
-    }
-{
-
-}
-
-inline constexpr alloy::core::vector2::vector2( real x, real y )
+inline constexpr alloy::core::vector2::vector2(real x, real y)
   noexcept
   : m_data{x,y}
 {
 
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Observers
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::vector2::size_type
   alloy::core::vector2::size()
@@ -484,7 +471,7 @@ inline constexpr alloy::core::vector2::size_type
   return 2;
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::vector2::reference
   alloy::core::vector2::x()
@@ -500,7 +487,7 @@ inline constexpr alloy::core::vector2::const_reference
   return m_data[0];
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::vector2::reference
   alloy::core::vector2::y()
@@ -516,7 +503,7 @@ inline constexpr alloy::core::vector2::const_reference
   return m_data[1];
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::vector2::pointer
   alloy::core::vector2::data()
@@ -532,25 +519,25 @@ inline constexpr alloy::core::vector2::const_pointer
   return &m_data[0];
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Element Access
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::vector2::reference
-  alloy::core::vector2::at( index_type n )
+  alloy::core::vector2::at(index_type n)
 {
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
   if (n >= 2 || n < 0) {
     throw std::out_of_range("alloy::core::vector2::at: index out of range");
   }
 #else
-  assert( n < 2 && n >= 0 );
+  assert(n < 2 && n >= 0);
 #endif
   return m_data[n];
 }
 
 inline constexpr alloy::core::vector2::const_reference
-  alloy::core::vector2::at( index_type n )
+  alloy::core::vector2::at(index_type n)
   const
 {
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
@@ -558,50 +545,50 @@ inline constexpr alloy::core::vector2::const_reference
     throw std::out_of_range("alloy::core::vector2::at: index out of range");
   }
 #else
-  ALLOY_ASSERT( n < 2 && n >= 0 );
+  ALLOY_ASSERT(n < 2 && n >= 0);
 #endif
   return m_data[n];
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::vector2::reference
-  alloy::core::vector2::operator[]( index_type n )
+  alloy::core::vector2::operator[](index_type n)
   noexcept
 {
-  ALLOY_ASSERT( n < 2 && n >= 0 );
+  ALLOY_ASSERT(n < 2 && n >= 0);
   return m_data[n];
 }
 
 inline constexpr alloy::core::vector2::const_reference
-  alloy::core::vector2::operator[]( index_type n )
+  alloy::core::vector2::operator[](index_type n)
   const noexcept
 {
-  ALLOY_ASSERT( n < 2 && n >= 0 );
+  ALLOY_ASSERT(n < 2 && n >= 0);
   return m_data[n];
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Quantifiers
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::real
-  alloy::core::vector2::dot( const vector2& other )
+  alloy::core::vector2::dot(const vector2& other)
   const noexcept
 {
   return (x() * other.x()) + (y() * other.y());
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::real
-  alloy::core::vector2::cross( const vector2& other )
+  alloy::core::vector2::cross(const vector2& other)
   const noexcept
 {
   return (x() * other.y()) - (y() * other.x());
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::real
   alloy::core::vector2::square_magnitude()
@@ -610,15 +597,8 @@ inline constexpr alloy::core::real
   return dot(*this);
 }
 
-inline alloy::core::real
-  alloy::core::vector2::magnitude()
-  const noexcept
-{
-  return sqrt( (x()*x()) + (y()*y()) );
-}
-
 inline constexpr alloy::core::vector2
-  alloy::core::vector2::midpoint( const vector2& rhs )
+  alloy::core::vector2::midpoint(const vector2& rhs)
   const noexcept
 {
   return vector2{
@@ -628,16 +608,16 @@ inline constexpr alloy::core::vector2
 }
 
 inline constexpr alloy::core::vector2
-  alloy::core::vector2::reflection( const vector2& normal )
+  alloy::core::vector2::reflection(const vector2& normal)
   const noexcept
 {
   return (*this) - (normal * (real{2} * dot(normal)));
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::vector2
-  alloy::core::vector2::projection( const vector2& vector )
+  alloy::core::vector2::projection(const vector2& vector)
   const noexcept
 {
   const auto multiplier = dot(vector) / dot(*this);
@@ -649,14 +629,13 @@ inline constexpr alloy::core::vector2
 }
 
 inline constexpr alloy::core::vector2
-  alloy::core::vector2::rejection( const vector2& vector )
+  alloy::core::vector2::rejection(const vector2& vector)
   const noexcept
 {
   return (*this) - projection(vector);
 }
 
-
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::vector2
   alloy::core::vector2::perpendicular()
@@ -679,36 +658,7 @@ inline constexpr alloy::core::vector2
   return vector2{ -x(), -y() };
 }
 
-//------------------------------------------------------------------------------
-
-inline alloy::core::radian
-  alloy::core::vector2::angle_between( const vector2& other )
-  const noexcept
-{
-  auto mag_product = magnitude() * other.magnitude();
-
-  if( almost_equal( mag_product, real{0} ) ){
-    mag_product = default_tolerance;
-  }
-
-  auto f = dot(other) / mag_product;
-
-  f = clamp( f, real{-1.0}, real{1.0} );
-  return trigonometry::arccos( f );
-}
-
-inline alloy::core::radian
-  alloy::core::vector2::angle_to( const vector2& other )
-  const noexcept
-{
-  auto angle = angle_between( other );
-
-  if( cross(other) < real{0} ) {
-    return radian_constants::revolution - angle;
-  }
-
-  return angle;
-}
+//-----------------------------------------------------------------------------
 
 inline constexpr bool
   alloy::core::vector2::is_normalized()
@@ -717,29 +667,9 @@ inline constexpr bool
   return almost_equal(square_magnitude(), real{1});
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Modifiers
-//------------------------------------------------------------------------------
-
-inline alloy::core::vector2&
-  alloy::core::vector2::normalize()
-  noexcept
-{
-  const auto square_mag = square_magnitude();
-
-  if (almost_equal(square_mag, real{1})) {
-    return (*this);
-  }
-
-  if (square_mag > real{0}) {
-    const auto mag_inv = real{1} / sqrt(square_mag);
-
-    x() *= mag_inv;
-    y() *= mag_inv;
-  }
-
-  return (*this);
-}
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::vector2&
   alloy::core::vector2::invert()
@@ -751,9 +681,9 @@ inline constexpr alloy::core::vector2&
   return (*this);
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Unary Operators
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr const alloy::core::vector2&
   alloy::core::vector2::operator+()
@@ -769,12 +699,12 @@ inline constexpr alloy::core::vector2
   return vector2{ -x(), -y() };
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Compound Operators
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::vector2&
-  alloy::core::vector2::operator+=( const vector2& rhs )
+  alloy::core::vector2::operator+=(const vector2& rhs)
   noexcept
 {
   x() += rhs.x();
@@ -783,7 +713,7 @@ inline constexpr alloy::core::vector2&
 }
 
 inline constexpr alloy::core::vector2&
-  alloy::core::vector2::operator-=( const vector2& rhs )
+  alloy::core::vector2::operator-=(const vector2& rhs)
   noexcept
 {
   x() -= rhs.x();
@@ -792,7 +722,7 @@ inline constexpr alloy::core::vector2&
 }
 
 inline constexpr alloy::core::vector2&
-  alloy::core::vector2::operator*=( real scalar )
+  alloy::core::vector2::operator*=(real scalar)
   noexcept
 {
   x() *= scalar;
@@ -801,7 +731,7 @@ inline constexpr alloy::core::vector2&
 }
 
 inline constexpr alloy::core::vector2&
-  alloy::core::vector2::operator/=( real scalar )
+  alloy::core::vector2::operator/=(real scalar)
   noexcept
 {
   const auto inv = real{1} / scalar;
@@ -811,62 +741,62 @@ inline constexpr alloy::core::vector2&
   return (*this);
 }
 
-//==============================================================================
+//=============================================================================
 // non-member functions : class : vector2
-//==============================================================================
+//=============================================================================
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Arithmetic Operators
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::vector2
-  alloy::core::operator+( const vector2& lhs, const vector2& rhs )
+  alloy::core::operator+(const vector2& lhs, const vector2& rhs)
   noexcept
 {
   return vector2{lhs}+=rhs;
 }
 
 inline constexpr alloy::core::vector2
-  alloy::core::operator-( const vector2& lhs, const vector2& rhs )
+  alloy::core::operator-(const vector2& lhs, const vector2& rhs)
   noexcept
 {
   return vector2{lhs}-=rhs;
 }
 
 inline constexpr alloy::core::vector2
-  alloy::core::operator*( const vector2& lhs, real scalar )
+  alloy::core::operator*(const vector2& lhs, real scalar)
   noexcept
 {
   return vector2{lhs}*=scalar;
 }
 
 inline constexpr alloy::core::vector2
-  alloy::core::operator*( real scalar, const vector2& lhs )
+  alloy::core::operator*(real scalar, const vector2& lhs)
   noexcept
 {
   return vector2{lhs}*=scalar;
 }
 
 inline constexpr alloy::core::vector2
-  alloy::core::operator/( const vector2& lhs, real scalar )
+  alloy::core::operator/(const vector2& lhs, real scalar)
   noexcept
 {
   return vector2{lhs}/=scalar;
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Comparisons
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr bool
-  alloy::core::operator==( const vector2& lhs, const vector2& rhs )
+  alloy::core::operator==(const vector2& lhs, const vector2& rhs)
   noexcept
 {
   for (auto i=0; i<2; ++i) {
-    if (lhs[i]!=rhs[i]) {
+    if (lhs[i] != rhs[i]) {
       return false;
     }
   }
@@ -874,7 +804,7 @@ inline constexpr bool
 }
 
 inline constexpr bool
-  alloy::core::operator!=( const vector2& lhs, const vector2& rhs )
+  alloy::core::operator!=(const vector2& lhs, const vector2& rhs)
   noexcept
 {
   return !(lhs==rhs);
@@ -882,24 +812,19 @@ inline constexpr bool
 
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr bool
-  alloy::core::almost_equal( const vector2& lhs, const vector2& rhs )
+  alloy::core::almost_equal(const vector2& lhs, const vector2& rhs)
   noexcept
 {
-  for (auto i=0; i<2; ++i) {
-    if (!almost_equal(lhs[i], rhs[i])) {
-      return false;
-    }
-  }
-  return true;
+  return almost_equal(lhs, rhs, default_tolerance);
 }
 
 inline constexpr bool
-  alloy::core::almost_equal( const vector2& lhs,
-                             const vector2& rhs,
-                             real tolerance )
+  alloy::core::almost_equal(const vector2& lhs,
+                            const vector2& rhs,
+                            real tolerance)
   noexcept
 {
   for (auto i=0; i<2; ++i) {
@@ -910,53 +835,41 @@ inline constexpr bool
   return true;
 }
 
-inline constexpr bool
-  alloy::core::are_linearly_independent( const vector2& v1,
-                                         const vector2& v2 )
-  noexcept
-{
-  // linear-independence tested by checking if the determinant of a produced
-  // 2x2 matrix is non-zero
-
-  const auto determinant = v1.x() * v2.y() - v1.y() * v2.x();
-  return !almost_equal( real{0}, determinant );
-}
-
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Quantifiers
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 inline constexpr alloy::core::real
-  alloy::core::dot( const vector2& lhs, const vector2& rhs )
+  alloy::core::dot(const vector2& lhs, const vector2& rhs)
   noexcept
 {
   return lhs.dot(rhs);
 }
 
 inline constexpr alloy::core::real
-  alloy::core::cross( const vector2& lhs, const vector2& rhs )
+  alloy::core::cross(const vector2& lhs, const vector2& rhs)
   noexcept
 {
   return lhs.cross(rhs);
 }
 
 inline alloy::core::real
-  alloy::core::magnitude( const vector2& vec )
+  alloy::core::magnitude(const vector2& vec)
   noexcept
 {
   return vec.magnitude();
 }
 
-//==============================================================================
+//=============================================================================
 // struct : piecewise_compare<vector2>
-//==============================================================================
+//=============================================================================
 
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr bool
   alloy::core::piecewise_compare<alloy::core::vector2>
-  ::operator()( const vector2& lhs, const vector2& rhs )
+  ::operator()(const vector2& lhs, const vector2& rhs)
   noexcept
 {
   return (lhs.x() == rhs.x()) ?

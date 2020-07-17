@@ -67,30 +67,45 @@ namespace alloy::core {
     using const_reference = const value_type&;
 
     //--------------------------------------------------------------------------
+    // Public Static Factories
+    //--------------------------------------------------------------------------
+  public:
+
+    /// \brief Makes a basis by normalizing the up, right, and forward vectors
+    ///
+    /// \pre \p up is linearly independent from \p right and \p forward
+    ///
+    /// \param up the direction for up
+    /// \param right the direction for right
+    /// \param forward the direction for forward
+    /// \return the newly constructed basis
+    static basis3 make(const vector3& up,
+                       const vector3& right,
+                       const vector3& forward) noexcept;
+
+    /// \brief Makes a basis without normalizing the up, right, and forward
+    ///        vectors
+    ///
+    /// The vectors are assumed to be normalized and orthogonal
+    ///
+    /// \param up the direction for up
+    /// \param right the direction for right
+    /// \param forward the direction for forward
+    /// \return the newly constructed basis
+    static constexpr basis3 make_unchecked(const vector3& up,
+                                           const vector3& right,
+                                           const vector3& forward) noexcept;
+
+
+    //--------------------------------------------------------------------------
     // Constructors / Assignment
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Constructs a basis3 vector given the up and right vectors
-    ///
-    /// \pre \p up and \p right are linearly independent
-    ///
-    /// \param up the 'up' vector
-    /// \param right the 'right' vector
-    /// \param forward the 'forward' vector
-    constexpr basis3( vector3 up,
-                      vector3 right,
-                      vector3 forward) noexcept;
-
     /// \brief Constructs this basis3 by copying another instance
     ///
     /// \param other the other basis3 to copy
-    constexpr basis3( const basis3& other ) noexcept = default;
-
-    /// \brief Constructs this basis3 by moving another instance
-    ///
-    /// \param other the other basis3 to move
-    constexpr basis3( basis3&& other ) noexcept = default;
+    constexpr basis3(const basis3& other) noexcept = default;
 
     //--------------------------------------------------------------------------
 
@@ -98,13 +113,7 @@ namespace alloy::core {
     ///
     /// \param other the other basis3 to copy
     /// \return reference to \c (*this)
-    basis3& operator=( const basis3& other ) noexcept = default;
-
-    /// \brief Move-assigns the contents of an existing basis3
-    ///
-    /// \param other the other basis3 to move
-    /// \return reference to \c (*this)
-    basis3& operator=( basis3&& other ) noexcept = default;
+    basis3& operator=(const basis3& other) noexcept = default;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -127,6 +136,22 @@ namespace alloy::core {
     constexpr const vector3& forward() const noexcept;
 
     //--------------------------------------------------------------------------
+    // Private Constructors
+    //--------------------------------------------------------------------------
+  private:
+
+    /// \brief Constructs a basis3 vector given the up and right vectors
+    ///
+    /// \pre \p up and \p right are linearly independent
+    ///
+    /// \param up the 'up' vector
+    /// \param right the 'right' vector
+    /// \param forward the 'forward' vector
+    constexpr basis3(const vector3& up,
+                     const vector3& right,
+                     const vector3& forward) noexcept;
+
+    //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------
   private:
@@ -144,10 +169,10 @@ namespace alloy::core {
   // Comparisons
   //----------------------------------------------------------------------------
 
-  constexpr bool operator==( const basis3& lhs,
-                             const basis3& rhs ) noexcept;
-  constexpr bool operator!=( const basis3& lhs,
-                             const basis3& rhs ) noexcept;
+  constexpr bool operator==(const basis3& lhs,
+                            const basis3& rhs) noexcept;
+  constexpr bool operator!=(const basis3& lhs,
+                            const basis3& rhs) noexcept;
 
   //----------------------------------------------------------------------------
 
@@ -157,17 +182,17 @@ namespace alloy::core {
   /// \param lhs the left basis3
   /// \param rhs the right basis3
   /// \return \c true if the two basis3 contain almost equal values
-  constexpr bool almost_equal( const basis3& lhs,
-                               const basis3& rhs ) noexcept;
+  constexpr bool almost_equal(const basis3& lhs,
+                              const basis3& rhs) noexcept;
 
   /// \brief Determines equality between two basis3 relative to \p tolerance
   ///
   /// \param lhs the left basis3
   /// \param rhs the right basis3
   /// \return \c true if the two basis3 contain almost equal values
-  constexpr bool almost_equal( const basis3& lhs,
-                               const basis3& rhs,
-                               real tolerance ) noexcept;
+  constexpr bool almost_equal(const basis3& lhs,
+                              const basis3& rhs,
+                              real tolerance) noexcept;
 
 } // namespace alloy::core
 
@@ -175,19 +200,29 @@ namespace alloy::core {
 // class : basis3
 //==============================================================================
 
+
 //------------------------------------------------------------------------------
-// Constructors
+// Public Static Factories
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::basis3::basis3( vector3 up,
-                                              vector3 right,
-                                              vector3 forward )
+inline alloy::core::basis3
+  alloy::core::basis3::make(const vector3& up,
+                            const vector3& right,
+                            const vector3& forward)
   noexcept
-  : m_up{up},
-    m_right{right},
-    m_forward{forward}
 {
-  ALLOY_ASSERT(are_linearly_independent(up,right,forward));
+  ALLOY_ASSERT(are_linearly_independent(up, right, forward));
+
+  return make_unchecked(up.normalized(), right.normalized(), forward.normalized());
+}
+
+inline constexpr alloy::core::basis3
+  alloy::core::basis3::make_unchecked(const vector3& up,
+                                      const vector3& right,
+                                      const vector3& forward)
+  noexcept
+{
+  return basis3{up, right, forward};
 }
 
 //------------------------------------------------------------------------------
@@ -198,7 +233,6 @@ inline constexpr alloy::core::basis3::const_reference
   alloy::core::basis3::up()
   const noexcept
 {
-  ALLOY_ASSERT(are_linearly_independent(m_up,m_right,m_forward));
   return m_up;
 }
 
@@ -206,7 +240,6 @@ inline constexpr alloy::core::basis3::const_reference
   alloy::core::basis3::right()
   const noexcept
 {
-  ALLOY_ASSERT(are_linearly_independent(m_up,m_right,m_forward));
   return m_right;
 }
 
@@ -214,8 +247,22 @@ inline constexpr alloy::core::basis3::const_reference
   alloy::core::basis3::forward()
   const noexcept
 {
-  ALLOY_ASSERT(are_linearly_independent(m_up,m_right,m_forward));
   return m_forward;
+}
+
+//------------------------------------------------------------------------------
+// Private Constructors
+//------------------------------------------------------------------------------
+
+inline constexpr alloy::core::basis3::basis3(const vector3& up,
+                                             const vector3& right,
+                                             const vector3& forward)
+  noexcept
+  : m_up{up},
+    m_right{right},
+    m_forward{forward}
+{
+
 }
 
 //==============================================================================
@@ -229,8 +276,8 @@ inline constexpr alloy::core::basis3::const_reference
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
-inline constexpr bool alloy::core::operator==( const basis3& lhs,
-                                               const basis3& rhs )
+inline constexpr bool alloy::core::operator==(const basis3& lhs,
+                                              const basis3& rhs)
   noexcept
 {
   return lhs.up() == rhs.up() &&
@@ -238,8 +285,8 @@ inline constexpr bool alloy::core::operator==( const basis3& lhs,
          lhs.forward() == rhs.forward();
 }
 
-inline constexpr bool alloy::core::operator!=( const basis3& lhs,
-                                               const basis3& rhs )
+inline constexpr bool alloy::core::operator!=(const basis3& lhs,
+                                              const basis3& rhs)
   noexcept
 {
   return !(lhs==rhs);
@@ -249,18 +296,16 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
 
-inline constexpr bool alloy::core::almost_equal( const basis3& lhs,
-                                                 const basis3& rhs )
+inline constexpr bool alloy::core::almost_equal(const basis3& lhs,
+                                                const basis3& rhs)
   noexcept
 {
-  return almost_equal(lhs.up(), rhs.up()) &&
-         almost_equal(lhs.right(), rhs.right()) &&
-         almost_equal(lhs.forward(), rhs.forward());
+  return almost_equal(lhs, rhs, default_tolerance);
 }
 
-inline constexpr bool alloy::core::almost_equal( const basis3& lhs,
-                                                 const basis3& rhs,
-                                                 real tolerance )
+inline constexpr bool alloy::core::almost_equal(const basis3& lhs,
+                                                const basis3& rhs,
+                                                real tolerance)
   noexcept
 {
   return almost_equal(lhs.up(), rhs.up(), tolerance) &&
