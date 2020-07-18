@@ -112,7 +112,7 @@ namespace alloy::io {
   public:
 
     /// \brief A type-safe integral value representing a unique event type
-    enum class id_type : std::uint32_t{};
+    using id_type = std::uint32_t;
 
     //--------------------------------------------------------------------------
     // Public Static Members
