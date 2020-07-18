@@ -8,12 +8,24 @@
 namespace {
   void print_message( const alloy::io::event& e )
   {
-    if (auto event = e.try_as<alloy::io::file_creation_event>()) {
-      std::cout << "file_creation_event{" << event->name << "}" << std::endl;
-    } else if (auto event = e.try_as<alloy::io::file_removal_event>()) {
-      std::cout << "file_removal_event{" << event->name << "}" << std::endl;
-    } else if (auto event = e.try_as<alloy::io::file_update_event>()) {
-      std::cout << "file_update_event{" << event->name << "}" << std::endl;
+    switch (e.id()) {
+      case alloy::io::event::id_of<alloy::io::file_creation_event>(): {
+        auto event = e.try_as<alloy::io::file_creation_event>();
+        std::cout << "file_creation_event{" << event->name << "}" << std::endl;
+        break;
+      }
+
+      case alloy::io::event::id_of<alloy::io::file_removal_event>(): {
+        auto event = e.try_as<alloy::io::file_removal_event>();
+        std::cout << "file_removal_event{" << event->name << "}" << std::endl;
+        break;
+      }
+
+      case alloy::io::event::id_of<alloy::io::file_update_event>(): {
+        auto event = e.try_as<alloy::io::file_update_event>();
+        std::cout << "file_update_event{" << event->name << "}" << std::endl;
+        break;
+      }
     }
   }
 

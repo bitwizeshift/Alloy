@@ -11,28 +11,26 @@ namespace {
     noexcept
   {
     using log_level = alloy::extra::log_level;
-    using std::literals::string_view_literals::operator""sv;
 
     switch (level) {
       case log_level::debug: {
-        return "debug"sv;
+        return "debug";
       }
       case log_level::info: {
-        return "info"sv;
+        return "info";
       }
       case log_level::warning: {
-        return "warning"sv;
+        return "warning";
       }
       case log_level::error: {
-        return "error"sv;
+        return "error";
       }
       case log_level::fatal: {
-        return "fatal"sv;
+        return "fatal";
       }
     }
 
-    alloy::core::compiler::unreachable();
-    return "unknown"sv;
+    return "unknown";
   }
 } // namespace <anonymous>
 

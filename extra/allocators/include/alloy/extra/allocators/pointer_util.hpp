@@ -363,7 +363,7 @@ inline std::size_t alloy::extra::pointer_util::align_of(const void* ptr)
 {
   const auto address = reinterpret_cast<std::uintptr_t>(ptr);
 
-  return static_cast<std::size_t>(address & -address);
+  return static_cast<std::size_t>(address & ((~address) + 1));
 }
 
 //-----------------------------------------------------------------------------

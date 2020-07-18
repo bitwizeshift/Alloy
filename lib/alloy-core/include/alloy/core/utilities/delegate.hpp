@@ -597,6 +597,9 @@ inline constexpr alloy::core::delegate<R(Args...)>
 // Private Static Functions
 //-----------------------------------------------------------------------------
 
+ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE(4646) // Ignore '[[noreturn]]' on non-void
+
 template <typename R, typename...Args>
 inline R alloy::core::delegate<R(Args...)>::default_stub(const void* p, Args...args)
 {
@@ -608,6 +611,8 @@ inline R alloy::core::delegate<R(Args...)>::default_stub(const void* p, Args...a
   std::terminate();
 #endif
 }
+
+ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 template <typename R, typename...Args>
 template <auto Fn>

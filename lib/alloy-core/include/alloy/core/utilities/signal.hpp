@@ -35,6 +35,7 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "alloy/core/assert.hpp" // ALLOY_ASSERT
+#include "alloy/core/intrinsics.hpp" // ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/utilities/delegate.hpp"
@@ -956,6 +957,11 @@ inline alloy::core::sink<Listener>::sink(signal_type* signal)
 // Event Handlers
 //-----------------------------------------------------------------------------
 
+// Disable complaints about the assertion not using the returned value from
+// std::find
+ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE(4834)
+
 template <typename Listener>
 inline alloy::core::connection
   alloy::core::sink<Listener>::connect(Listener* listener)
@@ -980,6 +986,8 @@ inline alloy::core::connection
     m_signal
   };
 }
+
+ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP()
 
 //-----------------------------------------------------------------------------
 // Modifiers

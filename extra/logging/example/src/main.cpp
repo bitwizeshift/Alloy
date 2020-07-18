@@ -17,8 +17,6 @@ namespace {
 
 int main()
 {
-  using std::literals::chrono_literals::operator""ms;
-
   auto disk_filesystem = alloy::io::disk_filesystem{};
   auto log_file = disk_filesystem.open("log.txt", alloy::io::open_mode::write);
 
@@ -44,7 +42,7 @@ int main()
     logger.error("{}: '{}'", "Test error", message);
     logger.fatal("{}: '{}'", "Test fatal", message);
 
-    std::this_thread::sleep_for(500ms);
+    std::this_thread::sleep_for(std::chrono::milliseconds{500});
   }
 
   { // new scope
@@ -55,6 +53,6 @@ int main()
 
     logger.debug("testing scope with multiple loggers");
 
-    std::this_thread::sleep_for(1000ms);
+    std::this_thread::sleep_for(std::chrono::seconds{1});
   }
 }

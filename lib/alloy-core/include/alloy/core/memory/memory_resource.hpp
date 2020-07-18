@@ -371,9 +371,7 @@ inline std::string_view
   alloy::core::memory_resource::get_name()
   const noexcept
 {
-  using std::literals::string_view_literals::operator""sv;
-
-  return "unnamed memory resource"sv;
+  return "unnamed memory resource";
 }
 
 #endif /* ALLOY_CORE_MEMORY_MEMORY_RESOURCE_HPP */

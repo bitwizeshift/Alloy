@@ -33,7 +33,7 @@ if (BUILD_SHARED_LIBS)
   )
 else()
   target_compile_definitions(${PROJECT_NAME}ExtraWin32Bindings
-    PRIVATE ALLOY_EXTRA_WIN32_STATIC=1
+    PUBLIC ALLOY_EXTRA_WIN32_STATIC=1
   )
 endif()
 

@@ -180,6 +180,7 @@ namespace alloy::core {
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wconversion)
 ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(-Wimplicit-int-conversion)
+ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE(4244) // ignore loss-of-precision warning
 
 template<typename To, typename From, typename>
 inline constexpr To alloy::core::casts::implicit_cast(From&& from)
