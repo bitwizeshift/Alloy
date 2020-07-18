@@ -175,8 +175,8 @@ namespace {
     const auto* const data = buffer.data();
 
     auto remaining = buffer.size();
-    auto total_written = 0u;
-    auto i = 0u;
+    auto total_written = std::size_t{0u};
+    auto i = std::size_t{0u};
 
     // Writing requires a mutable buffer, but file::write only exposes const
     // buffers. Internally, this uses a thread-local buffer of 128 bytes, and
