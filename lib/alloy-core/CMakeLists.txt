@@ -133,6 +133,7 @@ set(header_files
   include/alloy/core/model/light/global_light.hpp
   include/alloy/core/model/light/point_light.hpp
   include/alloy/core/model/light/spot_light.hpp
+  include/alloy/core/model/vertex.hpp
 )
 
 set(source_files
