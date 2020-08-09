@@ -10,6 +10,9 @@ set(source_files
   src/alloy/core/utilities/delegate.test.cpp
   src/alloy/core/utilities/casts.test.cpp
 
+  # Containers
+  src/alloy/core/containers/span.test.cpp
+
   # Traits
   src/alloy/core/traits/function_traits.test.cpp
 

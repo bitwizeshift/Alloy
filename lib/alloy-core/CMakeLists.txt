@@ -53,6 +53,7 @@ set(header_files
   include/alloy/core/containers/priority_queue.hpp
   include/alloy/core/containers/queue.hpp
   include/alloy/core/containers/set.hpp
+  include/alloy/core/containers/span.hpp
   include/alloy/core/containers/stack.hpp
   include/alloy/core/containers/string.hpp
   include/alloy/core/containers/vector.hpp
