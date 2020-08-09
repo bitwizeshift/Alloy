@@ -134,6 +134,7 @@ set(header_files
   include/alloy/core/model/light/point_light.hpp
   include/alloy/core/model/light/spot_light.hpp
   include/alloy/core/model/vertex.hpp
+  include/alloy/core/model/texture_coordinate.hpp
 )
 
 set(source_files
