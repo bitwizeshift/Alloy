@@ -20,6 +20,9 @@ set(source_files
   src/alloy/core/math/vector/vector2.test.cpp
   src/alloy/core/math/vector/vector3.test.cpp
 
+  # Model
+  src/alloy/core/model/attribute_buffer_view.test.cpp
+
   src/main.cpp
 )
 
