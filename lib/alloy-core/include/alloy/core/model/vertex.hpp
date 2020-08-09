@@ -41,6 +41,7 @@
 #include "alloy/core/utilities/piecewise_compare.hpp" // core::piecewise_compare
 #include "alloy/core/math/vector/vector3.hpp" // vector3
 #include "alloy/core/math/math.hpp"           // almost_equal
+#include "alloy/core/geometry/point.hpp"      // point
 
 #include <cstddef>     // std::size_t, std::ptrdiff_t
 #include <type_traits> // std::true_type, std::false_type
@@ -203,11 +204,27 @@ namespace alloy::core {
   // Utilities
   //----------------------------------------------------------------------------
 
-  /// \brief Converts a vertex \p v to a \ref vector3
-  ///
-  /// \param v the vertex to convert
-  /// \return the vector3
-  constexpr auto to_vector(const vertex& v) noexcept -> vector3;
+  inline namespace casts {
+
+    /// \brief Converts a vertex \p v to a \ref vector3
+    ///
+    /// \param v the vertex to convert
+    /// \return the vector3
+    constexpr auto to_vector(const vertex& v) noexcept -> vector3;
+
+    /// \brief Converts a vector3 to a vertex
+    ///
+    /// \param v the vector to convert
+    /// \return the vertex
+    constexpr auto to_vertex(const vector3& v) noexcept -> vertex;
+
+    /// \brief Converts a point to a vertex
+    ///
+    /// \param v the point to convert
+    /// \return the vertex
+    constexpr auto to_vertex(const point& p) noexcept -> point;
+
+  } // inline namespace casts
 
   //============================================================================
   // struct : piecewise_compare<vertex>
@@ -382,9 +399,23 @@ inline constexpr auto alloy::core::almost_equal(const vertex& lhs,
 // Utilities
 //------------------------------------------------------------------------------
 
-inline constexpr auto alloy::core::to_vector(const vertex& p)
+inline constexpr auto alloy::core::casts::to_vector(const vertex& p)
   noexcept
   -> vector3
+{
+  return {p.x(), p.y(), p.z()};
+}
+
+inline constexpr auto alloy::core::casts::to_vertex(const vector3& v)
+  noexcept
+  -> vertex
+{
+  return {v.x(), v.y(), v.z()};
+}
+
+inline constexpr auto alloy::core::casts::to_vertex(const point& p)
+  noexcept
+  -> point
 {
   return {p.x(), p.y(), p.z()};
 }

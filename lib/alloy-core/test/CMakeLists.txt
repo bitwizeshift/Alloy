@@ -26,7 +26,6 @@ set(source_files
 
   # Model
   src/alloy/core/model/attribute_buffer_view.test.cpp
-
   src/main.cpp
 )
 

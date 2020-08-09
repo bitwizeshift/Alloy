@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-/// \file real_array_view.cpp
+/// \file vertex_attribute_map.hpp
 ///
 /// \brief TODO(Bitwize): Add description
 ////////////////////////////////////////////////////////////////////////////////
@@ -28,20 +28,18 @@
   SOFTWARE.
 */
 
-#include "alloy/core/model/attribute_buffer_view.hpp"
+#ifndef EXTRA_SDL2_BINDINGS_EXAMPLE_SDL2_WINDOW_SRC_GL_VERTEX_ATTRIBUTE_MAP_HPP
+#define EXTRA_SDL2_BINDINGS_EXAMPLE_SDL2_WINDOW_SRC_GL_VERTEX_ATTRIBUTE_MAP_HPP
 
-#include "alloy/core/intrinsics.hpp"
+namespace alloy::render::gl {
 
-// GCC is complaining that 'ALLOY_CORE_API' is ignored in this circumstance,
-// but clang accepts this without any issues.
-// This is being ignored for now, since we don't build with -fvisibility=private
-// yet.
-//ALLOY_COMPILER_GCC_DIAGNOSTIC_PUSH()
-//ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE(-Wattributes)
-//
-//template class ALLOY_CORE_API alloy::core::attribute_buffer_view<alloy::core::vertex>;
-//template class ALLOY_CORE_API alloy::core::attribute_buffer_view<alloy::core::color>;
-//template class ALLOY_CORE_API alloy::core::attribute_buffer_view<alloy::core::vector3>;
-//template class ALLOY_CORE_API alloy::core::attribute_buffer_view<alloy::core::texture_coordinate>;
-//
-//ALLOY_COMPILER_GCC_DIAGNOSTIC_POP()
+  class vertex_attribute_map
+  {
+  public:
+
+  private:
+  };
+
+} // namespace alloy::render::gl
+
+#endif /* EXTRA_SDL2_BINDINGS_EXAMPLE_SDL2_WINDOW_SRC_GL_VERTEX_ATTRIBUTE_MAP_HPP */

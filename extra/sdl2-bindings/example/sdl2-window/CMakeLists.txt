@@ -1,9 +1,15 @@
 cmake_minimum_required(VERSION 3.12)
 
 find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
 
 set(source_files
   src/main.cpp
+  src/gl/shader.hpp
+  src/gl/program.hpp
+  src/gl/error.hpp
+  src/gl/vertex_attribute_map.hpp
+  src/gl/active_program.hpp
 )
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/src"
@@ -27,6 +33,7 @@ target_link_libraries(${PROJECT_NAME}SDL2WindowExample
   PRIVATE Alloy::Extra::SDL2Bindings
   PRIVATE SDL2main
   PRIVATE OpenGL::GL
+  PRIVATE GLEW::GLEW
 )
 
 set_target_properties(${PROJECT_NAME}SDL2WindowExample

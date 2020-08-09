@@ -36,6 +36,7 @@
 #include "alloy/core/assert.hpp"
 #include "alloy/core/containers/span.hpp"
 #include "alloy/core/precision/real.hpp"
+#include "alloy/core/memory/data_quantity.hpp"
 
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/model/color.hpp"
@@ -167,6 +168,11 @@ namespace alloy::core {
     /// \return the number of elements in this span
     constexpr auto size() const noexcept -> size_type;
 
+    /// \brief Gets the size of my attribute buffer in bytes
+    ///
+    /// \return the number of bytes in this span
+    constexpr auto size_bytes() const noexcept -> bytes;
+
     /// \brief Queries whether this span is empty
     ///
     /// \return true if this span is empty
@@ -219,10 +225,10 @@ namespace alloy::core {
 
   //---------------------------------------------------------------------------
 
-  extern template class attribute_buffer_view<vertex>;
-  extern template class attribute_buffer_view<vector3>;
-  extern template class attribute_buffer_view<color>;
-  extern template class attribute_buffer_view<texture_coordinate>;
+//  extern template class attribute_buffer_view<vertex>;
+//  extern template class attribute_buffer_view<vector3>;
+//  extern template class attribute_buffer_view<color>;
+//  extern template class attribute_buffer_view<texture_coordinate>;
 
 } // namespace alloy::core
 
@@ -327,6 +333,15 @@ inline constexpr auto
   -> size_type
 {
   return m_array.size() / elements_per_value;
+}
+
+template<typename T>
+inline constexpr auto
+  alloy::core::attribute_buffer_view<T>::size_bytes()
+  const noexcept
+  -> bytes
+{
+  return bytes{m_array.size_bytes()};
 }
 
 template <typename T>
