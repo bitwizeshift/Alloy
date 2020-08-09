@@ -128,6 +128,7 @@ set(header_files
   # Model
   include/alloy/core/model/color.hpp
   include/alloy/core/model/image.hpp
+  include/alloy/core/model/attribute_buffer_view.hpp
   include/alloy/core/model/light/light.hpp
   include/alloy/core/model/light/direction_light.hpp
   include/alloy/core/model/light/global_light.hpp
@@ -158,6 +159,7 @@ set(source_files
   src/alloy/core/geometry/sphere.cpp
 
   # Model
+  src/alloy/core/model/attribute_buffer_view.cpp
   src/alloy/core/model/color.cpp
   src/alloy/core/model/image.cpp
 )
