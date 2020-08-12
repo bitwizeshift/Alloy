@@ -48,7 +48,7 @@ namespace alloy::io {
   ///        a pump source.
   ///
   //////////////////////////////////////////////////////////////////////////////
-  class filesystem_monitor : public message_pump::source
+  class ALLOY_IO_API filesystem_monitor : public message_pump::source
   {
     //--------------------------------------------------------------------------
     // Destructor
@@ -67,7 +67,6 @@ namespace alloy::io {
     /// \param path the path to watch
     /// \param recursive boolean to determine whether this should be done
     ///                  recursively to all subdirectories/files
-    ALLOY_IO_API
     void watch(std::string_view path, bool recursive = true) noexcept;
 
     //--------------------------------------------------------------------------

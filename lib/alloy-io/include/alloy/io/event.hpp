@@ -38,6 +38,7 @@
 #include "alloy/core/assert.hpp"
 #include "alloy/core/utilities/aligned_storage.hpp"
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/config.hpp"
 
 #include <cstdint>     // std::uint32_t
@@ -104,7 +105,7 @@ namespace alloy::io {
   /// All events must fit in \c event::max_size, and are required to fit
   /// in \c event::max_align.
   //////////////////////////////////////////////////////////////////////////////
-  class event
+  class ALLOY_IO_API event
   {
     //--------------------------------------------------------------------------
     // Public Member Types

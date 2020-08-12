@@ -35,6 +35,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/filesystem/file.hpp"
 
 namespace alloy::io {
@@ -46,7 +47,7 @@ namespace alloy::io {
   /// successfully. In this regard, they are much like reading/writing to
   /// /dev/null on *nix systems.
   /////////////////////////////////////////////////////////////////////////////
-  class null_filesystem
+  class ALLOY_IO_API null_filesystem
   {
     //-------------------------------------------------------------------------
     // Constructors / Assignment

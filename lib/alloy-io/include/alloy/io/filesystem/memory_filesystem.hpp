@@ -35,6 +35,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/buffers/mutable_buffer.hpp"
 #include "alloy/io/filesystem/file.hpp"
 #include "alloy/io/filesystem/file_stream.hpp"
@@ -50,7 +51,7 @@ namespace alloy::io {
   /// Files read and write from mutable buffers that are specified from
   /// outside the system.
   /////////////////////////////////////////////////////////////////////////////
-  class memory_filesystem final
+  class ALLOY_IO_API memory_filesystem final
     : private file_stream_finalizer
   {
     //-------------------------------------------------------------------------

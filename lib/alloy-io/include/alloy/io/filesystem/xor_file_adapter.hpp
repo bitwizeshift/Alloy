@@ -30,6 +30,7 @@
 #ifndef ALLOY_IO_FILESYSTEM_XOR_FILE_ADAPTER_HPP
 #define ALLOY_IO_FILESYSTEM_XOR_FILE_ADAPTER_HPP
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/filesystem/file_adapter.hpp"
 #include "alloy/io/filesystem/file_stream_finalizer.hpp"
 #include "alloy/io/filesystem/file.hpp"
@@ -48,7 +49,7 @@ namespace alloy::io {
   ///
   /// This is used to allow composable
   /////////////////////////////////////////////////////////////////////////////
-  class xor_file_adapter final
+  class ALLOY_IO_API xor_file_adapter final
     : public file_adapter,
       private file_stream_finalizer
   {
