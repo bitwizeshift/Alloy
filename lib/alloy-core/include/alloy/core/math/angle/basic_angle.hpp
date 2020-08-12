@@ -679,7 +679,7 @@ namespace alloy::core::detail {
 
     constexpr auto factor = To::revolution() / From::revolution();
 
-    return basic_angle{ from.value() * factor };
+    return basic_angle<AngleUnitTo>{ from.value() * factor };
   }
 
   // case: From == To
