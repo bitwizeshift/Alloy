@@ -73,7 +73,6 @@
          const char* function_name)                                           \
         ALLOY_FORCE_INLINE_LAMBDA                                             \
       {                                                                       \
-        ALLOY_BREAKPOINT();                                                   \
         ::alloy::core::detail::assert_internal(                               \
           ALLOY_STRINGIZE(condition),                                         \
           message,                                                            \
@@ -157,7 +156,7 @@ namespace alloy::core {
   /// Assertion handlers are meant to be user-configurable functions that may
   /// provide more input to the failure, such as providing a stack-trace,
   /// writing out to a log file, etc.
-  using assert_handler_fn = void() noexcept;
+  using assert_handler_fn = void(const char*) noexcept;
 
   /// \brief Sets a user-configurable handler for behaviors to connect on
   ///        assertion failures
@@ -166,6 +165,7 @@ namespace alloy::core {
   ///
   /// \param handler the handler to install
   /// \return the previously installed handler
+  ALLOY_CORE_API
   assert_handler_fn* set_assert_handler(assert_handler_fn* handler) noexcept;
 
   namespace detail {
