@@ -30,6 +30,7 @@
 #ifndef ALLOY_IO_FILESYSTEM_FILE_STREAM_HPP
 #define ALLOY_IO_FILESYSTEM_FILE_STREAM_HPP
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/buffers/const_buffer.hpp"
 #include "alloy/io/buffers/mutable_buffer.hpp"
 #include "alloy/core/utilities/expected.hpp"
@@ -48,7 +49,7 @@ namespace alloy::io {
   /// File streams are intentionally immovable and uncopyable since their
   /// lifetimes are intended to be bound inside of the file object itself.
   /////////////////////////////////////////////////////////////////////////////
-  class file_stream
+  class ALLOY_IO_API file_stream
   {
     //-------------------------------------------------------------------------
     // Public Member Types

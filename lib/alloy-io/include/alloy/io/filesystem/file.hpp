@@ -30,6 +30,7 @@
 #ifndef ALLOY_IO_FILESYSTEM_FILE_HPP
 #define ALLOY_IO_FILESYSTEM_FILE_HPP
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/filesystem/file_stream_handle.hpp"
 #include "alloy/io/buffers/const_buffer.hpp"
 #include "alloy/io/buffers/mutable_buffer.hpp"
@@ -54,7 +55,7 @@ namespace alloy::io {
   /// Files are owners to any file_streams and use RAII to clean up resources
   /// upon completion.
   /////////////////////////////////////////////////////////////////////////////
-  class file
+  class ALLOY_IO_API file
   {
     //-------------------------------------------------------------------------
     // Public Member Types

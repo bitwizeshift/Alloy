@@ -35,6 +35,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/filesystem/file.hpp"
 
 namespace alloy::io {
@@ -45,7 +46,7 @@ namespace alloy::io {
   /// Random files behave much like /dev/random, in that reading and writing
   /// will always succeed, and reading will always return random bytes
   /////////////////////////////////////////////////////////////////////////////
-  class random_filesystem
+  class ALLOY_IO_API random_filesystem
   {
     //-------------------------------------------------------------------------
     // Constructors / Assignment

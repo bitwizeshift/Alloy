@@ -30,6 +30,7 @@
 #ifndef ALLOY_IO_FILESYSTEM_FILE_STREAM_FINALIZER_HPP
 #define ALLOY_IO_FILESYSTEM_FILE_STREAM_FINALIZER_HPP
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/filesystem/file_stream.hpp"
 
 namespace alloy::io {
@@ -45,7 +46,7 @@ namespace alloy::io {
   /// given file stream. Finalizers are always executed when closing a file,
   /// and are used
   /////////////////////////////////////////////////////////////////////////////
-  class file_stream_finalizer
+  class ALLOY_IO_API file_stream_finalizer
   {
     //-------------------------------------------------------------------------
     // Constructor / Assignment

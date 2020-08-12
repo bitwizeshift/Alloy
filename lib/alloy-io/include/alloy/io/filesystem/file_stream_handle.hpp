@@ -30,6 +30,7 @@
 #ifndef ALLOY_IO_FILESYSTEM_FILE_STREAM_HANDLE_HPP
 #define ALLOY_IO_FILESYSTEM_FILE_STREAM_HANDLE_HPP
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/filesystem/file_stream.hpp"
 #include "alloy/io/filesystem/file_stream_finalizer.hpp"
 
@@ -45,7 +46,7 @@ namespace alloy::io {
   /// \brief A pointer which holds onto a file_stream, and finalizes it using
   ///        RAII on destruction
   /////////////////////////////////////////////////////////////////////////////
-  class file_stream_handle
+  class ALLOY_IO_API file_stream_handle
   {
     //-------------------------------------------------------------------------
     // Constructors / Destructor / Assignment

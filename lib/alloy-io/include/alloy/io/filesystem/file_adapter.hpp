@@ -30,6 +30,7 @@
 #ifndef ALLOY_IO_FILESYSTEM_FILE_ADAPTER_HPP
 #define ALLOY_IO_FILESYSTEM_FILE_ADAPTER_HPP
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/filesystem/file.hpp"
 
 namespace alloy::io {
@@ -44,7 +45,7 @@ namespace alloy::io {
   /// This is used to produce higher-order files that do pre/post processing
   /// of data.
   /////////////////////////////////////////////////////////////////////////////
-  class file_adapter
+  class ALLOY_IO_API file_adapter
   {
     //-------------------------------------------------------------------------
     // Constructors / Assignment

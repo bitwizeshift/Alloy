@@ -30,6 +30,7 @@
 #ifndef ALLOY_IO_FILESYSTEM_DISK_FILESYSTEM_HPP
 #define ALLOY_IO_FILESYSTEM_DISK_FILESYSTEM_HPP
 
+#include "alloy/io/api.hpp"
 #include "alloy/io/filesystem/file.hpp"
 #include "alloy/io/filesystem/file_stream.hpp"
 #include "alloy/io/filesystem/file_stream_finalizer.hpp"
@@ -79,7 +80,7 @@ namespace alloy::io {
   ///
   /// All files are always opened as binary files.
   /////////////////////////////////////////////////////////////////////////////
-  class disk_filesystem final
+  class ALLOY_IO_API disk_filesystem final
     : private file_stream_finalizer
   {
     //-------------------------------------------------------------------------
