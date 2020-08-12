@@ -28,13 +28,16 @@
 #include <exception>   // std::terminate
 #include <atomic>      // std::atomic
 #include <cstdlib>     // std::abort
+#include <array>       // std::array
 
 namespace alloy::core {
 namespace {
 
   [[noreturn]]
-  void default_assert_handler() noexcept
+  void default_assert_handler(const char* message) noexcept
   {
+    std::fprintf(stderr, "%s", message);
+    std::fflush(stderr);
     std::terminate();
   }
 
@@ -62,17 +65,19 @@ void alloy::core::detail::assert_internal(const char* condition,
                                           const char* function_name)
   noexcept
 {
+  auto buffer = std::array<char,512>{};
+
   if (message == nullptr) {
-    std::fprintf(stderr,
+    std::snprintf(buffer.data(), buffer.size() - 1,
       "[assertion] %s (%zu)::%s\n"
       "            assertion failure: condition '%s' failed\n",
       file_name,
       line,
       function_name,
-      message
+      condition
     );
   } else {
-    std::fprintf(stderr,
+    std::snprintf(buffer.data(), buffer.size() - 1,
       "[assertion] %s (%zu)::%s\n"
       "            assertion failure: condition '%s' failed with message: "
       "'%s'\n",
@@ -83,9 +88,8 @@ void alloy::core::detail::assert_internal(const char* condition,
       message
     );
   }
-  std::fflush(stderr);
 
-  (*s_assert_handler.load())();
+  (*s_assert_handler.load())(buffer.data());
   std::abort();
 }
 
