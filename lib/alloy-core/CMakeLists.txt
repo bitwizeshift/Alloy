@@ -128,6 +128,7 @@ set(header_files
 
   # Model
   include/alloy/core/model/color.hpp
+  include/alloy/core/model/color_constants.hpp
   include/alloy/core/model/image.hpp
   include/alloy/core/model/attribute_buffer_view.hpp
   include/alloy/core/model/light/light.hpp
