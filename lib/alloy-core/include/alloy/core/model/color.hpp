@@ -79,8 +79,15 @@ namespace alloy::core {
   ///
   /// All colors values are in the range [0,1]
   //////////////////////////////////////////////////////////////////////////////
-  class color
+  class ALLOY_CORE_API color
   {
+    //--------------------------------------------------------------------------
+    // Public Static Member
+    //--------------------------------------------------------------------------
+  public:
+
+    inline static constexpr auto comparison_tolerance = default_tolerance;
+
     //--------------------------------------------------------------------------
     // Static Member Functions
     //--------------------------------------------------------------------------
@@ -92,19 +99,19 @@ namespace alloy::core {
     ///
     /// \param c the color to convert
     /// \return a color instance
-    ALLOY_CORE_API static color from_rgba32(rgba32 c) noexcept;
-    ALLOY_CORE_API static color from_argb32(argb32 c) noexcept;
-    ALLOY_CORE_API static color from_abgr32(abgr32 c) noexcept;
-    ALLOY_CORE_API static color from_rgba64(rgba64 c) noexcept;
-    ALLOY_CORE_API static color from_argb64(argb64 c) noexcept;
-    ALLOY_CORE_API static color from_abgr64(abgr64 c) noexcept;
+    static auto from_rgba32(rgba32 c) noexcept -> color;
+    static auto from_argb32(argb32 c) noexcept -> color;
+    static auto from_abgr32(abgr32 c) noexcept -> color;
+    static auto from_rgba64(rgba64 c) noexcept -> color;
+    static auto from_argb64(argb64 c) noexcept -> color;
+    static auto from_abgr64(abgr64 c) noexcept -> color;
     /// \}
 
     /// \brief Converts a {hue,saturation,brightness} triple into a color
     ///
     /// \note the alpha component is always '1.0' for this function
     /// \return the color denoted by te triple
-    ALLOY_CORE_API static color from_hsb(hsb c) noexcept;
+    static auto from_hsb(hsb c) noexcept -> color;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -119,7 +126,7 @@ namespace alloy::core {
     /// \param r the red color component
     /// \param g the green color component
     /// \param b the blue color component
-    constexpr color( real r, real g, real b ) noexcept;
+    constexpr color(real r, real g, real b) noexcept;
 
     /// \brief Constructs a color from the given color components
     ///
@@ -127,17 +134,17 @@ namespace alloy::core {
     /// \param g the green color component
     /// \param b the blue color component
     /// \param a the alpha component
-    constexpr color( real r, real g, real b, real a ) noexcept;
+    constexpr color(real r, real g, real b, real a) noexcept;
 
     /// \brief Copy-constructs a color from an existing one
     ///
     /// \param other the other color to copy
-    constexpr color( const color& other ) noexcept = default;
+    constexpr color(const color& other) noexcept = default;
 
     /// \brief Move-constructs a color from an existing one
     ///
     /// \param other the other color to move
-    constexpr color( color&& other ) noexcept = default;
+    constexpr color(color&& other) noexcept = default;
 
     //--------------------------------------------------------------------------
 
@@ -145,13 +152,13 @@ namespace alloy::core {
     ///
     /// \param other the other color to copy
     /// \reference to \c (*this)
-    color& operator=( const color& other ) noexcept = default;
+    color& operator=(const color& other) noexcept = default;
 
     /// \brief Move-assigns a color from an existing one
     ///
     /// \param other the other color to move
     /// \reference to \c (*this)
-    color& operator=( color&& other ) noexcept = default;
+    color& operator=(color&& other) noexcept = default;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -159,28 +166,24 @@ namespace alloy::core {
   public:
 
     /// \brief Inverts this color
-    ALLOY_CORE_API
-    void invert() noexcept;
+    auto invert() noexcept -> void;
 
     /// \brief Contrasts this color
-    ALLOY_CORE_API
-    void contrast() noexcept;
+    auto contrast() noexcept -> void;
 
     /// \brief Darkens this color by \p percent
     ///
     /// A value of \c 1 darkens this to be black
     ///
     /// \param percent the percentage to darken this by
-    ALLOY_CORE_API
-    void darken( real percent ) noexcept;
+    auto darken(real percent) noexcept -> void;
 
     /// \brief Brightens this color by \p percent
     ///
     /// A value of \c 1 brightens this to be white
     ///
     /// \param percent the percentage to brighten this by
-    ALLOY_CORE_API
-    void brighten( real percent ) noexcept;
+    auto brighten(real percent) noexcept -> void;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -191,51 +194,49 @@ namespace alloy::core {
     /// \brief Gets the red component of this color
     ///
     /// \return the red component
-    constexpr real& r() noexcept;
-    constexpr real r() const noexcept;
+    constexpr auto r() noexcept -> real&;
+    constexpr auto r() const noexcept -> real;
     /// \}
 
     /// \{
     /// \brief Gets the green component of this color
     ///
     /// \return the green component
-    constexpr real& g() noexcept;
-    constexpr real g() const noexcept;
+    constexpr auto g() noexcept -> real&;
+    constexpr auto g() const noexcept -> real;
     /// \}
 
     /// \{
     /// \brief Gets the blue component of this color
     ///
     /// \return the blue component
-    constexpr real& b() noexcept;
-    constexpr real b() const noexcept;
+    constexpr auto b() noexcept -> real&;
+    constexpr auto b() const noexcept -> real;
     /// \}
 
     /// \{
     /// \brief Gets the alpha component of this color
     ///
     /// \return the alpha component
-    constexpr real& a() noexcept;
-    constexpr real a() const noexcept;
+    constexpr auto a() noexcept -> real&;
+    constexpr auto a() const noexcept -> real;
     /// \}
-
 
     /// \{
     /// \brief Gets the color at the given index \p n
     ///
     /// \param n the index
     /// \return the color at index \p n
-    constexpr real& operator[]( std::ptrdiff_t n ) noexcept;
-    constexpr real operator[]( std::ptrdiff_t n ) const noexcept;
+    constexpr auto operator[](std::ptrdiff_t n) noexcept -> real&;
+    constexpr auto operator[](std::ptrdiff_t n) const noexcept -> real;
     /// \}
-
 
     /// \{
     /// \brief Gets a pointer to the underlying data
     ///
     /// \return a pointer to the underlying data
-    constexpr real* data() noexcept;
-    constexpr const real* data() const noexcept;
+    constexpr auto data() noexcept -> real*;
+    constexpr auto data() const noexcept -> const real*;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -244,53 +245,42 @@ namespace alloy::core {
     /// \brief Converts this color to an integral representation
     ///
     /// \return the integral representation of the color
-    ALLOY_CORE_API rgba32 to_rgba32() const noexcept;
-    ALLOY_CORE_API argb32 to_argb32() const noexcept;
-    ALLOY_CORE_API abgr32 to_abgr32() const noexcept;
-    ALLOY_CORE_API rgba64 to_rgba64() const noexcept;
-    ALLOY_CORE_API argb64 to_argb64() const noexcept;
-    ALLOY_CORE_API abgr64 to_abgr64() const noexcept;
+    auto to_rgba32() const noexcept -> rgba32;
+    auto to_argb32() const noexcept -> argb32;
+    auto to_abgr32() const noexcept -> abgr32;
+    auto to_rgba64() const noexcept -> rgba64;
+    auto to_argb64() const noexcept -> argb64;
+    auto to_abgr64() const noexcept -> abgr64;
     /// \}
 
     /// \brief Converts this color to a {hue,saturation,brightness} triple
     ///
     /// \return the triple
-    ALLOY_CORE_API
-    hsb to_hsb() const noexcept;
+    auto to_hsb() const noexcept -> hsb;
 
     //--------------------------------------------------------------------------
 
     /// \brief Returns a copy of this color inverted
     ///
     /// \return the inverted color
-    color inverted() const noexcept;
+    auto inverted() const noexcept -> color;
 
     /// \brief Returns a copy of this color contrasted
     ///
     /// \return the contrasted color
-    color contrasted() const noexcept;
+    auto contrasted() const noexcept -> color;
 
     /// \brief Returns a copy of this color darkened by \p percent
     ///
     /// \param percent the percentage to darken this by
     /// \return the color
-    color darkened( real percent ) const noexcept;
+    auto darkened(real percent) const noexcept -> color;
 
     /// \brief Returns a copy of this color brightened by \p percent
     ///
     /// \param percent the percentage to brighten this by
     /// \return the color
-    color brightened( real percent ) const noexcept;
-
-    //--------------------------------------------------------------------------
-    // Compound Operators
-    //--------------------------------------------------------------------------
-  public:
-
-    color& operator+=( const color& other ) noexcept;
-    color& operator-=( const color& other ) noexcept;
-    color& operator*=( real scalar ) noexcept;
-    color& operator/=( real scalar ) noexcept;
+    auto brightened(real percent) const noexcept -> color;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -308,34 +298,34 @@ namespace alloy::core {
   // Equality
   //----------------------------------------------------------------------------
 
-  constexpr bool operator==( const color& lhs, const color& rhs ) noexcept;
-  constexpr bool operator!=( const color& lhs, const color& rhs ) noexcept;
+  constexpr auto operator==(const color& lhs, const color& rhs) noexcept -> bool;
+  constexpr auto operator!=(const color& lhs, const color& rhs) noexcept -> bool;
 
-  constexpr bool almost_equal( const color& lhs, const color& rhs ) noexcept;
-  constexpr bool almost_equal( const color& lhs, const color& rhs,
-                               real tolerance ) noexcept;
+  constexpr auto almost_equal(const color& lhs, const color& rhs) noexcept -> bool;
+  constexpr auto almost_equal(const color& lhs, const color& rhs,
+                              real tolerance) noexcept -> bool;
 
   //----------------------------------------------------------------------------
   // Arithmetic
   //----------------------------------------------------------------------------
 
-  constexpr color operator+( const color& lhs, const color& rhs ) noexcept;
-  constexpr color operator-( const color& lhs, const color& rhs ) noexcept;
-  constexpr color operator*( const color& lhs, real scalar ) noexcept;
-  constexpr color operator*( real scalar, const color& rhs ) noexcept;
-  constexpr color operator/( const color& lhs, real scalar ) noexcept;
+  constexpr auto operator+(const color& lhs, const color& rhs) noexcept -> color;
+  constexpr auto operator-(const color& lhs, const color& rhs) noexcept -> color;
+  constexpr auto operator*(const color& lhs, real scalar) noexcept -> color;
+  constexpr auto operator*(real scalar, const color& rhs) noexcept -> color;
+  constexpr auto operator/(const color& lhs, real scalar) noexcept -> color;
 
   //----------------------------------------------------------------------------
   // Utilities
   //----------------------------------------------------------------------------
 
-  constexpr color blend( const color& c1, const color& c2 );
+  constexpr auto blend(const color& c1, const color& c2) -> color;
 
   template<typename...Colors,
            typename=std::enable_if_t<(sizeof...(Colors) != 0)>>
-  constexpr color blend( const color& c1,
-                         const color& c2,
-                         const Colors&...colors );
+  constexpr auto blend(const color& c1,
+                       const color& c2,
+                       const Colors&...colors) -> color;
 
 } // namespace alloy::core
 
@@ -350,14 +340,14 @@ inline constexpr alloy::core::color::color()
 
 }
 
-inline constexpr alloy::core::color::color( real r, real g, real b )
+inline constexpr alloy::core::color::color(real r, real g, real b)
   noexcept
   : color{r, g, b, real{1}}
 {
 
 }
 
-inline constexpr alloy::core::color::color( real r, real g, real b, real a )
+inline constexpr alloy::core::color::color(real r, real g, real b, real a)
   noexcept
   : m_data{r, g, b, a}
 {
@@ -368,116 +358,130 @@ inline constexpr alloy::core::color::color( real r, real g, real b, real a )
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::real& alloy::core::color::r()
+inline constexpr auto alloy::core::color::r()
   noexcept
+  -> real&
 {
   return m_data[0];
 }
 
-inline constexpr alloy::core::real alloy::core::color::r()
+inline constexpr auto alloy::core::color::r()
   const noexcept
+  -> real
 {
   return m_data[0];
 }
 
 
-inline constexpr alloy::core::real& alloy::core::color::g()
+inline constexpr auto alloy::core::color::g()
   noexcept
+  -> real&
 {
   return m_data[1];
 }
 
-inline constexpr alloy::core::real alloy::core::color::g()
+inline constexpr auto alloy::core::color::g()
   const noexcept
+  -> real
 {
   return m_data[1];
 }
 
 
-inline constexpr alloy::core::real& alloy::core::color::b()
+inline constexpr auto alloy::core::color::b()
   noexcept
+  -> real&
 {
   return m_data[2];
 }
 
-inline constexpr alloy::core::real alloy::core::color::b()
+inline constexpr auto alloy::core::color::b()
   const noexcept
+  -> real
 {
   return m_data[2];
 }
 
 
-inline constexpr alloy::core::real& alloy::core::color::a()
+inline constexpr auto alloy::core::color::a()
   noexcept
+  -> real&
 {
   return m_data[3];
 }
 
-inline constexpr alloy::core::real alloy::core::color::a()
+inline constexpr auto alloy::core::color::a()
   const noexcept
+  -> real
 {
   return m_data[3];
 }
 
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::real&
-  alloy::core::color::operator[]( std::ptrdiff_t n )
+inline constexpr auto alloy::core::color::operator[](std::ptrdiff_t n)
   noexcept
+  -> real&
 {
-  ALLOY_ASSERT( n >= 0 && n < 4 );
+  ALLOY_ASSERT(n >= 0 && n < 4);
   return m_data[n];
 }
 
-inline constexpr alloy::core::real
-  alloy::core::color::operator[]( std::ptrdiff_t n )
+inline constexpr auto alloy::core::color::operator[](std::ptrdiff_t n)
   const noexcept
+  -> real
 {
-  ALLOY_ASSERT( n >= 0 && n < 4 );
+  ALLOY_ASSERT(n >= 0 && n < 4);
   return m_data[n];
 }
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::real* alloy::core::color::data()
+inline constexpr auto alloy::core::color::data()
   noexcept
+  -> real*
 {
   return &m_data[0];
 }
 
-inline constexpr const alloy::core::real* alloy::core::color::data()
+inline constexpr auto alloy::core::color::data()
   const noexcept
+  -> const real*
 {
   return &m_data[0];
 }
 
 //------------------------------------------------------------------------------
 
-inline alloy::core::color alloy::core::color::inverted()
+inline auto alloy::core::color::inverted()
   const noexcept
+  -> color
 {
   auto copy = (*this);
   copy.invert();
   return copy;
 }
 
-inline alloy::core::color alloy::core::color::contrasted()
+inline auto alloy::core::color::contrasted()
   const noexcept
+  -> color
 {
   auto copy = (*this);
   copy.contrast();
   return copy;
 }
 
-inline alloy::core::color alloy::core::color::darkened( real percent )
+inline auto alloy::core::color::darkened(real percent)
   const noexcept
+  -> color
 {
   auto copy = (*this);
   copy.darken(percent);
   return copy;
 }
 
-inline alloy::core::color alloy::core::color::brightened( real percent )
+inline auto alloy::core::color::brightened(real percent)
   const noexcept
+  -> color
 {
   auto copy = (*this);
   copy.brighten(percent);
@@ -492,52 +496,52 @@ inline alloy::core::color alloy::core::color::brightened( real percent )
 // Arithmetic Operators
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::color
-  alloy::core::operator+( const color& lhs, const color& rhs )
+inline constexpr auto alloy::core::operator+(const color& lhs, const color& rhs)
   noexcept
+  -> color
 {
   auto result = color{};
   for (auto i = 0; i < 4; ++i ) {
     result[i] = saturate(lhs[i] + rhs[i]);
-    ALLOY_ASSERT( result[i] >= real{0} && result[i] <= real{1} );
+    ALLOY_ASSERT(result[i] >= real{0} && result[i] <= real{1});
   }
   return result;
 }
 
-inline constexpr alloy::core::color
-  alloy::core::operator-( const color& lhs, const color& rhs )
+inline constexpr auto alloy::core::operator-(const color& lhs, const color& rhs)
   noexcept
+  -> color
 {
   auto result = color{};
   for (auto i = 0; i < 4; ++i ) {
     result[i] = saturate(lhs[i] - rhs[i]);
-    ALLOY_ASSERT( result[i] >= real{0} && result[i] <= real{1} );
+    ALLOY_ASSERT(result[i] >= real{0} && result[i] <= real{1});
   }
   return result;
 }
 
-inline constexpr alloy::core::color
-  alloy::core::operator*( const color& lhs, real scalar )
+inline constexpr auto alloy::core::operator*(const color& lhs, real scalar)
   noexcept
+  -> color
 {
   auto result = color{};
   for (auto i = 0; i < 4; ++i ) {
     result[i] = saturate(lhs[i] * scalar);
-    ALLOY_ASSERT( result[i] >= real{0} && result[i] <= real{1} );
+    ALLOY_ASSERT(result[i] >= real{0} && result[i] <= real{1});
   }
   return result;
 }
 
-inline constexpr alloy::core::color
-  alloy::core::operator*( real scalar, const color& rhs )
+inline constexpr auto alloy::core::operator*(real scalar, const color& rhs)
   noexcept
+  -> color
 {
   return rhs * scalar;
 }
 
-inline constexpr alloy::core::color
-  alloy::core::operator/( const color& lhs, real scalar )
+inline constexpr auto alloy::core::operator/(const color& lhs, real scalar)
   noexcept
+  -> color
 {
   const auto reciprocal = real{1} / scalar;
   return lhs * reciprocal;
@@ -550,8 +554,8 @@ inline constexpr alloy::core::color
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
-inline constexpr bool alloy::core::operator==( const color& lhs,
-                                               const color& rhs )
+inline constexpr bool alloy::core::operator==(const color& lhs,
+                                              const color& rhs)
   noexcept
 {
   for (auto i=0; i<4; ++i) {
@@ -562,8 +566,8 @@ inline constexpr bool alloy::core::operator==( const color& lhs,
   return true;
 }
 
-inline constexpr bool alloy::core::operator!=( const color& lhs,
-                                               const color& rhs )
+inline constexpr bool alloy::core::operator!=(const color& lhs,
+                                              const color& rhs)
   noexcept
 {
   return !(lhs==rhs);
@@ -573,22 +577,19 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
 
-inline constexpr bool alloy::core::almost_equal( const color& lhs,
-                                                 const color& rhs )
+inline constexpr auto alloy::core::almost_equal(const color& lhs,
+                                                const color& rhs)
   noexcept
+  -> bool
 {
-  for (auto i=0; i<4; ++i) {
-    if (!almost_equal(lhs[i], rhs[i])) {
-      return false;
-    }
-  }
-  return true;
+  return almost_equal(lhs, rhs, color::comparison_tolerance);
 }
 
-inline constexpr bool alloy::core::almost_equal( const color& lhs,
-                                                 const color& rhs,
-                                                 real tolerance )
+inline constexpr auto alloy::core::almost_equal(const color& lhs,
+                                                const color& rhs,
+                                                real tolerance)
   noexcept
+  -> bool
 {
   for (auto i=0; i<4; ++i) {
     if (!almost_equal(lhs[i], rhs[i], tolerance)) {
@@ -600,8 +601,8 @@ inline constexpr bool alloy::core::almost_equal( const color& lhs,
 
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::color
-  alloy::core::blend( const color& c1, const color& c2 )
+inline constexpr auto alloy::core::blend(const color& c1, const color& c2)
+  -> color
 {
   const auto diff = real{1} - c2.a();
 
@@ -618,13 +619,13 @@ inline constexpr alloy::core::color
 }
 
 template<typename...Colors, typename>
-inline constexpr alloy::core::color
-  alloy::core::blend( const color& c1,
-                      const color& c2,
-                      const Colors&...colors )
+inline constexpr auto alloy::core::blend(const color& c1,
+                                         const color& c2,
+                                         const Colors&...colors)
+  -> color
 {
-  const auto r = blend( c1, c2 );
-  return blend( r, colors... );
+  const auto r = blend(c1, c2);
+  return blend(r, colors...);
 }
 
 

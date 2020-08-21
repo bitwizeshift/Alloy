@@ -138,6 +138,10 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
   # TODO(#4): Undo once this no longer produces errors
   add_compile_options(-Wno-weak-vtables)
 
+  # Don't warn on ignored attributes; this breaks builds using dllexport/dllimport on
+  # classes that may also define inline functions
+  add_compile_options(-Wno-ignored-attributes)
+
 elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
         "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   add_compile_options(-Wall -Werror -Wextra -pedantic -pedantic-errors)
@@ -145,6 +149,10 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
   # Xcode 11.2 seems to enable -Wnewline-eof with '-Wextra'. Disable this,
   # since it's a legacy requirement not needed in C++11 onward.
   add_compile_options(-Wno-newline-eof)
+
+  # Don't warn on ignored attributes; this breaks builds using dllexport/dllimport on
+  # classes that may also define inline functions
+  add_compile_options(-Wno-ignored-attributes)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   add_compile_options(/W4 /WX)
 endif ()

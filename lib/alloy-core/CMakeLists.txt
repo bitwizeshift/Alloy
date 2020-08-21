@@ -78,6 +78,7 @@ set(header_files
   include/alloy/core/utilities/scope_guard.hpp
   include/alloy/core/utilities/semantic_type.hpp
   include/alloy/core/utilities/string_view.hpp
+  include/alloy/core/utilities/quantity.hpp
 
   # Memory
   include/alloy/core/memory/memory_resource.hpp
@@ -127,6 +128,7 @@ set(header_files
 
   # Model
   include/alloy/core/model/color.hpp
+  include/alloy/core/model/color_constants.hpp
   include/alloy/core/model/image.hpp
   include/alloy/core/model/attribute_buffer_view.hpp
   include/alloy/core/model/light/light.hpp
@@ -135,6 +137,7 @@ set(header_files
   include/alloy/core/model/light/point_light.hpp
   include/alloy/core/model/light/spot_light.hpp
   include/alloy/core/model/vertex.hpp
+  include/alloy/core/model/normal.hpp
   include/alloy/core/model/texture_coordinate.hpp
 )
 

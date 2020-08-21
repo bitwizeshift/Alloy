@@ -11,8 +11,9 @@
 // Static Member Functions
 //------------------------------------------------------------------------------
 
-alloy::core::color alloy::core::color::from_rgba32( rgba32 c )
+auto alloy::core::color::from_rgba32(rgba32 c)
   noexcept
+  -> color
 {
   static constexpr auto radix = real{255};
 
@@ -25,8 +26,9 @@ alloy::core::color alloy::core::color::from_rgba32( rgba32 c )
   return {r,g,b,a};
 }
 
-alloy::core::color alloy::core::color::from_argb32( argb32 c )
+auto alloy::core::color::from_argb32(argb32 c)
   noexcept
+  -> color
 {
   static constexpr auto radix = real{255};
 
@@ -39,8 +41,9 @@ alloy::core::color alloy::core::color::from_argb32( argb32 c )
   return {r,g,b,a};
 }
 
-alloy::core::color alloy::core::color::from_abgr32( abgr32 c )
+auto alloy::core::color::from_abgr32(abgr32 c)
   noexcept
+  -> color
 {
   static constexpr auto radix = real{255};
 
@@ -53,8 +56,9 @@ alloy::core::color alloy::core::color::from_abgr32( abgr32 c )
   return {r,g,b,a};
 }
 
-alloy::core::color alloy::core::color::from_rgba64( rgba64 c )
+auto alloy::core::color::from_rgba64(rgba64 c)
   noexcept
+  -> color
 {
   static constexpr auto radix = real{65535};
 
@@ -67,8 +71,9 @@ alloy::core::color alloy::core::color::from_rgba64( rgba64 c )
   return {r,g,b,a};
 }
 
-alloy::core::color alloy::core::color::from_argb64(argb64 c)
+auto alloy::core::color::from_argb64(argb64 c)
   noexcept
+  -> color
 {
   static constexpr auto radix = real{65535};
 
@@ -81,8 +86,9 @@ alloy::core::color alloy::core::color::from_argb64(argb64 c)
   return {r,g,b,a};
 }
 
-alloy::core::color alloy::core::color::from_abgr64(abgr64 c)
+auto alloy::core::color::from_abgr64(abgr64 c)
   noexcept
+  -> color
 {
   static constexpr auto radix = real{65535};
 
@@ -97,8 +103,9 @@ alloy::core::color alloy::core::color::from_abgr64(abgr64 c)
 
 //------------------------------------------------------------------------------
 
-alloy::core::color alloy::core::color::from_hsb(hsb c)
+auto alloy::core::color::from_hsb(hsb c)
   noexcept
+  -> color
 {
   const auto hue        = mod(c.hue, real{1});
   const auto saturation = saturate(c.saturation);
@@ -168,16 +175,18 @@ alloy::core::color alloy::core::color::from_hsb(hsb c)
 // Modifiers
 //------------------------------------------------------------------------------
 
-void alloy::core::color::invert()
+auto alloy::core::color::invert()
   noexcept
+  -> void
 {
   for (auto i = 0; i < 3; ++i) {
     m_data[i] = real{1} - m_data[i];
   }
 }
 
-void alloy::core::color::contrast()
+auto alloy::core::color::contrast()
   noexcept
+  -> void
 {
   static constexpr auto half = real{1} / real{2};
 
@@ -186,16 +195,18 @@ void alloy::core::color::contrast()
   }
 }
 
-void alloy::core::color::darken( real percent )
+auto alloy::core::color::darken(real percent)
   noexcept
+  -> void
 {
   for (auto i = 0; i < 3; ++i) {
     m_data[i] = m_data[i] * (real{1} - percent);
   }
 }
 
-void alloy::core::color::brighten( real percent )
+auto alloy::core::color::brighten(real percent)
   noexcept
+  -> void
 {
   for (auto i = 0; i < 3; ++i) {
     m_data[i] = m_data[i] + (real{1} - m_data[i]) * percent;
@@ -206,8 +217,9 @@ void alloy::core::color::brighten( real percent )
 // Observers
 //------------------------------------------------------------------------------
 
-alloy::core::rgba32 alloy::core::color::to_rgba32()
+auto alloy::core::color::to_rgba32()
   const noexcept
+  -> rgba32
 {
   const auto br = static_cast<std::uint32_t>(r() * 255u);
   const auto bg = static_cast<std::uint32_t>(g() * 255u);
@@ -217,8 +229,9 @@ alloy::core::rgba32 alloy::core::color::to_rgba32()
   return static_cast<rgba32>((br << 24u) | (bg << 16u) | (bb << 8u) | (ba));
 }
 
-alloy::core::argb32 alloy::core::color::to_argb32()
+auto alloy::core::color::to_argb32()
   const noexcept
+  -> argb32
 {
   const auto br = static_cast<std::uint32_t>(r() * 255u);
   const auto bg = static_cast<std::uint32_t>(g() * 255u);
@@ -228,8 +241,9 @@ alloy::core::argb32 alloy::core::color::to_argb32()
   return static_cast<argb32>((ba << 24u) | (br << 16u) | (bg << 8u) | (bb));
 }
 
-alloy::core::abgr32 alloy::core::color::to_abgr32()
+auto alloy::core::color::to_abgr32()
   const noexcept
+  -> abgr32
 {
   const auto br = static_cast<std::uint32_t>(r() * 255u);
   const auto bg = static_cast<std::uint32_t>(g() * 255u);
@@ -239,8 +253,9 @@ alloy::core::abgr32 alloy::core::color::to_abgr32()
   return static_cast<abgr32>((ba << 24u) | (bb << 16u) | (bg << 8u) | (br));
 }
 
-alloy::core::rgba64 alloy::core::color::to_rgba64()
+auto alloy::core::color::to_rgba64()
   const noexcept
+  -> rgba64
 {
   const auto br = static_cast<std::uint64_t>(r() * 65535u);
   const auto bg = static_cast<std::uint64_t>(g() * 65535u);
@@ -250,8 +265,9 @@ alloy::core::rgba64 alloy::core::color::to_rgba64()
   return static_cast<rgba64>((br << 48u) | (bg << 32u) | (bb << 16u) | (ba));
 }
 
-alloy::core::argb64 alloy::core::color::to_argb64()
+auto alloy::core::color::to_argb64()
   const noexcept
+  -> argb64
 {
   const auto br = static_cast<std::uint64_t>(r() * 65535u);
   const auto bg = static_cast<std::uint64_t>(g() * 65535u);
@@ -261,8 +277,9 @@ alloy::core::argb64 alloy::core::color::to_argb64()
   return static_cast<argb64>((ba << 48u) | (br << 32u) | (bg << 16u) | (bb));
 }
 
-alloy::core::abgr64 alloy::core::color::to_abgr64()
+auto alloy::core::color::to_abgr64()
   const noexcept
+  -> abgr64
 {
   const auto br = static_cast<std::uint64_t>(r() * 65535u);
   const auto bg = static_cast<std::uint64_t>(g() * 65535u);
@@ -274,8 +291,9 @@ alloy::core::abgr64 alloy::core::color::to_abgr64()
 
 //------------------------------------------------------------------------------
 
-alloy::core::hsb alloy::core::color::to_hsb()
+auto alloy::core::color::to_hsb()
   const noexcept
+  -> hsb
 {
   const auto min_value = std::min(r(), std::min(g(), b()));
   const auto max_value = std::max(r(), std::max(g(), b()));
