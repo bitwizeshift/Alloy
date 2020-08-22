@@ -80,6 +80,7 @@ namespace alloy::core {
 
     static inline constexpr auto rows    = index_type{2};
     static inline constexpr auto columns = index_type{2};
+    static inline constexpr auto comparison_tolerance = default_tolerance;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -101,18 +102,18 @@ namespace alloy::core {
     ///
     /// \param v0 the first row vector
     /// \param v1 the second row vector
-    constexpr matrix2( const vector2& v0,
-                       const vector2& v1 ) noexcept;
+    constexpr matrix2(const vector2& v0,
+                      const vector2& v1) noexcept;
 
     /// \brief Constructs a matrix2 from an array of 4 entries
     ///
     /// \param array the 1-dimensional array
-    explicit constexpr matrix2( const real(&array)[4] ) noexcept;
+    explicit constexpr matrix2(const real(&array)[4]) noexcept;
 
     /// \brief Constructs a matrix2 from a 2-dimensional array
     ///
     /// \param array the 2-dimensional array
-    explicit constexpr matrix2( const real(&array)[2][2] ) noexcept;
+    explicit constexpr matrix2(const real(&array)[2][2]) noexcept;
 
     /// \brief Constructs a matrix2 from value entries
     ///
@@ -120,18 +121,13 @@ namespace alloy::core {
     /// \param m01 the entry at coordinate (0,1)
     /// \param m10 the entry at coordinate (1,0)
     /// \param m11 the entry at coordinate (1,1)
-    constexpr matrix2( real m00, real m01,
-                       real m10, real m11 ) noexcept;
+    constexpr matrix2(real m00, real m01,
+                      real m10, real m11) noexcept;
 
     /// \brief Copy-constructs a matrix2 from another matrix2
     ///
     /// \param other the other matrix2 to copy
-    constexpr matrix2( const matrix2& other ) noexcept = default;
-
-    /// \brief Move-constructs a matrix2 from another matrix2
-    ///
-    /// \param other the other matrix2 to move
-    constexpr matrix2( matrix2&& other ) noexcept = default;
+    constexpr matrix2(const matrix2& other) noexcept = default;
 
     //--------------------------------------------------------------------------
 
@@ -139,13 +135,7 @@ namespace alloy::core {
     ///
     /// \param other the other entry to copy
     /// \return reference to \c (*this)
-    matrix2& operator=( const matrix2& other ) = default;
-
-    /// \brief Move-assigns a matrix2 from another matrix2
-    ///
-    /// \param other the other entry to move
-    /// \return reference to \c (*this)
-    matrix2& operator=( matrix2&& other ) = default;
+    auto operator=(const matrix2& other) -> matrix2& = default;
 
     //--------------------------------------------------------------------------
     // Element Access
@@ -161,8 +151,8 @@ namespace alloy::core {
     /// \param r the row to retrieve
     /// \param c the column to retrieve
     /// \return the reference to the entry
-    constexpr reference at( index_type r, index_type c );
-    constexpr const_reference at( index_type r, index_type c ) const;
+    constexpr auto at(index_type r, index_type c) -> reference;
+    constexpr auto at(index_type r, index_type c) const -> const_reference;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -173,8 +163,8 @@ namespace alloy::core {
     /// \param r the row
     /// \param c the column
     /// \return reference to the entry
-    constexpr reference get( index_type r, index_type c ) noexcept;
-    constexpr const_reference get( index_type r, index_type c ) const noexcept;
+    constexpr auto get(index_type r, index_type c) noexcept -> reference;
+    constexpr auto get(index_type r, index_type c) const noexcept -> const_reference;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -182,12 +172,12 @@ namespace alloy::core {
     /// \brief Retrieves the vector at row \p r
     ///
     /// \param r the row index to retrieve
-    constexpr vector2 row( index_type r ) const noexcept;
+    constexpr auto row(index_type r) const noexcept -> vector2;
 
     /// \brief Retrieves the vector at row \p c
     ///
     /// \param c the column index to retrieve
-    constexpr vector2 column( index_type c ) const noexcept;
+    constexpr auto column(index_type c) const noexcept -> vector2;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -197,14 +187,14 @@ namespace alloy::core {
     /// \brief Retrieves the number of entries in this matrix
     ///
     /// \return the size of the matrix
-    constexpr size_type size() const noexcept;
+    constexpr auto size() const noexcept -> size_type;
 
     /// \{
     /// \brief Gets a pointer to the underlying data
     ///
     /// \return a pointer to the data
-    constexpr pointer data() noexcept;
-    constexpr const_pointer data() const noexcept;
+    constexpr auto data() noexcept -> pointer;
+    constexpr auto data() const noexcept -> const_pointer;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -215,30 +205,30 @@ namespace alloy::core {
     /// Calculates the determinant for this matrix2
     ///
     /// \returns the determinant of this matrix
-    constexpr real determinant() const noexcept;
+    constexpr auto determinant() const noexcept -> real;
 
     /// Calculates the trace for this matrix2
     ///
     /// \returns the trace of this matrix
-    constexpr real trace() const noexcept;
+    constexpr auto trace() const noexcept -> real;
 
     /// \brief Computes the inverse of this matrix2
     ///
-    /// If no inverse is possible, this returns \ref matrix2::identity
+    /// If no inverse is possible, this returns the identity
     ///
     /// \return the inverse of this matrix2
-    constexpr matrix2 inverse() const noexcept;
+    constexpr auto inverse() const noexcept -> matrix2;
 
     /// \brief Computes the transpose of this matrix2
     ///
     /// \return the transpose of this matrix2
-    constexpr matrix2 transposed() const noexcept;
+    constexpr auto transposed() const noexcept -> matrix2;
 
     /// \brief Combines \c (*this) with \p vec
     ///
     /// \param vec the vector to combine
     /// \return the result of \c vec * matrix
-    constexpr vector2 combine( const vector2& vec ) const noexcept;
+    constexpr auto combine(const vector2& vec) const noexcept -> vector2;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -253,24 +243,24 @@ namespace alloy::core {
     /// is left unmodified
     ///
     /// \return reference to \c (*this)
-    matrix2& invert() noexcept;
+    auto invert() noexcept -> matrix2&;
 
     /// \brief Transposes this current matrix2, returning a reference to
     ///        \c (*this)
     ///
     /// \return reference to \c (*this)
-    matrix2& transpose() noexcept;
+    auto transpose() noexcept -> matrix2&;
 
     //--------------------------------------------------------------------------
     // Compound Operators
     //--------------------------------------------------------------------------
   public:
 
-    matrix2& operator+=( const matrix2& rhs ) noexcept;
-    matrix2& operator-=( const matrix2& rhs ) noexcept;
-    matrix2& operator*=( const matrix2& rhs ) noexcept;
-    matrix2& operator*=( real scalar ) noexcept;
-    matrix2& operator/=( real scalar ) noexcept;
+   auto operator+=(const matrix2& rhs) noexcept ->  matrix2&;
+   auto operator-=(const matrix2& rhs) noexcept ->  matrix2&;
+   auto operator*=(const matrix2& rhs) noexcept ->  matrix2&;
+   auto operator*=(real scalar) noexcept ->  matrix2&;
+   auto operator/=(real scalar) noexcept ->  matrix2&;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -278,7 +268,6 @@ namespace alloy::core {
   private:
 
     real m_matrix[rows][columns]; ///< Linear array that represents the matrix
-
   };
 
   //============================================================================
@@ -289,27 +278,19 @@ namespace alloy::core {
   // Arithmetic Operators
   //----------------------------------------------------------------------------
 
-  matrix2 operator+( const matrix2& lhs,
-                     const matrix2& rhs ) noexcept;
-  matrix2 operator-( const matrix2& lhs,
-                     const matrix2& rhs ) noexcept;
-  matrix2 operator*( const matrix2& lhs,
-                     const matrix2& rhs ) noexcept;
-  vector2 operator*( const vector2& lhs,
-                     const matrix2& rhs ) noexcept;
-  matrix2 operator*( real lhs,
-                     const matrix2& rhs ) noexcept;
-  matrix2 operator*( const matrix2& lhs,
-                     real rhs ) noexcept;
+  auto operator+(const matrix2& lhs, const matrix2& rhs) noexcept -> matrix2;
+  auto operator-(const matrix2& lhs, const matrix2& rhs) noexcept -> matrix2;
+  auto operator*(const matrix2& lhs, const matrix2& rhs) noexcept -> matrix2;
+  auto operator*(const vector2& lhs, const matrix2& rhs) noexcept -> vector2;
+  auto operator*(real lhs, const matrix2& rhs) noexcept -> matrix2;
+  auto operator*(const matrix2& lhs, real rhs) noexcept -> matrix2;
 
   //------------------------------------------------------------------------
   // Comparisons
   //------------------------------------------------------------------------
 
-  constexpr bool operator==( const matrix2& lhs,
-                             const matrix2& rhs ) noexcept;
-  constexpr bool operator!=( const matrix2& lhs,
-                             const matrix2& rhs ) noexcept;
+  constexpr auto operator==(const matrix2& lhs, const matrix2& rhs) noexcept -> bool;
+  constexpr auto operator!=(const matrix2& lhs, const matrix2& rhs) noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -319,23 +300,17 @@ namespace alloy::core {
   /// \param lhs the left matrix2
   /// \param rhs the right matrix2
   /// \return \c true if the two matrix2 contain almost equal values
-  constexpr bool almost_equal( const matrix2& lhs,
-                               const matrix2& rhs ) noexcept;
+  constexpr auto almost_equal(const matrix2& lhs,
+                              const matrix2& rhs) noexcept -> bool;
 
   /// \brief Determines equality between two matrix2 relative to \ref tolerance
   ///
   /// \param lhs the left matrix2
   /// \param rhs the right matrix2
   /// \return \c true if the two matrix2 contain almost equal values
-  constexpr bool almost_equal( const matrix2& lhs,
-                               const matrix2& rhs,
-                               real tolerance ) noexcept;
-
-  //============================================================================
-  // aliases
-  //============================================================================
-
-  using mat2 = matrix2;
+  constexpr auto almost_equal(const matrix2& lhs,
+                              const matrix2& rhs,
+                              real tolerance) noexcept -> bool;
 
   //----------------------------------------------------------------------------
   // Type Traits
@@ -364,8 +339,7 @@ namespace alloy::core {
 // Constructors
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::matrix2
-  ::matrix2()
+inline constexpr alloy::core::matrix2::matrix2()
   noexcept
   : m_matrix {
       {real{0}, real{0}},
@@ -375,8 +349,8 @@ inline constexpr alloy::core::matrix2
 
 }
 
-inline constexpr alloy::core::matrix2
-  ::matrix2( const vector2& v0, const vector2& v1 )
+inline constexpr alloy::core::matrix2::matrix2(const vector2& v0,
+                                               const vector2& v1)
   noexcept
   : m_matrix {
       {v0.x(), v0.y()},
@@ -386,8 +360,7 @@ inline constexpr alloy::core::matrix2
 
 }
 
-inline constexpr alloy::core::matrix2
-  ::matrix2( const real(&array)[4] )
+inline constexpr alloy::core::matrix2::matrix2(const real(&array)[4])
   noexcept
   : m_matrix {
       {array[0], array[1]},
@@ -397,8 +370,7 @@ inline constexpr alloy::core::matrix2
 
 }
 
-inline constexpr alloy::core::matrix2
-  ::matrix2( const real(&array)[2][2] )
+inline constexpr alloy::core::matrix2::matrix2(const real(&array)[2][2])
   noexcept
   : m_matrix {
       {array[0][0], array[0][1]},
@@ -408,9 +380,8 @@ inline constexpr alloy::core::matrix2
 
 }
 
-inline constexpr alloy::core::matrix2
-  ::matrix2( real m00, real m01,
-             real m10, real m11 )
+inline constexpr alloy::core::matrix2::matrix2(real m00, real m01,
+                                               real m10, real m11)
   noexcept
   : m_matrix {
       {m00, m01},
@@ -424,21 +395,23 @@ inline constexpr alloy::core::matrix2
 // Element Access
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::matrix2::reference
-  alloy::core::matrix2::at( index_type r, index_type c )
+inline constexpr auto
+  alloy::core::matrix2::at(index_type r, index_type c)
+  -> reference
 {
-  if( c >=columns || c < 0 || r >=rows || r < 0 ) {
+  if (c >=columns || c < 0 || r >=rows || r < 0) {
     throw std::out_of_range{"matrix2::at: index out of range"};
   }
   return get(r,c);
 }
 
 
-inline constexpr alloy::core::matrix2::const_reference
-  alloy::core::matrix2::at( index_type r, index_type c )
+inline constexpr auto
+  alloy::core::matrix2::at(index_type r, index_type c)
   const
+  -> const_reference
 {
-  if( c >=columns || c < 0 || r >=rows || r < 0 ) {
+  if (c >=columns || c < 0 || r >=rows || r < 0) {
     throw std::out_of_range{"matrix2::at: index out of range"};
   }
   return get(r,c);
@@ -446,32 +419,32 @@ inline constexpr alloy::core::matrix2::const_reference
 
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::matrix2::reference
-  alloy::core::matrix2::get( index_type r, index_type c )
-  noexcept
+inline constexpr auto
+  alloy::core::matrix2::get(index_type r, index_type c)
+  noexcept -> reference
 {
   return m_matrix[r][c];
 }
 
-inline constexpr alloy::core::matrix2::const_reference
-  alloy::core::matrix2::get( index_type r, index_type c )
-  const noexcept
+inline constexpr auto
+  alloy::core::matrix2::get(index_type r, index_type c)
+  const noexcept -> const_reference
 {
   return m_matrix[r][c];
 }
 
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::vector2
-  alloy::core::matrix2::row( index_type r )
-  const noexcept
+inline constexpr auto
+  alloy::core::matrix2::row(index_type r)
+  const noexcept -> vector2
 {
   return vector2{ get(r,0), get(r,1) };
 }
 
-inline constexpr alloy::core::vector2
-  alloy::core::matrix2::column( index_type c )
-  const noexcept
+inline constexpr auto
+  alloy::core::matrix2::column(index_type c)
+  const noexcept -> vector2
 {
   return vector2{ get(0,c), get(1,c) };
 }
@@ -480,23 +453,23 @@ inline constexpr alloy::core::vector2
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::matrix2::size_type
+inline constexpr auto
   alloy::core::matrix2::size()
-  const noexcept
+  const noexcept -> size_type
 {
   return rows*columns;
 }
 
-inline constexpr alloy::core::matrix2::pointer
+inline constexpr auto
   alloy::core::matrix2::data()
-  noexcept
+  noexcept -> pointer
 {
   return &get(0,0);
 }
 
-inline constexpr alloy::core::matrix2::const_pointer
+inline constexpr auto
   alloy::core::matrix2::data()
-  const noexcept
+  const noexcept -> const_pointer
 {
   return &get(0,0);
 }
@@ -505,40 +478,44 @@ inline constexpr alloy::core::matrix2::const_pointer
 // Quantifiers
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::real
+inline constexpr auto
   alloy::core::matrix2::determinant()
-  const noexcept
+  const noexcept -> real
 {
   return (get(0,0) * get(1,1)) - (get(0,1) * get(1,0));
 }
 
-inline constexpr alloy::core::real
+inline constexpr auto
   alloy::core::matrix2::trace()
-  const noexcept
+  const noexcept -> real
 {
   return (get(0,0) + get(1,1));
 }
 
-inline constexpr alloy::core::matrix2
+inline constexpr auto
   alloy::core::matrix2::inverse()
-  const noexcept
+  const noexcept -> matrix2
 {
   const auto det = determinant();
 
   if (almost_equal(det, real{0})) {
-    return matrix2{};
+    return matrix2{
+      real{1}, real{0},
+      real{0}, real{1}
+    };
   }
 
   const auto inv_det = (real{1} / det);
+
   return matrix2{
      get(1,1) * inv_det, -get(1,0) * inv_det,
     -get(0,1) * inv_det,  get(0,0) * inv_det
   };
 }
 
-inline constexpr alloy::core::matrix2
+inline constexpr auto
   alloy::core::matrix2::transposed()
-  const noexcept
+  const noexcept -> matrix2
 {
   return matrix2{
     get(0,0), get(1,0),
@@ -546,9 +523,9 @@ inline constexpr alloy::core::matrix2
   };
 }
 
-constexpr alloy::core::vector2
-  alloy::core::matrix2::combine( const vector2& vec )
-  const noexcept
+inline constexpr auto
+  alloy::core::matrix2::combine(const vector2& vec)
+  const noexcept -> vector2
 {
   auto result = vector2{};
 
@@ -567,17 +544,17 @@ constexpr alloy::core::vector2
 // Modifiers
 //------------------------------------------------------------------------------
 
-inline alloy::core::matrix2&
+inline auto
   alloy::core::matrix2::invert()
-  noexcept
+  noexcept -> matrix2&
 {
   (*this) = inverse();
   return (*this);
 }
 
-inline alloy::core::matrix2&
+inline auto
   alloy::core::matrix2::transpose()
-  noexcept
+  noexcept -> matrix2&
 {
   using std::swap;
 
@@ -585,14 +562,13 @@ inline alloy::core::matrix2&
   return (*this);
 }
 
-
 //------------------------------------------------------------------------------
 // Compound Operators
 //------------------------------------------------------------------------------
 
-inline alloy::core::matrix2&
-  alloy::core::matrix2::operator+=( const matrix2& rhs )
-  noexcept
+inline auto
+  alloy::core::matrix2::operator+=(const matrix2& rhs)
+  noexcept -> matrix2&
 {
   for (auto r = 0; r < rows; ++r) {
     for (auto c = 0; c < columns; ++c) {
@@ -602,9 +578,9 @@ inline alloy::core::matrix2&
   return (*this);
 }
 
-inline alloy::core::matrix2&
-  alloy::core::matrix2::operator-=( const matrix2& rhs )
-  noexcept
+inline auto
+  alloy::core::matrix2::operator-=(const matrix2& rhs)
+  noexcept -> matrix2&
 {
   for (auto r = 0; r < rows; ++r) {
     for (auto c = 0; c < columns; ++c) {
@@ -614,9 +590,9 @@ inline alloy::core::matrix2&
   return (*this);
 }
 
-inline alloy::core::matrix2&
-  alloy::core::matrix2::operator*=( const matrix2& rhs )
-  noexcept
+inline auto
+  alloy::core::matrix2::operator*=(const matrix2& rhs)
+  noexcept -> matrix2&
 {
   auto result = matrix2{};
 
@@ -637,9 +613,9 @@ inline alloy::core::matrix2&
   return (*this);
 }
 
-inline alloy::core::matrix2&
-  alloy::core::matrix2::operator*=( real scalar )
-  noexcept
+inline auto
+  alloy::core::matrix2::operator*=(real scalar)
+  noexcept -> matrix2&
 {
   for (auto r = 0; r < rows; ++r) {
     for (auto c = 0; c < columns; ++c) {
@@ -649,9 +625,9 @@ inline alloy::core::matrix2&
   return (*this);
 }
 
-inline alloy::core::matrix2&
-  alloy::core::matrix2::operator/=( real scalar )
-  noexcept
+inline auto
+  alloy::core::matrix2::operator/=(real scalar)
+  noexcept -> matrix2&
 {
   const auto inv = real{1} / scalar;
 
@@ -671,44 +647,44 @@ inline alloy::core::matrix2&
 // Arithmetic Operators
 //------------------------------------------------------------------------------
 
-inline alloy::core::matrix2
-  alloy::core::operator+( const matrix2& lhs, const matrix2& rhs )
-  noexcept
+inline auto
+  alloy::core::operator+(const matrix2& lhs, const matrix2& rhs)
+  noexcept -> matrix2
 {
   return matrix2{lhs} += rhs;
 }
 
-inline alloy::core::matrix2
-  alloy::core::operator-( const matrix2& lhs, const matrix2& rhs )
-  noexcept
+inline auto
+  alloy::core::operator-(const matrix2& lhs, const matrix2& rhs)
+  noexcept -> matrix2
 {
   return matrix2{lhs} -= rhs;
 }
 
-inline alloy::core::matrix2
-  alloy::core::operator*( const matrix2& lhs, const matrix2& rhs )
-  noexcept
+inline auto
+  alloy::core::operator*(const matrix2& lhs, const matrix2& rhs)
+  noexcept -> matrix2
 {
   return matrix2{lhs} *= rhs;
 }
 
-inline alloy::core::vector2
-  alloy::core::operator*( const vector2& lhs, const matrix2& rhs )
-  noexcept
+inline auto
+  alloy::core::operator*(const vector2& lhs, const matrix2& rhs)
+  noexcept -> vector2
 {
   return rhs.combine(lhs);
 }
 
-inline alloy::core::matrix2
-  alloy::core::operator*( real lhs, const matrix2& rhs )
-  noexcept
+inline auto
+  alloy::core::operator*(real lhs, const matrix2& rhs)
+  noexcept -> matrix2
 {
   return matrix2{rhs} *= lhs;
 }
 
-inline alloy::core::matrix2
-  alloy::core::operator*( const matrix2& lhs, real rhs )
-  noexcept
+inline auto
+  alloy::core::operator*(const matrix2& lhs, real rhs)
+  noexcept -> matrix2
 {
   return matrix2{lhs} *= rhs;
 }
@@ -720,9 +696,9 @@ inline alloy::core::matrix2
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
-inline constexpr bool
-  alloy::core::operator==( const matrix2& lhs, const matrix2& rhs )
-  noexcept
+inline constexpr auto
+  alloy::core::operator==(const matrix2& lhs, const matrix2& rhs)
+  noexcept -> bool
 {
   for (auto r = 0; r < matrix2::rows; ++r) {
     for (auto c = 0; c < matrix2::columns; ++c) {
@@ -734,9 +710,9 @@ inline constexpr bool
   return true;
 }
 
-inline constexpr bool
-  alloy::core::operator!=( const matrix2& lhs, const matrix2& rhs )
-  noexcept
+inline constexpr auto
+  alloy::core::operator!=(const matrix2& lhs, const matrix2& rhs)
+  noexcept -> bool
 {
   return !(lhs==rhs);
 }
@@ -745,25 +721,18 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
 
-inline constexpr bool
-  alloy::core::almost_equal( const matrix2& lhs, const matrix2& rhs )
-  noexcept
+inline constexpr auto
+  alloy::core::almost_equal(const matrix2& lhs, const matrix2& rhs)
+  noexcept -> bool
 {
-  for (auto r = 0; r < matrix2::rows; ++r) {
-    for (auto c = 0; c < matrix2::columns; ++c) {
-      if (!almost_equal(lhs.get(r,c), rhs.get(r,c))) {
-        return false;
-      }
-    }
-  }
-  return true;
+  return almost_equal(lhs, rhs, matrix2::comparison_tolerance);
 }
 
-inline constexpr bool
-  alloy::core::almost_equal( const matrix2& lhs,
-                             const matrix2& rhs,
-                             real tolerance )
-  noexcept
+inline constexpr auto
+  alloy::core::almost_equal(const matrix2& lhs,
+                            const matrix2& rhs,
+                            real tolerance)
+  noexcept -> bool
 {
   for (auto r = 0; r < matrix2::rows; ++r) {
     for (auto c = 0; c < matrix2::columns; ++c) {
