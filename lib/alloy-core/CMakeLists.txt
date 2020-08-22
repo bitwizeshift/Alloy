@@ -85,6 +85,7 @@ set(header_files
   include/alloy/core/memory/data_quantity.hpp
   include/alloy/core/memory/allocator.hpp
   include/alloy/core/memory/observer_ptr.hpp
+  include/alloy/core/memory/unaligned.hpp
 
   # Math
   include/alloy/core/math/angle.hpp
