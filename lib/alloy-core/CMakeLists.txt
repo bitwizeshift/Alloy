@@ -155,6 +155,9 @@ set(source_files
   src/alloy/core/math/vector/vector2.cpp
   src/alloy/core/math/vector/vector3.cpp
   src/alloy/core/math/vector/vector4.cpp
+  src/alloy/core/math/matrix/matrix2.cpp
+  src/alloy/core/math/matrix/matrix3.cpp
+  src/alloy/core/math/matrix/matrix4.cpp
 
   # Geometry
   src/alloy/core/geometry/axis_aligned_box.cpp

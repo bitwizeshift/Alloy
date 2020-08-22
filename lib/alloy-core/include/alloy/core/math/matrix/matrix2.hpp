@@ -57,7 +57,7 @@ namespace alloy::core {
   /// The matrix is accessed in column-major format (e.g. mat[col][row]) as
   /// opposed to the native [row][col] way that C++ handles 2d arrays
   //////////////////////////////////////////////////////////////////////////////
-  class matrix2
+  class ALLOY_CORE_API matrix2
   {
     //--------------------------------------------------------------------------
     // Public Types
@@ -205,30 +205,30 @@ namespace alloy::core {
     /// Calculates the determinant for this matrix2
     ///
     /// \returns the determinant of this matrix
-    constexpr auto determinant() const noexcept -> real;
+    auto determinant() const noexcept -> real;
 
     /// Calculates the trace for this matrix2
     ///
     /// \returns the trace of this matrix
-    constexpr auto trace() const noexcept -> real;
+    auto trace() const noexcept -> real;
 
     /// \brief Computes the inverse of this matrix2
     ///
     /// If no inverse is possible, this returns the identity
     ///
     /// \return the inverse of this matrix2
-    constexpr auto inverse() const noexcept -> matrix2;
+    auto inverse() const noexcept -> matrix2;
 
     /// \brief Computes the transpose of this matrix2
     ///
     /// \return the transpose of this matrix2
-    constexpr auto transposed() const noexcept -> matrix2;
+    auto transposed() const noexcept -> matrix2;
 
     /// \brief Combines \c (*this) with \p vec
     ///
     /// \param vec the vector to combine
     /// \return the result of \c vec * matrix
-    constexpr auto combine(const vector2& vec) const noexcept -> vector2;
+    auto combine(const vector2& vec) const noexcept -> vector2;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -472,72 +472,6 @@ inline constexpr auto
   const noexcept -> const_pointer
 {
   return &get(0,0);
-}
-
-//------------------------------------------------------------------------------
-// Quantifiers
-//------------------------------------------------------------------------------
-
-inline constexpr auto
-  alloy::core::matrix2::determinant()
-  const noexcept -> real
-{
-  return (get(0,0) * get(1,1)) - (get(0,1) * get(1,0));
-}
-
-inline constexpr auto
-  alloy::core::matrix2::trace()
-  const noexcept -> real
-{
-  return (get(0,0) + get(1,1));
-}
-
-inline constexpr auto
-  alloy::core::matrix2::inverse()
-  const noexcept -> matrix2
-{
-  const auto det = determinant();
-
-  if (almost_equal(det, real{0})) {
-    return matrix2{
-      real{1}, real{0},
-      real{0}, real{1}
-    };
-  }
-
-  const auto inv_det = (real{1} / det);
-
-  return matrix2{
-     get(1,1) * inv_det, -get(1,0) * inv_det,
-    -get(0,1) * inv_det,  get(0,0) * inv_det
-  };
-}
-
-inline constexpr auto
-  alloy::core::matrix2::transposed()
-  const noexcept -> matrix2
-{
-  return matrix2{
-    get(0,0), get(1,0),
-    get(0,1), get(1,1)
-  };
-}
-
-inline constexpr auto
-  alloy::core::matrix2::combine(const vector2& vec)
-  const noexcept -> vector2
-{
-  auto result = vector2{};
-
-  for (auto r = 0; r < columns; ++r) {
-    auto sum = real{0};
-
-    for (auto c = 0; c < rows; ++c) {
-      sum += vec[c] * get(r,c);
-    }
-    result[r] = sum;
-  }
-  return result;
 }
 
 //------------------------------------------------------------------------------

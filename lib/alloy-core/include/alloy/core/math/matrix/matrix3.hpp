@@ -57,7 +57,7 @@ namespace alloy::core {
   /// The matrix is accessed in column-major format (e.g. mat[col][row]) as
   /// opposed to the native [row][col] way that C++ handles 2d arrays
   //////////////////////////////////////////////////////////////////////////////
-  class matrix3
+  class ALLOY_CORE_API matrix3
   {
     //--------------------------------------------------------------------------
     // Public Types
@@ -210,30 +210,30 @@ namespace alloy::core {
     /// Calculates the determinant for this matrix3
     ///
     /// \returns the determinant of this matrix
-    constexpr auto determinant() const noexcept -> real;
+    auto determinant() const noexcept -> real;
 
     /// Calculates the trace for this matrix3
     ///
     /// \returns the trace of this matrix
-    constexpr auto trace() const noexcept -> real;
+    auto trace() const noexcept -> real;
 
     /// \brief Computes the inverse of this matrix3
     ///
     /// If no inverse is possible, this returns \ref matrix3::identity
     ///
     /// \return the inverse of this matrix3
-    constexpr auto inverse() const noexcept -> matrix3;
+    auto inverse() const noexcept -> matrix3;
 
     /// \brief Computes the transpose of this matrix3
     ///
     /// \return the transpose of this matrix3
-    constexpr auto transposed() const noexcept -> matrix3;
+    auto transposed() const noexcept -> matrix3;
 
     /// \brief Combines \c (*this) with \p vec
     ///
     /// \param vec the vector to combine
     /// \return the result of \c vec * matrix
-    constexpr auto combine(const vector3& vec) const noexcept -> vector3;
+    auto combine(const vector3& vec) const noexcept -> vector3;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -486,88 +486,6 @@ inline constexpr auto
 }
 
 //------------------------------------------------------------------------------
-// Quantifiers
-//------------------------------------------------------------------------------
-
-inline constexpr auto
-  alloy::core::matrix3::determinant()
-  const noexcept -> real
-{
-  return (get(0,0)*get(1,1)*get(2,2)) -
-         (get(0,0)*get(1,2)*get(2,1)) -
-         (get(0,1)*get(1,0)*get(2,2)) +
-         (get(0,1)*get(1,2)*get(2,0)) +
-         (get(0,2)*get(1,0)*get(2,1)) -
-         (get(0,2)*get(1,1)*get(2,0));
-}
-
-inline constexpr auto
-  alloy::core::matrix3::trace()
-  const noexcept -> real
-{
-  return (get(0,0) + get(1,1) + get(2,2));
-}
-
-inline constexpr auto
-  alloy::core::matrix3::inverse()
-  const noexcept -> matrix3
-{
-  const auto det = determinant();
-
-  if (almost_equal(det,real{0})) {
-    return matrix3{
-      real{1}, real{0}, real{0},
-      real{0}, real{1}, real{0},
-      real{0}, real{0}, real{1}
-    };
-  }
-
-  const auto inv_det = (real{1} / det);
-
-  return matrix3{
-    (get(1,1)*get(2,2) - get(1,2)*get(2,1)) * inv_det,
-    (get(1,2)*get(2,0) - get(1,0)*get(2,2)) * inv_det,
-    (get(1,0)*get(2,1) - get(1,1)*get(2,0)) * inv_det,
-
-    (get(0,2)*get(2,1) - get(0,1)*get(2,2)) * inv_det,
-    (get(0,0)*get(2,2) - get(0,2)*get(2,0)) * inv_det,
-    (get(0,1)*get(2,0) - get(0,0)*get(2,1)) * inv_det,
-
-    (get(0,1)*get(1,2) - get(0,2)*get(1,1)) * inv_det,
-    (get(0,2)*get(1,0) - get(0,0)*get(1,2)) * inv_det,
-    (get(0,0)*get(1,1) - get(0,1)*get(1,0)) * inv_det
-  };
-}
-
-inline constexpr auto
-  alloy::core::matrix3::transposed()
-  const noexcept -> matrix3
-{
-  return matrix3{
-    get(0,0), get(1,0), get(2,0),
-    get(0,1), get(1,1), get(2,1),
-    get(0,2), get(1,2), get(2,2)
-  };
-}
-
-inline constexpr auto
-  alloy::core::matrix3::combine(const vector3& vec)
-  const noexcept -> vector3
-{
-  auto result = vector3{};
-
-  for (auto r = 0; r < columns; ++r) {
-    auto sum = real{0};
-
-    for (auto c = 0; c < rows; ++c) {
-      sum += vec[c] * get(r,c);
-    }
-    result[r] = sum;
-  }
-  return result;
-}
-
-//------------------------------------------------------------------------------
 // Modifiers
 //------------------------------------------------------------------------------
 
@@ -576,22 +494,6 @@ inline auto
   noexcept -> matrix3&
 {
   (*this) = inverse();
-  return (*this);
-}
-
-inline auto
-  alloy::core::matrix3::transpose()
-  noexcept -> matrix3&
-{
-  using std::swap;
-
-  for (auto r = 0; r < rows; ++r) {
-    for (auto c = 0; c < r; ++c) {
-      if (r != c) {
-        swap(get(r,c),get(c,r));
-      }
-    }
-  }
   return (*this);
 }
 
