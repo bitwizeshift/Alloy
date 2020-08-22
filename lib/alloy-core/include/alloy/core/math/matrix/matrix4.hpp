@@ -58,7 +58,7 @@ namespace alloy::core {
   /// The matrix is accessed in column-major format (e.g. mat[col][row]) as
   /// opposed to the native [row][col] way that C++ handles 2d arrays
   //////////////////////////////////////////////////////////////////////////////
-  class matrix4
+  class ALLOY_CORE_API matrix4
   {
     //--------------------------------------------------------------------------
     // Public Types
@@ -81,6 +81,7 @@ namespace alloy::core {
 
     static inline constexpr auto rows    = index_type{4};
     static inline constexpr auto columns = index_type{4};
+    static inline constexpr auto comparison_tolerance = default_tolerance;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -106,20 +107,20 @@ namespace alloy::core {
     /// \param v1 the second row vector
     /// \param v2 the third row vector
     /// \param v3 the fourth row vector
-    constexpr matrix4( const vector4& v0,
-                       const vector4& v1,
-                       const vector4& v2,
-                       const vector4& v3 ) noexcept;
+    constexpr matrix4(const vector4& v0,
+                      const vector4& v1,
+                      const vector4& v2,
+                      const vector4& v3) noexcept;
 
     /// \brief Constructs a matrix4 from an array of 4 entries
     ///
     /// \param array the 1-dimensional array
-    constexpr matrix4( const real(&array)[16] ) noexcept;
+    constexpr matrix4(const real(&array)[16]) noexcept;
 
     /// \brief Constructs a matrix4 from a 2-dimensional array
     ///
     /// \param array the 2-dimensional array
-    constexpr matrix4( const real(&array)[4][4] ) noexcept;
+    constexpr matrix4(const real(&array)[4][4]) noexcept;
 
     /// \brief Constructs a matrix4 from value entries
     ///
@@ -147,12 +148,12 @@ namespace alloy::core {
     /// \brief Copy-constructs a matrix4 from another matrix4
     ///
     /// \param other the other matrix4 to copy
-    constexpr matrix4( const matrix4& other ) noexcept = default;
+    constexpr matrix4(const matrix4& other) noexcept = default;
 
     /// \brief Move-constructs a matrix4 from another matrix4
     ///
     /// \param other the other matrix4 to move
-    constexpr matrix4( matrix4&& other ) noexcept = default;
+    constexpr matrix4(matrix4&& other) noexcept = default;
 
     //--------------------------------------------------------------------------
 
@@ -160,13 +161,13 @@ namespace alloy::core {
     ///
     /// \param other the other entry to copy
     /// \return reference to \c (*this)
-    matrix4& operator=( const matrix4& other ) = default;
+    auto operator=(const matrix4& other) -> matrix4& = default;
 
     /// \brief Move-assigns a matrix4 from another matrix4
     ///
     /// \param other the other entry to move
     /// \return reference to \c (*this)
-    matrix4& operator=( matrix4&& other ) = default;
+    auto operator=(matrix4&& other) -> matrix4& = default;
 
     //--------------------------------------------------------------------------
     // Element Access
@@ -182,8 +183,8 @@ namespace alloy::core {
     /// \param r the row to retrieve
     /// \param c the column to retrieve
     /// \return the reference to the entry
-    constexpr reference at( index_type r, index_type c );
-    constexpr const_reference at( index_type r, index_type c ) const;
+    constexpr auto at(index_type r, index_type c) -> reference;
+    constexpr auto at(index_type r, index_type c) const -> const_reference;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -194,8 +195,8 @@ namespace alloy::core {
     ///
     /// \param c the column
     /// \return a proxy to the row
-    constexpr reference get( index_type r, index_type c ) noexcept;
-    constexpr const_reference get( index_type r, index_type c ) const noexcept;
+    constexpr auto get(index_type r, index_type c) noexcept -> reference;
+    constexpr auto get(index_type r, index_type c) const noexcept -> const_reference;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -203,12 +204,12 @@ namespace alloy::core {
     /// \brief Retrieves the vector at row \p r
     ///
     /// \param r the row index to retrieve
-    constexpr vector4 row( index_type r ) const noexcept;
+    constexpr auto row(index_type r) const noexcept -> vector4;
 
     /// \brief Retrieves the vector at row \p c
     ///
     /// \param c the column index to retrieve
-    constexpr vector4 column( index_type c ) const noexcept;
+    constexpr auto column(index_type c) const noexcept -> vector4;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -218,14 +219,14 @@ namespace alloy::core {
     /// \brief Retrieves the number of entries in this matrix
     ///
     /// \return the size of the matrix
-    constexpr size_type size() const noexcept;
+    constexpr auto size() const noexcept -> size_type;
 
     /// \{
     /// \brief Gets a pointer to the underlying data
     ///
     /// \return a pointer to the data
-    constexpr pointer data() noexcept;
-    constexpr const_pointer data() const noexcept;
+    constexpr auto data() noexcept -> pointer;
+    constexpr auto data() const noexcept -> const_pointer;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -236,30 +237,30 @@ namespace alloy::core {
     /// Calculates the determinant for this matrix4
     ///
     /// \returns the determinant of this matrix
-    constexpr real determinant() const noexcept;
+    auto determinant() const noexcept -> real;
 
     /// Calculates the trace for this matrix4
     ///
     /// \returns the trace of this matrix
-    constexpr real trace() const noexcept;
+    auto trace() const noexcept -> real;
 
     /// \brief Computes the inverse of this matrix4
     ///
     /// If no inverse is possible, this returns \ref matrix4::identity
     ///
     /// \return the inverse of this matrix4
-    matrix4 inverse() const noexcept;
+    auto inverse() const noexcept -> matrix4;
 
     /// \brief Computes the transpose of this matrix4
     ///
     /// \return the transpose of this matrix4
-    constexpr matrix4 transposed() const noexcept;
+    auto transposed() const noexcept -> matrix4;
 
     /// \brief Combines \c (*this) with \p vec
     ///
     /// \param vec the vector to combine
     /// \return the result of \c vec * matrix
-    constexpr vector4 combine( const vector4& vec ) const noexcept;
+    auto combine(const vector4& vec) const noexcept -> vector4;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -274,24 +275,24 @@ namespace alloy::core {
     /// is left unmodified
     ///
     /// \return reference to \c (*this)
-    matrix4& invert() noexcept;
+    auto invert() noexcept -> matrix4&;
 
     /// \brief Transposes this current matrix4, returning a reference to
     ///        \c (*this)
     ///
     /// \return reference to \c (*this)
-    matrix4& transpose() noexcept;
+    auto transpose() noexcept -> matrix4&;
 
     //--------------------------------------------------------------------------
     // Compound Operators
     //--------------------------------------------------------------------------
   public:
 
-    matrix4& operator+=( const matrix4& rhs ) noexcept;
-    matrix4& operator-=( const matrix4& rhs ) noexcept;
-    matrix4& operator*=( const matrix4& rhs ) noexcept;
-    matrix4& operator*=( real scalar ) noexcept;
-    matrix4& operator/=( real scalar ) noexcept;
+    auto operator+=(const matrix4& rhs) noexcept -> matrix4&;
+    auto operator-=(const matrix4& rhs) noexcept -> matrix4&;
+    auto operator*=(const matrix4& rhs) noexcept -> matrix4&;
+    auto operator*=(real scalar) noexcept -> matrix4&;
+    auto operator/=(real scalar) noexcept -> matrix4&;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -310,25 +311,21 @@ namespace alloy::core {
   // Arithmetic Operators
   //----------------------------------------------------------------------------
 
-  matrix4 operator+( const matrix4& lhs,
-                     const matrix4& rhs ) noexcept;
-  matrix4 operator-( const matrix4& lhs,
-                     const matrix4& rhs ) noexcept;
-  matrix4 operator*( const matrix4& lhs,
-                     const matrix4& rhs ) noexcept;
-  vector4 operator*( const vector4& lhs,
-                     const matrix4& rhs ) noexcept;
-  matrix4 operator*( real lhs,
-                     const matrix4& rhs ) noexcept;
-  matrix4 operator*( const matrix4& lhs,
-                     real rhs ) noexcept;
+  auto operator+(const matrix4& lhs, const matrix4& rhs) noexcept -> matrix4;
+  auto operator-(const matrix4& lhs, const matrix4& rhs) noexcept -> matrix4;
+  auto operator*(const matrix4& lhs, const matrix4& rhs) noexcept -> matrix4;
+  auto operator*(const vector4& lhs, const matrix4& rhs) noexcept -> vector4;
+  auto operator*(real lhs, const matrix4& rhs) noexcept -> matrix4;
+  auto operator*(const matrix4& lhs, real rhs) noexcept -> matrix4;
 
   //----------------------------------------------------------------------------
   // Comparisons
   //----------------------------------------------------------------------------
 
-  constexpr bool operator==( const matrix4& lhs, const matrix4& rhs ) noexcept;
-  constexpr bool operator!=( const matrix4& lhs, const matrix4& rhs ) noexcept;
+  constexpr auto operator==(const matrix4& lhs,
+                            const matrix4& rhs) noexcept -> bool;
+  constexpr auto operator!=(const matrix4& lhs,
+                            const matrix4& rhs) noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -338,23 +335,17 @@ namespace alloy::core {
   /// \param lhs the left matrix4
   /// \param rhs the right matrix4
   /// \return \c true if the two matrix4 contain almost equal values
-  constexpr bool almost_equal( const matrix4& lhs,
-                               const matrix4& rhs ) noexcept;
+  constexpr auto almost_equal(const matrix4& lhs,
+                              const matrix4& rhs) noexcept -> bool;
 
   /// \brief Determines equality between two matrix4 relative to \ref tolerance
   ///
   /// \param lhs the left matrix4
   /// \param rhs the right matrix4
   /// \return \c true if the two matrix4 contain almost equal values
-  constexpr bool almost_equal( const matrix4& lhs,
-                               const matrix4& rhs,
-                               real tolerance ) noexcept;
-
-  //============================================================================
-  // aliases
-  //============================================================================
-
-  using mat4 = matrix4;
+  constexpr auto almost_equal(const matrix4& lhs,
+                              const matrix4& rhs,
+                              real tolerance) noexcept -> bool;
 
   //----------------------------------------------------------------------------
   // Type Traits
@@ -383,8 +374,7 @@ namespace alloy::core {
 // Constructors
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::matrix4
-  ::matrix4()
+inline constexpr alloy::core::matrix4::matrix4()
   noexcept
   : m_matrix{
     {real{0}, real{0}, real{0}, real{0}},
@@ -396,11 +386,10 @@ inline constexpr alloy::core::matrix4
 
 }
 
-inline constexpr alloy::core::matrix4
-  ::matrix4( const vector4& v0,
-             const vector4& v1,
-             const vector4& v2,
-             const vector4& v3 )
+inline constexpr alloy::core::matrix4::matrix4(const vector4& v0,
+                                               const vector4& v1,
+                                               const vector4& v2,
+                                               const vector4& v3)
   noexcept
   : m_matrix{
       {v0.x(), v0.y(), v0.z(), v0.w()},
@@ -412,8 +401,7 @@ inline constexpr alloy::core::matrix4
 
 }
 
-inline constexpr alloy::core::matrix4
-  ::matrix4( const real(&array)[16] )
+inline constexpr alloy::core::matrix4::matrix4(const real(&array)[16])
   noexcept
   : m_matrix {
       {array[0],  array[1],  array[2],  array[3]},
@@ -425,8 +413,7 @@ inline constexpr alloy::core::matrix4
 
 }
 
-inline constexpr alloy::core::matrix4
-  ::matrix4( const real(&array)[4][4] )
+inline constexpr alloy::core::matrix4::matrix4(const real(&array)[4][4])
   noexcept
   : m_matrix {
       {array[0][0], array[0][1], array[0][2], array[0][3]},
@@ -438,11 +425,11 @@ inline constexpr alloy::core::matrix4
 
 }
 
-inline constexpr alloy::core::matrix4
-  ::matrix4( real m00, real m01, real m02, real m03,
-             real m10, real m11, real m12, real m13,
-             real m20, real m21, real m22, real m23,
-             real m30, real m31, real m32, real m33 )
+inline constexpr
+  alloy::core::matrix4::matrix4(real m00, real m01, real m02, real m03,
+                                real m10, real m11, real m12, real m13,
+                                real m20, real m21, real m22, real m23,
+                                real m30, real m31, real m32, real m33)
   noexcept
   : m_matrix {
       {m00, m01, m02, m03},
@@ -458,21 +445,22 @@ inline constexpr alloy::core::matrix4
 // Element Access
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::matrix4::reference
-  alloy::core::matrix4::at( index_type c, index_type r )
+inline constexpr auto
+  alloy::core::matrix4::at(index_type c, index_type r)
+  -> reference
 {
-  if( c >=columns || c < 0 || r >=rows || r < 0 ) {
+  if (c >=columns || c < 0 || r >=rows || r < 0) {
     throw std::out_of_range{"matrix4::at: index out of range"};
   }
   return get(r,c);
 }
 
 
-inline constexpr alloy::core::matrix4::const_reference
-  alloy::core::matrix4::at( index_type c, index_type r )
-  const
+inline constexpr auto
+  alloy::core::matrix4::at(index_type c, index_type r)
+  const -> const_reference
 {
-  if( c >=columns || c < 0 || r >=rows || r < 0 ) {
+  if(c >=columns || c < 0 || r >=rows || r < 0) {
     throw std::out_of_range{"matrix4::at: index out of range"};
   }
   return get(r,c);
@@ -480,32 +468,32 @@ inline constexpr alloy::core::matrix4::const_reference
 
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::matrix4::reference
-  alloy::core::matrix4::get( index_type r, index_type c )
-  noexcept
+inline constexpr auto
+  alloy::core::matrix4::get(index_type r, index_type c)
+  noexcept -> reference
 {
   return m_matrix[r][c];
 }
 
-inline constexpr alloy::core::matrix4::const_reference
-  alloy::core::matrix4::get( index_type r, index_type c )
-  const noexcept
+inline constexpr auto
+  alloy::core::matrix4::get(index_type r, index_type c)
+  const noexcept -> const_reference
 {
   return m_matrix[r][c];
 }
 
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::vector4
-  alloy::core::matrix4::row( index_type r )
-  const noexcept
+inline constexpr auto
+  alloy::core::matrix4::row(index_type r)
+  const noexcept -> vector4
 {
   return vector4{ get(r,0), get(r,1), get(r,2), get(r,3) };
 }
 
-inline constexpr alloy::core::vector4
-  alloy::core::matrix4::column( index_type c )
-  const noexcept
+inline constexpr auto
+  alloy::core::matrix4::column(index_type c)
+  const noexcept -> vector4
 {
   return vector4{ get(0,c), get(1,c), get(2,c), get(3,c) };
 }
@@ -514,282 +502,34 @@ inline constexpr alloy::core::vector4
 // Observers
 //----------------------------------------------------------------------------
 
-inline constexpr alloy::core::matrix4::size_type
+inline constexpr auto
   alloy::core::matrix4::size()
-  const noexcept
+  const noexcept -> size_type
 {
   return rows * columns;
 }
 
-inline constexpr alloy::core::matrix4::pointer
+inline constexpr auto
   alloy::core::matrix4::data()
-  noexcept
+  noexcept -> pointer
 {
   return &get(0,0);
 }
 
-inline constexpr alloy::core::matrix4::const_pointer
+inline constexpr auto
   alloy::core::matrix4::data()
-  const noexcept
+  const noexcept -> const_pointer
 {
   return &get(0,0);
-}
-
-//------------------------------------------------------------------------------
-// Quantifiers
-//------------------------------------------------------------------------------
-
-inline constexpr alloy::core::real
-  alloy::core::matrix4::determinant()
-  const noexcept
-{
-  return  get(0,0) *
-        ( get(1,1) * get(2,2) * get(3,3) -
-          get(1,1) * get(2,3) * get(3,2) -
-          get(2,1) * get(1,2) * get(3,3) +
-          get(2,1) * get(1,3) * get(3,2) +
-          get(3,1) * get(1,2) * get(2,3) -
-          get(3,1) * get(1,3) * get(2,2) )
-        + get(0,1) *
-        (-get(1,0) * get(2,2) * get(3,3) +
-          get(1,0) * get(2,3) * get(3,2) +
-          get(2,0) * get(1,2) * get(3,3) -
-          get(2,0) * get(1,3) * get(3,2) -
-          get(3,0) * get(1,2) * get(2,3) +
-          get(3,0) * get(1,3) * get(2,2) )
-        + get(0,2) *
-        ( get(1,0) * get(2,1) * get(3,3) -
-          get(1,0) * get(2,3) * get(3,1) -
-          get(2,0) * get(1,1) * get(3,3) +
-          get(2,0) * get(1,3) * get(3,1) +
-          get(3,0) * get(1,1) * get(2,3) -
-          get(3,0) * get(1,3) * get(2,1))
-        + get(0,3) *
-        (-get(1,0) * get(2,1) * get(3,2) +
-          get(1,0) * get(2,2) * get(3,1) +
-          get(2,0) * get(1,1) * get(3,2) -
-          get(2,0) * get(1,2) * get(3,1) -
-          get(3,0) * get(1,1) * get(2,2) +
-          get(3,0) * get(1,2) * get(2,1));
-}
-
-inline constexpr alloy::core::real
-  alloy::core::matrix4::trace()
-  const noexcept
-{
-  return (get(0,0) + get(1,1) + get(2,2) + get(3,3));
-}
-
-inline alloy::core::matrix4
-  alloy::core::matrix4::inverse()
-  const noexcept
-{
-  return matrix4{*this}.invert();
-}
-
-inline constexpr alloy::core::matrix4
-  alloy::core::matrix4::transposed()
-  const noexcept
-{
-  return matrix4{
-    get(0,0), get(1,0), get(2,0), get(3,0),
-    get(0,1), get(1,1), get(2,1), get(3,1),
-    get(0,2), get(1,2), get(2,2), get(3,2),
-    get(0,3), get(1,3), get(2,3), get(3,3)
-  };
-}
-
-constexpr alloy::core::vector4
-  alloy::core::matrix4::combine( const vector4& vec )
-  const noexcept
-{
-  auto result = vector4{};
-
-  for( auto r = 0; r < columns; ++r ) {
-    auto sum = real{0};
-
-    for( auto c = 0; c < rows; ++c ) {
-      sum += vec[c] * get(r,c);
-    }
-    result[r] = sum;
-  }
-  return result;
-}
-
-//------------------------------------------------------------------------------
-// Modifiers
-//------------------------------------------------------------------------------
-
-inline alloy::core::matrix4&
-  alloy::core::matrix4::invert()
-  noexcept
-{
-  real inv[4][4] = {}; // The resultant matrix
-
-  inv[0][0] = get(1,1) * get(2,2) * get(3,3) -
-              get(1,1) * get(2,3) * get(3,2) -
-              get(2,1) * get(1,2) * get(3,3) +
-              get(2,1) * get(1,3) * get(3,2) +
-              get(3,1) * get(1,2) * get(2,3) -
-              get(3,1) * get(1,3) * get(2,2);
-
-  inv[1][0] =-get(1,0) * get(2,2) * get(3,3) +
-              get(1,0) * get(2,3) * get(3,2) +
-              get(2,0) * get(1,2) * get(3,3) -
-              get(2,0) * get(1,3) * get(3,2) -
-              get(3,0) * get(1,2) * get(2,3) +
-              get(3,0) * get(1,3) * get(2,2);
-
-  inv[2][0] = get(1,0) * get(2,1) * get(3,3) -
-              get(1,0) * get(2,3) * get(3,1) -
-              get(2,0) * get(1,1) * get(3,3) +
-              get(2,0) * get(1,3) * get(3,1) +
-              get(3,0) * get(1,1) * get(2,3) -
-              get(3,0) * get(1,3) * get(2,1);
-
-  inv[3][0] =-get(1,0) * get(2,1) * get(3,2) +
-              get(1,0) * get(2,2) * get(3,1) +
-              get(2,0) * get(1,1) * get(3,2) -
-              get(2,0) * get(1,2) * get(3,1) -
-              get(3,0) * get(1,1) * get(2,2) +
-              get(3,0) * get(1,2) * get(2,1);
-
-  auto det = get(0,0) * inv[0][0] +
-             get(0,1) * inv[1][0] +
-             get(0,2) * inv[2][0] +
-             get(0,3) * inv[3][0];
-
-  // If determinant is zero, just return the identity matrix
-  if (almost_equal(det, real{0})) {
-    (*this) = matrix4{
-      real{1}, real{0}, real{0}, real{0},
-      real{0}, real{1}, real{0}, real{0},
-      real{0}, real{0}, real{1}, real{0},
-      real{0}, real{0}, real{0}, real{1}
-    };
-
-    return (*this);
-  }
-
-  inv[0][1] =-get(0,1) * get(2,2) * get(3,3) +
-              get(0,1) * get(2,3) * get(3,2) +
-              get(2,1) * get(0,2) * get(3,3) -
-              get(2,1) * get(0,3) * get(3,2) -
-              get(3,1) * get(0,2) * get(2,3) +
-              get(3,1) * get(0,3) * get(2,2);
-
-  inv[1][1] = get(0,0) * get(2,2) * get(3,3) -
-              get(0,0) * get(2,3) * get(3,2) -
-              get(2,0) * get(0,2) * get(3,3) +
-              get(2,0) * get(0,3) * get(3,2) +
-              get(3,0) * get(0,2) * get(2,3) -
-              get(3,0) * get(0,3) * get(2,2);
-
-  inv[2][1] =-get(0,0) * get(2,1) * get(3,3) +
-              get(0,0) * get(2,3) * get(3,1) +
-              get(2,0) * get(0,1) * get(3,3) -
-              get(2,0) * get(0,3) * get(3,1) -
-              get(3,0) * get(0,1) * get(2,3) +
-              get(3,0) * get(0,3) * get(2,1);
-
-  inv[3][1] = get(0,0) * get(2,1) * get(3,2) -
-              get(0,0) * get(2,2) * get(3,1) -
-              get(2,0) * get(0,1) * get(3,2) +
-              get(2,0) * get(0,2) * get(3,1) +
-              get(3,0) * get(0,1) * get(2,2) -
-              get(3,0) * get(0,2) * get(2,1);
-
-  inv[0][2] = get(0,1) * get(1,2) * get(3,3) -
-              get(0,1) * get(1,3) * get(3,2) -
-              get(1,1) * get(0,2) * get(3,3) +
-              get(1,1) * get(0,3) * get(3,2) +
-              get(3,1) * get(0,2) * get(1,3) -
-              get(3,1) * get(0,3) * get(1,2);
-
-  inv[1][2] =-get(0,0) * get(1,2) * get(3,3) +
-              get(0,0) * get(1,3) * get(3,2) +
-              get(1,0) * get(0,2) * get(3,3) -
-              get(1,0) * get(0,3) * get(3,2) -
-              get(3,0) * get(0,2) * get(1,3) +
-              get(3,0) * get(0,3) * get(1,2);
-
-  inv[2][2] = get(0,0) * get(1,1) * get(3,3) -
-              get(0,0) * get(1,3) * get(3,1) -
-              get(1,0) * get(0,1) * get(3,3) +
-              get(1,0) * get(0,3) * get(3,1) +
-              get(3,0) * get(0,1) * get(1,3) -
-              get(3,0) * get(0,3) * get(1,1);
-
-  inv[3][2] =-get(0,0) * get(1,1) * get(3,2) +
-              get(0,0) * get(1,2) * get(3,1) +
-              get(1,0) * get(0,1) * get(3,2) -
-              get(1,0) * get(0,2) * get(3,1) -
-              get(3,0) * get(0,1) * get(1,2) +
-              get(3,0) * get(0,2) * get(1,1);
-
-  inv[0][3] =-get(0,1) * get(1,2) * get(2,3) +
-              get(0,1) * get(1,3) * get(2,2) +
-              get(1,1) * get(0,2) * get(2,3) -
-              get(1,1) * get(0,3) * get(2,2) -
-              get(2,1) * get(0,2) * get(1,3) +
-              get(2,1) * get(0,3) * get(1,2);
-
-  inv[1][3] = get(0,0) * get(1,2) * get(2,3) -
-              get(0,0) * get(1,3) * get(2,2) -
-              get(1,0) * get(0,2) * get(2,3) +
-              get(1,0) * get(0,3) * get(2,2) +
-              get(2,0) * get(0,2) * get(1,3) -
-              get(2,0) * get(0,3) * get(1,2);
-
-  inv[2][3] =-get(0,0) * get(1,1) * get(2,3) +
-              get(0,0) * get(1,3) * get(2,1) +
-              get(1,0) * get(0,1) * get(2,3) -
-              get(1,0) * get(0,3) * get(2,1) -
-              get(2,0) * get(0,1) * get(1,3) +
-              get(2,0) * get(0,3) * get(1,1);
-
-  inv[3][3] = get(0,0) * get(1,1) * get(2,2) -
-              get(0,0) * get(1,2) * get(2,1) -
-              get(1,0) * get(0,1) * get(2,2) +
-              get(1,0) * get(0,2) * get(2,1) +
-              get(2,0) * get(0,1) * get(1,2) -
-              get(2,0) * get(0,2) * get(1,1);
-
-  const auto inv_det = real{1} / det;
-
-  for (auto r = 0; r < rows; ++r) {
-    for (auto c = 0; c < columns; ++c) {
-      get(r,c) = inv[r][c] * inv_det;
-    }
-  }
-
-  return (*this);
-}
-
-inline alloy::core::matrix4&
-  alloy::core::matrix4::transpose()
-  noexcept
-{
-  using std::swap;
-
-  // Only need to swap across the diagonal
-  for( auto r = 0; r < rows; ++r ) {
-    for( auto c = 0; c < r; ++c ) {
-      if( r != c ) {
-        swap( get(r,c), get(c,r) );
-      }
-    }
-  }
-  return (*this);
 }
 
 //------------------------------------------------------------------------------
 // Compound Operators
 //------------------------------------------------------------------------------
 
-inline alloy::core::matrix4&
-  alloy::core::matrix4::operator+=( const matrix4& rhs )
-  noexcept
+inline auto
+  alloy::core::matrix4::operator+=(const matrix4& rhs)
+  noexcept -> matrix4&
 {
   for (auto r = 0; r < rows; ++r) {
     for (auto c = 0; c < columns; ++c) {
@@ -799,9 +539,9 @@ inline alloy::core::matrix4&
   return (*this);
 }
 
-alloy::core::matrix4&
-  alloy::core::matrix4::operator-=( const matrix4& rhs )
-  noexcept
+inline auto
+  alloy::core::matrix4::operator-=(const matrix4& rhs)
+  noexcept -> matrix4&
 {
   for (auto r = 0; r < rows; ++r) {
     for (auto c = 0; c < columns; ++c) {
@@ -811,9 +551,9 @@ alloy::core::matrix4&
   return (*this);
 }
 
-alloy::core::matrix4&
-  alloy::core::matrix4::operator*=( const matrix4& rhs )
-  noexcept
+inline auto
+  alloy::core::matrix4::operator*=(const matrix4& rhs)
+  noexcept -> matrix4&
 {
   auto result = matrix4{};
 
@@ -832,9 +572,9 @@ alloy::core::matrix4&
   return (*this);
 }
 
-alloy::core::matrix4&
-  alloy::core::matrix4::operator*=( real scalar )
-  noexcept
+inline auto
+  alloy::core::matrix4::operator*=(real scalar)
+  noexcept -> matrix4&
 {
   for (auto r = 0; r < rows; ++r) {
     for (auto c = 0; c < columns; ++c) {
@@ -844,9 +584,9 @@ alloy::core::matrix4&
   return (*this);
 }
 
-alloy::core::matrix4&
-  alloy::core::matrix4::operator/=( real scalar )
-  noexcept
+inline auto
+  alloy::core::matrix4::operator/=(real scalar)
+  noexcept -> matrix4&
 {
   const auto inv = real{1} / scalar;
 
@@ -866,44 +606,44 @@ alloy::core::matrix4&
 // Arithmetic Operators
 //------------------------------------------------------------------------------
 
-inline alloy::core::matrix4
-  alloy::core::operator+( const matrix4& lhs, const matrix4& rhs )
-  noexcept
+inline auto
+  alloy::core::operator+(const matrix4& lhs, const matrix4& rhs)
+  noexcept -> matrix4
 {
   return matrix4{lhs} += rhs;
 }
 
-inline alloy::core::matrix4
-  alloy::core::operator-( const matrix4& lhs, const matrix4& rhs )
-  noexcept
+inline auto
+  alloy::core::operator-(const matrix4& lhs, const matrix4& rhs)
+  noexcept -> matrix4
 {
   return matrix4{lhs} -= rhs;
 }
 
-inline alloy::core::matrix4
-  alloy::core::operator*( const matrix4& lhs, const matrix4& rhs )
-  noexcept
+inline auto
+  alloy::core::operator*(const matrix4& lhs, const matrix4& rhs)
+  noexcept -> matrix4
 {
   return matrix4{lhs} *= rhs;
 }
 
-inline alloy::core::vector4
-  alloy::core::operator*( const vector4& lhs, const matrix4& rhs )
-  noexcept
+inline auto
+  alloy::core::operator*(const vector4& lhs, const matrix4& rhs)
+  noexcept -> vector4
 {
   return rhs.combine(lhs);
 }
 
-inline alloy::core::matrix4
-  alloy::core::operator*( real lhs, const matrix4& rhs )
-  noexcept
+inline auto
+  alloy::core::operator*(real lhs, const matrix4& rhs)
+  noexcept -> matrix4
 {
   return matrix4{rhs} *= lhs;
 }
 
-inline alloy::core::matrix4
-  alloy::core::operator*( const matrix4& lhs, real rhs )
-  noexcept
+inline auto
+  alloy::core::operator*(const matrix4& lhs, real rhs)
+  noexcept -> matrix4
 {
   return matrix4{lhs} *= rhs;
 }
@@ -915,13 +655,13 @@ inline alloy::core::matrix4
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
-inline constexpr bool
-  alloy::core::operator==( const matrix4& lhs, const matrix4& rhs )
-  noexcept
+inline constexpr auto
+  alloy::core::operator==(const matrix4& lhs, const matrix4& rhs)
+  noexcept -> bool
 {
-  for(auto r = 0; r < matrix4::rows; ++r) {
-    for(auto c = 0; c < matrix4::columns; ++c) {
-      if( lhs.get(r,c) != rhs.get(r,c) ) {
+  for (auto r = 0; r < matrix4::rows; ++r) {
+    for (auto c = 0; c < matrix4::columns; ++c) {
+      if (lhs.get(r,c) != rhs.get(r,c)) {
         return false;
       }
     }
@@ -929,9 +669,9 @@ inline constexpr bool
   return true;
 }
 
-inline constexpr bool
-  alloy::core::operator!=( const matrix4& lhs, const matrix4& rhs )
-  noexcept
+inline constexpr auto
+  alloy::core::operator!=(const matrix4& lhs, const matrix4& rhs)
+  noexcept -> bool
 {
   return !(lhs==rhs);
 }
@@ -940,29 +680,22 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //----------------------------------------------------------------------------
 
-inline constexpr bool
-  alloy::core::almost_equal( const matrix4& lhs, const matrix4& rhs )
-  noexcept
+inline constexpr auto
+  alloy::core::almost_equal(const matrix4& lhs, const matrix4& rhs)
+  noexcept -> bool
 {
-  for(auto r = 0; r < matrix4::rows; ++r) {
-    for(auto c = 0; c < matrix4::columns; ++c) {
-      if( !almost_equal(lhs.get(r,c), rhs.get(r,c)) ) {
-        return false;
-      }
-    }
-  }
-  return true;
+  return almost_equal(lhs, rhs, matrix4::comparison_tolerance);
 }
 
-inline constexpr bool
-  alloy::core::almost_equal( const matrix4& lhs,
-                             const matrix4& rhs,
-                             real tolerance )
-  noexcept
+inline constexpr auto
+  alloy::core::almost_equal(const matrix4& lhs,
+                            const matrix4& rhs,
+                            real tolerance)
+  noexcept -> bool
 {
-  for(auto r = 0; r < matrix4::rows; ++r) {
-    for(auto c = 0; c < matrix4::columns; ++c) {
-      if( !almost_equal(lhs.get(r,c), rhs.get(r,c), tolerance) ) {
+  for (auto r = 0; r < matrix4::rows; ++r) {
+    for (auto c = 0; c < matrix4::columns; ++c) {
+      if (!almost_equal(lhs.get(r,c), rhs.get(r,c), tolerance)) {
         return false;
       }
     }
