@@ -23,6 +23,11 @@ unset(ALLOY_IO_EVENT_ALIGN)
 set(generated_header_files
   ${CMAKE_CURRENT_BINARY_DIR}/include/alloy/io/config.hpp
 )
+source_group(
+  TREE "${CMAKE_CURRENT_BINARY_DIR}/include"
+  PREFIX "Generated Header Files"
+  FILES ${generated_header_files}
+)
 
 set(header_files
   include/alloy/io/api.hpp
@@ -47,6 +52,11 @@ set(header_files
   include/alloy/io/filesystem/memory_filesystem.hpp
   include/alloy/io/filesystem/xor_file_adapter.hpp
 )
+source_group(
+  TREE "${CMAKE_CURRENT_LIST_DIR}/include"
+  PREFIX "Header Files"
+  FILES ${header_files}
+)
 
 set(source_files
   src/alloy/io/window.cpp
@@ -58,6 +68,11 @@ set(source_files
   src/alloy/io/filesystem/random_filesystem.cpp
   src/alloy/io/filesystem/memory_filesystem.cpp
   src/alloy/io/filesystem/xor_file_adapter.cpp
+)
+source_group(
+  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
+  PREFIX "Source Files"
+  FILES ${source_files}
 )
 
 add_library(${PROJECT_NAME}IO

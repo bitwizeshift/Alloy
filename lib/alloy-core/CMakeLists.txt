@@ -24,6 +24,11 @@ unset(ALLOY_CORE_EXCEPTIONS_ENABLED)
 set(generated_header_files
   ${CMAKE_CURRENT_BINARY_DIR}/include/alloy/core/config.hpp
 )
+source_group(
+  TREE "${CMAKE_CURRENT_BINARY_DIR}/include"
+  PREFIX "Generated Header Files"
+  FILES ${generated_header_files}
+)
 
 set(header_files
   # Core
@@ -145,6 +150,11 @@ set(header_files
   include/alloy/core/model/normal.hpp
   include/alloy/core/model/texture_coordinate.hpp
 )
+source_group(
+  TREE "${CMAKE_CURRENT_LIST_DIR}/include"
+  PREFIX "Header Files"
+  FILES ${header_files}
+)
 
 set(source_files
   src/alloy/core/assert.cpp
@@ -177,6 +187,12 @@ set(source_files
   src/alloy/core/model/color.cpp
   src/alloy/core/model/image.cpp
 )
+source_group(
+  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
+  PREFIX "Source Files"
+  FILES ${source_files}
+)
+
 
 add_library(${PROJECT_NAME}Core
   ${generated_header_files}

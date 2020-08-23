@@ -2,8 +2,17 @@ cmake_minimum_required(VERSION 3.12)
 
 find_package(OpenGL REQUIRED)
 
-add_executable(${PROJECT_NAME}SDL2WindowExample
+set(source_files
   src/main.cpp
+)
+source_group(
+  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
+  PREFIX "Source Files"
+  FILES ${source_files}
+)
+
+add_executable(${PROJECT_NAME}SDL2WindowExample
+  ${source_files}
 )
 
 if (MINGW)

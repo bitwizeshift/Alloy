@@ -7,11 +7,21 @@ set(header_files
   include/alloy/extra/logging/console_log_stream.hpp
   include/alloy/extra/logging/file_log_stream.hpp
 )
+source_group(
+  TREE "${CMAKE_CURRENT_LIST_DIR}/include"
+  PREFIX "Header Files"
+  FILES ${header_files}
+)
 
 set(source_files
   src/alloy/extra/logging/logger.cpp
   src/alloy/extra/logging/console_log_stream.cpp
   src/alloy/extra/logging/file_log_stream.cpp
+)
+source_group(
+  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
+  PREFIX "Source Files"
+  FILES ${source_files}
 )
 
 add_library(${PROJECT_NAME}ExtraLogging
