@@ -15,6 +15,8 @@ set(CMAKE_MODULE_PATH "${ALLOY_MODULE_PATH}" "${CMAKE_MODULE_PATH}")
 # Project Options
 ##############################################################################
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 option(CMAKE_EXPORT_COMPILE_COMMANDS "Enable exporting compile-commands within CMake" ON)
 option(BUILD_SHARED_LIBS "Whether to build this library as a shared library" ON)
 

@@ -42,6 +42,7 @@ set_target_properties(${PROJECT_NAME}ExtraAllocators
     OUTPUT_NAME "alloy-extra-allocators"
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
+    FOLDER "Optional Component Targets"
 )
 
 target_include_directories(${PROJECT_NAME}ExtraAllocators

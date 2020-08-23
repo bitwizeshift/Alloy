@@ -89,6 +89,10 @@ function(add_self_containment_test name)
     ${source_files}
     ${header_files}
   )
+  set_target_properties("${name}"
+    PROPERTIES
+      FOLDER "Containment Tests"
+  )
 
   # Iterate over the various CMake target properties, and propagate them
   # manually

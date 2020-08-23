@@ -193,7 +193,6 @@ source_group(
   FILES ${source_files}
 )
 
-
 add_library(${PROJECT_NAME}Core
   ${generated_header_files}
   ${header_files}
@@ -209,6 +208,7 @@ set_target_properties(${PROJECT_NAME}Core
     OUTPUT_NAME "alloy-core"
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
+    FOLDER "Component Targets"
 )
 if (BUILD_SHARED_LIBS)
   target_compile_definitions(${PROJECT_NAME}Core

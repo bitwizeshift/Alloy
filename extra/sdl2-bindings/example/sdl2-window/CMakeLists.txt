@@ -32,6 +32,7 @@ target_link_libraries(${PROJECT_NAME}SDL2WindowExample
 set_target_properties(${PROJECT_NAME}SDL2WindowExample
   PROPERTIES
     OUTPUT_NAME "sdl2-window-example"
+    FOLDER "Example Targets"
 )
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
     "${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC")

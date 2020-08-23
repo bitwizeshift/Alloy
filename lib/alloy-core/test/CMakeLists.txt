@@ -46,6 +46,7 @@ target_link_libraries(${PROJECT_NAME}CoreTest
 set_target_properties(${PROJECT_NAME}CoreTest
   PROPERTIES
     OUTPUT_NAME "alloy-core-test"
+    FOLDER "Unit Test Targets"
 )
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
     "${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC")

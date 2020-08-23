@@ -41,6 +41,7 @@ set_target_properties(${PROJECT_NAME}ExtraSDL2Bindings
     OUTPUT_NAME "alloy-extra-sdl2-bindings"
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
+    FOLDER "Optional Component Targets"
 )
 if (BUILD_SHARED_LIBS)
   target_compile_definitions(${PROJECT_NAME}ExtraSDL2Bindings

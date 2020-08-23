@@ -90,6 +90,7 @@ set_target_properties(${PROJECT_NAME}IO
     OUTPUT_NAME "alloy-io"
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
+    FOLDER "Component Targets"
 )
 if (BUILD_SHARED_LIBS)
   target_compile_definitions(${PROJECT_NAME}IO

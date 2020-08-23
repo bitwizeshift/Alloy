@@ -65,6 +65,7 @@ set_target_properties(${PROJECT_NAME}Engine
     OUTPUT_NAME "alloy-engine"
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
+    FOLDER "Component Targets"
 )
 
 target_include_directories(${PROJECT_NAME}Engine

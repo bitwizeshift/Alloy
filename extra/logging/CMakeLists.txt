@@ -43,6 +43,7 @@ set_target_properties(${PROJECT_NAME}ExtraLogging
     OUTPUT_NAME "alloy-extra-logging"
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
+    FOLDER "Optional Component Targets"
 )
 
 target_include_directories(${PROJECT_NAME}ExtraLogging

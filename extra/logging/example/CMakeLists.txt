@@ -22,4 +22,5 @@ target_link_libraries(${PROJECT_NAME}LoggingExample
 set_target_properties(${PROJECT_NAME}LoggingExample
   PROPERTIES
     OUTPUT_NAME "logging-example"
+    FOLDER "Example Targets"
 )

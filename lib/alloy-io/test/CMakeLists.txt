@@ -27,6 +27,7 @@ target_link_libraries(${PROJECT_NAME}IOTest
 set_target_properties(${PROJECT_NAME}IOTest
   PROPERTIES
     OUTPUT_NAME "alloy-io-test"
+    FOLDER "Unit Test Targets"
 )
 
 ##############################################################################
