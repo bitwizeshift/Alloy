@@ -85,6 +85,8 @@ set(header_files
   include/alloy/core/memory/data_quantity.hpp
   include/alloy/core/memory/allocator.hpp
   include/alloy/core/memory/observer_ptr.hpp
+  include/alloy/core/memory/unaligned.hpp
+  include/alloy/core/memory/packed_buffer.hpp
 
   # Math
   include/alloy/core/math/angle.hpp
@@ -166,6 +168,9 @@ set(source_files
   src/alloy/core/geometry/plane.cpp
   src/alloy/core/geometry/ray.cpp
   src/alloy/core/geometry/sphere.cpp
+
+  # Memory
+  src/alloy/core/memory/packed_buffer.cpp
 
   # Model
   src/alloy/core/model/attribute_buffer_view.cpp

@@ -283,14 +283,14 @@ namespace alloy::core {
     ///
     /// \param it the iterator
     /// \param end the end iterator
-    template <typename It, typename End,
+    template <typename It,
               std::enable_if_t<(Extent == alloy::core::dynamic_extent) &&
-                               alloy::core::detail::is_iter_convertible<It, T>::value, int> = 0>
-    constexpr span(It it, End end) noexcept;
-    template <typename It, typename End,
+                                alloy::core::detail::is_iter_convertible<It, T>::value, int> = 0>
+    constexpr span(It it, It end) noexcept;
+    template <typename It,
               std::enable_if_t<(Extent != alloy::core::dynamic_extent) &&
-                               alloy::core::detail::is_iter_convertible<It, T>::value, int> = 0>
-    constexpr explicit span(It it, End end) noexcept;
+                                alloy::core::detail::is_iter_convertible<It, T>::value, int> = 0>
+    constexpr explicit span(It it, It end) noexcept;
 
     /// \brief Constructs a span from an array reference
     ///
@@ -491,19 +491,27 @@ namespace alloy::core {
   // Utilities
   //----------------------------------------------------------------------------
 
+  /// \{
   /// \brief Converts a span \p s to a byte span
   ///
   /// \param s the span to convert
   /// \return a span of the byte range that \p s covered
   template <typename T, std::size_t N>
   span<const std::byte, sizeof(T) * N> as_bytes(span<T, N> s) noexcept;
+  template <typename T>
+  span<const std::byte> as_bytes(span<T> s) noexcept;
+  /// \}
 
+  /// \{
   /// \brief Converts a span \p s to a writable byte span
   ///
   /// \param s the span to convert
   /// \return a span of the byte range that \p s covered
   template <typename T, std::size_t N>
   span<std::byte, sizeof(T) * N> as_writable_bytes(span<T, N> s) noexcept;
+  template <typename T>
+  span<std::byte> as_writable_bytes(span<T> s) noexcept;
+  /// \}
 
 } // namespace alloy::core
 
@@ -553,11 +561,11 @@ alloy::core::span<T,Extent>::span(It it, size_type count)
 }
 
 template <typename T, std::size_t Extent>
-template <typename It, typename End,
+template <typename It,
           std::enable_if_t<(Extent == alloy::core::dynamic_extent) &&
                             alloy::core::detail::is_iter_convertible<It, T>::value, int>>
 inline constexpr
-alloy::core::span<T,Extent>::span(It it, End end)
+alloy::core::span<T,Extent>::span(It it, It end)
   noexcept
   : m_storage{detail::to_address(it), static_cast<size_type>(end - it)}
 {
@@ -565,11 +573,11 @@ alloy::core::span<T,Extent>::span(It it, End end)
 }
 
 template <typename T, std::size_t Extent>
-template <typename It, typename End,
+template <typename It,
           std::enable_if_t<(Extent != alloy::core::dynamic_extent) &&
                               alloy::core::detail::is_iter_convertible<It, T>::value, int>>
 inline constexpr
-alloy::core::span<T,Extent>::span(It it, End end)
+alloy::core::span<T,Extent>::span(It it, It end)
   noexcept
   : m_storage{detail::to_address(it), static_cast<size_type>(end - it)}
 {
@@ -825,14 +833,37 @@ inline alloy::core::span<const std::byte, sizeof(T) * N>
   alloy::core::as_bytes(span<T, N> s)
   noexcept
 {
-  return {reinterpret_cast<const std::byte*>(s.data()), s.size_bytes()};
+  return span<const std::byte, sizeof(T) * N>{
+    reinterpret_cast<const std::byte*>(s.data()), s.size_bytes()
+  };
+}
+
+template <typename T>
+inline alloy::core::span<const std::byte>
+  alloy::core::as_bytes(span<T> s)
+  noexcept
+{
+  return span<const std::byte>{
+    reinterpret_cast<const std::byte*>(s.data()), s.size_bytes()
+  };
 }
 
 template <typename T, std::size_t N>
 inline alloy::core::span<std::byte, sizeof(T) * N> alloy::core::as_writable_bytes(span<T, N> s)
   noexcept
 {
-  return {reinterpret_cast<std::byte*>(s.data()), s.size_bytes()};
+  return span<std::byte, sizeof(T) * N>{
+    reinterpret_cast<std::byte*>(s.data()), s.size_bytes()
+  };
+}
+
+template <typename T>
+inline alloy::core::span<std::byte> alloy::core::as_writable_bytes(span<T> s)
+  noexcept
+{
+  return span<std::byte>{
+    reinterpret_cast<std::byte*>(s.data()), s.size_bytes()
+  };
 }
 
 #endif // if __cplusplus >= 202003L
