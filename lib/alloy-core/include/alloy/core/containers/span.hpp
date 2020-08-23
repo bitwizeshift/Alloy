@@ -491,19 +491,27 @@ namespace alloy::core {
   // Utilities
   //----------------------------------------------------------------------------
 
+  /// \{
   /// \brief Converts a span \p s to a byte span
   ///
   /// \param s the span to convert
   /// \return a span of the byte range that \p s covered
   template <typename T, std::size_t N>
   span<const std::byte, sizeof(T) * N> as_bytes(span<T, N> s) noexcept;
+  template <typename T>
+  span<const std::byte> as_bytes(span<T> s) noexcept;
+  /// \}
 
+  /// \{
   /// \brief Converts a span \p s to a writable byte span
   ///
   /// \param s the span to convert
   /// \return a span of the byte range that \p s covered
   template <typename T, std::size_t N>
   span<std::byte, sizeof(T) * N> as_writable_bytes(span<T, N> s) noexcept;
+  template <typename T>
+  span<std::byte> as_writable_bytes(span<T> s) noexcept;
+  /// \}
 
 } // namespace alloy::core
 
@@ -825,14 +833,37 @@ inline alloy::core::span<const std::byte, sizeof(T) * N>
   alloy::core::as_bytes(span<T, N> s)
   noexcept
 {
-  return {reinterpret_cast<const std::byte*>(s.data()), s.size_bytes()};
+  return span<const std::byte, sizeof(T) * N>{
+    reinterpret_cast<const std::byte*>(s.data()), s.size_bytes()
+  };
+}
+
+template <typename T>
+inline alloy::core::span<const std::byte>
+  alloy::core::as_bytes(span<T> s)
+  noexcept
+{
+  return span<const std::byte>{
+    reinterpret_cast<const std::byte*>(s.data()), s.size_bytes()
+  };
 }
 
 template <typename T, std::size_t N>
 inline alloy::core::span<std::byte, sizeof(T) * N> alloy::core::as_writable_bytes(span<T, N> s)
   noexcept
 {
-  return {reinterpret_cast<std::byte*>(s.data()), s.size_bytes()};
+  return span<std::byte, sizeof(T) * N>{
+    reinterpret_cast<std::byte*>(s.data()), s.size_bytes()
+  };
+}
+
+template <typename T>
+inline alloy::core::span<std::byte> alloy::core::as_writable_bytes(span<T> s)
+  noexcept
+{
+  return span<std::byte>{
+    reinterpret_cast<std::byte*>(s.data()), s.size_bytes()
+  };
 }
 
 #endif // if __cplusplus >= 202003L
