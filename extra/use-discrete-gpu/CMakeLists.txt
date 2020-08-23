@@ -9,3 +9,9 @@ add_library(${PROJECT_NAME}DiscreteGPU STATIC
 )
 
 add_library(${PROJECT_NAME}::DiscreteGPU ALIAS ${PROJECT_NAME}DiscreteGPU)
+
+set_target_properties(${PROJECT_NAME}DiscreteGPU
+  PROPERTIES
+    OUTPUT_NAME "alloy-extra-discrete-gpu"
+    FOLDER "Optional Component Targets"
+)

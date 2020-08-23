@@ -21,6 +21,11 @@ unset(ALLOY_ENGINE_ENTITY_TYPE)
 set(generated_header_files
   ${CMAKE_CURRENT_BINARY_DIR}/include/alloy/engine/config.hpp
 )
+source_group(
+  TREE "${CMAKE_CURRENT_BINARY_DIR}/include"
+  PREFIX "Generated Header Files"
+  FILES ${generated_header_files}
+)
 
 set(header_files
   include/alloy/engine/component.hpp
@@ -29,10 +34,20 @@ set(header_files
   include/alloy/engine/entity_manager.hpp
   include/alloy/engine/component_manager.hpp
 )
+source_group(
+  TREE "${CMAKE_CURRENT_LIST_DIR}/include"
+  PREFIX "Header Files"
+  FILES ${header_files}
+)
 
 set(source_files
   src/alloy/engine/entity_manager.cpp
   src/alloy/engine/component_manager.cpp
+)
+source_group(
+  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
+  PREFIX "Source Files"
+  FILES ${source_files}
 )
 
 add_library(${PROJECT_NAME}Engine
@@ -50,6 +65,7 @@ set_target_properties(${PROJECT_NAME}Engine
     OUTPUT_NAME "alloy-engine"
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
+    FOLDER "Component Targets"
 )
 
 target_include_directories(${PROJECT_NAME}Engine

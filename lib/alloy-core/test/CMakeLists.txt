@@ -28,6 +28,11 @@ set(source_files
 
   src/main.cpp
 )
+source_group(
+  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
+  PREFIX "Source Files"
+  FILES ${source_files}
+)
 
 add_executable(${PROJECT_NAME}CoreTest
   ${source_files}
@@ -41,6 +46,7 @@ target_link_libraries(${PROJECT_NAME}CoreTest
 set_target_properties(${PROJECT_NAME}CoreTest
   PROPERTIES
     OUTPUT_NAME "alloy-core-test"
+    FOLDER "Unit Test Targets"
 )
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
     "${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC")

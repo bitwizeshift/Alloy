@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.8)
 
 # Disable defaulting the warning flags for MSVC
 # this isn't bad, it's just inconvenient
@@ -14,6 +14,8 @@ set(CMAKE_MODULE_PATH "${ALLOY_MODULE_PATH}" "${CMAKE_MODULE_PATH}")
 ##############################################################################
 # Project Options
 ##############################################################################
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 option(CMAKE_EXPORT_COMPILE_COMMANDS "Enable exporting compile-commands within CMake" ON)
 option(BUILD_SHARED_LIBS "Whether to build this library as a shared library" ON)

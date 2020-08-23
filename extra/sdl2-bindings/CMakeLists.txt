@@ -8,11 +8,21 @@ set(header_files
   include/alloy/extra/sdl2-bindings/sdl2_gl_window.hpp
   include/alloy/extra/sdl2-bindings/sdl2_pump_source.hpp
 )
+source_group(
+  TREE "${CMAKE_CURRENT_LIST_DIR}/include"
+  PREFIX "Header Files"
+  FILES ${header_files}
+)
 
 set(source_files
   src/alloy/extra/sdl2-bindings/sdl2_window.cpp
   src/alloy/extra/sdl2-bindings/sdl2_gl_window.cpp
   src/alloy/extra/sdl2-bindings/sdl2_pump_source.cpp
+)
+source_group(
+  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
+  PREFIX "Source Files"
+  FILES ${source_files}
 )
 
 add_library(${PROJECT_NAME}ExtraSDL2Bindings
@@ -31,15 +41,16 @@ set_target_properties(${PROJECT_NAME}ExtraSDL2Bindings
     OUTPUT_NAME "alloy-extra-sdl2-bindings"
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
+    FOLDER "Optional Component Targets"
 )
 if (BUILD_SHARED_LIBS)
   target_compile_definitions(${PROJECT_NAME}ExtraSDL2Bindings
-          PRIVATE ALLOY_EXTRA_SDL2_EXPORT=1
-          )
+    PUBLIC ALLOY_EXTRA_SDL2_EXPORT=1
+  )
 else()
   target_compile_definitions(${PROJECT_NAME}ExtraSDL2Bindings
-          PRIVATE ALLOY_EXTRA_SDL2_STATIC=1
-          )
+    PUBLIC ALLOY_EXTRA_SDL2_STATIC=1
+  )
 endif()
 
 target_include_directories(${PROJECT_NAME}ExtraSDL2Bindings
