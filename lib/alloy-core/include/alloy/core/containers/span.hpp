@@ -283,14 +283,14 @@ namespace alloy::core {
     ///
     /// \param it the iterator
     /// \param end the end iterator
-    template <typename It, typename End,
+    template <typename It,
               std::enable_if_t<(Extent == alloy::core::dynamic_extent) &&
-                               alloy::core::detail::is_iter_convertible<It, T>::value, int> = 0>
-    constexpr span(It it, End end) noexcept;
-    template <typename It, typename End,
+                                alloy::core::detail::is_iter_convertible<It, T>::value, int> = 0>
+    constexpr span(It it, It end) noexcept;
+    template <typename It,
               std::enable_if_t<(Extent != alloy::core::dynamic_extent) &&
-                               alloy::core::detail::is_iter_convertible<It, T>::value, int> = 0>
-    constexpr explicit span(It it, End end) noexcept;
+                                alloy::core::detail::is_iter_convertible<It, T>::value, int> = 0>
+    constexpr explicit span(It it, It end) noexcept;
 
     /// \brief Constructs a span from an array reference
     ///
@@ -561,11 +561,11 @@ alloy::core::span<T,Extent>::span(It it, size_type count)
 }
 
 template <typename T, std::size_t Extent>
-template <typename It, typename End,
+template <typename It,
           std::enable_if_t<(Extent == alloy::core::dynamic_extent) &&
                             alloy::core::detail::is_iter_convertible<It, T>::value, int>>
 inline constexpr
-alloy::core::span<T,Extent>::span(It it, End end)
+alloy::core::span<T,Extent>::span(It it, It end)
   noexcept
   : m_storage{detail::to_address(it), static_cast<size_type>(end - it)}
 {
@@ -573,11 +573,11 @@ alloy::core::span<T,Extent>::span(It it, End end)
 }
 
 template <typename T, std::size_t Extent>
-template <typename It, typename End,
+template <typename It,
           std::enable_if_t<(Extent != alloy::core::dynamic_extent) &&
                               alloy::core::detail::is_iter_convertible<It, T>::value, int>>
 inline constexpr
-alloy::core::span<T,Extent>::span(It it, End end)
+alloy::core::span<T,Extent>::span(It it, It end)
   noexcept
   : m_storage{detail::to_address(it), static_cast<size_type>(end - it)}
 {
