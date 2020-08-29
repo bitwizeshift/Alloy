@@ -190,6 +190,17 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
 
     /// \{
+    /// \brief Retrieves the matrix row at row \p r
+    ///
+    /// \param r the row
+    /// \return pointer to the row
+    constexpr auto operator[](index_type r) noexcept -> pointer;
+    constexpr auto operator[](index_type r) const noexcept -> const_pointer;
+    /// \}
+
+    //--------------------------------------------------------------------------
+
+    /// \{
     /// \brief Retrieves the matrix entry at column \p c, and returns a
     ///        proxy to that row
     ///
@@ -464,6 +475,20 @@ inline constexpr auto
     throw std::out_of_range{"matrix4::at: index out of range"};
   }
   return get(r,c);
+}
+
+//------------------------------------------------------------------------------
+
+inline constexpr auto alloy::core::matrix4::operator[](index_type r)
+  noexcept -> pointer
+{
+  return m_matrix[r];
+}
+
+inline constexpr auto alloy::core::matrix4::operator[](index_type r)
+  const noexcept -> const_pointer
+{
+  return m_matrix[r];
 }
 
 //------------------------------------------------------------------------------
