@@ -150,6 +150,7 @@ set(header_files
   include/alloy/core/model/vertex.hpp
   include/alloy/core/model/normal.hpp
   include/alloy/core/model/texture_coordinate.hpp
+  include/alloy/core/model/transform.hpp
 )
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/include"
@@ -187,6 +188,7 @@ set(source_files
   src/alloy/core/model/attribute_buffer_view.cpp
   src/alloy/core/model/color.cpp
   src/alloy/core/model/image.cpp
+  src/alloy/core/model/transform.cpp
 )
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/src"
