@@ -37,17 +37,16 @@
 // Static Factory Functions
 //------------------------------------------------------------------------------
 
-alloy::core::quaternion
-  alloy::core::quaternion::from_angle_axis( radian angle,
-                                            const vector3& axis )
-  noexcept
+auto alloy::core::quaternion::from_angle_axis(radian angle,
+                                              const vector3& axis)
+  noexcept -> quaternion
 {
   const auto norm_axis = axis.normalized();
 
   const auto half_angle = angle * real{0.5};
   const auto result = trigonometry::sin(half_angle);
 
-  const auto w = trigonometry::cos( half_angle );
+  const auto w = trigonometry::cos(half_angle);
   const auto x = norm_axis.x() * result;
   const auto y = norm_axis.y() * result;
   const auto z = norm_axis.z() * result;
@@ -55,9 +54,8 @@ alloy::core::quaternion
   return {w,x,y,z};
 }
 
-alloy::core::quaternion
-  alloy::core::quaternion::from_angles( radian yaw, radian pitch, radian roll )
-  noexcept
+auto alloy::core::quaternion::from_angles(radian yaw, radian pitch, radian roll)
+  noexcept -> quaternion
 {
   // Half Angles
   const auto half_yaw   = yaw * real{0.5};
@@ -65,16 +63,16 @@ alloy::core::quaternion
   const auto half_roll  = roll * real{0.5};
 
   // y-vector
-  const auto v0w = trigonometry::cos( half_yaw );
-  const auto v0y = trigonometry::sin( half_yaw );
+  const auto v0w = trigonometry::cos(half_yaw);
+  const auto v0y = trigonometry::sin(half_yaw);
 
   // x-vector
-  const auto v1w = trigonometry::cos( half_pitch );
-  const auto v1x = trigonometry::sin( half_pitch );
+  const auto v1w = trigonometry::cos(half_pitch);
+  const auto v1x = trigonometry::sin(half_pitch);
 
   // z-vector
-  const auto v2w = trigonometry::cos( half_roll );
-  const auto v2z = trigonometry::sin( half_roll );
+  const auto v2w = trigonometry::cos(half_roll);
+  const auto v2z = trigonometry::sin(half_roll);
 
   // y * x vector
   const auto w1 = (v0w * v1w);
@@ -91,9 +89,8 @@ alloy::core::quaternion
   return {w,x,y,z};
 }
 
-alloy::core::quaternion
-  alloy::core::quaternion::from_rotation_matrix( const matrix3& rot )
-  noexcept
+auto alloy::core::quaternion::from_rotation_matrix(const matrix3& rot)
+  noexcept -> quaternion
 {
   // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
   // article "Quaternion Calculus and Fast Animation".
@@ -102,12 +99,12 @@ alloy::core::quaternion
   auto root = real{};
 
   if (trace > real{0}){
-    root = sqrt( trace + 1 );
+    root = sqrt(trace + 1);
     const auto w = real{0.5} * root;
     root = real{0.5} / root;
-    const auto x = (rot.get(2,1) - rot.get(1,2)) * root;
-    const auto y = (rot.get(0,2) - rot.get(2,0)) * root;
-    const auto z = (rot.get(1,0) - rot.get(0,1)) * root;
+    const auto x = (rot[2][1] - rot[1][2]) * root;
+    const auto y = (rot[0][2] - rot[2][0]) * root;
+    const auto z = (rot[1][0] - rot[0][1]) * root;
 
     return {w,x,y,z};
   }
@@ -117,10 +114,10 @@ alloy::core::quaternion
   int i, j, k;
 
   i = 0;
-  if ( rot.get(1,1) > rot.get(0,0) ) {
+  if (rot[1][1] > rot[0][0]) {
     i = 1;
   }
-  if ( rot.get(2,2) > rot.get(i,i) ) {
+  if (rot[2][2] > rot.get(i,i)) {
     i = 2;
   }
   j = s_next[i];
@@ -143,43 +140,40 @@ alloy::core::quaternion
   return {w,x,y,z};
 }
 
-alloy::core::quaternion
-  alloy::core::quaternion::from_rotation_matrix( const matrix4& rot )
-  noexcept
+auto alloy::core::quaternion::from_rotation_matrix(const matrix4& rot)
+  noexcept -> quaternion
 {
   using namespace alloy::core::casts;
 
-  return from_rotation_matrix( matrix_cast<matrix3>(rot) );
+  return from_rotation_matrix(matrix_cast<matrix3>(rot));
 }
 
-alloy::core::quaternion
-  alloy::core::quaternion::from_rotation_axes( const vector3& x_axis,
-                                               const vector3& y_axis,
-                                               const vector3& z_axis )
-  noexcept
+auto alloy::core::quaternion::from_rotation_axes(const vector3& x_axis,
+                                                 const vector3& y_axis,
+                                                 const vector3& z_axis)
+  noexcept -> quaternion
 {
-  return from_rotation_matrix( matrix3{x_axis,y_axis,z_axis} );
+  return from_rotation_matrix(matrix3{x_axis,y_axis,z_axis});
 }
 
 //----------------------------------------------------------------------------
 // Element Access
 //----------------------------------------------------------------------------
 
-alloy::core::quaternion::reference
-  alloy::core::quaternion::at( index_type n )
+auto alloy::core::quaternion::at(index_type n)
+  -> reference
 {
-  if( n >= 4 || n < 0 ) {
+  if(n >= 4 || n < 0) {
     throw std::out_of_range{"quaternion::at: index out of range"};
   }
 
   return m_data[n];
 }
 
-alloy::core::quaternion::const_reference
-  alloy::core::quaternion::at( index_type n )
-  const
+auto alloy::core::quaternion::at(index_type n)
+  const -> const_reference
 {
-  if( n >= 4 || n < 0 ) {
+  if(n >= 4 || n < 0) {
     throw std::out_of_range{"quaternion::at: index out of range"};
   }
 
@@ -188,9 +182,8 @@ alloy::core::quaternion::const_reference
 
 //----------------------------------------------------------------------------
 
-alloy::core::vector3
-  alloy::core::quaternion::x_axis()
-  const noexcept
+auto alloy::core::quaternion::x_axis()
+  const noexcept -> vector3
 {
   const auto ty  = real{2.0} * y();
   const auto tz  = real{2.0} * z();
@@ -206,9 +199,8 @@ alloy::core::vector3
 
 //----------------------------------------------------------------------------
 
-alloy::core::vector3
-  alloy::core::quaternion::y_axis()
-  const noexcept
+auto alloy::core::quaternion::y_axis()
+  const noexcept -> vector3
 {
   const auto tx  = 2.0f * x();
   const auto ty  = 2.0f * y();
@@ -225,9 +217,8 @@ alloy::core::vector3
 
 //----------------------------------------------------------------------------
 
-alloy::core::vector3
-  alloy::core::quaternion::z_axis()
-  const noexcept
+auto alloy::core::quaternion::z_axis()
+  const noexcept -> vector3
 {
   const auto tx  = 2.0f * x();
   const auto ty  = 2.0f * y();
@@ -246,8 +237,8 @@ alloy::core::vector3
 // Extraction
 //----------------------------------------------------------------------------
 
-void alloy::core::quaternion::extract_rotation_matrix( matrix3* rot )
-  const noexcept
+auto alloy::core::quaternion::extract_rotation_matrix(not_null<matrix3*> rot)
+  const noexcept -> void
 {
   const auto tx  = 2 * x();
   const auto ty  = 2 * y();
@@ -264,27 +255,25 @@ void alloy::core::quaternion::extract_rotation_matrix( matrix3* rot )
 
   //--------------------------------------------------------------------------
 
-  assert( rot != nullptr );
-
   auto& matrix = (*rot);
 
-  matrix.get(0,0) = real{1} - (tyy + tzz);
-  matrix.get(0,1) = txy - twz;
-  matrix.get(0,2) = txz + twy;
+  matrix[0][0] = real{1} - (tyy + tzz);
+  matrix[0][1] = txy - twz;
+  matrix[0][2] = txz + twy;
 
-  matrix.get(1,0) = txy + twz;
-  matrix.get(1,1) = real{1} - (txx + tzz);
-  matrix.get(1,2) = tyz - twx;
+  matrix[1][0] = txy + twz;
+  matrix[1][1] = real{1} - (txx + tzz);
+  matrix[1][2] = tyz - twx;
 
-  matrix.get(2,0) = txz - twy;
-  matrix.get(2,1) = tyz + twx;
-  matrix.get(2,2) = real{1} - (txx + tyy);
+  matrix[2][0] = txz - twy;
+  matrix[2][1] = tyz + twx;
+  matrix[2][2] = real{1} - (txx + tyy);
 }
 
 //----------------------------------------------------------------------------
 
-void alloy::core::quaternion::extract_rotation_matrix( matrix4* rot )
-  const noexcept
+auto alloy::core::quaternion::extract_rotation_matrix(not_null<matrix4*> rot)
+  const noexcept -> void
 {
   const auto tx  = real{2} * x();
   const auto ty  = real{2} * y();
@@ -301,51 +290,46 @@ void alloy::core::quaternion::extract_rotation_matrix( matrix4* rot )
 
   //--------------------------------------------------------------------------
 
-  assert( rot != nullptr );
-
   auto& matrix = (*rot);
 
-  matrix.get(0,0) = real{1} - (tyy + tzz);
-  matrix.get(0,1) = txy - twz;
-  matrix.get(0,2) = txz + twy;
-  matrix.get(0,3) = real{0};
+  matrix[0][0] = real{1} - (tyy + tzz);
+  matrix[0][1] = txy - twz;
+  matrix[0][2] = txz + twy;
+  matrix[0][3] = real{0};
 
-  matrix.get(1,0) = txy + twz;
-  matrix.get(1,1) = real{1} - (txx + tzz);
-  matrix.get(1,2) = tyz - twx;
-  matrix.get(1,3) = real{0};
+  matrix[1][0] = txy + twz;
+  matrix[1][1] = real{1} - (txx + tzz);
+  matrix[1][2] = tyz - twx;
+  matrix[1][3] = real{0};
 
-  matrix.get(2,0) = txz - twy;
-  matrix.get(2,1) = tyz + twx;
-  matrix.get(2,2) = real{1} - (txx + tyy);
-  matrix.get(2,3) = real{0};
+  matrix[2][0] = txz - twy;
+  matrix[2][1] = tyz + twx;
+  matrix[2][2] = real{1} - (txx + tyy);
+  matrix[2][3] = real{0};
 
-  matrix.get(3,0) = real{0};
-  matrix.get(3,1) = real{0};
-  matrix.get(3,2) = real{0};
-  matrix.get(3,3) = real{1};
+  matrix[3][0] = real{0};
+  matrix[3][1] = real{0};
+  matrix[3][2] = real{0};
+  matrix[3][3] = real{1};
 }
 
 //----------------------------------------------------------------------------
 
-void alloy::core::quaternion::extract_angle_axis( radian* angle,
-                                                  vector3* axis )
-  const noexcept
+auto alloy::core::quaternion::extract_angle_axis(not_null<radian*> angle,
+                                                 not_null<vector3*> axis)
+  const noexcept -> void
 {
-  assert( angle != nullptr );
-  assert( axis != nullptr );
-
   const auto squared_length = x()*x() + y()*y() + z()*z();
 
-  if( squared_length > real{0} ){
+  if (squared_length > real{0}){
 
     const auto inv_length = real{1} / sqrt(squared_length);
-    (*angle) = 2 * trigonometry::arccos( x() );
+    (*angle) = 2 * trigonometry::arccos(x());
     axis->x() = x() * inv_length;
     axis->y() = y() * inv_length;
     axis->z() = z() * inv_length;
 
-  }else{
+  } else {
 
     (*angle)  = radian{0};
     axis->x() = real{1};
@@ -357,14 +341,11 @@ void alloy::core::quaternion::extract_angle_axis( radian* angle,
 
 //----------------------------------------------------------------------------
 
-void alloy::core::quaternion::extract_axes( vector3* x_axis,
-                                            vector3* y_axis,
-                                            vector3* z_axis )
-  const noexcept
+auto alloy::core::quaternion::extract_axes(not_null<vector3*> x_axis,
+                                           not_null<vector3*> y_axis,
+                                           not_null<vector3*> z_axis)
+  const noexcept -> void
 {
-  assert( x_axis != nullptr );
-  assert( y_axis != nullptr );
-  assert( z_axis != nullptr );
 
   auto mat = matrix3{};
   extract_rotation_matrix(&mat);
@@ -379,8 +360,8 @@ void alloy::core::quaternion::extract_axes( vector3* x_axis,
 // Modifiers
 //----------------------------------------------------------------------------
 
-alloy::core::quaternion& alloy::core::quaternion::normalize()
-  noexcept
+auto alloy::core::quaternion::normalize()
+  noexcept -> quaternion&
 {
   const auto mag_inv = real{1} / magnitude();
 
@@ -390,8 +371,8 @@ alloy::core::quaternion& alloy::core::quaternion::normalize()
   return (*this);
 }
 
-alloy::core::quaternion& alloy::core::quaternion::invert()
-  noexcept
+auto alloy::core::quaternion::invert()
+  noexcept -> quaternion&
 {
   const auto mag = magnitude();
   if (mag > real{0}){
@@ -413,9 +394,8 @@ alloy::core::quaternion& alloy::core::quaternion::invert()
 // Quantifiers
 //----------------------------------------------------------------------------
 
-alloy::core::quaternion::value_type
-  alloy::core::quaternion::dot( const quaternion& rhs )
-  const noexcept
+auto alloy::core::quaternion::dot(const quaternion& rhs)
+  const noexcept -> value_type
 {
   auto result = quaternion::value_type{};
   for (auto i=0; i<4; ++i) {
@@ -425,16 +405,16 @@ alloy::core::quaternion::value_type
   return result;
 }
 
-alloy::core::quaternion::value_type alloy::core::quaternion::magnitude()
-  const noexcept
+auto alloy::core::quaternion::magnitude()
+  const noexcept -> value_type
 {
   return sqrt(dot(*this));
 }
 
 //----------------------------------------------------------------------------
 
-alloy::core::radian alloy::core::quaternion::roll( reproject_axis_t )
-  const noexcept
+auto alloy::core::quaternion::roll(reproject_axis_t)
+  const noexcept -> radian
 {
   const auto ty  = 2 * y();
   const auto tz  = 2 * z();
@@ -451,8 +431,8 @@ alloy::core::radian alloy::core::quaternion::roll( reproject_axis_t )
        : angle;
 }
 
-alloy::core::radian alloy::core::quaternion::roll()
-  const noexcept
+auto alloy::core::quaternion::roll()
+  const noexcept -> radian
 {
   const auto f1 = 2*(x()*y() + w()*z());
   const auto f2 = w()*w() + x()*x() - y()*y() - z()*z();
@@ -464,8 +444,8 @@ alloy::core::radian alloy::core::quaternion::roll()
 
 //----------------------------------------------------------------------------
 
-alloy::core::radian alloy::core::quaternion::pitch( reproject_axis_t )
-  const noexcept
+auto alloy::core::quaternion::pitch(reproject_axis_t)
+  const noexcept -> radian
 {
   const auto tx  = 2 * x();
   const auto tz  = 2 * z();
@@ -482,8 +462,8 @@ alloy::core::radian alloy::core::quaternion::pitch( reproject_axis_t )
        :  angle;
 }
 
-alloy::core::radian alloy::core::quaternion::pitch()
-  const noexcept
+auto alloy::core::quaternion::pitch()
+  const noexcept -> radian
 {
   const auto f1 = 2*(y()*z() + w()*x());
   const auto f2 = w()*w() - x()*x() - y()*y() + z()*z();
@@ -495,8 +475,8 @@ alloy::core::radian alloy::core::quaternion::pitch()
 
 //----------------------------------------------------------------------------
 
-alloy::core::radian alloy::core::quaternion::yaw( reproject_axis_t )
-  const noexcept
+auto alloy::core::quaternion::yaw(reproject_axis_t)
+  const noexcept -> radian
 {
   const auto tx  = 2 * x();
   const auto ty  = 2 * y();
@@ -514,8 +494,8 @@ alloy::core::radian alloy::core::quaternion::yaw( reproject_axis_t )
        :  angle;
 }
 
-alloy::core::radian alloy::core::quaternion::yaw()
-  const noexcept
+auto alloy::core::quaternion::yaw()
+  const noexcept -> radian
 {
   const auto angle = trigonometry::arcsin(-2*(x()*z() - w()*y()));
   return angle >= radian_constants::half_revolution
@@ -527,9 +507,8 @@ alloy::core::radian alloy::core::quaternion::yaw()
 // Compound Operators
 //----------------------------------------------------------------------------
 
-alloy::core::quaternion&
-  alloy::core::quaternion::operator+=( const quaternion& rhs )
-  noexcept
+auto alloy::core::quaternion::operator+=(const quaternion& rhs)
+  noexcept -> quaternion&
 {
   for (auto i=0; i<4;++i) {
     m_data[i] += rhs[i];
@@ -538,9 +517,8 @@ alloy::core::quaternion&
   return (*this);
 }
 
-alloy::core::quaternion&
-  alloy::core::quaternion::operator-=( const quaternion& rhs )
-  noexcept
+auto alloy::core::quaternion::operator-=(const quaternion& rhs)
+  noexcept -> quaternion&
 {
   for (auto i=0; i<4;++i) {
     m_data[i] -= rhs[i];
@@ -549,9 +527,8 @@ alloy::core::quaternion&
   return (*this);
 }
 
-alloy::core::quaternion&
-  alloy::core::quaternion::operator*=( const quaternion& rhs )
-  noexcept
+auto alloy::core::quaternion::operator*=(const quaternion& rhs)
+  noexcept -> quaternion&
 {
   const auto tmp0 = w() * rhs.w() - x() * rhs.x() - y() * rhs.y() - z() * rhs.z();
   const auto tmp1 = w() * rhs.x() + x() * rhs.w() + y() * rhs.z() - z() * rhs.y();
@@ -565,9 +542,8 @@ alloy::core::quaternion&
   return (*this);
 }
 
-alloy::core::quaternion&
-  alloy::core::quaternion::operator*=( value_type rhs )
-  noexcept
+auto alloy::core::quaternion::operator*=(value_type rhs)
+  noexcept -> quaternion&
 {
   for (auto i=0; i<4;++i) {
     m_data[i] *= rhs;
@@ -576,9 +552,8 @@ alloy::core::quaternion&
   return (*this);
 }
 
-alloy::core::quaternion&
-  alloy::core::quaternion::operator/=( value_type rhs )
-  noexcept
+auto alloy::core::quaternion::operator/=(value_type rhs)
+  noexcept -> quaternion&
 {
   const auto inv = real{1} / rhs;
 
@@ -590,9 +565,8 @@ alloy::core::quaternion&
 }
 
 
-alloy::core::quaternion&
-  alloy::core::quaternion::operator/=( const quaternion& rhs )
-  noexcept
+auto alloy::core::quaternion::operator/=(const quaternion& rhs)
+  noexcept -> quaternion&
 {
   (*this) *= rhs.inverse();
 
@@ -601,10 +575,8 @@ alloy::core::quaternion&
 
 //----------------------------------------------------------------------------
 
-alloy::core::vector3
-  alloy::core::operator*( const quaternion& lhs,
-                          const vector3& rhs )
-  noexcept
+auto alloy::core::operator*(const quaternion& lhs, const vector3& rhs)
+  noexcept -> vector3
 {
   auto qvec = vector3{lhs.x(), lhs.y(), lhs.z()};
 
