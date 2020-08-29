@@ -288,7 +288,7 @@ inline std::common_type_t<V0,V1,T>
   alloy::core::interpolation::half_cosine( const V0& v0, const V0& v1, const T& t )
   noexcept
 {
-  return linear(v0, v1, (0.5 - trigonometry::cos(t * math_constants::half_pi())));
+  return linear(v0, v1, (0.5 - trigonometry::cos(t * math_constants::half_pi)));
 }
 
 
@@ -297,7 +297,7 @@ inline std::common_type_t<V0,V1,T>
   alloy::core::interpolation::cosine( const V0& v0, const V0& v1, const T& t )
   noexcept
 {
-  return linear(v0, v1, (1.0 - trigonometry::cos(t * math_constants::pi())));
+  return linear(v0, v1, (1.0 - trigonometry::cos(t * math_constants::pi)));
 }
 
 //----------------------------------------------------------------------------
@@ -307,7 +307,7 @@ inline std::common_type_t<V0,V1,T>
   alloy::core::interpolation::half_sine( const V0& v0, const V0& v1, const T& t )
   noexcept
 {
-  return linear(v0, v1, (0.5 - trigonometry::sin(t * math_constants::half_pi())));
+  return linear(v0, v1, (0.5 - trigonometry::sin(t * math_constants::half_pi)));
 }
 
 
@@ -316,7 +316,7 @@ inline std::common_type_t<V0,V1,T>
   alloy::core::interpolation::sine( const V0& v0, const V0& v1, const T& t )
   noexcept
 {
-  return linear(v0, v1, (1.0 - trigonometry::sin(t * math_constants::pi())));
+  return linear(v0, v1, (1.0 - trigonometry::sin(t * math_constants::pi)));
 }
 
 //-----------------------------------------------------------------------------
