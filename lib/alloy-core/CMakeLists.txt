@@ -115,6 +115,7 @@ set(header_files
   include/alloy/core/math/matrix/matrix3_constants.hpp
   include/alloy/core/math/matrix/matrix4_constants.hpp
   include/alloy/core/math/quaternion.hpp
+  include/alloy/core/math/quaternion_constants.hpp
   include/alloy/core/math/simplex.hpp
   include/alloy/core/math/trigonometry.hpp
   include/alloy/core/math/vector.hpp

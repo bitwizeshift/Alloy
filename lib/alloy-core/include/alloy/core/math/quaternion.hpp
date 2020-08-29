@@ -541,21 +541,6 @@ namespace alloy::core {
   /// \return the magnitude of \p x
   core::real magnitude( const quaternion& x ) noexcept;
 
-  //============================================================================
-  // struct : quaternion_constants
-  //============================================================================
-
-  struct quaternion_constants final
-  {
-    ~quaternion_constants() = delete;
-
-    ALLOY_CORE_API
-    static const quaternion zero;
-
-    ALLOY_CORE_API
-    static const quaternion identity;
-  };
-
   //----------------------------------------------------------------------------
   // Type Traits
   //----------------------------------------------------------------------------
