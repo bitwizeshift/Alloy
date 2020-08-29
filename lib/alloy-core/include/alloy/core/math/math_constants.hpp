@@ -52,30 +52,13 @@ namespace alloy::core {
     math_constants() = delete;
     ~math_constants() = delete;
 
-    static constexpr core::real half_pi() noexcept;
-    static constexpr core::real pi() noexcept;
-    static constexpr core::real two_pi() noexcept;
-    static constexpr auto tau = &math_constants::two_pi;
+    inline static constexpr auto pi = 3.1415926535897932384626433832795028_real;
+    inline static constexpr auto half_pi = pi / 2;
+    inline static constexpr auto two_pi = 2 * pi;
+
+    inline static constexpr auto tau = two_pi;
   };
 
 } // namespace alloy::core
-
-inline constexpr alloy::core::real alloy::core::math_constants::half_pi()
-  noexcept
-{
-  return pi() / 2.0_real;
-}
-
-inline constexpr alloy::core::real alloy::core::math_constants::pi()
-  noexcept
-{
-  return 3.14159265358979323846264338327950288419716939937510_real;
-}
-
-inline constexpr alloy::core::real alloy::core::math_constants::two_pi()
-  noexcept
-{
-  return 2.0_real * pi();
-}
 
 #endif /* ALLOY_CORE_MATH_MATH_CONSTANTS_HPP */

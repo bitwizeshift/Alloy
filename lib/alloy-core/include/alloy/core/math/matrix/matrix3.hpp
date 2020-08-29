@@ -162,6 +162,19 @@ namespace alloy::core {
     constexpr auto at(index_type r, index_type c) const -> const_reference;
     /// \}
 
+    //--------------------------------------------------------------------------
+
+    /// \{
+    /// \brief Retrieves the matrix row at row \p r
+    ///
+    /// \param r the row
+    /// \return pointer to the row
+    constexpr auto operator[](index_type r) noexcept -> pointer;
+    constexpr auto operator[](index_type r) const noexcept -> const_pointer;
+    /// \}
+
+    //--------------------------------------------------------------------------
+
     /// \{
     /// \brief Retrieves the matrix entry at column \p c and row \p r
     ///
@@ -426,6 +439,20 @@ inline constexpr auto
     throw std::out_of_range{"matrix3::at: index out of range"};
   }
   return get(r,c);
+}
+
+//------------------------------------------------------------------------------
+
+inline constexpr auto alloy::core::matrix3::operator[](index_type r)
+  noexcept -> pointer
+{
+  return m_matrix[r];
+}
+
+inline constexpr auto alloy::core::matrix3::operator[](index_type r)
+  const noexcept -> const_pointer
+{
+  return m_matrix[r];
 }
 
 //------------------------------------------------------------------------------

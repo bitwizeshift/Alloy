@@ -118,7 +118,7 @@ namespace alloy::core {
 inline constexpr alloy::core::real alloy::core::radian_unit::revolution()
   noexcept
 {
-  return static_cast<real>(math_constants::two_pi());
+  return static_cast<real>(math_constants::two_pi);
 }
 
 //==============================================================================
