@@ -268,21 +268,25 @@ namespace alloy::core {
   public:
 
     /// \brief Retrieves the translation of this transform
+    [[nodiscard]]
     auto translation() const noexcept -> vector3;
 
     /// \brief Retrieves the orientation of this transform as a quaternion
     ///
     /// \return retrieves the rotation orientation of this transform
+    [[nodiscard]]
     auto orientation() const noexcept -> quaternion;
 
     /// \brief Retrieves the orientation of this transform as euler_angles
     ///
     /// \return retrieves the rotation orientation of this transform
+    [[nodiscard]]
     auto angles() const noexcept -> euler_angles;
 
     /// \brief Retrieve the scale of this transform
     ///
     /// \return the 3-component scale
+    [[nodiscard]]
     auto scale() const noexcept -> vector3;
 
     //-------------------------------------------------------------------------
@@ -298,6 +302,7 @@ namespace alloy::core {
     /// \brief Converts this transform to a matrix4
     ///
     /// \return the matrix4
+    [[nodiscard]]
     auto to_matrix4() const noexcept -> matrix4;
 
     //-------------------------------------------------------------------------
