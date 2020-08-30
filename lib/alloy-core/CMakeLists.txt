@@ -153,7 +153,9 @@ set(header_files
   include/alloy/core/model/transform.hpp
   include/alloy/core/model/projection.hpp
   include/alloy/core/model/camera.hpp
+  include/alloy/core/model/lazy_transform.hpp
 )
+
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/include"
   PREFIX "Header Files"
