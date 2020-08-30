@@ -151,6 +151,7 @@ set(header_files
   include/alloy/core/model/normal.hpp
   include/alloy/core/model/texture_coordinate.hpp
   include/alloy/core/model/transform.hpp
+  include/alloy/core/model/projection.hpp
   include/alloy/core/model/camera.hpp
 )
 source_group(
@@ -190,6 +191,7 @@ set(source_files
   src/alloy/core/model/color.cpp
   src/alloy/core/model/image.cpp
   src/alloy/core/model/transform.cpp
+  src/alloy/core/model/projection.cpp
   src/alloy/core/model/camera.cpp
 )
 
