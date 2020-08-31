@@ -8,7 +8,7 @@ alloy::core::transform::transform()
   noexcept
   : m_rotation{},
     m_translation{},
-    m_scale{}
+    m_scale{real{1}, real{1}, real{1}}
 {
 
 }
@@ -269,6 +269,10 @@ auto alloy::core::transform::scale()
 {
   return m_scale;
 }
+
+//-----------------------------------------------------------------------------
+// Conversion
+//-----------------------------------------------------------------------------
 
 auto alloy::core::transform::extract_matrix(not_null<matrix4*> out)
   const noexcept -> void
