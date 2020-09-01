@@ -116,13 +116,13 @@ namespace alloy::core {
     /// \brief Copies this packed_buffer using the same allocator
     ///
     /// \return a copy of this packed_buffer
-    auto copy() -> packed_buffer;
+    auto copy() const -> packed_buffer;
 
     /// \brief Copies this packed_buffer using the requested allocator \p alloc
     ///
     /// \param alloc the allocator to use
     /// \return a copy of this packed_buffer
-    auto copy(allocator alloc) -> packed_buffer;
+    auto copy(allocator alloc) const -> packed_buffer;
 
     //-------------------------------------------------------------------------
     // Element Access

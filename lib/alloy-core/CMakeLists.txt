@@ -154,6 +154,7 @@ set(header_files
   include/alloy/core/model/projection.hpp
   include/alloy/core/model/camera.hpp
   include/alloy/core/model/lazy_transform.hpp
+  include/alloy/core/model/mesh.hpp
 )
 
 source_group(
@@ -195,6 +196,7 @@ set(source_files
   src/alloy/core/model/transform.cpp
   src/alloy/core/model/projection.cpp
   src/alloy/core/model/camera.cpp
+  src/alloy/core/model/mesh.cpp
 )
 
 source_group(

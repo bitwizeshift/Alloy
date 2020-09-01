@@ -27,13 +27,13 @@ alloy::core::packed_buffer::packed_buffer(vector<std::byte> buffer)
 //-----------------------------------------------------------------------------
 
 auto alloy::core::packed_buffer::copy()
-  -> packed_buffer
+  const -> packed_buffer
 {
   return packed_buffer{m_buffer.copy()};
 }
 
 auto alloy::core::packed_buffer::copy(allocator alloc)
-  -> packed_buffer
+  const -> packed_buffer
 {
   return packed_buffer{m_buffer.copy(stl_allocator_adapter<std::byte>{alloc})};
 }
