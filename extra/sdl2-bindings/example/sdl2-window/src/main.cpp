@@ -24,6 +24,10 @@
 
 #include <alloy/core/geometry/point.hpp>
 
+#include <alloy/io/filesystem/disk_filesystem.hpp>
+#include <alloy/core/containers/map.hpp>
+#include <alloy/core/utilities/string_tokenizer.hpp>
+
 #include <SDL2/SDL.h> // ::SDL_Init, ::SDL_Quit, etc
 #include <gl/glew.h>
 #include <windows.h>
@@ -31,6 +35,7 @@
 #include <iostream> // std::cout, std::endl
 #include <chrono>   // std::chrono::steady_clock
 #include <random>   // std::random
+#include <charconv> // from_chars
 
 namespace {
 
@@ -441,7 +446,261 @@ namespace alloy::core::experimental {
 
     return std::move(builder).build();
   }
+
 }
+
+namespace alloy::engine::experimental {
+
+  class obj_mesh_loader
+  {
+  public:
+
+    obj_mesh_loader() = default;
+
+    auto load(io::file& file) -> core::expected<core::mesh>
+    {
+      if (!file.is_open()) {
+        return core::unexpected(io::file::error_code::closed);
+      }
+
+      const auto buffer_size = file.bytes();
+      if (!buffer_size) {
+        return core::unexpected(buffer_size.error());
+      }
+      auto buffer = core::vector<char>{};
+      buffer.resize(*buffer_size);
+
+      auto read_result = file.read(io::mutable_buffer::from_container(buffer));
+      if (!read_result) {
+        return core::unexpected(read_result.error());
+      }
+
+      for_each_line(buffer, [&](core::string_view line){
+        if (line.empty()) {
+          return;
+        }
+
+        auto tokenizer = core::string_tokenizer{line, " \n"};
+
+        const auto directive = tokenizer.next();
+
+        if (directive->empty()) {
+          return;
+        }
+
+        if (*directive == "v") {
+          parse_vertex_data(tokenizer);
+        } else if (*directive == "vt") {
+          parse_texture_coordinate_data(tokenizer);
+        } else if (*directive == "vn") {
+          parse_normal_data(tokenizer);
+        } else if (*directive == "f") {
+          parse_face_data(tokenizer);
+        }
+      });
+
+      return std::move(m_builder).build();
+    }
+
+  private:
+
+    using index_type = core::mesh::index_type;
+
+    struct index_triple
+    {
+      std::optional<core::mesh::index_type> vertex_index;
+      std::optional<core::mesh::index_type> normal_index;
+      std::optional<core::mesh::index_type> texture_coordinate_index;
+    };
+
+    auto parse_vertex_data(core::string_tokenizer& tokenizer) -> void
+    {
+      const auto v0 = tokenizer.next();
+      const auto v1 = tokenizer.next();
+      const auto v2 = tokenizer.next();
+
+      if (!v0 || !v1 || !v2) {
+        std::cerr << "Error parsing vertex data (";
+        std::cerr.write(tokenizer.buffer().data(), tokenizer.buffer().size());
+        std::cerr << std::endl;
+        return;
+      }
+
+      const auto vertex = core::vertex{
+        std::stof(v0->data()),
+        std::stof(v1->data()),
+        std::stof(v2->data()),
+      };
+
+      m_vertices.push_back(vertex);
+    }
+
+    auto parse_texture_coordinate_data(core::string_tokenizer& tokenizer) -> void
+    {
+      const auto v0 = tokenizer.next();
+      const auto v1 = tokenizer.next();
+
+      if (!v0 || !v1) {
+        return;
+      }
+
+      const auto texture_coordinate = core::texture_coordinate{
+        std::stof(v0->data()),
+        std::stof(v1->data()),
+      };
+
+      m_texture_coordinates.push_back(texture_coordinate);
+    }
+
+    auto parse_normal_data(core::string_tokenizer& tokenizer) -> void
+    {
+      const auto v0 = tokenizer.next();
+      const auto v1 = tokenizer.next();
+      const auto v2 = tokenizer.next();
+
+      if (!v0 || !v1 || !v2) {
+        std::cerr << "Error parsing normal data (";
+        std::cerr.write(tokenizer.buffer().data(), tokenizer.buffer().size());
+        std::cerr << std::endl;
+        return;
+      }
+
+      const auto normal = core::normal::make(
+        std::stof(v0->data()),
+        std::stof(v1->data()),
+        std::stof(v2->data())
+      );
+
+      m_normals.push_back(normal);
+    }
+
+    auto parse_triple(core::string_view triple) -> index_triple
+    {
+      auto tokenizer = core::string_tokenizer{triple, "/"};
+
+      const auto compute_value = [](const auto& exp) -> std::optional<core::mesh::index_type> {
+        if (!exp) {
+          return std::nullopt;
+        }
+        if (exp->empty()) {
+          return std::nullopt;
+        }
+        return std::stoi( static_cast<std::string>(*exp) );
+      };
+
+      const auto t0 = tokenizer.next();
+      const auto t1 = tokenizer.next();
+      const auto t2 = tokenizer.next();
+
+      return index_triple{
+        compute_value(t0),
+        compute_value(t2),
+        compute_value(t1),
+      };
+    }
+
+    auto parse_face_data(core::string_tokenizer& tokenizer) -> void
+    {
+      const auto i0 = tokenizer.next();
+      const auto i1 = tokenizer.next();
+      const auto i2 = tokenizer.next();
+
+      if (!i0 || !i1 || !i2) {
+        std::cerr << "Error parsing face data (";
+        std::cerr.write(tokenizer.buffer().data(), tokenizer.buffer().size());
+        std::cerr << std::endl;
+        return;
+      }
+
+      const auto t0 = parse_triple(*i0);
+      const auto t1 = parse_triple(*i1);
+      const auto t2 = parse_triple(*i2);
+
+      add_face(t0,t1,t2);
+    }
+
+    template <typename Fn>
+    auto for_each_line(const core::vector<char>& buffer, Fn&& fn) -> void
+    {
+      auto start = 0u;
+
+      const auto buffer_size = buffer.size();
+      for (auto i = 0u; i < buffer_size; ++i) {
+
+        if (buffer[i] == '\n' || i == (buffer_size - 1)) {
+          fn(core::string_view{buffer.data() + start, (i - start)});
+          // Set start to the next index
+          start = i + 1;
+        }
+      }
+    }
+
+    auto add_face(const index_triple& t0,
+                  const index_triple& t1,
+                  const index_triple& t2) -> void
+    {
+      const auto i0 = add_vertex(t0);
+      const auto i1 = add_vertex(t1);
+      const auto i2 = add_vertex(t2);
+
+      m_builder.add_face(i0, i1, i2);
+    }
+
+    auto add_vertex(const index_triple& triple) -> index_type
+    {
+      auto it = m_index_map.find(triple);
+
+      if (it != m_index_map.end()) {
+        return it->second;
+      }
+
+      const auto default_normal = core::normal::make(0,1,0);
+      const auto default_texture_coordinate = core::texture_coordinate{0,0};
+
+      const auto vertex = m_vertices.at(*triple.vertex_index - 1);
+      const auto normal = [&]{
+        if (!triple.normal_index) {
+          return default_normal;
+        }
+        return m_normals[*triple.normal_index - 1];
+      }();
+      const auto texture_coordinate = [&]{
+        if (!triple.texture_coordinate_index) {
+          return default_texture_coordinate;
+        }
+        return m_texture_coordinates[*triple.texture_coordinate_index - 1];
+      }();
+
+      const auto index = m_builder.add_vertex(vertex, normal, texture_coordinate);
+
+      // Cache it for later lookups
+      m_index_map.insert(it, std::make_pair(triple, index));
+
+      return index;
+    }
+
+    struct index_triple_comparator {
+      auto operator()(const index_triple& lhs, const index_triple& rhs) const noexcept -> bool
+      {
+        return
+          std::tie(lhs.vertex_index, lhs.normal_index, lhs.texture_coordinate_index) <
+          std::tie(rhs.vertex_index, rhs.normal_index, rhs.texture_coordinate_index);
+      }
+    };
+
+    using vertex_map = core::map<
+      index_triple,
+      core::mesh_builder::index_type,
+      index_triple_comparator
+    >;
+    core::vector<core::vertex> m_vertices;
+    core::vector<core::normal> m_normals;
+    core::vector<core::texture_coordinate> m_texture_coordinates;
+    vertex_map m_index_map;
+    core::mesh_builder m_builder;
+  };
+
+} // namespace alloy::engine::experimental
 
 
 int main(int argc, char** argv)
@@ -533,7 +792,19 @@ int main(int argc, char** argv)
     return EXIT_FAILURE;
   }
 
-  auto cube = alloy::core::experimental::make_cube();//std::move(triangle_builder).build();
+  auto fs = alloy::io::disk_filesystem{};
+  auto file = fs.open("teapot.obj",alloy::io::open_mode::read);
+  auto loader = alloy::engine::experimental::obj_mesh_loader{};
+
+  auto cube_result = loader.load(file);
+  if (!cube_result) {
+    std::cerr << cube_result.error().message() << std::endl;
+    return 1;
+  }
+  auto& cube = *cube_result;
+
+
+//  auto cube = alloy::core::experimental::make_cube();//std::move(triangle_builder).build();
   auto vao = ::GLuint{};
   auto vbos = std::array<::GLuint,2>{};
 
