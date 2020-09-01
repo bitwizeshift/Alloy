@@ -397,6 +397,68 @@ namespace alloy::core {
     constexpr bool has_error() const noexcept;
 
     //--------------------------------------------------------------------------
+    // Monadic
+    //--------------------------------------------------------------------------
+
+    /// \{
+    /// \brief Gets the underlying type from this expected if it contains a
+    ///        value, or \p default_value otherwise
+    ///
+    /// \param default_value the default value to retrieve if this does not
+    ///                      contain a value
+    /// \return the retrieved value
+    template <typename U>
+    constexpr auto value_or(U&& default_value) const & -> T;
+    template <typename U>
+    constexpr auto value_or(U&& default_value) && -> T;
+    /// \}
+
+    /// \{
+    /// \brief Invokes the function \p fn with the value of this expected as
+    ///        the argument
+    ///
+    /// If this expected contains an error, an expected of the error is returned
+    ///
+    /// The function being called must return an expected type
+    ///
+    /// \param fn the function to invoke with this
+    /// \return The result of the function being called
+    template <typename Fn>
+    auto flat_map(Fn&& fn) & -> std::invoke_result_t<Fn,T&>;
+    template <typename Fn>
+    auto flat_map(Fn&& fn) const & -> std::invoke_result_t<Fn,const T&>;
+    template <typename Fn>
+    auto flat_map(Fn&& fn) && -> std::invoke_result_t<Fn,T&&>;
+    /// \}
+
+    /// \{
+    /// \brief Invokes the function \p fn with the value of this expected as
+    ///        the argument
+    ///
+    /// If this expected is an error, the result of this function is that
+    /// error. Otherwise this function wraps the result and returns it as an
+    /// expected.
+    ///
+    /// \param fn the function to invoke with this
+    /// \return The expected result of the function invoked
+    template<typename Fn>
+    auto map(Fn&& fn) & -> expected<std::invoke_result_t<Fn,T&>,E>;
+    template<typename Fn>
+    auto map(Fn&& fn) const & -> expected<std::invoke_result_t<Fn,const T&>,E>;
+    template<typename Fn>
+    auto map(Fn&& fn) && -> expected<std::invoke_result_t<Fn,T&&>,E>;
+    /// \}
+
+    /// \brief Returns \p u if this expected contains a value, the error
+    ///        otherwise.
+    ///
+    /// \param u the value to return as an expected
+    /// \return an expected of \p u if this contains a value
+    template <typename U>
+    auto and_then(U&& u) const -> expected<std::decay_t<U>,E>;
+
+
+    //--------------------------------------------------------------------------
     // Modifiers
     //--------------------------------------------------------------------------
   public:
@@ -791,6 +853,109 @@ inline constexpr bool alloy::core::expected<T,E>::has_error()
   return !has_value();
 }
 
+//------------------------------------------------------------------------------
+// Monadic
+//------------------------------------------------------------------------------
+
+template <typename T, typename E>
+template <typename U>
+inline constexpr
+auto alloy::core::expected<T, E>::value_or(U&& default_value)
+  const & -> T
+{
+  return has_value() ? (**this) : std::forward<U>(default_value);
+}
+
+template <typename T, typename E>
+template <typename U>
+inline constexpr
+auto alloy::core::expected<T, E>::value_or(U&& default_value)
+  && -> T
+{
+  return has_value() ? std::move(**this) : std::forward<U>(default_value);
+}
+
+template <typename T, typename E>
+template <typename Fn>
+inline
+auto alloy::core::expected<T, E>::flat_map(Fn&& fn)
+  & -> std::invoke_result_t<Fn, T&>
+{
+  if (has_value()) {
+    return std::forward<Fn>(fn)(**this);
+  }
+  return unexpected(error());
+}
+
+template <typename T, typename E>
+template <typename Fn>
+inline
+auto alloy::core::expected<T, E>::flat_map(Fn&& fn)
+  const & -> std::invoke_result_t<Fn, const T&>
+{
+  if (has_value()) {
+    return std::forward<Fn>(fn)(**this);
+  }
+  return unexpected(error());
+}
+
+template <typename T, typename E>
+template <typename Fn>
+inline
+auto alloy::core::expected<T, E>::flat_map(Fn&& fn)
+  && -> std::invoke_result_t<Fn, T&&>
+{
+  if (has_value()) {
+    return std::forward<Fn>(fn)(std::move(**this));
+  }
+  return unexpected(error());
+}
+
+template <typename T, typename E>
+template <typename Fn>
+inline auto alloy::core::expected<T, E>::map(Fn&& fn)
+  & -> expected<std::invoke_result_t<Fn, T&>,E>
+{
+  if (has_value()) {
+    return std::forward<Fn>(fn)(**this);
+  }
+  return unexpected(error());
+}
+
+template <typename T, typename E>
+template <typename Fn>
+inline auto alloy::core::expected<T, E>::map(Fn&& fn)
+  const & -> expected<std::invoke_result_t<Fn, const T&>,E>
+{
+  if (has_value()) {
+    return std::forward<Fn>(fn)(**this);
+  }
+  return unexpected(error());
+}
+
+template <typename T, typename E>
+template <typename Fn>
+inline
+auto alloy::core::expected<T, E>::map(Fn&& fn)
+  && -> expected<std::invoke_result_t<Fn, T&&>,E>
+{
+  if (has_value()) {
+    return std::forward<Fn>(fn)(std::move(**this));
+  }
+  return unexpected(error());
+}
+
+template <typename T, typename E>
+template <typename U>
+inline
+auto alloy::core::expected<T, E>::and_then(U&& u)
+  const -> expected<std::decay_t<U>,E>
+{
+  if (has_value()) {
+    return std::forward<U>(u);
+  }
+  return unexpected{error()};
+}
 
 //------------------------------------------------------------------------------
 // Modifiers
