@@ -83,6 +83,8 @@ set(header_files
   include/alloy/core/utilities/scope_guard.hpp
   include/alloy/core/utilities/semantic_type.hpp
   include/alloy/core/utilities/string_view.hpp
+  include/alloy/core/utilities/string_tokenizer.hpp
+  include/alloy/core/utilities/string_utilities.hpp
   include/alloy/core/utilities/quantity.hpp
 
   # Memory
@@ -166,6 +168,10 @@ source_group(
 set(source_files
   src/alloy/core/assert.cpp
   src/alloy/core/type_index.cpp
+
+  # Utilities
+  src/alloy/core/utilities/string_tokenizer.cpp
+  src/alloy/core/utilities/string_utilities.cpp
 
   # Math
   src/alloy/core/math/simplex.cpp

@@ -9,6 +9,7 @@ set(source_files
   src/alloy/core/utilities/scope_guard.test.cpp
   src/alloy/core/utilities/delegate.test.cpp
   src/alloy/core/utilities/casts.test.cpp
+  src/alloy/core/utilities/string_tokenizer.test.cpp
 
   # Containers
   src/alloy/core/containers/span.test.cpp
@@ -28,6 +29,7 @@ set(source_files
 
   src/main.cpp
 )
+
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/src"
   PREFIX "Source Files"

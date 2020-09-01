@@ -25,10 +25,10 @@ jobs:
             version: 16
 
           - compiler: clang-cl
-            version: 9
+            version: 10
 
           - compiler: clang
-            version: 9
+            version: 10
 
     steps:
 
