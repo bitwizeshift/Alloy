@@ -84,6 +84,7 @@ set(header_files
   include/alloy/core/utilities/semantic_type.hpp
   include/alloy/core/utilities/string_view.hpp
   include/alloy/core/utilities/string_tokenizer.hpp
+  include/alloy/core/utilities/string_utilities.hpp
   include/alloy/core/utilities/quantity.hpp
 
   # Memory
@@ -169,6 +170,7 @@ set(source_files
 
   # Utilities
   src/alloy/core/utilities/string_tokenizer.cpp
+  src/alloy/core/utilities/string_utilities.cpp
 
   # Math
   src/alloy/core/math/simplex.cpp
