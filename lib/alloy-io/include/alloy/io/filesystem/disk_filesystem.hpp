@@ -128,7 +128,7 @@ namespace alloy::io {
     //-------------------------------------------------------------------------
     // Virtual Hooks : Finalization
     //-------------------------------------------------------------------------
-  public:
+  private:
 
     /// \brief Finalizes the file stream
     ///

@@ -252,6 +252,7 @@ namespace alloy::io {
   ///
   /// \param ec the file error code
   /// \return the std::error_code of the file error
+  ALLOY_IO_API
   std::error_code make_error_code(file::error_code ec) noexcept;
 
   //===========================================================================
