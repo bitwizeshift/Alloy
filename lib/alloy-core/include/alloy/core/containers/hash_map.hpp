@@ -49,7 +49,7 @@ namespace alloy::core {
             typename Hash = std::hash<Key>,
             typename KeyEqual = std::equal_to<Key>,
             typename Allocator = stl_allocator_adapter<std::pair<const Key, T>>>
-  using hash_map = explicitly_copyable<std::unordered_map<Key,Hash,KeyEqual,Allocator>>;
+  using hash_map = explicitly_copyable<std::unordered_map<Key,T,Hash,KeyEqual,Allocator>>;
 
 } // namespace alloy::core
 
