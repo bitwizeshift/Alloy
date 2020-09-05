@@ -47,6 +47,7 @@
 #include <type_traits> // std::true_type, std::false_type, std::common_type
 #include <cstddef>     // std::size_t, std::ptrdiff_t
 #include <stdexcept>   // std::out_of_range
+#include <tuple>       // std::tuple_element, std::tuple_size
 
 namespace alloy::core {
 
@@ -375,6 +376,18 @@ namespace alloy::core {
   auto are_linearly_independent(const vector2& v1,
                                 const vector2& v2) noexcept -> bool;
 
+  /// \{
+  /// \brief Gets the Nth entry from a given vector, used for structure bindings
+  ///
+  /// \tparam N the index
+  /// \param vec the vector to decompose
+  /// \return reference to the Nth entry
+  template <std::size_t N>
+  constexpr auto get(vector2& vec) noexcept -> real&;
+  template <std::size_t N>
+  constexpr auto get(const vector2& vec) noexcept -> const real&;
+  /// \}
+
   //---------------------------------------------------------------------------
   // Quantifiers
   //---------------------------------------------------------------------------
@@ -417,6 +430,18 @@ namespace alloy::core {
   using vec2 = vector2;
 
 } // namespace alloy::core
+
+namespace std {
+
+  template <>
+  struct tuple_size<::alloy::core::vector2> : integral_constant<std::size_t,2>{};
+
+  template <std::size_t N>
+  struct tuple_element<N, ::alloy::core::vector2> {
+    using type = ::alloy::core::real;
+  };
+
+} // namespace std
 
 //=============================================================================
 // class : vector2
@@ -817,6 +842,28 @@ auto alloy::core::almost_equal(const vector2& lhs,
     }
   }
   return true;
+}
+
+//-----------------------------------------------------------------------------
+// Utilities
+//-----------------------------------------------------------------------------
+
+template <std::size_t N>
+inline constexpr
+auto alloy::core::get(vector2& vec)
+  noexcept -> real&
+{
+  static_assert(N < vector2::size());
+  return vec[N];
+}
+
+template <std::size_t N>
+inline constexpr
+auto alloy::core::get(const vector2& vec)
+  noexcept -> const real&
+{
+  static_assert(N < vector2::size());
+  return vec[N];
 }
 
 //-----------------------------------------------------------------------------

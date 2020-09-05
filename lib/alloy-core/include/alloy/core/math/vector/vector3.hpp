@@ -47,6 +47,7 @@
 #include <type_traits> // std::true_type, std::false_type, std::common_type
 #include <cstddef>     // std::size_t, std::ptrdiff_t
 #include <stdexcept>   // std::out_of_range
+#include <tuple>       // std::tuple_element, std::tuple_size
 
 namespace alloy::core {
 
@@ -378,6 +379,18 @@ namespace alloy::core {
                                 const vector3& v2,
                                 const vector3& v3) noexcept -> bool;
 
+  /// \{
+  /// \brief Gets the Nth entry from a given vector, used for structure bindings
+  ///
+  /// \tparam N the index
+  /// \param vec the vector to decompose
+  /// \return reference to the Nth entry
+  template <std::size_t N>
+  constexpr auto get(vector3& vec) noexcept -> real&;
+  template <std::size_t N>
+  constexpr auto get(const vector3& vec) noexcept -> const real&;
+  /// \}
+
   //---------------------------------------------------------------------------
   // Quantifiers
   //---------------------------------------------------------------------------
@@ -423,6 +436,17 @@ namespace alloy::core {
 
 } // namespace alloy::core
 
+namespace std {
+
+  template <>
+  struct tuple_size<::alloy::core::vector3> : integral_constant<std::size_t,3>{};
+
+  template <std::size_t N>
+  struct tuple_element<N, ::alloy::core::vector3> {
+    using type = ::alloy::core::real;
+  };
+
+} // namespace std
 
 //=============================================================================
 // class : vector3
@@ -838,6 +862,28 @@ auto alloy::core::almost_equal(const vector3& lhs,
     }
   }
   return true;
+}
+
+//-----------------------------------------------------------------------------
+// Utilities
+//-----------------------------------------------------------------------------
+
+template <std::size_t N>
+inline constexpr
+auto alloy::core::get(vector3& vec)
+  noexcept -> real&
+{
+  static_assert(N < vector3::size());
+  return vec[N];
+}
+
+template <std::size_t N>
+inline constexpr
+auto alloy::core::get(const vector3& vec)
+  noexcept -> const real&
+{
+  static_assert(N < vector3::size());
+  return vec[N];
 }
 
 //-----------------------------------------------------------------------------
