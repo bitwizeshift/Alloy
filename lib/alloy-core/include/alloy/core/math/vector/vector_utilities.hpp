@@ -84,10 +84,10 @@ namespace alloy::core {
     vector_traits() = delete;
     ~vector_traits() = delete;
 
-    static constexpr real x( const T& vec ) noexcept;
-    static constexpr real y( const T& vec ) noexcept;
-    static constexpr real z( const T& vec ) noexcept;
-    static constexpr real w( const T& vec ) noexcept;
+    static constexpr auto x(const T& vec) noexcept -> real;
+    static constexpr auto y(const T& vec) noexcept -> real;
+    static constexpr auto z(const T& vec) noexcept -> real;
+    static constexpr auto w(const T& vec) noexcept -> real;
   };
 
 
@@ -98,24 +98,24 @@ namespace alloy::core {
     /// \param vec the vector to convert to a vector2
     /// \return the vector2
     template<typename Vector,
-        typename=std::enable_if_t<is_vector<Vector>::value>>
-    vector2 to_vector2( const Vector& vec ) noexcept;
+             typename = std::enable_if_t<is_vector<Vector>::value>>
+    auto to_vector2(const Vector& vec) noexcept -> vector2;
 
     /// \brief Converts a vector to a vector3
     ///
     /// \param vec the vector to convert to a vector3
     /// \return the vector3
     template<typename Vector,
-        typename=std::enable_if_t<is_vector<Vector>::value>>
-    vector3 to_vector3( const Vector& vec ) noexcept;
+             typename = std::enable_if_t<is_vector<Vector>::value>>
+    auto to_vector3(const Vector& vec) noexcept -> vector3;
 
     /// \brief Converts a vector to a vector3
     ///
     /// \param vec the vector to convert to a vector3
     /// \return the vector3
     template<typename Vector,
-        typename=std::enable_if_t<is_vector<Vector>::value>>
-    vector4 to_vector4( const Vector& vec ) noexcept;
+             typename = std::enable_if_t<is_vector<Vector>::value>>
+    auto to_vector4(const Vector& vec) noexcept -> vector4;
 
   } // inline namespace casts
 
@@ -155,9 +155,9 @@ namespace alloy::core::detail {
 } // namespace alloy::core::detail
 
 template<typename T>
-inline constexpr alloy::core::real
-  alloy::core::vector_traits<T>::x( const T& vec )
-  noexcept
+inline constexpr
+auto alloy::core::vector_traits<T>::x(const T& vec)
+  noexcept -> real
 {
   if constexpr (detail::vector_has_x<T>::value) {
     return vec.x();
@@ -167,9 +167,9 @@ inline constexpr alloy::core::real
 }
 
 template<typename T>
-inline constexpr alloy::core::real
-  alloy::core::vector_traits<T>::y( const T& vec )
-  noexcept
+inline constexpr
+auto alloy::core::vector_traits<T>::y(const T& vec)
+  noexcept -> real
 {
   if constexpr (detail::vector_has_y<T>::value) {
     return vec.y();
@@ -179,9 +179,9 @@ inline constexpr alloy::core::real
 }
 
 template<typename T>
-inline constexpr alloy::core::real
-  alloy::core::vector_traits<T>::z( const T& vec )
-  noexcept
+inline constexpr
+auto alloy::core::vector_traits<T>::z(const T& vec)
+  noexcept -> real
 {
   if constexpr (detail::vector_has_z<T>::value) {
     return vec.z();
@@ -191,9 +191,9 @@ inline constexpr alloy::core::real
 }
 
 template<typename T>
-inline constexpr alloy::core::real
-  alloy::core::vector_traits<T>::w( const T& vec )
-  noexcept
+inline constexpr
+auto alloy::core::vector_traits<T>::w(const T& vec)
+  noexcept -> real
 {
   if constexpr (detail::vector_has_w<T>::value) {
     return vec.w();
@@ -208,9 +208,8 @@ inline constexpr alloy::core::real
 //------------------------------------------------------------------------------
 
 template<typename Vector, typename>
-inline alloy::core::vector2
-  alloy::core::casts::to_vector2( const Vector& vec )
-  noexcept
+inline auto alloy::core::casts::to_vector2(const Vector& vec)
+  noexcept -> vector2
 {
   return vector2{
       vector_traits<Vector>::x(vec),
@@ -219,9 +218,8 @@ inline alloy::core::vector2
 }
 
 template<typename Vector, typename>
-inline alloy::core::vector3
-  alloy::core::casts::to_vector3( const Vector& vec )
-  noexcept
+inline auto alloy::core::casts::to_vector3(const Vector& vec)
+  noexcept -> vector3
 {
   return vector3{
       vector_traits<Vector>::x(vec),
@@ -231,9 +229,8 @@ inline alloy::core::vector3
 }
 
 template<typename Vector, typename>
-inline alloy::core::vector4
-  alloy::core::casts::to_vector4( const Vector& vec )
-  noexcept
+inline auto alloy::core::casts::to_vector4(const Vector& vec)
+  noexcept -> vector4
 {
   return vector4{
       vector_traits<Vector>::x(vec),

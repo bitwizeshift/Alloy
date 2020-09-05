@@ -1,5 +1,7 @@
 #include "alloy/core/math/vector/vector3.hpp"
 
+#include <array> // std::array
+
 //=============================================================================
 // class : vector3
 //=============================================================================
@@ -8,16 +10,14 @@
 // Quantifiers
 //-----------------------------------------------------------------------------
 
-alloy::core::real
-  alloy::core::vector3::magnitude()
-  const noexcept
+auto alloy::core::vector3::magnitude()
+  const noexcept -> real
 {
   return sqrt((x()*x()) + (y()*y()) + (z()*z()));
 }
 
-alloy::core::vector3
-  alloy::core::vector3::perpendicular()
-  const noexcept
+auto alloy::core::vector3::perpendicular()
+  const noexcept -> vector3
 {
   static constexpr auto unit_x = vector3{
     real{1}, real{0}, real{0},
@@ -36,9 +36,8 @@ alloy::core::vector3
   return perp.normalize();
 }
 
-alloy::core::radian
-  alloy::core::vector3::angle_between(const vector3& other)
-  const noexcept
+auto alloy::core::vector3::angle_between(const vector3& other)
+  const noexcept -> radian
 {
   auto mag_product = magnitude() * other.magnitude();
 
@@ -52,9 +51,8 @@ alloy::core::radian
   return trigonometry::arccos(f);
 }
 
-alloy::core::radian
-  alloy::core::vector3::angle_to(const vector3& other)
-  const noexcept
+auto alloy::core::vector3::angle_to(const vector3& other)
+  const noexcept -> radian
 {
   const auto angle = angle_between(other);
 
@@ -69,9 +67,8 @@ alloy::core::radian
 // Modifiers
 //-----------------------------------------------------------------------------
 
-alloy::core::vector3&
-  alloy::core::vector3::normalize()
-  noexcept
+auto alloy::core::vector3::normalize()
+  noexcept -> vector3&
 {
   const auto square_mag = square_magnitude();
 
@@ -98,14 +95,14 @@ alloy::core::vector3&
 // Utilities
 //-----------------------------------------------------------------------------
 
-bool alloy::core::are_linearly_independent(const vector3& v1,
+auto alloy::core::are_linearly_independent(const vector3& v1,
                                            const vector3& v2,
                                            const vector3& v3)
-  noexcept
+  noexcept -> bool
 {
   // linear-independence tested by checking if the determinant of a produced
   // 3x3 matrix is non-zero
-  const vector3 matrix[3] = {v1,v2,v3};
+  const auto matrix = std::array<vector3,3>{v1,v2,v3};
 
   const auto determinant = (matrix[0][0] * matrix[1][1] * matrix[2][2]) -
                            (matrix[0][0] * matrix[1][2] * matrix[2][1]) -
