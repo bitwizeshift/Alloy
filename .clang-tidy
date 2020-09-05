@@ -3,7 +3,7 @@ Checks:          'clang-diagnostic-*,clang-analyzer-*,bugprone-*,cppcoreguidelin
 WarningsAsErrors: 'clang-diagnostic-*,clang-analyzer-*,bugprone-*,cppcoreguidelines-*,readability-*,portability-*,performance-*,misc-*'
 HeaderFilterRegex: ''
 AnalyzeTemporaryDtors: false
-FormatStyle:     llvm
+FormatStyle:     file
 User:            bitwize
 CheckOptions:    
   - key:             bugprone-argument-comment.StrictMode
@@ -89,7 +89,7 @@ CheckOptions:
   - key:             modernize-loop-convert.MinConfidence
     value:           reasonable
   - key:             modernize-loop-convert.NamingStyle
-    value:           CamelCase
+    value:           snake_case
   - key:             modernize-pass-by-value.IncludeStyle
     value:           llvm
   - key:             modernize-replace-auto-ptr.IncludeStyle
