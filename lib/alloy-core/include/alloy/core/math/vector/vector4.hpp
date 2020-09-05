@@ -80,6 +80,14 @@ namespace alloy::core {
     using size_type  = std::size_t;
     using index_type = std::ptrdiff_t;
 
+    //-------------------------------------------------------------------------
+    // Public Types
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \brief The tolerance to use for almost_equal comparison
+    static inline constexpr auto comparison_tolerance = default_tolerance;
+
     //--------------------------------------------------------------------------
     // Constructors
     //--------------------------------------------------------------------------
@@ -882,7 +890,7 @@ auto alloy::core::almost_equal(const vector4& lhs, const vector4& rhs)
   noexcept
   -> bool
 {
-  return almost_equal(lhs, rhs, default_tolerance);
+  return almost_equal(lhs, rhs, vector4::comparison_tolerance);
 }
 
 inline constexpr
