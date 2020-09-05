@@ -122,6 +122,7 @@ set(header_files
   include/alloy/core/math/trigonometry.hpp
   include/alloy/core/math/vector.hpp
   include/alloy/core/math/vector/vector_utilities.hpp
+  include/alloy/core/math/vector/vector_streams.hpp
   include/alloy/core/math/vector/vector2.hpp
   include/alloy/core/math/vector/vector3.hpp
   include/alloy/core/math/vector/vector4.hpp

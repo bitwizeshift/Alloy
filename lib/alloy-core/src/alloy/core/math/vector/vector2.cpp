@@ -8,10 +8,9 @@
 // Public Static Factories
 //-----------------------------------------------------------------------------
 
-alloy::core::vector2
-  alloy::core::vector2::from_magnitude_direction(real magnitude,
-                                                 radian direction)
-  noexcept
+auto alloy::core::vector2::from_magnitude_direction(real magnitude,
+                                                    radian direction)
+  noexcept -> vector2
 {
   return vector2 {
     magnitude * trigonometry::cos(direction),
@@ -23,16 +22,14 @@ alloy::core::vector2
 // Quantifiers
 //-----------------------------------------------------------------------------
 
-alloy::core::real
-  alloy::core::vector2::magnitude()
-  const noexcept
+auto alloy::core::vector2::magnitude()
+  const noexcept -> real
 {
   return sqrt((x()*x()) + (y()*y()));
 }
 
-alloy::core::radian
-  alloy::core::vector2::angle_between(const vector2& other)
-  const noexcept
+auto alloy::core::vector2::angle_between(const vector2 &other)
+  const noexcept -> radian
 {
   auto mag_product = magnitude() * other.magnitude();
 
@@ -46,9 +43,8 @@ alloy::core::radian
   return trigonometry::arccos(f);
 }
 
-alloy::core::radian
-  alloy::core::vector2::angle_to(const vector2& other)
-  const noexcept
+auto alloy::core::vector2::angle_to(const vector2 &other)
+  const noexcept -> radian
 {
   auto angle = angle_between(other);
 
@@ -63,9 +59,8 @@ alloy::core::radian
 // Modifiers
 //-----------------------------------------------------------------------------
 
-alloy::core::vector2&
-  alloy::core::vector2::normalize()
-  noexcept
+auto alloy::core::vector2::normalize()
+  noexcept -> vector2&
 {
   const auto square_mag = square_magnitude();
 
@@ -91,8 +86,8 @@ alloy::core::vector2&
 // Utilities
 //-----------------------------------------------------------------------------
 
-bool alloy::core::are_linearly_independent(const vector2& v1, const vector2& v2)
-  noexcept
+auto alloy::core::are_linearly_independent(const vector2 &v1, const vector2 &v2)
+  noexcept -> bool
 {
   // linear-independence tested by checking if the determinant of a produced
   // 2x2 matrix is non-zero
