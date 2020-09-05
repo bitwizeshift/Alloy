@@ -49,7 +49,7 @@ namespace alloy::core {
 
   struct radian_unit
   {
-    static constexpr core::real revolution() noexcept;
+    static constexpr auto revolution() noexcept -> real;
   };
 
   //============================================================================
@@ -73,7 +73,7 @@ namespace alloy::core {
     /// \param angle the angle to convert
     /// \return the angle in radians
     template<typename AngleUnit>
-    constexpr radian to_radian( basic_angle<AngleUnit> angle ) noexcept;
+    constexpr auto to_radian(basic_angle<AngleUnit> angle) noexcept -> radian;
 
   } // inline namespace casts
 
@@ -106,7 +106,7 @@ namespace alloy::core {
   //============================================================================
 
   inline namespace literals {
-    constexpr radian operator""_rad( long double x ) noexcept;
+    constexpr auto operator""_rad(long double x) noexcept -> radian;
   } // inline namespace literals
 } // namespace alloy::core
 
@@ -115,8 +115,9 @@ namespace alloy::core {
 // struct : radian_unit
 //==============================================================================
 
-inline constexpr alloy::core::real alloy::core::radian_unit::revolution()
-  noexcept
+inline constexpr
+auto alloy::core::radian_unit::revolution()
+  noexcept -> real
 {
   return static_cast<real>(math_constants::two_pi);
 }
@@ -130,9 +131,9 @@ inline constexpr alloy::core::real alloy::core::radian_unit::revolution()
 //------------------------------------------------------------------------------
 
 template<typename AngleUnit>
-inline constexpr alloy::core::radian
-  alloy::core::casts::to_radian( basic_angle<AngleUnit> angle )
-  noexcept
+inline constexpr
+auto alloy::core::casts::to_radian(basic_angle<AngleUnit> angle)
+  noexcept -> radian
 {
   return to_angle<radian>(angle);
 }
@@ -141,9 +142,9 @@ inline constexpr alloy::core::radian
 // Literals
 //==============================================================================
 
-inline constexpr alloy::core::radian
-  alloy::core::literals::operator ""_rad( long double x )
-  noexcept
+inline constexpr
+auto alloy::core::literals::operator""_rad(long double x)
+  noexcept -> radian
 {
   return radian{ static_cast<real>(x) };
 }

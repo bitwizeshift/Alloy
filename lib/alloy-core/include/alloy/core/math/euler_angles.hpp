@@ -34,10 +34,12 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/config.hpp"            // ALLOY_CORE_EXCEPTIONS_ENABLED
+#include "alloy/core/intrinsics.hpp"        // ALLOY_COMPILER_DIAGNOSTIC_PUSH
 #include "alloy/core/assert.hpp"            // ALLOY_ASSERT
-#include "alloy/core/precision.hpp"         // core::real
-#include "alloy/core/math/math.hpp"         // core::almost_equals
-#include "alloy/core/math/angle/radian.hpp" // core::radian
+#include "alloy/core/precision.hpp"         // real
+#include "alloy/core/math/math.hpp"         // almost_equals
+#include "alloy/core/math/angle/radian.hpp" // radian
 
 #include <cstddef>   // std::size_t, std::ptrdiff_t
 #include <stdexcept> // std::out_of_range
@@ -56,7 +58,7 @@ namespace alloy::core {
   class euler_angles
   {
     //--------------------------------------------------------------------------
-    // Public member Types
+    // Public Member Types
     //--------------------------------------------------------------------------
   public:
 
@@ -68,6 +70,14 @@ namespace alloy::core {
 
     using size_type  = std::size_t;           ///< The type used for sizes
     using index_type = std::ptrdiff_t;        ///< The type used for indices
+
+    //--------------------------------------------------------------------------
+    // Public Static Members
+    //--------------------------------------------------------------------------
+  public:
+
+    /// \brief The default comparison tolerance used for comparing euler angles
+    static inline constexpr auto comparison_tolerance = default_tolerance;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -83,17 +93,12 @@ namespace alloy::core {
     /// \param yaw the yaw angle
     /// \param pitch the pitch angle
     /// \param roll the roll angle
-    constexpr euler_angles( radian yaw, radian pitch, radian roll ) noexcept;
+    constexpr euler_angles(radian yaw, radian pitch, radian roll) noexcept;
 
     /// \brief Constructs this euler_angles by copying another instance
     ///
     /// \param other the other euler_angles to copy
-    constexpr euler_angles( const euler_angles& other ) noexcept = default;
-
-    /// \brief Constructs this euler_angles by moving another instance
-    ///
-    /// \param other the other euler_angles to move
-    constexpr euler_angles( euler_angles&& other ) noexcept = default;
+    constexpr euler_angles(const euler_angles& other) noexcept = default;
 
     //--------------------------------------------------------------------------
 
@@ -101,13 +106,7 @@ namespace alloy::core {
     ///
     /// \param other the other euler_angles to copy
     /// \return reference to \c (*this)
-    euler_angles& operator=( const euler_angles& other ) noexcept = default;
-
-    /// \brief Move-assigns the contents of an existing euler_angles
-    ///
-    /// \param other the other euler_angles to move
-    /// \return reference to \c (*this)
-    euler_angles& operator=( euler_angles&& other ) noexcept = default;
+    auto operator=(const euler_angles& other) noexcept -> euler_angles& = default;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -117,38 +116,38 @@ namespace alloy::core {
     /// \brief Gets the number of components in the vector2
     ///
     /// \return the number of components in the vector2
-    constexpr size_type size() const noexcept;
+    constexpr auto size() const noexcept -> size_type;
 
     /// \{
     /// \brief Gets the yaw angle
     ///
     /// \return the yaw angle
-    constexpr reference yaw() noexcept;
-    constexpr const_reference yaw() const noexcept;
+    constexpr auto yaw() noexcept -> reference;
+    constexpr auto yaw() const noexcept -> const_reference;
     /// \}
 
     /// \{
     /// \brief Gets the pitch angle
     ///
     /// \return the pitch angle
-    constexpr reference pitch() noexcept;
-    constexpr const_reference pitch() const noexcept;
+    constexpr auto pitch() noexcept -> reference;
+    constexpr auto pitch() const noexcept -> const_reference;
     /// \}
 
     /// \{
     /// \brief Gets the roll angle
     ///
     /// \return the roll angle
-    constexpr reference roll() noexcept;
-    constexpr const_reference roll() const noexcept;
+    constexpr auto roll() noexcept -> reference;
+    constexpr auto roll() const noexcept -> const_reference;
     /// \}
 
     /// \{
     /// \brief Gets a pointer to the underlying data
     ///
     /// \return pointer to the underlying radians
-    constexpr pointer data() noexcept;
-    constexpr const_pointer data() const noexcept;
+    constexpr auto data() noexcept -> pointer;
+    constexpr auto data() const noexcept -> const_pointer;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -163,8 +162,8 @@ namespace alloy::core {
     ///
     /// \param n the element index
     /// \return a reference to the entry
-    reference at( index_type n );
-    const_reference at( index_type n ) const;
+    auto at(index_type n) -> reference;
+    auto at(index_type n) const -> const_reference;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -174,8 +173,8 @@ namespace alloy::core {
     ///
     /// \param n the element index
     /// \return a reference to the entry
-    constexpr reference operator[] ( index_type n ) noexcept;
-    constexpr const_reference operator[] ( index_type n ) const noexcept;
+    constexpr auto operator[](index_type n) noexcept -> reference;
+    constexpr auto operator[](index_type n) const noexcept -> const_reference;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -187,25 +186,25 @@ namespace alloy::core {
     ///
     /// \param rhs the other euler_angles to perform the dot-product with
     /// \return the dot product of \c this and \p rhs
-    constexpr real dot( const euler_angles& rhs ) const noexcept;
+    constexpr auto dot(const euler_angles& rhs) const noexcept -> real;
 
     //--------------------------------------------------------------------------
     // Unary Operators
     //--------------------------------------------------------------------------
   public:
 
-    constexpr const euler_angles& operator+() const noexcept;
-    constexpr euler_angles operator-() const noexcept;
+    constexpr auto operator+() const noexcept -> const euler_angles&;
+    constexpr auto operator-() const noexcept -> euler_angles;
 
     //--------------------------------------------------------------------------
     // Compound Operators
     //--------------------------------------------------------------------------
   public:
 
-    euler_angles& operator+=( const euler_angles& rhs ) noexcept;
-    euler_angles& operator-=( const euler_angles& rhs ) noexcept;
-    euler_angles& operator*=( real scalar ) noexcept;
-    euler_angles& operator/=( real scalar ) noexcept;
+    auto operator+=(const euler_angles& rhs) noexcept -> euler_angles&;
+    auto operator-=(const euler_angles& rhs) noexcept -> euler_angles&;
+    auto operator*=(real scalar) noexcept -> euler_angles&;
+    auto operator/=(real scalar) noexcept -> euler_angles&;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -223,25 +222,25 @@ namespace alloy::core {
   // Arithmetic Operators
   //----------------------------------------------------------------------------
 
-  constexpr euler_angles operator+( const euler_angles& lhs,
-                                    const euler_angles& rhs ) noexcept;
-  constexpr euler_angles operator-( const euler_angles& lhs,
-                                    const euler_angles& rhs ) noexcept;
-  constexpr euler_angles operator*( const euler_angles& lhs,
-                                    real scalar ) noexcept;
-  constexpr euler_angles operator*( real scalar,
-                                    const euler_angles& rhs ) noexcept;
-  constexpr euler_angles operator/( const euler_angles& lhs,
-                                    real scalar ) noexcept;
+  constexpr auto operator+(const euler_angles& lhs,
+                           const euler_angles& rhs) noexcept -> euler_angles;
+  constexpr auto operator-(const euler_angles& lhs,
+                           const euler_angles& rhs) noexcept -> euler_angles;
+  constexpr auto operator*(const euler_angles& lhs,
+                           real scalar) noexcept -> euler_angles;
+  constexpr auto operator*(real scalar,
+                           const euler_angles& rhs) noexcept -> euler_angles;
+  constexpr auto operator/(const euler_angles& lhs,
+                           real scalar) noexcept -> euler_angles;
 
   //----------------------------------------------------------------------------
   // Comparisons
   //----------------------------------------------------------------------------
 
-  constexpr bool operator==( const euler_angles& lhs,
-                             const euler_angles& rhs ) noexcept;
-  constexpr bool operator!=( const euler_angles& lhs,
-                             const euler_angles& rhs ) noexcept;
+  constexpr auto operator==(const euler_angles& lhs,
+                            const euler_angles& rhs) noexcept -> bool;
+  constexpr auto operator!=(const euler_angles& lhs,
+                            const euler_angles& rhs) noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -251,8 +250,8 @@ namespace alloy::core {
   /// \param lhs the left euler_angles
   /// \param rhs the right euler_angles
   /// \return \c true if the two euler_angles contain almost equal values
-  constexpr bool almost_equal( const euler_angles& lhs,
-                               const euler_angles& rhs ) noexcept;
+  constexpr auto almost_equal(const euler_angles& lhs,
+                              const euler_angles& rhs) noexcept -> bool;
 
   /// \brief Determines equality between two euler_angles relative to
   ///        \p tolerance
@@ -260,9 +259,9 @@ namespace alloy::core {
   /// \param lhs the left euler_angles
   /// \param rhs the right euler_angles
   /// \return \c true if the two euler_angles contain almost equal values
-  constexpr bool almost_equal( const euler_angles& lhs,
-                               const euler_angles& rhs,
-                               real tolerance ) noexcept;
+  constexpr auto almost_equal(const euler_angles& lhs,
+                              const euler_angles& rhs,
+                              real tolerance) noexcept -> bool;
 
   //----------------------------------------------------------------------------
   // Quantifiers
@@ -273,8 +272,8 @@ namespace alloy::core {
   /// \param lhs the left euler_angles
   /// \param rhs the right euler_angles
   /// \return the result of the dot product
-  constexpr real dot( const euler_angles& lhs,
-                      const euler_angles& rhs ) noexcept;
+  constexpr
+  auto dot(const euler_angles& lhs, const euler_angles& rhs) noexcept -> real;
 
 } // namespace alloy::core
 
@@ -286,7 +285,8 @@ namespace alloy::core {
 // Constructors
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::euler_angles::euler_angles()
+inline constexpr
+alloy::core::euler_angles::euler_angles()
   noexcept
   : m_data{
       radian{real{0}},
@@ -297,9 +297,8 @@ inline constexpr alloy::core::euler_angles::euler_angles()
 
 }
 
-inline constexpr alloy::core::euler_angles::euler_angles( radian yaw,
-                                                          radian pitch,
-                                                          radian roll)
+inline constexpr
+alloy::core::euler_angles::euler_angles(radian yaw, radian pitch, radian roll)
   noexcept
   : m_data{yaw, pitch, roll}
 {
@@ -310,70 +309,67 @@ inline constexpr alloy::core::euler_angles::euler_angles( radian yaw,
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::euler_angles::size_type
-  alloy::core::euler_angles::size()
-  const noexcept
+inline constexpr
+auto alloy::core::euler_angles::size()
+  const noexcept -> size_type
 {
   return 3;
 }
 
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::euler_angles::reference
-  alloy::core::euler_angles::yaw()
-  noexcept
+inline constexpr
+auto alloy::core::euler_angles::yaw()
+  noexcept -> reference
 {
   return m_data[0];
 }
 
-inline constexpr alloy::core::euler_angles::const_reference
-  alloy::core::euler_angles::yaw()
-  const noexcept
+inline constexpr
+auto alloy::core::euler_angles::yaw()
+  const noexcept -> const_reference
 {
   return m_data[0];
 }
 
-
-inline constexpr alloy::core::euler_angles::reference
-  alloy::core::euler_angles::pitch()
-  noexcept
+inline constexpr
+auto alloy::core::euler_angles::pitch()
+  noexcept -> reference
 {
   return m_data[1];
 }
 
-inline constexpr alloy::core::euler_angles::const_reference
-  alloy::core::euler_angles::pitch()
-  const noexcept
+inline constexpr
+auto alloy::core::euler_angles::pitch()
+  const noexcept -> const_reference
 {
   return m_data[1];
 }
 
-
-inline constexpr alloy::core::euler_angles::reference
-  alloy::core::euler_angles::roll()
-  noexcept
+inline constexpr
+auto alloy::core::euler_angles::roll()
+  noexcept -> reference
 {
   return m_data[2];
 }
 
-inline constexpr alloy::core::euler_angles::const_reference
-  alloy::core::euler_angles::roll()
-  const noexcept
+inline constexpr
+auto alloy::core::euler_angles::roll()
+  const noexcept -> const_reference
 {
   return m_data[2];
 }
 
-
-inline constexpr alloy::core::euler_angles::pointer
-  alloy::core::euler_angles::data()
-  noexcept
+inline constexpr
+auto alloy::core::euler_angles::data()
+  noexcept -> pointer
 {
   return &m_data[0];
 }
 
-inline constexpr alloy::core::euler_angles::const_pointer
-  alloy::core::euler_angles::data()
-  const noexcept
+inline constexpr
+auto alloy::core::euler_angles::data()
+  const noexcept -> const_pointer
 {
   return &m_data[0];
 }
@@ -382,36 +378,44 @@ inline constexpr alloy::core::euler_angles::const_pointer
 // Element Access
 //------------------------------------------------------------------------------
 
-inline alloy::core::euler_angles::reference
-  alloy::core::euler_angles::at(index_type n)
+inline
+auto alloy::core::euler_angles::at(index_type n)
+  -> reference
 {
+#if ALLOY_CORE_EXCEPTIONS_ENABLED
   if (n < 0 || n >= 3) {
     throw std::out_of_range{"euler_angles::at"};
   }
+#else
+  ALLOY_ASSERT(n < 3 && n >= 0);
+#endif
   return m_data[n];
 }
 
-inline alloy::core::euler_angles::const_reference
-alloy::core::euler_angles::at(index_type n)
-  const
+inline
+auto alloy::core::euler_angles::at(index_type n)
+  const -> const_reference
 {
+#if ALLOY_CORE_EXCEPTIONS_ENABLED
   if (n < 0 || n >= 3) {
     throw std::out_of_range{"euler_angles::at"};
   }
+#else
+  ALLOY_ASSERT(n < 3 && n >= 0);
+#endif
   return m_data[n];
 }
 
-
-inline constexpr alloy::core::euler_angles::reference
-  alloy::core::euler_angles::operator[](index_type n)
-  noexcept
+inline constexpr
+auto alloy::core::euler_angles::operator[](index_type n)
+  noexcept -> reference
 {
   return m_data[n];
 }
 
-inline constexpr alloy::core::euler_angles::const_reference
-  alloy::core::euler_angles::operator[](index_type n)
-  const noexcept
+inline constexpr
+auto alloy::core::euler_angles::operator[](index_type n)
+  const noexcept -> const_reference
 {
   return m_data[n];
 }
@@ -420,9 +424,9 @@ inline constexpr alloy::core::euler_angles::const_reference
 // Quantifiers
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::real
-  alloy::core::euler_angles::dot(const euler_angles& rhs)
-  const noexcept
+inline constexpr
+auto alloy::core::euler_angles::dot(const euler_angles& rhs)
+  const noexcept -> real
 {
   auto result = real{0};
   for (auto i = 0; i < 3; ++i) {
@@ -435,16 +439,16 @@ inline constexpr alloy::core::real
 // Unary Operators
 //------------------------------------------------------------------------------
 
-inline constexpr const alloy::core::euler_angles&
-  alloy::core::euler_angles::operator+()
-  const noexcept
+inline constexpr
+auto alloy::core::euler_angles::operator+()
+  const noexcept -> const euler_angles&
 {
   return (*this);
 }
 
-inline constexpr alloy::core::euler_angles
-  alloy::core::euler_angles::operator-()
-  const noexcept
+inline constexpr
+auto alloy::core::euler_angles::operator-()
+  const noexcept -> euler_angles
 {
   return euler_angles{ -yaw(), -pitch(), -roll() };
 }
@@ -453,9 +457,9 @@ inline constexpr alloy::core::euler_angles
 // Compound Operators
 //------------------------------------------------------------------------------
 
-inline alloy::core::euler_angles&
-  alloy::core::euler_angles::operator+=( const euler_angles& rhs )
-  noexcept
+inline
+auto alloy::core::euler_angles::operator+=(const euler_angles& rhs)
+  noexcept -> euler_angles&
 {
   for (auto i = 0; i < 3; ++i) {
     m_data[i] += rhs.m_data[i];
@@ -463,9 +467,9 @@ inline alloy::core::euler_angles&
   return (*this);
 }
 
-inline alloy::core::euler_angles&
-  alloy::core::euler_angles::operator-=( const euler_angles& rhs )
-  noexcept
+inline
+auto alloy::core::euler_angles::operator-=(const euler_angles& rhs)
+  noexcept -> euler_angles&
 {
   for (auto i = 0; i < 3; ++i) {
     m_data[i] -= rhs.m_data[i];
@@ -473,9 +477,9 @@ inline alloy::core::euler_angles&
   return (*this);
 }
 
-inline alloy::core::euler_angles&
-  alloy::core::euler_angles::operator*=(real scalar)
-  noexcept
+inline
+auto alloy::core::euler_angles::operator*=(real scalar)
+  noexcept -> euler_angles&
 {
   for (auto i = 0; i < 3; ++i) {
     m_data[i] *= scalar;
@@ -483,9 +487,9 @@ inline alloy::core::euler_angles&
   return (*this);
 }
 
-inline alloy::core::euler_angles&
-  alloy::core::euler_angles::operator/=(real scalar)
-  noexcept
+inline
+auto alloy::core::euler_angles::operator/=(real scalar)
+  noexcept -> euler_angles&
 {
   const auto reciprocal = real{1} / scalar;
 
@@ -503,10 +507,9 @@ inline alloy::core::euler_angles&
 // Arithmetic Operators
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::euler_angles
-  alloy::core::operator+( const euler_angles& lhs,
-                          const euler_angles& rhs )
-  noexcept
+inline constexpr
+auto alloy::core::operator+(const euler_angles& lhs, const euler_angles& rhs)
+  noexcept -> euler_angles
 {
   return euler_angles{
     lhs.yaw() + rhs.yaw(),
@@ -515,10 +518,9 @@ inline constexpr alloy::core::euler_angles
   };
 }
 
-inline constexpr alloy::core::euler_angles
-  alloy::core::operator-( const euler_angles& lhs,
-                          const euler_angles& rhs )
-  noexcept
+inline constexpr
+auto alloy::core::operator-(const euler_angles& lhs, const euler_angles& rhs)
+  noexcept -> euler_angles
 {
   return euler_angles{
     lhs.yaw() - rhs.yaw(),
@@ -527,9 +529,9 @@ inline constexpr alloy::core::euler_angles
   };
 }
 
-inline constexpr alloy::core::euler_angles
-  alloy::core::operator*( const euler_angles& lhs, real scalar )
-  noexcept
+inline constexpr
+auto alloy::core::operator*(const euler_angles& lhs, real scalar)
+  noexcept -> euler_angles
 {
   return euler_angles{
     lhs.yaw() * scalar,
@@ -538,16 +540,16 @@ inline constexpr alloy::core::euler_angles
   };
 }
 
-inline constexpr alloy::core::euler_angles
-  alloy::core::operator*( real scalar, const euler_angles& rhs )
-  noexcept
+inline constexpr
+auto alloy::core::operator*(real scalar, const euler_angles& rhs)
+  noexcept -> euler_angles
 {
   return rhs * scalar;
 }
 
-inline constexpr alloy::core::euler_angles
-  alloy::core::operator/( const euler_angles& lhs, real scalar )
-  noexcept
+inline constexpr
+auto alloy::core::operator/(const euler_angles& lhs, real scalar) 
+  noexcept -> euler_angles
 {
   const auto reciprocal = real{1} / scalar;
 
@@ -562,9 +564,12 @@ inline constexpr alloy::core::euler_angles
 // Comparisons
 //----------------------------------------------------------------------------
 
-inline constexpr bool alloy::core::operator==( const euler_angles& lhs,
-                                               const euler_angles& rhs )
-  noexcept
+ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
+
+inline constexpr
+auto alloy::core::operator==(const euler_angles& lhs, const euler_angles& rhs)
+  noexcept -> bool
 {
   for (auto i =0; i < 3; ++i) {
     if (lhs[i] != rhs[i]) {
@@ -574,33 +579,31 @@ inline constexpr bool alloy::core::operator==( const euler_angles& lhs,
   return true;
 }
 
-inline constexpr bool alloy::core::operator!=( const euler_angles& lhs,
-                                               const euler_angles& rhs )
-  noexcept
+inline constexpr
+auto alloy::core::operator!=(const euler_angles& lhs, const euler_angles& rhs)
+  noexcept -> bool
 {
   return !(lhs==rhs);
 }
 
+ALLOY_COMPILER_DIAGNOSTIC_POP()
+
 //------------------------------------------------------------------------------
 
-inline constexpr bool alloy::core::almost_equal( const euler_angles& lhs,
-                                                 const euler_angles& rhs )
-  noexcept
+inline constexpr
+auto alloy::core::almost_equal(const euler_angles& lhs, const euler_angles& rhs)
+  noexcept -> bool
 {
-  for (auto i =0; i < 3; ++i) {
-    if (!almost_equal(lhs,rhs)) {
-      return false;
-    }
-  }
-  return true;
+  return almost_equal(lhs, rhs, euler_angles::comparison_tolerance);
 }
 
-inline constexpr bool alloy::core::almost_equal( const euler_angles& lhs,
-                                                 const euler_angles& rhs,
-                                                 real tolerance )
-  noexcept
+inline constexpr
+auto alloy::core::almost_equal(const euler_angles& lhs,
+                               const euler_angles& rhs,
+                               real tolerance)
+  noexcept -> bool
 {
-  for (auto i =0; i < 3; ++i) {
+  for (auto i = 0; i < 3; ++i) {
     if (!almost_equal(lhs,rhs,tolerance)) {
       return false;
     }
@@ -612,9 +615,9 @@ inline constexpr bool alloy::core::almost_equal( const euler_angles& lhs,
 // Quantifiers
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::real
-  alloy::core::dot( const euler_angles& lhs, const euler_angles& rhs )
-  noexcept
+inline constexpr
+auto alloy::core::dot(const euler_angles& lhs, const euler_angles& rhs)
+  noexcept -> real
 {
   return lhs.dot(rhs);
 }

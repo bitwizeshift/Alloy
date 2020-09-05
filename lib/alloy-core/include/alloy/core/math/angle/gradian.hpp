@@ -48,7 +48,7 @@ namespace alloy::core {
 
   struct gradian_unit
   {
-    static constexpr core::real revolution() noexcept;
+    static constexpr auto revolution() noexcept -> real;
   };
 
   //============================================================================
@@ -72,7 +72,7 @@ namespace alloy::core {
     /// \param angle the angle to convert
     /// \return the angle in gradians
     template<typename AngleUnit>
-    constexpr gradian to_gradian( basic_angle<AngleUnit> angle ) noexcept;
+    constexpr auto to_gradian(basic_angle<AngleUnit> angle) noexcept -> gradian;
 
   } // inline namespace casts
 
@@ -105,7 +105,7 @@ namespace alloy::core {
   //============================================================================
 
   inline namespace literals {
-    constexpr gradian operator""_grad( long double x ) noexcept;
+    constexpr auto operator""_grad(long double x) noexcept -> gradian;
   } // inline namespace literals
 } // namespace alloy::core
 
@@ -114,8 +114,9 @@ namespace alloy::core {
 // struct : gradian_unit
 //==============================================================================
 
-inline constexpr alloy::core::real alloy::core::gradian_unit::revolution()
-  noexcept
+inline constexpr
+auto alloy::core::gradian_unit::revolution()
+  noexcept -> real
 {
   return static_cast<real>(400);
 }
@@ -129,9 +130,9 @@ inline constexpr alloy::core::real alloy::core::gradian_unit::revolution()
 //------------------------------------------------------------------------------
 
 template<typename AngleUnit>
-inline constexpr alloy::core::gradian
-  alloy::core::casts::to_gradian( basic_angle<AngleUnit> angle )
-  noexcept
+inline constexpr
+auto alloy::core::casts::to_gradian(basic_angle<AngleUnit> angle)
+  noexcept -> gradian
 {
   return to_angle<gradian>(angle);
 }
@@ -140,9 +141,9 @@ inline constexpr alloy::core::gradian
 // Literals
 //==============================================================================
 
-inline constexpr alloy::core::gradian
-  alloy::core::literals::operator ""_grad( long double x )
-  noexcept
+inline constexpr
+auto alloy::core::literals::operator""_grad(long double x)
+  noexcept -> gradian
 {
   return gradian{ static_cast<real>(x) };
 }

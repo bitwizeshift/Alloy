@@ -48,7 +48,7 @@ namespace alloy::core {
 
   struct degree_unit
   {
-    static constexpr core::real revolution() noexcept;
+    static constexpr auto revolution() noexcept -> core::real;
   };
 
   //============================================================================
@@ -72,7 +72,7 @@ namespace alloy::core {
     /// \param angle the angle to convert
     /// \return the angle in degrees
     template<typename AngleUnit>
-    constexpr degree to_degree( basic_angle<AngleUnit> angle ) noexcept;
+    constexpr auto to_degree(basic_angle<AngleUnit> angle) noexcept -> degree;
 
   } // inline namespace casts
 
@@ -105,7 +105,7 @@ namespace alloy::core {
   //============================================================================
 
   inline namespace literals {
-    constexpr degree operator""_deg( long double x ) noexcept;
+    constexpr auto operator""_deg(long double x) noexcept -> degree;
   } // inline namespace literals
 } // namespace alloy::core
 
@@ -114,8 +114,8 @@ namespace alloy::core {
 // struct : degree_unit
 //==============================================================================
 
-inline constexpr alloy::core::real alloy::core::degree_unit::revolution()
-  noexcept
+inline constexpr auto
+  alloy::core::degree_unit::revolution() noexcept -> alloy::core::real
 {
   return static_cast<real>(360);
 }
@@ -129,9 +129,9 @@ inline constexpr alloy::core::real alloy::core::degree_unit::revolution()
 //------------------------------------------------------------------------------
 
 template<typename AngleUnit>
-inline constexpr alloy::core::degree
-  alloy::core::casts::to_degree( basic_angle<AngleUnit> angle )
-  noexcept
+inline constexpr auto
+  alloy::core::casts::to_degree(basic_angle<AngleUnit> angle) noexcept
+  -> alloy::core::degree
 {
   return to_angle<degree>(angle);
 }
@@ -140,9 +140,9 @@ inline constexpr alloy::core::degree
 // Literals
 //==============================================================================
 
-inline constexpr alloy::core::degree
-  alloy::core::literals::operator ""_deg( long double x )
-  noexcept
+inline constexpr auto
+  alloy::core::literals::operator""_deg(long double x) noexcept
+  -> alloy::core::degree
 {
   return degree{ static_cast<real>(x) };
 }

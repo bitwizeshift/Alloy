@@ -38,6 +38,8 @@
 #include "alloy/core/math/matrix/matrix3.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"
 
+#include <type_traits> // std::true_type
+
 namespace alloy::core {
 
   //----------------------------------------------------------------------------
@@ -46,93 +48,15 @@ namespace alloy::core {
 
   inline namespace casts {
 
+    /// \brief Casts a matrix from type From to To
+    ///
+    /// \tparam To the type to cast to
+    /// \param from the matrix being cast from
+    /// \return a constructed matrix
     template<typename To, typename From>
-    constexpr To matrix_cast(const From& from) noexcept;
+    constexpr auto matrix_cast(const From& from) noexcept -> To;
 
   } // inline namespace casts
-
-  //============================================================================
-  // struct : matrix2_constants
-  //============================================================================
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief A collection of matrix2 constants
-  //////////////////////////////////////////////////////////////////////////////
-  struct matrix2_constants
-  {
-    //--------------------------------------------------------------------------
-    // Public Constants
-    //--------------------------------------------------------------------------
-
-    static inline constexpr auto zero = matrix2{
-      real{0}, real{0},
-      real{0}, real{0}
-    };
-    static inline constexpr auto identity = matrix2{
-      real{1}, real{0},
-      real{0}, real{1},
-    };
-  };
-
-  //============================================================================
-  // struct : matrix3_constants
-  //============================================================================
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief A collection of matrix3 constants
-  //////////////////////////////////////////////////////////////////////////////
-  struct matrix3_constants
-  {
-    //--------------------------------------------------------------------------
-    // Public Constants
-    //--------------------------------------------------------------------------
-
-    static inline constexpr auto zero = matrix3{
-      real{0}, real{0}, real{0},
-      real{0}, real{0}, real{0},
-      real{0}, real{0}, real{0}
-    };
-    static inline constexpr auto identity = matrix3{
-      real{1}, real{0}, real{0},
-      real{0}, real{1}, real{0},
-      real{0}, real{0}, real{1}
-    };
-  };
-
-  //============================================================================
-  // struct : matrix4_constants
-  //============================================================================
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief A collection of matrix4 constants
-  //////////////////////////////////////////////////////////////////////////////
-  struct matrix4_constants
-  {
-    //--------------------------------------------------------------------------
-    // Public Constants
-    //--------------------------------------------------------------------------
-
-    static inline constexpr auto zero = matrix4{
-      real{0}, real{0}, real{0}, real{0},
-      real{0}, real{0}, real{0}, real{0},
-      real{0}, real{0}, real{0}, real{0},
-      real{0}, real{0}, real{0}, real{0}
-    };
-    static inline constexpr auto identity = matrix4{
-      real{1}, real{0}, real{0}, real{0},
-      real{0}, real{1}, real{0}, real{0},
-      real{0}, real{0}, real{1}, real{0},
-      real{0}, real{0}, real{0}, real{1}
-    };
-  };
-
-  //============================================================================
-  // aliases
-  //============================================================================
-
-  using mat2_constants = matrix2_constants;
-  using mat3_constants = matrix3_constants;
-  using mat4_constants = matrix4_constants;
 
   //============================================================================
   // trait : is_matrix
@@ -169,8 +93,9 @@ namespace alloy::core::detail {
   template<>
   struct matrix_caster<matrix2,matrix2>
   {
-    static constexpr const matrix2& cast( const matrix2& from )
-      noexcept
+    static constexpr
+    auto cast(const matrix2& from)
+      noexcept -> const matrix2&
     {
       return from;
     }
@@ -179,13 +104,14 @@ namespace alloy::core::detail {
   template<>
   struct matrix_caster<matrix3,matrix2>
   {
-    static constexpr matrix3 cast( const matrix2& from )
-      noexcept
+    static constexpr
+    auto cast(const matrix2& from)
+      noexcept -> matrix3
     {
       return matrix3{
-        from.get(0,0), from.get(0,10), real{0},
-        from.get(1,0), from.get(1,10), real{0},
-        real{0},       real{0},        real{1}
+        from[0][0], from.get(0,10), real{0},
+        from[1][0], from.get(1,10), real{0},
+        real{0},    real{0},        real{1}
       };
     }
   };
@@ -193,14 +119,15 @@ namespace alloy::core::detail {
   template<>
   struct matrix_caster<matrix4,matrix2>
   {
-    static constexpr matrix4 cast( const matrix2& from )
-      noexcept
+    static constexpr
+    auto cast(const matrix2& from)
+      noexcept -> matrix4
     {
       return matrix4{
-        from.get(0,0), from.get(0,1), real{0}, real{0},
-        from.get(1,0), from.get(1,1), real{0}, real{0},
-        real{0},       real{0},       real{1}, real{0},
-        real{0},       real{0},       real{0}, real{1}
+        from[0][0], from[0][1], real{0}, real{0},
+        from[1][0], from[1][1], real{0}, real{0},
+        real{0},    real{0},    real{1}, real{0},
+        real{0},    real{0},    real{0}, real{1}
       };
     }
   };
@@ -210,12 +137,13 @@ namespace alloy::core::detail {
   template<>
   struct matrix_caster<matrix2,matrix3>
   {
-    static constexpr matrix2 cast( const matrix3& from )
-      noexcept
+    static constexpr
+    auto cast(const matrix3& from)
+      noexcept -> matrix2
     {
       return matrix2{
-        from.get(0,0), from.get(0,1),
-        from.get(1,0), from.get(1,1)
+        from[0][0], from[0][1],
+        from[1][0], from[1][1]
       };
     }
   };
@@ -223,8 +151,9 @@ namespace alloy::core::detail {
   template<>
   struct matrix_caster<matrix3,matrix3>
   {
-    static constexpr const matrix3& cast( const matrix3& from )
-      noexcept
+    static constexpr
+    auto cast(const matrix3& from)
+      noexcept -> const matrix3&
     {
       return from;
     }
@@ -233,14 +162,15 @@ namespace alloy::core::detail {
   template<>
   struct matrix_caster<matrix4,matrix3>
   {
-    static constexpr matrix4 cast( const matrix3& from )
-      noexcept
+    static constexpr
+    auto cast(const matrix3& from)
+      noexcept -> matrix4
     {
       return matrix4{
-        from.get(0,0), from.get(0,1), from.get(0,2), real{0},
-        from.get(1,0), from.get(1,1), from.get(1,2), real{0},
-        from.get(2,0), from.get(2,1), from.get(2,2), real{0},
-        real{0},       real{0},       real{0},       real{1}
+        from[0][0], from[0][1], from[0][2], real{0},
+        from[1][0], from[1][1], from[1][2], real{0},
+        from[2][0], from[2][1], from[2][2], real{0},
+        real{0},    real{0},    real{0},    real{1}
       };
     }
   };
@@ -250,12 +180,13 @@ namespace alloy::core::detail {
   template<>
   struct matrix_caster<matrix2,matrix4>
   {
-    static constexpr matrix2 cast( const matrix4& from )
-      noexcept
+    static constexpr
+    auto cast(const matrix4& from)
+      noexcept -> matrix2
     {
       return matrix2{
-        from.get(0,0), from.get(0,1),
-        from.get(1,0), from.get(1,1)
+        from[0][0], from[0][1],
+        from[1][0], from[1][1]
       };
     }
   };
@@ -263,13 +194,14 @@ namespace alloy::core::detail {
   template<>
   struct matrix_caster<matrix3,matrix4>
   {
-    static constexpr matrix3 cast( const matrix4& from )
-      noexcept
+    static constexpr
+    auto cast(const matrix4& from)
+      noexcept -> matrix3
     {
       return matrix3{
-        from.get(0,0), from.get(0,1), from.get(0,3),
-        from.get(1,0), from.get(1,1), from.get(1,3),
-        from.get(3,0), from.get(3,1), from.get(3,3)
+        from[0][0], from[0][1], from[0][3],
+        from[1][0], from[1][1], from[1][3],
+        from[3][0], from[3][1], from[3][3]
       };
     }
   };
@@ -277,8 +209,9 @@ namespace alloy::core::detail {
   template<>
   struct matrix_caster<matrix4,matrix4>
   {
-    static constexpr const matrix4& cast( const matrix4& from )
-      noexcept
+    static constexpr
+    auto cast(const matrix4& from)
+      noexcept -> const matrix4&
     {
       return from;
     }
@@ -291,8 +224,9 @@ namespace alloy::core::detail {
 //------------------------------------------------------------------------------
 
 template<typename To, typename From>
-inline constexpr To alloy::core::casts::matrix_cast( const From& from )
-  noexcept
+inline constexpr
+auto alloy::core::casts::matrix_cast(const From& from)
+  noexcept -> To
 {
   return detail::matrix_caster<To,From>::cast(from);
 }
