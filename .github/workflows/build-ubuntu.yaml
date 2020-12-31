@@ -1,0 +1,132 @@
+name: build-linux
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Ubuntu ${{ matrix.compiler }} ${{ matrix.arch }} ${{ matrix.build_type }}
+    runs-on: ubuntu-20.04
+
+    env:
+      build-directory: build
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86, x86_64]
+        build_type: [Debug, Release]
+        compiler:
+          - { cc: gcc-10, cxx: g++-10 }
+          - { cc: clang-10,  cxx: clang++-10 }
+
+    steps:
+
+      - name: Clone
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+
+      - name: Prepare Environment
+        run: |
+          if [[ "${{matrix.arch}}" == "x86" ]]; then
+            sudo dpkg --add-architecture i386
+          fi
+          sudo apt-get update
+          sudo apt-get install -y ninja-build
+          if [[ "${{matrix.compiler.cc}}" =~ "gcc" ]]; then
+            sudo apt-get install -y ${{matrix.compiler.cxx}} ${{matrix.compiler.cxx}}-multilib
+          else
+            sudo apt-get install -y ${{matrix.compiler.cc}} g++-multilib
+          fi
+          python -m pip install --upgrade pip
+          pip install conan
+          conan --version
+          cmake -E make_directory ${{env.build-directory}}
+
+      - name: Prepare Architecture
+        run: |
+          if [[ "${{matrix.arch}}" = "x86" ]]; then
+            echo "CXXFLAGS=${CXXFLAGS} -m32" >> ${GITHUB_ENV}
+          fi
+
+      - name: Configure
+        working-directory: ${{env.build-directory}}
+        env:
+          CC: ${{matrix.compiler.cc}}
+          CXX: ${{matrix.compiler.cxx}}
+        run: |
+          conan profile new --detect default
+          conan profile update settings.arch=${{matrix.arch}} default
+          cmake ..                                         \
+             -GNinja                                       \
+             -DCMAKE_BUILD_TYPE=${{matrix.build_type}}     \
+             -DALLOY_COMPILE_SELF_CONTAINMENT_TESTS=On     \
+             -DALLOY_COMPILE_TESTS=On                      \
+             -DALLOY_COMPILE_EXTRAS=On                     \
+             -DALLOY_COMPILE_EXAMPLES=On                   \
+             -DALLOY_ENABLE_EXCEPTIONS=On
+
+      - name: Build
+        working-directory: ${{env.build-directory}}
+        run: cmake --build .
+
+      - name: Test
+        working-directory: ${{env.build-directory}}
+        run: ctest --output-on-failure
+
+  # TODO(#9): Enable sanitizer on Ubuntu
+  # sanitize:
+  #   name: ${{matrix.compiler.cc}} '${{matrix.sanitizer}}' sanitizer
+  #   runs-on: ubuntu-20.04
+  #   needs: test
+  #
+  #   env:
+  #     build-directory: build
+  #
+  #   strategy:
+  #     matrix:
+  #       compiler:
+  #         - { cc: gcc, cxx: g++ }
+  #         - { cc: clang, cxx: clang++ }
+  #       sanitizer: [address, undefined]
+  #
+  #   steps:
+  #     - name: Clone
+  #       uses: actions/checkout@v2
+  #
+  #     - name: Prepare Environment
+  #       run: |
+  #         sudo apt-get install -y ninja-build
+  #         if [[ "${{matrix.compiler.cc}}" =~ "gcc" ]]; then
+  #           sudo apt-get install -y ${{matrix.compiler.cxx}} ${{matrix.compiler.cxx}}-multilib
+  #         else
+  #           sudo apt-get install -y ${{matrix.compiler.cc}} g++-multilib
+  #         fi
+  #         cmake -E make_directory ${{env.build-directory}}
+  #
+  #     - name: Configure
+  #       working-directory: ${{env.build-directory}}
+  #       env:
+  #         CC: ${{matrix.compiler.cc}}
+  #         CXX: ${{matrix.compiler.cxx}}
+  #       run: |
+  #         cmake ..                                         \
+  #            -GNinja                                       \
+  #            -DCMAKE_BUILD_TYPE=Debug                      \
+  #            -DCMAKE_CXX_FLAGS="-fsanitize=${{matrix.sanitizer}}" \
+  #            -DALLOY_COMPILE_SELF_CONTAINMENT_TESTS=On     \
+  #            -DALLOY_COMPILE_TESTS=On                      \
+  #            -DALLOY_COMPILE_EXTRAS=On                     \
+  #            -DALLOY_COMPILE_EXAMPLES=On                   \
+  #            -DALLOY_ENABLE_EXCEPTIONS=On
+  #
+  #     - name: Build
+  #       working-directory: ${{env.build-directory}}
+  #       run: cmake --build .
+  #
+  #     - name: Test (Sanitize)
+  #       working-directory: ${{env.build-directory}}
+  #       run: ctest --output-on-failure

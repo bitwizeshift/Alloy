@@ -3,36 +3,40 @@ name: build-windows
 on: [push, pull_request]
 
 jobs:
-  ci:
-    name: Windows ${{ matrix.compiler }} ${{ matrix.arch }} ${{ matrix.build_type }}
-    runs-on: ${{ matrix.os }}
-
+  test:
+    name: Windows ${{matrix.compiler.name}} ${{matrix.arch}} ${{matrix.build_type}}
+    runs-on: windows-latest
     env:
-      CMAKE_GENERATOR: Ninja
-      CTEST_OUTPUT_ON_FAILURE: ON
-      CTEST_PARALLEL_LEVEL: 2
+      build-directory: build
 
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest]
-        compiler: [cl, clang-cl, clang]
         arch: [x86, x86_64]
         build_type: [Debug, Release]
+        compiler:
+          # TODO(#8): Fix GCC build
+          # - { name: "gcc", cc: gcc, cxx: g++ }
+          - { name: "clang", cc: clang, cxx: clang++ }
+          - { name: "clang-cl", cc: clang-cl, cxx: clang-cl }
+          - { name: "cl", cc: cl, cxx: cl }
 
+        # Visual Studios specifies strange terminology for x86/x86_64
         include:
-          - compiler: cl
-            version: 16
+          - arch: x86
+            vs_arch: Win32
+          - arch: x86_64
+            vs_arch: x64
 
-          - compiler: clang-cl
-            version: 10
-
-          - compiler: clang
-            version: 10
+        # GCC fails to compile 32-bit correctly with Github's Windows runner
+        # configuration.
+        exclude:
+          - arch: x86
+            compiler: { name: "gcc", cc: gcc, cxx: g++ }
 
     steps:
 
-      - name: Checkout
+      - name: Clone
         uses: actions/checkout@v2
 
       - name: Set up Python
@@ -40,80 +44,97 @@ jobs:
         with:
           python-version: 3.7
 
-      - name: Install
-        shell: powershell
+      - name: Prepare Environment
         run: |
-          Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
-          scoop install ninja --global
-          if ("${{ matrix.compiler }}".StartsWith("clang")) {
-            scoop install llvm --global
-          }
-          if ("${{ matrix.compiler }}" -eq "clang") {
-            echo "::set-env name=CC::clang"
-            echo "::set-env name=CXX::clang++"
-          } else {
-            echo "::set-env name=CC::${{ matrix.compiler }}"
-            echo "::set-env name=CXX::${{ matrix.compiler }}"
-          }
-          # Scoop modifies the PATH so we make the modified PATH global.
-          echo "::set-env name=PATH::$env:PATH"
-          & python -m pip install --upgrade pip
-          & pip install conan
-          & conan --version
+          curl -fsSL -o LLVM10.exe https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/LLVM-10.0.0-win64.exe ; 7z x LLVM10.exe -y -o"C:/Program Files/LLVM"
 
-      - name: Prepare Architecture
-        shell: powershell
-        run: |
-          if ("${{ matrix.arch }}" -eq "x86_64") {
-            & .github\workflows\vsenv.bat -arch=x64 -host_arch=x64
-          } else {
-            & .github\workflows\vsenv.bat -arch=x86 -host_arch=x64
-            if ("${{ matrix.compiler }}" -notcontains "cl") {
-              echo "::set-env name=CXXFLAGS::$env:CXXFLAGS -m32"
-            }
-          }
+          python -m pip install --upgrade pip
+          pip install conan
+          conan --version
+          cmake -E make_directory ${{env.build-directory}}
 
       - name: Create Conan Profile (MSVC)
-        if: matrix.compiler == 'cl'
+        if: matrix.compiler.name == 'cl'
         run: |
           conan profile new default
           conan profile update settings.compiler="Visual Studio" default
-          conan profile update settings.compiler.version=${{ matrix.version }} default
-          if ("${{ matrix.build_type }}" -eq "Release") {
+          if ("${{matrix.build_type}}" -eq "Release") {
             conan profile update settings.compiler.runtime=MD default
           } else {
             conan profile update settings.compiler.runtime=MDd default
           }
-          conan profile update settings.arch=${{ matrix.arch }} default
           conan profile update settings.os=Windows default
 
       - name: Create Conan Profile (other)
-        if: matrix.compiler != 'cl'
-        run: |
-          conan profile new --detect default
-          conan profile update settings.arch=${{ matrix.arch }} default
+        if: matrix.compiler.name != 'cl'
+        env:
+          CC: ${{matrix.compiler.cc}}
+          CXX: ${{matrix.compiler.cxx}}
+        run: conan profile new --detect default
 
-      - name: Configure
-        run: |
-          cmake -E remove_directory build
-          mkdir build
-          cd build
-          conan install .. -s build_type=${{ matrix.build_type }}
+      - name: Install Conan Dependencies
+        working-directory: ${{env.build-directory}}
+        run: conan install .. -s build_type=${{matrix.build_type}}
 
-          cmake ..                                         `
-             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}   `
-             -DALLOY_COMPILE_SELF_CONTAINMENT_TESTS=On     `
-             -DALLOY_COMPILE_TESTS=On                      `
-             -DALLOY_COMPILE_EXTRAS=On                     `
-             -DALLOY_COMPILE_EXAMPLES=On                   `
-             -DALLOY_ENABLE_EXCEPTIONS=On
+      - name: Prepare Architecture
+        if: (matrix.compiler.name == 'clang' || matrix.compiler.name == 'gcc') && matrix.arch == 'x86'
+        shell: bash
+        run: echo "CXXFLAGS=${CXXFLAGS} -m32" >> ${GITHUB_ENV}
+
+      - name: Configure (gcc)
+        working-directory: ${{env.build-directory}}
+        if: matrix.compiler.name == 'gcc'
+        env:
+          CC: gcc
+          CXX: g++
+        run: |
+          cmake .. -G"MinGW Makefiles"                    `
+            -DCMAKE_BUILD_TYPE=${{matrix.build_type}}     `
+            -DALLOY_COMPILE_SELF_CONTAINMENT_TESTS=On     `
+            -DALLOY_COMPILE_TESTS=On                      `
+            -DALLOY_COMPILE_EXTRAS=On                     `
+            -DALLOY_COMPILE_EXAMPLES=On                   `
+            -DALLOY_ENABLE_EXCEPTIONS=On
+
+      - name: Configure (clang)
+        working-directory: ${{env.build-directory}}
+        if: matrix.compiler.name == 'clang'
+        run: |
+          cmake .. -G"MinGW Makefiles"                    `
+            -DCMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang++.exe" `
+            -DCMAKE_BUILD_TYPE=${{matrix.build_type}}     `
+            -DALLOY_COMPILE_SELF_CONTAINMENT_TESTS=On     `
+            -DALLOY_COMPILE_TESTS=On                      `
+            -DALLOY_COMPILE_EXTRAS=On                     `
+            -DALLOY_COMPILE_EXAMPLES=On                   `
+            -DALLOY_ENABLE_EXCEPTIONS=On
+
+      - name: Configure (clang-cl)
+        working-directory: ${{env.build-directory}}
+        if: matrix.compiler.name == 'clang-cl'
+        run: |
+          cmake .. -G"Visual Studio 16 2019" -A ${{matrix.vs_arch}} -T ClangCL `
+            -DALLOY_COMPILE_SELF_CONTAINMENT_TESTS=On     `
+            -DALLOY_COMPILE_TESTS=On                      `
+            -DALLOY_COMPILE_EXTRAS=On                     `
+            -DALLOY_COMPILE_EXAMPLES=On                   `
+            -DALLOY_ENABLE_EXCEPTIONS=On
+
+      - name: Configure (MSVC)
+        working-directory: ${{env.build-directory}}
+        if: matrix.compiler.name == 'cl'
+        run: |
+          cmake .. -G"Visual Studio 16 2019" -A ${{matrix.vs_arch}} `
+            -DALLOY_COMPILE_SELF_CONTAINMENT_TESTS=On     `
+            -DALLOY_COMPILE_TESTS=On                      `
+            -DALLOY_COMPILE_EXTRAS=On                     `
+            -DALLOY_COMPILE_EXAMPLES=On                   `
+            -DALLOY_ENABLE_EXCEPTIONS=On
 
       - name: Build
-        run: |
-          cd build
-          cmake --build .
+        working-directory: ${{env.build-directory}}
+        run: cmake --build . --config ${{matrix.build_type}}
 
       - name: Test
-        run: |
-          cd build
-          ctest --output-on-failure
+        working-directory: ${{env.build-directory}}
+        run: ctest --output-on-failure

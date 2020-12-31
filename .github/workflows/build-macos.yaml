@@ -3,32 +3,23 @@ name: build-macos
 on: [push, pull_request]
 
 jobs:
-  ci:
-    name: macOS ${{ matrix.compiler }} ${{ matrix.arch }} ${{ matrix.build_type }}
-    runs-on: ${{ matrix.os }}
+  test:
+    name: macoS Xcode ${{matrix.compiler.version}} ${{matrix.arch}} ${{matrix.build_type}}
+    runs-on: macos-latest
 
     env:
-      CMAKE_GENERATOR: Ninja
-      CTEST_OUTPUT_ON_FAILURE: ON
-      CTEST_PARALLEL_LEVEL: 2
+      build-directory: build
 
     strategy:
       fail-fast: false
       matrix:
-        os: [macOS-latest]
-        compiler: [xcode]
         arch: [x86_64]
         build_type: [Debug, Release]
-
-        include:
-
-          - os: macOS-latest
-            compiler: xcode
-            version: "11.3"
+        compiler:
+          - { name: "xcode", version: "12.3" }
 
     steps:
-
-      - name: Checkout
+      - name: Clone
         uses: actions/checkout@v2
 
       - name: Set up Python
@@ -36,35 +27,27 @@ jobs:
         with:
           python-version: 3.7
 
-      - name: Install
+      - name: Prepare Environment
         run: |
-          brew install cmake ninja
-          if [ "${{ matrix.compiler }}" = "gcc" ]; then
-            brew install gcc@${{ matrix.version }}
-            echo "::set-env name=CC::gcc-${{ matrix.version }}"
-            echo "::set-env name=CXX::g++-${{ matrix.version }}"
-          else
-            ls -ls /Applications/
-            sudo xcode-select -switch /Applications/Xcode_${{ matrix.version }}.app
-            echo "::set-env name=CC::clang"
-            echo "::set-env name=CXX::clang++"
-          fi
+          ls -ls /Applications/
+          sudo xcode-select -switch /Applications/Xcode_${{matrix.compiler.version}}.app
+          brew install ninja
+
           python -m pip install --upgrade pip
           pip install conan
-          conan --version
-
-      - name: Create Conan Profile
-        run: |
-          conan profile new --detect default
+          cmake -E make_directory ${{env.build-directory}}
+          cmake -E chdir ${{env.build-directory}} conan install .. -s build_type=${{matrix.build_type}}
 
       - name: Configure
+        working-directory: ${{env.build-directory}}
+        env:
+          CC: clang
+          CXX: clang++
         run: |
-          cmake -E remove_directory build
-          mkdir build
-          cd build
-          conan install .. -s build_type=${{ matrix.build_type }}
+          conan profile new --detect default
           cmake ..                                         \
-             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}   \
+             -GNinja                                       \
+             -DCMAKE_BUILD_TYPE=${{matrix.build_type}}     \
              -DALLOY_COMPILE_SELF_CONTAINMENT_TESTS=On     \
              -DALLOY_COMPILE_TESTS=On                      \
              -DALLOY_COMPILE_EXTRAS=On                     \
@@ -72,11 +55,63 @@ jobs:
              -DALLOY_ENABLE_EXCEPTIONS=On
 
       - name: Build
-        run: |
-          cd build
-          cmake --build .
+        working-directory: ${{env.build-directory}}
+        run: cmake --build .
 
       - name: Test
+        working-directory: ${{env.build-directory}}
+        run: ctest --output-on-failure
+
+  sanitize:
+    name: macOS Xcode ${{matrix.compiler.version}} '${{matrix.sanitizer}}' sanitizer
+    runs-on: macos-latest
+    needs: test
+
+    env:
+      build-directory: build
+
+    strategy:
+      matrix:
+        sanitizer: [address, undefined]
+
+    steps:
+      - name: Clone
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+
+      - name: Prepare Environment
         run: |
-          cd build
-          ctest --output-on-failure
+          python -m pip install --upgrade pip
+          pip install conan
+          brew install ninja
+          cmake -E make_directory ${{env.build-directory}}
+          cmake -E chdir ${{env.build-directory}} conan install ..
+
+      - name: Configure
+        working-directory: ${{env.build-directory}}
+        env:
+          CC: clang
+          CXX: clang++
+        run: |
+          conan profile new --detect default
+          cmake ..                                         \
+             -GNinja                                       \
+             -DCMAKE_BUILD_TYPE=Debug                      \
+             -DALLOY_COMPILE_SELF_CONTAINMENT_TESTS=On     \
+             -DALLOY_COMPILE_TESTS=On                      \
+             -DALLOY_COMPILE_EXTRAS=On                     \
+             -DALLOY_COMPILE_EXAMPLES=On                   \
+             -DALLOY_ENABLE_EXCEPTIONS=On                  \
+             -DCMAKE_CXX_FLAGS="-fsanitize=${{matrix.sanitizer}}"
+
+      - name: Build
+        working-directory: ${{env.build-directory}}
+        run: cmake --build .
+
+      - name: Test (Sanitize)
+        working-directory: ${{env.build-directory}}
+        run: ctest --output-on-failure
