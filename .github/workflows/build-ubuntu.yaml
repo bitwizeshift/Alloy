@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: Ubuntu ${{ matrix.compiler }} ${{ matrix.arch }} ${{ matrix.build_type }}
+    name: Ubuntu ${{matrix.compiler.cc}} ${{matrix.arch}} ${{matrix.build_type}}
     runs-on: ubuntu-20.04
 
     env:
@@ -13,21 +13,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [x86, x86_64]
-        build_type: [Debug, Release]
         compiler:
           - { cc: gcc-10, cxx: g++-10 }
           - { cc: clang-10,  cxx: clang++-10 }
+        arch: [x86, x86_64]
+        build_type: [Debug, Release]
 
     steps:
 
       - name: Clone
         uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v1
         with:
-          python-version: 3.7
+          submodules: true
 
       - name: Prepare Environment
         run: |
@@ -41,9 +38,6 @@ jobs:
           else
             sudo apt-get install -y ${{matrix.compiler.cc}} g++-multilib
           fi
-          python -m pip install --upgrade pip
-          pip install conan
-          conan --version
           cmake -E make_directory ${{env.build-directory}}
 
       - name: Prepare Architecture
@@ -58,8 +52,6 @@ jobs:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
         run: |
-          conan profile new --detect default
-          conan profile update settings.arch=${{matrix.arch}} default
           cmake ..                                         \
              -GNinja                                       \
              -DCMAKE_BUILD_TYPE=${{matrix.build_type}}     \
