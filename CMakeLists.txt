@@ -9,7 +9,9 @@ if (PROJECT_NAME)
 endif ()
 
 set(ALLOY_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-set(CMAKE_MODULE_PATH "${ALLOY_MODULE_PATH}" "${CMAKE_MODULE_PATH}")
+set(CATCH_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/third_party/catch/contrib")
+
+set(CMAKE_MODULE_PATH "${ALLOY_MODULE_PATH}" "${CMAKE_MODULE_PATH}" "${CATCH_MODULE_PATH}")
 
 ##############################################################################
 # Project Options
@@ -92,13 +94,6 @@ set(ALLOY_VERSION_MINOR ${PROJECT_VERSION_MINOR} CACHE INTERNAL "Minor version o
 set(ALLOY_VERSION_PATCH ${PROJECT_VERSION_PATCH} CACHE INTERNAL "Patch version of the Alloy game engine")
 set(ALLOY_VERSION ${PROJECT_VERSION} CACHE INTERNAL "Version of Alloy game engine")
 
-# If using conan, only set the find paths. This project is trying to be
-# fully CMake
-if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake")
-  include("${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake")
-  conan_set_find_paths()
-endif ()
-
 #-----------------------------------------------------------------------------
 
 # default to debug when building CMake
@@ -172,6 +167,10 @@ endif ()
 ##############################################################################
 # Targets
 ##############################################################################
+
+# Dependencies
+
+add_subdirectory("third_party")
 
 # Library Targets
 

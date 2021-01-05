@@ -294,7 +294,7 @@ namespace alloy::core {
 
     /// \brief Constructs the underlying value by default-construction by
     ///        calling T's constructor
-    constexpr expected() = default;
+    expected() = default;
 
     /// \brief Constructs the underlying value of this expected by calling
     ///        T's constructor with the given args
@@ -334,12 +334,12 @@ namespace alloy::core {
     /// \brief Constructs this expected by moving the contents of \p other
     ///
     /// \param other the other expected to move
-    constexpr expected(expected&& other) = default;
+    expected(expected&& other) = default;
 
     /// \brief Constructs this expected by copying the contents of \p other
     ///
     /// \param other the other expected to copy
-    constexpr expected(const expected& other) = default;
+    expected(const expected& other) = default;
 
     //--------------------------------------------------------------------------
 
@@ -516,7 +516,7 @@ namespace alloy::core {
   public:
 
     /// \brief Constructs this expected successfully
-    constexpr expected() noexcept = default;
+    expected() = default;
 
     /// \brief Constructs the underlying error of this expected
     ///
@@ -528,12 +528,12 @@ namespace alloy::core {
     /// \brief Constructs this expected by moving the contents of \p other
     ///
     /// \param other the other expected to move
-    constexpr expected(expected&& other) = default;
+    expected(expected&& other) = default;
 
     /// \brief Constructs this expected by copying the contents of \p other
     ///
     /// \param other the other expected to copy
-    constexpr expected(const expected& other) = default;
+    expected(const expected& other) = default;
 
     //--------------------------------------------------------------------------
 
