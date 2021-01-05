@@ -8,6 +8,9 @@ set(source_files
   src/alloy/core/utilities/delegate.test.cpp
   src/alloy/core/utilities/casts.test.cpp
   src/alloy/core/utilities/string_tokenizer.test.cpp
+  src/alloy/core/utilities/result.test.cpp
+  src/alloy/core/utilities/result.constexpr.test.cpp
+  src/alloy/core/utilities/failure.test.cpp
 
   # Containers
   src/alloy/core/containers/span.test.cpp
