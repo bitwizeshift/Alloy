@@ -33,9 +33,10 @@
 #include "alloy/io/api.hpp"
 #include "alloy/io/buffers/const_buffer.hpp"
 #include "alloy/io/buffers/mutable_buffer.hpp"
-#include "alloy/core/utilities/expected.hpp"
+#include "alloy/core/utilities/result.hpp"
 
-#include <cstddef> // std::size_t
+#include <cstddef>      // std::size_t
+#include <system_error> // std::error_code
 
 namespace alloy::io {
 
@@ -86,7 +87,7 @@ namespace alloy::io {
     /// \brief Gets the number of bytes in this file stream
     ///
     /// \return the number of bytes in this file stream
-    virtual core::expected<size_type>
+    virtual core::result<size_type,std::error_code>
       bytes() const noexcept = 0;
 
     //-------------------------------------------------------------------------
@@ -100,18 +101,18 @@ namespace alloy::io {
     /// \brief Resets the file cursor back to the start position
     ///
     /// \return void on success
-    virtual core::expected<void> reset() noexcept = 0;
+    virtual core::result<void,std::error_code> reset() noexcept = 0;
 
     /// \brief Flushes the contents of the stream to storage
     ///
     /// \return void on success
-    virtual core::expected<void> flush() noexcept;
+    virtual core::result<void,std::error_code> flush() noexcept;
 
     /// \brief Skips up to the next N bytes of the file
     ///
     /// \param offset the number of bytes to skip
     /// \return void on success
-    virtual core::expected<void>
+    virtual core::result<void,std::error_code>
       skip(offset_type offset) noexcept = 0;
 
     /// \brief Reads data into the specified \p buffer, returning a buffer the
@@ -119,7 +120,7 @@ namespace alloy::io {
     ///
     /// \param buffer the buffer to read into
     /// \return the buffer that was read on success
-    virtual core::expected<mutable_buffer>
+    virtual core::result<mutable_buffer,std::error_code>
       read(mutable_buffer buffer) noexcept = 0;
 
     /// \brief Writes data from the specified \p buffer, returning a buffer of
@@ -127,7 +128,7 @@ namespace alloy::io {
     ///
     /// \param buffer the buffer to write from
     /// \return the buffer that was written on success
-    virtual core::expected<const_buffer>
+    virtual core::result<const_buffer,std::error_code>
       write(const_buffer buffer) noexcept = 0;
   };
 
@@ -141,7 +142,7 @@ namespace alloy::io {
 // File Access
 //-----------------------------------------------------------------------------
 
-inline alloy::core::expected<void> alloy::io::file_stream::flush()
+inline alloy::core::result<void,std::error_code> alloy::io::file_stream::flush()
   noexcept
 {
   return {};

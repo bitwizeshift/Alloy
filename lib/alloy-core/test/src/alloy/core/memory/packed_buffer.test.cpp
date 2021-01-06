@@ -175,7 +175,7 @@ struct uint32_test_packer
     buffer.pack_object(b3);
   }
 
-  auto unpack(packed_buffer_reader& buffer) -> expected<std::uint32_t>
+  auto unpack(packed_buffer_reader& buffer) -> result<std::uint32_t,std::error_code>
   {
     auto array = std::array<std::byte, sizeof(std::uint32_t)>{};
     buffer.read_bytes({array.data(), array.size()});

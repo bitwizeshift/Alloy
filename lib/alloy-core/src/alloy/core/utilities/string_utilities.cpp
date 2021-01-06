@@ -30,7 +30,7 @@ namespace alloy::core {
 namespace {
 
   template <typename T>
-  auto to_integer(string_view in) noexcept -> expected<T>
+  auto to_integer(string_view in) noexcept -> result<T,std::error_code>
   {
     const auto* const first = in.data();
     const char* const last = first + in.size();
@@ -39,7 +39,7 @@ namespace {
     const auto result = std::from_chars(first, last, out);
 
     if (result.ec != std::errc{}) {
-      return unexpected(std::make_error_code(result.ec));
+      return fail(std::make_error_code(result.ec));
     }
 
     return out;
@@ -53,25 +53,25 @@ namespace {
 //-----------------------------------------------------------------------------
 
 auto alloy::core::string_utilities::to_int8(string_view in)
-  noexcept -> expected<std::int8_t>
+  noexcept -> result<std::int8_t,std::error_code>
 {
   return to_integer<std::int8_t>(in);
 }
 
 auto alloy::core::string_utilities::to_int16(string_view in)
-  noexcept -> expected<std::int16_t>
+  noexcept -> result<std::int16_t,std::error_code>
 {
   return to_integer<std::int16_t>(in);
 }
 
 auto alloy::core::string_utilities::to_int32(string_view in)
-  noexcept -> expected<std::int32_t>
+  noexcept -> result<std::int32_t,std::error_code>
 {
   return to_integer<std::int32_t>(in);
 }
 
 auto alloy::core::string_utilities::to_int64(string_view in)
-  noexcept -> expected<std::int64_t>
+  noexcept -> result<std::int64_t,std::error_code>
 {
   return to_integer<std::int64_t>(in);
 }
@@ -81,25 +81,25 @@ auto alloy::core::string_utilities::to_int64(string_view in)
 //-----------------------------------------------------------------------------
 
 auto alloy::core::string_utilities::to_uint8(string_view in)
-  noexcept -> expected<std::uint8_t>
+  noexcept -> result<std::uint8_t,std::error_code>
 {
   return to_integer<std::uint8_t>(in);
 }
 
 auto alloy::core::string_utilities::to_uint16(string_view in)
-  noexcept -> expected<std::uint16_t>
+  noexcept -> result<std::uint16_t,std::error_code>
 {
   return to_integer<std::uint16_t>(in);
 }
 
 auto alloy::core::string_utilities::to_uint32(string_view in)
-  noexcept -> expected<std::uint32_t>
+  noexcept -> result<std::uint32_t,std::error_code>
 {
   return to_integer<std::uint32_t>(in);
 }
 
 auto alloy::core::string_utilities::to_uint64(string_view in)
-  noexcept -> expected<std::uint64_t>
+  noexcept -> result<std::uint64_t,std::error_code>
 {
   return to_integer<std::uint64_t>(in);
 }
@@ -112,7 +112,7 @@ auto alloy::core::string_utilities::to_uint64(string_view in)
 // be std::strtof/std::strtod/etc
 
 auto alloy::core::string_utilities::to_float(string_view in)
-  noexcept -> expected<float>
+  noexcept -> result<float,std::error_code>
 {
   auto* last_entry = static_cast<char*>(nullptr);
 
@@ -120,13 +120,13 @@ auto alloy::core::string_utilities::to_float(string_view in)
   const auto result = std::strtof(in.data(), &last_entry);
 
   if (errno != 0) {
-    return unexpected(std::make_error_code(static_cast<std::errc>(errno)));
+    return fail(std::make_error_code(static_cast<std::errc>(errno)));
   }
   return result;
 }
 
 auto alloy::core::string_utilities::to_double(string_view in)
-  noexcept -> expected<double>
+  noexcept -> result<double,std::error_code>
 {
   auto* last_entry = static_cast<char*>(nullptr);
 
@@ -134,13 +134,13 @@ auto alloy::core::string_utilities::to_double(string_view in)
   const auto result = std::strtod(in.data(), &last_entry);
 
   if (errno != 0) {
-    return unexpected(std::make_error_code(static_cast<std::errc>(errno)));
+    return fail(std::make_error_code(static_cast<std::errc>(errno)));
   }
   return result;
 }
 
 auto alloy::core::string_utilities::to_real(string_view in)
-  noexcept -> expected<real>
+  noexcept -> result<real,std::error_code>
 {
 #if ALLOY_CORE_PRECISION == ALLOY_CORE_PRECISION_FLOAT
     return to_float(in);

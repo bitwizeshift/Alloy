@@ -46,7 +46,7 @@ namespace {
     /// \brief Returns the size of the mutable buffer
     ///
     /// \return the size of the buffer
-    alloy::core::expected<size_type> bytes() const noexcept override;
+    alloy::core::result<size_type,std::error_code> bytes() const noexcept override;
 
     //-------------------------------------------------------------------------
     // File API
@@ -61,32 +61,32 @@ namespace {
     /// \brief Resets the file cursor back to the start position
     ///
     /// \return void on success
-    alloy::core::expected<void> reset() noexcept override;
+    alloy::core::result<void,std::error_code> reset() noexcept override;
 
     /// \brief Flushes the disk
     ///
     /// \return void on success
-    alloy::core::expected<void> flush() noexcept override;
+    alloy::core::result<void,std::error_code> flush() noexcept override;
 
     /// \brief Skips the next \p offset bytes from this file
     ///
     /// \param offset the offset to skip
     /// \return void
-    alloy::core::expected<void>
+    alloy::core::result<void,std::error_code>
       skip(offset_type offset) noexcept override;
 
     /// \brief Reads from the buffer
     ///
     /// \param buffer the buffer to read from
     /// \return a buffer to what was read
-    alloy::core::expected<alloy::io::mutable_buffer>
+    alloy::core::result<alloy::io::mutable_buffer,std::error_code>
       read(alloy::io::mutable_buffer buffer) noexcept override;
 
     /// \brief Writes memory from the \p buffer into the stored memory
     ///
     /// \param buffer the buffer to write
     /// \return the buffer to what was written
-    alloy::core::expected<alloy::io::const_buffer>
+    alloy::core::result<alloy::io::const_buffer,std::error_code>
       write(alloy::io::const_buffer buffer) noexcept override;
 
     //-------------------------------------------------------------------------
@@ -116,14 +116,14 @@ namespace {
   // Observers
   //---------------------------------------------------------------------------
 
-  alloy::core::expected<alloy::io::file_stream::size_type>
+  alloy::core::result<alloy::io::file_stream::size_type,std::error_code>
     disk_file_stream::bytes()
     const noexcept
   {
     auto current = std::ftell(m_file);
 
     if (ALLOY_UNLIKELY(current == -1)) {
-      return alloy::core::unexpected(alloy::io::file::error_code::system_error);
+      return alloy::core::fail(alloy::io::file::error_code::system_error);
     }
 
     auto r0 = std::fseek(m_file, 0, SEEK_END);
@@ -132,7 +132,7 @@ namespace {
 
     // If any of these functions failed, propagate the error
     if (ALLOY_UNLIKELY(r0 != 0 || r1 != 0 || result == -1)) {
-      return alloy::core::unexpected(alloy::io::file::error_code::system_error);
+      return alloy::core::fail(alloy::io::file::error_code::system_error);
     }
 
     return static_cast<std::size_t>(result);
@@ -149,44 +149,44 @@ namespace {
   }
 
 
-  alloy::core::expected<void> disk_file_stream::reset()
+  alloy::core::result<void,std::error_code> disk_file_stream::reset()
     noexcept
   {
     const auto r = std::fseek(m_file, 0, SEEK_SET);
 
     if (!ALLOY_UNLIKELY(r != 0)) {
-      return alloy::core::unexpected(alloy::io::file::error_code::system_error);
+      return alloy::core::fail(alloy::io::file::error_code::system_error);
     }
     return {};
   }
 
 
-  alloy::core::expected<void> disk_file_stream::flush()
+  alloy::core::result<void,std::error_code> disk_file_stream::flush()
     noexcept
   {
     const auto r = std::fflush(m_file);
 
     if (!ALLOY_UNLIKELY(r != 0)) {
-      return alloy::core::unexpected(alloy::io::file::error_code::system_error);
+      return alloy::core::fail(alloy::io::file::error_code::system_error);
     }
     return {};
   }
 
 
-  alloy::core::expected<void>
+  alloy::core::result<void,std::error_code>
     disk_file_stream::skip(offset_type offset)
     noexcept
   {
     const auto r = std::fseek(m_file, static_cast<long>(offset), SEEK_CUR);
 
     if (!ALLOY_UNLIKELY(r != 0)) {
-      return alloy::core::unexpected(alloy::io::file::error_code::system_error);
+      return alloy::core::fail(alloy::io::file::error_code::system_error);
     }
     return {};
   }
 
 
-  alloy::core::expected<alloy::io::mutable_buffer>
+  alloy::core::result<alloy::io::mutable_buffer,std::error_code>
     disk_file_stream::read(alloy::io::mutable_buffer buffer)
     noexcept
   {
@@ -196,7 +196,7 @@ namespace {
     // this is caused by an error
     if (ALLOY_UNLIKELY(size != buffer.size())) {
       if (std::ferror(m_file)) {
-        return alloy::core::unexpected(alloy::io::file::error_code::system_error);
+        return alloy::core::fail(alloy::io::file::error_code::system_error);
       }
     }
 
@@ -207,14 +207,14 @@ namespace {
   }
 
 
-  alloy::core::expected<alloy::io::const_buffer>
+  alloy::core::result<alloy::io::const_buffer,std::error_code>
     disk_file_stream::write(alloy::io::const_buffer buffer)
     noexcept
   {
     const auto size = std::fwrite(buffer.data(), 1u, buffer.size(), m_file);
 
     if (ALLOY_UNLIKELY(size != buffer.size() && std::ferror(m_file))) {
-      return alloy::core::unexpected(alloy::io::file::error_code::system_error);
+      return alloy::core::fail(alloy::io::file::error_code::system_error);
     }
 
     return alloy::io::const_buffer{
