@@ -99,8 +99,8 @@ TEST_CASE("string_tokenizer::has_more()")
   SECTION("Doesn't have more after tokenizing") {
     auto tokenizer = string_tokenizer("Hello World", " ");
 
-    tokenizer.next();
-    tokenizer.next();
+    alloy::core::compiler::unused(tokenizer.next());
+    alloy::core::compiler::unused(tokenizer.next());
 
     REQUIRE_FALSE(tokenizer.has_more());
   }
@@ -131,14 +131,14 @@ TEST_CASE("string_tokenizer::next()")
     }
 
     SECTION("Retrieves second token") {
-      tokenizer.next();
+      alloy::core::compiler::unused(tokenizer.next());
 
       REQUIRE(tokenizer.next() == "World");
     }
 
     SECTION("Retrieves empty string token") {
-      tokenizer.next();
-      tokenizer.next();
+      alloy::core::compiler::unused(tokenizer.next());
+      alloy::core::compiler::unused(tokenizer.next());
 
       auto token = tokenizer.next();
 
@@ -159,7 +159,7 @@ TEST_CASE("string_tokenizer::next()")
     }
 
     SECTION("Retrieves empty string token second") {
-      tokenizer.next();
+      alloy::core::compiler::unused(tokenizer.next());
 
       auto token = tokenizer.next();
 
@@ -180,7 +180,7 @@ TEST_CASE("string_tokenizer::next()")
     }
 
     SECTION("Second token is an error") {
-      tokenizer.next();
+      alloy::core::compiler::unused(tokenizer.next());
       auto token = tokenizer.next();
 
       SECTION("Result is an error") {
@@ -218,7 +218,7 @@ TEST_CASE("string_tokenizer::next(const string_type&)")
     }
 
     SECTION("Second token is an error") {
-      tokenizer.next();
+      alloy::core::compiler::unused(tokenizer.next());
       auto token = tokenizer.next();
 
       SECTION("Result is an error") {
@@ -238,7 +238,7 @@ TEST_CASE("string_tokenizer::next(const string_type&)")
     }
 
     SECTION("Second token is empty") {
-      tokenizer.next();
+      alloy::core::compiler::unused(tokenizer.next());
 
       auto token = tokenizer.next(";");
 
@@ -259,7 +259,7 @@ TEST_CASE("string_tokenizer::next(const string_type&)")
     }
 
     SECTION("Second token is an error") {
-      tokenizer.next();
+      alloy::core::compiler::unused(tokenizer.next());
       auto token = tokenizer.next();
 
       SECTION("Result is an error") {

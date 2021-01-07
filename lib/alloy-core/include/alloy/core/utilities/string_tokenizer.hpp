@@ -33,7 +33,7 @@
 #include "alloy/core/api.hpp"
 #include "alloy/core/utilities/string_view.hpp"
 
-#include "alloy/core/utilities/expected.hpp"
+#include "alloy/core/utilities/result.hpp"
 
 #include <utility> // std::forward
 #include <string>  // std::char_traits
@@ -136,7 +136,7 @@ namespace alloy::core {
     /// \brief Gets the next token in this string tokenizer's string.
     ///
     /// \return the next token
-    auto next() noexcept -> expected<string_type>;
+    auto next() noexcept -> result<string_type,std::error_code>;
 
     /// \brief Gets the next token in this string tokenizer's string.
     ///
@@ -151,7 +151,7 @@ namespace alloy::core {
     ///
     /// \param delim the delimiter to match
     /// \return the next token
-    auto next(string_type delim) noexcept -> expected<string_type>;
+    auto next(string_type delim) noexcept -> result<string_type,std::error_code>;
 
     /// \brief Resets the current position within this string tokenizer
     ///        to the beginning of the buffer
@@ -185,7 +185,7 @@ namespace alloy::core {
     /// \brief Retrieves the next token in the series
     ///
     /// \param delim the delimiters to check
-    auto next_token(string_type delim) noexcept -> expected<string_type>;
+    auto next_token(string_type delim) noexcept -> result<string_type,std::error_code>;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -275,7 +275,7 @@ inline constexpr auto
 template <typename CharT, typename Traits>
 inline
 auto alloy::core::basic_string_tokenizer<CharT,Traits>::next()
-  noexcept -> expected<string_type>
+  noexcept -> result<string_type,std::error_code>
 {
   return next_token(m_delimiter);
 }
@@ -283,7 +283,7 @@ auto alloy::core::basic_string_tokenizer<CharT,Traits>::next()
 template <typename CharT, typename Traits>
 inline
 auto alloy::core::basic_string_tokenizer<CharT,Traits>::next(string_type delim)
-  noexcept -> expected<string_type>
+  noexcept -> result<string_type,std::error_code>
 {
   return next_token(delim);
 }
@@ -332,7 +332,7 @@ template <typename CharT, typename Traits>
 inline
 auto alloy::core::basic_string_tokenizer<CharT,Traits>
   ::next_token(string_type delim)
-  noexcept -> expected<string_type>
+  noexcept -> result<string_type,std::error_code>
 {
   const auto buffer_size = m_buffer.size();
 
@@ -358,7 +358,7 @@ auto alloy::core::basic_string_tokenizer<CharT,Traits>
     return m_buffer.substr(start, size);
   }
 
-  return unexpected(tokenizer_error::out_of_tokens);
+  return fail(tokenizer_error::out_of_tokens);
 }
 
 #endif /* ALLOY_CORE_UTILITIES_STRING_TOKENIZER_HPP */

@@ -8,6 +8,9 @@ set(source_files
   src/alloy/core/utilities/delegate.test.cpp
   src/alloy/core/utilities/casts.test.cpp
   src/alloy/core/utilities/string_tokenizer.test.cpp
+  src/alloy/core/utilities/result.test.cpp
+  src/alloy/core/utilities/result.constexpr.test.cpp
+  src/alloy/core/utilities/failure.test.cpp
 
   # Containers
   src/alloy/core/containers/span.test.cpp
@@ -38,6 +41,20 @@ add_executable(${PROJECT_NAME}CoreTest
   ${source_files}
 )
 add_executable(${PROJECT_NAME}::Core::Test ALIAS ${PROJECT_NAME}CoreTest)
+
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
+    "${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC")
+
+  # clang-cl complains about truncating 64 to 32 bits of values in the unit tests.
+  target_compile_options(${PROJECT_NAME}CoreTest
+    PRIVATE
+      -Wno-shorten-64-to-32
+      -Wno-sign-conversion
+      -Wno-unneeded-member-function
+      -Wno-unused-member-function
+  )
+endif ()
+
 
 target_link_libraries(${PROJECT_NAME}CoreTest
   PRIVATE Catch2::Catch2

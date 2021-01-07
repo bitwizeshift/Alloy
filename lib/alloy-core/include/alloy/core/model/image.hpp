@@ -34,7 +34,7 @@
 #include "alloy/core/model/color.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/containers/vector.hpp"
-#include "alloy/core/utilities/expected.hpp"
+#include "alloy/core/utilities/result.hpp"
 
 #include <cstdint>      // std::uint8_t
 #include <cstddef>      // std::size_t, std::byte
@@ -96,7 +96,7 @@ namespace alloy::core {
     ///
     /// \return an image on success, an error_code on failure
     ALLOY_CORE_API
-    static expected<image> make_image_from_buffer(vector<std::byte> buffer,
+    static result<image,std::error_code> make_image_from_buffer(vector<std::byte> buffer,
                                                   dimensions d,
                                                   pixel_format format);
 
@@ -113,7 +113,7 @@ namespace alloy::core {
     ///
     /// \return an image on success, an error_code on failure
     ALLOY_CORE_API
-    static expected<image> make_blank_image(dimensions d,
+    static result<image,std::error_code> make_blank_image(dimensions d,
                                             pixel_format format,
                                             color background);
 
@@ -131,7 +131,7 @@ namespace alloy::core {
     ///
     /// \return an image on success, an error_code on failure
     ALLOY_CORE_API
-    static expected<image> make_blank_image(dimensions d,
+    static result<image,std::error_code> make_blank_image(dimensions d,
                                             pixel_format format,
                                             color background,
                                             allocator alloc);

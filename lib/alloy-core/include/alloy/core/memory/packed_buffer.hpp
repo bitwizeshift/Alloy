@@ -33,7 +33,7 @@
 
 #include "alloy/core/api.hpp"
 #include "alloy/core/utilities/not_null.hpp"
-#include "alloy/core/utilities/expected.hpp"
+#include "alloy/core/utilities/result.hpp"
 #include "alloy/core/utilities/casts.hpp"    // narrow_cast
 
 #include "alloy/core/memory/data_quantity.hpp" // bytes
@@ -387,7 +387,7 @@ namespace alloy::core {
     /// \tparam T the type of object to read
     /// \return a T object on success
     template <typename T>
-    auto unpack_object() noexcept -> expected<T>;
+    auto unpack_object() noexcept -> result<T,std::error_code>;
 
     /// \brief Reads an object \p value to the underlying packed_buffer using
     ///        the specified \p packer for arranging the bytes.
@@ -398,7 +398,7 @@ namespace alloy::core {
     /// \tparam T the type of object to read
     /// \param packer the packager to use to read from the buffer
     template <typename T, typename Packer>
-    auto unpack_object(Packer&& packer) noexcept -> expected<T>;
+    auto unpack_object(Packer&& packer) noexcept -> result<T,std::error_code>;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -450,7 +450,7 @@ namespace alloy::core {
     ///
     /// \param buffer the buffer reader
     /// \return a T value on success
-    auto unpack(packed_buffer_reader& buffer) const noexcept -> expected<T>;
+    auto unpack(packed_buffer_reader& buffer) const noexcept -> result<T,std::error_code>;
   };
 
 } // namespace alloy::core
@@ -604,7 +604,7 @@ ALLOY_FORCE_INLINE auto
 template <typename T>
 ALLOY_FORCE_INLINE auto
   alloy::core::packed_buffer_reader::unpack_object()
-  noexcept -> expected<T>
+  noexcept -> result<T,std::error_code>
 {
   return unpack_object<T>(trivial_object_packer<T>{});
 }
@@ -612,7 +612,7 @@ ALLOY_FORCE_INLINE auto
 template <typename T, typename Packer>
 ALLOY_FORCE_INLINE auto
   alloy::core::packed_buffer_reader::unpack_object(Packer&& packer)
-  noexcept -> expected<T>
+  noexcept -> result<T,std::error_code>
 {
   return packer.unpack(*this);
 }
@@ -635,7 +635,7 @@ ALLOY_FORCE_INLINE auto
 template <typename T>
 inline auto
   alloy::core::trivial_object_packer<T>::unpack(packed_buffer_reader& buffer)
-  const noexcept -> expected<T>
+  const noexcept -> result<T,std::error_code>
 {
   auto out = T{};
   auto s = span<T>{&out,std::size_t{1}};
@@ -643,7 +643,7 @@ inline auto
   const auto result = buffer.read_bytes(input);
 
   if (input.size() != result.size()) {
-    return unexpected(packed_buffer_reader::error::out_of_bytes);
+    return fail(packed_buffer_reader::error::out_of_bytes);
   }
 
   return out;

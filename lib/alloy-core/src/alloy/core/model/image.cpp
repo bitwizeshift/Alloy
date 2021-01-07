@@ -219,32 +219,32 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
 // Static Factories
 //-----------------------------------------------------------------------------
 
-alloy::core::expected<alloy::core::image>
+alloy::core::result<alloy::core::image,std::error_code>
   alloy::core::image::make_image_from_buffer(vector<std::byte> buffer,
                                              dimensions d,
                                              pixel_format format)
 {
   if (ALLOY_UNLIKELY(!::is_valid_format(format))) {
-    return unexpected(error_code::invalid_pixel_format);
+    return fail(error_code::invalid_pixel_format);
   }
   const auto pixel_size = ::pixel_format_size(format);
   const auto expected_size = d.width * d.height * pixel_size;
 
   if (ALLOY_UNLIKELY(d.width == 0u)) {
-    return unexpected(error_code::bad_width);
+    return fail(error_code::bad_width);
   }
   if (ALLOY_UNLIKELY(d.height == 0u)) {
-    return unexpected(error_code::bad_height);
+    return fail(error_code::bad_height);
   }
   if (ALLOY_UNLIKELY(buffer.size() != expected_size)) {
-    return unexpected(error_code::incorrect_dimensions);
+    return fail(error_code::incorrect_dimensions);
   }
 
   return image{std::move(buffer), d, format};
 }
 
 
-alloy::core::expected<alloy::core::image>
+alloy::core::result<alloy::core::image,std::error_code>
   alloy::core::image::make_blank_image(dimensions d,
                                        pixel_format format,
                                        color background)
@@ -253,7 +253,7 @@ alloy::core::expected<alloy::core::image>
 }
 
 
-alloy::core::expected<alloy::core::image>
+alloy::core::result<alloy::core::image,std::error_code>
   alloy::core::image::make_blank_image(dimensions d,
                                        pixel_format format,
                                        color background,

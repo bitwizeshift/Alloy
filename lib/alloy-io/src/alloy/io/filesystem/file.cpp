@@ -89,7 +89,7 @@ alloy::io::file::file(file_stream_handle handle)
 
 alloy::io::file::~file()
 {
-  close();
+  core::compiler::unused(close());
 }
 
 //-----------------------------------------------------------------------------
@@ -97,7 +97,7 @@ alloy::io::file::~file()
 alloy::io::file& alloy::io::file::operator=(file&& other)
   noexcept
 {
-  close();
+  core::compiler::unused(close());
 
   m_handle = std::move(other.m_handle);
 
@@ -115,11 +115,11 @@ bool alloy::io::file::is_open()
 }
 
 
-alloy::core::expected<alloy::io::file::size_type> alloy::io::file::bytes()
+alloy::core::result<alloy::io::file::size_type,std::error_code> alloy::io::file::bytes()
   const noexcept
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
-    return core::unexpected(error_code::closed);
+    return core::fail(error_code::closed);
   }
 
   return m_handle->bytes();
@@ -139,11 +139,11 @@ alloy::io::file_stream_handle alloy::io::file::release()
 // File API
 //-----------------------------------------------------------------------------
 
-alloy::core::expected<void> alloy::io::file::close()
+alloy::core::result<void,std::error_code> alloy::io::file::close()
   noexcept
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
-    return core::unexpected(error_code::closed);
+    return core::fail(error_code::closed);
   }
 
   m_handle->close();
@@ -153,57 +153,57 @@ alloy::core::expected<void> alloy::io::file::close()
 }
 
 
-alloy::core::expected<void> alloy::io::file::reset()
+alloy::core::result<void,std::error_code> alloy::io::file::reset()
   noexcept
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
-    return core::unexpected(error_code::closed);
+    return core::fail(error_code::closed);
   }
 
   return m_handle->reset();
 }
 
 
-alloy::core::expected<void> alloy::io::file::flush()
+alloy::core::result<void,std::error_code> alloy::io::file::flush()
   noexcept
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
-    return core::unexpected(error_code::closed);
+    return core::fail(error_code::closed);
   }
 
   return m_handle->flush();
 }
 
 
-alloy::core::expected<void> alloy::io::file::skip(offset_type offset)
+alloy::core::result<void,std::error_code> alloy::io::file::skip(offset_type offset)
   noexcept
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
-    return core::unexpected(error_code::closed);
+    return core::fail(error_code::closed);
   }
 
   return m_handle->skip(offset);
 }
 
 
-alloy::core::expected<alloy::io::mutable_buffer>
+alloy::core::result<alloy::io::mutable_buffer,std::error_code>
   alloy::io::file::read(mutable_buffer buffer)
   noexcept
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
-    return core::unexpected(error_code::closed);
+    return core::fail(error_code::closed);
   }
 
   return m_handle->read(buffer);
 }
 
 
-alloy::core::expected<alloy::io::const_buffer>
+alloy::core::result<alloy::io::const_buffer,std::error_code>
   alloy::io::file::write(const_buffer buffer)
   noexcept
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
-    return core::unexpected(error_code::closed);
+    return core::fail(error_code::closed);
   }
 
   return m_handle->write(buffer);

@@ -39,7 +39,7 @@ namespace {
     /// \brief Returns the size of the mutable buffer
     ///
     /// \return the size of the buffer
-    alloy::core::expected<size_type> bytes() const noexcept override;
+    alloy::core::result<size_type,std::error_code> bytes() const noexcept override;
 
     //-------------------------------------------------------------------------
     // File API
@@ -54,27 +54,27 @@ namespace {
     /// \brief Resets the file cursor back to the start position
     ///
     /// \return void on success
-    alloy::core::expected<void> reset() noexcept override;
+    alloy::core::result<void,std::error_code> reset() noexcept override;
 
     /// \brief Skips the next \p offset bytes from this file
     ///
     /// \param offset the offset to skip
     /// \return void
-    alloy::core::expected<void>
+    alloy::core::result<void,std::error_code>
       skip(offset_type offset) noexcept override;
 
     /// \brief Reads from the buffer
     ///
     /// \param buffer the buffer to read from
     /// \return a buffer to what was read
-    alloy::core::expected<alloy::io::mutable_buffer>
+    alloy::core::result<alloy::io::mutable_buffer,std::error_code>
       read(alloy::io::mutable_buffer buffer) noexcept override;
 
     /// \brief Writes memory from the \p buffer into the stored memory
     ///
     /// \param buffer the buffer to write
     /// \return the buffer to what was written
-    alloy::core::expected<alloy::io::const_buffer>
+    alloy::core::result<alloy::io::const_buffer,std::error_code>
       write(alloy::io::const_buffer buffer) noexcept override;
 
     //-------------------------------------------------------------------------
@@ -106,7 +106,7 @@ namespace {
   // Observers
   //---------------------------------------------------------------------------
 
-  alloy::core::expected<alloy::io::file_stream::size_type>
+  alloy::core::result<alloy::io::file_stream::size_type,std::error_code>
     memory_file_stream::bytes()
     const noexcept
   {
@@ -123,21 +123,21 @@ namespace {
     // Nothing to do
   }
 
-  alloy::core::expected<void> memory_file_stream::reset()
+  alloy::core::result<void,std::error_code> memory_file_stream::reset()
     noexcept
   {
     m_index = 0u;
     return {};
   }
 
-  alloy::core::expected<void>
+  alloy::core::result<void,std::error_code>
     memory_file_stream::skip(offset_type offset)
     noexcept
   {
     const auto next_index = std::min(m_index + offset, m_buffer.size());
 
     if (next_index == m_index) {
-      return alloy::core::unexpected(alloy::io::file::error_code::eof);
+      return alloy::core::fail(alloy::io::file::error_code::eof);
     }
 
     m_index = next_index;
@@ -145,12 +145,12 @@ namespace {
     return {};
   }
 
-  alloy::core::expected<alloy::io::mutable_buffer>
+  alloy::core::result<alloy::io::mutable_buffer,std::error_code>
     memory_file_stream::read(alloy::io::mutable_buffer buffer)
     noexcept
   {
     if (m_buffer.size() == m_index) {
-      return alloy::core::unexpected(alloy::io::file::error_code::eof);
+      return alloy::core::fail(alloy::io::file::error_code::eof);
     }
 
     // To write to
@@ -176,12 +176,12 @@ namespace {
     };
   }
 
-  alloy::core::expected<alloy::io::const_buffer>
+  alloy::core::result<alloy::io::const_buffer,std::error_code>
     memory_file_stream::write(alloy::io::const_buffer buffer)
     noexcept
   {
     if (m_buffer.size() == m_index) {
-      return alloy::core::unexpected(alloy::io::file::error_code::eof);
+      return alloy::core::fail(alloy::io::file::error_code::eof);
     }
 
     // To read from

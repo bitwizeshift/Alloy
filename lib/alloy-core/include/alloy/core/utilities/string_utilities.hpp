@@ -33,10 +33,11 @@
 
 #include "alloy/core/api.hpp"
 #include "alloy/core/utilities/string_view.hpp"
-#include "alloy/core/utilities/expected.hpp"
+#include "alloy/core/utilities/result.hpp"
 #include "alloy/core/precision/real.hpp"
 
 #include <cstdint>
+#include <system_error> // std::error_code
 
 namespace alloy::core {
 
@@ -63,10 +64,10 @@ namespace alloy::core {
     ///
     /// \param in the input value
     /// \return the integer on success
-    static auto to_int8(string_view in) noexcept -> expected<std::int8_t>;
-    static auto to_int16(string_view in) noexcept -> expected<std::int16_t>;
-    static auto to_int32(string_view in) noexcept -> expected<std::int32_t>;
-    static auto to_int64(string_view in) noexcept -> expected<std::int64_t>;
+    static auto to_int8(string_view in) noexcept -> result<std::int8_t,std::error_code>;
+    static auto to_int16(string_view in) noexcept -> result<std::int16_t,std::error_code>;
+    static auto to_int32(string_view in) noexcept -> result<std::int32_t,std::error_code>;
+    static auto to_int64(string_view in) noexcept -> result<std::int64_t,std::error_code>;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -84,10 +85,10 @@ namespace alloy::core {
     ///
     /// \param in the input value
     /// \return the integer on success
-    static auto to_uint8(string_view in) noexcept -> expected<std::uint8_t>;
-    static auto to_uint16(string_view in) noexcept -> expected<std::uint16_t>;
-    static auto to_uint32(string_view in) noexcept -> expected<std::uint32_t>;
-    static auto to_uint64(string_view in) noexcept -> expected<std::uint64_t>;
+    static auto to_uint8(string_view in) noexcept -> result<std::uint8_t,std::error_code>;
+    static auto to_uint16(string_view in) noexcept -> result<std::uint16_t,std::error_code>;
+    static auto to_uint32(string_view in) noexcept -> result<std::uint32_t,std::error_code>;
+    static auto to_uint64(string_view in) noexcept -> result<std::uint64_t,std::error_code>;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -100,9 +101,9 @@ namespace alloy::core {
     ///
     /// \param in the input value
     /// \return the integer on success
-    static auto to_float(string_view in) noexcept -> expected<float>;
-    static auto to_double(string_view in) noexcept -> expected<double>;
-    static auto to_real(string_view in) noexcept -> expected<real>;
+    static auto to_float(string_view in) noexcept -> result<float,std::error_code>;
+    static auto to_double(string_view in) noexcept -> result<double,std::error_code>;
+    static auto to_real(string_view in) noexcept -> result<real,std::error_code>;
     /// \}
   };
 

@@ -89,11 +89,11 @@ namespace alloy::core {
 
 
 #if 0 // TODO(bitwizeshift): Re-enable this when a view of the mesh is added
-      auto unpack_vertex(packed_buffer_reader& reader) const noexcept -> expected<vertex>
+      auto unpack_vertex(packed_buffer_reader& reader) const noexcept -> result<vertex,std::error_code>
       {
         const auto components = reader.unpack_object<std::array<real,3>>();
         if (!components) {
-          return unexpected(components.error());
+          return fail(components.error());
         }
 
         const auto& x = (*components)[0];
@@ -103,11 +103,11 @@ namespace alloy::core {
         return vertex{x,y,z};
       }
 
-      auto unpack_normal(packed_buffer_reader& reader) const noexcept -> expected<normal>
+      auto unpack_normal(packed_buffer_reader& reader) const noexcept -> result<normal,std::error_code>
       {
         const auto components = reader.unpack_object<std::array<std::int16_t,4>>();
         if (!components) {
-          return unexpected(components.error());
+          return fail(components.error());
         }
 
         const auto& x = (*components)[0];
@@ -123,11 +123,11 @@ namespace alloy::core {
         );
       }
 
-      auto unpack_texture_coordinate(packed_buffer_reader& reader) const noexcept -> expected<texture_coordinate>
+      auto unpack_texture_coordinate(packed_buffer_reader& reader) const noexcept -> result<texture_coordinate,std::error_code>
       {
         const auto components = reader.unpack_object<std::array<real,2>>();
         if (!components) {
-          return unexpected(components.error());
+          return fail(components.error());
         }
 
         const auto& u = (*components)[0];
@@ -136,11 +136,11 @@ namespace alloy::core {
         return texture_coordinate{u, v};
       }
 
-      auto unpack_color(packed_buffer_reader& reader) const noexcept -> expected<color>
+      auto unpack_color(packed_buffer_reader& reader) const noexcept -> result<color,std::error_code>
       {
         const auto components = reader.unpack_object<std::array<std::uint8_t,4>>();
         if (!components) {
-          return unexpected(components.error());
+          return fail(components.error());
         }
         const auto& r = (*components)[0];
         const auto& g = (*components)[1];
@@ -157,27 +157,27 @@ namespace alloy::core {
         return color::from_rgba32(result);
       }
 
-      auto unpack(packed_buffer_reader& reader) const noexcept -> expected<vertex_data>
+      auto unpack(packed_buffer_reader& reader) const noexcept -> result<vertex_data,std::error_code>
       {
         // Rebuild everything piece-by-piece
         const auto vertex = unpack_vertex(reader);
         if (!vertex) {
-          return unexpected(vertex.error());
+          return fail(vertex.error());
         }
 
         const auto normal = unpack_normal(reader);
         if (!normal) {
-          return unexpected(normal.error());
+          return fail(normal.error());
         }
 
         const auto texture_coordinate = unpack_texture_coordinate(reader);
         if (!texture_coordinate) {
-          return unexpected(texture_coordinate.error());
+          return fail(texture_coordinate.error());
         }
 
         const auto color = unpack_color(reader);
         if (!color) {
-          return unexpected(color.error());
+          return fail(color.error());
         }
 
         return vertex_data{*vertex, *normal, *texture_coordinate, *color};

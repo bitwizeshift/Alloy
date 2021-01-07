@@ -82,7 +82,7 @@ namespace {
     /// \brief Returns 0
     ///
     /// \return 0
-    alloy::core::expected<size_type> bytes() const noexcept override;
+    alloy::core::result<size_type,std::error_code> bytes() const noexcept override;
 
     //-------------------------------------------------------------------------
     // File API
@@ -97,7 +97,7 @@ namespace {
     /// \brief Resets the file cursor back to the start position
     ///
     /// \return void on success
-    alloy::core::expected<void> reset() noexcept override;
+    alloy::core::result<void,std::error_code> reset() noexcept override;
 
     /// \brief Skips the next \p offset bytes
     ///
@@ -105,14 +105,14 @@ namespace {
     ///
     /// \param offset ignored
     /// \return void
-    alloy::core::expected<void>
+    alloy::core::result<void,std::error_code>
       skip(offset_type offset) noexcept override;
 
     /// \brief Reads random values into \p buffer
     ///
     /// \param buffer the buffer to read into
     /// \return the buffer
-    alloy::core::expected<alloy::io::mutable_buffer>
+    alloy::core::result<alloy::io::mutable_buffer,std::error_code>
       read(alloy::io::mutable_buffer buffer) noexcept override;
 
     /// \brief 'Writes' \p buffer to the random file
@@ -121,7 +121,7 @@ namespace {
     ///
     /// \param buffer the buffer to write
     /// \return buffer
-    alloy::core::expected<alloy::io::const_buffer>
+    alloy::core::result<alloy::io::const_buffer,std::error_code>
       write(alloy::io::const_buffer buffer) noexcept override;
 
     //-------------------------------------------------------------------------
@@ -163,7 +163,7 @@ namespace {
   // Observers
   //---------------------------------------------------------------------------
 
-  alloy::core::expected<alloy::io::file_stream::size_type>
+  alloy::core::result<alloy::io::file_stream::size_type,std::error_code>
     random_file_stream::bytes()
     const noexcept
   {
@@ -180,13 +180,13 @@ namespace {
     // Nothing to do
   }
 
-  alloy::core::expected<void> random_file_stream::reset()
+  alloy::core::result<void,std::error_code> random_file_stream::reset()
     noexcept
   {
     return {};
   }
 
-  alloy::core::expected<void>
+  alloy::core::result<void,std::error_code>
     random_file_stream::skip(offset_type offset)
     noexcept
   {
@@ -195,7 +195,7 @@ namespace {
     return {};
   }
 
-  alloy::core::expected<alloy::io::mutable_buffer>
+  alloy::core::result<alloy::io::mutable_buffer,std::error_code>
     random_file_stream::read(alloy::io::mutable_buffer buffer)
     noexcept
   {
@@ -211,7 +211,7 @@ namespace {
     return buffer;
   }
 
-  alloy::core::expected<alloy::io::const_buffer>
+  alloy::core::result<alloy::io::const_buffer,std::error_code>
     random_file_stream::write(alloy::io::const_buffer buffer)
     noexcept
   {

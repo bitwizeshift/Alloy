@@ -73,7 +73,7 @@ set(header_files
   include/alloy/core/utilities/casts.hpp
   include/alloy/core/utilities/delegate.hpp
   include/alloy/core/utilities/signal.hpp
-  include/alloy/core/utilities/expected.hpp
+  include/alloy/core/utilities/result.hpp
   include/alloy/core/utilities/explicitly_copyable.hpp
   include/alloy/core/utilities/fnv1a_hash.hpp
   include/alloy/core/utilities/hashed_string_view.hpp
