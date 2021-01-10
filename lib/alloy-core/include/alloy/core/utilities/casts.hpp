@@ -56,10 +56,11 @@ namespace alloy::core {
     ///
     /// \tparam To the type to convert to
     /// \param from the type being converted
-    template <typename To, typename From,
-              typename=std::enable_if_t<std::is_convertible<From,To>::value>>
-    constexpr To implicit_cast(From&& from)
-      noexcept(std::is_nothrow_constructible<To,From>::value);
+    template <typename To,
+              typename From,
+              typename = std::enable_if_t<std::is_convertible<From, To>::value>>
+    constexpr auto implicit_cast(From&& from)
+      noexcept(std::is_nothrow_constructible<To, From>::value) -> To;
 
     /// \brief Performs a cast that is known to potentially cause narrowing
     ///
@@ -74,9 +75,11 @@ namespace alloy::core {
     /// \tparam To the type to cast to
     /// \param from the value to cast
     /// \return the casted value
-    template<typename To, typename From,
-             typename=std::enable_if_t<std::is_integral<To>::value && std::is_integral<From>::value>>
-    constexpr To narrow_cast(From from) noexcept;
+    template <typename To,
+              typename From,
+              typename = std::enable_if_t<std::is_integral<To>::value &&
+                                          std::is_integral<From>::value>>
+    constexpr auto narrow_cast(From from) noexcept -> To;
 
     /// \brief Performs a bounded casting safely between numeric types.
     ///
@@ -91,9 +94,11 @@ namespace alloy::core {
     /// \tparam To the type to cast to
     /// \param from the value to cast
     /// \return the casted value
-    template<typename To, typename From,
-             typename=std::enable_if_t<std::is_integral<To>::value && std::is_integral<From>::value>>
-    constexpr To checked_narrow_cast(From from) noexcept;
+    template <typename To,
+              typename From,
+              typename = std::enable_if_t<std::is_integral<To>::value &&
+                                          std::is_integral<From>::value>>
+    constexpr auto checked_narrow_cast(From from) noexcept -> To;
 
     /// \brief Statically casts a pointer if the pointer is dynamically
     ///        castable to that type, asserting otherwise.
@@ -107,10 +112,11 @@ namespace alloy::core {
     /// \tparam To the type to cast to
     /// \param ptr the pointer to cast
     /// \return the statically casted pointer
-    template<typename To, typename From,
-             typename=std::enable_if_t<std::is_pointer<To>::value &&
-                                       std::is_pointer<From>::value>>
-    constexpr To pointer_cast( From ptr ) noexcept;
+    template <typename To,
+              typename From,
+              typename = std::enable_if_t<std::is_pointer<To>::value &&
+                                          std::is_pointer<From>::value>>
+    constexpr auto pointer_cast(From ptr) noexcept -> To;
 
     /// \brief Performs a cast between types by copying bytes from \p from to
     ///        the new type.
@@ -122,13 +128,13 @@ namespace alloy::core {
     /// \tparam To the type to cast to
     /// \param from the value to convert
     /// \return the converted value
-    template <typename To, typename From,
-              typename=std::enable_if_t<
+    template <typename To,
+              typename From,
+              typename = std::enable_if_t<
                 (sizeof(To) == sizeof(From)) &&
                 std::is_trivially_copyable<From>::value &&
-                std::is_trivially_copyable<To>::value
-              >>
-    To bit_cast(const From& from) noexcept;
+                std::is_trivially_copyable<To>::value>>
+    auto bit_cast(const From& from) noexcept -> To;
 
     //-------------------------------------------------------------------------
     // Signed / Unsigned Conversions
@@ -143,12 +149,14 @@ namespace alloy::core {
     ///
     /// \param from the integral type being converted
     /// \return a signed integral
-    template<typename Integral,
-             typename=std::enable_if_t<std::is_integral<Integral>::value>>
-    constexpr std::make_signed_t<Integral> as_signed(Integral from) noexcept;
-    template<typename Enum,
-             typename=std::enable_if_t<std::is_enum<Enum>::value>>
-    constexpr std::make_signed_t<std::underlying_type_t<Enum>> as_signed(Enum from) noexcept;
+    template <typename Integral,
+              typename = std::enable_if_t<std::is_integral<Integral>::value>>
+    constexpr auto as_signed(Integral from)
+      noexcept -> std::make_signed_t<Integral>;
+    template <typename Enum,
+              typename = std::enable_if_t<std::is_enum<Enum>::value>>
+    constexpr auto as_signed(Enum from)
+      noexcept -> std::make_signed_t<std::underlying_type_t<Enum>>;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -162,12 +170,14 @@ namespace alloy::core {
     ///
     /// \param from the integral type being converted
     /// \return an unsigned integral
-    template<typename Integral,
-             typename=std::enable_if_t<std::is_integral<Integral>::value>>
-    constexpr std::make_unsigned_t<Integral> as_unsigned(Integral from) noexcept;
-    template<typename Enum,
-             typename=std::enable_if_t<std::is_enum<Enum>::value>>
-    constexpr std::make_unsigned_t<std::underlying_type_t<Enum>> as_unsigned(Enum from) noexcept;
+    template <typename Integral,
+              typename = std::enable_if_t<std::is_integral<Integral>::value>>
+    constexpr auto as_unsigned(Integral from)
+      noexcept -> std::make_unsigned_t<Integral>;
+    template <typename Enum,
+              typename = std::enable_if_t<std::is_enum<Enum>::value>>
+    constexpr auto as_unsigned(Enum from)
+      noexcept -> std::make_unsigned_t<std::underlying_type_t<Enum>>;
     /// \}
 
   } // inline namespace casts
@@ -183,24 +193,26 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(-Wimplicit-int-conversion)
 ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE(4244) // ignore loss-of-precision warning
 
 template<typename To, typename From, typename>
-inline constexpr To alloy::core::casts::implicit_cast(From&& from)
-  noexcept(std::is_nothrow_constructible<To,From>::value)
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::casts::implicit_cast(From&& from)
+  noexcept(std::is_nothrow_constructible<To, From>::value) -> To
 {
   return std::forward<From>(from);
 }
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 template<typename To, typename From, typename>
-inline constexpr To alloy::core::casts::narrow_cast(From from)
-  noexcept
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::casts::narrow_cast(From from)
+  noexcept -> To
 {
   return static_cast<To>(from);
 }
 
-
 template<typename To, typename From, typename>
-inline constexpr To alloy::core::casts::checked_narrow_cast(From from)
-  noexcept
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::casts::checked_narrow_cast(From from)
+  noexcept -> To
 {
   auto to = static_cast<To>(from);
 
@@ -218,10 +230,10 @@ inline constexpr To alloy::core::casts::checked_narrow_cast(From from)
   return to;
 }
 
-
-template<typename To, typename From, typename>
-inline constexpr To alloy::core::casts::pointer_cast(From ptr)
-  noexcept
+template <typename To, typename From, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::casts::pointer_cast(From ptr)
+  noexcept -> To
 {
   ALLOY_ASSERT(
     static_cast<To>(ptr) == dynamic_cast<To>(ptr),
@@ -231,35 +243,34 @@ inline constexpr To alloy::core::casts::pointer_cast(From ptr)
   return static_cast<To>(ptr);
 }
 
-
 template<typename To, typename From, typename>
-inline To alloy::core::casts::bit_cast(const From& from)
-  noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::casts::bit_cast(const From& from)
+  noexcept -> To
 {
     To to;
     std::memcpy(&to, &from, sizeof(To));
     return to;
 }
 
-
 //-----------------------------------------------------------------------------
 // Signed / Unsigned Conversions
 //-----------------------------------------------------------------------------
 
-template<typename Integral, typename>
-inline constexpr std::make_signed_t<Integral>
-  alloy::core::casts::as_signed(Integral from)
-  noexcept
+template <typename Integral, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::casts::as_signed(Integral from)
+  noexcept -> std::make_signed_t<Integral>
 {
   using signed_type = std::make_signed_t<Integral>;
 
   return static_cast<signed_type>(from);
 }
 
-template<typename Enum, typename>
-inline constexpr std::make_signed_t<std::underlying_type_t<Enum>>
-  alloy::core::casts::as_signed(Enum from)
-  noexcept
+template <typename Enum, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::casts::as_signed(Enum from)
+  noexcept -> std::make_signed_t<std::underlying_type_t<Enum>>
 {
   using integral_type = std::underlying_type_t<Enum>;
   using signed_type = std::make_signed_t<integral_type>;
@@ -269,20 +280,20 @@ inline constexpr std::make_signed_t<std::underlying_type_t<Enum>>
 
 //-----------------------------------------------------------------------------
 
-template<typename Integral, typename>
-inline constexpr std::make_unsigned_t<Integral>
-  alloy::core::casts::as_unsigned(Integral from)
-  noexcept
+template <typename Integral, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::casts::as_unsigned(Integral from)
+  noexcept -> std::make_unsigned_t<Integral>
 {
   using unsigned_type = std::make_unsigned_t<Integral>;
 
   return static_cast<unsigned_type>(from);
 }
 
-template<typename Enum, typename>
-inline constexpr std::make_unsigned_t<std::underlying_type_t<Enum>>
-  alloy::core::casts::as_unsigned(Enum from)
-  noexcept
+template <typename Enum, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::casts::as_unsigned(Enum from)
+  noexcept -> std::make_unsigned_t<std::underlying_type_t<Enum>>
 {
   using integral_type = std::underlying_type_t<Enum>;
   using unsigned_type = std::make_unsigned_t<integral_type>;
