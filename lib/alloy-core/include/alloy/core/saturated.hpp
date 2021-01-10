@@ -44,9 +44,21 @@ namespace alloy::core {
   /////////////////////////////////////////////////////////////////////////////
   /// \brief A value that will always saturate between values of [0...1]
   ///
-  /// Unlike the "saturated" type, "saturated" is defined to have operations
-  /// similar to floating point types, but with saturating behavior. All
-  /// operations are guaranteed to saturate values to either '0' or '1'.
+  /// Unlike the `clamped` class template, `saturated` is defined to have
+  /// operations similar to floating point types, but with saturating behavior.
+  /// All operations are guaranteed to saturate values to either '0' or '1'.
+  ///
+  /// Since the behavior is always saturating, there is a persistent overhead
+  /// on any potentially saturating operations.
+  ///
+  /// ### Examples
+  ///
+  /// Basic Use:
+  ///
+  /// ```cpp
+  /// const auto sat = alloy::core::saturated<float>::make(x);
+  /// sat += 0.5; // may saturate to 1.0 if x + 0.5 > 1.0
+  /// ```
   ///
   /// \tparam Float the underlying floating point type
   /////////////////////////////////////////////////////////////////////////////
@@ -73,13 +85,32 @@ namespace alloy::core {
     /// If \p value is below 0, it saturates to 0. If \p value is above 1, it
     /// saturates to 1.
     ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// ALLOY_ASSERT(alloy::core::saturated<float>::make(2.0f) == 1.0f);
+    /// ALLOY_ASSERT(alloy::core::saturated<float>::make(-1.0f) == 0.0f);
+    /// ALLOY_ASSERT(alloy::core::saturated<float>::make(0.5f) == 0.5f);
+    /// ```
+    ///
     /// \param value the value to saturate
     /// \return the saturated value
     static constexpr auto make(element_type value) noexcept -> saturated;
 
     /// \brief Creates a saturated object with the given \p value without
-    ///        any checks
+    ///        any checks or saturating behavior
     ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// ALLOY_ASSERT(alloy::core::saturated<float>::make_unchecked(0.5f) == 0.5f);
+    /// ```
+    ///
+    /// \pre `value >= 0` and `value <= 1`
     /// \param value the value to saturate
     /// \return the saturated value
     static constexpr auto make_unchecked(element_type value) noexcept -> saturated;
@@ -90,15 +121,44 @@ namespace alloy::core {
   public:
 
     /// \brief Default-constructs this saturated object
+    ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// // Creates 'x' with '0.0f' as underlying value
+    /// const auto x = alloy::core::saturated<float>{};
+    /// ```
     constexpr saturated() noexcept = default;
 
     /// \brief Copy-constructs this saturated from \p other
+    ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// const auto other = alloy::core::saturated<float>::make_unchecked(0.5f);
+    ///
+    /// const auto copy = other;
+    /// ```
     ///
     /// \param other the other object to copy
     constexpr saturated(const saturated& other) noexcept = default;
 
     /// \brief Convert-constructs this saturated from a saturated of a different
     ///        underlying float
+    ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// const auto other = alloy::core::saturated<double>::make_unchecked(0.5);
+    ///
+    /// const auto copy = alloy::core::saturated<float>{other};
+    /// ```
     ///
     /// \param other the other object to copy
     template <typename UFloat,
@@ -108,6 +168,17 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
 
     /// \brief Copies the value of \p other
+    ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// auto foo = alloy::core::saturated<float>::make_unchecked(0.5f);
+    ///
+    /// // re-assign
+    /// foo = alloy::core::saturated<float>::make_unchecked(0.1f);
+    /// ```
     ///
     /// \param other the other saturated to copy
     /// \return reference to (*this)

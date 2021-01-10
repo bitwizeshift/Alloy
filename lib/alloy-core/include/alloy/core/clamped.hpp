@@ -51,6 +51,25 @@ namespace alloy::core {
   /////////////////////////////////////////////////////////////////////////////
   /// \brief A floating point value that is clamped between 0 and 1
   ///
+  /// The `clamped` class template is a very simple, stripped down type that
+  /// exists to differentiate APIs that require floating point values clamped
+  /// in the range [0, 1].
+  ///
+  /// For proper saturating behavior, use the `saturated` class template. This
+  /// API exists only to represent clamped values where it would be a logic
+  /// bug to exceed the 1.0 or precede 0.0 (for example, open-gl-like APIs that
+  /// use proper clamping).
+  ///
+  /// ### Examples
+  ///
+  /// ```cpp
+  /// // Make performs boundary checking for precondition testing
+  /// const auto x = alloy::core::clamped<float>::make(y);
+  ///
+  /// // Throws if 'x' exceeds 1.0 or precedes 0.0
+  /// some_function_requiring_clamping(x.value());
+  /// ```
+  ///
   /// \tparam Float the underlying floating point value
   /////////////////////////////////////////////////////////////////////////////
   template <typename Float>
@@ -82,9 +101,25 @@ namespace alloy::core {
 
     /// \brief Creates a clamped object with the given \p value with checking
     ///
-    /// \pre \p value >= 0 and \p value <= 1
+    /// Unlike `saturated::make`, this `make` function returns an error if the
+    /// input value either exceeds 1.0 or precedes 0.0. This has been done
+    /// since generally it is a *logic bug* to pass values outside of this range
+    /// to any APIs requiring clamped values.
     ///
+    /// ### Examples
     ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// using clamped       = alloy::core::clamped<float>;
+    /// using clamped_error = clamped::error;
+    ///
+    /// ALLOY_ASSERT(clamped::make(2.0f) == alloy::core::fail(clampf_error::overflow));
+    /// ALLOY_ASSERT(clamped::make(-1.0f) == alloy::core::fail(clampf_error::underflow));
+    /// ALLOY_ASSERT(clamped::make(0.5f) == 0.5f);
+    /// ```
+    ///
+    /// \pre `value >= 0` and `value <= 1`
     /// \param value the value
     /// \return the clamped value, if \p value is within [0,1]; an error
     ///         otherwise. If \p value exceeds 1.0, this returns
@@ -98,6 +133,14 @@ namespace alloy::core {
     ///
     /// This assumes that \p value is between the clamped range [0.0, 1.0]
     ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// const auto x = alloy::core::clamped<float>::make_unchecked(0.5f);
+    /// ```
+    ///
     /// \param value the value
     /// \return the clamped object
     static constexpr auto make_unchecked(element_type value) noexcept -> clamped;
@@ -108,15 +151,44 @@ namespace alloy::core {
   public:
 
     /// \brief Default-constructs this clamped object
+    ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// // Creates 'x' with '0.0f' as underlying value
+    /// const auto x = alloy::core::clamped<float>{};
+    /// ```
     constexpr clamped() noexcept = default;
 
     /// \brief Copy-constructs this clamped from \p other
+    ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// const auto other = alloy::core::clamped<float>::make_unchecked(0.5f);
+    ///
+    /// const auto copy = other;
+    /// ```
     ///
     /// \param other the other object to copy
     constexpr clamped(const clamped& other) noexcept = default;
 
     /// \brief Convert-constructs this clamped from a clamped of a different
     ///        underlying float
+    ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// const auto other = alloy::core::saturated<float>::make_unchecked(0.5f);
+    ///
+    /// const auto copy = alloy::core::clamped<float>{other};
+    /// ```
     ///
     /// \param other the other object to copy
     template <typename UFloat,
@@ -126,6 +198,16 @@ namespace alloy::core {
     /// \brief Convert-constructs this clamped from a clamped of a different
     ///        underlying float
     ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// const auto other = alloy::core::clamped<double>::make_unchecked(0.5);
+    ///
+    /// const auto copy = alloy::core::clamped<float>{other};
+    /// ```
+    ///
     /// \param other the other object to copy
     template <typename UFloat,
               typename = std::enable_if_t<std::is_convertible<UFloat, Float>::value>>
@@ -134,6 +216,17 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
 
     /// \brief Copies the value of \p other
+    ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// auto foo = alloy::core::clamped<float>::make_unchecked(0.5f);
+    ///
+    /// // re-assign
+    /// foo = alloy::core::clamped<float>::make_unchecked(0.1f);
+    /// ```
     ///
     /// \param other the other clamped to copy
     /// \return reference to (*this)
