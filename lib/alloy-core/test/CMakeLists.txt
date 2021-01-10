@@ -21,15 +21,14 @@ set(source_files
   # Math
   src/alloy/core/math/vector/vector2.test.cpp
   src/alloy/core/math/vector/vector3.test.cpp
+  src/alloy/core/math/clamped.test.cpp
+  src/alloy/core/math/saturated.test.cpp
 
   # Memory
   src/alloy/core/memory/packed_buffer.test.cpp
 
   # Model
   src/alloy/core/model/attribute_buffer_view.test.cpp
-
-  src/alloy/core/clamped.test.cpp
-  src/alloy/core/saturated.test.cpp
 
   src/main.cpp
 )

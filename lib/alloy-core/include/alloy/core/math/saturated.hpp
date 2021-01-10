@@ -29,8 +29,8 @@
   SOFTWARE.
 */
 
-#ifndef ALLOY_CORE_SATURATED_HPP
-#define ALLOY_CORE_SATURATED_HPP
+#ifndef ALLOY_CORE_MATH_SATURATED_HPP
+#define ALLOY_CORE_MATH_SATURATED_HPP
 
 #include "alloy/core/precision/real.hpp" // real
 #include "alloy/core/intrinsics.hpp"     // ALLOY_FORCE_INLINE
@@ -966,4 +966,4 @@ auto alloy::core::is_subnormal(saturated<Float> f)
   return is_subnormal(f.value());
 }
 
-#endif /* ALLOY_CORE_SATURATED_HPP */
+#endif /* ALLOY_CORE_MATH_SATURATED_HPP */

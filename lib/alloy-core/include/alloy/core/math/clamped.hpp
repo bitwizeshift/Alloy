@@ -29,14 +29,14 @@
   SOFTWARE.
 */
 
-#ifndef ALLOY_CORE_CLAMPED_HPP
-#define ALLOY_CORE_CLAMPED_HPP
+#ifndef ALLOY_CORE_MATH_CLAMPED_HPP
+#define ALLOY_CORE_MATH_CLAMPED_HPP
 
 #include "alloy/core/assert.hpp"
-#include "alloy/core/saturated.hpp"
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/result.hpp"
+#include "alloy/core/math/saturated.hpp"
 
 #include <type_traits> // std::is_floating_point
 #include <functional>  // std::hash
@@ -728,4 +728,4 @@ auto alloy::core::is_subnormal(clamped<Float> f)
   return is_subnormal(f.value());
 }
 
-#endif /* ALLOY_CORE_CLAMPED_HPP */
+#endif /* ALLOY_CORE_MATH_CLAMPED_HPP */

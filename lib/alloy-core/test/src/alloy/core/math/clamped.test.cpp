@@ -22,8 +22,8 @@
   SOFTWARE.
 */
 
-#include "alloy/core/clamped.hpp"
-#include "alloy/core/saturated.hpp"
+#include "alloy/core/math/clamped.hpp"
+#include "alloy/core/math/saturated.hpp"
 
 #include <catch2/catch.hpp>
 

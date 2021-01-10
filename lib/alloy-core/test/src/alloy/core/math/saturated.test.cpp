@@ -22,7 +22,7 @@
   SOFTWARE.
 */
 
-#include "alloy/core/saturated.hpp"
+#include "alloy/core/math/saturated.hpp"
 
 #include <catch2/catch.hpp>
 
