@@ -33,6 +33,7 @@
 
 #include "alloy/core/api.hpp"
 #include "alloy/core/string/string_view.hpp"
+#include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/core/precision/real.hpp"
 
@@ -121,7 +122,8 @@ namespace alloy::core {
   ///
   /// \param error the error code
   /// \return a string message
-  auto get_message(string_utilities::parse_error error) noexcept -> string_view;
+  ALLOY_CORE_API
+  auto get_message(string_utilities::parse_error error) noexcept -> zstring_view;
 
 } // namespace alloy::core
 
