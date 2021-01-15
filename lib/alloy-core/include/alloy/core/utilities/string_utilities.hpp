@@ -37,7 +37,6 @@
 #include "alloy/core/precision/real.hpp"
 
 #include <cstdint>
-#include <system_error> // std::error_code
 
 namespace alloy::core {
 
@@ -48,6 +47,17 @@ namespace alloy::core {
   {
     string_utilities() = delete;
     ~string_utilities() = delete;
+
+    //-------------------------------------------------------------------------
+    // Public Member Types
+    //-------------------------------------------------------------------------
+
+    enum class parse_error {
+      none,             ///< No error occurred
+      invalid_argument, ///< Invalid argument occurred during parsing
+      out_of_range,     ///< Parsed result exceeds boundary of type
+      unknown,          ///< An unknown error occurred.
+    };
 
     //-------------------------------------------------------------------------
     // Signed Integer Parsing
@@ -64,10 +74,10 @@ namespace alloy::core {
     ///
     /// \param in the input value
     /// \return the integer on success
-    static auto to_int8(string_view in) noexcept -> result<std::int8_t,std::error_code>;
-    static auto to_int16(string_view in) noexcept -> result<std::int16_t,std::error_code>;
-    static auto to_int32(string_view in) noexcept -> result<std::int32_t,std::error_code>;
-    static auto to_int64(string_view in) noexcept -> result<std::int64_t,std::error_code>;
+    static auto to_int8(string_view in) noexcept -> result<std::int8_t,parse_error>;
+    static auto to_int16(string_view in) noexcept -> result<std::int16_t,parse_error>;
+    static auto to_int32(string_view in) noexcept -> result<std::int32_t,parse_error>;
+    static auto to_int64(string_view in) noexcept -> result<std::int64_t,parse_error>;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -85,10 +95,10 @@ namespace alloy::core {
     ///
     /// \param in the input value
     /// \return the integer on success
-    static auto to_uint8(string_view in) noexcept -> result<std::uint8_t,std::error_code>;
-    static auto to_uint16(string_view in) noexcept -> result<std::uint16_t,std::error_code>;
-    static auto to_uint32(string_view in) noexcept -> result<std::uint32_t,std::error_code>;
-    static auto to_uint64(string_view in) noexcept -> result<std::uint64_t,std::error_code>;
+    static auto to_uint8(string_view in) noexcept -> result<std::uint8_t,parse_error>;
+    static auto to_uint16(string_view in) noexcept -> result<std::uint16_t,parse_error>;
+    static auto to_uint32(string_view in) noexcept -> result<std::uint32_t,parse_error>;
+    static auto to_uint64(string_view in) noexcept -> result<std::uint64_t,parse_error>;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -101,11 +111,17 @@ namespace alloy::core {
     ///
     /// \param in the input value
     /// \return the integer on success
-    static auto to_float(string_view in) noexcept -> result<float,std::error_code>;
-    static auto to_double(string_view in) noexcept -> result<double,std::error_code>;
-    static auto to_real(string_view in) noexcept -> result<real,std::error_code>;
+    static auto to_float(string_view in) noexcept -> result<float,parse_error>;
+    static auto to_double(string_view in) noexcept -> result<double,parse_error>;
+    static auto to_real(string_view in) noexcept -> result<real,parse_error>;
     /// \}
   };
+
+  /// \brief Convert the `string_utilities::parse_error` to a message string
+  ///
+  /// \param error the error code
+  /// \return a string message
+  auto get_message(string_utilities::parse_error error) noexcept -> string_view;
 
 } // namespace alloy::core
 
