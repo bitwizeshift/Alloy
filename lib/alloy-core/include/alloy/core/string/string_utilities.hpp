@@ -28,11 +28,11 @@
   SOFTWARE.
 */
 
-#ifndef ALLOY_CORE_UTILITIES_STRING_UTILITIES_HPP
-#define ALLOY_CORE_UTILITIES_STRING_UTILITIES_HPP
+#ifndef ALLOY_CORE_STRINGS_STRING_UTILITIES_HPP
+#define ALLOY_CORE_STRINGS_STRING_UTILITIES_HPP
 
 #include "alloy/core/api.hpp"
-#include "alloy/core/utilities/string_view.hpp"
+#include "alloy/core/string/string_view.hpp"
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/core/precision/real.hpp"
 
@@ -125,4 +125,4 @@ namespace alloy::core {
 
 } // namespace alloy::core
 
-#endif /* ALLOY_CORE_UTILITIES_STRING_UTILITIES_HPP */
+#endif /* ALLOY_CORE_STRINGS_STRING_UTILITIES_HPP */

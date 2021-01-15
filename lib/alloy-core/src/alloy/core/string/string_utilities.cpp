@@ -21,7 +21,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-#include "alloy/core/utilities/string_utilities.hpp"
+#include "alloy/core/string/string_utilities.hpp"
 
 #include <charconv>
 #include <cerrno>
@@ -193,4 +193,3 @@ auto alloy::core::get_message(string_utilities::parse_error error)
   ALLOY_ASSERT(false, "Invalid error input");
   ALLOY_UNREACHABLE();
 }
-

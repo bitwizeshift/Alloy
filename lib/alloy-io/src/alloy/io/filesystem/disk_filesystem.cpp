@@ -10,7 +10,7 @@
 #include "alloy/io/filesystem/file_stream_finalizer.hpp"
 
 #include "alloy/core/intrinsics.hpp" // core::compiler::unreachable
-#include "alloy/core/containers/string.hpp"
+#include "alloy/core/string/string.hpp"
 
 #include <cstdio>    // std::FILE
 

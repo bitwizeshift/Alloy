@@ -22,7 +22,7 @@
   SOFTWARE.
 */
 
-#include <alloy/core/utilities/string_tokenizer.hpp>
+#include <alloy/core/string/string_tokenizer.hpp>
 
 #include <catch2/catch.hpp>
 
@@ -112,7 +112,7 @@ TEST_CASE("string_tokenizer::next()")
 {
   SECTION("Tokenize empty string") {
     auto tokenizer = string_tokenizer("", " ");
-    
+
     auto token = tokenizer.next();
 
     SECTION("Result is an error") {
