@@ -88,6 +88,7 @@ set(header_files
   include/alloy/core/strings/string_tokenizer.hpp
   include/alloy/core/strings/string_utilities.hpp
   include/alloy/core/strings/string.hpp
+  include/alloy/core/strings/zstring_view.hpp
 
   # Memory
   include/alloy/core/memory/memory_resource.hpp

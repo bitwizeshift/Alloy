@@ -32,6 +32,7 @@
 
 #include "alloy/core/api.hpp"
 #include "alloy/core/strings/string_view.hpp"
+#include "alloy/core/strings/zstring_view.hpp"
 
 #include "alloy/core/utilities/result.hpp"
 
