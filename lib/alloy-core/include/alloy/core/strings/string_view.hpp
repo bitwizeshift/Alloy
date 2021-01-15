@@ -28,14 +28,14 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-#ifndef ALLOY_CORE_UTILITIES_STRING_VIEW_HPP
-#define ALLOY_CORE_UTILITIES_STRING_VIEW_HPP
+#ifndef ALLOY_CORE_STRINGS_STRING_VIEW_HPP
+#define ALLOY_CORE_STRINGS_STRING_VIEW_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "alloy/core/containers/string.hpp"
+#include "alloy/core/strings/string.hpp"
 
 #include "alloy/core/macros.hpp" // ALLOY_UNIQUE_NAME
 
@@ -301,4 +301,4 @@ inline constexpr alloy::core::basic_zstring_view<CharT,Traits>
 
 }
 
-#endif /* ALLOY_CORE_UTILITIES_STRING_VIEW_HPP */
+#endif /* ALLOY_CORE_STRINGS_STRING_VIEW_HPP */

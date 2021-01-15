@@ -22,7 +22,7 @@
   SOFTWARE.
 */
 
-#include <alloy/core/utilities/string_tokenizer.hpp>
+#include <alloy/core/strings/string_tokenizer.hpp>
 
 #include <catch2/catch.hpp>
 

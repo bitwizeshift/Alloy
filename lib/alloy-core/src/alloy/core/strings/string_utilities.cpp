@@ -21,7 +21,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-#include "alloy/core/utilities/string_utilities.hpp"
+#include "alloy/core/strings/string_utilities.hpp"
 
 #include <charconv>
 #include <cerrno>
