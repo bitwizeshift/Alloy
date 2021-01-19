@@ -135,6 +135,10 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
   # TODO(#4): Undo once this no longer produces errors
   add_compile_options(-Wno-weak-vtables)
 
+  # This warning is triggered on switch statements that intentionally use `default:`
+  # for falling through. Disable this.
+  add_compile_options(-Wno-switch-enum)
+
   # Don't warn on ignored attributes; this breaks builds using dllexport/dllimport on
   # classes that may also define inline functions
   add_compile_options(-Wno-ignored-attributes)
