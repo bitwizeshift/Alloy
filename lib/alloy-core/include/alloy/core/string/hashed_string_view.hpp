@@ -27,11 +27,11 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-#ifndef ALLOY_CORE_UTILITIES_HASHED_STRING_VIEW_HPP
-#define ALLOY_CORE_UTILITIES_HASHED_STRING_VIEW_HPP
+#ifndef ALLOY_CORE_STRINGS_HASHED_STRING_VIEW_HPP
+#define ALLOY_CORE_STRINGS_HASHED_STRING_VIEW_HPP
 
 #include "alloy/core/utilities/fnv1a_hash.hpp"
-#include "alloy/core/utilities/string_view.hpp"
+#include "alloy/core/string/string_view.hpp"
 
 #include <utility> // std::hash
 #include <climits> // CHAR_BIT
@@ -238,4 +238,4 @@ inline constexpr bool
   return !(lhs == rhs);
 }
 
-#endif /* ALLOY_CORE_UTILITIES_HASHED_STRING_VIEW_HPP */
+#endif /* ALLOY_CORE_STRINGS_HASHED_STRING_VIEW_HPP */

@@ -27,17 +27,17 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-#ifndef ALLOY_CORE_UTILITIES_STRING_TOKENIZER_HPP
-#define ALLOY_CORE_UTILITIES_STRING_TOKENIZER_HPP
+#ifndef ALLOY_CORE_STRINGS_STRING_TOKENIZER_HPP
+#define ALLOY_CORE_STRINGS_STRING_TOKENIZER_HPP
 
 #include "alloy/core/api.hpp"
-#include "alloy/core/utilities/string_view.hpp"
+#include "alloy/core/string/string_view.hpp"
+#include "alloy/core/string/zstring_view.hpp"
 
 #include "alloy/core/utilities/result.hpp"
 
 #include <utility> // std::forward
 #include <string>  // std::char_traits
-#include <system_error> // std::error_code
 #include <type_traits>  // std::true_type
 
 namespace alloy::core {
@@ -50,7 +50,8 @@ namespace alloy::core {
   /// \brief An enumeration used for tokenizing errors
   /////////////////////////////////////////////////////////////////////////////
   enum class tokenizer_error {
-    out_of_tokens = 1,
+    none,
+    out_of_tokens,
   };
 
   //===========================================================================
@@ -136,7 +137,7 @@ namespace alloy::core {
     /// \brief Gets the next token in this string tokenizer's string.
     ///
     /// \return the next token
-    auto next() noexcept -> result<string_type,std::error_code>;
+    auto next() noexcept -> result<string_type,tokenizer_error>;
 
     /// \brief Gets the next token in this string tokenizer's string.
     ///
@@ -151,7 +152,7 @@ namespace alloy::core {
     ///
     /// \param delim the delimiter to match
     /// \return the next token
-    auto next(string_type delim) noexcept -> result<string_type,std::error_code>;
+    auto next(string_type delim) noexcept -> result<string_type,tokenizer_error>;
 
     /// \brief Resets the current position within this string tokenizer
     ///        to the beginning of the buffer
@@ -185,7 +186,7 @@ namespace alloy::core {
     /// \brief Retrieves the next token in the series
     ///
     /// \param delim the delimiters to check
-    auto next_token(string_type delim) noexcept -> result<string_type,std::error_code>;
+    auto next_token(string_type delim) noexcept -> result<string_type,tokenizer_error>;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -204,9 +205,9 @@ namespace alloy::core {
   /// \brief Makes an error_code from a tokenizer_error
   ///
   /// \param error the error to convert
-  /// \return the std::error_code object representing the error
+  /// \return the tokenizer_error object representing the error
   ALLOY_CORE_API
-  auto make_error_code(tokenizer_error error) noexcept -> std::error_code;
+  auto get_message(tokenizer_error error) noexcept -> zstring_view;
 
   //===========================================================================
   // aliases : basic_string_tokenizer
@@ -218,11 +219,6 @@ namespace alloy::core {
   using u32string_tokenizer = basic_string_tokenizer<char32_t,std::char_traits<char32_t>>;
 
 } // namespace alloy::core
-
-namespace std {
-  template <>
-  struct is_error_code_enum<alloy::core::tokenizer_error> : std::true_type{};
-}
 
 //-----------------------------------------------------------------------------
 // Constructor
@@ -275,7 +271,7 @@ inline constexpr auto
 template <typename CharT, typename Traits>
 inline
 auto alloy::core::basic_string_tokenizer<CharT,Traits>::next()
-  noexcept -> result<string_type,std::error_code>
+  noexcept -> result<string_type,tokenizer_error>
 {
   return next_token(m_delimiter);
 }
@@ -283,7 +279,7 @@ auto alloy::core::basic_string_tokenizer<CharT,Traits>::next()
 template <typename CharT, typename Traits>
 inline
 auto alloy::core::basic_string_tokenizer<CharT,Traits>::next(string_type delim)
-  noexcept -> result<string_type,std::error_code>
+  noexcept -> result<string_type,tokenizer_error>
 {
   return next_token(delim);
 }
@@ -332,7 +328,7 @@ template <typename CharT, typename Traits>
 inline
 auto alloy::core::basic_string_tokenizer<CharT,Traits>
   ::next_token(string_type delim)
-  noexcept -> result<string_type,std::error_code>
+  noexcept -> result<string_type,tokenizer_error>
 {
   const auto buffer_size = m_buffer.size();
 
@@ -361,4 +357,4 @@ auto alloy::core::basic_string_tokenizer<CharT,Traits>
   return fail(tokenizer_error::out_of_tokens);
 }
 
-#endif /* ALLOY_CORE_UTILITIES_STRING_TOKENIZER_HPP */
+#endif /* ALLOY_CORE_STRINGS_STRING_TOKENIZER_HPP */

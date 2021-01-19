@@ -1,14 +1,13 @@
-/*****************************************************************************
- * \file string_view.hpp
- *
- * \brief This header defines a string_view data type by using the C++17
- *        string_view equivalent.
- *****************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+/// \file zstring_view.hpp.h
+///
+/// \brief TODO(Bitwize): Add description
+////////////////////////////////////////////////////////////////////////////////
 
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -28,38 +27,13 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-#ifndef ALLOY_CORE_UTILITIES_STRING_VIEW_HPP
-#define ALLOY_CORE_UTILITIES_STRING_VIEW_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifndef LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_STRINGS_ZSTRING_VIEW_HPP
+#define LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_STRINGS_ZSTRING_VIEW_HPP
 
-#include "alloy/core/containers/string.hpp"
-
-#include "alloy/core/macros.hpp" // ALLOY_UNIQUE_NAME
-
-#include <string_view> // std::basic_string_view
-#include <string>      // std::char_traits, std::basic_string
+#include "alloy/core/string/string_view.hpp"
 
 namespace alloy::core {
-
-  //===========================================================================
-  // class : basic_string_view<CharT,Traits>
-  //===========================================================================
-
-  template <typename CharT, typename Traits = std::char_traits<CharT>>
-  using basic_string_view = std::basic_string_view<CharT,Traits>;
-
-  //===========================================================================
-  // aliases : class : basic_string_view<CharT,Traits>
-  //===========================================================================
-
-  using string_view    = basic_string_view<char>;
-  using wstring_view   = basic_string_view<wchar_t>;
-  using u16string_view = basic_string_view<char16_t>;
-  using u32string_view = basic_string_view<char32_t>;
-  using u8string_view  = basic_string_view<decltype(u8' ')>;
 
   //===========================================================================
   // class : basic_zstring_view<CharT,Traits>
@@ -125,8 +99,8 @@ namespace alloy::core {
     ///
     /// \param str the string to determine is null-terminated
     /// \return the zstring view
-    static constexpr basic_zstring_view
-      from_view(basic_string_view<CharT,Traits> str) noexcept;
+    static constexpr auto from_view(basic_string_view<CharT,Traits> str)
+      noexcept -> basic_zstring_view;
 
     //-------------------------------------------------------------------------
     // Constructors / Assignment
@@ -163,7 +137,7 @@ namespace alloy::core {
     ///
     /// \param other the other basic_zstring_view to copy
     /// \return reference to \c (*this)
-    constexpr basic_zstring_view& operator=(const basic_zstring_view& other) noexcept = default;
+    auto operator=(const basic_zstring_view& other) -> basic_zstring_view& = default;
 
     //-------------------------------------------------------------------------
     // Element Access
@@ -179,7 +153,7 @@ namespace alloy::core {
     /// \brief Returns a pointer to the underlying null-terminated string
     ///
     /// \return the pointer
-    constexpr const_pointer c_str() const noexcept;
+    constexpr auto c_str() const noexcept -> const_pointer;
 
     //-------------------------------------------------------------------------
     // Capacity
@@ -197,8 +171,8 @@ namespace alloy::core {
   public:
 
     using base_type::remove_prefix;
-    void remove_suffix(std::size_t) = delete;
-    void substr(std::size_t,std::size_t) = delete;
+    auto remove_suffix(std::size_t) -> void = delete;
+    auto substr(std::size_t,std::size_t) -> void = delete;
 
     //-------------------------------------------------------------------------
     // Iterators
@@ -238,6 +212,7 @@ namespace alloy::core {
 
 } // namespace alloy::core
 
+
 //=============================================================================
 // definitions : class : basic_string_view
 //=============================================================================
@@ -247,9 +222,10 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 template <typename CharT, typename Traits>
-inline constexpr alloy::core::basic_zstring_view<CharT,Traits>
-  alloy::core::basic_zstring_view<CharT,Traits>::from_view(basic_string_view<CharT,Traits> str)
-  noexcept
+inline constexpr
+auto alloy::core::basic_zstring_view<CharT,Traits>::from_view(
+  basic_string_view<CharT,Traits> str
+) noexcept -> basic_zstring_view
 {
   return basic_zstring_view{str.data(), str.size()};
 }
@@ -259,8 +235,8 @@ inline constexpr alloy::core::basic_zstring_view<CharT,Traits>
 //-----------------------------------------------------------------------------
 
 template <typename CharT, typename Traits>
-inline constexpr alloy::core::basic_zstring_view<CharT,Traits>
-  ::basic_zstring_view(const CharT* str)
+inline constexpr
+alloy::core::basic_zstring_view<CharT,Traits>::basic_zstring_view(const CharT* str)
   noexcept
   : base_type{str}
 {
@@ -268,9 +244,10 @@ inline constexpr alloy::core::basic_zstring_view<CharT,Traits>
 }
 
 template <typename CharT, typename Traits>
-inline alloy::core::basic_zstring_view<CharT,Traits>
-  ::basic_zstring_view(const basic_string<CharT,Traits>& str)
-  noexcept
+inline
+alloy::core::basic_zstring_view<CharT,Traits>::basic_zstring_view(
+  const basic_string<CharT,Traits>& str
+) noexcept
   : base_type{str.c_str(), str.size()}
 {
 
@@ -281,9 +258,9 @@ inline alloy::core::basic_zstring_view<CharT,Traits>
 //-----------------------------------------------------------------------------
 
 template <typename CharT, typename Traits>
-inline constexpr typename alloy::core::basic_zstring_view<CharT,Traits>::const_pointer
-  alloy::core::basic_zstring_view<CharT,Traits>::c_str()
-  const noexcept
+inline constexpr
+auto alloy::core::basic_zstring_view<CharT,Traits>::c_str()
+  const noexcept -> const_pointer
 {
   return base_type::data();
 }
@@ -293,7 +270,8 @@ inline constexpr typename alloy::core::basic_zstring_view<CharT,Traits>::const_p
 //-----------------------------------------------------------------------------
 
 template <typename CharT, typename Traits>
-inline constexpr alloy::core::basic_zstring_view<CharT,Traits>
+inline constexpr
+alloy::core::basic_zstring_view<CharT,Traits>
   ::basic_zstring_view(const CharT* p, size_type size)
   noexcept
   : base_type{p, size}
@@ -301,4 +279,4 @@ inline constexpr alloy::core::basic_zstring_view<CharT,Traits>
 
 }
 
-#endif /* ALLOY_CORE_UTILITIES_STRING_VIEW_HPP */
+#endif /* LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_STRINGS_ZSTRING_VIEW_HPP */

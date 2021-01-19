@@ -60,7 +60,6 @@ set(header_files
   include/alloy/core/containers/set.hpp
   include/alloy/core/containers/span.hpp
   include/alloy/core/containers/stack.hpp
-  include/alloy/core/containers/string.hpp
   include/alloy/core/containers/vector.hpp
 
   # Traits
@@ -76,16 +75,20 @@ set(header_files
   include/alloy/core/utilities/result.hpp
   include/alloy/core/utilities/explicitly_copyable.hpp
   include/alloy/core/utilities/fnv1a_hash.hpp
-  include/alloy/core/utilities/hashed_string_view.hpp
   include/alloy/core/utilities/not_null.hpp
   include/alloy/core/utilities/piecewise_compare.hpp
   include/alloy/core/utilities/source_location.hpp
   include/alloy/core/utilities/scope_guard.hpp
   include/alloy/core/utilities/semantic_type.hpp
-  include/alloy/core/utilities/string_view.hpp
-  include/alloy/core/utilities/string_tokenizer.hpp
-  include/alloy/core/utilities/string_utilities.hpp
   include/alloy/core/utilities/quantity.hpp
+
+  # Strings
+  include/alloy/core/string/hashed_string_view.hpp
+  include/alloy/core/string/string_view.hpp
+  include/alloy/core/string/string_tokenizer.hpp
+  include/alloy/core/string/string_utilities.hpp
+  include/alloy/core/string/string.hpp
+  include/alloy/core/string/zstring_view.hpp
 
   # Memory
   include/alloy/core/memory/memory_resource.hpp
@@ -170,9 +173,9 @@ set(source_files
   src/alloy/core/assert.cpp
   src/alloy/core/type_index.cpp
 
-  # Utilities
-  src/alloy/core/utilities/string_tokenizer.cpp
-  src/alloy/core/utilities/string_utilities.cpp
+  # Strings
+  src/alloy/core/string/string_tokenizer.cpp
+  src/alloy/core/string/string_utilities.cpp
 
   # Math
   src/alloy/core/math/simplex.cpp

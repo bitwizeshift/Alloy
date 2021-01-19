@@ -1,7 +1,8 @@
 /*****************************************************************************
- * \file string.hpp
+ * \file string_view.hpp
  *
- * \todo
+ * \brief This header defines a string_view data type by using the C++17
+ *        string_view equivalent.
  *****************************************************************************/
 
 /*
@@ -27,36 +28,39 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-#ifndef ALLOY_CORE_CONTAINERS_STRING_HPP
-#define ALLOY_CORE_CONTAINERS_STRING_HPP
+#ifndef ALLOY_CORE_STRINGS_STRING_VIEW_HPP
+#define ALLOY_CORE_STRINGS_STRING_VIEW_HPP
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "alloy/core/memory/allocator.hpp"
-#include "alloy/core/utilities/explicitly_copyable.hpp"
+#include "alloy/core/string/string.hpp"
 
-#include <string>
-#include <memory> // std::allocator
+#include "alloy/core/macros.hpp" // ALLOY_UNIQUE_NAME
+
+#include <string_view> // std::basic_string_view
+#include <string>      // std::char_traits, std::basic_string
 
 namespace alloy::core {
 
-  template <typename CharT,
-            typename Traits = std::char_traits<CharT>,
-            typename Allocator = stl_allocator_adapter<CharT>>
-  using basic_string = explicitly_copyable<std::basic_string<CharT,Traits,Allocator>>;
+  //===========================================================================
+  // class : basic_string_view<CharT,Traits>
+  //===========================================================================
 
-  using string = basic_string<char>;
-  using wstring = basic_string<wchar_t>;
-  using u16string = basic_string<char16_t>;
-  using u32string = basic_string<char32_t>;
+  template <typename CharT, typename Traits = std::char_traits<CharT>>
+  using basic_string_view = std::basic_string_view<CharT,Traits>;
 
-  // The 'u8' literal prefix in C++17 produces a char literal, but in C++20
-  // will produce a char8_t literal. This is an easy way to toggle between
-  // char and char8_t without requiring #ifdef and feature-test macros
-  using u8string = basic_string<decltype(u8' ')>;
+  //===========================================================================
+  // aliases : class : basic_string_view<CharT,Traits>
+  //===========================================================================
+
+  using string_view    = basic_string_view<char>;
+  using wstring_view   = basic_string_view<wchar_t>;
+  using u16string_view = basic_string_view<char16_t>;
+  using u32string_view = basic_string_view<char32_t>;
+  using u8string_view  = basic_string_view<decltype(u8' ')>;
 
 } // namespace alloy::core
 
-#endif /* ALLOY_CORE_CONTAINERS_STRING_HPP */
+#endif /* ALLOY_CORE_STRINGS_STRING_VIEW_HPP */
