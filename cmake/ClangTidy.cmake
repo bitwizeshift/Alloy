@@ -89,7 +89,7 @@ function(add_clang_tidy_target target)
 
   if (NOT sources)
     message(FATAL_ERROR "add_clang_tidy_target: No sources specified")
-  endforeach ()
+  endif ()
 
   add_custom_target(
     "${target}"
