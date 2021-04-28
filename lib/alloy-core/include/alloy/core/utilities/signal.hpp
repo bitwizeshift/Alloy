@@ -970,8 +970,6 @@ inline alloy::core::connection
   ALLOY_ASSERT(m_signal != nullptr);
   ALLOY_ASSERT(listener != nullptr);
 
-  using disconnect_type = connection::disconnect_callback;
-
   auto& listeners = m_signal->m_listeners;
 
   ALLOY_ASSERT(
@@ -982,7 +980,7 @@ inline alloy::core::connection
   listeners.emplace_back(listener);
 
   return connection{
-    disconnect_type::template make<&disconnect>(listener),
+    core::bind<&disconnect>(listener),
     m_signal
   };
 }
@@ -1083,16 +1081,14 @@ inline alloy::core::connection
 {
   ALLOY_ASSERT(m_signal != nullptr);
 
-  using disconnect_type = connection::disconnect_callback;
-
   auto& listeners = m_signal->m_listeners;
 
   listeners.emplace_back(
-    listener_type::template make<Fn>()
+    core::bind<Fn>()
   );
 
   return connection{
-    disconnect_type::template make<&disconnect<Fn>>(),
+    core::bind<&disconnect<Fn>>(),
     m_signal
   };
 }
@@ -1107,16 +1103,14 @@ inline alloy::core::connection
   ALLOY_ASSERT(c != nullptr);
   ALLOY_ASSERT(m_signal != nullptr);
 
-  using disconnect_type = connection::disconnect_callback;
-
   auto& listeners = m_signal->m_listeners;
 
   listeners.emplace_back(
-    listener_type::template make<MemberFn>(c)
+    core::bind<MemberFn>(c)
   );
 
   return connection{
-    disconnect_type::make<&disconnect<MemberFn, C>>(c),
+    core::bind<&disconnect<MemberFn, C>>(c),
     m_signal
   };
 }
@@ -1131,16 +1125,14 @@ inline alloy::core::connection
   ALLOY_ASSERT(c != nullptr);
   ALLOY_ASSERT(m_signal != nullptr);
 
-  using disconnect_type = connection::disconnect_callback;
-
   auto& listeners = m_signal->m_listeners;
 
   listeners.emplace_back(
-    listener_type::template make<MemberFn>(c)
+    core::bind<MemberFn>(c)
   );
 
   return connection{
-    disconnect_type::make<&disconnect<MemberFn, const C>>(c),
+    core::bind<&disconnect<MemberFn, const C>>(c),
     m_signal
   };
 }
@@ -1155,8 +1147,6 @@ inline alloy::core::connection
   ALLOY_ASSERT(callable != nullptr);
   ALLOY_ASSERT(m_signal != nullptr);
 
-  using disconnect_type = connection::disconnect_callback;
-
   auto& listeners = m_signal->m_listeners;
 
   listeners.emplace_back(
@@ -1164,7 +1154,7 @@ inline alloy::core::connection
   );
 
   return connection{
-    disconnect_type::make<&disconnect<Callable>>(callable),
+    core::bind<&disconnect<Callable>>(callable),
     m_signal
   };
 }
@@ -1176,10 +1166,9 @@ inline alloy::core::connection
   alloy::core::sink<R(Args...)>::connect(const Callable* callable)
   noexcept
 {
-  using disconnect_type = connection::disconnect_callback;
-
   ALLOY_ASSERT(callable != nullptr);
   ALLOY_ASSERT(m_signal != nullptr);
+
   auto& listeners = m_signal->m_listeners;
 
   listeners.emplace_back(
@@ -1187,7 +1176,7 @@ inline alloy::core::connection
   );
 
   return connection{
-    disconnect_type::make<&disconnect<const Callable>>(callable),
+    core::bind<&disconnect<const Callable>>(callable),
     m_signal
   };
 }
@@ -1252,7 +1241,7 @@ inline void alloy::core::sink<R(Args...)>::disconnect(void* signal)
   const auto it = std::remove(
     listeners.begin(),
     listeners.end(),
-    listener_type::template make<Fn>()
+    core::bind<Fn>()
   );
   listeners.erase(it, listeners.cend());
 }
@@ -1270,7 +1259,7 @@ inline void alloy::core::sink<R(Args...)>::disconnect(C* c, void* signal)
   const auto it = std::remove(
     listeners.begin(),
     listeners.end(),
-    listener_type::template make<MemberFn>(c)
+    core::bind<MemberFn>(c)
   );
   listeners.erase(it, listeners.cend());
 }
@@ -1288,7 +1277,7 @@ inline void alloy::core::sink<R(Args...)>::disconnect(Callable* callable, void* 
   const auto it = std::remove(
     listeners.begin(),
     listeners.end(),
-    listener_type::template make(callable)
+    core::bind(callable)
   );
   listeners.erase(it, listeners.cend());
 }

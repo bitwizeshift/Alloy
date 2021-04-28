@@ -39,13 +39,50 @@
 #include "alloy/core/traits/function_traits.hpp" // function_traits
 #include "alloy/core/traits/is_function_pointer.hpp"
 
-#include <type_traits> // std::true_type
-#include <functional>  // std::invoke
-#include <cstddef>     // std::nullptr_t
+#include <type_traits>  // std::enable_if, std::is_constructible, etc
+#include <functional>   // std::invoke
+#include <new>          // placement new, std::launder
+#include <cassert>      // assert
+#include <utility>      // std::forward
+#include <cstring>      // std::memcmp
 
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
-# include <exception> // std::exception
+# include <stdexcept>    // std::runtime_error
 #endif
+
+namespace alloy::core::detail {
+  template <typename T, typename = void>
+  struct is_equality_comparable : std::false_type{};
+
+  template <typename T>
+  struct is_equality_comparable<T,std::void_t<decltype(std::declval<const T&>()==std::declval<const T&>())>>
+    : std::true_type{};
+
+  template <typename Type>
+  struct effective_signature_impl;
+
+  template <typename R, typename...Args>
+  struct effective_signature_impl<R(*)(Args...)> { using type = R(Args...); };
+
+  template <typename R, typename...Args>
+  struct effective_signature_impl<R(*)(Args...) noexcept> { using type = R(Args...); };
+
+  template <typename R, typename C, typename...Args>
+  struct effective_signature_impl<R(C::*)(Args...)> { using type = R(Args...); };
+
+  template <typename R, typename C, typename...Args>
+  struct effective_signature_impl<R(C::*)(Args...) noexcept> { using type = R(Args...); };
+
+  template <typename R, typename C, typename...Args>
+  struct effective_signature_impl<R(C::*)(Args...) const> { using type = R(Args...); };
+
+  template <typename R, typename C, typename...Args>
+  struct effective_signature_impl<R(C::*)(Args...) const noexcept> { using type = R(Args...); };
+
+  template <typename Type>
+  using effective_signature = typename effective_signature_impl<Type>::type;
+
+} // namespace alloy::core::detail
 
 namespace alloy::core {
 
@@ -59,693 +96,1389 @@ namespace alloy::core {
   /// \brief An exception thrown when a delegate is invoked without a bound
   ///        function
   /////////////////////////////////////////////////////////////////////////////
-  class bad_delegate_call final : public std::exception
+  class bad_delegate_call final : public std::runtime_error
   {
     //-------------------------------------------------------------------------
     // Constructors / Assignment
     //-------------------------------------------------------------------------
   public:
 
-    bad_delegate_call() noexcept = default;
+    bad_delegate_call();
     bad_delegate_call(const bad_delegate_call&) noexcept = default;
     bad_delegate_call(bad_delegate_call&&) noexcept = default;
 
     bad_delegate_call& operator=(const bad_delegate_call&) = default;
     bad_delegate_call& operator=(bad_delegate_call&&) = default;
-
-    //-------------------------------------------------------------------------
-    // Observers
-    //-------------------------------------------------------------------------
-  public:
-
-    const char* what() const noexcept override;
-
   };
 
 #endif // ALLOY_CORE_EXCEPTIONS_ENABLED
 
-  //===========================================================================
+  inline namespace targets {
+
+    template <auto Function>
+    struct function_bind_target{};
+
+    template <auto MemberFunction, typename T>
+    struct member_bind_target{ T* instance; };
+
+    template <typename Signature>
+    struct opaque_function_bind_target;
+
+    template <typename R, typename...Args>
+    struct opaque_function_bind_target<R(Args...)>{ R(*target)(Args...); };
+
+    template <typename Callable>
+    struct callable_ref_bind_target{ Callable* target; };
+
+    template <typename Callable>
+    struct empty_callable_bind_target{};
+
+    template <typename Callable>
+    struct callable_bind_target{ Callable target; };
+
+  } // inline namespace targets
+
+  /// \brief Binds a function pointer to create a function bind target
+  ///
+  /// \tparam Function the funtion to bind
+  /// \return the created target
+  template <auto Function>
+  constexpr auto bind() noexcept -> function_bind_target<Function>;
+
+  /// \brief Binds a member pointer to create a function bind target
+  ///
+  /// \pre `p != nullptr`
+  ///
+  /// \tparam MemberFunction the member functon
+  /// \param p the instance pointer
+  /// \return the created target
+  template <auto MemberFunction, typename T>
+  constexpr auto bind(T* p) noexcept -> member_bind_target<MemberFunction, T>;
+
+  /// \brief Binds a pointer to a callable function as a bind target
+  ///
+  /// \pre `fn != nullptr`
+  ///
+  /// \param fn the callable object to bind
+  /// \return the created target
+  template <typename Callable>
+  constexpr auto bind(Callable* fn) noexcept -> callable_ref_bind_target<Callable>;
+
+  /// \brief Binds an opaque function pointer to create a function bind target
+  ///
+  /// \param fn the opaque function to pointer to bind
+  /// \return the created target
+  template <typename R, typename...Args>
+  constexpr auto bind(R(*fn)(Args...)) noexcept -> opaque_function_bind_target<R(Args...)>;
+
+  /// \brief Binds an empty, default-constructible `Callable` object as a bind
+  ///        target
+  ///
+  /// \tparam Callable the target to bind
+  /// \return the created target
+  template <typename Callable>
+  constexpr auto bind() noexcept -> empty_callable_bind_target<Callable>;
+
+  /// \brief Binds an empty, default-constructible `Callable` object as a bind
+  ///        target
+  ///
+  /// \param callable an instance of the callable to bind
+  /// \return the created target
+  template <typename Callable,
+            typename = std::enable_if_t<(
+              std::is_empty_v<Callable> &&
+              std::is_default_constructible_v<Callable>
+            )>>
+  constexpr auto bind(Callable callable) noexcept -> empty_callable_bind_target<Callable>;
+
+  /// \brief Binds a trivially-copyable callable object as a bind target
+  ///
+  /// \param callable an instance of the callable to bind
+  /// \return the created target
+  template <typename Callable,
+            typename = std::enable_if_t<(
+              !std::is_empty_v<std::decay_t<Callable>> &&
+              std::is_trivially_copyable_v<std::decay_t<Callable>> &&
+              std::is_trivially_destructible_v<std::decay_t<Callable>>
+            )>>
+  constexpr auto bind(Callable&& callable) noexcept -> callable_bind_target<std::decay_t<Callable>>;
+
+  //============================================================================
   // class : delegate
-  //===========================================================================
+  //============================================================================
 
   template <typename Fn>
   class delegate;
 
-  /////////////////////////////////////////////////////////////////////////////
-  /// \brief A class for makeing light-weight non-owning functions
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief A lightweight 0-overhead wrapper for binding function objects.
   ///
-  /// \tparam R the result type
-  /// \tparam Args the argument types
-  /////////////////////////////////////////////////////////////////////////////
+  /// `delegate` objects have more guaranteed performance characteristics over
+  /// the likes of `std::function`. Most functions will be statically bound using
+  /// C++17's auto template parameters, which provides more hints ot the compiler
+  /// while also ensuring that function pointers will optimize almost directly
+  /// into a singular function call without indirection.
+  ///
+  /// This type is small -- weighing in at only 2 function pointers in size --
+  /// and trivial to copy. This allows for `delegate` objects to easily be passed
+  /// into functions by registers. Additionally this ensures that any stored
+  /// callable objects are always small and immediately close to the data.
+  ///
+  /// \warning
+  /// Due to its small size, most stored callable objects for a `delegate` will
+  /// simply *view* the lifetime of the captured object. As a result, care needs
+  /// to be taken to ensure that any captured lifetime does no expire while it is
+  /// in use by a delegate. Any operations that view lifetime can easily be seen
+  /// as they only operate on pointers.
+  ///
+  /// See the `bind` series of free functions for more details.
+  ///
+  /// ### Examples
+  ///
+  /// ```cpp
+  /// delegate d = bind<&std::strlen>();
+  ///
+  /// assert(d("hello world") == 11);
+  /// ```
+  ///
+  /// \tparam R the return type
+  /// \tparam Args the arguments to the function
+  //////////////////////////////////////////////////////////////////////////////
   template <typename R, typename...Args>
   class delegate<R(Args...)>
   {
-    template <typename F, typename...Ts>
-    using enable_if_invocable_t = std::enable_if_t<
-      std::conjunction_v<
-        std::is_invocable<F, Ts...>,
-        std::disjunction<
-          std::is_void<R>,
-          std::is_convertible<std::invoke_result_t<F, Ts...>,R>
-        >
-      >
-    >;
+    // Make the storage size hold at least a function pointer or a void pointer,
+    // whichever is larger.
+    static constexpr auto storage_size = (
+      (sizeof(void*) < sizeof(void(*)()))
+      ? sizeof(void(*)())
+      : sizeof(void*)
+    );
 
-    //-------------------------------------------------------------------------
-    // Public Member Types
-    //-------------------------------------------------------------------------
-  public:
+    static constexpr auto storage_align = (
+      alignof(void*)
+    );
 
-    using result_type = R;
+    template <typename U>
+    using fits_storage = std::bool_constant<(
+      (sizeof(U) <= storage_size) &&
+      (alignof(U) <= storage_align)
+    )>;
 
-    //-------------------------------------------------------------------------
-    // Static Factories
-    //-------------------------------------------------------------------------
-
-    /// \brief Binds a non-member function pointer to this delegate
-    ///
-    /// \tparam Fn the function pointer to make
-    /// \return the bound delegate
-    template <auto Fn,
-              typename=enable_if_invocable_t<decltype(Fn),Args...>>
-    static constexpr delegate make() noexcept;
-
-    /// \brief Binds a member function pointer to this delegate
-    ///
-    /// \tparam MemberFn the member function pointer to make
-    /// \return the bound delegate
-    template <auto MemberFn, typename C,
-              typename=enable_if_invocable_t<decltype(MemberFn),C*,Args...>>
-    static constexpr delegate make(C* c) noexcept;
-
-    /// \brief Binds a const member function pointer to this delegate
-    ///
-    /// \tparam MemberFn the const member function pointer to make
-    /// \return the bound delegate
-    template <auto MemberFn, typename C,
-              typename=enable_if_invocable_t<decltype(MemberFn),const C*,Args...>>
-    static constexpr delegate make(const C* c) noexcept;
-
-    /// \{
-    /// \brief Binds a callable to this delegate
-    ///
-    /// \param callable the callable to make
-    /// \return the bound delegate
-    template <typename Callable,
-              typename=enable_if_invocable_t<Callable&,Args...>>
-    static constexpr delegate make(Callable* callable) noexcept;
-    template <typename Callable,
-              typename=enable_if_invocable_t<const Callable&,Args...>>
-    static constexpr delegate make(const Callable* callable) noexcept;
-    /// \}
-
-    // Disallow makeing nulls
-    template <auto MemberFn>
-    static delegate make(std::nullptr_t) = delete;
-    static delegate make(std::nullptr_t) = delete;
-
-    //-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Constructors / Assignment
-    //-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
-    /// \brief Constructs a delegate that does not have a bound function
+    /// \brief Default constructs this delegate without a bound target
     constexpr delegate() noexcept;
-    constexpr delegate(const delegate&) noexcept = default;
-    constexpr delegate(delegate&&) noexcept = default;
 
-    //-------------------------------------------------------------------------
-
-    delegate& operator=(const delegate&) noexcept = default;
-    delegate& operator=(delegate&&) noexcept = default;
-
-    //-------------------------------------------------------------------------
-
-    /// \brief Binds a non-member function pointer to this delegate
+    /// \brief Constructs this delegate bound to the specified `Function`
     ///
-    /// \tparam Fn the function pointer to bind
-    template <auto Fn,
-              typename=enable_if_invocable_t<decltype(Fn),Args...>>
-    void bind() noexcept;
-
-    /// \brief Binds a member function pointer to this delegate
+    /// \note
+    /// The `Function` argument needs to be some callable object type, such as a
+    /// function pointer, or a C++20 constexpr functor.
     ///
-    /// \tparam MemberFn the member function pointer to bind
-    template <auto MemberFn, typename C,
-              typename=enable_if_invocable_t<decltype(MemberFn),C*,Args...>>
-    void bind(C* c) noexcept;
-
-    /// \brief Binds a const member function pointer to this delegate
+    /// ### Examples
     ///
-    /// \tparam MemberFn the const member function pointer to bind
-    template <auto MemberFn, typename C,
-              typename=enable_if_invocable_t<decltype(MemberFn),const C*,Args...>>
-    void bind(const C* c) noexcept;
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// delegate<int(const char*)> d1 = bind<&std::strlen>();
+    /// ```
+    ///
+    /// \param target the target to bind
+    template <auto Function,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,decltype(Function),Args...>
+              )>>
+    constexpr delegate(function_bind_target<Function> target) noexcept;
 
     /// \{
-    /// \brief Binds a callable to this delegate
+    /// \brief Makes a delegate object that binds the `MemberFunction` in the
+    ///        target
     ///
-    /// \param callable the callable to bind
-    template <typename Callable,
-              typename=enable_if_invocable_t<Callable&,Args...>>
-    void bind(Callable* callable) noexcept;
-    template <typename Callable,
-              typename=enable_if_invocable_t<const Callable&,Args...>>
-    void bind(const Callable* callable) noexcept;
+    /// \note
+    /// Technically the `MemberFunction` needs to only be some callable object
+    /// that accepts the target instance as the first argument. This could be a
+    /// regular function pointer, a member function, or some C++20 constexpr
+    /// functor
+    ///
+    /// \pre `target.target != nullptr`. You cannot bind a null instance to a
+    ///      member function.
+    ///
+    /// \warning
+    /// A `delegate` constructed this way only *views* the lifetime of
+    /// \p instance; it does not capture or contribute to its lifetime. Care must
+    /// be taken to ensure that the constructed `delegate` does not outlive the
+    /// bound lifetime -- or at least is not called after outliving it, otherwise
+    /// this will be undefined behavior.
+    ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// std::string s;
+    /// delegate<std::size_t()> d = bind<&std::string::size>(&s);
+    /// ```
+    ///
+    /// \param target the target to bind
+    template <auto MemberFunction, typename T,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,decltype(MemberFunction),T*,Args...>
+              )>>
+    constexpr delegate(member_bind_target<MemberFunction,T> target) noexcept;
+    template <auto MemberFunction, typename T,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,decltype(MemberFunction),const T*,Args...>
+              )>>
+    constexpr delegate(member_bind_target<MemberFunction,const T> target) noexcept;
     /// \}
 
-    // Disallow binding nulls
-    template <auto MemberFn>
-    void bind(std::nullptr_t) = delete;
-    void bind(std::nullptr_t) = delete;
-
-    //-------------------------------------------------------------------------
-    // Modifiers
-    //-------------------------------------------------------------------------
-  public:
-
-    /// \brief Unbinds any bound function to this delegate
-    void reset() noexcept;
-
-    //-------------------------------------------------------------------------
-    // Observers
-    //-------------------------------------------------------------------------
-  public:
-
-    // Some versions of clang using '-Wdocumentation' seem to not understand
-    // that the following template, with R = void, still has correct
-    // documentation.
-    ALLOY_COMPILER_CLANG_DIAGNOSTIC_PUSH()
-    ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(-Wdocumentation)
-
-    /// \brief Invokes the underlying delegate with the specified \p args
+    /// \{
+    /// \brief Constructs this delegate by binding an instance of some callable
+    ///        function
     ///
-    /// \param args the arguments
-    /// \return the result of the function
-    template <typename...UArgs,
-              typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>>
-    R operator()(UArgs&&...args) const;
+    /// \note
+    /// The bound function may be any invocable object, such as a functor or a
+    /// lambda.
+    ///
+    /// \pre `target.target != nullptr`. You cannot bind a null function
+    ///
+    /// \warning
+    /// A `delegate` constructed this way only *views* the lifetime of
+    /// the callable object; it does not capture or contribute to its lifetime.
+    /// Care must be taken to ensure that the constructed `delegate` does not
+    /// outlive the bound lifetime -- or at least is not called after outliving
+    /// it, otherwise this will be undefined behavior.
+    ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// auto object = std::hash<int>{};
+    /// delegate<std::size_t(int)> d = bind(&object);
+    /// ```
+    ///
+    /// \param target the target to bind
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,Fn,Args...> &&
+                !std::is_function_v<Fn>
+              )>>
+    constexpr delegate(callable_ref_bind_target<Fn> target) noexcept;
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,const Fn,Args...> &&
+                !std::is_function_v<Fn>
+              )>>
+    constexpr delegate(callable_ref_bind_target<const Fn> target) noexcept;
+    /// \}
 
-    ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
+    /// \brief Constructs this delegate from some empty, default-constructible
+    ///        callable object
+    ///
+    /// \note
+    /// Unlike the lifetime-viewing `make` functions, the acllable object is not
+    /// referenced during capture; it is ephemerally constructed each time it is
+    /// invoked.
+    ///
+    /// ### Examples
+    ///
+    /// Basic Use:
+    ///
+    /// ```cpp
+    /// delegate<std::size_t(int)> d = bind<std::hash<int>>();
+    /// ```
+    ///
+    /// Automatic empty detection:
+    ///
+    /// ```cpp
+    /// delegate<std::size_t(int)> d = bind(std::hash<int>{});
+    /// ```
+    ///
+    /// \param target the target to bind
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                std::is_empty_v<Fn> &&
+                std::is_default_constructible_v<Fn> &&
+                std::is_invocable_r_v<R,Fn,Args...>
+              )>>
+    constexpr delegate(empty_callable_bind_target<Fn> target) noexcept;
 
-    /// \brief Returns \c true if this delegate contains a function
+    /// \brief Constructs a delegate object by binding a small-sized trivially
+    ///        copyable callable object
+    ///
+    /// \note
+    /// This overload stores the small-sized callable object internally, allowing
+    /// for the lifetime to effectively be captured.
+    ///
+    /// \param target the target to bind
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                !std::is_empty_v<std::decay_t<Fn>> &&
+                !std::is_function_v<std::remove_pointer_t<Fn>> &&
+                fits_storage<std::decay_t<Fn>>::value &&
+                std::is_constructible_v<std::decay_t<Fn>,Fn> &&
+                std::is_trivially_destructible_v<std::decay_t<Fn>> &&
+                std::is_trivially_copyable_v<std::decay_t<Fn>> &&
+                std::is_invocable_r_v<R,const Fn&,Args...>
+              )>>
+    delegate(callable_bind_target<Fn> target) noexcept;
+
+    /// \brief Constructs this delegate by binding an opaque function pointer
+    ///
+    /// \note
+    /// This overload allows for binding opaque function pointers, such as the
+    /// result of a `::dlsym` call.
+    ///
+    /// \pre `target.target != nullptr`
+    ///
+    /// \param target the target to bind
+    template <typename UR, typename...UArgs,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,UR(*)(UArgs...),Args...>
+              )>>
+    delegate(opaque_function_bind_target<UR(UArgs...)> target) noexcept;
+
+    /// \brief Trivially copies the contents of \p other
+    ///
+    /// \param other the other delegate to copy
+    delegate(const delegate& other) = default;
+
+    //--------------------------------------------------------------------------
+
+    /// \brief Trivially assigns the contents from \p other
+    ///
+    /// \param other the other delegate to copy
+    /// \return reference to `(*this)`
+    auto operator=(const delegate& other) -> delegate& = default;
+
+    //--------------------------------------------------------------------------
+    // Binding
+    //--------------------------------------------------------------------------
+  public:
+
+    /// \brief Binds the specified \p Function to this `delegate`
+    ///
+    /// \note
+    /// The \p Function argument needs to be some callable object type, such as a
+    /// function pointer, or a C++20 constexpr functor.
+    ///
+    /// \tparam Function the function argument
+    /// \return reference to `(*this)`
+    template <auto Function,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,decltype(Function),Args...>
+              )>>
+    constexpr auto bind() noexcept -> delegate&;
+
+    /// \{
+    /// \brief Binds the \p MemberFunction with the specified \p instance
+    ///
+    /// \note
+    /// Technically the \p MemberFunction needs to only be some callable object
+    /// that accepts \p instance as the first argument. This could be a regular
+    /// function pointer, a member function, or some C++20 constexpr functor
+    ///
+    /// \pre `instance != nullptr`. You cannot bind a null instance to a member
+    ///      function.
+    ///
+    /// \warning
+    /// A `delegate` constructed this way only *views* the lifetime of
+    /// \p instance; it does not capture or contribute to its lifetime. Care must
+    /// be taken to ensure that the constructed `delegate` does not outlive the
+    /// bound lifetime -- or at least is not called after outliving it, otherwise
+    /// this will be undefined behavior.
+    ///
+    /// \tparam MemberFunction The MemberFunction pointer to invoke
+    /// \param instance an instance pointer
+    /// \return reference to `(*this)`
+    template <auto MemberFunction, typename T,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,decltype(MemberFunction),const T&,Args...>
+              )>>
+    constexpr auto bind(const T* instance) noexcept -> delegate&;
+    template <auto MemberFunction, typename T,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,decltype(MemberFunction),T&,Args...>
+              )>>
+    constexpr auto bind(T* instance) noexcept -> delegate&;
+    /// \}
+
+    /// \{
+    /// \brief Binds an instance of some callable function \p fn
+    ///
+    /// \note
+    /// \p fn may be any invocable object, such as a functor or a lambda.
+    ///
+    /// \pre `fn != nullptr`. You cannot bind a null function
+    ///
+    /// \warning
+    /// A `delegate` constructed this way only *views* the lifetime of
+    /// \p fn; it does not capture or contribute to its lifetime. Care must
+    /// be taken to ensure that the constructed `delegate` does not outlive the
+    /// bound lifetime -- or at least is not called after outliving it, otherwise
+    /// this will be undefined behavior.
+    ///
+    /// \param fn A pointer to the callable object to view
+    /// \return reference to `(*this)`
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,Fn,Args...> &&
+                !std::is_function_v<Fn>
+              )>>
+    constexpr auto bind(Fn* fn) noexcept -> delegate&;
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,Fn,Args...> &&
+                !std::is_function_v<Fn>
+              )>>
+    constexpr auto bind(const Fn* fn) noexcept -> delegate&;
+    /// \}
+
+    /// \brief Constructs a delegate object from some empty,
+    ///        default-constructible callable object
+    ///
+    /// \note
+    /// This overload only works with the type itself, such as an empty functor
+    /// or`std::hash`-like object
+    ///
+    /// Unlike the lifetime-viewing `make` functions,the `Fn` is not referenced
+    /// during capture
+    ///
+    /// \tparam Fn the function type to ephemerally instantiate on invocations
+    /// \return the constructed delegate
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                std::is_empty_v<Fn> &&
+                std::is_default_constructible_v<Fn> &&
+                std::is_invocable_r_v<R,Fn,Args...>
+              )>>
+    constexpr auto bind() noexcept -> delegate&;
+
+    /// \brief Binds a default-constructible callable object
+    ///
+    /// \note
+    /// This overload allows for C++20 non-capturing lambdas to be easily
+    /// captured without requiring any extra storage overhead. This also allows
+    /// for any functor without storage space, such as `std::hash`, to be
+    /// ephemerally created during invocation rather than stored
+    ///
+    /// Unlike the lifetime-viewing `make` functions, \p fn is passed by-value
+    /// here.
+    ///
+    /// \param fn the function to store
+    /// \return reference to `(*this)`
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                std::is_empty_v<Fn> &&
+                std::is_default_constructible_v<Fn> &&
+                std::is_invocable_r_v<R,Fn,Args...>
+              )>>
+    constexpr auto bind(Fn fn) noexcept -> delegate&;
+
+    /// \brief Binds a small-sized trivially copyable callable object
+    ///
+    /// \note
+    /// This overload stores the small-sized callable object internally,
+    /// allowing for the lifetime to effectively be captured.
+    ///
+    /// \param fn the function to store
+    /// \return reference to `(*this)`
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                !std::is_empty_v<std::decay_t<Fn>> &&
+                !std::is_function_v<std::remove_pointer_t<Fn>> &&
+                fits_storage<std::decay_t<Fn>>::value &&
+                std::is_constructible_v<std::decay_t<Fn>,Fn> &&
+                std::is_trivially_destructible_v<std::decay_t<Fn>> &&
+                std::is_trivially_copyable_v<std::decay_t<Fn>> &&
+                std::is_invocable_r_v<R,const Fn&,Args...>
+              )>>
+    constexpr auto bind(Fn&& fn) noexcept -> delegate&;
+
+    /// \brief Binds a non-member function pointer to this `delegate`
+    ///
+    /// \note
+    /// This overload allows for binding opaque function pointers, such as the
+    /// result of a `::dlsym` call.
+    ///
+    /// \pre `fn != nullptr`
+    ///
+    /// \param fn the function to store
+    /// \return reference to `(*this)`
+    template <typename R2, typename...Args2,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R2,R(*)(Args...),Args2...>
+              )>>
+    constexpr auto bind(R2(*fn)(Args2...)) noexcept -> delegate&;
+
+    //--------------------------------------------------------------------------
+
+    /// \brief Resets this delegate so that it is no longer bounds
+    ///
+    /// \post `(*this).has_target()` will return `false`
+    constexpr auto reset() noexcept -> void;
+
+    //--------------------------------------------------------------------------
+    // Observers
+    //--------------------------------------------------------------------------
+  public:
+
+    /// \brief Contextually convertible to `true` if this `delegate` is already
+    ///        bound
+    ///
+    /// This is equivalent to call `has_target()`
     constexpr explicit operator bool() const noexcept;
 
-    //-------------------------------------------------------------------------
-    // Private Member Types
-    //-------------------------------------------------------------------------
-  private:
+#if defined(__clang__)
+# pragma clang diagnostic push
+// clang incorrectly flags '\return' when 'R = void' as being an error, but
+// there is no way to conditionally document a return type
+# pragma clang diagnostic ignored "-Wdocumentation"
+#endif
 
-    using function_type = R(*)(const void*, Args...);
-
-    //-------------------------------------------------------------------------
-    // Private Constructors
-    //-------------------------------------------------------------------------
-  private:
-
-    constexpr delegate(const void* instance, function_type function) noexcept;
-
-    //-------------------------------------------------------------------------
-    // Private Member Types
-    //-------------------------------------------------------------------------
-  private:
-
-    const void*   m_instance;
-    function_type m_function;
-
-    //-------------------------------------------------------------------------
-    // Private Function Stubs
-    //-------------------------------------------------------------------------
-  private:
-
-    /// \brief The default function bound to the delegate
+    /// \brief Invokes the underlying bound function
     ///
-    /// If exceptions are enabled, this will always throw an exception. If they
-    /// are disabled, this will call the assertion handler.
+    /// \param args the arguments to forward to the function
+    /// \return the result of the bound function
+    template <typename...UArgs,
+              typename = std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>>
+    constexpr auto operator()(UArgs&&...args) const -> R;
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#endif
+
+    //--------------------------------------------------------------------------
+
+    /// \brief Queries whether this `delegate` has any function bound to it
+    ///
+    /// \return `true` if a delegate is bound
+    [[nodiscard]]
+    constexpr auto has_target() const noexcept -> bool;
+
+    /// \brief Queries whether this `delegate` has a `Function` object bound to it
+    ///
+    /// \tparam Function the function to query
+    /// \return `true` if the delegate is bound with the specified `Function`
+    template <auto Function,
+              typename = std::enable_if_t<std::is_invocable_r_v<R,decltype(Function),Args...>>>
+    [[nodiscard]]
+    constexpr auto has_target() const noexcept -> bool;
+
+    /// \brief Queries whether this `delegate` has a `MemberFunction` object
+    ///        bound to it with the specified \p instance
+    ///
+    /// \tparam MemberFunction the function to query
+    /// \param instance the instance to query aganst
+    /// \return `true` if the delegate is bound with the specified `MemberFunction`
+    template <auto MemberFunction, typename T,
+              typename = std::enable_if_t<std::is_invocable_r_v<R,decltype(MemberFunction),const T&,Args...>>>
+    [[nodiscard]]
+    constexpr auto has_target(const T* instance) const noexcept -> bool;
+
+    /// \brief Queries whether this `delegate` has a `MemberFunction` object
+    ///        bound to it with the specified \p instance
+    ///
+    /// \tparam MemberFunction the function to query
+    /// \param instance the instance to query aganst
+    /// \return `true` if the delegate is bound with the specified `MemberFunction`
+    template <auto MemberFunction, typename T,
+              typename = std::enable_if_t<std::is_invocable_r_v<R,decltype(MemberFunction),T&,Args...>>>
+    [[nodiscard]]
+    constexpr auto has_target(T* instance) const noexcept -> bool;
+
+    /// \{
+    /// \brief Queries whether this `delegate` is bound viewing the specified
+    ///        callable \p fn
+    ///
+    /// \param fn the function to query
+    /// \return `true` if the delegate is bound with `fn`
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,Fn,Args...> &&
+                !std::is_function_v<Fn>
+              )>>
+    [[nodiscard]]
+    constexpr auto has_target(Fn* fn) const noexcept -> bool;
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,Fn,Args...> &&
+                !std::is_function_v<Fn>
+              )>>
+    [[nodiscard]]
+    constexpr auto has_target(const Fn* fn) const noexcept -> bool;
+    /// \}
+
+    /// \brief Queries whether this `delegate` is bound with the specified
+    ///        empty callable object Fn
+    ///
+    /// \tparam Fn the type to query
+    /// \return `true` if the delegate is bound with `fn`
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                std::is_empty_v<Fn> &&
+                std::is_default_constructible_v<Fn> &&
+                std::is_invocable_r_v<R,Fn,Args...>
+              )>>
+    [[nodiscard]]
+    constexpr auto has_target() const noexcept -> bool;
+
+    /// \brief Queries whether this `delegate` is bound with the specified
+    ///        empty function \p fn
+    ///
+    /// \param fn the function to query
+    /// \return `true` if the delegate is bound with `fn`
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                std::is_empty_v<Fn> &&
+                std::is_default_constructible_v<Fn> &&
+                std::is_invocable_r_v<R,Fn,Args...>
+              )>>
+    [[nodiscard]]
+    constexpr auto has_target(Fn fn) const noexcept -> bool;
+
+    /// \brief Queries whether this `delegate` is bound with the specified
+    ///        trivial non-empty function \p fn
+    ///
+    /// \param fn the function to query
+    /// \return `true` if the delegate is bound with `fn`
+    template <typename Fn,
+              typename = std::enable_if_t<(
+                !std::is_empty_v<Fn> &&
+                !std::is_function_v<std::remove_pointer_t<Fn>> &&
+                fits_storage<Fn>::value &&
+                std::is_constructible_v<Fn,Fn> &&
+                std::is_trivially_destructible_v<Fn> &&
+                std::is_trivially_copyable_v<Fn> &&
+                std::is_invocable_r_v<R,const Fn&,Args...>
+              )>>
+    [[nodiscard]]
+    auto has_target(const Fn& fn) const noexcept -> bool;
+
+    /// \brief Queries this delegate has been bound with the late-bound function
+    ///        pointer \p fn
+    ///
+    /// \note
+    /// This will only compare for functions that were bound using the
+    /// `bind` or `make` overload for runtime function-pointer values; otherwise
+    /// this will return `false`.
+    ///
+    /// \pre `fn != nullptr`
+    ///
+    /// \param fn the function to query
+    /// \return `true` if this delegate is bound to the runtime function \p fn
+    template <typename R2, typename...Args2,
+              typename = std::enable_if_t<(
+                std::is_invocable_r_v<R,R2(*)(Args2...),Args...>
+              )>>
+    [[nodiscard]]
+    constexpr auto has_target(R2(*fn)(Args2...)) const noexcept -> bool;
+
+    //--------------------------------------------------------------------------
+    // Private Member Types
+    //--------------------------------------------------------------------------
+  private:
+
+    // [expr.reinterpret.cast/6] explicitly allows for a conversion between
+    // any two function pointer-types -- provided that the function pointer type
+    // is not used through the wrong pointer type.
+    // So we normalize all pointers to a simple `void(*)()` to allow late-bound
+    // pointers
+    using any_function = void(*)();
+
+    using stub_function = R(*)(const delegate*, Args...);
+
+    //--------------------------------------------------------------------------
+    // Stub Functions
+    //--------------------------------------------------------------------------
+  private:
+
+#if defined(__clang__)
+# pragma clang diagnostic push
+// clang incorrectly flags '\return' when 'R = void' as being an error, but
+// there is no way to conditionally document a return type
+# pragma clang diagnostic ignored "-Wdocumentation"
+#endif
+
+    /// \brief Throws an exception by default
     [[noreturn]]
-    static R default_stub(const void* p, Args... args);
+    static auto null_stub(const delegate*, Args...) -> R;
 
-    template <auto Fn>
-    static R function_stub(const void* p, Args... args);
+    /// \brief A stub function for statically-specific functions (or other
+    ///        callables)
+    ///
+    /// \tparam Function the statically-specific functions
+    /// \param args the arguments to forward to the function
+    /// \return the result of the Function call
+    template <auto Function>
+    static auto function_stub(const delegate*, Args...args) -> R;
 
-    template <auto MemberFn, typename C>
-    static R member_function_stub(const void* p, Args...args);
+    /// \brief A stub function for statically-specific member functions (or other
+    ///        callables)
+    ///
+    /// \tparam MemberFunction the statically-specific member function
+    /// \tparam T the type of the first pointer
+    /// \param self an instance to the delegate that contains the instance pointer
+    /// \param args the arguments to forward to the function
+    /// \return the result of the MemberFunction call
+    template <auto MemberFunction, typename T>
+    static auto member_function_stub(const delegate* self, Args...args) -> R;
 
-    template <auto MemberFn, typename C>
-    static R const_member_function_stub(const void* p, Args...args);
+    /// \brief A stub function for non-owning view of callable objects
+    ///
+    /// \tparam Fn the function to reference
+    /// \param self an instance to the delegate that contains \p fn
+    /// \param args the arguments to forward to the function
+    /// \return the result of invoking \p fn
+    template <typename Fn>
+    static auto callable_view_stub(const delegate* self, Args...args) -> R;
 
-    template <typename Callable>
-    static R callable_stub(const void* p, Args...args);
+    /// \brief A stub function empty callable objects
+    ///
+    /// \tparam Fn the empty function to invoke
+    /// \param args the arguments to forward to the function
+    /// \return the result of invoking \p fn
+    template <typename Fn>
+    static auto empty_callable_stub(const delegate*, Args...args) -> R;
 
-    template <typename Callable>
-    static R const_callable_stub(const void* p, Args...args);
+    /// \brief A stub function for small callable objects
+    ///
+    /// \tparam Fn the small-storage function to invoke
+    /// \param self an instance to the delegate that contains the function
+    /// \param args the arguments to forward to the function
+    /// \return the result of invoking \p fn
+    template <typename Fn>
+    static auto small_callable_stub(const delegate* self, Args...args) -> R;
 
-    //-------------------------------------------------------------------------
-
+    /// \brief A stub function for function pointers
+    ///
+    /// \tparam R2 the return type
+    /// \tparam Args2 the arguments
+    /// \param self an instance to the delegate that contains the function pointers
+    /// \param args the arguments to forward to the function
+    /// \return the result of invoking the function
     template <typename R2, typename...Args2>
-    friend constexpr bool operator==(const delegate<R2(Args2...)>&,
-                                     const delegate<R2(Args2...)>&) noexcept;
+    static auto function_ptr_stub(const delegate* self, Args...args) -> R;
+
+  #if defined(__clang__)
+  # pragma clang diagnostic pop
+  #endif
+
+    //--------------------------------------------------------------------------
+    // Private Members
+    //--------------------------------------------------------------------------
+  private:
+
+    struct empty_type{};
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// The underlying storage, which may be either a (possibly const) pointer,
+    /// or a char buffer of storage.
+    ////////////////////////////////////////////////////////////////////////////
+    union {
+      empty_type m_empty; // Default type does nothing
+      void* m_instance{};
+      const void* m_const_instance;
+      any_function m_function;
+      alignas(storage_align) unsigned char m_storage[storage_size];
+    };
+    stub_function m_stub;
   };
 
-  //===========================================================================
-  // non-member functions : class : delegateR(Args...)>
-  //===========================================================================
-
-  //---------------------------------------------------------------------------
-  // Equality
-  //---------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+  // Deduction Guides
+  //----------------------------------------------------------------------------
 
   template <typename R, typename...Args>
-  constexpr bool operator==(const delegate<R(Args...)>& lhs,
-                            const delegate<R(Args...)>& rhs) noexcept;
-  template <typename R, typename...Args>
-  constexpr bool operator!=(const delegate<R(Args...)>& lhs,
-                            const delegate<R(Args...)>& rhs) noexcept;
+  delegate(targets::opaque_function_bind_target<R(Args...)>)
+    -> delegate<R(Args...)>;
 
-  //---------------------------------------------------------------------------
-  // Utility
-  //---------------------------------------------------------------------------
+  template <auto Function>
+  delegate(targets::function_bind_target<Function>)
+    -> delegate<detail::effective_signature<decltype(Function)>>;
 
-  namespace detail {
-
-    template <auto Fn>
-    struct enable_make_delegate_function : is_function_pointer<decltype(Fn)>{};
-
-    template <auto MemberFn, typename C, typename = void>
-    struct enable_make_delegate_member : std::false_type{};
-
-    template <auto MemberFn, typename C>
-    struct enable_make_delegate_member<MemberFn,C,std::void_t<
-      decltype(delegate<typename function_traits<MemberFn>::signature_type>::template make<MemberFn>(std::declval<C*>()))
-    >> : std::true_type{};
-  }
-
-  /// \brief Makes a delegate from a function pointer
-  ///
-  /// \return a delegate from a function pointer
-  template <auto Fn,
-            typename = std::enable_if_t<detail::enable_make_delegate_function<Fn>::value>>
-  constexpr delegate<typename alloy::core::function_traits<Fn>::signature_type>
-    make_delegate() noexcept;
-
-  /// \{
-  /// \brief Makes a delegate from a member function pointer and a bound class
-  ///
-  /// \return a delegate from a function pointer
-  template <auto MemberFn, typename C,
-            typename = std::enable_if_t<detail::enable_make_delegate_member<MemberFn,C>::value>>
-  constexpr delegate<typename alloy::core::function_traits<MemberFn>::signature_type>
-    make_delegate(C* c) noexcept;
-  template <auto MemberFn, typename C,
-            typename = std::enable_if_t<detail::enable_make_delegate_member<MemberFn,const C>::value>>
-  constexpr delegate<typename alloy::core::function_traits<MemberFn>::signature_type>
-    make_delegate(const C* c) noexcept;
-  /// \}
-  template <auto MemberFn>
-  void make_delegate(std::nullptr_t) = delete;
+  template <auto MemberFunction, typename T>
+  delegate(targets::member_bind_target<MemberFunction, T>)
+    -> delegate<detail::effective_signature<decltype(MemberFunction)>>;
 
 } // namespace alloy::core
-
 
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
 
 //==============================================================================
-// inline definitions : class : bad_delegate_call
+// class : bad_delegate_call
 //==============================================================================
+
+inline
+alloy::core::bad_delegate_call::bad_delegate_call()
+  : runtime_error{"delegate called without being bound"}
+{
+
+}
+
+#endif // ALLOY_CORE_EXCEPTIONS_ENABLED
+
+//------------------------------------------------------------------------------
+// Binding
+//------------------------------------------------------------------------------
+
+template <auto Function>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::bind()
+  noexcept -> function_bind_target<Function>
+{
+  return {};
+}
+
+template <auto MemberFunction, typename T>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::bind(T* p)
+  noexcept -> member_bind_target<MemberFunction, T>
+{
+  ALLOY_ASSERT(p != nullptr);
+  return {p};
+}
+
+template <typename Callable>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::bind(Callable* fn)
+  noexcept -> callable_ref_bind_target<Callable>
+{
+  ALLOY_ASSERT(fn != nullptr);
+  return {fn};
+}
+
+template <typename R, typename...Args>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::bind(R(*fn)(Args...))
+  noexcept -> opaque_function_bind_target<R(Args...)>
+{
+  ALLOY_ASSERT(fn != nullptr);
+  return {fn};
+}
+
+template <typename Callable>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::bind()
+  noexcept -> empty_callable_bind_target<Callable>
+{
+  return {};
+}
+
+template <typename Callable, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::bind(Callable)
+  noexcept -> empty_callable_bind_target<Callable>
+{
+  return {};
+}
+
+template <typename Callable, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::bind(Callable&& callable)
+  noexcept -> callable_bind_target<std::decay_t<Callable>>
+{
+  return {std::forward<Callable>(callable)};
+}
+
+//==============================================================================
+// class : delegate<R(Args...)>
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Constructors
+//------------------------------------------------------------------------------
+
+template <typename R, typename... Args>
+inline constexpr
+alloy::core::delegate<R(Args...)>::delegate()
+  noexcept
+  : m_empty{},
+    m_stub{&null_stub}
+{
+
+}
+
+template <typename R, typename... Args>
+template <auto Function, typename>
+ALLOY_FORCE_INLINE constexpr
+alloy::core::delegate<R(Args...)>::delegate(function_bind_target<Function>)
+  noexcept
+  : m_empty{},
+    m_stub{&function_stub<Function>}
+{
+
+}
+
+template <typename R, typename... Args>
+template <auto MemberFunction, typename T, typename>
+ALLOY_FORCE_INLINE constexpr
+alloy::core::delegate<R(Args...)>::delegate(member_bind_target<MemberFunction, T> target)
+  noexcept
+  : m_instance{target.instance},
+    m_stub{&member_function_stub<MemberFunction, T>}
+{
+
+}
+
+template <typename R, typename... Args>
+template <auto MemberFunction, typename T, typename>
+ALLOY_FORCE_INLINE constexpr
+alloy::core::delegate<R(Args...)>::delegate(member_bind_target<MemberFunction, const T> target)
+  noexcept
+  : m_const_instance{target.instance},
+    m_stub{&member_function_stub<MemberFunction, const T>}
+{
+
+}
+
+template <typename R, typename... Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE constexpr
+alloy::core::delegate<R(Args...)>::delegate(callable_ref_bind_target<Fn> target)
+  noexcept
+  : m_instance{target.target},
+    m_stub{&callable_view_stub<Fn>}
+{
+
+}
+
+template <typename R, typename... Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE constexpr
+alloy::core::delegate<R(Args...)>::delegate(callable_ref_bind_target<const Fn> target)
+  noexcept
+  : m_const_instance{target.target},
+    m_stub{&callable_view_stub<const Fn>}
+{
+
+}
+
+template <typename R, typename... Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE
+alloy::core::delegate<R(Args...)>::delegate(callable_bind_target<Fn> target)
+  noexcept
+  : m_empty{},
+    m_stub{&small_callable_stub<Fn>}
+{
+  new (static_cast<void*>(m_storage)) Fn(std::move(target.target));
+}
+
+template <typename R, typename... Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE constexpr
+alloy::core::delegate<R(Args...)>::delegate(empty_callable_bind_target<Fn>)
+  noexcept
+  : m_empty{},
+    m_stub{&empty_callable_stub<Fn>}
+{
+
+}
+
+template <typename R, typename... Args>
+template <typename UR, typename... UArgs, typename>
+ALLOY_FORCE_INLINE
+alloy::core::delegate<R(Args...)>::delegate(opaque_function_bind_target<UR(UArgs...)> target)
+  noexcept
+  : m_function{reinterpret_cast<any_function>(target.target)},
+    m_stub{&function_ptr_stub<UR, UArgs...>}
+{
+
+}
+
+//------------------------------------------------------------------------------
+// Binding
+//------------------------------------------------------------------------------
+
+template <typename R, typename...Args>
+template <auto Function, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::bind()
+  noexcept -> delegate&
+{
+  return ((*this) = delegate{
+    targets::function_bind_target<Function>{}
+  });
+}
+
+template <typename R, typename...Args>
+template <auto MemberFunction, typename T, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::bind(const T* instance)
+  noexcept -> delegate&
+{
+  return ((*this) = delegate{
+    targets::member_bind_target<MemberFunction, const T>{instance}
+  });
+}
+
+template <typename R, typename...Args>
+template <auto MemberFunction, typename T, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::bind(T* instance)
+  noexcept -> delegate&
+{
+  return ((*this) = delegate{
+    targets::member_bind_target<MemberFunction, T>{instance}
+  });
+}
+
+template <typename R, typename...Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::bind(Fn* fn)
+  noexcept -> delegate&
+{
+  return ((*this) = delegate{
+    targets::callable_ref_bind_target<Fn>{fn}
+  });
+}
+
+template <typename R, typename...Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::bind(const Fn* fn)
+  noexcept -> delegate&
+{
+  return ((*this) = delegate{
+    targets::callable_ref_bind_target<const Fn>{fn}
+  });
+}
+
+template <typename R, typename...Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::bind()
+  noexcept -> delegate&
+{
+  return ((*this) = delegate{
+    targets::empty_callable_bind_target<Fn>{}
+  });
+}
+
+template <typename R, typename...Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::bind(Fn)
+  noexcept -> delegate&
+{
+  return ((*this) = delegate{
+    targets::empty_callable_bind_target<Fn>{}
+  });
+}
+
+template <typename R, typename...Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::bind(Fn&& fn)
+  noexcept -> delegate&
+{
+  return ((*this) = delegate{
+    targets::callable_bind_target<std::decay_t<Fn>>{
+      std::forward<Fn>(fn)
+    }
+  });
+}
+
+template <typename R, typename...Args>
+template <typename R2, typename...Args2, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::bind(R2(*fn)(Args2...))
+  noexcept -> delegate&
+{
+  return ((*this) = delegate{
+    targets::opaque_function_bind_target<R2(Args2...)>{fn}
+  });
+}
+
+//------------------------------------------------------------------------------
+
+template <typename R, typename...Args>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::reset()
+  noexcept -> void
+{
+  m_stub = &null_stub;
+}
 
 //------------------------------------------------------------------------------
 // Observers
 //------------------------------------------------------------------------------
 
-inline const char* alloy::core::bad_delegate_call::what()
+template <typename R, typename...Args>
+ALLOY_FORCE_INLINE constexpr
+alloy::core::delegate<R(Args...)>::operator bool()
   const noexcept
 {
-  return "bad_delegate_call";
+  return has_target();
 }
-
-#endif // ALLOY_CORE_EXCEPTIONS_ENABLED
-
-//=============================================================================
-// inline definitions : class : delegate
-//=============================================================================
-
-namespace alloy::core::detail {
-
-  template <typename T>
-  using delegate_forward_result_t = std::conditional_t<
-    std::is_reference<T>::value, T, std::add_rvalue_reference_t<T>
-  >;
-
-  // A small utility for forwarding class template arguments in a variadic
-  // member function.
-  //
-  // This allow by-value move-only types to be propagates to the underlying
-  // function (e.g. for if std::unique_ptr is a parameter).
-  //
-  // * l-value references are passed-through as l-value references
-  // * r-value references are passed-through as r-value references
-  // * By-value arguments are std::moved to r-value references
-  template <typename T, typename U>
-  constexpr delegate_forward_result_t<T> delegate_forward(U&& u)
-  {
-    return static_cast<delegate_forward_result_t<T>>(u);
-  }
-
-} // namespace alloy::core::detail
-
-//-----------------------------------------------------------------------------
-// Static Factories
-//-----------------------------------------------------------------------------
-
-template <typename R, typename...Args>
-template <auto Fn, typename>
-inline constexpr alloy::core::delegate<R(Args...)>
-  alloy::core::delegate<R(Args...)>::make()
-  noexcept
-{
-  const auto p  = static_cast<const void*>(nullptr);
-  const auto fn = &function_stub<Fn>;
-
-  return delegate{p, fn};
-}
-
-
-template <typename R, typename...Args>
-template <auto MemberFn, typename C, typename>
-inline constexpr alloy::core::delegate<R(Args...)>
-  alloy::core::delegate<R(Args...)>::make(C* c)
-  noexcept
-{
-  ALLOY_ASSERT(c != nullptr);
-
-  const auto p  = static_cast<const void*>(c);
-  const auto fn = &member_function_stub<MemberFn, C>;
-
-  return delegate{p, fn};
-}
-
-
-template <typename R, typename...Args>
-template <auto MemberFn, typename C, typename>
-inline constexpr alloy::core::delegate<R(Args...)>
-  alloy::core::delegate<R(Args...)>::make(const C* c)
-  noexcept
-{
-  ALLOY_ASSERT(c != nullptr);
-
-  const auto p  = static_cast<const void*>(c);
-  const auto fn = &const_member_function_stub<MemberFn, C>;
-
-  return delegate{p, fn};
-}
-
-
-template <typename R, typename...Args>
-template <typename Callable, typename>
-inline constexpr alloy::core::delegate<R(Args...)>
-  alloy::core::delegate<R(Args...)>::make(Callable* callable)
-  noexcept
-{
-  ALLOY_ASSERT(callable != nullptr);
-
-  const auto ptr = static_cast<const void*>(callable);
-  const auto fn  = &callable_stub<Callable>;
-
-  return delegate{ptr, static_cast<function_type>(fn)};
-}
-
-
-template <typename R, typename...Args>
-template <typename Callable, typename>
-inline constexpr alloy::core::delegate<R(Args...)>
-  alloy::core::delegate<R(Args...)>::make(const Callable* callable)
-  noexcept
-{
-  ALLOY_ASSERT(callable != nullptr);
-
-  const auto p  = static_cast<const void*>(callable);
-  const auto fn = &const_callable_stub<Callable>;
-
-  return delegate{p, fn};
-}
-
-//-----------------------------------------------------------------------------
-// Constructors
-//-----------------------------------------------------------------------------
-
-template <typename R, typename...Args>
-inline constexpr alloy::core::delegate<R(Args...)>::delegate()
-  noexcept
-  : delegate{nullptr, &default_stub}
-{
-
-}
-
-//-----------------------------------------------------------------------------
-
-template <typename R, typename...Args>
-template <auto Fn, typename>
-inline void alloy::core::delegate<R(Args...)>::bind()
-  noexcept
-{
-  (*this) = make<Fn>();
-}
-
-
-template <typename R, typename...Args>
-template <auto MemberFn, typename C, typename>
-inline void alloy::core::delegate<R(Args...)>::bind(C* c)
-  noexcept
-{
-  (*this) = make<MemberFn>(c);
-}
-
-
-template <typename R, typename...Args>
-template <auto MemberFn, typename C, typename>
-inline void alloy::core::delegate<R(Args...)>::bind(const C* c)
-  noexcept
-{
-  (*this) = make<MemberFn>(c);
-}
-
-
-template <typename R, typename...Args>
-template <typename Callable, typename>
-inline void alloy::core::delegate<R(Args...)>::bind(Callable* callable)
-  noexcept
-{
-  (*this) = make(callable);
-}
-
-
-template <typename R, typename...Args>
-template <typename Callable, typename>
-inline void alloy::core::delegate<R(Args...)>::bind(const Callable* callable)
-  noexcept
-{
-  (*this) = make(callable);
-}
-
-//-----------------------------------------------------------------------------
-// Modifiers
-//-----------------------------------------------------------------------------
-
-template <typename R, typename...Args>
-inline void alloy::core::delegate<R(Args...)>::reset()
-  noexcept
-{
-  m_function = &default_stub;
-  m_instance = nullptr;
-}
-
-//-----------------------------------------------------------------------------
-// Observer
-//-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
 template <typename...UArgs, typename>
-inline R alloy::core::delegate<R(Args...)>::operator()(UArgs&&...args)
-  const
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::operator()(UArgs&&...args)
+  const -> R
 {
-  return m_function(m_instance, std::forward<UArgs>(args)...);
+  return std::invoke(m_stub, this, std::forward<UArgs>(args)...);
 }
 
+//------------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-inline constexpr alloy::core::delegate<R(Args...)>::operator bool()
-  const noexcept
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::has_target()
+  const noexcept -> bool
 {
-  return m_function != &default_stub;
+  return m_stub != &null_stub;
 }
 
-//-----------------------------------------------------------------------------
-// Private Constructors
-//-----------------------------------------------------------------------------
-
 template <typename R, typename...Args>
-inline constexpr alloy::core::delegate<R(Args...)>
-  ::delegate(const void* instance, function_type function)
-  noexcept
-  : m_instance{instance},
-    m_function{function}
+template <auto Function, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::has_target()
+  const noexcept -> bool
 {
-
+  return m_stub == &function_stub<Function>;
 }
 
-//-----------------------------------------------------------------------------
-// Private Static Functions
-//-----------------------------------------------------------------------------
+template <typename R, typename...Args>
+template <auto MemberFunction, typename T, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::has_target(const T* instance)
+  const noexcept -> bool
+{
+  ALLOY_ASSERT(instance != nullptr);
 
-ALLOY_COMPILER_DIAGNOSTIC_PUSH()
-ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE(4646) // Ignore '[[noreturn]]' on non-void
+  return (m_stub == &member_function_stub<MemberFunction, const T>) &&
+         (m_const_instance == instance);
+}
 
 template <typename R, typename...Args>
-inline R alloy::core::delegate<R(Args...)>::default_stub(const void* p, Args...args)
+template <auto MemberFunction, typename T, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::has_target(T* instance)
+  const noexcept -> bool
 {
-  compiler::unused(p, args...);
-#if ALLOY_CORE_EXCEPTIONS_ENABLED
+  ALLOY_ASSERT(instance != nullptr);
+
+  return (m_stub == &member_function_stub<MemberFunction, T>) &&
+         (m_instance == instance);
+}
+
+template <typename R, typename...Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::has_target(Fn* fn)
+  const noexcept -> bool
+{
+  ALLOY_ASSERT(fn != nullptr);
+
+  return (m_stub == &callable_view_stub<Fn>) &&
+         (m_instance == fn);
+}
+
+template <typename R, typename...Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::has_target(const Fn* fn)
+  const noexcept -> bool
+{
+  ALLOY_ASSERT(fn != nullptr);
+
+  return (m_stub == &callable_view_stub<const Fn>) &&
+         (m_const_instance == fn);
+}
+
+template <typename R, typename...Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::has_target()
+  const noexcept -> bool
+{
+  return (m_stub == &empty_callable_stub<Fn>);
+}
+
+template <typename R, typename...Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::has_target(Fn)
+  const noexcept -> bool
+{
+  return has_target<Fn>();
+}
+
+template <typename R, typename...Args>
+template <typename Fn, typename>
+ALLOY_FORCE_INLINE
+auto alloy::core::delegate<R(Args...)>::has_target(const Fn& fn)
+  const noexcept -> bool
+{
+  // If 'Fn' has equality operators, use that.
+  // Otherwise fall back to comparing raw bytes
+  if constexpr (detail::is_equality_comparable<Fn>::value) {
+    return (m_stub == &small_callable_stub<Fn>) &&
+           ((*reinterpret_cast<const Fn*>(m_storage)) == fn);
+  } else {
+    static_assert(
+      std::has_unique_object_representations_v<Fn>,
+      "Specified `Fn` type for `has_target` does not have a unique object "
+      "representation! "
+      "Target testing can only be reliably done for functions whose identity can "
+      "be established by the uniqueness of their bits."
+    );
+
+    return (m_stub == &small_callable_stub<Fn>) &&
+           (std::memcmp(m_storage, &fn, sizeof(Fn)) == 0);
+  }
+}
+
+template <typename R, typename...Args>
+template <typename R2, typename...Args2, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::delegate<R(Args...)>::has_target(R2(*fn)(Args2...))
+  const noexcept -> bool
+{
+  ALLOY_ASSERT(fn != nullptr);
+
+  // The result of a comparing pointers of the wrong type is undefined behavior;
+  // but thanks to each of our function stubs being uniquely instantiated based
+  // on the template signature of the stub function, we can guarantee that if
+  // the stubs are the same function, then the underlying data must also be the
+  // same type which allows us to do this comparison without violating strict
+  // aliasing
+  using underlying = R2(*)(Args2...);
+
+  return (m_stub == &function_ptr_stub<R2, Args2...>) &&
+         (reinterpret_cast<underlying>(m_function) == fn);
+}
+
+//------------------------------------------------------------------------------
+// Stub Functions
+//------------------------------------------------------------------------------
+
+template <typename R, typename...Args>
+inline
+auto alloy::core::delegate<R(Args...)>::null_stub(const delegate*, Args...)
+  -> R
+{
+  // Default stub throws unconditionally
   throw bad_delegate_call{};
-#else
-  ALLOY_ASSERT(false, "no function bound to delegate");
-  std::terminate();
-#endif
 }
 
-ALLOY_COMPILER_DIAGNOSTIC_POP()
-
-template <typename R, typename...Args>
-template <auto Fn>
-inline R
-  alloy::core::delegate<R(Args...)>::function_stub(const void* p, Args...args)
+template <typename R, typename... Args>
+template <auto Function>
+inline
+auto alloy::core::delegate<R(Args...)>::function_stub(const delegate*, Args...args)
+  -> R
 {
-  compiler::unused(p);
-
-  if constexpr (std::is_void<R>::value) {
-    std::invoke(Fn, detail::delegate_forward<Args>(args)...);
+  if constexpr (std::is_void_v<R>) {
+    std::invoke(Function, std::forward<Args>(args)...);
   } else {
-    return std::invoke(Fn, detail::delegate_forward<Args>(args)...);
+    return std::invoke(Function, std::forward<Args>(args)...);
   }
 }
 
-template <typename R, typename...Args>
-template <auto MemberFn, typename C>
-inline R
-  alloy::core::delegate<R(Args...)>::member_function_stub(const void* p, Args...args )
+template <typename R, typename... Args>
+template <auto MemberFunction, typename T>
+inline
+auto alloy::core::delegate<R(Args...)>::member_function_stub(const delegate* self,
+                                                             Args...args)
+  -> R
 {
-  auto* pc = static_cast<C*>(const_cast<void*>(compiler::assume_not_null(p)));
+  // This stub is used for both `const` and non-`const` `T` types. To extract
+  // the pointer from the correct data member of the union, this uses an
+  // immediately-invoking lambda (IIL) with `if constexpr`
+  auto* const c = [&self]{
+    if constexpr (std::is_const_v<T>) {
+      return static_cast<T*>(self->m_const_instance);
+    } else {
+      return static_cast<T*>(self->m_instance);
+    }
+  }();
 
-  if constexpr (std::is_void<R>::value) {
-    std::invoke(MemberFn, pc, detail::delegate_forward<Args>(args)...);
+  if constexpr (std::is_void_v<R>) {
+    std::invoke(MemberFunction, c, std::forward<Args>(args)...);
   } else {
-    return std::invoke(MemberFn, pc, detail::delegate_forward<Args>(args)...);
+    return std::invoke(MemberFunction, c, std::forward<Args>(args)...);
   }
 }
 
-
-template <typename R, typename...Args>
-template <auto MemberFn, typename C>
-inline R
-  alloy::core::delegate<R(Args...)>::const_member_function_stub(const void* p, Args... args )
+template <typename R, typename... Args>
+template <typename Fn>
+inline
+auto alloy::core::delegate<R(Args...)>::callable_view_stub(const delegate* self,
+                                                           Args...args)
+  -> R
 {
-  const auto* pc = static_cast<const C*>(compiler::assume_not_null(p));
+  // This stub is used for both `const` and non-`const` `Fn` types. To extract
+  // the pointer from the correct data member of the union, this uses an
+  // immediately-invoking lambda (IIL) with `if constexpr`
+  auto* const f = [&self]{
+    if constexpr (std::is_const_v<Fn>) {
+      return static_cast<Fn*>(self->m_const_instance);
+    } else {
+      return static_cast<Fn*>(self->m_instance);
+    }
+  }();
 
-  if constexpr (std::is_void<R>::value) {
-    std::invoke(MemberFn, pc, detail::delegate_forward<Args>(args)...);
+  if constexpr (std::is_void_v<R>) {
+    std::invoke(*f, std::forward<Args>(args)...);
   } else {
-    return std::invoke(MemberFn, pc, detail::delegate_forward<Args>(args)...);
+    return std::invoke(*f, std::forward<Args>(args)...);
   }
 }
 
-template <typename R, typename...Args>
-template <typename Callable>
-inline R
-  alloy::core::delegate<R(Args...)>::callable_stub(const void* p, Args...args)
+template <typename R, typename... Args>
+template <typename Fn>
+inline
+auto alloy::core::delegate<R(Args...)>::empty_callable_stub(const delegate*,
+                                                            Args...args)
+  -> R
 {
-  auto* pc = static_cast<Callable*>(const_cast<void*>(compiler::assume_not_null(p)));
-
-  if constexpr (std::is_void<R>::value) {
-    std::invoke(*pc, detail::delegate_forward<Args>(args)...);
+  if constexpr (std::is_void_v<R>) {
+    std::invoke(Fn{}, std::forward<Args>(args)...);
   } else {
-    return std::invoke(*pc, detail::delegate_forward<Args>(args)...);
+    return std::invoke(Fn{}, std::forward<Args>(args)...);
   }
 }
 
-template <typename R, typename...Args>
-template <typename Callable>
-inline R
-  alloy::core::delegate<R(Args...)>::const_callable_stub(const void* p, Args...args)
+template <typename R, typename... Args>
+template <typename Fn>
+inline
+auto alloy::core::delegate<R(Args...)>::small_callable_stub(const delegate* self,
+                                                            Args...args)
+  -> R
 {
-  auto* pc = static_cast<const Callable*>(compiler::assume_not_null(p));
+  const auto& f = *std::launder(reinterpret_cast<const Fn*>(self->m_storage));
 
-  if constexpr (std::is_void<R>::value) {
-    std::invoke(*pc, detail::delegate_forward<Args>(args)...);
+  if constexpr (std::is_void_v<R>) {
+    std::invoke(f, std::forward<Args>(args)...);
   } else {
-    return std::invoke(*pc, detail::delegate_forward<Args>(args)...);
+    return std::invoke(f, std::forward<Args>(args)...);
   }
-
 }
 
-
-//=============================================================================
-// inline definitions : non-member functions
-//=============================================================================
-
-//-----------------------------------------------------------------------------
-// Equality
-//-----------------------------------------------------------------------------
-
-template <typename R, typename...Args>
-inline constexpr bool
-  alloy::core::operator==(const delegate<R(Args...)>& lhs,
-                          const delegate<R(Args...)>& rhs)
-  noexcept
+template <typename R, typename... Args>
+template <typename R2, typename... Args2>
+inline
+auto alloy::core::delegate<R(Args...)>::function_ptr_stub(const delegate* self,
+                                                          Args...args)
+  -> R
 {
-  return lhs.m_instance == rhs.m_instance &&
-         lhs.m_function == rhs.m_function;
-}
+  const auto f = reinterpret_cast<R2(*)(Args...)>(self->m_function);
 
-template <typename R, typename...Args>
-inline constexpr bool
-  alloy::core::operator!=(const delegate<R(Args...)>& lhs,
-                          const delegate<R(Args...)>& rhs)
-  noexcept
-{
-  return !(lhs == rhs);
-}
-
-//-----------------------------------------------------------------------------
-// Utilities
-//-----------------------------------------------------------------------------
-
-template <auto Fn, typename>
-inline constexpr alloy::core::delegate<typename alloy::core::function_traits<Fn>::signature_type>
-  alloy::core::make_delegate()
-  noexcept
-{
-  using delegate_type = delegate<typename function_traits<Fn>::signature_type>;
-
-  return delegate_type::template make<Fn>();
-}
-
-template <auto MemberFn, typename C, typename>
-inline constexpr alloy::core::delegate<typename alloy::core::function_traits<MemberFn>::signature_type>
-  alloy::core::make_delegate(C* c)
-  noexcept
-{
-  using delegate_type = delegate<typename function_traits<MemberFn>::signature_type>;
-
-  return delegate_type::template make<MemberFn>(c);
-}
-
-template <auto MemberFn, typename C, typename>
-inline constexpr alloy::core::delegate<typename alloy::core::function_traits<MemberFn>::signature_type>
-  alloy::core::make_delegate(const C* c)
-  noexcept
-{
-  using delegate_type = delegate<typename function_traits<MemberFn>::signature_type>;
-
-  return delegate_type::template make<MemberFn>(c);
+  if constexpr (std::is_void_v<R>) {
+    std::invoke(f, std::forward<Args>(args)...);
+  } else {
+    return std::invoke(f, std::forward<Args>(args)...);
+  }
 }
 
 #endif /* ALLOY_CORE_UTILITIES_DELEGATE_HPP */

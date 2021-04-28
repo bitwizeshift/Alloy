@@ -95,7 +95,7 @@ void alloy::extra::logger::attach(core::not_null<log_stream*> log)
     m_head = new_link;
   }
 
-  log->m_detach = log_stream::detach_function::make<&logger::detach>(this);
+  log->m_detach = core::bind<&logger::detach>(this);
 }
 
 
