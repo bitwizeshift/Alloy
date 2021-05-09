@@ -100,13 +100,19 @@ namespace alloy::core {
     /// \brief Default constructs this view without any underlying data
     constexpr attribute_buffer_view() noexcept;
 
-    /// \brief Constructs a attribute_buffer_view from the underlying data and size
+    /// \brief Constructs an attribute_buffer_view from the underlying data and
+    ///        size
     ///
     /// \pre size is divisible by sizeof(T) / sizeof(real)
     ///
     /// \param data the underlying data
     /// \param size the number of reals
     constexpr attribute_buffer_view(const real* data, size_type size) noexcept;
+
+    /// \brief Constructs an attribute_buffer_view from a span of data
+    ///
+    /// \param data the underlying data
+    constexpr explicit attribute_buffer_view(span<const real> data) noexcept;
 
     /// \brief Copies the contents of \p other
     ///
@@ -217,13 +223,6 @@ namespace alloy::core {
   using color_buffer_view              = attribute_buffer_view<color>;
   using texture_coordinate_buffer_view = attribute_buffer_view<texture_coordinate>;
 
-  //---------------------------------------------------------------------------
-
-  extern template class attribute_buffer_view<vertex>;
-  extern template class attribute_buffer_view<vector3>;
-  extern template class attribute_buffer_view<color>;
-  extern template class attribute_buffer_view<texture_coordinate>;
-
 } // namespace alloy::core
 
 //=============================================================================
@@ -235,8 +234,8 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 template<typename T>
-constexpr alloy::core::attribute_buffer_view<T>
-  ::attribute_buffer_view()
+inline constexpr
+alloy::core::attribute_buffer_view<T>::attribute_buffer_view()
   noexcept
   : m_array{}
 {
@@ -244,12 +243,22 @@ constexpr alloy::core::attribute_buffer_view<T>
 }
 
 template<typename T>
-inline constexpr alloy::core::attribute_buffer_view<T>
-  ::attribute_buffer_view(const real* data, size_type size)
+inline constexpr
+alloy::core::attribute_buffer_view<T>::attribute_buffer_view(const real* data,
+                                                             size_type size)
   noexcept
   : m_array{data, size}
 {
   ALLOY_ASSERT((size % elements_per_value) == 0u);
+}
+
+template<typename T>
+inline constexpr
+alloy::core::attribute_buffer_view<T>::attribute_buffer_view(span<const real> data)
+  noexcept
+  : m_array{data}
+{
+
 }
 
 //-----------------------------------------------------------------------------
@@ -257,10 +266,9 @@ inline constexpr alloy::core::attribute_buffer_view<T>
 //-----------------------------------------------------------------------------
 
 template <typename T>
-inline constexpr auto
-  alloy::core::attribute_buffer_view<T>::front()
-  const noexcept
-  -> value_type
+inline constexpr
+auto alloy::core::attribute_buffer_view<T>::front()
+  const noexcept -> value_type
 {
   ALLOY_ASSERT(!empty());
 
@@ -268,10 +276,9 @@ inline constexpr auto
 }
 
 template <typename T>
-inline constexpr auto
-  alloy::core::attribute_buffer_view<T>::back()
-  const noexcept
-  -> value_type
+inline constexpr
+auto alloy::core::attribute_buffer_view<T>::back()
+  const noexcept -> value_type
 {
   ALLOY_ASSERT(!empty());
 
@@ -279,10 +286,9 @@ inline constexpr auto
 }
 
 template <typename T>
-inline constexpr auto
-  alloy::core::attribute_buffer_view<T>::operator[](std::size_t idx)
-  const noexcept
-  -> value_type
+inline constexpr
+auto alloy::core::attribute_buffer_view<T>::operator[](std::size_t idx)
+  const noexcept -> value_type
 {
   ALLOY_ASSERT(idx < size());
 
@@ -290,10 +296,9 @@ inline constexpr auto
 }
 
 template <typename T>
-inline constexpr auto
-  alloy::core::attribute_buffer_view<T>::at(std::size_t idx)
-  const
-  -> value_type
+inline constexpr
+auto alloy::core::attribute_buffer_view<T>::at(std::size_t idx)
+  const -> value_type
 {
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
   if (idx >= size()) {
@@ -310,8 +315,7 @@ inline constexpr auto
 template <typename T>
 inline constexpr auto
   alloy::core::attribute_buffer_view<T>::data()
-  const noexcept
-  -> const real*
+  const noexcept -> const real*
 {
   return m_array.data();
 }
@@ -321,19 +325,17 @@ inline constexpr auto
 //-----------------------------------------------------------------------------
 
 template <typename T>
-inline constexpr auto
-  alloy::core::attribute_buffer_view<T>::size()
-  const noexcept
-  -> size_type
+inline constexpr
+auto alloy::core::attribute_buffer_view<T>::size()
+  const noexcept -> size_type
 {
   return m_array.size() / elements_per_value;
 }
 
 template <typename T>
-inline constexpr auto
-  alloy::core::attribute_buffer_view<T>::empty()
-  const noexcept
-  -> bool
+inline constexpr
+auto alloy::core::attribute_buffer_view<T>::empty()
+  const noexcept -> bool
 {
   return m_array.empty();
 }
@@ -344,11 +346,10 @@ inline constexpr auto
 
 template <typename T>
 template <size_t... Idx>
-inline constexpr auto
-  alloy::core::attribute_buffer_view<T>::do_get(std::size_t index,
-                                          std::index_sequence<Idx...>)
-  const noexcept
-  -> value_type
+inline constexpr
+auto alloy::core::attribute_buffer_view<T>::do_get(std::size_t index,
+                                                   std::index_sequence<Idx...>)
+  const noexcept -> value_type
 {
   const auto offset = elements_per_value * index;
 
@@ -356,21 +357,19 @@ inline constexpr auto
 }
 
 template <typename T>
-inline constexpr auto
-  alloy::core::operator==(const attribute_buffer_view<T>& lhs,
-                          const attribute_buffer_view<T>& rhs)
-  noexcept
-  -> bool
+inline constexpr
+auto alloy::core::operator==(const attribute_buffer_view<T>& lhs,
+                             const attribute_buffer_view<T>& rhs)
+  noexcept -> bool
 {
   return lhs.m_array == rhs.m_array;
 }
 
 template <typename T>
-inline constexpr auto
-  alloy::core::operator!=(const attribute_buffer_view<T>& lhs,
-                          const attribute_buffer_view<T>& rhs)
-  noexcept
-  -> bool
+inline constexpr
+auto alloy::core::operator!=(const attribute_buffer_view<T>& lhs,
+                             const attribute_buffer_view<T>& rhs)
+  noexcept -> bool
 {
   return !(lhs == rhs);
 }

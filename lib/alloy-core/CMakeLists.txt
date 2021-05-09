@@ -200,7 +200,6 @@ set(source_files
   src/alloy/core/memory/packed_buffer.cpp
 
   # Model
-  src/alloy/core/model/attribute_buffer_view.cpp
   src/alloy/core/model/color.cpp
   src/alloy/core/model/image.cpp
   src/alloy/core/model/transform.cpp
