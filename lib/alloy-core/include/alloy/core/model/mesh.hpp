@@ -42,7 +42,8 @@
 #include "alloy/core/model/color.hpp"
 #include "alloy/core/model/color_constants.hpp"
 
-#include <variant>
+#include <cstdint>  // std::uint16_t
+#include <iterator> // std::distance
 
 namespace alloy::core {
 
@@ -69,7 +70,14 @@ namespace alloy::core {
   //===========================================================================
 
   /////////////////////////////////////////////////////////////////////////////
-  /// \brief
+  /// \brief A mesh represents a series of vertices and attributes in a static
+  ///        configuration.
+  ///
+  /// All mesh data is compressed and packed into a simple data-format for
+  /// convenient use by the underlying graphics engine.
+  /// To build a mesh on-the-fly, see `mesh_builder` -- which allows for
+  /// specifying vertex information along with the face information from those
+  /// vertices.
   /////////////////////////////////////////////////////////////////////////////
   class ALLOY_CORE_API mesh
   {
@@ -91,7 +99,12 @@ namespace alloy::core {
     ///
     /// This function does no checking of the buffers. Ensure that, by calling
     /// this, the input data is valid, and that indices point into a valid point
-    /// of data into the buffer
+    /// of data into the buffer.
+    ///
+    /// \note
+    /// At the moment, all meshes contain the same vertex attribute data as
+    /// specified in `vertex_data`. In the future, meshes may optionally disable
+    /// vertex attribute information.
     ///
     /// \param buffer the packed buffer
     /// \param vertices the number of vertices in the packed buffer
@@ -287,6 +300,22 @@ namespace alloy::core {
     /// \return the index of the newly added vertex data
     auto add_vertex(const vertex_data& vertex) noexcept -> index_type;
 
+    /// \brief Adds a collection of vertex data to this mesh builder
+    ///
+    /// For systems where the vertices/data are all known up-front in an
+    /// unpacked form, this operation will be faster than repeatedly calling
+    /// `add_vertex`. Not only is an index not returned each time, the complete
+    /// vertex count is also not needed.
+    ///
+    /// \note
+    /// The supplied range *must* be usable with multiple passes, otherwise this
+    /// function will experience undefined behavior.
+    ///
+    /// \param first the start of the range
+    /// \param last the end of the range
+    template <typename ForwardIt, typename Sentinel>
+    auto add_vertices(ForwardIt first, Sentinel last) noexcept -> void;
+
     //-------------------------------------------------------------------------
 
     /// \brief Adds a face from three vertex indices
@@ -305,6 +334,13 @@ namespace alloy::core {
     /// \param i3 the index of the fourth vertex
     auto add_face(index_type i0, index_type i1, index_type i2, index_type i3)
       noexcept -> void;
+
+    /// \brief Adds a collection of face data to this mesh builder
+    ///
+    /// \param first the start of the range
+    /// \param last the end of the range
+    template <typename InputIt, typename Sentinel>
+    auto add_faces(InputIt first, Sentinel last) noexcept -> void;
 
     //-------------------------------------------------------------------------
 
@@ -336,8 +372,50 @@ namespace alloy::core {
     packed_buffer_writer m_writer;
     quantity<vertex_data> m_vertices;
     vector<index_type> m_indices;
+
+    //-------------------------------------------------------------------------
+    // Private Building
+    //-------------------------------------------------------------------------
+  private:
+
+    /// \brief Packs the vertex data \p data into the mesh
+    ///
+    /// \param data the data to pack
+    auto pack_vertex(const vertex_data& data) noexcept -> void;
   };
 
 } // namespace alloy::core
+
+//==============================================================================
+// class : mesh_builder
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Building
+//------------------------------------------------------------------------------
+
+template <typename ForwardIt, typename Sentinel>
+inline
+auto alloy::core::mesh_builder::add_vertices(ForwardIt first, Sentinel last)
+  noexcept -> void
+{
+  for (auto it = first; it != last; ++it) {
+    pack_vertex(*it);
+  }
+  m_vertices += std::distance(first, last);
+}
+
+//------------------------------------------------------------------------------
+
+template <typename InputIt, typename Sentinel>
+inline
+auto alloy::core::mesh_builder::add_faces(InputIt first, Sentinel last)
+  noexcept -> void
+{
+  for (auto it = first; it != last; ++it) {
+    add_face(*it);
+  }
+}
+
 
 #endif /* ALLOY_CORE_MODEL_MESH_HPP */

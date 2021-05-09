@@ -382,7 +382,7 @@ auto alloy::core::mesh_builder::add_vertex(const vertex_data& data)
 {
   const auto index = checked_narrow_cast<std::uint16_t>(m_vertices.count());
 
-  m_writer.pack_object(data, vertex_data_packer{});
+  pack_vertex(data);
 
   ++m_vertices;
   return index;
@@ -441,4 +441,14 @@ auto alloy::core::mesh_builder::build(allocator alloc)
     m_vertices,
     m_indices.copy(stl_allocator_adapter<index_type>{alloc})
   );
+}
+
+//------------------------------------------------------------------------------
+// Private Functions
+//------------------------------------------------------------------------------
+
+auto alloy::core::mesh_builder::pack_vertex(const vertex_data& data)
+  noexcept -> void
+{
+  m_writer.pack_object(data, vertex_data_packer{});
 }
