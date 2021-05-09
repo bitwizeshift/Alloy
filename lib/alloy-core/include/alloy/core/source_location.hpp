@@ -34,8 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include <string_view> // std::string_view
-#include <cstddef>     // std::size_t
+#include <cstdint>     // std::uint_least32_t
 
 namespace alloy::core {
 
@@ -50,9 +49,9 @@ namespace alloy::core {
   public:
 
     constexpr source_location() noexcept = default;
-    constexpr source_location(std::string_view filename,
-                              std::string_view function,
-                              std::size_t line_number) noexcept;
+    constexpr source_location(const char* filename,
+                              const char* function,
+                              std::uint_least32_t line_number) noexcept;
     constexpr source_location(const source_location&) noexcept = default;
     constexpr source_location& operator=(const source_location&) noexcept = default;
 
@@ -64,26 +63,26 @@ namespace alloy::core {
     /// \brief Gets the file that this source location represents
     ///
     /// \return the file
-    constexpr std::string_view file() const noexcept;
+    constexpr auto file_name() const noexcept -> const char*;
 
     /// \brief Gets the function that this source location represents
     ///
     /// \return the function
-    constexpr std::string_view function() const noexcept;
+    constexpr auto function_name() const noexcept -> const char*;
 
     /// \brief Gets the line that this source location represents
     ///
     /// \return the line
-    constexpr std::size_t line() const noexcept;
+    constexpr auto line() const noexcept -> std::uint_least32_t;
 
     //-------------------------------------------------------------------------
     // Private Members
     //-------------------------------------------------------------------------
   private:
 
-    std::string_view m_filename{};
-    std::string_view m_function{};
-    std::size_t m_line_number{};
+    const char* m_filename{};
+    const char* m_function{};
+    std::uint_least32_t m_line_number{};
   };
 
 
@@ -104,10 +103,10 @@ namespace alloy::core {
 // Constructors
 //-----------------------------------------------------------------------------
 
-inline constexpr alloy::core::source_location
-  ::source_location(std::string_view filename,
-                    std::string_view function,
-                    std::size_t line_number)
+inline constexpr
+alloy::core::source_location::source_location(const char* filename,
+                                              const char* function,
+                                              std::uint_least32_t line_number)
   noexcept
   : m_filename{filename},
     m_function{function},
@@ -120,23 +119,25 @@ inline constexpr alloy::core::source_location
 // Observers
 //-----------------------------------------------------------------------------
 
-inline constexpr std::string_view alloy::core::source_location::file()
-  const noexcept
+inline constexpr
+auto alloy::core::source_location::file_name()
+  const noexcept -> const char*
 {
   return m_filename;
 }
 
-inline constexpr std::string_view alloy::core::source_location::function()
-  const noexcept
+inline constexpr
+auto alloy::core::source_location::function_name()
+  const noexcept -> const char*
 {
   return m_function;
 }
 
-inline constexpr std::size_t alloy::core::source_location::line()
-  const noexcept
+inline constexpr
+auto alloy::core::source_location::line()
+  const noexcept -> std::uint_least32_t
 {
   return m_line_number;
 }
-
 
 #endif /* ALLOY_CORE_UTILITIES_SOURCE_LOCATION_HPP */
