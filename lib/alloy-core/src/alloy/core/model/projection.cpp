@@ -69,29 +69,49 @@ namespace alloy::core {
   } // namespace <anonymous>
 }
 
+//------------------------------------------------------------------------------
+// Static Factories: Identity
+//------------------------------------------------------------------------------
+
+auto alloy::core::projection::identity()
+  noexcept -> projection
+{
+  return projection{};
+}
+
+//------------------------------------------------------------------------------
+// Static Factories: Perspective
+//------------------------------------------------------------------------------
+
 auto alloy::core::projection::perspective(degree fov,
                                           real aspect_ratio,
                                           clip_space::depth depth)
-  noexcept -> void
+  noexcept -> projection
 {
-  perspective(to_radian(fov), aspect_ratio, depth);
+  return perspective(to_radian(fov), aspect_ratio, depth);
 }
 
 auto alloy::core::projection::perspective(radian fov,
                                           real aspect_ratio,
                                           clip_space::depth depth)
-  noexcept -> void
+  noexcept -> projection
 {
   ALLOY_ASSERT(aspect_ratio > 0);
   ALLOY_ASSERT(depth.near < depth.far);
   ALLOY_ASSERT(fov > radian{0});
 
-  m_storage = perspective_data{
-    fov,
-    aspect_ratio,
-    depth
+  return projection{
+    perspective_data{
+      fov,
+      aspect_ratio,
+      depth
+    }
   };
 }
+
+//------------------------------------------------------------------------------
+// Static Factories: Orthographic
+//------------------------------------------------------------------------------
 
 auto alloy::core::projection::orthographic(real left,
                                            real right,
@@ -99,16 +119,20 @@ auto alloy::core::projection::orthographic(real left,
                                            real top,
                                            real near,
                                            real far)
-  noexcept -> void
+  noexcept -> projection
 {
-  orthographic(clip_space::make(left, right, bottom, top, near, far));
+  return orthographic(clip_space::make(left, right, bottom, top, near, far));
 }
 
 auto alloy::core::projection::orthographic(const clip_space& space)
-  noexcept -> void
+  noexcept -> projection
 {
-  m_storage = orthographic_data{space};
+  return projection{orthographic_data{space}};
 }
+
+//------------------------------------------------------------------------------
+// Conversion
+//------------------------------------------------------------------------------
 
 auto alloy::core::projection::extract_matrix(not_null<matrix4*> out)
   const noexcept -> void
@@ -131,3 +155,5 @@ auto alloy::core::projection::to_matrix4()
   extract_matrix(&result);
   return result;
 }
+
+

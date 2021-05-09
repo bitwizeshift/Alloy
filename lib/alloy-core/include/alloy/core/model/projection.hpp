@@ -267,30 +267,23 @@ namespace alloy::core {
   /////////////////////////////////////////////////////////////////////////////
   class ALLOY_CORE_API projection
   {
-    //-------------------------------------------------------------------------
-    // Constructors / Assignment
-    //-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // Static Factories : Identity
+    //--------------------------------------------------------------------------
   public:
 
-    /// \brief Constructs a projection with nothing but an identity matrix
-    projection() noexcept = default;
-
-    /// \brief Copies the contents of \p other
+    /// \brief Creates an identity projection
     ///
-    /// \param other the other transform to copy
-    projection(const projection& other) noexcept = default;
-
-    //-------------------------------------------------------------------------
-
-    /// \brief Copies the contents of \p other
+    /// An identity projection does not actually contain any projection data,
+    /// which results in a flat view of the (-1,1) space.
     ///
-    /// \param other the other transform to copy
-    /// \return reference to (*this)
-    auto operator=(const projection& other) noexcept -> projection& = default;
+    /// \return the identity projection
+    [[nodiscard]]
+    static auto identity() noexcept -> projection;
 
-    //-------------------------------------------------------------------------
-    // Perspective Transformations
-    //-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // Static Factories : Perspective
+    //--------------------------------------------------------------------------
   public:
 
     /// \brief Projects a perspective with the given information
@@ -302,8 +295,10 @@ namespace alloy::core {
     /// \param fov the field-of-view in degrees
     /// \param aspect_ratio the aspect ratio
     /// \param depth the depth of the clipping space
-    auto perspective(degree fov, real aspect_ratio, clip_space::depth depth)
-      noexcept -> void;
+    /// \return A perspective projection
+    [[nodiscard]]
+    static auto perspective(degree fov, real aspect_ratio, clip_space::depth depth)
+      noexcept -> projection;
 
     /// \brief Projects a perspective with the given information
     ///
@@ -314,12 +309,14 @@ namespace alloy::core {
     /// \param fov the field-of-view in radians
     /// \param aspect_ratio the aspect ratio
     /// \param depth the depth of the clipping space
-    auto perspective(radian fov, real aspect_ratio, clip_space::depth depth)
-      noexcept -> void;
+    /// \return A perspective projection
+    [[nodiscard]]
+    static auto perspective(radian fov, real aspect_ratio, clip_space::depth depth)
+      noexcept -> projection;
 
-    //-------------------------------------------------------------------------
-    // Orthographic Transformations
-    //-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // Static Factories: Orthographic
+    //--------------------------------------------------------------------------
   public:
 
     /// \brief Projects an orthographic view from the given clip space
@@ -330,19 +327,41 @@ namespace alloy::core {
     /// \param top the top part of the view
     /// \param near the near part of the view
     /// \param far the far part of the view
-    auto orthographic(real left, real right,
-                      real bottom, real top,
-                      real near, real far)
-      noexcept -> void;
+    /// \return An orthographic projection
+    [[nodiscard]]
+    static auto orthographic(real left, real right,
+                             real bottom, real top,
+                             real near, real far)
+      noexcept -> projection;
 
     /// \brief Projects an orthographic view from the given clip \p space
     ///
     /// \param space the clip space
-    auto orthographic(const clip_space& space) noexcept -> void;
+    /// \return An orthographic projection
+    [[nodiscard]]
+    static auto orthographic(const clip_space& space) noexcept -> projection;
 
-    //-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // Constructors / Assignment
+    //--------------------------------------------------------------------------
+  public:
+
+    /// \brief Copies the contents of \p other
+    ///
+    /// \param other the other transform to copy
+    projection(const projection& other) noexcept = default;
+
+    //--------------------------------------------------------------------------
+
+    /// \brief Copies the contents of \p other
+    ///
+    /// \param other the other transform to copy
+    /// \return reference to (*this)
+    auto operator=(const projection& other) noexcept -> projection& = default;
+
+    //--------------------------------------------------------------------------
     // Conversion
-    //-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
   public:
 
     /// \brief Extracts the transformation matrix from this projection
@@ -356,9 +375,9 @@ namespace alloy::core {
     [[nodiscard]]
     auto to_matrix4() const noexcept -> matrix4;
 
-    //-------------------------------------------------------------------------
-    // Private Members
-    //-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // Private Member Types
+    //--------------------------------------------------------------------------
   private:
 
     struct identity_data {};
@@ -376,7 +395,35 @@ namespace alloy::core {
       orthographic_data  // performs orthographic transformation
     >;
 
+    //--------------------------------------------------------------------------
+    // Private Members
+    //--------------------------------------------------------------------------
+  private:
+
     storage_type m_storage; ///< Either perspective or ortho data
+
+    //--------------------------------------------------------------------------
+    // Private Constructors
+    //--------------------------------------------------------------------------
+  private:
+
+    /// \brief Constructs a projection with nothing but an identity matrix
+    ///
+    /// \note This is marked private so that users have to use the named static
+    ///       factory of `projection::identity()` to explicitly request the
+    ///       identity projection.
+    projection() noexcept = default;
+
+    /// \brief Constructs a projection with perspective data
+    ///
+    /// \param data the perspective data
+    constexpr explicit projection(const perspective_data& data) noexcept;
+
+    /// \brief Constructs a projection with orthographic data
+    ///
+    /// \param data the orthographic data
+    constexpr explicit projection(const orthographic_data& data) noexcept;
+
   };
 
 } // namespace alloy::core
@@ -499,6 +546,30 @@ alloy::core::clip_space::clip_space(const horizontal& h,
   : m_horizontal{h},
     m_vertical{v},
     m_depth{d}
+{
+
+}
+
+//==============================================================================
+// class : projection
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Private Constructors
+//------------------------------------------------------------------------------
+
+inline constexpr
+alloy::core::projection::projection(const orthographic_data& data)
+  noexcept
+  : m_storage{data}
+{
+
+}
+
+inline constexpr
+alloy::core::projection::projection(const perspective_data& data)
+  noexcept
+  : m_storage{data}
 {
 
 }
