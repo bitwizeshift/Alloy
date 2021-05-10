@@ -9,16 +9,16 @@
 # ``clang-tidy`` support in CMake
 #
 # This module only works for CMake versions 3.5 or above, due to a few
-# CMake limitations. In 3.5, only the ``add_clang_tidy_target`` work, 
+# CMake limitations. In 3.5, only the ``add_clang_tidy_target`` work,
 # whereas anything above 3.5 can support the ``enable_clang_tidy`` commands
-# in addition to the ``add_clang_tidy_target``. 
-# This limitation is a result of the ``CMAKE_EXPORT_COMPILE_COMMANDS`` not 
+# in addition to the ``add_clang_tidy_target``.
+# This limitation is a result of the ``CMAKE_EXPORT_COMPILE_COMMANDS`` not
 # being present prior to this.
 #
 # This module defines the following variables:
 #
-#   ``CLANG_TIDY_EXECUTABLE`` 
-#     Path to the ``clang-tidy`` executable, or ``NOTFOUND`` if it cannot be 
+#   ``CLANG_TIDY_EXECUTABLE``
+#     Path to the ``clang-tidy`` executable, or ``NOTFOUND`` if it cannot be
 #     found.
 
 set(__FIND_ROOT_PATH_MODE_PROGRAM ${CMAKE_FIND_ROOT_PATH_MODE_PROGRAM})
@@ -32,7 +32,7 @@ set(__FIND_ROOT_PATH_MODE_PROGRAM)
 
 # Only added in 3.5.0
 if (CMAKE_VERSION VERSION_LESS 3.5.0)
-  message(FATAL_ERROR "ClangTidy: Minimum cmake version 3.5 not satisfied (CMake ${CMAKE_VERSION})")  
+  message(FATAL_ERROR "ClangTidy: Minimum cmake version 3.5 not satisfied (CMake ${CMAKE_VERSION})")
 endif ()
 set(CMAKE_EXPORT_COMPILE_COMMANDS True CACHE INTERNAL "")
 
@@ -53,7 +53,7 @@ endif ()
 #                         [TARGETS <target>...]
 #                         [SOURCES <source>...]
 #                         [CLANG_TIDY_ARGS <arg>...])
-# 
+#
 # Creates a new ``clang-tidy`` target with the name ``<name>``.
 # The options are:
 #
@@ -89,7 +89,7 @@ function(add_clang_tidy_target target)
 
   if (NOT sources)
     message(FATAL_ERROR "add_clang_tidy_target: No sources specified")
-  endforeach ()
+  endif ()
 
   add_custom_target(
     "${target}"
@@ -115,7 +115,7 @@ endfunction()
 # targets defined after the invocation at any directory scope deeper than
 # the current setting.
 #
-# Note: This command only works on CMake 3.6 or greater. If used on a 
+# Note: This command only works on CMake 3.6 or greater. If used on a
 #       cmake version less than 3.6, FATAL_ERROR is emitted.
 #
 # .. code-block:: cmake
@@ -123,7 +123,7 @@ endfunction()
 #   enable_clang_tidy([REQUIRED]
 #                     [LANGUAGES <language>...]
 #                     [CLANG_TIDY_ARGS <arg>...])
-# 
+#
 # The options are:
 #
 #   ``REQUIRED``
@@ -132,7 +132,7 @@ endfunction()
 #   ``LANGUAGES``
 #     Languages to support (C,CXX)
 #
-#   ``CLANG_TIDY_ARGS`` 
+#   ``CLANG_TIDY_ARGS``
 #     Arguments to forward directly to clang-tidy
 function(enable_clang_tidy)
   if (NOT CMAKE_VERSION VERSION_GREATER 3.5)
@@ -170,7 +170,7 @@ endfunction()
 # This command sets the clang-tidy language and arguments locally for the
 # specified target
 #
-# Note: This command only works on CMake 3.6 or greater. If used on a 
+# Note: This command only works on CMake 3.6 or greater. If used on a
 #       cmake version less than 3.6, FATAL_ERROR is emitted.
 #
 # .. code-block:: cmake
@@ -179,7 +179,7 @@ endfunction()
 #                     [REQUIRED]
 #                     [LANGUAGES <language>...]
 #                     [ARGS <arg>...])
-# 
+#
 # Enables ``clang-tidy`` for the specified ``<target>``.
 # The options are:
 #
@@ -189,12 +189,12 @@ endfunction()
 #   ``LANGUAGES``
 #     Languages to support (C,CXX)
 #
-#   ``CLANG_TIDY_ARGS`` 
+#   ``CLANG_TIDY_ARGS``
 #     Arguments to forward directly to clang-tidy
 function(target_enable_clang_tidy target)
   if (NOT CMAKE_VERSION VERSION_GREATER 3.5)
-    message(FATAL_ERROR 
-      "target_enable_clang_tidy:" 
+    message(FATAL_ERROR
+      "target_enable_clang_tidy:"
       "built-in clang-tidy support only available in CMake 3.5 or above"
     )
   endif ()
@@ -208,8 +208,8 @@ function(target_enable_clang_tidy target)
   )
 
   if (CLANG_TIDY_REQUIRED AND NOT CLANG_TIDY_EXECUTABLE)
-    message(FATAL_ERROR 
-      "target_enable_clang_tidy REQUIRED:" 
+    message(FATAL_ERROR
+      "target_enable_clang_tidy REQUIRED:"
       "clang-tidy program not found"
     )
   elseif (NOT CLANG_TIDY_EXECUTABLE)
@@ -222,8 +222,8 @@ function(target_enable_clang_tidy target)
 
   foreach (lang IN LISTS CLANG_TIDY_LANGUAGES )
     set_property(
-      TARGET ${target} 
-      PROPERTY "${lang}_CLANG_TIDY" 
+      TARGET ${target}
+      PROPERTY "${lang}_CLANG_TIDY"
       "${CLANG_TIDY_EXECUTABLE};${CLANG_TIDY_CLANG_TIDY_ARGS}"
     )
   endforeach ()
