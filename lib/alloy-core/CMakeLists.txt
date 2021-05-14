@@ -136,6 +136,7 @@ set(header_files
 
   # Geometry
   include/alloy/core/geometry/axis_aligned_box.hpp
+  include/alloy/core/geometry/frustum.hpp
   include/alloy/core/geometry/intersection.hpp
   include/alloy/core/geometry/line.hpp
   include/alloy/core/geometry/line_segment.hpp
@@ -191,6 +192,7 @@ set(source_files
 
   # Geometry
   src/alloy/core/geometry/axis_aligned_box.cpp
+  src/alloy/core/geometry/frustum.cpp
   src/alloy/core/geometry/line.cpp
   src/alloy/core/geometry/line_segment.cpp
   src/alloy/core/geometry/plane.cpp
