@@ -69,7 +69,7 @@ namespace alloy::core {
     static constexpr auto interpolate(const V0& v0,
                                       const V1& v1,
                                       const T& t, Func func)
-      noexcept -> std::common_type_t<V0, V1, T>;
+      noexcept -> std::common_type_t<V0, V1>;
 
     //------------------------------------------------------------------------
 
@@ -82,7 +82,7 @@ namespace alloy::core {
     /// \return the result of the interpolation
     template<typename V0, typename V1, typename T>
     static constexpr auto linear(const V0& v0, const V1& v1, const T& t)
-      noexcept -> std::common_type_t<V0, V1, T>;
+      noexcept -> std::common_type_t<V0, V1>;
 
     /// \brief Quadratically interpolates a point between \p v0 and \p v1 at
     ///        position \p t
@@ -93,7 +93,7 @@ namespace alloy::core {
     /// \return the result of the interpolation
     template<typename V0, typename V1, typename T>
     static constexpr auto quadratic(const V0& v0, const V1& v1, const T& t)
-      noexcept -> std::common_type_t<V0, V1, T>;
+      noexcept -> std::common_type_t<V0, V1>;
 
     /// \brief Cubically interpolates a point between \p v0 and \p v1 at
     ///        position \p t
@@ -104,7 +104,7 @@ namespace alloy::core {
     /// \return the result of the interpolation
     template<typename V0, typename V1, typename T>
     static constexpr auto cubic(const V0& v0, const V0& v1, const T& t)
-      noexcept -> std::common_type_t<V0, V1, T>;
+      noexcept -> std::common_type_t<V0, V1>;
 
     /// \brief Quartically interpolates a point between \p v0 and \p v1 at
     ///        position \p t
@@ -115,7 +115,7 @@ namespace alloy::core {
     /// \return the result of the interpolation
     template<typename V0, typename V1, typename T>
     static constexpr auto quartic(const V0& v0, const V0& v1, const T& t)
-      noexcept -> std::common_type_t<V0, V1, T>;
+      noexcept -> std::common_type_t<V0, V1>;
 
     /// \brief Performs quintic linear interpolation on a point between \p v0
     ///        and \p v1 at position \p t
@@ -126,7 +126,7 @@ namespace alloy::core {
     /// \return the result of the interpolation
     template<typename V0, typename V1, typename T>
     static constexpr auto quintic(const V0& v0, const V0& v1, const T& t)
-      noexcept -> std::common_type_t<V0, V1, T>;
+      noexcept -> std::common_type_t<V0, V1>;
 
     //------------------------------------------------------------------------
 
@@ -139,7 +139,7 @@ namespace alloy::core {
     /// \return the result of the interpolation
     template<typename V0, typename V1, typename T>
     static auto circular(const V0& v0, const V0& v1, const T& t)
-      noexcept -> std::common_type_t<V0, V1, T>;
+      noexcept -> std::common_type_t<V0, V1>;
 
     //------------------------------------------------------------------------
 
@@ -152,7 +152,7 @@ namespace alloy::core {
     /// \return the result of the interpolation
     template<typename V0, typename V1, typename T>
     static auto half_cosine(const V0& v0, const V0& v1, const T& t)
-      noexcept -> std::common_type_t<V0, V1, T>;
+      noexcept -> std::common_type_t<V0, V1>;
 
     /// \brief Performs cosine linear interpolation on a point between \p v0
     ///        and \p v1 at position \p t
@@ -163,7 +163,7 @@ namespace alloy::core {
     /// \return the result of the interpolation
     template<typename V0, typename V1, typename T>
     static auto cosine(const V0& v0, const V0& v1, const T& t)
-      noexcept -> std::common_type_t<V0, V1, T>;
+      noexcept -> std::common_type_t<V0, V1>;
 
     //------------------------------------------------------------------------
 
@@ -176,7 +176,7 @@ namespace alloy::core {
     /// \return the result of the interpolation
     template<typename V0, typename V1, typename T>
     static auto half_sine(const V0& v0, const V0& v1, const T& t)
-      noexcept -> std::common_type_t<V0, V1, T>;
+      noexcept -> std::common_type_t<V0, V1>;
 
     /// \brief Performs sine linear interpolation on a point between \p v0
     ///        and \p v1 at position \p t
@@ -187,7 +187,7 @@ namespace alloy::core {
     /// \return the result of the interpolation
     template<typename V0, typename V1, typename T>
     static auto sine(const V0& v0, const V0& v1, const T& t)
-      noexcept -> std::common_type_t<V0, V1, T>;
+      noexcept -> std::common_type_t<V0, V1>;
 
     //------------------------------------------------------------------------
 
@@ -242,7 +242,7 @@ auto alloy::core::interpolation::interpolate(const V0& v0,
                                              const V1& v1,
                                              const T& t,
                                              Func func)
-  noexcept -> std::common_type_t<V0, V1, T>
+  noexcept -> std::common_type_t<V0, V1>
 {
   static_assert( std::is_nothrow_invocable<Func,T>::value, "" );
 
@@ -257,7 +257,7 @@ inline constexpr
 auto alloy::core::interpolation::linear(const V0& v0,
                                         const V1& v1,
                                         const T& t)
-  noexcept -> std::common_type_t<V0, V1, T>
+  noexcept -> std::common_type_t<V0, V1>
 {
   return v0 * (1 - t) + v1 * t;
 }
@@ -267,7 +267,7 @@ inline constexpr
 auto alloy::core::interpolation::quadratic(const V0& v0,
                                            const V1& v1,
                                            const T& t)
-  noexcept -> std::common_type_t<V0, V1, T>
+  noexcept -> std::common_type_t<V0, V1>
 {
   return linear(v0,v1,t*t);
 }
@@ -277,7 +277,7 @@ inline constexpr
 auto alloy::core::interpolation::cubic(const V0& v0,
                                        const V0& v1,
                                        const T& t)
-  noexcept -> std::common_type_t<V0, V1, T>
+  noexcept -> std::common_type_t<V0, V1>
 {
   return linear(v0,v1,t*t*t);
 }
@@ -287,7 +287,7 @@ inline constexpr
 auto alloy::core::interpolation::quartic(const V0& v0,
                                          const V0& v1,
                                          const T& t)
-  noexcept -> std::common_type_t<V0, V1, T>
+  noexcept -> std::common_type_t<V0, V1>
 {
   return linear(v0,v1,t*t*t*t);
 }
@@ -297,7 +297,7 @@ inline constexpr
 auto alloy::core::interpolation::quintic(const V0& v0,
                                          const V0& v1,
                                          const T& t)
-  noexcept -> std::common_type_t<V0, V1, T>
+  noexcept -> std::common_type_t<V0, V1>
 {
   return linear(v0,v1,t*t*t*t*t);
 }
@@ -309,7 +309,7 @@ inline
 auto alloy::core::interpolation::circular(const V0& v0,
                                           const V0& v1,
                                           const T& t)
-  noexcept -> std::common_type_t<V0, V1, T>
+  noexcept -> std::common_type_t<V0, V1>
 {
   return linear(v0, v1, (1.0 - sqrt(1.0 - (t*t))));
 }
@@ -321,7 +321,7 @@ inline
 auto alloy::core::interpolation::half_cosine(const V0& v0,
                                              const V0& v1,
                                              const T& t)
-  noexcept -> std::common_type_t<V0, V1, T>
+  noexcept -> std::common_type_t<V0, V1>
 {
   return linear(v0, v1, (0.5 - trigonometry::cos(t * math_constants::half_pi)));
 }
@@ -331,7 +331,7 @@ inline
 auto alloy::core::interpolation::cosine(const V0& v0,
                                         const V0& v1,
                                         const T& t)
-  noexcept -> std::common_type_t<V0, V1, T>
+  noexcept -> std::common_type_t<V0, V1>
 {
   return linear(v0, v1, (1.0 - trigonometry::cos(t * math_constants::pi)));
 }
@@ -343,7 +343,7 @@ inline
 auto alloy::core::interpolation::half_sine(const V0& v0,
                                            const V0& v1,
                                            const T& t)
-  noexcept -> std::common_type_t<V0, V1, T>
+  noexcept -> std::common_type_t<V0, V1>
 {
   return linear(v0, v1, (0.5 - trigonometry::sin(t * math_constants::half_pi)));
 }
@@ -353,7 +353,7 @@ inline
 auto alloy::core::interpolation::sine(const V0& v0,
                                       const V0& v1,
                                       const T& t)
-  noexcept -> std::common_type_t<V0, V1, T>
+  noexcept -> std::common_type_t<V0, V1>
 {
   return linear(v0, v1, (1.0 - trigonometry::sin(t * math_constants::pi)));
 }
