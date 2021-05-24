@@ -33,6 +33,7 @@ set(header_files
   include/alloy/engine/signature.hpp
   include/alloy/engine/entity_manager.hpp
   include/alloy/engine/component_manager.hpp
+  include/alloy/engine/frame_clock.hpp
 )
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/include"
