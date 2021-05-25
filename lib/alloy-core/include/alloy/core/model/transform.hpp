@@ -36,6 +36,7 @@
 #include "alloy/core/math/euler_angles.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"
+#include "alloy/core/math/interpolation.hpp"
 
 #include "alloy/core/utilities/not_null.hpp"
 
@@ -313,6 +314,21 @@ namespace alloy::core {
     quaternion m_rotation;
     vector3 m_translation;
     vector3 m_scale;
+
+    friend interpolator<transform>;
+  };
+
+  /// \brief Interpolates the state between \p t0 and \p t1
+  ///
+  /// \param t0 the start state
+  /// \param t1 the end state
+  /// \param alpha the state between t0 and t1
+  /// \return the interpolated transform
+  template <>
+  struct interpolator<transform>
+  {
+    auto operator()(const transform& v0, const transform& v1, real alpha)
+      noexcept -> transform;
   };
 
 } // namespace alloy::core

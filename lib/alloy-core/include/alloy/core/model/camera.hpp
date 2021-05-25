@@ -36,6 +36,7 @@
 #include "alloy/core/math/euler_angles.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/math/vector/vector3_constants.hpp"
+#include "alloy/core/math/interpolation.hpp"
 
 namespace alloy::core {
 
@@ -261,6 +262,19 @@ namespace alloy::core {
 
     vector3 m_translation;
     quaternion m_orientation;
+
+    friend interpolator<camera>;
+  };
+
+  //============================================================================
+  // struct : interpolator<camera>
+  //============================================================================
+
+  template <>
+  struct interpolator<camera>
+  {
+    auto operator()(const camera& v0, const camera& v1, real alpha)
+      noexcept -> camera;
   };
 
 } // namespace alloy::core

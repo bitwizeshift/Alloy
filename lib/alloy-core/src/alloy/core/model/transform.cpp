@@ -309,3 +309,18 @@ auto alloy::core::transform::to_matrix4()
 
   return result;
 }
+
+auto alloy::core::interpolator<alloy::core::transform>::operator()(
+  const transform& v0,
+  const transform& v1,
+  real alpha
+) noexcept -> transform
+{
+  auto result = transform{};
+
+  result.m_rotation    = interpolation::linear(v0.m_rotation, v1.m_rotation, alpha);
+  result.m_translation = interpolation::linear(v0.m_translation, v1.m_translation, alpha);
+  result.m_scale       = interpolation::linear(v0.m_scale, v1.m_scale, alpha);
+
+  return result;
+}

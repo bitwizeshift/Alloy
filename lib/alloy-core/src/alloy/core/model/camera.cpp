@@ -220,3 +220,17 @@ auto alloy::core::camera::to_matrix4()
 
   return result;
 }
+
+auto alloy::core::interpolator<alloy::core::camera>::operator()(
+  const camera& v0,
+  const camera& v1,
+  real alpha
+) noexcept -> camera
+{
+  auto result = camera{};
+
+  result.m_translation = interpolation::linear(v0.m_translation, v1.m_translation, alpha);
+  result.m_orientation = interpolation::linear(v0.m_orientation, v1.m_orientation, alpha);
+
+  return result;
+}
