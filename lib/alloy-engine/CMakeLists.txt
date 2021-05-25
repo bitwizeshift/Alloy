@@ -34,6 +34,8 @@ set(header_files
   include/alloy/engine/entity_manager.hpp
   include/alloy/engine/component_manager.hpp
   include/alloy/engine/frame_clock.hpp
+  include/alloy/engine/game-loop/semi_fixed_game_loop.hpp
+  include/alloy/engine/game-loop/fixed_game_loop.hpp
 )
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/include"
