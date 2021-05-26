@@ -193,10 +193,13 @@ namespace {
     const auto size = std::fread(buffer.data(), 1u, buffer.size(), m_file);
 
     // It's unlikely that we didn't complete reading; but if this happens, check if
-    // this is caused by an error
+    // this is caused by an error or eof
     if (ALLOY_UNLIKELY(size != buffer.size())) {
       if (std::ferror(m_file)) {
         return alloy::core::fail(alloy::io::file::error_code::system_error);
+      }
+      if ((size == 0u) && std::feof(m_file)) {
+        return alloy::core::fail(alloy::io::file::error_code::eof);
       }
     }
 
