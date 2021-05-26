@@ -36,6 +36,7 @@ set(header_files
   include/alloy/engine/frame_clock.hpp
   include/alloy/engine/game-loop/semi_fixed_game_loop.hpp
   include/alloy/engine/game-loop/fixed_game_loop.hpp
+  include/alloy/engine/image/image_loader.hpp
 )
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/include"
@@ -79,6 +80,7 @@ target_include_directories(${PROJECT_NAME}Engine
 
 target_link_libraries(${PROJECT_NAME}Engine
   PUBLIC ${PROJECT_NAME}::Core
+  PUBLIC ${PROJECT_NAME}::IO
 )
 
 # Header Self-Containment Tests
