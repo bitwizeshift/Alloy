@@ -37,6 +37,7 @@ set(header_files
   include/alloy/engine/game-loop/semi_fixed_game_loop.hpp
   include/alloy/engine/game-loop/fixed_game_loop.hpp
   include/alloy/engine/image/image_loader.hpp
+  include/alloy/engine/image/tga_image_loader.hpp
 )
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/include"
@@ -47,6 +48,7 @@ source_group(
 set(source_files
   src/alloy/engine/entity_manager.cpp
   src/alloy/engine/component_manager.cpp
+  src/alloy/engine/image/tga_image_loader.cpp
 )
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/src"
@@ -76,11 +78,13 @@ target_include_directories(${PROJECT_NAME}Engine
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
   PUBLIC $<INSTALL_INTERFACE:include>
+  PRIVATE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party>
 )
 
 target_link_libraries(${PROJECT_NAME}Engine
   PUBLIC ${PROJECT_NAME}::Core
   PUBLIC ${PROJECT_NAME}::IO
+  PRIVATE tga-lib
 )
 
 # Header Self-Containment Tests
