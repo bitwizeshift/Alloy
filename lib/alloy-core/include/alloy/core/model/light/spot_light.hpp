@@ -33,7 +33,7 @@
 #include "alloy/core/model/color.hpp"
 #include "alloy/core/model/light/light.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/geometry/point.hpp"
+#include "alloy/core/geometry/point3.hpp"
 #include "alloy/core/precision.hpp"
 #include "alloy/core/intrinsics.hpp"
 
@@ -51,7 +51,7 @@ namespace alloy::core {
   //////////////////////////////////////////////////////////////////////////////
   struct spot_light
   {
-    point source;
+    point3 source;
     vector3 direction;
     real cutoff;
     class color color;

@@ -33,7 +33,7 @@
 
 #include "alloy/core/api.hpp"
 #include "alloy/core/geometry/plane.hpp"
-#include "alloy/core/geometry/point.hpp"
+#include "alloy/core/geometry/point3.hpp"
 #include "alloy/core/containers/span.hpp"
 
 #if defined(near)
@@ -131,7 +131,7 @@ namespace alloy::core {
     ///
     /// \param p the point to check
     /// \return \c true if the point is contained in this sphere
-    auto contains(const point& p) const noexcept -> bool;
+    auto contains(const point3& p) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members

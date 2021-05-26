@@ -19,7 +19,7 @@ alloy::core::real alloy::core::line_segment::magnitude()
 // Quantifiers
 //------------------------------------------------------------------------------
 
-alloy::core::point alloy::core::line_segment::point_at_percent( real percent )
+alloy::core::point3 alloy::core::line_segment::point_at_percent( real percent )
   const noexcept
 {
   percent = saturate(percent);
@@ -27,13 +27,13 @@ alloy::core::point alloy::core::line_segment::point_at_percent( real percent )
   return m_start + (percent * direction());
 }
 
-bool alloy::core::line_segment::contains( const point& p )
+bool alloy::core::line_segment::contains( const point3& p )
   const noexcept
 {
   return contains(p, default_tolerance);
 }
 
-bool alloy::core::line_segment::contains( const point& p, real tolerance )
+bool alloy::core::line_segment::contains( const point3& p, real tolerance )
   const noexcept
 {
   const auto dir = (m_end - m_start);

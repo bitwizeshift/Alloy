@@ -6,19 +6,19 @@
 // Quantifiers
 //------------------------------------------------------------------------------
 
-alloy::core::point alloy::core::line::point_at_distance( real dt )
+alloy::core::point3 alloy::core::line::point_at_distance( real dt )
   const noexcept
 {
   return m_origin + (m_direction * dt);
 }
 
-bool alloy::core::line::contains( const point& p )
+bool alloy::core::line::contains( const point3& p )
   const noexcept
 {
   return contains(p, default_tolerance);
 }
 
-bool alloy::core::line::contains( const point& p, real tolerance )
+bool alloy::core::line::contains( const point3& p, real tolerance )
   const noexcept
 {
   const auto dx = (p.x() - m_origin.x()) / m_direction.x();

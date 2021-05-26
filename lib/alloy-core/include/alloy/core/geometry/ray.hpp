@@ -36,7 +36,7 @@
 
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/math/vector/vector3.hpp" // core::vector3
-#include "alloy/core/geometry/point.hpp" // core::point
+#include "alloy/core/geometry/point3.hpp" // core::point
 
 namespace alloy::core {
 
@@ -66,7 +66,7 @@ namespace alloy::core {
     /// \param origin the start of the ray
     /// \param p a point that this ray passes through
     /// \return a ray that starts at \p origin and travels through \p p
-    static ray from_points( const point& origin,  const point& p ) noexcept;
+    static ray from_points( const point3& origin,  const point3& p ) noexcept;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -88,7 +88,7 @@ namespace alloy::core {
     ///
     /// \param origin the point where the ray begins
     /// \param direction the direction the ray travels in
-    ray( const point& origin, const vector3& direction ) noexcept;
+    ray( const point3& origin, const vector3& direction ) noexcept;
 
     /// \brief Constructs a ray by moving an existing instance
     ///
@@ -134,7 +134,7 @@ namespace alloy::core {
     /// \brief Gets the origin of this ray
     ///
     /// \return the origin of this ray
-    constexpr const point& origin() const noexcept;
+    constexpr const point3& origin() const noexcept;
 
     /// \brief Gets the direction this ray faces
     ///
@@ -157,13 +157,13 @@ namespace alloy::core {
     /// \pre \p dt must be greater than 0
     /// \param dt the distance to get this point at
     /// \return the point at the distance
-    point point_at_distance( real dt ) const noexcept;
+    point3 point_at_distance( real dt ) const noexcept;
 
     /// \brief Checks if this ray intersects the given point \p p
     ///
     /// \param p the point to check for intersection
     /// \return \c true if \p p is in the ray
-    bool contains( const point& p ) const noexcept;
+    bool contains( const point3& p ) const noexcept;
 
     /// \brief Checks if this ray intersects the given point \p p relative to
     ///        the given \p tolerance
@@ -171,14 +171,14 @@ namespace alloy::core {
     /// \param p the point to check for intersection
     /// \param tolerance the tolerance for accepting the containment
     /// \return \c true if \p p is in the ray
-    bool contains( const point& p, real tolerance ) const noexcept;
+    bool contains( const point3& p, real tolerance ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------
   private:
 
-    point   m_origin;    ///< Where this point originates from
+    point3  m_origin;    ///< Where this point originates from
     vector3 m_direction; ///< The direction this ray moves in
   };
 
@@ -230,7 +230,7 @@ inline constexpr alloy::core::ray::ray()
 
 }
 
-inline alloy::core::ray::ray( const point& origin,
+inline alloy::core::ray::ray( const point3& origin,
                               const vector3& direction )
   noexcept
   : m_origin{origin},
@@ -256,7 +256,7 @@ inline alloy::core::ray& alloy::core::ray::invert()
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr const alloy::core::point& alloy::core::ray::origin()
+inline constexpr const alloy::core::point3& alloy::core::ray::origin()
   const noexcept
 {
   return m_origin;

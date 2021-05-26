@@ -11,7 +11,7 @@
 //------------------------------------------------------------------------------
 
 alloy::core::axis_aligned_box
-  alloy::core::axis_aligned_box::from_point_and_size( const point& p,
+  alloy::core::axis_aligned_box::from_point_and_size( const point3& p,
                                                       const vector3& size )
   noexcept
 {
@@ -19,16 +19,16 @@ alloy::core::axis_aligned_box
 }
 
 alloy::core::axis_aligned_box
-  alloy::core::axis_aligned_box::from_points( const point& p0,
-                                              const point& p1 )
+  alloy::core::axis_aligned_box::from_points( const point3& p0,
+                                              const point3& p1 )
   noexcept
 {
-  const auto min_point = point{
+  const auto min_point = point3{
     std::min(p0.x(),p1.x()),
     std::min(p0.y(),p1.y()),
     std::min(p0.z(),p1.z())
   };
-  const auto max_point = point{
+  const auto max_point = point3{
     std::max(p0.x(),p1.x()),
     std::max(p0.y(),p1.y()),
     std::max(p0.z(),p1.z())
@@ -124,7 +124,7 @@ std::array<alloy::core::plane,6> alloy::core::axis_aligned_box::planes()
   };
 }
 
-bool alloy::core::axis_aligned_box::contains( const point& p )
+bool alloy::core::axis_aligned_box::contains( const point3& p )
   const noexcept
 {
   return (p.x() <= m_top_right.x()) && (p.x() >= m_bottom_left.x()) &&
@@ -132,7 +132,7 @@ bool alloy::core::axis_aligned_box::contains( const point& p )
          (p.z() <= m_top_right.z()) && (p.z() >= m_bottom_left.z());
 }
 
-bool alloy::core::axis_aligned_box::contains( const point& p, real tolerance )
+bool alloy::core::axis_aligned_box::contains( const point3& p, real tolerance )
   const noexcept
 {
   // Add a buffer of 'tolerance' for fuzzy matching

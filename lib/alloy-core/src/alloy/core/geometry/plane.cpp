@@ -10,9 +10,9 @@
 // Static Member Functions
 //------------------------------------------------------------------------------
 
-alloy::core::plane alloy::core::plane::from_points_clockwise( const point& p0,
-                                                              const point& p1,
-                                                              const point& p2 )
+alloy::core::plane alloy::core::plane::from_points_clockwise( const point3& p0,
+                                                              const point3& p1,
+                                                              const point3& p2 )
   noexcept
 {
   const auto normal = (p2 - p0).cross(p1 - p0).normalize();
@@ -21,9 +21,9 @@ alloy::core::plane alloy::core::plane::from_points_clockwise( const point& p0,
 }
 
 alloy::core::plane
-  alloy::core::plane::from_points_counter_clockwise( const point& p0,
-                                                     const point& p1,
-                                                     const point& p2 )
+  alloy::core::plane::from_points_counter_clockwise( const point3& p0,
+                                                     const point3& p1,
+                                                     const point3& p2 )
   noexcept
 {
   const auto normal = (p1 - p0).cross(p2 - p0).normalize();
@@ -33,7 +33,7 @@ alloy::core::plane
 
 
 alloy::core::plane
-  alloy::core::plane::from_point_and_normal( const point& p,
+  alloy::core::plane::from_point_and_normal( const point3& p,
                                              const vector3& normal )
   noexcept
 {
@@ -76,7 +76,7 @@ alloy::core::plane& alloy::core::plane::invert()
 // Quantifiers
 //------------------------------------------------------------------------------
 
-alloy::core::real alloy::core::plane::distance_to( const point& p )
+alloy::core::real alloy::core::plane::distance_to( const point3& p )
   const noexcept
 {
   auto result = real{0};
@@ -106,13 +106,13 @@ alloy::core::vector3 alloy::core::plane::projection( const vector3& vec )
   return vec * matrix;
 }
 
-bool alloy::core::plane::contains( const point& p )
+bool alloy::core::plane::contains( const point3& p )
   const noexcept
 {
   return contains(p, default_tolerance);
 }
 
-bool alloy::core::plane::contains( const point& p, real tolerance )
+bool alloy::core::plane::contains( const point3& p, real tolerance )
   const noexcept
 {
   const auto dt = normal().dot(to_vector(p)) - d();
@@ -124,13 +124,13 @@ bool alloy::core::plane::contains( const point& p, real tolerance )
 // Utilities
 //------------------------------------------------------------------------------
 
-bool alloy::core::is_point_over_plane( const point& p, const plane& plane )
+bool alloy::core::is_point_over_plane( const point3& p, const plane& plane )
   noexcept
 {
   return plane.normal().dot(to_vector(p)) > plane.d();
 }
 
-bool alloy::core::is_point_under_plane( const point& p, const plane& plane )
+bool alloy::core::is_point_under_plane( const point3& p, const plane& plane )
   noexcept
 {
   return plane.normal().dot(to_vector(p)) < plane.d();

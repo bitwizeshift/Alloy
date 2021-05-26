@@ -30,7 +30,7 @@
 
 #include "alloy/core/geometry/frustum.hpp"
 
-auto alloy::core::frustum::contains(const point& p)
+auto alloy::core::frustum::contains(const point3& p)
   const noexcept -> bool
 {
   for (const auto& plane : m_planes) {

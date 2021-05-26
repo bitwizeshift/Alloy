@@ -1,6 +1,6 @@
 #include "alloy/core/geometry/sphere.hpp"
 
-bool alloy::core::sphere::contains( const point& p )
+bool alloy::core::sphere::contains( const point3& p )
   const noexcept
 {
   const auto adjusted = (p - m_center);
@@ -9,7 +9,7 @@ bool alloy::core::sphere::contains( const point& p )
   return adjusted.dot(adjusted) < (m_radius*m_radius);
 }
 
-bool alloy::core::sphere::contains( const point& p, real tolerance )
+bool alloy::core::sphere::contains( const point3& p, real tolerance )
   const noexcept
 {
   const auto adjusted = (p - m_center);

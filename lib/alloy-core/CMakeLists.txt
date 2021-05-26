@@ -141,7 +141,7 @@ set(header_files
   include/alloy/core/geometry/line.hpp
   include/alloy/core/geometry/line_segment.hpp
   include/alloy/core/geometry/plane.hpp
-  include/alloy/core/geometry/point.hpp
+  include/alloy/core/geometry/point3.hpp
   include/alloy/core/geometry/sphere.hpp
   include/alloy/core/geometry/ray.hpp
 

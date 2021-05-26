@@ -40,7 +40,7 @@
 #include "alloy/core/assert.hpp"    // ALLOY_ASSERT
 #include "alloy/core/math/vector/vector3.hpp" // core::vector3
 #include "alloy/core/math/math.hpp"           // core::default_tolerance
-#include "alloy/core/geometry/point.hpp" // core::point
+#include "alloy/core/geometry/point3.hpp" // core::point
 
 #include <cstdint> // std::uinr32_t, std::uint64_t
 #include <type_traits>
@@ -69,13 +69,13 @@ namespace alloy::core {
     /// \param p2 the third point
     /// \return a plane that intersects the 3 points
     ALLOY_CORE_API
-    static plane from_points_clockwise( const point& p0,
-                                        const point& p1,
-                                        const point& p2 ) noexcept;
+    static plane from_points_clockwise( const point3& p0,
+                                        const point3& p1,
+                                        const point3& p2 ) noexcept;
     ALLOY_CORE_API
-    static plane from_points_counter_clockwise( const point& p0,
-                                                const point& p1,
-                                                const point& p2 ) noexcept;
+    static plane from_points_counter_clockwise( const point3& p0,
+                                                const point3& p1,
+                                                const point3& p2 ) noexcept;
     /// \}
 
     /// \brief Makes a plane that intersects point \p, and contains the
@@ -85,7 +85,7 @@ namespace alloy::core {
     /// \param normal the normal vector
     /// \return the plane
     ALLOY_CORE_API
-    static plane from_point_and_normal( const point& p,
+    static plane from_point_and_normal( const point3& p,
                                         const vector3& normal ) noexcept;
 
     //--------------------------------------------------------------------------
@@ -179,7 +179,7 @@ namespace alloy::core {
     /// \param p the point to get the distance to
     /// \return the distance
     ALLOY_CORE_API
-    real distance_to( const point& p ) const noexcept;
+    real distance_to( const point3& p ) const noexcept;
 
     /// \brief Gets the projection of the specified vector onto this plane
     ///
@@ -212,7 +212,7 @@ namespace alloy::core {
     /// \param p the point to check for intersection
     /// \return \c true if \p p is in the plane
     ALLOY_CORE_API
-    bool contains( const point& p ) const noexcept;
+    bool contains( const point3& p ) const noexcept;
 
     /// \brief Checks if this plane intersects the given point \p p
     ///        relative to the given \p tolerance
@@ -221,7 +221,7 @@ namespace alloy::core {
     /// \param tolerance the tolerance for accepting the containment
     /// \return \c true if \p p is in the plane
     ALLOY_CORE_API
-    bool contains( const point& p, real tolerance ) const noexcept;
+    bool contains( const point3& p, real tolerance ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Unary Operators
@@ -280,7 +280,7 @@ namespace alloy::core {
   /// \param plane the plane
   /// \return \c true if \p p is over the \p plane
   ALLOY_CORE_API
-  bool is_point_over_plane( const point& p, const plane& plane ) noexcept;
+  bool is_point_over_plane( const point3& p, const plane& plane ) noexcept;
 
   /// \brief Checks if the given point \p p is under the \p plane
   ///
@@ -288,7 +288,7 @@ namespace alloy::core {
   /// \param plane the plane
   /// \return \c true if \p p is under the \p plane
   ALLOY_CORE_API
-  bool is_point_under_plane( const point& p, const plane& plane ) noexcept;
+  bool is_point_under_plane( const point3& p, const plane& plane ) noexcept;
 
 } // namespace alloy::core
 

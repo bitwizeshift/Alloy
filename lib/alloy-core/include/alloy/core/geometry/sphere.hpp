@@ -40,7 +40,7 @@
 #include "alloy/core/assert.hpp"    // ALLOY_ASSERT
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/math/math.hpp" // core::almost_equal
-#include "alloy/core/geometry/point.hpp"// core::point
+#include "alloy/core/geometry/point3.hpp"// core::point
 
 namespace alloy::core {
 
@@ -71,7 +71,7 @@ namespace alloy::core {
     ///
     /// \param center the center point
     /// \param radius the radius of the sphere
-    sphere( const point& center, real radius ) noexcept;
+    sphere( const point3& center, real radius ) noexcept;
 
     /// \brief Constructs a sphere by moving an existing instance
     ///
@@ -105,7 +105,7 @@ namespace alloy::core {
     /// \brief Gets the center point of this sphere
     ///
     /// \return the center point
-    constexpr const point& center() const noexcept;
+    constexpr const point3& center() const noexcept;
 
     /// \brief Gets the radius of this sphere
     ///
@@ -118,7 +118,7 @@ namespace alloy::core {
     /// \param p the point to check
     /// \return \c true if the point is contained in this sphere
     ALLOY_CORE_API
-    bool contains( const point& p ) const noexcept;
+    bool contains( const point3& p ) const noexcept;
 
     /// \brief Checks whether a given point \p p is contained within this
     ///        sphere within a specified error \p tolerance
@@ -127,14 +127,14 @@ namespace alloy::core {
     /// \param tolerance the error tolerance to accept
     /// \return \c true if the point is contained in this sphere
     ALLOY_CORE_API
-    bool contains( const point& p, real tolerance ) const noexcept;
+    bool contains( const point3& p, real tolerance ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------
   private:
 
-    point m_center; ///< The center point of the sphere
+    point3 m_center; ///< The center point of the sphere
     real  m_radius; ///< The radius of the sphere
   };
 
@@ -186,7 +186,7 @@ inline constexpr alloy::core::sphere::sphere()
 
 }
 
-inline alloy::core::sphere::sphere( const point& center, real radius )
+inline alloy::core::sphere::sphere( const point3& center, real radius )
   noexcept
   : m_center{center},
     m_radius{radius}
@@ -198,7 +198,7 @@ inline alloy::core::sphere::sphere( const point& center, real radius )
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr const alloy::core::point& alloy::core::sphere::center()
+inline constexpr const alloy::core::point3& alloy::core::sphere::center()
   const noexcept
 {
   return m_center;

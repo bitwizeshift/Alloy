@@ -55,7 +55,7 @@ namespace alloy::core {
   /// \brief This class represents a coordinate in 3d space
   ///
   //////////////////////////////////////////////////////////////////////////////
-  class point
+  class point3
   {
     //--------------------------------------------------------------------------
     // Public Types
@@ -77,24 +77,24 @@ namespace alloy::core {
   public:
 
     /// \brief Default-constructs a point at the origin
-    constexpr point() noexcept;
+    constexpr point3() noexcept;
 
     /// \brief Constructs a point at coordinates \c {x,y,z}
     ///
     /// \param x the x-coordinate
     /// \param y the y-coordinate
     /// \param z the z-coordinate
-    constexpr point( real x, real y, real z ) noexcept;
+    constexpr point3( real x, real y, real z ) noexcept;
 
     /// \brief Move-constructs a point from another point
     ///
     /// \param other the other point to move
-    constexpr point( point&& other ) noexcept = default;
+    constexpr point3( point3&& other ) noexcept = default;
 
     /// \brief Copy-constructs a point from another point
     ///
     /// \param other the other point to copy
-    constexpr point( const point& other ) noexcept = default;
+    constexpr point3( const point3& other ) noexcept = default;
 
     //--------------------------------------------------------------------------
 
@@ -102,21 +102,21 @@ namespace alloy::core {
     ///
     /// \param other the other point to move
     /// \return reference to \c (*this)
-    point& operator=( point&& other ) noexcept = default;
+    point3& operator=( point3&& other ) noexcept = default;
 
     /// \brief Copy-assigns a point from another point
     ///
     /// \param other the other point to copy
     /// \return reference to \c (*this)
-    point& operator=( const point& other ) noexcept = default;
+    point3& operator=( const point3& other ) noexcept = default;
 
     //--------------------------------------------------------------------------
     // Compound Operators
     //--------------------------------------------------------------------------
   public:
 
-    point& operator+=( const vector3& rhs ) noexcept;
-    point& operator-=( const vector3& rhs ) noexcept;
+    point3& operator+=( const vector3& rhs ) noexcept;
+    point3& operator-=( const vector3& rhs ) noexcept;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -182,16 +182,16 @@ namespace alloy::core {
   // Arithmetic Operators
   //----------------------------------------------------------------------------
 
-  constexpr vector3 operator-( const point& lhs, const point& rhs ) noexcept;
-  constexpr point operator+( const point& lhs, const vector3& rhs ) noexcept;
-  constexpr point operator-( const point& lhs, const vector3& rhs ) noexcept;
+  constexpr vector3 operator-( const point3& lhs, const point3& rhs ) noexcept;
+  constexpr point3 operator+( const point3& lhs, const vector3& rhs ) noexcept;
+  constexpr point3 operator-( const point3& lhs, const vector3& rhs ) noexcept;
 
   //----------------------------------------------------------------------------
   // Comparisons
   //----------------------------------------------------------------------------
 
-  constexpr bool operator==( const point& lhs, const point& rhs ) noexcept;
-  constexpr bool operator!=( const point& lhs, const point& rhs ) noexcept;
+  constexpr bool operator==( const point3& lhs, const point3& rhs ) noexcept;
+  constexpr bool operator!=( const point3& lhs, const point3& rhs ) noexcept;
 
   //----------------------------------------------------------------------------
 
@@ -201,15 +201,15 @@ namespace alloy::core {
   /// \param lhs the left point
   /// \param rhs the right point
   /// \return \c true if the two point contain almost equal values
-  constexpr bool almost_equal( const point& lhs, const point& rhs ) noexcept;
+  constexpr bool almost_equal( const point3& lhs, const point3& rhs ) noexcept;
 
   /// \brief Determines equality between two point relative to \p tolerance
   ///
   /// \param lhs the left point
   /// \param rhs the right point
   /// \return \c true if the two point contain almost equal values
-  constexpr bool almost_equal( const point& lhs,
-                               const point& rhs,
+  constexpr bool almost_equal( const point3& lhs,
+                               const point3& rhs,
                                real tolerance ) noexcept;
 
   //----------------------------------------------------------------------------
@@ -220,17 +220,17 @@ namespace alloy::core {
   ///
   /// \param p the point to convert
   /// \return the vector3
-  constexpr vector3 to_vector( const point& p ) noexcept;
+  constexpr vector3 to_vector( const point3& p ) noexcept;
 
   //============================================================================
   // struct : piecewise_compare<point>
   //============================================================================
 
   template<>
-  struct piecewise_compare<point>
+  struct piecewise_compare<point3>
   {
-    constexpr bool operator()( const point& lhs,
-                               const point& rhs ) noexcept;
+    constexpr bool operator()( const point3& lhs,
+                               const point3& rhs ) noexcept;
   };
 
 } // namespace alloy::core
@@ -243,14 +243,14 @@ namespace alloy::core {
 // Constructors
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::point::point()
+inline constexpr alloy::core::point3::point3()
   noexcept
   : m_data{0,0,0}
 {
 
 }
 
-inline constexpr alloy::core::point::point( real x, real y, real z )
+inline constexpr alloy::core::point3::point3( real x, real y, real z )
   noexcept
   : m_data{x,y,z}
 {
@@ -261,7 +261,7 @@ inline constexpr alloy::core::point::point( real x, real y, real z )
 // Compound Operators
 //------------------------------------------------------------------------------
 
-inline alloy::core::point& alloy::core::point::operator+=( const vector3& rhs )
+inline alloy::core::point3& alloy::core::point3::operator+=( const vector3& rhs )
   noexcept
 {
   for (auto i = 0; i < 3; ++i) {
@@ -270,7 +270,7 @@ inline alloy::core::point& alloy::core::point::operator+=( const vector3& rhs )
   return (*this);
 }
 
-inline alloy::core::point& alloy::core::point::operator-=( const vector3& rhs )
+inline alloy::core::point3& alloy::core::point3::operator-=( const vector3& rhs )
   noexcept
 {
   for (auto i = 0; i < 3; ++i) {
@@ -283,64 +283,64 @@ inline alloy::core::point& alloy::core::point::operator-=( const vector3& rhs )
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::point::reference alloy::core::point::x()
+inline constexpr alloy::core::point3::reference alloy::core::point3::x()
   noexcept
 {
   return m_data[0];
 }
 
-inline constexpr alloy::core::point::const_reference alloy::core::point::x()
+inline constexpr alloy::core::point3::const_reference alloy::core::point3::x()
   const noexcept
 {
   return m_data[0];
 }
 
-inline constexpr alloy::core::point::reference alloy::core::point::y()
+inline constexpr alloy::core::point3::reference alloy::core::point3::y()
   noexcept
 {
   return m_data[1];
 }
 
-inline constexpr alloy::core::point::const_reference alloy::core::point::y()
+inline constexpr alloy::core::point3::const_reference alloy::core::point3::y()
   const noexcept
 {
   return m_data[1];
 }
 
-inline constexpr alloy::core::point::reference alloy::core::point::z()
+inline constexpr alloy::core::point3::reference alloy::core::point3::z()
   noexcept
 {
   return m_data[2];
 }
 
-inline constexpr alloy::core::point::const_reference alloy::core::point::z()
+inline constexpr alloy::core::point3::const_reference alloy::core::point3::z()
   const noexcept
 {
   return m_data[2];
 }
 
-inline constexpr alloy::core::point::pointer alloy::core::point::data()
+inline constexpr alloy::core::point3::pointer alloy::core::point3::data()
   noexcept
 {
   return &m_data[0];
 }
 
-inline constexpr alloy::core::point::const_pointer alloy::core::point::data()
+inline constexpr alloy::core::point3::const_pointer alloy::core::point3::data()
   const noexcept
 {
   return &m_data[0];
 }
 
-inline constexpr alloy::core::point::reference
-  alloy::core::point::operator[]( index_type n )
+inline constexpr alloy::core::point3::reference
+  alloy::core::point3::operator[]( index_type n )
   noexcept
 {
   ALLOY_ASSERT( n >= 0 && n < 3 );
   return m_data[n];
 }
 
-inline constexpr alloy::core::point::const_reference
-  alloy::core::point::operator[]( index_type n )
+inline constexpr alloy::core::point3::const_reference
+  alloy::core::point3::operator[]( index_type n )
   const noexcept
 {
   ALLOY_ASSERT( n >= 0 && n < 3 );
@@ -356,7 +356,7 @@ inline constexpr alloy::core::point::const_reference
 //------------------------------------------------------------------------------
 
 inline constexpr alloy::core::vector3
-  alloy::core::operator-( const point& lhs, const point& rhs )
+  alloy::core::operator-( const point3& lhs, const point3& rhs )
   noexcept
 {
   auto result = vector3{};
@@ -366,22 +366,22 @@ inline constexpr alloy::core::vector3
   return result;
 }
 
-inline constexpr alloy::core::point
-  alloy::core::operator+( const point& lhs, const vector3& rhs )
+inline constexpr alloy::core::point3
+  alloy::core::operator+( const point3& lhs, const vector3& rhs )
   noexcept
 {
-  auto result = point{};
+  auto result = point3{};
   for (auto i = 0; i < 3; ++i ) {
     result[i] = lhs[i] + rhs[i];
   }
   return result;
 }
 
-inline constexpr alloy::core::point
-  alloy::core::operator-( const point& lhs, const vector3& rhs )
+inline constexpr alloy::core::point3
+  alloy::core::operator-( const point3& lhs, const vector3& rhs )
   noexcept
 {
-  auto result = point{};
+  auto result = point3{};
   for (auto i = 0; i < 3; ++i ) {
     result[i] = lhs[i] - rhs[i];
   }
@@ -395,8 +395,8 @@ inline constexpr alloy::core::point
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
-inline constexpr bool alloy::core::operator==( const point& lhs,
-                                               const point& rhs )
+inline constexpr bool alloy::core::operator==( const point3& lhs,
+                                               const point3& rhs )
   noexcept
 {
   for (auto i = 0; i < 3; ++i) {
@@ -407,8 +407,8 @@ inline constexpr bool alloy::core::operator==( const point& lhs,
   return true;
 }
 
-inline constexpr bool alloy::core::operator!=( const point& lhs,
-                                               const point& rhs )
+inline constexpr bool alloy::core::operator!=( const point3& lhs,
+                                               const point3& rhs )
   noexcept
 {
   return !(lhs==rhs);
@@ -418,8 +418,8 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
 
-inline constexpr bool alloy::core::almost_equal( const point& lhs,
-                                                 const point& rhs )
+inline constexpr bool alloy::core::almost_equal( const point3& lhs,
+                                                 const point3& rhs )
   noexcept
 {
   for (auto i = 0; i < 3; ++i) {
@@ -430,8 +430,8 @@ inline constexpr bool alloy::core::almost_equal( const point& lhs,
   return true;
 }
 
-inline constexpr bool alloy::core::almost_equal( const point& lhs,
-                                                 const point& rhs,
+inline constexpr bool alloy::core::almost_equal( const point3& lhs,
+                                                 const point3& rhs,
                                                  real tolerance )
   noexcept
 {
@@ -447,7 +447,7 @@ inline constexpr bool alloy::core::almost_equal( const point& lhs,
 // Utilities
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::vector3 alloy::core::to_vector( const point& p )
+inline constexpr alloy::core::vector3 alloy::core::to_vector( const point3& p )
   noexcept
 {
   return {p.x(), p.y(), p.z()};
@@ -461,8 +461,8 @@ ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr bool
-  alloy::core::piecewise_compare<alloy::core::point>
-  ::operator()( const point& lhs, const point& rhs )
+  alloy::core::piecewise_compare<alloy::core::point3>
+  ::operator()( const point3& lhs, const point3& rhs )
   noexcept
 {
   return (lhs.x() == rhs.x()) ?

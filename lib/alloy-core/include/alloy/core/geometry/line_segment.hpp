@@ -37,7 +37,7 @@
 #include "alloy/core/api.hpp"
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/math/vector/vector3.hpp" // core::vector3
-#include "alloy/core/geometry/point.hpp" // core::point
+#include "alloy/core/geometry/point3.hpp" // core::point
 
 namespace alloy::core {
 
@@ -68,14 +68,14 @@ namespace alloy::core {
     ///
     /// \param p0 the start point
     /// \param p1 the end point
-    constexpr line_segment( const point& p0, const point& p1 ) noexcept;
+    constexpr line_segment( const point3& p0, const point3& p1 ) noexcept;
 
     /// \brief Constructs a line segment starting at point \p origin,
     ///        extending out \p distance
     ///
     /// \param origin the start point
     /// \param distance the distance the line segment extends for
-    constexpr line_segment( const point& origin, const vector3& distance ) noexcept;
+    constexpr line_segment( const point3& origin, const vector3& distance ) noexcept;
 
     /// \brief Constructs a line_segment by moving an existing instance
     ///
@@ -108,12 +108,12 @@ namespace alloy::core {
     /// \brief Gets the point that the line segment originates at
     ///
     /// \return the starting point
-    constexpr const point& start_point() const noexcept;
+    constexpr const point3& start_point() const noexcept;
 
     /// \brief Gets the point that the line segment ends at
     ///
     /// \return the ending point
-    constexpr const point& end_point() const noexcept;
+    constexpr const point3& end_point() const noexcept;
 
     /// \brief Gets the direction that this line points
     ///
@@ -143,14 +143,14 @@ namespace alloy::core {
     /// \param percent the distance to get this point at
     /// \return the point at the distance
     ALLOY_CORE_API
-    point point_at_percent( real percent ) const noexcept;
+    point3 point_at_percent( real percent ) const noexcept;
 
     /// \brief Checks if this line_segment intersects the given point \p p
     ///
     /// \param p the point to check for intersection
     /// \return \c true if \p p is in the line_segment
     ALLOY_CORE_API
-    bool contains( const point& p ) const noexcept;
+    bool contains( const point3& p ) const noexcept;
 
     /// \brief Checks if this line_segment intersects the given point \p p
     ///        relative to the given \p tolerance
@@ -159,15 +159,15 @@ namespace alloy::core {
     /// \param tolerance the tolerance for accepting the containment
     /// \return \c true if \p p is in the line_segment
     ALLOY_CORE_API
-    bool contains( const point& p, real tolerance ) const noexcept;
+    bool contains( const point3& p, real tolerance ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------
   private:
 
-    point m_start; ///< The start point
-    point m_end;   ///< The end point
+    point3 m_start; ///< The start point
+    point3 m_end;   ///< The end point
   };
 
   //============================================================================
@@ -223,7 +223,7 @@ inline constexpr alloy::core::line_segment::line_segment()
 }
 
 inline constexpr alloy::core::line_segment
-  ::line_segment( const point& p0, const point& p1 )
+  ::line_segment( const point3& p0, const point3& p1 )
   noexcept
   : m_start{p0},
     m_end{p1}
@@ -232,7 +232,7 @@ inline constexpr alloy::core::line_segment
 }
 
 inline constexpr alloy::core::line_segment
-  ::line_segment( const point& origin, const vector3& distance )
+  ::line_segment( const point3& origin, const vector3& distance )
   noexcept
   : m_start{origin},
     m_end{origin + distance}
@@ -244,14 +244,14 @@ inline constexpr alloy::core::line_segment
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr const alloy::core::point&
+inline constexpr const alloy::core::point3&
   alloy::core::line_segment::start_point()
   const noexcept
 {
   return m_start;
 }
 
-inline constexpr const alloy::core::point&
+inline constexpr const alloy::core::point3&
   alloy::core::line_segment::end_point()
   const noexcept
 {

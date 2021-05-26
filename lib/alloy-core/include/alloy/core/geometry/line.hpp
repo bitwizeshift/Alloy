@@ -37,7 +37,7 @@
 #include "alloy/core/api.hpp"
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/math/vector/vector3.hpp" // core::vector3
-#include "alloy/core/geometry/point.hpp" // core::point
+#include "alloy/core/geometry/point3.hpp" // core::point
 
 namespace alloy::core {
 
@@ -71,7 +71,7 @@ namespace alloy::core {
     /// \pre \p direction is normalized
     /// \param origin a point to intersect
     /// \param direction the direction the line extends toward
-    constexpr line( const point& origin, const vector3& direction ) noexcept;
+    constexpr line( const point3& origin, const vector3& direction ) noexcept;
 
     /// \brief Constructs a line by moving an existing instance
     ///
@@ -104,7 +104,7 @@ namespace alloy::core {
     /// \brief Gets the origin point of this line
     ///
     /// \return the origin point of the line
-    constexpr const point& origin() const noexcept;
+    constexpr const point3& origin() const noexcept;
 
     /// \brief Gets the direction that this line extends in
     ///
@@ -122,14 +122,14 @@ namespace alloy::core {
     /// \param dt the distance to get this point at
     /// \return the point at the distance
     ALLOY_CORE_API
-    point point_at_distance( real dt ) const noexcept;
+    point3 point_at_distance( real dt ) const noexcept;
 
     /// \brief Checks if this line intersects the given point \p p
     ///
     /// \param p the point to check for intersection
     /// \return \c true if \p p is in the line
     ALLOY_CORE_API
-    bool contains( const point& p ) const noexcept;
+    bool contains( const point3& p ) const noexcept;
 
     /// \brief Checks if this line intersects the given point \p p
     ///        relative to the given \p tolerance
@@ -138,14 +138,14 @@ namespace alloy::core {
     /// \param tolerance the tolerance for accepting the containment
     /// \return \c true if \p p is in the line
     ALLOY_CORE_API
-    bool contains( const point& p, real tolerance ) const noexcept;
+    bool contains( const point3& p, real tolerance ) const noexcept;
 
     //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------
   private:
 
-    point   m_origin;    ///< The origin point
+    point3  m_origin;    ///< The origin point
     vector3 m_direction; ///< The direction
   };
 
@@ -199,7 +199,7 @@ inline constexpr alloy::core::line::line()
 
 }
 
-inline constexpr alloy::core::line::line( const point& origin,
+inline constexpr alloy::core::line::line( const point3& origin,
                                           const vector3& direction )
   noexcept
   : m_origin{origin},
@@ -212,7 +212,7 @@ inline constexpr alloy::core::line::line( const point& origin,
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr const alloy::core::point& alloy::core::line::origin()
+inline constexpr const alloy::core::point3& alloy::core::line::origin()
   const noexcept
 {
   return m_origin;
