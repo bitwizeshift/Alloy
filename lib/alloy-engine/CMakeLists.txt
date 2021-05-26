@@ -38,6 +38,7 @@ set(header_files
   include/alloy/engine/game-loop/fixed_game_loop.hpp
   include/alloy/engine/image/image_loader.hpp
   include/alloy/engine/image/tga_image_loader.hpp
+  include/alloy/engine/image/image_manager.hpp
 )
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/include"
@@ -49,6 +50,7 @@ set(source_files
   src/alloy/engine/entity_manager.cpp
   src/alloy/engine/component_manager.cpp
   src/alloy/engine/image/tga_image_loader.cpp
+  src/alloy/engine/image/image_manager.cpp
 )
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/src"
