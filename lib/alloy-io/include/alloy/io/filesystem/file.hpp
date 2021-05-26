@@ -307,14 +307,14 @@ inline alloy::core::result<T,std::error_code> alloy::io::file::read_object()
   noexcept
 {
   static_assert(
-    noexcept(file_serializer<T>::read(*this)),
-    "user-defined file_serializer<T>::read requests must be non-throwing. "
+    noexcept(file_serializer<T>::deserialize(*this)),
+    "user-defined file_serializer<T>::deserialize requests must be non-throwing. "
     "Please ensure your implementation translates all errors to an "
     "result<T,std::error_code> type and returns them accordingly, then mark the function "
     "'noexcept'."
   );
 
-  return file_serializer<T>::read(*this);
+  return file_serializer<T>::deserialize(*this);
 }
 
 template <typename T>
