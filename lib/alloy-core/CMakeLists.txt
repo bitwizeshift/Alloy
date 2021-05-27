@@ -146,6 +146,7 @@ set(header_files
   include/alloy/core/geometry/sphere.hpp
   include/alloy/core/geometry/ray.hpp
   include/alloy/core/geometry/polar.hpp
+  include/alloy/core/geometry/spherical.hpp
 
   # Model
   include/alloy/core/model/color.hpp
