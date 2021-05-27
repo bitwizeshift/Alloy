@@ -33,7 +33,7 @@
 
 #include "alloy/core/api.hpp"
 #include "alloy/core/geometry/plane.hpp"
-#include "alloy/core/geometry/point3.hpp"
+#include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/containers/span.hpp"
 
 #if defined(near)

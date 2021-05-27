@@ -40,7 +40,7 @@
 #include "alloy/core/assert.hpp"    // ALLOY_ASSERT
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/math/math.hpp" // core::almost_equal
-#include "alloy/core/geometry/point3.hpp"// core::point
+#include "alloy/core/geometry/point/point3.hpp"// core::point
 
 namespace alloy::core {
 

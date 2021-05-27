@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-/// \file spherical.hpp
+/// \file polar.hpp
 ///
 /// \brief TODO(Bitwize): Add description
 ////////////////////////////////////////////////////////////////////////////////
@@ -28,47 +28,44 @@
   SOFTWARE.
 */
 
-#ifndef ALLOY_CORE_GEOMETRY_SPHERICAL_HPP
-#define ALLOY_CORE_GEOMETRY_SPHERICAL_HPP
+#ifndef ALLOY_CORE_GEOMETRY_POINT_POLAR_HPP
+#define ALLOY_CORE_GEOMETRY_POINT_POLAR_HPP
 
 #include "alloy/core/math/trigonometry.hpp"
 #include "alloy/core/math/angle/radian.hpp"
 #include "alloy/core/math/vector/vector2.hpp"
-#include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/geometry/point3.hpp"
+#include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/precision.hpp"
 
 namespace alloy::core {
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief A point using spherical coordinates
+  /// \brief A point using polar coordinates
   ///
-  /// A spherical-coordinate points are identified by the distance from the
-  /// center of a sphere ("rho"), and two angular components representing its
-  /// position on the sphere ("phi" and "theta").
+  /// A polar-coordinate point is identified by the distance from the center of
+  /// a "circle", and the angle from the x-axis.
   //////////////////////////////////////////////////////////////////////////////
-  class spherical
+  class polar
   {
     //--------------------------------------------------------------------------
     // Constructors / Assignment
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Default-initializes this spherical point
-    spherical() = default;
+    /// \brief Default-initializes this polar point
+    polar() = default;
 
-    /// \brief Constructs this point with the specified \p rho, \p phi, and
-    ///        \p theta
+    /// \brief Constructs this point with the specified \p distance and \p theta
+    ///        angle
     ///
-    /// \param rho the distance from the origin
-    /// \param theta the first angular component
-    /// \param theta the second angular component
-    constexpr spherical(real rho, radian phi, radian theta) noexcept;
+    /// \param distance the distance from the origin
+    /// \param theta the angle
+    constexpr polar(real distance, radian theta) noexcept;
 
     /// \brief Copies the contents from \p other
     ///
-    /// \param other the other spherical point to copy
-    spherical(const spherical& other) = default;
+    /// \param other the other polar point to copy
+    polar(const polar& other) = default;
 
     //--------------------------------------------------------------------------
 
@@ -76,7 +73,7 @@ namespace alloy::core {
     ///
     /// \param other the other point to copy
     /// \return reference to `(*this)`
-    auto operator=(const spherical& other) -> spherical& = default;
+    auto operator=(const polar& other) -> polar& = default;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -84,23 +81,15 @@ namespace alloy::core {
   public:
 
     /// \{
-    /// \brief Gets the distance component of this spherical
+    /// \brief Gets the distance component of this polar
     ///
     /// \return reference to the distance component
-    constexpr auto rho() noexcept -> real&;
-    constexpr auto rho() const noexcept-> real;
+    constexpr auto r() noexcept -> real&;
+    constexpr auto r() const noexcept-> real;
     /// \}
 
     /// \{
-    /// \brief Gets the phi component of this spherical
-    ///
-    /// \return reference to the phi component
-    constexpr auto phi() noexcept -> radian&;
-    constexpr auto phi() const noexcept -> radian;
-    /// \}
-
-    /// \{
-    /// \brief Gets the theta component of this spherical
+    /// \brief Gets the theta component of this polar
     ///
     /// \return reference to the theta component
     constexpr auto theta() noexcept -> radian&;
@@ -112,56 +101,55 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   private:
 
-    real m_rho;
-    radian m_phi;
+    real m_distance;
     radian m_theta;
   };
 
   //============================================================================
-  // non-member functions : class : spherical
+  // non-member functions : class : polar
   //============================================================================
 
   //----------------------------------------------------------------------------
   // Comparisons
   //----------------------------------------------------------------------------
 
-  constexpr auto operator==(const spherical& lhs, const spherical& rhs) noexcept -> bool;
-  constexpr auto operator!=(const spherical& lhs, const spherical& rhs) noexcept -> bool;
+  constexpr auto operator==(const polar& lhs, const polar& rhs) noexcept -> bool;
+  constexpr auto operator!=(const polar& lhs, const polar& rhs) noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
-  /// \brief Determines equality between two spherical relative to
+  /// \brief Determines equality between two polar relative to
   ///        \ref default_tolerance
   ///
-  /// \param lhs the left spherical
-  /// \param rhs the right spherical
-  /// \return \c true if the two spherical contain almost equal values
-  constexpr auto almost_equal(const spherical& lhs, const spherical& rhs) noexcept -> bool;
+  /// \param lhs the left polar
+  /// \param rhs the right polar
+  /// \return \c true if the two polar contain almost equal values
+  constexpr auto almost_equal(const polar& lhs, const polar& rhs) noexcept -> bool;
 
-  /// \brief Determines equality between two spherical relative to \p tolerance
+  /// \brief Determines equality between two polar relative to \p tolerance
   ///
-  /// \param lhs the left spherical
-  /// \param rhs the right spherical
-  /// \return \c true if the two spherical contain almost equal values
-  constexpr auto almost_equal(const spherical& lhs,
-                              const spherical& rhs,
+  /// \param lhs the left polar
+  /// \param rhs the right polar
+  /// \return \c true if the two polar contain almost equal values
+  constexpr auto almost_equal(const polar& lhs,
+                              const polar& rhs,
                               real tolerance) noexcept -> bool;
 
   //----------------------------------------------------------------------------
   // Utilities
   //----------------------------------------------------------------------------
 
-  /// \brief Converts a cartesian `point3` into a `spherical` point
+  /// \brief Converts a cartesian `point2` into a `polar` point
   ///
   /// \param p the cartesian point
-  /// \return the spherical point representation
-  auto to_spherical(const point3& p) noexcept -> spherical;
+  /// \return the polar point representation
+  auto to_polar(const point2& p) noexcept -> polar;
 
-  /// \brief Converts a `spherical` point into a cartesian `point3`
+  /// \brief Converts a `polar` point into a cartesian `point2`
   ///
   /// \param p the cartesian point
-  /// \return the spherical point representation
-  auto to_point(const spherical& p) noexcept -> point3;
+  /// \return the polar point representation
+  auto to_point(const polar& p) noexcept -> point2;
 
 
   //============================================================================
@@ -169,16 +157,16 @@ namespace alloy::core {
   //============================================================================
 
   template<>
-  struct piecewise_compare<spherical>
+  struct piecewise_compare<polar>
   {
-    constexpr auto operator()(const spherical& lhs, const spherical& rhs)
+    constexpr auto operator()(const polar& lhs, const polar& rhs)
       noexcept -> bool;
   };
 
 } // namespace alloy::core
 
 //==============================================================================
-// definitions : class : spherical
+// definitions : class : polar
 //==============================================================================
 
 //------------------------------------------------------------------------------
@@ -186,10 +174,9 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::spherical::spherical(real rho, radian phi, radian theta)
+alloy::core::polar::polar(real distance, radian theta)
   noexcept
-  : m_rho{rho},
-    m_phi{phi},
+  : m_distance{distance},
     m_theta{theta}
 {
 
@@ -200,49 +187,35 @@ alloy::core::spherical::spherical(real rho, radian phi, radian theta)
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::rho()
+auto alloy::core::polar::r()
   noexcept -> real&
 {
-  return m_rho;
+  return m_distance;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::rho()
+auto alloy::core::polar::r()
   const noexcept -> real
 {
-  return m_rho;
+  return m_distance;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::phi()
-  noexcept -> radian&
-{
-  return m_phi;
-}
-
-ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::phi()
-  const noexcept -> radian
-{
-  return m_phi;
-}
-
-ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::theta()
+auto alloy::core::polar::theta()
   noexcept -> radian&
 {
   return m_theta;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::theta()
+auto alloy::core::polar::theta()
   const noexcept -> radian
 {
   return m_theta;
 }
 
 //==============================================================================
-// definitions : non-member functions : class : spherical
+// definitions : non-member functions : class : polar
 //==============================================================================
 
 //------------------------------------------------------------------------------
@@ -253,17 +226,13 @@ ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr
-auto alloy::core::operator==(const spherical& lhs, const spherical& rhs) noexcept -> bool
+auto alloy::core::operator==(const polar& lhs, const polar& rhs) noexcept -> bool
 {
-  return (
-    lhs.rho() == rhs.rho() &&
-    lhs.phi() == rhs.phi() &&
-    lhs.theta() == rhs.theta()
-  );
+  return lhs.r() == rhs.r() && lhs.theta() == rhs.theta();
 }
 
 inline constexpr
-auto alloy::core::operator!=(const spherical& lhs, const spherical& rhs) noexcept -> bool
+auto alloy::core::operator!=(const polar& lhs, const polar& rhs) noexcept -> bool
 {
   return !(lhs == rhs);
 }
@@ -273,81 +242,70 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::almost_equal(const spherical& lhs, const spherical& rhs)
+auto alloy::core::almost_equal(const polar& lhs, const polar& rhs)
   noexcept -> bool
 {
   return (
-    almost_equal(lhs.rho(), rhs.rho()) &&
-    almost_equal(lhs.phi(), rhs.phi()) &&
+    almost_equal(lhs.r(), rhs.r()) &&
     almost_equal(lhs.theta(), rhs.theta())
   );
 }
 
 inline constexpr
-auto alloy::core::almost_equal(const spherical& lhs,
-                               const spherical& rhs,
+auto alloy::core::almost_equal(const polar& lhs,
+                               const polar& rhs,
                                real tolerance)
   noexcept -> bool
 {
   return (
-    almost_equal(lhs.rho(), rhs.rho(), tolerance) &&
-    almost_equal(lhs.phi(), rhs.phi(), tolerance) &&
-    almost_equal(lhs.theta(), rhs.theta(), tolerance)
+    almost_equal(lhs.theta(), rhs.theta(), tolerance) &&
+    almost_equal(lhs.r(), rhs.r(), tolerance)
   );
 }
+
 
 //------------------------------------------------------------------------------
 // Utilities
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::core::to_spherical(const point3& p)
-  noexcept -> spherical
+auto alloy::core::to_polar(const point2& p)
+  noexcept -> polar
 {
-  const auto phi_distance = vector2{p.x(), p.y()}.magnitude();
   const auto distance = to_vector(p).magnitude();
-  const auto phi = trigonometry::arctan2(phi_distance, p.z());
-  const auto theta = trigonometry::arctan2(p.y(), p.x());
+  const auto theta = trigonometry::arctan2(p.x(), p.y());
 
-  return spherical{distance, phi, theta};
+  return polar{distance, theta};
 }
 
 inline
-auto alloy::core::to_point(const spherical& p)
-  noexcept -> point3
+auto alloy::core::to_point(const polar& p)
+  noexcept -> point2
 {
-  const auto sin_phi = trigonometry::sin(p.phi());
-  const auto cos_phi = trigonometry::cos(p.phi());
-  const auto cos_theta = trigonometry::cos(p.theta());
-  const auto sin_theta = trigonometry::cos(p.theta());
+  const auto x = p.r() * trigonometry::cos(p.theta());
+  const auto y = p.r() * trigonometry::sin(p.theta());
 
-  const auto x = p.rho() * sin_phi * cos_theta;
-  const auto y = p.rho() * sin_phi * sin_theta;
-  const auto z = p.rho() * cos_phi;
-
-  return point3{x, y, z};
+  return point2{x, y};
 }
 
 
 //==============================================================================
-// struct : piecewise_compare<spherical>
+// struct : piecewise_compare<polar>
 //==============================================================================
 
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr
-auto alloy::core::piecewise_compare<alloy::core::spherical>
-  ::operator()(const spherical& lhs, const spherical& rhs)
+auto alloy::core::piecewise_compare<alloy::core::polar>
+  ::operator()(const polar& lhs, const polar& rhs)
   noexcept -> bool
 {
-  return (lhs.rho() == rhs.rho()) ?
-           (lhs.phi() == rhs.phi()) ?
-             (lhs.theta() < rhs.theta()) :
-           (lhs.phi() < rhs.phi()) :
-         (lhs.rho() < rhs.rho());
+  return (lhs.r() == rhs.r()) ?
+           (lhs.theta() < rhs.theta()) :
+         (lhs.r() < rhs.r());
 }
 
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
-#endif /* ALLOY_CORE_GEOMETRY_SPHERICAL_HPP */
+#endif /* ALLOY_CORE_GEOMETRY_POINT_POLAR_HPP */

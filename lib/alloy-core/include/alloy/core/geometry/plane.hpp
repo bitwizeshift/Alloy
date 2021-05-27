@@ -40,7 +40,7 @@
 #include "alloy/core/assert.hpp"    // ALLOY_ASSERT
 #include "alloy/core/math/vector/vector3.hpp" // core::vector3
 #include "alloy/core/math/math.hpp"           // core::default_tolerance
-#include "alloy/core/geometry/point3.hpp" // core::point
+#include "alloy/core/geometry/point/point3.hpp" // core::point
 
 #include <cstdint> // std::uinr32_t, std::uint64_t
 #include <type_traits>

@@ -135,18 +135,18 @@ set(header_files
   include/alloy/core/math/vector/vector4_constants.hpp
 
   # Geometry
+  include/alloy/core/geometry/point/point2.hpp
+  include/alloy/core/geometry/point/point3.hpp
+  include/alloy/core/geometry/point/polar.hpp
+  include/alloy/core/geometry/point/spherical.hpp
   include/alloy/core/geometry/axis_aligned_box.hpp
   include/alloy/core/geometry/frustum.hpp
   include/alloy/core/geometry/intersection.hpp
   include/alloy/core/geometry/line.hpp
   include/alloy/core/geometry/line_segment.hpp
   include/alloy/core/geometry/plane.hpp
-  include/alloy/core/geometry/point2.hpp
-  include/alloy/core/geometry/point3.hpp
   include/alloy/core/geometry/sphere.hpp
   include/alloy/core/geometry/ray.hpp
-  include/alloy/core/geometry/polar.hpp
-  include/alloy/core/geometry/spherical.hpp
 
   # Model
   include/alloy/core/model/color.hpp
