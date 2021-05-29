@@ -68,6 +68,7 @@ set(header_files
   include/alloy/core/traits/select_nth.hpp
   include/alloy/core/traits/function_traits.hpp
   include/alloy/core/traits/is_function_pointer.hpp
+  include/alloy/core/traits/for_each_member.hpp
 
   # Utilities
   include/alloy/core/utilities/aligned_storage.hpp
