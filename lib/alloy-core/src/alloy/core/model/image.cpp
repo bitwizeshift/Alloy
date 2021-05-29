@@ -394,7 +394,7 @@ alloy::core::image alloy::core::image::copy()
 }
 
 
-alloy::core::image alloy::core::image::copy(allocator alloc)
+alloy::core::image alloy::core::image::copy_with(allocator alloc)
   const
 {
   const auto adapter = stl_allocator_adapter<std::byte>{alloc};

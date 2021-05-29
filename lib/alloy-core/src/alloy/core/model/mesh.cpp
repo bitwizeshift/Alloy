@@ -437,9 +437,9 @@ auto alloy::core::mesh_builder::build(allocator alloc)
   const & noexcept -> mesh
 {
   return mesh::make_from_buffers(
-    m_buffer.copy(alloc),
+    m_buffer.copy_with(alloc),
     m_vertices,
-    m_indices.copy(stl_allocator_adapter<index_type>{alloc})
+    m_indices.copy_with(stl_allocator_adapter<index_type>{alloc})
   );
 }
 

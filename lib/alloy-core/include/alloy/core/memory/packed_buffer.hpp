@@ -122,7 +122,7 @@ namespace alloy::core {
     ///
     /// \param alloc the allocator to use
     /// \return a copy of this packed_buffer
-    auto copy(allocator alloc) const -> packed_buffer;
+    auto copy_with(allocator alloc) const -> packed_buffer;
 
     //-------------------------------------------------------------------------
     // Element Access

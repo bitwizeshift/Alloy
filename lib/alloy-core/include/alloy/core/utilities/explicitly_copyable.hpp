@@ -71,8 +71,8 @@ namespace alloy::core {
     explicitly_copyable(const T&) = delete;
     using T::T;
 
-    explicitly_copyable& operator=(explicitly_copyable&&) = default;
-    explicitly_copyable& operator=(const T&) = delete;
+    auto operator=(explicitly_copyable&&) -> explicitly_copyable& = default;
+    auto operator=(const T&) -> explicitly_copyable& = delete;
     using T::operator=;
 
     //-------------------------------------------------------------------------
@@ -85,8 +85,9 @@ namespace alloy::core {
     /// This is the only way to receive a copy of the type
     ///
     /// \return a copy of the underlying type
-    constexpr explicitly_copyable copy()
-      const noexcept(std::is_nothrow_copy_constructible<T>::value);
+    auto copy()
+      const noexcept(std::is_nothrow_copy_constructible<T>::value)
+      -> explicitly_copyable;
 
     /// \brief Creates a copy of the underlying type using the specified
     ///        allocator
@@ -95,8 +96,9 @@ namespace alloy::core {
     /// \return a copy of the underlying type using \p alloc
     template <typename Alloc = typename T::allocator_type,
               typename = std::enable_if_t<std::is_constructible<T,const T&, const Alloc&>::value>>
-    constexpr explicitly_copyable copy(const Alloc& alloc)
-     const noexcept(std::is_nothrow_constructible<T, const T&, const Alloc&>::value);
+    auto copy_with(const Alloc& alloc)
+     const noexcept(std::is_nothrow_constructible<T, const T&, const Alloc&>::value)
+     -> explicitly_copyable;
 
     //-------------------------------------------------------------------------
     // Private Constructors / Assignment
@@ -112,20 +114,21 @@ namespace alloy::core {
 
 template <typename T>
 ALLOY_FORCE_INLINE
-constexpr alloy::core::explicitly_copyable<T>
-  alloy::core::explicitly_copyable<T>::copy()
+auto alloy::core::explicitly_copyable<T>::copy()
   const noexcept(std::is_nothrow_copy_constructible<T>::value)
+  -> explicitly_copyable
 {
   return (*this);
 }
+
 template <typename T>
 template <typename Alloc, typename>
 ALLOY_FORCE_INLINE
-constexpr alloy::core::explicitly_copyable<T>
-  alloy::core::explicitly_copyable<T>::copy(const Alloc& alloc)
+auto alloy::core::explicitly_copyable<T>::copy_with(const Alloc& alloc)
   const noexcept(std::is_nothrow_constructible<T, const T&, const Alloc&>::value)
+  -> explicitly_copyable
 {
-  return explicitly_copyable<T>{(*this), alloc};
+  return explicitly_copyable<T>{static_cast<const T&>(*this), alloc};
 }
 
 #endif /* ALLOY_CORE_UTILITIES_EXPLICITLY_COPYABLE_HPP */

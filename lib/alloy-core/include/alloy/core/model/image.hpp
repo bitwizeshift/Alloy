@@ -200,7 +200,7 @@ namespace alloy::core {
     /// \param alloc the allocator to use
     /// \return the new image
     ALLOY_CORE_API
-    image copy(allocator alloc) const;
+    image copy_with(allocator alloc) const;
 
     //--------------------------------------------------------------------------
 

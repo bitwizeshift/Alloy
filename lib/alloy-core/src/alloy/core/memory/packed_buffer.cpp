@@ -32,10 +32,10 @@ auto alloy::core::packed_buffer::copy()
   return packed_buffer{m_buffer.copy()};
 }
 
-auto alloy::core::packed_buffer::copy(allocator alloc)
+auto alloy::core::packed_buffer::copy_with(allocator alloc)
   const -> packed_buffer
 {
-  return packed_buffer{m_buffer.copy(stl_allocator_adapter<std::byte>{alloc})};
+  return packed_buffer{m_buffer.copy_with(stl_allocator_adapter<std::byte>{alloc})};
 }
 
 //-----------------------------------------------------------------------------
