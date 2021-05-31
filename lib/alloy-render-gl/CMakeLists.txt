@@ -12,6 +12,7 @@ set(header_files
   include/alloy/render/gl/material/depth_compare.hpp
   include/alloy/render/gl/mesh/primitive_topology.hpp
   include/alloy/render/gl/mesh/fill_mode.hpp
+  include/alloy/render/gl/error.hpp
 )
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/include"
@@ -20,7 +21,7 @@ source_group(
 )
 
 set(source_files
-
+  src/alloy/render/gl/error.cpp
 )
 
 source_group(
