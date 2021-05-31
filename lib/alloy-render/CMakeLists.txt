@@ -12,6 +12,7 @@ set(header_files
   include/alloy/render/mesh/mesh.hpp
   include/alloy/render/mesh/mesh_builder.hpp
   include/alloy/render/mesh/3d/cube_builder.hpp
+  include/alloy/render/mesh/3d/sphere_builder.hpp
 )
 
 source_group(
@@ -23,6 +24,7 @@ source_group(
 set(source_files
   src/alloy/render/mesh/mesh.cpp
   src/alloy/render/mesh/3d/cube_builder.cpp
+  src/alloy/render/mesh/3d/sphere_builder.cpp
   src/alloy/render/mesh/unsafe_mesh_builder.hpp
   src/alloy/render/mesh/unsafe_mesh_builder.cpp
 )
