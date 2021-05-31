@@ -21,6 +21,8 @@ source_group(
 
 set(source_files
   src/alloy/render/mesh/mesh.cpp
+  src/alloy/render/mesh/unsafe_mesh_builder.hpp
+  src/alloy/render/mesh/unsafe_mesh_builder.cpp
 )
 
 source_group(
