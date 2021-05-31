@@ -29,9 +29,6 @@ set(source_files
   # Memory
   src/alloy/core/memory/packed_buffer.test.cpp
 
-  # Model
-  src/alloy/core/model/attribute_buffer_view.test.cpp
-
   src/main.cpp
 )
 

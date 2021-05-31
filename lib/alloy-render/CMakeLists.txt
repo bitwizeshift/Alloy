@@ -9,6 +9,7 @@ set(header_files
   include/alloy/render/material/cull_face.hpp
   include/alloy/render/mesh/fill_mode.hpp
   include/alloy/render/mesh/primitive_topology.hpp
+  include/alloy/render/mesh/mesh.hpp
 )
 
 source_group(
@@ -18,7 +19,7 @@ source_group(
 )
 
 set(source_files
-
+  src/alloy/render/mesh/mesh.cpp
 )
 
 source_group(

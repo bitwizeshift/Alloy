@@ -153,20 +153,15 @@ set(header_files
   include/alloy/core/model/color.hpp
   include/alloy/core/model/color_constants.hpp
   include/alloy/core/model/image.hpp
-  include/alloy/core/model/attribute_buffer_view.hpp
   include/alloy/core/model/light/light.hpp
   include/alloy/core/model/light/direction_light.hpp
   include/alloy/core/model/light/global_light.hpp
   include/alloy/core/model/light/point_light.hpp
   include/alloy/core/model/light/spot_light.hpp
-  include/alloy/core/model/vertex.hpp
-  include/alloy/core/model/normal.hpp
-  include/alloy/core/model/texture_coordinate.hpp
   include/alloy/core/model/transform.hpp
   include/alloy/core/model/projection.hpp
   include/alloy/core/model/camera.hpp
   include/alloy/core/model/lazy_transform.hpp
-  include/alloy/core/model/mesh.hpp
   include/alloy/core/model/interpolated_transform.hpp
 )
 
@@ -213,7 +208,7 @@ set(source_files
   src/alloy/core/model/transform.cpp
   src/alloy/core/model/projection.cpp
   src/alloy/core/model/camera.cpp
-  src/alloy/core/model/mesh.cpp
+
 )
 
 source_group(
