@@ -181,6 +181,7 @@ add_subdirectory("third_party")
 add_subdirectory("lib/alloy-core")
 add_subdirectory("lib/alloy-io")
 add_subdirectory("lib/alloy-render")
+add_subdirectory("lib/alloy-render-gl")
 add_subdirectory("lib/alloy-audio")
 add_subdirectory("lib/alloy-engine")
 
