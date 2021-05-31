@@ -91,6 +91,9 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
+    /// \brief Constructs an axis-aligned bounding-box with default values
+    axis_aligned_box() noexcept = default;
+
     /// \brief Constructs an axis-aligned bounding-box from points from two
     ///        opposite ends
     ///
