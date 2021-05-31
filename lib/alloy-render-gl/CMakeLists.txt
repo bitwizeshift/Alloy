@@ -13,6 +13,7 @@ set(header_files
   include/alloy/render/gl/mesh/primitive_topology.hpp
   include/alloy/render/gl/mesh/fill_mode.hpp
   include/alloy/render/gl/error.hpp
+  include/alloy/render/gl/state_cache.hpp
 )
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/include"
@@ -22,6 +23,7 @@ source_group(
 
 set(source_files
   src/alloy/render/gl/error.cpp
+  src/alloy/render/gl/state_cache.cpp
 )
 
 source_group(
