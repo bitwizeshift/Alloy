@@ -24,17 +24,10 @@
 
 #include "unsafe_mesh_builder.hpp"
 
+#include "attribute_packer.hpp"
+
 namespace alloy::render {
 namespace {
-
-inline
-auto compress(float x)
-  noexcept -> std::int16_t
-{
-  static constexpr auto max = std::numeric_limits<std::int16_t>::max();
-
-  return static_cast<std::int16_t>(x * max);
-}
 
 inline
 auto round_up_power_two(std::size_t v)
@@ -50,31 +43,6 @@ auto round_up_power_two(std::size_t v)
   v++;
   return v;
 }
-
-struct point_packer
-{
-  auto pack(core::packed_buffer_writer& writer, const core::point2& p) -> void
-  {
-    writer.pack_object(p.x());
-    writer.pack_object(p.y());
-  }
-  auto pack(core::packed_buffer_writer& writer, const core::point3& p) -> void
-  {
-    writer.pack_object(p.x());
-    writer.pack_object(p.y());
-    writer.pack_object(p.z());
-  }
-};
-struct vector_packer
-{
-  auto pack(core::packed_buffer_writer& writer, const core::vector3& v) -> void
-  {
-    writer.pack_object(compress(v.x()));
-    writer.pack_object(compress(v.y()));
-    writer.pack_object(compress(v.z()));
-    writer.pack_object(std::uint16_t{});
-  }
-};
 
 } //namespace <anonymous>
 } // namespace alloy::render
@@ -92,6 +60,7 @@ alloy::render::unsafe_mesh_builder::unsafe_mesh_builder(primitive_topology topol
     m_topology{topology},
     m_bound{},
     m_components_per_position{0u},
+    m_components_per_color{0u},
     m_components_per_uv{0u},
     m_components_per_normal{0u},
     m_components_per_tangent{0u},
@@ -108,6 +77,12 @@ auto alloy::render::unsafe_mesh_builder::set_components_per_position(std::uint8_
   noexcept -> void
 {
   m_components_per_position = n;
+}
+
+auto alloy::render::unsafe_mesh_builder::set_components_per_color(std::uint8_t n)
+  noexcept -> void
+{
+  m_components_per_color = n;
 }
 
 auto alloy::render::unsafe_mesh_builder::set_components_per_uv(std::uint8_t n)
@@ -141,6 +116,7 @@ auto alloy::render::unsafe_mesh_builder::reserve_vertices(std::size_t n)
 {
   const auto buffer_size = (
     m_components_per_position * core::size_of<float>() +
+    round_up_power_two(m_components_per_color) * core::size_of<std::byte>() +
     m_components_per_uv * core::size_of<float>() +
     round_up_power_two(m_components_per_normal) * core::size_of<std::int16_t>() +
     round_up_power_two(m_components_per_tangent) * core::size_of<std::int16_t>() +
@@ -182,6 +158,13 @@ auto alloy::render::unsafe_mesh_builder::add_position(const core::point3& p)
   -> void
 {
   m_writer.pack_object(p, point_packer{});
+}
+
+
+auto alloy::render::unsafe_mesh_builder::add_color(const alloy::core::color& c)
+  -> void
+{
+  m_writer.pack_object(c, color_packer{});
 }
 
 auto alloy::render::unsafe_mesh_builder::add_uv(float p)

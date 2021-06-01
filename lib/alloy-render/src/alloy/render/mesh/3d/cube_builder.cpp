@@ -164,5 +164,9 @@ auto alloy::render::cube_builder::build_with(core::allocator alloc)
     builder.add_face(20u, 21u, 22u, 23u);
   }
 
+  builder.set_bounding_box(
+    core::axis_aligned_box::from_points({-1, -1, -1}, {1, 1, 1})
+  );
+
   return std::move(builder).release();
 }

@@ -63,6 +63,7 @@ namespace alloy::render {
     primitive_topology topology;
 
     std::uint8_t position_components;
+    std::uint8_t color_components;
     std::uint8_t uv_components;
     std::uint8_t normal_components;
     std::uint8_t tangent_components;
@@ -123,6 +124,10 @@ namespace alloy::render {
       /// The specified number of position components is invalid. This can
       /// occur if `position_components` is not between `0` and `4` (inclusive)
       invalid_position_component,
+
+      /// The specified number of color components is invalid. This can occur if
+      /// `color_components` is not between `0` and `4` (inclusive)
+      invalid_color_component,
 
       /// The specified UV components is invalid. This can occur if
       /// `uv_components` is not between `0` and `3` (inclusive)
@@ -204,6 +209,7 @@ namespace alloy::render {
     ///
     /// \return whether the attribute is present
     auto has_positions() const noexcept -> bool;
+    auto has_color() const noexcept -> bool;
     auto has_uvs() const noexcept -> bool;
     auto has_normals() const noexcept -> bool;
     auto has_tangents() const noexcept -> bool;
@@ -216,6 +222,7 @@ namespace alloy::render {
     ///
     /// \return the offset, in bytes, to the specified attribute
     auto offset_to_positions() const noexcept -> core::bytes;
+    auto offset_to_colors() const noexcept -> core::bytes;
     auto offset_to_uvs() const noexcept -> core::bytes;
     auto offset_to_normals() const noexcept -> core::bytes;
     auto offset_to_tangents() const noexcept -> core::bytes;
@@ -228,6 +235,7 @@ namespace alloy::render {
     /// \return the number of bytes to offset into the buffer for the start of
     ///         the attribute
     auto bytes_per_position() const noexcept -> core::bytes;
+    auto bytes_per_colors() const noexcept -> core::bytes;
     auto bytes_per_uvs() const noexcept -> core::bytes;
     auto bytes_per_normals() const noexcept -> core::bytes;
     auto bytes_per_tangents() const noexcept -> core::bytes;
@@ -239,6 +247,7 @@ namespace alloy::render {
     ///
     /// \return the number of components in this vertex
     auto position_components() const noexcept -> std::size_t;
+    auto color_components() const noexcept -> std::size_t;
     auto uv_components() const noexcept -> std::size_t;
     auto normal_components() const noexcept -> std::size_t;
     auto tangent_components() const noexcept -> std::size_t;
@@ -292,6 +301,9 @@ namespace alloy::render {
     /// The number of components per position
     std::uint8_t m_position_components;
 
+    /// The number of components per color
+    std::uint8_t m_color_components;
+
     /// The number of components per UV
     std::uint8_t m_uv_components;
 
@@ -344,6 +356,14 @@ auto alloy::render::mesh::has_positions()
   return m_position_components != 0u;
 }
 
+
+inline
+auto alloy::render::mesh::has_color()
+  const noexcept -> bool
+{
+  return m_color_components != 0u;
+}
+
 inline
 auto alloy::render::mesh::has_uvs()
   const noexcept -> bool
@@ -389,6 +409,13 @@ auto alloy::render::mesh::offset_to_positions()
 }
 
 inline
+auto alloy::render::mesh::offset_to_colors()
+  const noexcept -> core::bytes
+{
+  return offset_to_positions() + bytes_per_colors();
+}
+
+inline
 auto alloy::render::mesh::offset_to_uvs()
   const noexcept -> core::bytes
 {
@@ -424,6 +451,15 @@ auto alloy::render::mesh::bytes_per_position()
 {
   return core::bytes{
     m_position_components * sizeof(float)
+  };
+}
+
+inline
+auto alloy::render::mesh::bytes_per_colors()
+  const noexcept -> core::bytes
+{
+  return core::bytes{
+    (m_color_components & 0x0f)
   };
 }
 
@@ -470,6 +506,13 @@ auto alloy::render::mesh::position_components()
   const noexcept -> std::size_t
 {
   return m_position_components;
+}
+
+inline
+auto alloy::render::mesh::color_components()
+  const noexcept -> std::size_t
+{
+  return (m_color_components >> 4u);
 }
 
 inline

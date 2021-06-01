@@ -48,6 +48,7 @@ auto indices_per_topology(primitive_topology topology) noexcept -> std::size_t
 }
 
 inline constexpr auto max_vertex_components = 4u;
+inline constexpr auto max_color_components = 4u;
 inline constexpr auto max_uv_components = 3u;
 inline constexpr auto max_normal_components = 4u;
 inline constexpr auto max_tangent_components = 4u;
@@ -70,6 +71,9 @@ auto alloy::render::mesh::from_config(mesh_config config)
   if (ALLOY_UNLIKELY(config.position_components > max_vertex_components)) {
     return core::fail(construct_error::invalid_position_component);
   }
+  if (ALLOY_UNLIKELY(config.color_components > max_color_components)) {
+    return core::fail(construct_error::invalid_color_component);
+  }
   if (ALLOY_UNLIKELY(config.uv_components > max_uv_components)) {
     return core::fail(construct_error::invalid_uv_component);
   }
@@ -86,6 +90,7 @@ auto alloy::render::mesh::from_config(mesh_config config)
   const auto vertices = config.vertex_data.size();
   const auto stride = (
     (config.position_components * sizeof(float)) +
+    (round_up_power_two(config.color_components) * sizeof(std::byte)) +
     (config.uv_components * sizeof(float)) +
     (round_up_power_two(config.normal_components) * sizeof(std::uint16_t)) +
     (round_up_power_two(config.tangent_components) * sizeof(std::uint16_t)) +
@@ -136,6 +141,7 @@ alloy::render::mesh::mesh(const mesh& other)
     m_bounding_volume{other.m_bounding_volume},
     m_topology{other.m_topology},
     m_position_components{other.m_position_components},
+    m_color_components{other.m_color_components},
     m_uv_components{other.m_uv_components},
     m_normal_components{other.m_normal_components},
     m_tangent_components{other.m_tangent_components},
@@ -152,6 +158,7 @@ alloy::render::mesh::mesh(const mesh& other, core::allocator alloc)
     m_bounding_volume{other.m_bounding_volume},
     m_topology{other.m_topology},
     m_position_components{other.m_position_components},
+    m_color_components{other.m_color_components},
     m_uv_components{other.m_uv_components},
     m_normal_components{other.m_normal_components},
     m_tangent_components{other.m_tangent_components},
@@ -166,6 +173,11 @@ alloy::render::mesh::mesh(alloy::render::mesh_config config)
     m_bounding_volume{config.bounding_volume},
     m_topology{config.topology},
     m_position_components{config.position_components},
+    m_color_components{
+      static_cast<std::uint8_t>(
+        (config.color_components << 4u) | (round_up_power_two(config.color_components))
+      )
+    },
     m_uv_components{config.uv_components},
     m_normal_components{
       static_cast<std::uint8_t>(
@@ -210,6 +222,11 @@ auto alloy::render::error_message(mesh::construct_error e)
     case mesh::construct_error::invalid_position_component: {
       return "The specified number of position components is invalid. This can "
              "occur if `position_components` is not between `0` and `4` "
+             "(inclusive)";
+    }
+    case mesh::construct_error::invalid_color_component: {
+      return "The specified number of color components is invalid. This can "
+             "occur if `color_components` is not between `0` and `4` "
              "(inclusive)";
     }
     case mesh::construct_error::invalid_uv_component: {

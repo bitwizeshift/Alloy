@@ -24,24 +24,19 @@
 
 #include "alloy/render/mesh/3d/polygon_3d_builder.hpp"
 
+#include "../attribute_packer.hpp"
+
 #include <utility> // std::move
 
 namespace {
 
 inline constexpr auto entries_per_position  = 3u;
+inline constexpr auto entries_per_color     = 4u;
 inline constexpr auto entries_per_uv        = 2u;
 inline constexpr auto entries_per_normal    = 3u;
 inline constexpr auto entries_per_tangent   = 3u;
 inline constexpr auto entries_per_bitangent = 3u;
 inline constexpr auto entries_per_indices   = 3u;
-
-auto compress(float x)
-  noexcept -> std::int16_t
-{
-  static constexpr auto max = std::numeric_limits<std::int16_t>::max();
-
-  return static_cast<std::int16_t>(x * max);
-}
 
 } // namespace <anonymous>
 
@@ -53,6 +48,7 @@ alloy::render::polygon_3d_builder::polygon_3d_builder(primitive_topology topolog
                                                 core::allocator alloc)
   noexcept
   : m_positions{core::stl_allocator_adapter<core::point3>{alloc}},
+    m_colors{core::stl_allocator_adapter<core::color>{alloc}},
     m_uvs{core::stl_allocator_adapter<core::point2>{alloc}},
     m_normals{core::stl_allocator_adapter<core::vector3>{alloc}},
     m_tangents{core::stl_allocator_adapter<core::vector3>{alloc}},
@@ -72,40 +68,53 @@ alloy::render::polygon_3d_builder::polygon_3d_builder(primitive_topology topolog
 auto alloy::render::polygon_3d_builder::reserve(std::size_t n) -> void
 {
   reserve_positions(n);
+  reserve_colors(n);
   reserve_uvs(n);
   reserve_normals(n);
   reserve_tangents(n);
   reserve_bitangents(n);
 }
 
-auto alloy::render::polygon_3d_builder::reserve_positions(std::size_t n) -> void
+auto alloy::render::polygon_3d_builder::reserve_positions(std::size_t n)
+  -> void
 {
-  m_positions.reserve(n * ::entries_per_position);
+  m_positions.reserve(n);
 }
 
-auto alloy::render::polygon_3d_builder::reserve_uvs(std::size_t n) -> void
+auto alloy::render::polygon_3d_builder::reserve_colors(std::size_t n)
+  -> void
 {
-  m_uvs.reserve(n * ::entries_per_uv);
+  m_colors.reserve(n);
 }
 
-auto alloy::render::polygon_3d_builder::reserve_normals(std::size_t n) -> void
+auto alloy::render::polygon_3d_builder::reserve_uvs(std::size_t n)
+  -> void
 {
-  m_normals.reserve(n * ::entries_per_normal);
+  m_uvs.reserve(n);
 }
 
-auto alloy::render::polygon_3d_builder::reserve_tangents(std::size_t n) -> void
+auto alloy::render::polygon_3d_builder::reserve_normals(std::size_t n)
+  -> void
 {
-  m_tangents.reserve(n * ::entries_per_tangent);
+  m_normals.reserve(n);
 }
 
-auto alloy::render::polygon_3d_builder::reserve_bitangents(std::size_t n) -> void
+auto alloy::render::polygon_3d_builder::reserve_tangents(std::size_t n)
+  -> void
 {
-  m_bitangents.reserve(n * ::entries_per_bitangent);
+  m_tangents.reserve(n);
 }
 
-auto alloy::render::polygon_3d_builder::reserve_indices(std::size_t n) -> void
+auto alloy::render::polygon_3d_builder::reserve_bitangents(std::size_t n)
+  -> void
 {
-  m_indices.reserve(n * ::entries_per_indices);
+  m_bitangents.reserve(n);
+}
+
+auto alloy::render::polygon_3d_builder::reserve_indices(std::size_t n)
+  -> void
+{
+  m_indices.reserve(n);
 }
 
 //------------------------------------------------------------------------------
@@ -116,6 +125,12 @@ auto alloy::render::polygon_3d_builder::set_positions(core::vector<core::point3>
   -> void
 {
   m_positions = std::move(positions);
+}
+
+auto alloy::render::polygon_3d_builder::set_colors(core::vector<core::color> colors)
+  -> void
+{
+  m_colors = std::move(colors);
 }
 
 auto alloy::render::polygon_3d_builder::set_uvs(core::vector<core::point2> uvs)
@@ -162,6 +177,12 @@ auto alloy::render::polygon_3d_builder::add_position(const core::point3& p)
   } else if (core::piecewise_compare<core::point3>{}(p, m_upper_right)) {
     m_upper_right = p;
   }
+}
+
+auto alloy::render::polygon_3d_builder::add_color(const core::color& c)
+  -> void
+{
+  m_colors.push_back(c);
 }
 
 auto alloy::render::polygon_3d_builder::add_uv(const core::point2& p)
@@ -224,6 +245,7 @@ auto alloy::render::polygon_3d_builder::build_with(core::allocator alloc)
   auto config = mesh_config{};
   config.topology             = m_topology;
   config.normal_components    = m_normals.empty() ? 0u : ::entries_per_normal;
+  config.color_components     = m_colors.empty() ? 0u : ::entries_per_color;
   config.uv_components        = m_uvs.empty() ? 0u : ::entries_per_uv;
   config.tangent_components   = m_tangents.empty() ? 0u : ::entries_per_tangent;
   config.bitangent_components = m_normals.empty() ? 0u : ::entries_per_bitangent;
@@ -242,6 +264,7 @@ auto alloy::render::polygon_3d_builder::construct_data(core::packed_buffer& buff
   // integers will leave unaligned vertex buffers.
   const auto buffer_size = (
     ::entries_per_position * m_positions.size() * core::size_of<float>() +
+    ::entries_per_color * m_colors.size() * core::size_of<std::byte>() +
     ::entries_per_uv * m_uvs.size() * core::size_of<float>() +
     (::entries_per_normal + 1u) * m_normals.size() * core::size_of<std::int16_t>() +
     (::entries_per_tangent + 1u) * m_tangents.size() * core::size_of<std::int16_t>() +
@@ -254,41 +277,36 @@ auto alloy::render::polygon_3d_builder::construct_data(core::packed_buffer& buff
   const auto positions = m_positions.size();
   for (auto i = 0u; i < positions; ++i) {
 
-    writer.pack_object(m_positions[i].x());
-    writer.pack_object(m_positions[i].y());
+    writer.pack_object(m_positions[i], point_packer{});
+
+    if (!m_colors.empty()) {
+      ALLOY_ASSERT(i < m_colors.size());
+
+      writer.pack_object(m_colors[i], color_packer{});
+    }
 
     if (!m_uvs.empty()) {
       ALLOY_ASSERT(i < m_uvs.size());
 
-      writer.pack_object(m_uvs[i].x());
-      writer.pack_object(m_uvs[i].y());
+      writer.pack_object(m_uvs[i], point_packer{});
     }
 
     if (!m_normals.empty()) {
       ALLOY_ASSERT(i < m_normals.size());
 
-      writer.pack_object(compress(m_normals[i].x()));
-      writer.pack_object(compress(m_normals[i].y()));
-      writer.pack_object(compress(m_normals[i].z()));
-      writer.pack_object(std::uint16_t{}); // padding
+      writer.pack_object(m_normals[i], vector_packer{});
     }
 
     if (!m_tangents.empty()) {
       ALLOY_ASSERT(i < m_tangents.size());
 
-      writer.pack_object(compress(m_tangents[i].x()));
-      writer.pack_object(compress(m_tangents[i].y()));
-      writer.pack_object(compress(m_tangents[i].z()));
-      writer.pack_object(std::uint16_t{}); // padding
+      writer.pack_object(m_tangents[i], vector_packer{});
     }
 
     if (!m_bitangents.empty()) {
       ALLOY_ASSERT(i < m_bitangents.size());
 
-      writer.pack_object(compress(m_bitangents[i].x()));
-      writer.pack_object(compress(m_bitangents[i].y()));
-      writer.pack_object(compress(m_bitangents[i].z()));
-      writer.pack_object(std::uint16_t{}); // padding
+      writer.pack_object(m_bitangents[i], vector_packer{});
     }
   }
 

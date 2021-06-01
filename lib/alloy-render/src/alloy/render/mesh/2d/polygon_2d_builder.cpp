@@ -24,22 +24,17 @@
 
 #include "alloy/render/mesh/2d/polygon_2d_builder.hpp"
 
+#include "../attribute_packer.hpp"
+
 #include <utility> // std::move
 
 namespace {
 
 inline constexpr auto entries_per_position = 2u;
+inline constexpr auto entries_per_color = 4u;
 inline constexpr auto entries_per_uv = 2u;
 inline constexpr auto entries_per_normal = 3u;
 inline constexpr auto entries_per_indices = 3u;
-
-auto compress(float x)
-  noexcept -> std::int16_t
-{
-  static constexpr auto max = std::numeric_limits<std::int16_t>::max();
-
-  return static_cast<std::int16_t>(x * max);
-}
 
 } // namespace <anonymous>
 
@@ -51,6 +46,7 @@ alloy::render::polygon_2d_builder::polygon_2d_builder(primitive_topology topolog
                                                 core::allocator alloc)
   noexcept
   : m_positions{core::stl_allocator_adapter<core::point2>{alloc}},
+    m_colors{core::stl_allocator_adapter<core::color>{alloc}},
     m_uvs{core::stl_allocator_adapter<core::point2>{alloc}},
     m_normals{core::stl_allocator_adapter<core::vector3>{alloc}},
     m_indices{core::stl_allocator_adapter<index_type>{alloc}},
@@ -69,6 +65,7 @@ auto alloy::render::polygon_2d_builder::reserve(std::size_t n)
   -> void
 {
   reserve_positions(n);
+  reserve_colors(n);
   reserve_uvs(n);
   reserve_normals(n);
 }
@@ -78,17 +75,25 @@ auto alloy::render::polygon_2d_builder::reserve(std::size_t n)
 auto alloy::render::polygon_2d_builder::reserve_positions(std::size_t n)
   -> void
 {
-  m_positions.reserve(n * ::entries_per_position);
+  m_positions.reserve(n);
 }
 
-auto alloy::render::polygon_2d_builder::reserve_uvs(std::size_t n) -> void
+auto alloy::render::polygon_2d_builder::reserve_colors(std::size_t n)
+  -> void
 {
-  m_uvs.reserve(n * ::entries_per_uv);
+  m_colors.reserve(n);
 }
 
-auto alloy::render::polygon_2d_builder::reserve_normals(std::size_t n) -> void
+auto alloy::render::polygon_2d_builder::reserve_uvs(std::size_t n)
+  -> void
 {
-  m_normals.reserve(n * ::entries_per_normal);
+  m_uvs.reserve(n);
+}
+
+auto alloy::render::polygon_2d_builder::reserve_normals(std::size_t n)
+  -> void
+{
+  m_normals.reserve(n);
 }
 
 auto alloy::render::polygon_2d_builder::reserve_indices(std::size_t n)
@@ -115,6 +120,12 @@ auto alloy::render::polygon_2d_builder::set_positions(core::vector<core::point2>
       m_upper_right = p3;
     }
   }
+}
+
+auto alloy::render::polygon_2d_builder::set_colors(core::vector<core::color> colors)
+  -> void
+{
+  m_colors = std::move(colors);
 }
 
 auto alloy::render::polygon_2d_builder::set_uvs(core::vector<core::point2> uvs)
@@ -151,6 +162,12 @@ auto alloy::render::polygon_2d_builder::add_position(const alloy::core::point2& 
   } else if (core::piecewise_compare<core::point3>{}(p3, m_upper_right)) {
     m_upper_right = p3;
   }
+}
+
+auto alloy::render::polygon_2d_builder::add_color(const core::color& c)
+  -> void
+{
+  m_colors.push_back(c);
 }
 
 auto alloy::render::polygon_2d_builder::add_uv(const core::point2& p)
@@ -203,6 +220,7 @@ auto alloy::render::polygon_2d_builder::build_with(core::allocator alloc)
   auto config = mesh_config{};
   config.topology             = m_topology;
   config.normal_components    = m_normals.empty() ? 0u : ::entries_per_normal;
+  config.color_components     = m_colors.empty() ? 0u : ::entries_per_color;
   config.uv_components        = m_uvs.empty() ? 0u : ::entries_per_uv;
   config.tangent_components   = 0u;
   config.bitangent_components = 0u;
@@ -223,6 +241,7 @@ auto alloy::render::polygon_2d_builder::construct_data(core::packed_buffer& buff
   // integers will leave unaligned vertex buffers.
   const auto buffer_size = (
     ::entries_per_position * m_positions.size() * core::size_of<float>() +
+    ::entries_per_color * m_colors.size() * core::size_of<std::byte>() +
     ::entries_per_uv * m_uvs.size() * core::size_of<float>() +
     (::entries_per_normal + 1u) * m_normals.size() * core::size_of<std::int16_t>()
   );
@@ -233,27 +252,29 @@ auto alloy::render::polygon_2d_builder::construct_data(core::packed_buffer& buff
   const auto positions = m_positions.size();
   for (auto i = 0u; i < positions; ++i) {
 
-    writer.pack_object(m_positions[i].x());
-    writer.pack_object(m_positions[i].y());
+    writer.pack_object(m_positions[i], point_packer{});
+
+    if (!m_colors.empty()) {
+      ALLOY_ASSERT(i < m_colors.size());
+
+      writer.pack_object(m_colors[i], color_packer{});
+    }
 
     if (!m_uvs.empty()) {
       ALLOY_ASSERT(i < m_uvs.size());
 
-      writer.pack_object(m_uvs[i].x());
-      writer.pack_object(m_uvs[i].y());
+      writer.pack_object(m_uvs[i], point_packer{});
     }
 
     if (!m_normals.empty()) {
       ALLOY_ASSERT(i < m_normals.size());
 
-      writer.pack_object(compress(m_normals[i].x()));
-      writer.pack_object(compress(m_normals[i].y()));
-      writer.pack_object(compress(m_normals[i].z()));
-      writer.pack_object(std::uint16_t{}); // padding
+      writer.pack_object(m_normals[i], vector_packer{});
     }
   }
 
   // This should hold provided that the input data was correct.
   ALLOY_ASSERT(buffer.size() == buffer_size);
 }
+
 

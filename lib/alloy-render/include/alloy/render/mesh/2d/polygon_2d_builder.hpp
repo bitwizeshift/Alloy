@@ -42,6 +42,7 @@
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/containers/vector.hpp"
+#include "alloy/core/model/color.hpp"
 
 #include <cstdint> // std::uint16_t
 #include <cstddef> // std::size_t
@@ -105,6 +106,7 @@ namespace alloy::render {
     ///
     /// \param n the number of entries
     auto reserve_positions(std::size_t n) -> void;
+    auto reserve_colors(std::size_t n) -> void;
     auto reserve_uvs(std::size_t n) -> void;
     auto reserve_normals(std::size_t n) -> void;
     auto reserve_indices(std::size_t n) -> void;
@@ -119,6 +121,11 @@ namespace alloy::render {
     ///
     /// \param positions the positions
     auto set_positions(core::vector<core::point2> positions) -> void;
+
+    /// \brief Sets the color coordinates for this mesh
+    ///
+    /// \param uvs the color coordinates
+    auto set_colors(core::vector<core::color> uvs) -> void;
 
     /// \brief Sets the UV coordinates for this mesh
     ///
@@ -144,6 +151,11 @@ namespace alloy::render {
     ///
     /// \param p the position
     auto add_position(const core::point2& p) -> void;
+
+    /// \brief Adds a color to the mesh
+    ///
+    /// \param c the color
+    auto add_color(const core::color& c) -> void;
 
     /// \brief Adds a UV coordinate to the mesh
     ///
@@ -191,6 +203,7 @@ namespace alloy::render {
   private:
 
     core::vector<core::point2> m_positions;
+    core::vector<core::color> m_colors;
     core::vector<core::point2> m_uvs;
     core::vector<core::vector3> m_normals;
     core::vector<std::uint16_t> m_indices;

@@ -35,6 +35,7 @@
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/mesh/mesh_builder.hpp"
 
+#include "alloy/core/model/color.hpp"
 #include "alloy/core/memory/packed_buffer.hpp"
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
@@ -104,6 +105,7 @@ namespace alloy::render {
     ///
     /// \param n the number of entries
     auto reserve_positions(std::size_t n) -> void;
+    auto reserve_colors(std::size_t n) -> void;
     auto reserve_uvs(std::size_t n) -> void;
     auto reserve_normals(std::size_t n) -> void;
     auto reserve_tangents(std::size_t n) -> void;
@@ -120,6 +122,11 @@ namespace alloy::render {
     ///
     /// \param positions the positions
     auto set_positions(core::vector<core::point3> positions) -> void;
+
+    /// \brief Sets the colors for this mesh
+    ///
+    /// \param colors the colors
+    auto set_colors(core::vector<core::color> colors) -> void;
 
     /// \brief Sets the UV coordinates for this mesh
     ///
@@ -158,6 +165,11 @@ namespace alloy::render {
     ///
     /// \param p the position
     auto add_position(const core::point3& p) -> void;
+
+    /// \brief Adds a color to the mesh
+    ///
+    /// \param c the color
+    auto add_color(const core::color& c) -> void;
 
     /// \brief Adds a UV coordinate to the mesh
     ///
@@ -215,6 +227,7 @@ namespace alloy::render {
   private:
 
     core::vector<core::point3> m_positions;
+    core::vector<core::color> m_colors;
     core::vector<core::point2> m_uvs;
     core::vector<core::vector3> m_normals;
     core::vector<core::vector3> m_tangents;

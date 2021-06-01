@@ -44,6 +44,7 @@
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/memory/data_quantity.hpp"
 #include "alloy/core/containers/vector.hpp"
+#include "alloy/core/model/color.hpp"
 
 #include <cstddef>
 #include <cstdint>
@@ -90,6 +91,7 @@ namespace alloy::render {
   public:
 
     auto set_components_per_position(std::uint8_t n) noexcept-> void;
+    auto set_components_per_color(std::uint8_t n) noexcept -> void;
     auto set_components_per_uv(std::uint8_t n) noexcept-> void;
     auto set_components_per_normal(std::uint8_t n) noexcept-> void;
     auto set_components_per_tangent(std::uint8_t n) noexcept-> void;
@@ -108,6 +110,8 @@ namespace alloy::render {
 
     auto add_position(const core::point2& p) -> void;
     auto add_position(const core::point3& p) -> void;
+
+    auto add_color(const core::color& c) -> void;
 
     auto add_uv(float p) -> void;
     auto add_uv(const core::point2& p) -> void;
@@ -141,6 +145,7 @@ namespace alloy::render {
     primitive_topology m_topology;
     core::axis_aligned_box m_bound;
     std::uint8_t m_components_per_position;
+    std::uint8_t m_components_per_color;
     std::uint8_t m_components_per_uv;
     std::uint8_t m_components_per_normal;
     std::uint8_t m_components_per_tangent;

@@ -31,6 +31,7 @@ set(source_files
   src/alloy/render/mesh/3d/sphere_builder.cpp
   src/alloy/render/mesh/unsafe_mesh_builder.hpp
   src/alloy/render/mesh/unsafe_mesh_builder.cpp
+  src/alloy/render/mesh/attribute_packer.hpp
 )
 
 source_group(
