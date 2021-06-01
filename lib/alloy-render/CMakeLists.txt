@@ -3,6 +3,11 @@
 ##############################################################################
 
 set(header_files
+  include/alloy/render/light/light.hpp
+  include/alloy/render/light/direction_light.hpp
+  include/alloy/render/light/global_light.hpp
+  include/alloy/render/light/point_light.hpp
+  include/alloy/render/light/spot_light.hpp
   include/alloy/render/material/blend_factor.hpp
   include/alloy/render/material/blend_equation.hpp
   include/alloy/render/material/depth_compare.hpp
