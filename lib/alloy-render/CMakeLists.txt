@@ -15,6 +15,7 @@ set(header_files
   include/alloy/render/mesh/3d/polygon_3d_builder.hpp
   include/alloy/render/mesh/3d/cube_builder.hpp
   include/alloy/render/mesh/3d/sphere_builder.hpp
+  include/alloy/render/mesh/attribute_locations.hpp
 )
 
 source_group(
