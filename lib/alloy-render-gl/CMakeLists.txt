@@ -12,6 +12,7 @@ set(header_files
   include/alloy/render/gl/material/depth_compare.hpp
   include/alloy/render/gl/mesh/primitive_topology.hpp
   include/alloy/render/gl/mesh/fill_mode.hpp
+  include/alloy/render/gl/mesh/mesh.hpp
   include/alloy/render/gl/error.hpp
   include/alloy/render/gl/state_cache.hpp
 )
@@ -22,6 +23,7 @@ source_group(
 )
 
 set(source_files
+  src/alloy/render/gl/mesh/mesh.cpp
   src/alloy/render/gl/error.cpp
   src/alloy/render/gl/state_cache.cpp
 )
