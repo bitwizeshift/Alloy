@@ -158,6 +158,7 @@ set(header_files
   include/alloy/core/model/camera.hpp
   include/alloy/core/model/lazy_transform.hpp
   include/alloy/core/model/interpolated_transform.hpp
+  include/alloy/core/utilities/optional.hpp
 )
 
 source_group(
