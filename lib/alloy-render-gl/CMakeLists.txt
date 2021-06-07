@@ -6,6 +6,10 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 
 set(header_files
+  include/alloy/render/gl/shader/shader.hpp
+  include/alloy/render/gl/shader/program.hpp
+  include/alloy/render/gl/shader/program_utilities.hpp
+  include/alloy/render/gl/shader/active_program.hpp
   include/alloy/render/gl/material/blend_equation.hpp
   include/alloy/render/gl/material/blend_factor.hpp
   include/alloy/render/gl/material/cull_face.hpp
@@ -23,6 +27,9 @@ source_group(
 )
 
 set(source_files
+  src/alloy/render/gl/shader/shader.cpp
+  src/alloy/render/gl/shader/program.cpp
+  src/alloy/render/gl/shader/program_utilities.cpp
   src/alloy/render/gl/mesh/mesh.cpp
   src/alloy/render/gl/error.cpp
   src/alloy/render/gl/state_cache.cpp
@@ -70,6 +77,7 @@ target_include_directories(${PROJECT_NAME}RenderGL
 
 target_link_libraries(${PROJECT_NAME}RenderGL
   PUBLIC ${PROJECT_NAME}::Core
+  PUBLIC ${PROJECT_NAME}::IO
   PUBLIC ${PROJECT_NAME}::Render
   PUBLIC OpenGL::GL
   PUBLIC GLEW::GLEW
