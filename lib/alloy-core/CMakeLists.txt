@@ -138,6 +138,7 @@ set(header_files
   include/alloy/core/math/vector/vector4_constants.hpp
 
   # Geometry
+  include/alloy/core/geometry/point/barycentric.hpp
   include/alloy/core/geometry/point/point2.hpp
   include/alloy/core/geometry/point/point3.hpp
   include/alloy/core/geometry/point/polar.hpp
