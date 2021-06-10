@@ -3,39 +3,69 @@
 #include "alloy/core/math/vector/vector_utilities.hpp"
 
 //-----------------------------------------------------------------------------
-// Relative Transformations
+// World Translations
 //-----------------------------------------------------------------------------
 
-auto alloy::core::camera::translate(real delta_x,
-                                    real delta_y,
-                                    real delta_z)
+auto alloy::core::camera::translate_world(real delta_x,
+                                          real delta_y,
+                                          real delta_z)
   noexcept -> void
 {
-  translate(vector3{delta_x, delta_y, delta_z});
+  translate_world(vector3{delta_x, delta_y, delta_z});
 }
 
-auto alloy::core::camera::translate(const vector3& delta)
+auto alloy::core::camera::translate_world(const vector3& delta)
   noexcept -> void
 {
   m_translation += delta;
 }
 
-auto alloy::core::camera::translate_x(real delta)
+auto alloy::core::camera::translate_world_x(real delta)
   noexcept -> void
 {
   m_translation.x() += delta;
 }
 
-auto alloy::core::camera::translate_y(real delta)
+auto alloy::core::camera::translate_world_y(real delta)
   noexcept -> void
 {
   m_translation.y() += delta;
 }
 
-auto alloy::core::camera::translate_z(real delta)
+auto alloy::core::camera::translate_world_z(real delta)
   noexcept -> void
 {
   m_translation.z() += delta;
+}
+
+//-----------------------------------------------------------------------------
+// Local Translations
+//-----------------------------------------------------------------------------
+
+auto alloy::core::camera::translate_local_x(real delta)
+  noexcept -> void
+{
+  m_translation += m_right * delta;
+}
+
+auto alloy::core::camera::translate_local_y(real delta)
+  noexcept -> void
+{
+  m_translation += m_up * delta;
+}
+
+auto alloy::core::camera::translate_local_z(real delta)
+  noexcept -> void
+{
+  m_translation += m_forward * delta;
+}
+
+auto alloy::core::camera::translate_local(const vector3& delta)
+  noexcept -> void
+{
+  translate_local_x(delta.x());
+  translate_local_y(delta.y());
+  translate_local_z(delta.z());
 }
 
 //-----------------------------------------------------------------------------
@@ -44,6 +74,7 @@ auto alloy::core::camera::rotate(const quaternion& orientation)
   noexcept -> void
 {
   m_orientation *= orientation;
+  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
 }
 
 auto alloy::core::camera::rotate(const euler_angles& angles)
@@ -119,30 +150,35 @@ auto alloy::core::camera::set_roll(radian angle)
   noexcept -> void
 {
   m_orientation *= quaternion::from_angles(radian{0}, radian{0}, angle);
+  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
 }
 
 auto alloy::core::camera::set_pitch(radian angle)
   noexcept -> void
 {
   m_orientation *= quaternion::from_angles(radian{0}, angle, radian{0});
+  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
 }
 
 auto alloy::core::camera::set_yaw(radian angle)
   noexcept -> void
 {
   m_orientation *= quaternion::from_angles(angle, radian{0}, radian{0});
+  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
 }
 
 auto alloy::core::camera::set_orientation(const quaternion& orientation) 
   noexcept -> void
 {
   m_orientation = orientation;
+  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
 }
 
 auto alloy::core::camera::set_orientation(const euler_angles& angles) 
   noexcept -> void
 {
   m_orientation = quaternion::from_angles(angles);
+  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
 }
 
 auto alloy::core::camera::look_at(const vector3& subject, const vector3& up)
@@ -154,6 +190,7 @@ auto alloy::core::camera::look_at(const vector3& subject, const vector3& up)
   const auto y_axis = z_axis.cross(x_axis);
 
   m_orientation = quaternion::from_rotation_axes(x_axis, y_axis, z_axis);
+  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
 }
 
 auto alloy::core::camera::look_at(real x, real y, real z, const vector3& up)
@@ -231,6 +268,9 @@ auto alloy::core::interpolator<alloy::core::camera>::operator()(
 
   result.m_translation = interpolation::linear(v0.m_translation, v1.m_translation, alpha);
   result.m_orientation = interpolation::linear(v0.m_orientation, v1.m_orientation, alpha);
+  result.m_forward     = interpolation::linear(v0.m_forward, v1.m_forward, alpha);
+  result.m_up          = interpolation::linear(v0.m_up, v1.m_up, alpha);
+  result.m_right       = interpolation::linear(v0.m_right, v1.m_right, alpha);
 
   return result;
 }

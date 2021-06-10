@@ -76,36 +76,92 @@ namespace alloy::core {
     auto operator=(const camera& other) noexcept -> camera& = default;
 
     //-------------------------------------------------------------------------
-    // Relative Transformations
+    // World Translations
     //-------------------------------------------------------------------------
   public:
 
     /// \brief Translates this camera by \p delta_x, \p delta_y, \p delta_z
     ///
+    /// \note
+    /// This works in terms of absolute world coordinates
+    ///
     /// \param delta_x the change in the x position
     /// \param delta_y the change in the y position
     /// \param delta_z the change in the z position
-    auto translate(real delta_x, real delta_y, real delta_z) noexcept -> void;
+    auto translate_world(real delta_x, real delta_y, real delta_z) noexcept -> void;
 
     /// \brief Translates this camera by the vector \p delta
     ///
+    /// \note
+    /// This works in terms of absolute world coordinates
+    ///
     /// \param delta the change in translation
-    auto translate(const vector3& delta) noexcept -> void;
+    auto translate_world(const vector3& delta) noexcept -> void;
 
     /// \brief Translates this camera by \p delta in the x axis
     ///
+    /// \note
+    /// This works in terms of absolute world coordinates
+    ///
     /// \param delta the change in translation for the x axis
-    auto translate_x(real delta) noexcept -> void;
+    auto translate_world_x(real delta) noexcept -> void;
 
     /// \brief Translates this camera by \p delta in the y axis
     ///
+    /// \note
+    /// This works in terms of absolute world coordinates
+    ///
     /// \param delta the change in translation for the y axis
-    auto translate_y(real delta) noexcept -> void;
+    auto translate_world_y(real delta) noexcept -> void;
 
     /// \brief Translates this camera by \p delta in the z axis
     ///
+    /// \note
+    /// This works in terms of absolute world coordinates
+    ///
     /// \param delta the change in translation for the z axis
-    auto translate_z(real delta) noexcept -> void;
+    auto translate_world_z(real delta) noexcept -> void;
+
+    //-------------------------------------------------------------------------
+    // Local Translations
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \brief Moves the camera forward along the camera's 'z' axis
+    ///
+    /// \note
+    /// This works in terms of the camera's orientation, rather than the
+    /// camera's position in world-coordinates
+    ///
+    /// \param delta the amount to move forward
+    auto translate_local_z(real delta) noexcept -> void;
+
+    /// \brief Strafes the camera along the camera's x-axis
+    ///
+    /// \note
+    /// This works in terms of the camera's orientation, rather than the
+    /// camera's position in world-coordinates
+    ///
+    /// \param delta the amount to move left
+    auto translate_local_x(real delta) noexcept -> void;
+
+    /// \brief Raises the camera along the camera's y-axis
+    ///
+    /// \note
+    /// This works in terms of the camera's orientation, rather than the
+    /// camera's position in world-coordinates
+    ///
+    /// \param delta the amount to move right
+    auto translate_local_y(real delta) noexcept -> void;
+
+    /// \brief Moves the camera relative to its own axis
+    ///
+    /// \note
+    /// This works in terms of the camera's orientation, rather than the
+    /// camera's position in world-coordinates
+    ///
+    /// \param delta the amount to move right
+    auto translate_local(const vector3& local) noexcept -> void;
 
     //-------------------------------------------------------------------------
 
@@ -262,6 +318,13 @@ namespace alloy::core {
 
     vector3 m_translation;
     quaternion m_orientation;
+
+    // TODO: We can precompute this and cache these values per camera movement,
+    //       as this becomes the 4x4 transform matrix
+    // Vector basis (effectively the transform)
+    vector3 m_forward = vector3_constants::neg_unit_z;
+    vector3 m_up      = vector3_constants::unit_y;
+    vector3 m_right   = vector3_constants::unit_x;
 
     friend interpolator<camera>;
   };
