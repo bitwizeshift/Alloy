@@ -85,6 +85,7 @@ set(header_files
   include/alloy/core/utilities/quantity.hpp
   include/alloy/core/utilities/optional.hpp
   include/alloy/core/utilities/ctor_function.hpp
+  include/alloy/core/utilities/enum_traits.hpp
 
   # Strings
   include/alloy/core/string/hashed_string_view.hpp
