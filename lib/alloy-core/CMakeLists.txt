@@ -84,6 +84,7 @@ set(header_files
   include/alloy/core/utilities/semantic_type.hpp
   include/alloy/core/utilities/quantity.hpp
   include/alloy/core/utilities/optional.hpp
+  include/alloy/core/utilities/option_set.hpp
   include/alloy/core/utilities/ctor_function.hpp
   include/alloy/core/utilities/enum_traits.hpp
 
