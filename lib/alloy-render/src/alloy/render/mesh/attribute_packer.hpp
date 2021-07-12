@@ -141,16 +141,10 @@ auto alloy::render::color_packer::pack(core::packed_buffer_writer& writer,
                                        const core::color& c)
   -> void
 {
-  auto rgba = static_cast<std::uint32_t>(c.to_rgba32());
-  const auto r = static_cast<std::uint8_t>((rgba & 0xff000000) >> 24);
-  const auto g = static_cast<std::uint8_t>((rgba & 0x00ff0000) >> 16);
-  const auto b = static_cast<std::uint8_t>((rgba & 0x0000ff00) >> 8);
-  const auto a = static_cast<std::uint8_t>((rgba & 0x000000ff) >> 0);
-
-  writer.pack_object(r);
-  writer.pack_object(g);
-  writer.pack_object(b);
-  writer.pack_object(a);
+  writer.pack_object(c.r8());
+  writer.pack_object(c.g8());
+  writer.pack_object(c.b8());
+  writer.pack_object(c.a8());
 }
 
 #endif /* ALLOY_RENDER_MESH_ATTRIBUTE_PACKER_HPP */
