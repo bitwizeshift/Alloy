@@ -551,6 +551,7 @@ auto alloy::render::mesh::stride()
 {
   return (
     bytes_per_position() +
+    bytes_per_colors() +
     bytes_per_uvs() +
     bytes_per_normals() +
     bytes_per_tangents() +

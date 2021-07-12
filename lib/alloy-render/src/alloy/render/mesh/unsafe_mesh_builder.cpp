@@ -242,6 +242,7 @@ auto alloy::render::unsafe_mesh_builder::release()
   config.indices = std::move(m_indices);
   config.topology = m_topology;
   config.position_components = m_components_per_position;
+  config.color_components = m_components_per_color;
   config.uv_components = m_components_per_uv;
   config.normal_components = m_components_per_normal;
   config.tangent_components = m_components_per_tangent;
@@ -259,6 +260,7 @@ auto alloy::render::unsafe_mesh_builder::build_with(core::allocator alloc)
   config.indices = m_indices.copy_with(core::stl_allocator_adapter<index_type>{alloc});
   config.topology = m_topology;
   config.position_components = m_components_per_position;
+  config.color_components = m_components_per_color;
   config.uv_components = m_components_per_uv;
   config.normal_components = m_components_per_normal;
   config.tangent_components = m_components_per_tangent;

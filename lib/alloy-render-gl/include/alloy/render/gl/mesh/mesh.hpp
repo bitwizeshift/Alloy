@@ -35,7 +35,7 @@
 
 #include <GL/glew.h>
 
-#include <array>
+#include <cstdint>
 
 namespace alloy::render::gl {
 

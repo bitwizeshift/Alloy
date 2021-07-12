@@ -27,6 +27,8 @@
 
 #include "alloy/render/mesh/attribute_locations.hpp"
 
+#include <array>
+
 auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
 {
   auto buffers = std::array<::GLuint,2>{};
@@ -75,8 +77,8 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     ::glVertexAttribPointer(
       render::attribute_locations::colors,
       components,
-      GL_RGBA,
-      GL_FALSE,
+      GL_UNSIGNED_BYTE,
+      GL_TRUE,
       stride,
       offset
     );
