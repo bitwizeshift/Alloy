@@ -146,6 +146,13 @@ namespace alloy::extra {
                                io::keyboard::key_state state,
                                io::message_pump& p) noexcept;
 
+    /// \brief Handles a mouse event
+    ///
+    /// \param event the SDL_Event to handle
+    /// \param p the message pump to respond to
+    void handle_mouse_event(const ::SDL_Event& event,
+                            io::message_pump& p) noexcept;
+
     //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------

@@ -3,12 +3,33 @@
 
 #include "alloy/core/assert.hpp"
 
-#include <SDL2/SDL.h>
 #include "alloy/io/keyboard.hpp"
 #include "alloy/io/events/keyboard_events.hpp"
+#include "alloy/io/events/mouse_events.hpp"
+
+#include <SDL2/SDL.h>
 
 
 namespace {
+
+auto to_mouse_button(::Uint8 code) -> std::optional<alloy::io::mouse::button>
+{
+  switch (code) {
+    case SDL_BUTTON_LEFT: {
+      return alloy::io::mouse::button::left;
+    }
+    case SDL_BUTTON_RIGHT: {
+      return alloy::io::mouse::button::right;
+    }
+    case SDL_BUTTON_MIDDLE: {
+      return alloy::io::mouse::button::middle;
+    }
+    default: {
+      break;
+    }
+  }
+  return std::nullopt;
+}
 
 alloy::io::keyboard::scan_code to_scan_code(::SDL_Scancode code)
 {
@@ -916,6 +937,13 @@ void alloy::extra::sdl2_pump_source::poll( io::message_pump& p )
         handle_keyboard_event(event, io::keyboard::key_state::pressed, p);
         break;
       }
+      case SDL_MOUSEWHEEL:
+      case SDL_MOUSEMOTION:
+      case SDL_MOUSEBUTTONUP:
+      case SDL_MOUSEBUTTONDOWN: {
+        handle_mouse_event(event, p);
+        break;
+      }
     }
   }
 }
@@ -1031,4 +1059,56 @@ void alloy::extra::sdl2_pump_source
     io::keyboard::symbol{ scan_code, key_code, modifiers, },
     state
   });
+}
+
+void alloy::extra::sdl2_pump_source::handle_mouse_event(const SDL_Event& event,
+                                                        alloy::io::message_pump& p)
+  noexcept
+{
+  const auto id = event.window.windowID;
+  const auto it = m_windows.find(id);
+
+  // Ignore windows that aren't attached; no reason to fire these events.
+  if (it == m_windows.end()) {
+    return;
+  }
+
+  const auto window = it->second;
+
+  switch (event.type) {
+    case SDL_MOUSEWHEEL: {
+      p.post_event(io::mouse_scroll_event{
+        window,
+        event.wheel.x, event.wheel.y
+      });
+      return;
+    }
+    case SDL_MOUSEMOTION: {
+      p.post_event(io::mouse_move_event{
+        window,
+        event.motion.x, event.motion.y,
+        event.motion.xrel, event.motion.yrel,
+      });
+      return;
+    }
+    case SDL_MOUSEBUTTONDOWN: [[fallthrough]];
+    case SDL_MOUSEBUTTONUP: {
+      const auto button = to_mouse_button(event.button.button);
+      const auto state = (event.button.state == SDL_PRESSED)
+        ? io::mouse::button_state::pressed
+        : io::mouse::button_state::depressed;
+
+      if (!button) { return; }
+
+      p.post_event(io::mouse_button_event{
+        window,
+        event.button.x, event.button.y,
+        *button, state
+      });
+      return;
+    }
+    default: {
+      break;
+    }
+  }
 }
