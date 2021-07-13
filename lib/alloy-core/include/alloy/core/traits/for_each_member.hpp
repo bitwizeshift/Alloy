@@ -49,6 +49,12 @@ namespace alloy::core {
 
 } // namespace alloy::core
 
+// GCC throws a false positive here and seems to think that the `void_t`
+// expressions are not initializing members of a struct... Which is insane since
+// these are unevaluated contexts. This is a garbage diagnostic, and is disabled
+ALLOY_COMPILER_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE(-Wmissing-field-initializers)
+
 namespace alloy::core::detail {
 
   // The approach taken here is described in detail in the following blog post:
@@ -143,6 +149,8 @@ namespace alloy::core::detail {
   constexpr auto for_each_impl(T&& agg, Fn&& fn, ctor_arity<N>) -> void;
 
 } // namespace alloy::core::detail
+
+ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 template <typename T, typename Fn>
 inline constexpr
