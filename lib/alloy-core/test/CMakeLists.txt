@@ -30,6 +30,7 @@ set(source_files
   src/alloy/core/memory/packed_buffer.test.cpp
 
   src/main.cpp
+  src/alloy/core/utilities/hash.test.cpp
 )
 
 source_group(
