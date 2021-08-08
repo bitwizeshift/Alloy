@@ -35,6 +35,7 @@ set(header_files
   include/alloy/core/api.hpp
   include/alloy/core/assert.hpp
   include/alloy/core/source_location.hpp
+  include/alloy/core/types.hpp
 
   include/alloy/core/math/clamped.hpp
   include/alloy/core/math/saturated.hpp
@@ -72,6 +73,7 @@ set(header_files
 
   # Utilities
   include/alloy/core/utilities/aligned_storage.hpp
+  include/alloy/core/utilities/int_utilities.hpp
   include/alloy/core/utilities/casts.hpp
   include/alloy/core/utilities/delegate.hpp
   include/alloy/core/utilities/signal.hpp

@@ -10,6 +10,8 @@ set(source_files
   src/alloy/core/utilities/result.test.cpp
   src/alloy/core/utilities/result.constexpr.test.cpp
   src/alloy/core/utilities/failure.test.cpp
+  src/alloy/core/utilities/hash.test.cpp
+  src/alloy/core/utilities/int_utilities.test.cpp
 
   # Strings
   src/alloy/core/string/string_tokenizer.test.cpp
@@ -30,7 +32,6 @@ set(source_files
   src/alloy/core/memory/packed_buffer.test.cpp
 
   src/main.cpp
-  src/alloy/core/utilities/hash.test.cpp
 )
 
 source_group(
