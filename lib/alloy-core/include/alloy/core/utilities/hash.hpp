@@ -159,7 +159,7 @@ namespace alloy::core {
   /// \param value the value to hash
   /// \return the hashed value
   template <typename T>
-  auto hash_combine_object_representation(std::size_t seed, const T& value) noexcept -> hash_type;
+  auto hash_combine_object_representation(hash_type seed, const T& value) noexcept -> hash_type;
 
   //----------------------------------------------------------------------------
 
