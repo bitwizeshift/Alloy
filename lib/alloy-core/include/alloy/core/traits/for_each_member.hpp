@@ -165,8 +165,11 @@ auto alloy::core::for_each_member(T&& agg, Fn&& fn) -> void
 
 template <typename T, typename Fn>
 inline constexpr
-auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<0>)
-  -> void
+auto alloy::core::detail::for_each_impl(
+  [[maybe_unused]] T&& agg,
+  [[maybe_unused]] Fn&& fn,
+  ctor_arity<0>
+) -> void
 {
   // do nothing (0 members)
 }
