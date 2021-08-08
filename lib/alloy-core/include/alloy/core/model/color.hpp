@@ -582,9 +582,9 @@ namespace alloy::core {
 
 template <typename T>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::detail::color_reference<T>::color_reference(not_null<real*> f)
+alloy::core::detail::color_reference<T>::color_reference(not_null<real*> color)
   noexcept
-  : m_color{f}
+  : m_color{color}
 {
 
 }
