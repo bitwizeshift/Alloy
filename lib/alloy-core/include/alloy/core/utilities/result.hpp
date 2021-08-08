@@ -3658,6 +3658,9 @@ alloy::core::detail::result_union<T,E,false>
 
 //-----------------------------------------------------------------------------
 
+ALLOY_COMPILER_CLANG_DIAGNOSTIC_PUSH()
+ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(-Wdtor-name)
+
 template <typename T, typename E>
 ALLOY_FORCE_INLINE
 alloy::core::detail::result_union<T,E,false>
@@ -3666,6 +3669,8 @@ alloy::core::detail::result_union<T,E,false>
 {
   destroy();
 }
+
+ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
 
 //-----------------------------------------------------------------------------
 // Modifiers
