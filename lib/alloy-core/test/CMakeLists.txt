@@ -22,6 +22,9 @@ set(source_files
   # Traits
   src/alloy/core/traits/function_traits.test.cpp
 
+  # Model
+  src/alloy/core/model/color.test.cpp
+
   # Math
   src/alloy/core/math/vector/vector2.test.cpp
   src/alloy/core/math/vector/vector3.test.cpp
