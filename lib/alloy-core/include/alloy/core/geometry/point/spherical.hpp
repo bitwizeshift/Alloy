@@ -130,14 +130,6 @@ namespace alloy::core {
 
   //----------------------------------------------------------------------------
 
-  /// \brief Determines equality between two spherical relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left spherical
-  /// \param rhs the right spherical
-  /// \return \c true if the two spherical contain almost equal values
-  constexpr auto almost_equal(const spherical& lhs, const spherical& rhs) noexcept -> bool;
-
   /// \brief Determines equality between two spherical relative to \p tolerance
   ///
   /// \param lhs the left spherical
@@ -271,17 +263,6 @@ auto alloy::core::operator!=(const spherical& lhs, const spherical& rhs) noexcep
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
-
-inline constexpr
-auto alloy::core::almost_equal(const spherical& lhs, const spherical& rhs)
-  noexcept -> bool
-{
-  return (
-    almost_equal(lhs.rho(), rhs.rho()) &&
-    almost_equal(lhs.phi(), rhs.phi()) &&
-    almost_equal(lhs.theta(), rhs.theta())
-  );
-}
 
 inline constexpr
 auto alloy::core::almost_equal(const spherical& lhs,

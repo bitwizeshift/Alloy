@@ -118,14 +118,6 @@ namespace alloy::core {
 
   //----------------------------------------------------------------------------
 
-  /// \brief Determines equality between two polar relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left polar
-  /// \param rhs the right polar
-  /// \return \c true if the two polar contain almost equal values
-  constexpr auto almost_equal(const polar& lhs, const polar& rhs) noexcept -> bool;
-
   /// \brief Determines equality between two polar relative to \p tolerance
   ///
   /// \param lhs the left polar
@@ -240,16 +232,6 @@ auto alloy::core::operator!=(const polar& lhs, const polar& rhs) noexcept -> boo
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
-
-inline constexpr
-auto alloy::core::almost_equal(const polar& lhs, const polar& rhs)
-  noexcept -> bool
-{
-  return (
-    almost_equal(lhs.r(), rhs.r()) &&
-    almost_equal(lhs.theta(), rhs.theta())
-  );
-}
 
 inline constexpr
 auto alloy::core::almost_equal(const polar& lhs,

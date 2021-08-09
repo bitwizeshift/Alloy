@@ -241,16 +241,6 @@ namespace alloy::core {
   //----------------------------------------------------------------------------
 
   /// \brief Determines equality between two basic_angle relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left basic_angle
-  /// \param rhs the right basic_angle
-  /// \return \c true if the two basic_angle contain almost equal values
-  template<typename AngleUnit>
-  constexpr auto almost_equal(const basic_angle<AngleUnit>& lhs,
-                              const basic_angle<AngleUnit>& rhs) noexcept -> bool;
-
-  /// \brief Determines equality between two basic_angle relative to
   ///        \ref tolerance
   ///
   /// \param lhs the left basic_angle
@@ -596,15 +586,6 @@ auto alloy::core::operator>=(const basic_angle<AngleUnit>& lhs,
 }
 
 //------------------------------------------------------------------------------
-
-template<typename AngleUnit>
-inline constexpr
-auto alloy::core::almost_equal(const basic_angle<AngleUnit>& lhs,
-                               const basic_angle<AngleUnit>& rhs)
-  noexcept -> bool
-{
-  return almost_equal( lhs.value(), rhs.value() );
-}
 
 template<typename AngleUnit>
 inline constexpr

@@ -537,7 +537,6 @@ namespace alloy::core {
   constexpr auto operator==(const color& lhs, const color& rhs) noexcept -> bool;
   constexpr auto operator!=(const color& lhs, const color& rhs) noexcept -> bool;
 
-  constexpr auto almost_equal(const color& lhs, const color& rhs) noexcept -> bool;
   constexpr auto almost_equal(const color& lhs, const color& rhs,
                               real tolerance) noexcept -> bool;
 
@@ -1293,14 +1292,6 @@ auto alloy::core::operator!=(const color& lhs, const color& rhs)
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
-
-inline constexpr
-auto alloy::core::almost_equal(const color& lhs, const color& rhs)
-  noexcept
-  -> bool
-{
-  return almost_equal(lhs, rhs, color::comparison_tolerance);
-}
 
 inline constexpr
 auto alloy::core::almost_equal(const color& lhs, const color& rhs, real tolerance)

@@ -252,15 +252,6 @@ namespace alloy::core {
 
   //----------------------------------------------------------------------------
 
-  /// \brief Determines equality between two planes relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left plane
-  /// \param rhs the right plane
-  /// \return \c true if the two planes contain almost equal values
-  constexpr bool almost_equal( const plane& lhs,
-                               const plane& rhs ) noexcept;
-
   /// \brief Determines equality between two planes relative to \p tolerance
   ///
   /// \param lhs the left plane
@@ -431,16 +422,6 @@ inline constexpr bool alloy::core::operator!=( const plane& lhs,
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
-
-inline constexpr bool alloy::core::almost_equal( const plane& lhs,
-                                                 const plane& rhs )
-  noexcept
-{
-  return almost_equal(lhs.a(), rhs.a()) &&
-         almost_equal(lhs.b(), rhs.b()) &&
-         almost_equal(lhs.c(), rhs.c()) &&
-         almost_equal(lhs.d(), rhs.d());
-}
 
 inline constexpr bool alloy::core::almost_equal( const plane& lhs,
                                                  const plane& rhs,

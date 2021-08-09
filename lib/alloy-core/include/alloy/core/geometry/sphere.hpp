@@ -151,14 +151,6 @@ namespace alloy::core {
 
   //----------------------------------------------------------------------------
 
-  /// \brief Determines equality between two spheres relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left sphere
-  /// \param rhs the right sphere
-  /// \return \c true if the two spheres contain almost equal values
-  constexpr bool almost_equal( const sphere& lhs, const sphere& rhs ) noexcept;
-
   /// \brief Determines equality between two spheres relative to \p tolerance
   ///
   /// \param lhs the left sphere
@@ -238,14 +230,6 @@ inline constexpr bool alloy::core::operator!=( const sphere& lhs,
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
-
-inline constexpr bool alloy::core::almost_equal( const sphere& lhs,
-                                                 const sphere& rhs )
-  noexcept
-{
-  return almost_equal(lhs.center(), rhs.center()) &&
-         almost_equal(lhs.radius(), rhs.radius());
-}
 
 inline constexpr bool alloy::core::almost_equal( const sphere& lhs,
                                                  const sphere& rhs,

@@ -186,15 +186,6 @@ namespace alloy::core {
   //----------------------------------------------------------------------------
 
   /// \brief Determines equality between two line_segments relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left line_segment
-  /// \param rhs the right line_segment
-  /// \return \c true if the two line_segments contain almost equal values
-  constexpr bool almost_equal( const line_segment& lhs,
-                               const line_segment& rhs ) noexcept;
-
-  /// \brief Determines equality between two line_segments relative to
   ///        \p tolerance
   ///
   /// \param lhs the left line_segment
@@ -293,14 +284,6 @@ inline constexpr bool alloy::core::operator!=( const line_segment& lhs,
 }
 
 //----------------------------------------------------------------------------
-
-inline constexpr bool alloy::core::almost_equal( const line_segment& lhs,
-                                                 const line_segment& rhs )
-  noexcept
-{
-  return almost_equal(lhs.start_point(), rhs.start_point()) &&
-         almost_equal(lhs.end_point(), rhs.end_point());
-}
 
 inline constexpr bool alloy::core::almost_equal( const line_segment& lhs,
                                                  const line_segment& rhs,

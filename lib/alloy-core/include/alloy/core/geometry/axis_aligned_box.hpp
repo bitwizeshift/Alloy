@@ -252,16 +252,6 @@ namespace alloy::core {
 
   //----------------------------------------------------------------------------
 
-  /// \brief Determines equality between two planes relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left plane
-  /// \param rhs the right plane
-  /// \return \c true if the two planes contain almost equal values
-  ALLOY_CORE_API
-  bool almost_equal(const axis_aligned_box& lhs,
-                    const axis_aligned_box& rhs) noexcept;
-
   /// \brief Determines equality between two planes relative to \p tolerance
   ///
   /// \param lhs the left plane

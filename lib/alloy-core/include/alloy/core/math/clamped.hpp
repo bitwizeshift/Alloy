@@ -343,16 +343,6 @@ namespace alloy::core {
   //---------------------------------------------------------------------------
 
   /// \brief Determines relative equality between \p lhs and \p rhs relative
-  ///        to \ref default_tolerance
-  ///
-  /// \param lhs the value on the left of the equation
-  /// \param rhs the value on the right of the equation
-  /// \return \c true if \p lhs is almost equal to \p rhs
-  template <typename Float>
-  constexpr auto almost_equal(clamped<Float> lhs, clamped<Float> rhs)
-    noexcept -> bool;
-
-  /// \brief Determines relative equality between \p lhs and \p rhs relative
   ///        to the specified \p tolerance
   ///
   /// A tolerance of '1' or greater will always return 'true'
@@ -657,15 +647,6 @@ auto alloy::core::operator>=(const T& lhs, clamped<Float> rhs)
   noexcept -> bool
 {
   return lhs >= rhs.value();
-}
-
-
-template <typename Float>
-ALLOY_FORCE_INLINE constexpr
-auto alloy::core::almost_equal(clamped<Float> lhs, clamped<Float> rhs)
-  noexcept -> bool
-{
-  return almost_equal(lhs, rhs, static_cast<real>(1e8));
 }
 
 template <typename Float>

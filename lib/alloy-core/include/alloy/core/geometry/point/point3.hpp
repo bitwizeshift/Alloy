@@ -195,14 +195,6 @@ namespace alloy::core {
 
   //----------------------------------------------------------------------------
 
-  /// \brief Determines equality between two point relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left point
-  /// \param rhs the right point
-  /// \return \c true if the two point contain almost equal values
-  constexpr bool almost_equal( const point3& lhs, const point3& rhs ) noexcept;
-
   /// \brief Determines equality between two point relative to \p tolerance
   ///
   /// \param lhs the left point
@@ -417,18 +409,6 @@ inline constexpr bool alloy::core::operator!=( const point3& lhs,
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
-
-inline constexpr bool alloy::core::almost_equal( const point3& lhs,
-                                                 const point3& rhs )
-  noexcept
-{
-  for (auto i = 0; i < 3; ++i) {
-    if (!almost_equal(lhs[i], rhs[i])) {
-      return false;
-    }
-  }
-  return true;
-}
 
 inline constexpr bool alloy::core::almost_equal( const point3& lhs,
                                                  const point3& rhs,

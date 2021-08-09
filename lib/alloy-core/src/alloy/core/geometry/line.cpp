@@ -71,12 +71,6 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
 
-bool alloy::core::almost_equal( const line& lhs, const line& rhs )
-  noexcept
-{
-  return almost_equal(lhs, rhs, default_tolerance);
-}
-
 bool alloy::core::almost_equal( const line& lhs,
                                 const line& rhs,
                                 real tolerance )

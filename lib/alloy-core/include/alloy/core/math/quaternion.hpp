@@ -479,15 +479,6 @@ namespace alloy::core {
 
   //----------------------------------------------------------------------------
 
-  /// \brief Determines whether two quaternions are almost equal, relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left quaternion
-  /// \param rhs the right quaternion
-  /// \return \c true if \p lhs almost equals \p rhs
-  auto almost_equal(const quaternion& lhs,
-                    const quaternion& rhs) noexcept -> bool;
-
   /// \brief Determines whether two quaternions are almost equal, v to
   ///        \p tolerance
   ///
@@ -843,13 +834,6 @@ auto alloy::core::operator!=(const quaternion& lhs, const quaternion& rhs)
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
-
-inline
-auto alloy::core::almost_equal(const quaternion& lhs, const quaternion& rhs)
-  noexcept -> bool
-{
-  return almost_equal(lhs, rhs, quaternion::comparison_tolerance);
-}
 
 inline
 auto alloy::core::almost_equal(const quaternion& lhs,

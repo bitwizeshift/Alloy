@@ -188,16 +188,6 @@ namespace alloy::core {
   //----------------------------------------------------------------------------
 
   /// \brief Determines equality between two intersection objects relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left intersection
-  /// \param rhs the right intersection
-  /// \return true if the two intersections contain almost equal values
-  template <typename...Types>
-  constexpr bool almost_equal(const intersection<Types...>& lhs,
-                              const intersection<Types...>& rhs) noexcept;
-
-  /// \brief Determines equality between two intersection objects relative to
   ///        \p tolerance
   ///
   /// \param lhs the left intersection
@@ -349,16 +339,6 @@ inline constexpr bool
 }
 
 //------------------------------------------------------------------------------
-
-template <typename...Types>
-inline constexpr bool
-  alloy::core::almost_equal(const intersection<Types...>& lhs,
-                            const intersection<Types...>& rhs)
-  noexcept
-{
-  return almost_equal(lhs, rhs, default_tolerance);
-}
-
 
 template <typename...Types>
 inline constexpr bool

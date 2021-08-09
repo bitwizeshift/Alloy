@@ -208,14 +208,6 @@ bool alloy::core::operator!=( const axis_aligned_box& lhs,
 //------------------------------------------------------------------------------
 
 bool alloy::core::almost_equal( const axis_aligned_box& lhs,
-                                const axis_aligned_box& rhs )
-  noexcept
-{
-  return almost_equal(lhs.top_right_point(), rhs.top_right_point()) &&
-         almost_equal(lhs.bottom_left_point(), rhs.bottom_left_point());
-}
-
-bool alloy::core::almost_equal( const axis_aligned_box& lhs,
                                 const axis_aligned_box& rhs,
                                 real tolerance )
   noexcept

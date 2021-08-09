@@ -164,15 +164,6 @@ namespace alloy::core {
   //----------------------------------------------------------------------------
 
   /// \brief Determines equality between two lines relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left line
-  /// \param rhs the right line
-  /// \return \c true if the two lines contain almost equal values
-  ALLOY_CORE_API
-  bool almost_equal( const line& lhs, const line& rhs ) noexcept;
-
-  /// \brief Determines equality between two lines relative to
   ///        \p tolerance
   ///
   /// \param lhs the left line

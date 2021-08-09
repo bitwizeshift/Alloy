@@ -245,15 +245,6 @@ namespace alloy::core {
   //----------------------------------------------------------------------------
 
   /// \brief Determines equality between two euler_angles relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left euler_angles
-  /// \param rhs the right euler_angles
-  /// \return \c true if the two euler_angles contain almost equal values
-  constexpr auto almost_equal(const euler_angles& lhs,
-                              const euler_angles& rhs) noexcept -> bool;
-
-  /// \brief Determines equality between two euler_angles relative to
   ///        \p tolerance
   ///
   /// \param lhs the left euler_angles
@@ -589,13 +580,6 @@ auto alloy::core::operator!=(const euler_angles& lhs, const euler_angles& rhs)
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
-
-inline constexpr
-auto alloy::core::almost_equal(const euler_angles& lhs, const euler_angles& rhs)
-  noexcept -> bool
-{
-  return almost_equal(lhs, rhs, euler_angles::comparison_tolerance);
-}
 
 inline constexpr
 auto alloy::core::almost_equal(const euler_angles& lhs,

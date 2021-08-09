@@ -346,15 +346,6 @@ namespace alloy::core {
 
   //----------------------------------------------------------------------------
 
-  /// \brief Determines equality between two vector4 relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left vector4
-  /// \param rhs the right vector4
-  /// \return \c true if the two vector4 contain almost equal values
-  constexpr auto almost_equal(const vector4& lhs,
-                              const vector4& rhs) noexcept -> bool;
-
   /// \brief Determines equality between two vector4 relative to \p tolerance
   ///
   /// \param lhs the left vector4
@@ -884,14 +875,6 @@ auto alloy::core::operator!=(const vector4& lhs, const vector4& rhs)
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //----------------------------------------------------------------------------
-
-inline constexpr
-auto alloy::core::almost_equal(const vector4& lhs, const vector4& rhs)
-  noexcept
-  -> bool
-{
-  return almost_equal(lhs, rhs, vector4::comparison_tolerance);
-}
 
 inline constexpr
 auto alloy::core::almost_equal(const vector4& lhs,

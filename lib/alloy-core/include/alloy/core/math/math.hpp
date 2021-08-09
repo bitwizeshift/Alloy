@@ -49,14 +49,14 @@ namespace alloy::core {
   // trait : math_result
   //===========================================================================
 
-  template<typename T>
+  template <typename T>
   using math_result = std::conditional<
     std::is_floating_point<T>::value,
     T,
     core::real
   >;
 
-  template<typename T>
+  template <typename T>
   using math_result_t = typename math_result<T>::type;
 
   //===========================================================================
@@ -209,13 +209,50 @@ namespace alloy::core {
   // Equality
   //---------------------------------------------------------------------------
 
+  namespace detail {
+
+    template <typename T, typename = void>
+    struct comparison_tolerance
+    {
+      static inline constexpr auto tolerance = default_tolerance;
+    };
+
+    template <typename T>
+    struct comparison_tolerance<T, std::void_t<decltype(T::comparison_tolerance)>>
+    {
+      static inline constexpr auto tolerance = T::comparison_tolerance;
+    };
+
+  } // namespace detail
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief Traits to retrieve the tolerance for `almost_equals` comparison.
+  ///
+  /// By default, this will search `T::comparison_tolerance` first before
+  /// falling back to `default_tolerance`.
+  ///
+  /// For custom types, this can either be specialized, or the class may be
+  /// given a `comparison_tolerance` static member.
+  ///
+  /// \tparam T the type to get the tolerance
+  //////////////////////////////////////////////////////////////////////////////
+  template <typename T>
+  struct comparison_traits
+  {
+    static inline constexpr auto tolerance = detail::comparison_tolerance<T>::tolerance;
+  };
+
   /// \brief Determines relative equality between \p lhs and \p rhs relative
-  ///        to \ref default_tolerance
+  ///        to `comparison_traits<T>::tolerance`
+  ///
+  /// This function will find `almost_equal(lhs,rhs,tolerance)` by ADL, and
+  /// apply the appropriate default tolerance based on `comparison_traits`
   ///
   /// \param lhs the value on the left of the equation
   /// \param rhs the value on the right of the equation
   /// \return \c true if \p lhs is almost equal to \p rhs
-  constexpr auto almost_equal(real lhs, real rhs) noexcept -> bool;
+  template <typename T, typename U>
+  constexpr auto almost_equal(const T& lhs, const U& rhs) noexcept -> bool;
 
   /// \brief Determines relative equality between \p lhs and \p rhs relative
   ///        to the specified \p tolerance
@@ -224,9 +261,11 @@ namespace alloy::core {
   /// \param rhs the value on the right of the equation
   /// \param tolerance the tolerance to use for comparison
   /// \return \c true if \p lhs is almost equal to \p rhs
-  constexpr auto almost_equal(real lhs,
-                              real rhs,
-                              real tolerance) noexcept -> bool;
+  constexpr auto almost_equal(
+    real lhs,
+    real rhs,
+    real tolerance
+  ) noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -371,11 +410,17 @@ auto alloy::core::saturate(real val)
 // Equality
 //-----------------------------------------------------------------------------
 
+template <typename T, typename U>
 inline constexpr
-auto alloy::core::almost_equal(real lhs, real rhs)
+auto alloy::core::almost_equal(const T& lhs, const U& rhs)
   noexcept -> bool
 {
-  return almost_equal(lhs, rhs, default_tolerance);
+  using alloy::core::almost_equal;
+
+  using type = std::common_type_t<T,U>;
+
+  // Call via ADL
+  return almost_equal(lhs, rhs, comparison_traits<type>::tolerance);
 }
 
 inline constexpr

@@ -195,14 +195,6 @@ namespace alloy::core {
 
   //----------------------------------------------------------------------------
 
-  /// \brief Determines equality between two rays relative to
-  ///        \ref default_tolerance
-  ///
-  /// \param lhs the left ray
-  /// \param rhs the right ray
-  /// \return \c true if the two rays contain almost equal values
-  constexpr bool almost_equal( const ray& lhs, const ray& rhs ) noexcept;
-
   /// \brief Determines equality between two rays relative to \p tolerance
   ///
   /// \param lhs the left ray
@@ -300,14 +292,6 @@ inline constexpr bool alloy::core::operator!=( const ray& lhs, const ray& rhs )
 }
 
 //------------------------------------------------------------------------------
-
-inline constexpr bool alloy::core::almost_equal( const ray& lhs,
-                                                 const ray& rhs )
-  noexcept
-{
-  return almost_equal(lhs.origin(), rhs.origin()) &&
-         almost_equal(lhs.direction(), rhs.direction());
-}
 
 inline constexpr bool alloy::core::almost_equal( const ray& lhs,
                                                  const ray& rhs,
