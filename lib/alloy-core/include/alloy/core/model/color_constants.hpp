@@ -134,7 +134,7 @@ namespace alloy::core {
     inline static constexpr auto dark_violet       = color::from_rgb8(148u, 0u, 211u);
     inline static constexpr auto dark_orchid       = color::from_rgb8(153u, 50u, 204u);
     inline static constexpr auto dark_magenta      = color::from_rgb8(139u, 0u, 139u);
-    inline static constexpr auto rebecca_prple     = color::from_rgb8(102u, 51u, 153u);
+    inline static constexpr auto rebecca_purple    = color::from_rgb8(102u, 51u, 153u);
     inline static constexpr auto indigo            = color::from_rgb8(75u, 0u, 130u);
     inline static constexpr auto medium_slate_blue = color::from_rgb8(123u, 104u, 238u);
     inline static constexpr auto slate_blue        = color::from_rgb8(106u, 90u, 205u);
@@ -142,7 +142,7 @@ namespace alloy::core {
 
     // Greens
 
-    inline static constexpr auto greenYellow         = color::from_rgb8(173u, 255u, 47u);
+    inline static constexpr auto green_yellow        = color::from_rgb8(173u, 255u, 47u);
     inline static constexpr auto chartreuse          = color::from_rgb8(127u, 255u, 0u);
     inline static constexpr auto lawn_green          = color::from_rgb8(124u, 252u, 0u);
     inline static constexpr auto lime_green          = color::from_rgb8(50u, 205u, 50u);
@@ -157,7 +157,7 @@ namespace alloy::core {
     inline static constexpr auto yellow_green        = color::from_rgb8(154u, 205u, 50u);
     inline static constexpr auto olive_drab          = color::from_rgb8(107u, 142u, 35u);
     inline static constexpr auto dark_olive_green    = color::from_rgb8(85u, 107u, 47u);
-    inline static constexpr auto medium_qquamarine   = color::from_rgb8(102u, 205u, 170u);
+    inline static constexpr auto medium_aquamarine   = color::from_rgb8(102u, 205u, 170u);
     inline static constexpr auto dark_sea_green      = color::from_rgb8(143u, 188u, 143u);
     inline static constexpr auto light_sea_green     = color::from_rgb8(32u, 178u, 170u);
     inline static constexpr auto dark_cyan           = color::from_rgb8(0u, 139u, 139u);
@@ -201,7 +201,7 @@ namespace alloy::core {
     inline static constexpr auto dark_goldenrod  = color::from_rgb8(184u, 134u, 11u);
     inline static constexpr auto peru            = color::from_rgb8(205u, 133u, 63u);
     inline static constexpr auto chocolate       = color::from_rgb8(210u, 105u, 30u);
-    inline static constexpr auto saddleBrown     = color::from_rgb8(139u, 69u, 19u);
+    inline static constexpr auto saddle_brown    = color::from_rgb8(139u, 69u, 19u);
     inline static constexpr auto sienna          = color::from_rgb8(160u, 82u, 45u);
     inline static constexpr auto brown           = color::from_rgb8(165u, 42u, 42u);
 
