@@ -35,13 +35,14 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include "alloy/core/api.hpp"
+#include "alloy/core/types.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/precision.hpp"
 #include "alloy/core/assert.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/utilities/not_null.hpp"
+#include "alloy/core/utilities/int_utilities.hpp"
 
-#include <cstdint> // std::uint32_t, std::uint64_t
 #include <type_traits>
 
 namespace alloy::core::detail {
@@ -171,12 +172,12 @@ namespace alloy::core {
   // enum class : r, g, b, a
   //============================================================================
 
-  enum class rgba8 : std::uint32_t{};
-  enum class argb8 : std::uint32_t{};
-  enum class abgr8 : std::uint32_t{};
-  enum class rgba16 : std::uint64_t{};
-  enum class argb16 : std::uint64_t{};
-  enum class abgr16 : std::uint64_t{};
+  enum class rgba8 : u32{};
+  enum class argb8 : u32{};
+  enum class abgr8 : u32{};
+  enum class rgba16 : u64{};
+  enum class argb16 : u64{};
+  enum class abgr16 : u64{};
 
   //============================================================================
   // class : color
@@ -221,7 +222,7 @@ namespace alloy::core {
     /// \param g the green component
     /// \param b the blue component
     /// \return the constructed color value
-    static constexpr auto from_rgb8(std::uint8_t r, std::uint8_t g, std::uint8_t b)
+    static constexpr auto from_rgb8(u8 r, u8 g, u8 b)
       noexcept -> color;
 
     /// \brief Constructs a color from 8-bit integral rgba components
@@ -231,10 +232,7 @@ namespace alloy::core {
     /// \param b the blue component
     /// \param a the alpha component (default: 255)
     /// \return the constructed color value
-    static constexpr auto from_rgba8(std::uint8_t r,
-                                     std::uint8_t g,
-                                     std::uint8_t b,
-                                     std::uint8_t a)
+    static constexpr auto from_rgba8(u8 r, u8 g, u8 b, u8 a)
       noexcept -> color;
 
     //--------------------------------------------------------------------------
@@ -246,9 +244,7 @@ namespace alloy::core {
     /// \param b the blue component
     /// \param a the alpha component (default: 65535)
     /// \return the constructed color value
-    static constexpr auto from_rgb16(std::uint16_t r,
-                                     std::uint16_t g,
-                                     std::uint16_t b)
+    static constexpr auto from_rgb16(u16 r, u16 g, u16 b)
       noexcept -> color;
 
     /// \brief Constructs a color from 16-bit integral rgba components
@@ -258,10 +254,7 @@ namespace alloy::core {
     /// \param b the blue component
     /// \param a the alpha component
     /// \return the constructed color value
-    static constexpr auto from_rgba16(std::uint16_t r,
-                                      std::uint16_t g,
-                                      std::uint16_t b,
-                                      std::uint16_t a)
+    static constexpr auto from_rgba16(u16 r, u16 g, u16 b, u16 a)
       noexcept -> color;
 
     //--------------------------------------------------------------------------
@@ -272,12 +265,12 @@ namespace alloy::core {
     ///
     /// \param c the color to convert
     /// \return a color instance
-    static auto from_rgba8(rgba8 c) noexcept -> color;
-    static auto from_argb8(argb8 c) noexcept -> color;
-    static auto from_abgr8(abgr8 c) noexcept -> color;
-    static auto from_rgba16(rgba16 c) noexcept -> color;
-    static auto from_argb16(argb16 c) noexcept -> color;
-    static auto from_abgr16(abgr16 c) noexcept -> color;
+    static constexpr auto from_rgba8(rgba8 c) noexcept -> color;
+    static constexpr auto from_argb8(argb8 c) noexcept -> color;
+    static constexpr auto from_abgr8(abgr8 c) noexcept -> color;
+    static constexpr auto from_rgba16(rgba16 c) noexcept -> color;
+    static constexpr auto from_argb16(argb16 c) noexcept -> color;
+    static constexpr auto from_abgr16(abgr16 c) noexcept -> color;
     /// \}
 
     /// \brief Converts a {hue,saturation,brightness} triple into a color
@@ -401,32 +394,32 @@ namespace alloy::core {
     /// \brief Gets the red component of this color as a uint8_t
     ///
     /// \return the red component
-    constexpr auto r8() noexcept -> detail::color_reference<std::uint8_t>;
-    constexpr auto r8() const noexcept -> std::uint8_t;
+    constexpr auto r8() noexcept -> detail::color_reference<u8>;
+    constexpr auto r8() const noexcept -> u8;
     /// \}
 
     /// \{
     /// \brief Gets the green component of this color as a uint8_t
     ///
     /// \return the green component
-    constexpr auto g8() noexcept -> detail::color_reference<std::uint8_t>;
-    constexpr auto g8() const noexcept -> std::uint8_t;
+    constexpr auto g8() noexcept -> detail::color_reference<u8>;
+    constexpr auto g8() const noexcept -> u8;
     /// \}
 
     /// \{
     /// \brief Gets the blue component of this color as a uint8_t
     ///
     /// \return the blue component
-    constexpr auto b8() noexcept -> detail::color_reference<std::uint8_t>;
-    constexpr auto b8() const noexcept -> std::uint8_t;
+    constexpr auto b8() noexcept -> detail::color_reference<u8>;
+    constexpr auto b8() const noexcept -> u8;
     /// \}
 
     /// \{
     /// \brief Gets the alpha component of this color as a uint8_t
     ///
     /// \return the alpha component
-    constexpr auto a8() noexcept -> detail::color_reference<std::uint8_t>;
-    constexpr auto a8() const noexcept -> std::uint8_t;
+    constexpr auto a8() noexcept -> detail::color_reference<u8>;
+    constexpr auto a8() const noexcept -> u8;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -435,32 +428,32 @@ namespace alloy::core {
     /// \brief Gets the red component of this color as a uint16_t
     ///
     /// \return the red component
-    constexpr auto r16() noexcept -> detail::color_reference<std::uint16_t>;
-    constexpr auto r16() const noexcept -> std::uint16_t;
+    constexpr auto r16() noexcept -> detail::color_reference<u16>;
+    constexpr auto r16() const noexcept -> u16;
     /// \}
 
     /// \{
     /// \brief Gets the green component of this color as a uint16_t
     ///
     /// \return the green component
-    constexpr auto g16() noexcept -> detail::color_reference<std::uint16_t>;
-    constexpr auto g16() const noexcept -> std::uint16_t;
+    constexpr auto g16() noexcept -> detail::color_reference<u16>;
+    constexpr auto g16() const noexcept -> u16;
     /// \}
 
     /// \{
     /// \brief Gets the blue component of this color as a uint16_t
     ///
     /// \return the blue component
-    constexpr auto b16() noexcept -> detail::color_reference<std::uint16_t>;
-    constexpr auto b16() const noexcept -> std::uint16_t;
+    constexpr auto b16() noexcept -> detail::color_reference<u16>;
+    constexpr auto b16() const noexcept -> u16;
     /// \}
 
     /// \{
     /// \brief Gets the alpha component of this color as a uint16_t
     ///
     /// \return the alpha component
-    constexpr auto a16() noexcept -> detail::color_reference<std::uint16_t>;
-    constexpr auto a16() const noexcept -> std::uint16_t;
+    constexpr auto a16() noexcept -> detail::color_reference<u16>;
+    constexpr auto a16() const noexcept -> u16;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -488,12 +481,12 @@ namespace alloy::core {
     /// \brief Converts this color to an integral representation
     ///
     /// \return the integral representation of the color
-    auto to_rgba8() const noexcept -> rgba8;
-    auto to_argb8() const noexcept -> argb8;
-    auto to_abgr8() const noexcept -> abgr8;
-    auto to_rgba16() const noexcept -> rgba16;
-    auto to_argb16() const noexcept -> argb16;
-    auto to_abgr16() const noexcept -> abgr16;
+    constexpr auto to_rgba8() const noexcept -> rgba8;
+    constexpr auto to_argb8() const noexcept -> argb8;
+    constexpr auto to_abgr8() const noexcept -> abgr8;
+    constexpr auto to_rgba16() const noexcept -> rgba16;
+    constexpr auto to_argb16() const noexcept -> argb16;
+    constexpr auto to_abgr16() const noexcept -> abgr16;
     /// \}
 
     /// \brief Converts this color to a {hue,saturation,brightness} triple
@@ -789,19 +782,14 @@ auto alloy::core::detail::operator>=(T lhs, const color_reference<T>& rhs)
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::color::from_rgb8(std::uint8_t r,
-                                   std::uint8_t g,
-                                   std::uint8_t b)
+auto alloy::core::color::from_rgb8(u8 r, u8 g, u8 b)
   noexcept -> color
 {
   return from_rgba8(r,g,b,255u);
 }
 
 inline constexpr
-auto alloy::core::color::from_rgba8(std::uint8_t r,
-                                    std::uint8_t g,
-                                    std::uint8_t b,
-                                    std::uint8_t a)
+auto alloy::core::color::from_rgba8(u8 r, u8 g, u8 b, u8 a)
   noexcept -> color
 {
   constexpr auto inverse_radix = real{1} / real{255};
@@ -817,19 +805,14 @@ auto alloy::core::color::from_rgba8(std::uint8_t r,
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::color::from_rgb16(std::uint16_t r,
-                                    std::uint16_t g,
-                                    std::uint16_t b)
+auto alloy::core::color::from_rgb16(u16 r, u16 g, u16 b)
   noexcept -> color
 {
   return from_rgba16(r,g,b,65535u);
 }
 
 inline constexpr
-auto alloy::core::color::from_rgba16(std::uint16_t r,
-                                     std::uint16_t g,
-                                     std::uint16_t b,
-                                     std::uint16_t a)
+auto alloy::core::color::from_rgba16(u16 r, u16 g, u16 b, u16 a)
   noexcept -> color
 {
   constexpr auto inverse_radix = real{1} / real{65535};
@@ -840,6 +823,62 @@ auto alloy::core::color::from_rgba16(std::uint16_t r,
   const auto af = static_cast<real>(a) * inverse_radix;
 
   return color{rf, gf, bf, af};
+}
+
+//------------------------------------------------------------------------------
+
+inline constexpr
+auto alloy::core::color::from_rgba8(rgba8 c)
+  noexcept -> color
+{
+  const auto [r,g,b,a] = int_utilities::split<u8>(c);
+
+  return from_rgba8(r,g,b,a);
+}
+
+inline constexpr
+auto alloy::core::color::from_argb8(argb8 c)
+  noexcept -> color
+{
+  const auto [a,r,g,b] = int_utilities::split<u8>(c);
+
+  return from_rgba8(r,g,b,a);
+}
+
+inline constexpr
+auto alloy::core::color::from_abgr8(abgr8 c)
+  noexcept -> color
+{
+  const auto [a,b,g,r] = int_utilities::split<u8>(c);
+
+  return from_rgba8(r,g,b,a);
+}
+
+inline constexpr
+auto alloy::core::color::from_rgba16(rgba16 c)
+  noexcept -> color
+{
+  const auto [r,g,b,a] = int_utilities::split<u16>(c);
+
+  return from_rgba16(r,g,b,a);
+}
+
+inline constexpr
+auto alloy::core::color::from_argb16(argb16 c)
+  noexcept -> color
+{
+  const auto [a,r,g,b] = int_utilities::split<u16>(c);
+
+  return from_rgba16(r,g,b,a);
+}
+
+inline constexpr
+auto alloy::core::color::from_abgr16(abgr16 c)
+  noexcept -> color
+{
+  const auto [a,b,g,r] = int_utilities::split<u16>(c);
+
+  return from_rgba16(r,g,b,a);
 }
 
 //------------------------------------------------------------------------------
@@ -937,114 +976,114 @@ auto alloy::core::color::a()
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::r8()
-  noexcept -> detail::color_reference<std::uint8_t>
+  noexcept -> detail::color_reference<u8>
 {
-  return detail::color_reference<std::uint8_t>{&r()};
+  return detail::color_reference<u8>{&r()};
 }
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::r8()
-  const noexcept -> std::uint8_t
+  const noexcept -> u8
 {
-  return static_cast<std::uint8_t>(r() * 255.0f);
+  return static_cast<u8>(r() * 255.0f);
 }
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::g8()
-  noexcept -> detail::color_reference<std::uint8_t>
+  noexcept -> detail::color_reference<u8>
 {
-  return detail::color_reference<std::uint8_t>{&g()};
+  return detail::color_reference<u8>{&g()};
 }
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::g8()
-  const noexcept -> std::uint8_t
+  const noexcept -> u8
 {
-  return static_cast<std::uint8_t>(g() * 255.0f);
+  return static_cast<u8>(g() * 255.0f);
 }
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::b8()
-  noexcept -> detail::color_reference<std::uint8_t>
+  noexcept -> detail::color_reference<u8>
 {
-  return detail::color_reference<std::uint8_t>{&b()};
+  return detail::color_reference<u8>{&b()};
 }
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::b8()
-  const noexcept -> std::uint8_t
+  const noexcept -> u8
 {
-  return static_cast<std::uint8_t>(b() * 255.0f);
+  return static_cast<u8>(b() * 255.0f);
 }
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::a8()
-  noexcept -> detail::color_reference<std::uint8_t>
+  noexcept -> detail::color_reference<u8>
 {
-  return detail::color_reference<std::uint8_t>{&a()};
+  return detail::color_reference<u8>{&a()};
 }
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::a8()
-  const noexcept -> std::uint8_t
+  const noexcept -> u8
 {
-  return static_cast<std::uint8_t>(a() * 255.0f);
+  return static_cast<u8>(a() * 255.0f);
 }
 
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::r16()
-  noexcept -> detail::color_reference<std::uint16_t>
+  noexcept -> detail::color_reference<u16>
 {
-  return detail::color_reference<std::uint16_t>{&r()};
+  return detail::color_reference<u16>{&r()};
 }
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::r16()
-  const noexcept -> std::uint16_t
+  const noexcept -> u16
 {
-  return static_cast<std::uint16_t>(r() * 65535.0f);
+  return static_cast<u16>(r() * 65535.0f);
 }
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::g16()
-  noexcept -> detail::color_reference<std::uint16_t>
+  noexcept -> detail::color_reference<u16>
 {
-  return detail::color_reference<std::uint16_t>{&g()};
+  return detail::color_reference<u16>{&g()};
 }
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::g16()
-  const noexcept -> std::uint16_t
+  const noexcept -> u16
 {
-  return static_cast<std::uint16_t>(g() * 65535.0f);
+  return static_cast<u16>(g() * 65535.0f);
 }
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::b16()
-  noexcept -> detail::color_reference<std::uint16_t>
+  noexcept -> detail::color_reference<u16>
 {
-  return detail::color_reference<std::uint16_t>{&b()};
+  return detail::color_reference<u16>{&b()};
 }
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::b16()
-  const noexcept -> std::uint16_t
+  const noexcept -> u16
 {
-  return static_cast<std::uint16_t>(b() * 65535.0f);
+  return static_cast<u16>(b() * 65535.0f);
 }
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::a16()
-  noexcept -> detail::color_reference<std::uint16_t>
+  noexcept -> detail::color_reference<u16>
 {
-  return detail::color_reference<std::uint16_t>{&a()};
+  return detail::color_reference<u16>{&a()};
 }
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::a16()
-  const noexcept -> std::uint16_t
+  const noexcept -> u16
 {
-  return static_cast<std::uint16_t>(a() * 65535.0f);
+  return static_cast<u16>(a() * 65535.0f);
 }
 
 //------------------------------------------------------------------------------
@@ -1082,6 +1121,50 @@ auto alloy::core::color::data()
   -> const real*
 {
   return &m_data[0];
+}
+
+//------------------------------------------------------------------------------
+
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::color::to_rgba8()
+  const noexcept -> rgba8
+{
+  return int_utilities::make<rgba8>(r8(), g8(), b8(), a8());
+}
+
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::color::to_argb8()
+  const noexcept-> argb8
+{
+  return int_utilities::make<argb8>(a8(), r8(), g8(), b8());
+}
+
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::color::to_abgr8()
+  const noexcept -> abgr8
+{
+  return int_utilities::make<abgr8>(a8(), b8(), g8(), r8());
+}
+
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::color::to_rgba16()
+  const noexcept -> rgba16
+{
+  return int_utilities::make<rgba16>(r16(), g16(), b16(), a16());
+}
+
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::color::to_argb16()
+  const noexcept -> argb16
+{
+  return int_utilities::make<argb16>(a16(), r16(), g16(), b16());
+}
+
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::color::to_abgr16()
+  const noexcept -> abgr16
+{
+  return int_utilities::make<abgr16>(a16(), b16(), g16(), r16());
 }
 
 //------------------------------------------------------------------------------
@@ -1241,13 +1324,14 @@ auto alloy::core::blend(const color& c1, const color& c2)
   const auto diff = real{1} - c2.a();
 
   auto result = color{};
-  result.a() = c1.a() * diff + c2.a();
+  const auto alpha_delta = c1.a() * diff;
+  result.a() = alpha_delta + c2.a();
   if (almost_equal(result.a(),0)) {
     return color{0,0,0,0};
   }
-  result.r() = (c1.r() * c1.a() * diff + c2.r() * c2.a()) / result.a();
-  result.g() = (c1.g() * c1.a() * diff + c2.g() * c2.a()) / result.a();
-  result.b() = (c1.b() * c1.a() * diff + c2.b() * c2.a()) / result.a();
+  result.r() = ((c1.r() * alpha_delta) + (c2.r() * c2.a())) / result.a();
+  result.g() = ((c1.g() * alpha_delta) + (c2.g() * c2.a())) / result.a();
+  result.b() = ((c1.b() * alpha_delta) + (c2.b() * c2.a())) / result.a();
 
   return result;
 }
