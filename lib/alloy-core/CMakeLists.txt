@@ -274,9 +274,9 @@ endif ()
 # Installation
 ##############################################################################
 
-if (ALLOY_IS_SUBPROJECT)
+#if (ALLOY_IS_SUBPROJECT)
   return()
-endif ()
+#endif ()
 
 include(GNUInstallDirs)
 

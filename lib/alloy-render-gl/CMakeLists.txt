@@ -67,8 +67,6 @@ else()
   )
 endif()
 
-message("${CMAKE_CURRENT_LIST_DIR}/include")
-
 target_include_directories(${PROJECT_NAME}RenderGL
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
@@ -104,9 +102,9 @@ endif ()
 # Installation
 ##############################################################################
 
-if (ALLOY_IS_SUBPROJECT)
+#if (ALLOY_IS_SUBPROJECT)
   return()
-endif ()
+#endif ()
 
 include(GNUInstallDirs)
 
