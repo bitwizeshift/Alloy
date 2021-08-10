@@ -66,13 +66,12 @@ function(add_self_containment_test name)
 
     get_filename_component(path_segment "${header}" PATH)
     get_filename_component(absolute_header "${header}" ABSOLUTE)
-    file(RELATIVE_PATH relative_header "${output_dir}/${path_segment}" "${absolute_header}")
 
     set(output_path "${output_dir}/${header}.${extension}")
 
     if( NOT EXISTS "${output_path}" OR "${absolute_header}" IS_NEWER_THAN "${output_path}" )
 
-      file(WRITE "${output_path}" "#include \"${relative_header}\" // IWYU pragma: keep")
+      file(WRITE "${output_path}" "#include \"${absolute_header}\" // IWYU pragma: keep")
 
     endif()
 
