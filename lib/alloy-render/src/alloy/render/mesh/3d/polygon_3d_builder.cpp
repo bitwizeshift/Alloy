@@ -36,7 +36,6 @@ inline constexpr auto entries_per_uv        = 2u;
 inline constexpr auto entries_per_normal    = 3u;
 inline constexpr auto entries_per_tangent   = 3u;
 inline constexpr auto entries_per_bitangent = 3u;
-inline constexpr auto entries_per_indices   = 3u;
 
 } // namespace <anonymous>
 

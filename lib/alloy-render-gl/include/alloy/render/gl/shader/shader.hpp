@@ -319,7 +319,7 @@ alloy::render::gl::basic_shader<Type>::basic_shader(basic_shader&& other)
 
 template <alloy::render::gl::shader_type Type>
 inline
-alloy::render::gl::basic_shader<Type>::~basic_shader()
+alloy::render::gl::basic_shader<Type>::~basic_shader<Type>()
 {
   reset();
 }

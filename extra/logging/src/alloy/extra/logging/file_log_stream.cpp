@@ -63,17 +63,17 @@ void alloy::extra::file_log_stream
   const auto level_string = ::to_string(level);
 
   // write time
-  m_destination.write(io::const_buffer::from_container(time_string));
-  m_destination.write_object('\t');
+  (void) m_destination.write(io::const_buffer::from_container(time_string));
+  (void) m_destination.write_object('\t');
 
   // write level
-  m_destination.write(io::const_buffer::from_container(level_string));
-  m_destination.write_object('\t');
+  (void) m_destination.write(io::const_buffer::from_container(level_string));
+  (void) m_destination.write_object('\t');
 
   // write message
-  m_destination.write(io::const_buffer::from_container(message));
-  m_destination.write_object('\n');
+  (void) m_destination.write(io::const_buffer::from_container(message));
+  (void) m_destination.write_object('\n');
 
   // We never want logging to buffer, in case a crash occurs.
-  m_destination.flush();
+  (void) m_destination.flush();
 }

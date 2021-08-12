@@ -93,7 +93,7 @@ int main(int argc, char** argv)
     message_pump.pump();
 
     const auto now = clock::now();
-    if ((now - last_frame) >= 1s) {
+    if ((now - last_frame) >= std::chrono::seconds{1}) {
       const auto r = distribution(generator);
       const auto g = distribution(generator);
       const auto b = distribution(generator);

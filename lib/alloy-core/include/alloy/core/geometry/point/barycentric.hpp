@@ -34,6 +34,7 @@
 #include "alloy/core/precision.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
+#include "alloy/core/geometry/point/point2.hpp"
 
 #include <cstddef> // std::size_t
 
@@ -198,9 +199,9 @@ auto alloy::core::barycentric::from_cartesion(const point2& p,
   const auto v1 = (t2 - t0);
   const auto v2 = (p  - t0);
 
-  const auto reciprocal = real{1} / ((v0.x * v1.y) - (v1.x * v0.y));
-  const auto v = (v2.x * v1.y - v1.x * v2.y) * reciprocal;
-  const auto w = (v0.x * v2.y - v2.x * v0.y) * reciprocal;
+  const auto reciprocal = real{1} / ((v0.x() * v1.y()) - (v1.x() * v0.y()));
+  const auto v = (v2.x() * v1.y() - v1.x() * v2.y()) * reciprocal;
+  const auto w = (v0.x() * v2.y() - v2.x() * v0.y()) * reciprocal;
   const auto u = real{1} - v - w;
 
   return barycentric{u, v, w};
@@ -217,35 +218,35 @@ inline constexpr
 auto alloy::core::barycentric::u()
   const noexcept -> real
 {
+  return m_data[0];
+}
+
+inline constexpr 
+auto alloy::core::barycentric::v()
+  noexcept -> real&
+{
   return m_data[1];
 }
 
 inline constexpr 
 auto alloy::core::barycentric::v()
-  noexcept -> real&
-{
-  return m_data[2];
-}
-
-inline constexpr 
-auto alloy::core::barycentric::v()
   const noexcept -> real
 {
-  return m_data[2];
+  return m_data[1];
 }
 
 inline constexpr 
 auto alloy::core::barycentric::w()
   noexcept -> real&
 {
-  return m_data[3];
+  return m_data[2];
 }
 
 inline constexpr 
 auto alloy::core::barycentric::w()
   const noexcept -> real
 {
-  return m_data[3];
+  return m_data[2];
 }
 
 inline constexpr 
