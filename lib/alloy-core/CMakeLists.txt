@@ -64,6 +64,7 @@ set(header_files
   include/alloy/core/containers/span.hpp
   include/alloy/core/containers/stack.hpp
   include/alloy/core/containers/vector.hpp
+  include/alloy/core/containers/polymorphic_vector.hpp
 
   # Traits
   include/alloy/core/traits/select_nth.hpp
