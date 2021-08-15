@@ -18,6 +18,7 @@ set(source_files
 
   # Containers
   src/alloy/core/containers/span.test.cpp
+  src/alloy/core/containers/polymorphic_vector.test.cpp
 
   # Traits
   src/alloy/core/traits/function_traits.test.cpp
