@@ -34,6 +34,7 @@
 #endif
 
 #include "alloy/core/types.hpp"
+#include "alloy/core/intrinsics.hpp"
 
 #include <type_traits> // std::make_signed
 #include <array>       // std::array
@@ -267,6 +268,79 @@ namespace alloy::core {
     static constexpr auto extract(const From& from) noexcept -> To;
 
     //--------------------------------------------------------------------------
+    // Comparisons
+    //--------------------------------------------------------------------------
+  public:
+
+    /// \brief Safely compares equality between two integer values
+    ///
+    /// This is guaranteed to provide the correct result irrespective of the
+    /// sign of both integer values. This allows for a safe way to compare
+    /// signed and unsigned integers.
+    ///
+    /// \param lhs the left integer
+    /// \param rhs the right integer
+    /// \return the result of the equality
+    template <typename T, typename U>
+    static constexpr auto equal(T lhs, U rhs) noexcept -> bool;
+
+    /// \brief Safely compares inequality between two integer values
+    ///
+    /// This is guaranteed to provide the correct result irrespective of the
+    /// sign of both integer values. This allows for a safe way to compare
+    /// signed and unsigned integers.
+    ///
+    /// \param lhs the left integer
+    /// \param rhs the right integer
+    /// \return the result of the inequality
+    template <typename T, typename U>
+    static constexpr auto not_equal(T lhs, U rhs) noexcept -> bool;
+
+    /// \brief Safely checks if `lhs` is greater than `rhs`
+    ///
+    /// This is guaranteed to provide the correct result irrespective of the
+    /// sign of both integer values.
+    ///
+    /// \param lhs the left integer
+    /// \param rhs the right integer
+    /// \return the result of `lhs < rhs`
+    template <typename T, typename U>
+    static constexpr auto greater(T lhs, U rhs) noexcept -> bool;
+
+    /// \brief Safely checks if `lhs` is greater than or equal to `rhs`
+    ///
+    /// This is guaranteed to provide the correct result irrespective of the
+    /// sign of both integer values.
+    ///
+    /// \param lhs the left integer
+    /// \param rhs the right integer
+    /// \return the result of `lhs <= rhs`
+    template <typename T, typename U>
+    static constexpr auto greater_equal(T lhs, U rhs) noexcept -> bool;
+
+    /// \brief Safely checks if `lhs` is less than `rhs`
+    ///
+    /// This is guaranteed to provide the correct result irrespective of the
+    /// sign of both integer values.
+    ///
+    /// \param lhs the left integer
+    /// \param rhs the right integer
+    /// \return the result of `lhs > rhs`
+    template <typename T, typename U>
+    static constexpr auto less(T lhs, U rhs) noexcept -> bool;
+
+    /// \brief Safely checks if `lhs` is less than or equal to `rhs`
+    ///
+    /// This is guaranteed to provide the correct result irrespective of the
+    /// sign of both integer values.
+    ///
+    /// \param lhs the left integer
+    /// \param rhs the right integer
+    /// \return the result of `lhs >= rhs`
+    template <typename T, typename U>
+    static constexpr auto less_equal(T lhs, U rhs) noexcept -> bool;
+
+    //--------------------------------------------------------------------------
     // Private: Static Factories
     //--------------------------------------------------------------------------
   private:
@@ -461,7 +535,79 @@ auto alloy::core::int_utilities::make_u64(
 }
 
 //------------------------------------------------------------------------------
-// Splitting
+// Comparisons
+//------------------------------------------------------------------------------
+
+template <typename T, typename U>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::int_utilities::equal(T lhs, U rhs)
+  noexcept -> bool
+{
+  if constexpr (std::is_signed_v<T> == std::is_signed_v<U>) {
+    return lhs == rhs;
+  } else if constexpr (std::is_signed_v<T>) {
+    using type = std::make_unsigned_t<T>;
+
+    return lhs < 0 ? false : static_cast<type>(lhs) == rhs;
+  } else {
+    using type = std::make_unsigned_t<U>;
+
+    return rhs < 0 ? false : lhs == static_cast<type>(rhs);
+  }
+}
+
+template <typename T, typename U>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::int_utilities::not_equal(T lhs, U rhs)
+  noexcept -> bool
+{
+  return !equal(lhs, rhs);
+}
+
+template <typename T, typename U>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::int_utilities::greater(T lhs, U rhs)
+  noexcept -> bool
+{
+  if constexpr (std::is_signed_v<T> == std::is_signed_v<U>) {
+    return lhs < rhs;
+  } else if constexpr (std::is_signed_v<T>) {
+    using type = std::make_unsigned_t<T>;
+
+    return (lhs < 0) ? true : static_cast<type>(lhs) < rhs;
+  } else {
+    using type = std::make_unsigned_t<U>;
+
+    return (rhs < 0) ? false : lhs < static_cast<type>(rhs);
+  }
+}
+
+template <typename T, typename U>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::int_utilities::greater_equal(T lhs, U rhs)
+  noexcept -> bool
+{
+  return !greater(rhs, lhs);
+}
+
+template <typename T, typename U>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::int_utilities::less(T lhs, U rhs)
+  noexcept -> bool
+{
+  return greater(rhs, lhs);
+}
+
+template <typename T, typename U>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::int_utilities::less_equal(T lhs, U rhs)
+  noexcept -> bool
+{
+  return !greater(lhs, rhs);
+}
+
+//------------------------------------------------------------------------------
+// Private: Splitting
 //------------------------------------------------------------------------------
 
 template <typename To, typename..., typename From>
