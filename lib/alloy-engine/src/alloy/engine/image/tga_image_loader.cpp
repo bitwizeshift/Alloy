@@ -28,7 +28,7 @@
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/io/filesystem/file.hpp"
 
-#include <tga/tga.h>
+#include <tga.h>
 
 namespace alloy::engine {
 namespace {

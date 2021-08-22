@@ -1,6 +1,0 @@
-[submodule "Catch2"]
-	path = third_party/catch
-	url = git@github.com:catchorg/Catch2.git
-[submodule "third_party/tga"]
-	path = third_party/tga
-	url = git@github.com:aseprite/tga.git

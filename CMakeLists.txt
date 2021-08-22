@@ -13,6 +13,8 @@ set(CATCH_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/third_party/catch/contrib")
 
 set(CMAKE_MODULE_PATH "${ALLOY_MODULE_PATH}" "${CMAKE_MODULE_PATH}" "${CATCH_MODULE_PATH}")
 
+include(cmake/CPM.cmake)
+
 ##############################################################################
 # Project Options
 ##############################################################################
