@@ -35,7 +35,7 @@
 #include "alloy/core/string/string.hpp"
 #include "alloy/core/string/zstring_view.hpp"
 
-#include <gl/glew.h>
+#include <GL/glew.h>
 
 #include <system_error> // std::error_category
 #include <memory> // std::shared_ptr

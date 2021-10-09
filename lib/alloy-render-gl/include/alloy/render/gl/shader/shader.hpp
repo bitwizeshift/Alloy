@@ -42,7 +42,7 @@
 
 #include "alloy/io/filesystem/file.hpp"
 
-#include <gl/glew.h>
+#include <GL/glew.h>
 
 #include <limits>
 #include <utility>

@@ -45,7 +45,7 @@
 
 #include "alloy/core/containers/span.hpp"
 
-#include <gl/glew.h>
+#include <GL/glew.h>
 
 namespace alloy::render::gl {
   struct transpose_type {};

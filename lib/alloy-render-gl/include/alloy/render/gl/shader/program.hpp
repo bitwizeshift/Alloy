@@ -37,7 +37,7 @@
 #include "alloy/core/assert.hpp"
 #include "alloy/core/utilities/result.hpp"
 
-#include <gl/glew.h>
+#include <GL/glew.h>
 
 #include <limits>      // std::numeric_limits
 #include <utility>     // std::move
