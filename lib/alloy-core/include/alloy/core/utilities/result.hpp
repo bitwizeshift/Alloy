@@ -3658,19 +3658,14 @@ alloy::core::detail::result_union<T,E,false>
 
 //-----------------------------------------------------------------------------
 
-ALLOY_COMPILER_CLANG_DIAGNOSTIC_PUSH()
-ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE(-Wdtor-name)
-
 template <typename T, typename E>
 ALLOY_FORCE_INLINE
 alloy::core::detail::result_union<T,E,false>
-  ::~result_union()
+  ::~result_union<T,E,false>()
   noexcept(std::is_nothrow_destructible<T>::value && std::is_nothrow_destructible<E>::value)
 {
   destroy();
 }
-
-ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
 
 //-----------------------------------------------------------------------------
 // Modifiers
