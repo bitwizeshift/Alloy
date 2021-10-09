@@ -432,7 +432,7 @@ alloy::io::keyboard::scan_code to_scan_code(::SDL_Scancode code)
 
 alloy::io::keyboard::key_code to_key_code(::SDL_Keycode code)
 {
-  switch (static_cast<::SDL_KeyCode>(code)) {
+  switch (static_cast<::SDL_Keycode>(code)) {
     //-------------------------------------------------------------------------
     // Function Keys
     //-------------------------------------------------------------------------
