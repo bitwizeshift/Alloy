@@ -30,10 +30,14 @@
 #ifndef ALLOY_EXTRA_LOGGING_LOGGER_HPP
 #define ALLOY_EXTRA_LOGGING_LOGGER_HPP
 
+#include "alloy/extra/logging/log_level.hpp"
+#include "alloy/extra/logging/log_filter.hpp"
+
 #include "alloy/io/buffers/mutable_buffer.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/delegate.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/utilities/option_set.hpp"
 
 #include <fmt/format.h>
 
@@ -43,23 +47,6 @@
 #include <chrono>      // std::chrono
 
 namespace alloy::extra {
-
-  //============================================================================
-  // enum class : log_level
-  //============================================================================
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief The severity of a log statement
-  //////////////////////////////////////////////////////////////////////////////
-  enum class log_level : std::uint8_t
-  {
-    debug,   ///< Indicates a message for developer debugging
-    info,    ///< Indicates a control flow message (for general info)
-    warning, ///< Indicates a recoverable bad state occurred
-    error,   ///< Indicates a recoverable error has occurred
-    fatal,   ///< Indicates an unrecoverable error has occurred. Should be
-             ///< followed by some form of program termination
-  };
 
   //============================================================================
   // class : log_stream
@@ -113,7 +100,7 @@ namespace alloy::extra {
     ~log_stream();
 
     //--------------------------------------------------------------------------
-    // Virtual Hooks : Logging
+    // Logging
     //--------------------------------------------------------------------------
   public:
 
@@ -122,9 +109,38 @@ namespace alloy::extra {
     /// \param time the time that the logging occurred at
     /// \param level the log level of this message
     /// \param message the message itself
-    virtual void log_message(std::chrono::system_clock::time_point time,
-                             log_level level,
-                             std::string_view message) = 0;
+    auto log_message(std::chrono::system_clock::time_point time,
+                     log_level level,
+                     std::string_view message) -> void;
+
+    //--------------------------------------------------------------------------
+    // Modifiers
+    //--------------------------------------------------------------------------
+  public:
+
+    /// \brief Enables logging at the specified log level
+    ///
+    /// \param level the level to enable
+    auto enable_log_level(log_level level) noexcept -> void;
+
+    /// \brief Disables logging at the specified log level
+    ///
+    /// \param level the level to disable
+    auto disable_log_level(log_level level) noexcept -> void;
+
+    //--------------------------------------------------------------------------
+    // Virtual Hooks : Logging
+    //--------------------------------------------------------------------------
+  private:
+
+    /// \brief Called when a message should be logged
+    ///
+    /// \param time the time that the logging occurred at
+    /// \param level the log level of this message
+    /// \param message the message itself
+    virtual auto on_log_message(std::chrono::system_clock::time_point time,
+                                log_level level,
+                                std::string_view message) -> void = 0;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -137,6 +153,7 @@ namespace alloy::extra {
 
     log_stream* m_next;
     detach_function m_detach;
+    log_filter m_level_filter = log_filter::all();
   };
 
   //============================================================================
@@ -211,8 +228,8 @@ namespace alloy::extra {
     ///
     /// \param other the other logger to move
     /// \return reference to \c (*this)
-    logger& operator=(logger&& other) noexcept;
-    logger& operator=(const logger&) = delete;
+    auto operator=(logger&& other) noexcept -> logger&;
+    auto operator=(const logger&) -> logger& = delete;
 
     //--------------------------------------------------------------------------
     // Binding
@@ -225,17 +242,17 @@ namespace alloy::extra {
     /// logger messages are posted
     ///
     /// \param log the log stream to attach
-    void attach(core::not_null<log_stream*> log) noexcept;
+    auto attach(core::not_null<log_stream*> log) noexcept -> void;
 
     /// \brief Detaches a log stream from this logger
     ///
     /// \pre \p log must have already been attached
     ///
     /// \param log the log to detach
-    void detach(core::not_null<log_stream*> log) noexcept;
+    auto detach(core::not_null<log_stream*> log) noexcept -> void;
 
     /// \brief Detaches all log streams from this logger
-    void detach_all() noexcept;
+    auto detach_all() noexcept -> void;
 
     //--------------------------------------------------------------------------
     // Logging
@@ -250,9 +267,9 @@ namespace alloy::extra {
     /// \param format the format string for the log
     /// \param args the arguments for formatting
     template <typename...Args>
-    void log(log_level level,
+    auto log(log_level level,
              std::string_view format,
-             Args&&...args);
+             Args&&...args) -> void;
 
     //--------------------------------------------------------------------------
 
@@ -263,8 +280,8 @@ namespace alloy::extra {
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    void debug(std::string_view format,
-               Args&&...args);
+    auto debug(std::string_view format,
+               Args&&...args) -> void;
 
     /// \brief Logs a formatted info message
     ///
@@ -273,8 +290,8 @@ namespace alloy::extra {
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    void info(std::string_view format,
-              Args&&...args);
+    auto info(std::string_view format,
+              Args&&...args) -> void;
 
     /// \brief Logs a formatted warning message
     ///
@@ -283,8 +300,8 @@ namespace alloy::extra {
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    void warn(std::string_view format,
-              Args&&...args);
+    auto warn(std::string_view format,
+              Args&&...args) -> void;
 
     /// \brief Logs a formatted error message
     ///
@@ -293,8 +310,8 @@ namespace alloy::extra {
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    void error(std::string_view format,
-               Args&&...args);
+    auto error(std::string_view format,
+               Args&&...args) -> void;
 
     /// \brief Logs a formatted fatal message
     ///
@@ -303,8 +320,8 @@ namespace alloy::extra {
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    void fatal(std::string_view format,
-               Args&&...args);
+    auto fatal(std::string_view format,
+               Args&&...args) -> void;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -317,6 +334,36 @@ namespace alloy::extra {
 } // namespace alloy::extra
 
 //==============================================================================
+// class : log_stream
+//==============================================================================
+
+inline
+auto alloy::extra::log_stream::log_message(
+  std::chrono::system_clock::time_point time,
+  log_level level,
+  std::string_view message
+) -> void
+{
+  if (m_level_filter.is_allowed(level)) {
+    on_log_message(time, level, message);
+  }
+}
+
+inline
+auto alloy::extra::log_stream::enable_log_level(log_level level)
+  noexcept -> void
+{
+  m_level_filter.allow(level);
+}
+
+inline
+auto alloy::extra::log_stream::disable_log_level(log_level level)
+  noexcept -> void
+{
+  m_level_filter.block(level);
+}
+
+//==============================================================================
 // class : logger
 //==============================================================================
 
@@ -325,13 +372,16 @@ namespace alloy::extra {
 //------------------------------------------------------------------------------
 
 template <typename...Args>
-void alloy::extra::logger::log(log_level level,
-                               std::string_view format,
-                               Args&&...args)
+inline
+auto alloy::extra::logger::log(
+  log_level level,
+  std::string_view format,
+  Args&&...args
+) -> void
 {
   // If we don't have any log streams attached, don't bother formatting the
   // log statement.
-  if (m_head == nullptr) {
+  if (ALLOY_UNLIKELY(m_head == nullptr)) {
     return;
   }
 
@@ -365,8 +415,9 @@ void alloy::extra::logger::log(log_level level,
 //------------------------------------------------------------------------------
 
 template<typename...Args>
-inline void alloy::extra::logger::debug(std::string_view format,
-                                        Args&&...args)
+inline
+auto alloy::extra::logger::debug(std::string_view format, Args&&...args)
+  -> void
 {
   log(log_level::debug, format, std::forward<Args>(args)...);
 }
@@ -374,8 +425,9 @@ inline void alloy::extra::logger::debug(std::string_view format,
 //------------------------------------------------------------------------------
 
 template<typename...Args>
-inline void alloy::extra::logger::info(std::string_view format,
-                                       Args&&...args)
+inline
+auto alloy::extra::logger::info(std::string_view format, Args&&...args)
+  -> void
 {
   log(log_level::info, format, std::forward<Args>(args)...);
 }
@@ -383,8 +435,9 @@ inline void alloy::extra::logger::info(std::string_view format,
 //------------------------------------------------------------------------------
 
 template<typename...Args>
-inline void alloy::extra::logger::warn(std::string_view format,
-                                       Args&&...args)
+inline
+auto alloy::extra::logger::warn(std::string_view format, Args&&...args)
+  -> void
 {
   log(log_level::warning, format, std::forward<Args>(args)...);
 }
@@ -392,8 +445,9 @@ inline void alloy::extra::logger::warn(std::string_view format,
 //------------------------------------------------------------------------------
 
 template<typename...Args>
-inline void alloy::extra::logger::error(std::string_view format,
-                                        Args&&...args)
+inline
+auto alloy::extra::logger::error(std::string_view format, Args&&...args)
+  -> void
 {
   log(log_level::error, format, std::forward<Args>(args)...);
 }
@@ -401,8 +455,9 @@ inline void alloy::extra::logger::error(std::string_view format,
 //------------------------------------------------------------------------------
 
 template<typename...Args>
-inline void alloy::extra::logger::fatal(std::string_view format,
-                                         Args&&...args)
+inline
+auto alloy::extra::logger::fatal(std::string_view format, Args&&...args)
+  -> void
 {
   log(log_level::fatal, format, std::forward<Args>(args)...);
 }

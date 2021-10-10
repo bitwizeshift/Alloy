@@ -3,6 +3,8 @@
 ##############################################################################
 
 set(header_files
+  include/alloy/extra/logging/log_filter.hpp
+  include/alloy/extra/logging/log_level.hpp
   include/alloy/extra/logging/logger.hpp
   include/alloy/extra/logging/console_log_stream.hpp
   include/alloy/extra/logging/file_log_stream.hpp

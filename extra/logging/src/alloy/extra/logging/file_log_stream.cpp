@@ -43,10 +43,11 @@ alloy::extra::file_log_stream::file_log_stream(io::file destination)
 
 }
 
-void alloy::extra::file_log_stream
-  ::log_message(std::chrono::system_clock::time_point time,
-                log_level level,
-                std::string_view message)
+auto alloy::extra::file_log_stream::on_log_message(
+  std::chrono::system_clock::time_point time,
+  log_level level,
+  std::string_view message
+) -> void
 {
   auto buffer = std::array<char,32>{};
 

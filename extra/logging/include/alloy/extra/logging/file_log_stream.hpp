@@ -63,18 +63,18 @@ namespace alloy::extra {
     file_log_stream& operator=(const file_log_stream&) = delete;
 
     //--------------------------------------------------------------------------
-    // Logging
+    // Virtual Hooks: Logging
     //--------------------------------------------------------------------------
-  public:
+  private:
 
     /// \brief Logs the message to the underlying file
     ///
     /// \param time the time of the logging
     /// \param level the log level of the log message
     /// \param message the message to write
-    void log_message(std::chrono::system_clock::time_point time,
-                     log_level level,
-                     std::string_view message) override;
+    auto on_log_message(std::chrono::system_clock::time_point time,
+                        log_level level,
+                        std::string_view message) -> void override;
 
     //--------------------------------------------------------------------------
     // Private Members

@@ -1,13 +1,14 @@
 /*****************************************************************************
- * \file console_log_stream.hpp
+ * \file log_Level.hpp
  *
- * \todo description
+ * \brief This header defines the log-level enum used for logging specific
+ *        levels of messages
  *****************************************************************************/
 
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -27,47 +28,27 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-#ifndef ALLOY_EXTRA_LOGGING_CONSOLE_LOG_STREAM_HPP
-#define ALLOY_EXTRA_LOGGING_CONSOLE_LOG_STREAM_HPP
+#ifndef ALLOY_EXTRA_LOGGING_LOG_LEVEL_HPP
+#define ALLOY_EXTRA_LOGGING_LOG_LEVEL_HPP
 
-#include "alloy/extra/logging/logger.hpp"
+#include "alloy/core/types.hpp"
 
-#include "alloy/core/utilities/not_null.hpp"
-
-#include <chrono>
-#include <string_view>
 
 namespace alloy::extra {
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief A log stream that logs to console
+  /// \brief The severity of a log statement
   //////////////////////////////////////////////////////////////////////////////
-  class console_log_stream : public log_stream
+  enum class log_level : core::u8
   {
-    //--------------------------------------------------------------------------
-    // Constructors / Assignment
-    //--------------------------------------------------------------------------
-  public:
-
-    console_log_stream() noexcept = default;
-    console_log_stream(console_log_stream&&) = delete;
-    console_log_stream(const console_log_stream&) = delete;
-
-    //--------------------------------------------------------------------------
-
-    console_log_stream& operator=(console_log_stream&&) = delete;
-    console_log_stream& operator=(const console_log_stream&) = delete;
-
-    //--------------------------------------------------------------------------
-    // Virtual Hooks: Logging
-    //--------------------------------------------------------------------------
-  private:
-
-    auto on_log_message(std::chrono::system_clock::time_point time,
-                        log_level level,
-                        std::string_view message) -> void override;
+    debug,   ///< Indicates a message for developer debugging
+    info,    ///< Indicates a control flow message (for general info)
+    warning, ///< Indicates a recoverable bad state occurred
+    error,   ///< Indicates a recoverable error has occurred
+    fatal,   ///< Indicates an unrecoverable error has occurred. Should be
+             ///< followed by some form of program termination
   };
 
 } // namespace alloy::extra
 
-#endif /* ALLOY_EXTRA_LOGGING_CONSOLE_LOG_STREAM_HPP */
+#endif /* ALLOY_EXTRA_LOGGING_LOG_LEVEL_HPP */

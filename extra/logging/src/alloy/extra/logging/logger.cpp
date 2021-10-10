@@ -13,7 +13,8 @@
 alloy::extra::log_stream::log_stream()
   noexcept
   : m_next{nullptr},
-    m_detach{}
+    m_detach{},
+    m_level_filter{log_filter::all()}
 {
 
 }
@@ -62,8 +63,8 @@ alloy::extra::logger::~logger()
 
 //------------------------------------------------------------------------------
 
-alloy::extra::logger& alloy::extra::logger::operator=(logger&& other)
-  noexcept
+auto alloy::extra::logger::operator=(logger&& other)
+  noexcept -> logger&
 {
   detach_all();
   m_head = other.m_head;
@@ -78,8 +79,8 @@ alloy::extra::logger& alloy::extra::logger::operator=(logger&& other)
 // Binding
 //------------------------------------------------------------------------------
 
-void alloy::extra::logger::attach(core::not_null<log_stream*> log)
-  noexcept
+auto alloy::extra::logger::attach(core::not_null<log_stream*> log)
+  noexcept -> void
 {
   ALLOY_ASSERT(
     log->m_detach == log_stream::detach_function{},
@@ -99,8 +100,8 @@ void alloy::extra::logger::attach(core::not_null<log_stream*> log)
 }
 
 
-void alloy::extra::logger::detach(core::not_null<log_stream*> log)
-  noexcept
+auto alloy::extra::logger::detach(core::not_null<log_stream*> log)
+  noexcept -> void
 {
   ALLOY_ASSERT(
     log->m_detach != log_stream::detach_function{},
@@ -127,8 +128,8 @@ void alloy::extra::logger::detach(core::not_null<log_stream*> log)
   prev->m_next = current->m_next;
 }
 
-void alloy::extra::logger::detach_all()
-  noexcept
+auto alloy::extra::logger::detach_all()
+  noexcept -> void
 {
   // detach all log streams from this logger to ensure there are no lifetime
   // issues

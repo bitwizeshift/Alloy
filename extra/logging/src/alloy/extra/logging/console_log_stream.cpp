@@ -34,10 +34,11 @@ namespace {
   }
 } // namespace <anonymous>
 
-void alloy::extra::console_log_stream
-  ::log_message(std::chrono::system_clock::time_point time,
-                log_level level,
-                std::string_view message)
+auto alloy::extra::console_log_stream::on_log_message(
+  std::chrono::system_clock::time_point time,
+  log_level level,
+  std::string_view message
+) -> void
 {
   const auto t = std::chrono::system_clock::to_time_t(time);
   const auto tm = *std::localtime(&t);
