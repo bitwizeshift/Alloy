@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2021 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -120,8 +120,8 @@ namespace alloy::io {
     //--------------------------------------------------------------------------
   public:
 
-    static constexpr std::size_t max_size = ALLOY_IO_EVENT_SIZE;
-    static constexpr std::size_t max_align = ALLOY_IO_EVENT_ALIGN;
+    static constexpr auto max_size  = std::size_t{ALLOY_IO_EVENT_SIZE};
+    static constexpr auto max_align = std::size_t{ALLOY_IO_EVENT_ALIGN};
 
     //--------------------------------------------------------------------------
     // Public Static Functions
@@ -133,22 +133,22 @@ namespace alloy::io {
     /// \tparam Event the event to get the id of
     /// \return the id of the event type
     template<typename Event>
-    static constexpr id_type id_of() noexcept;
+    static constexpr auto id_of() noexcept -> id_type;
 
     /// \brief Gets the priority of the specified \p Event
     ///
     /// \tparam Event the event to get the priority of
     /// \return the priority of the event type
     template<typename Event>
-    static constexpr event_priority priority_of() noexcept;
+    static constexpr auto priority_of() noexcept -> event_priority;
 
     /// \brief Constructs an \p Event from the given \p args
     ///
     /// \param args the arguments to forward to Event's constructor
     /// \return an event that contains the type-erased Event
     template<typename Event, typename...Args>
-    static event make_event( Args&&...args )
-      noexcept(std::is_nothrow_constructible<Event,Args...>::value);
+    static auto make_event( Args&&...args )
+      noexcept(std::is_nothrow_constructible<Event,Args...>::value) -> event;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -187,13 +187,13 @@ namespace alloy::io {
     ///
     /// \param other the other event to move
     /// \return reference to \c (*this)
-    event& operator=(event&& other) noexcept;
+    auto operator=(event&& other) noexcept -> event&;
 
     /// \brief Assigns an event by copying the contents of an existing event
     ///
     /// \param other the other event to copy
     /// \return reference to \c (*this)
-    event& operator=(const event& other) noexcept;
+    auto operator=(const event& other) noexcept -> event&;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -203,19 +203,19 @@ namespace alloy::io {
     /// \brief Gets the id of this event
     ///
     /// \return the id
-    id_type id() const noexcept;
+    auto id() const noexcept -> id_type;
 
     /// \brief Gets the priority of this event
     ///
     /// \return the priority of this event
-    event_priority priority() const noexcept;
+    auto priority() const noexcept -> event_priority;
 
     /// \brief Checks if this event is of type \p Event
     ///
     /// \tparam Event the event to compare against
     /// \return \c true if this event is of type \p Event
     template<typename Event>
-    bool is() const noexcept;
+    auto is() const noexcept -> bool;
 
     /// \brief Converts this event to the specified \p Event type
     ///
@@ -223,7 +223,7 @@ namespace alloy::io {
     /// \tparam Event the event type to convert to
     /// \return the event
     template<typename Event>
-    const Event& as() const noexcept;
+    auto as() const noexcept -> const Event&;
 
     /// \brief Attempts to convert this event to the specified \p Event type
     ///
@@ -234,16 +234,16 @@ namespace alloy::io {
     /// \tparam Event the event type to attempt to convert to
     /// \return a pointer to the event if successful, \c nullptr otherwise
     template<typename Event>
-    const Event* try_as() const noexcept;
+    auto try_as() const noexcept -> const Event*;
 
     //--------------------------------------------------------------------------
-    // Private Functions
+    // Modifiers
     //--------------------------------------------------------------------------
   public:
 
     /// \brief Clears the state of this event, calling the destructor on the
     ///        underlying type-erased object
-    void reset() noexcept;
+    auto reset() noexcept -> void;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -260,7 +260,25 @@ namespace alloy::io {
     };
 
     using storage_type    = core::aligned_storage<max_size, max_align>;
-    using storage_handler = std::uint32_t(*)(operation, const storage_type*,const storage_type*);
+    using storage_handler = auto(*)(operation, void*) -> void;
+
+    struct destroy_payload {
+      storage_type& self;
+    };
+    struct copy_payload {
+      storage_type& self;
+      const storage_type& other;
+    };
+    struct move_payload {
+      storage_type& self;
+      storage_type& other;
+    };
+    struct id_payload {
+      id_type& result;
+    };
+    struct priority_payload {
+      event_priority& result;
+    };
 
     storage_type    m_storage;
     storage_handler m_handler;
@@ -274,13 +292,10 @@ namespace alloy::io {
     ///
     /// \tparam T the type of the handler
     /// \param op the operation
-    /// \param self the self pointer, used for 'copy', 'move', and 'destroy'
-    /// \param other the other pointer, used for 'copy', and 'move'
+    /// \param payload the payload for the operation
     /// \return an integral value, only valid for "id" and "priority" ops
-    template<typename T>
-    static std::uint32_t handler(operation op,
-                                 const storage_type* self,
-                                 const storage_type* other);
+    template <typename T>
+    static auto handler(operation op, void* payload) -> void;
 
     /// \brief The handler used for managing events with no instance
     ///
@@ -288,13 +303,15 @@ namespace alloy::io {
     /// state, when the common case will never contain a null state.
     ///
     /// \param op the operation
-    /// \param self the self pointer (unused)
-    /// \param other the other pointer (unused)
-    /// \return an integral value, only valid for "id" and "priority" ops
-    static std::uint32_t null_handler(operation op,
-                                      const storage_type* self,
-                                      const storage_type* other);
+    /// \param payload the payload for the operation (unused)
+    static auto null_handler(operation op, void* payload) -> void;
 
+    /// \brief Converts and launders the \p storage to the specified T type
+    ///
+    /// \tparam T the type to request
+    /// \return a reference of the `T` type
+    template <typename T, typename Storage>
+    static auto storage_as(Storage& storage) noexcept -> T&;
   };
 
   //============================================================================
@@ -435,9 +452,9 @@ namespace alloy::io {
 //------------------------------------------------------------------------------
 
 template<typename Event>
-inline constexpr alloy::io::event::id_type
-  alloy::io::event::id_of()
-  noexcept
+inline constexpr
+auto alloy::io::event::id_of()
+  noexcept -> id_type
 {
   static_assert(is_valid_event<Event>::value);
 
@@ -446,9 +463,9 @@ inline constexpr alloy::io::event::id_type
 
 
 template<typename Event>
-inline constexpr alloy::io::event_priority
-  alloy::io::event::priority_of()
-  noexcept
+inline constexpr
+auto alloy::io::event::priority_of()
+  noexcept -> event_priority
 {
   static_assert(is_valid_event<Event>::value);
 
@@ -457,8 +474,9 @@ inline constexpr alloy::io::event_priority
 
 
 template<typename Event, typename...Args>
-inline alloy::io::event alloy::io::event::make_event( Args&&...args )
-  noexcept(std::is_nothrow_constructible<Event,Args...>::value)
+inline
+auto alloy::io::event::make_event( Args&&...args )
+  noexcept(std::is_nothrow_constructible<Event,Args...>::value) -> event
 {
   static_assert(is_valid_event<Event>::value);
 
@@ -473,7 +491,8 @@ inline alloy::io::event alloy::io::event::make_event( Args&&...args )
 // Constructors
 //------------------------------------------------------------------------------
 
-inline alloy::io::event::event()
+inline
+alloy::io::event::event()
   noexcept
   : m_handler{&event::null_handler}
 {
@@ -482,7 +501,8 @@ inline alloy::io::event::event()
 
 
 template <typename Event, typename>
-inline alloy::io::event::event(Event&& e)
+inline
+alloy::io::event::event(Event&& e)
   noexcept(std::is_nothrow_constructible<std::decay_t<Event>,Event>::value)
   : event{}
 {
@@ -493,30 +513,43 @@ inline alloy::io::event::event(Event&& e)
 }
 
 
-inline alloy::io::event::event(event&& other)
+inline
+alloy::io::event::event(event&& other)
   noexcept
   : event{}
 {
   auto* const handler = core::compiler::assume_not_null(other.m_handler);
 
-  (*handler)(operation::move, &m_storage, &other.m_storage);
+  auto payload = copy_payload {
+    m_storage,
+    other.m_storage
+  };
+
+  (*handler)(operation::move, &payload);
   m_handler = handler;
 }
 
 
-inline alloy::io::event::event(const event& other)
+inline
+alloy::io::event::event(const event& other)
   noexcept
   : event{}
 {
   auto* const handler = core::compiler::assume_not_null(other.m_handler);
 
-  (*handler)(operation::copy, &m_storage, &other.m_storage);
+  auto payload = copy_payload {
+    m_storage,
+    other.m_storage
+  };
+
+  (*handler)(operation::copy, &payload);
   m_handler = handler;
 }
 
 //------------------------------------------------------------------------------
 
-inline alloy::io::event::~event()
+inline
+alloy::io::event::~event()
   noexcept
 {
   reset();
@@ -524,29 +557,40 @@ inline alloy::io::event::~event()
 
 //------------------------------------------------------------------------------
 
-inline alloy::io::event& alloy::io::event::operator=(event&& other)
-  noexcept
+inline
+auto alloy::io::event::operator=(event&& other)
+  noexcept -> event&
 {
   reset();
 
   auto* const handler = core::compiler::assume_not_null(other.m_handler);
 
-  (*handler)(operation::move, &m_storage, &other.m_storage);
-  m_handler = handler;
+  auto payload = move_payload {
+    m_storage,
+    other.m_storage
+  };
 
+  m_handler = handler;
+  (*handler)(operation::move, &payload);
   return (*this);
 }
 
 
-inline alloy::io::event& alloy::io::event::operator=(const event& other)
-  noexcept
+inline
+auto alloy::io::event::operator=(const event& other)
+  noexcept -> event&
 {
   reset();
 
   auto* const handler = core::compiler::assume_not_null(other.m_handler);
 
-  (*handler)(operation::copy, &m_storage, &other.m_storage);
+  auto payload = copy_payload {
+    m_storage,
+    other.m_storage
+  };
+
   m_handler = handler;
+  (*handler)(operation::copy, &payload);
 
   return (*this);
 }
@@ -555,29 +599,40 @@ inline alloy::io::event& alloy::io::event::operator=(const event& other)
 // Observers
 //------------------------------------------------------------------------------
 
-inline alloy::io::event::id_type
-  alloy::io::event::id()
-  const noexcept
+inline
+auto alloy::io::event::id()
+  const noexcept -> id_type
 {
   auto* const handler = core::compiler::assume_not_null(m_handler);
 
-  const auto value = (*handler)(operation::id,nullptr,nullptr);
-  return static_cast<id_type>(value);
+  auto result = id_type{};
+  auto payload = id_payload{
+    result
+  };
+
+  (*handler)(operation::id,&payload);
+  return result;
 }
 
-inline alloy::io::event_priority
-  alloy::io::event::priority()
-  const noexcept
+inline
+auto alloy::io::event::priority()
+  const noexcept -> event_priority
 {
   auto* const handler = core::compiler::assume_not_null(m_handler);
 
-  const auto value = (*handler)(operation::priority,nullptr,nullptr);
-  return static_cast<event_priority>(value);
+  auto result = event_priority{};
+  auto payload = priority_payload {
+    result
+  };
+
+  (*handler)(operation::priority,&payload);
+  return result;
 }
 
 template<typename Event>
-inline bool alloy::io::event::is()
-  const noexcept
+inline
+auto alloy::io::event::is()
+  const noexcept -> bool
 {
   static_assert(is_valid_event<Event>::value);
 
@@ -585,20 +640,21 @@ inline bool alloy::io::event::is()
 }
 
 template<typename Event>
-inline const Event& alloy::io::event::as()
-  const noexcept
+inline
+auto alloy::io::event::as()
+  const noexcept -> const Event&
 {
   static_assert(is_valid_event<Event>::value);
 
   ALLOY_ASSERT(id() == event::id_of<Event>(), "Invalid type conversion");
 
-  // TODO: std::launder this reference
-  return reinterpret_cast<const Event&>(m_storage);
+  return storage_as<const Event>(m_storage);
 }
 
 template<typename Event>
-inline const Event* alloy::io::event::try_as()
-  const noexcept
+inline
+auto alloy::io::event::try_as()
+  const noexcept -> const Event*
 {
   static_assert(is_valid_event<Event>::value);
 
@@ -606,20 +662,24 @@ inline const Event* alloy::io::event::try_as()
     return nullptr;
   }
 
-  // TODO: std::launder this pointer
-  return reinterpret_cast<const Event*>(&m_storage);
+  return &storage_as<const Event>(m_storage);
 }
 
 //------------------------------------------------------------------------------
 // Private Members
 //------------------------------------------------------------------------------
 
-inline void alloy::io::event::reset()
-  noexcept
+inline
+auto alloy::io::event::reset()
+  noexcept -> void
 {
   auto* const handler = core::compiler::assume_not_null(m_handler);
 
-  (*handler)(operation::destroy, &m_storage, nullptr);
+  auto payload = destroy_payload{
+    m_storage
+  };
+
+  (*handler)(operation::destroy, &payload);
   m_handler = &event::null_handler;
 }
 
@@ -628,92 +688,70 @@ inline void alloy::io::event::reset()
 //------------------------------------------------------------------------------
 
 template<typename T>
-std::uint32_t alloy::io::event::handler(operation op,
-                                        const storage_type* self,
-                                        const storage_type* other)
+auto alloy::io::event::handler(operation op, void* payload)
+  -> void
 {
   switch (op) {
     case operation::destroy: {
-      ALLOY_ASSERT_AND_ASSUME( self != nullptr );
-      core::compiler::unused(other);
-
-      auto* const mself = const_cast<storage_type*>(self);
-      auto* const t = reinterpret_cast<T*>(mself);
-      t->~T();
-      return 0u;
+      auto& p = *static_cast<destroy_payload*>(payload);
+      storage_as<T>(p.self).~T();
+      return;
     }
-
     case operation::copy: {
-      ALLOY_ASSERT_AND_ASSUME( self != nullptr );
-      ALLOY_ASSERT_AND_ASSUME( other != nullptr );
-
-      auto* const mself = const_cast<storage_type*>(self);
-      const auto* const t = reinterpret_cast<const T*>(other);
-      ::new(static_cast<void*>(mself)) T(*t);
-      return 0u;
+      auto& p = *static_cast<copy_payload*>(payload);
+      const auto& other = storage_as<const T>(p.other);
+      new (&p.self) T{other};
+      return;
     }
-
     case operation::move: {
-      ALLOY_ASSERT_AND_ASSUME( self != nullptr );
-      ALLOY_ASSERT_AND_ASSUME( other != nullptr );
-
-      // Move construct from the internal storage. '
-      auto* const mself = const_cast<storage_type*>(self);
-      const auto* const t = reinterpret_cast<const T*>(other);
-      auto* const mt = const_cast<T*>(t);
-
-      ::new(static_cast<void*>(mself)) T(std::move(*mt));
-      return 0u;
+      auto& p = *static_cast<move_payload*>(payload);
+      auto& other = storage_as<T>(p.other);
+      new (&p.self) T{std::move(other)};
+      return;
     }
-
     case operation::id: {
-      core::compiler::unused(self);
-      core::compiler::unused(other);
-
-      return static_cast<std::uint32_t>(id_of<T>());
+      static_cast<id_payload*>(payload)->result = id_of<T>();
+      return;
     }
-
     case operation::priority: {
-      core::compiler::unused(self);
-      core::compiler::unused(other);
-
-      return static_cast<std::uint32_t>(priority_of<T>());
+      static_cast<priority_payload*>(payload)->result = priority_of<T>();
+      return;
     }
   }
   core::compiler::unreachable();
 }
 
-inline std::uint32_t alloy::io::event::null_handler(operation op,
-                                                    const storage_type* self,
-                                                    const storage_type* other)
+inline
+auto alloy::io::event::null_handler(operation op, void* payload)
+  -> void
 {
-  core::compiler::unused(self, other);
-
   switch (op) {
-    case operation::destroy: {
-      return 0u;
-    }
-
-    case operation::copy: {
-      // No operation required for 'copy'
-      return 0u;
-    }
-
+    case operation::destroy: [[fallthrough]];
+    case operation::copy: [[fallthrough]];
     case operation::move: {
-      // No operation required for 'move'
-      return 0u;
+      // No operation needed for destroying, copying, or moving, since there is
+      // no object stored
+      return;
     }
-
     case operation::id: {
-      // ID of null is '0'
-      return 0u;
+      static_cast<id_payload*>(payload)->result = 0u;
+      return;
     }
-
     case operation::priority: {
-      return static_cast<std::uint32_t>(event_priority::none);
+      static_cast<priority_payload*>(payload)->result = event_priority::none;
+      return;
     }
   }
   core::compiler::unreachable();
 }
+
+template <typename T, typename Storage>
+ALLOY_FORCE_INLINE
+auto alloy::io::event::storage_as(Storage& storage)
+  noexcept -> T&
+{
+  return *std::launder(reinterpret_cast<T*>(&storage)); // NOLINT
+}
+
 
 #endif /* ALLOY_IO_EVENT_HPP */
