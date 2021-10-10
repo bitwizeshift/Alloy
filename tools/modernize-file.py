@@ -23,12 +23,13 @@ def root_path():
   return Path(path)
 
 if __name__ == "__main__":
+  import os
 
   ROOT_PATH = root_path()
 
   # Handle argument parsing
   args, files = argument_parser.parse_known_args()
-  db_path = args.db
+  db_path = os.path.abspath(args.db)
 
   command = [
     "clang-tidy",
@@ -37,7 +38,8 @@ if __name__ == "__main__":
     "--fix",
     f"-p={db_path}",
   ]
-  command.extend(files)
+
+  command.extend([os.path.abspath(f) for f in files])
 
   print(command)
 
