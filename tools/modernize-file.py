@@ -7,41 +7,43 @@ import argparse
 from pathlib import Path
 argument_parser = argparse.ArgumentParser()
 argument_parser.add_argument(
-  "--db",
-  help="The path to the compilation database",
-  type=Path,
-  action="store"
+    "--db",
+    help="The path to the compilation database",
+    type=Path,
+    action="store"
 )
 
+
 def root_path():
-  import os
+    import os
 
-  path = os.path.realpath(__file__) # ./tools/bootstrap.py
-  path = os.path.dirname(path)      # ./tools/
-  path = os.path.dirname(path)      # ./
+    path = os.path.realpath(__file__)  # ./tools/bootstrap.py
+    path = os.path.dirname(path)      # ./tools/
+    path = os.path.dirname(path)      # ./
 
-  return Path(path)
+    return Path(path)
+
 
 if __name__ == "__main__":
-  import os
+    import os
 
-  ROOT_PATH = root_path()
+    ROOT_PATH = root_path()
 
-  # Handle argument parsing
-  args, files = argument_parser.parse_known_args()
-  db_path = os.path.abspath(args.db)
+    # Handle argument parsing
+    args, files = argument_parser.parse_known_args()
+    db_path = os.path.abspath(args.db)
 
-  command = [
-    "clang-tidy",
-    "--format-style=file",
-    "--checks=-*,modernize-use-trailing-return-type",
-    "--fix",
-    f"-p={db_path}",
-  ]
+    command = [
+        "clang-tidy",
+        "--format-style=file",
+        "--checks=-*,modernize-use-trailing-return-type",
+        "--fix",
+        f"-p={db_path}",
+    ]
 
-  command.extend([os.path.abspath(f) for f in files])
+    command.extend([os.path.abspath(f) for f in files])
 
-  print(command)
+    print(command)
 
-  import subprocess
-  subprocess.run(command, cwd=ROOT_PATH)
+    import subprocess
+    subprocess.run(command, cwd=ROOT_PATH)

@@ -3,23 +3,24 @@
 Script for generating doxygen output
 """
 
+
 def root_path():
-  import os
+    import os
 
-  path = os.path.realpath(__file__) # ./tools/run-doxygen.py
-  path = os.path.dirname(path)      # ./tools/
-  path = os.path.dirname(path)      # ./
+    path = os.path.realpath(__file__)  # ./tools/run-doxygen.py
+    path = os.path.dirname(path)      # ./tools/
+    path = os.path.dirname(path)      # ./
 
-  return path
+    return path
 
 
 if __name__ == "__main__":
 
-  import subprocess
-  import os
+    import subprocess
+    import os
 
-  doxyfile_path = os.path.join(root_path(),".codedocs")
+    doxyfile_path = os.path.join(root_path(), ".codedocs")
 
-  subprocess.run(["doxygen", doxyfile_path],
-                  cwd=root_path(),
-                  check=True)
+    subprocess.run(["doxygen", doxyfile_path],
+                   cwd=root_path(),
+                   check=True)
