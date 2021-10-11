@@ -7,7 +7,7 @@ Script for running clang-format locally
 def root_path():
     import os
 
-    path = os.path.realpath(__file__)  # ./tools/run-clang-format.py
+    path = os.path.realpath(__file__)  # ./tools/check-format.py
     path = os.path.dirname(path)      # ./tools/
     path = os.path.dirname(path)      # ./
 

@@ -8,7 +8,7 @@ def tool_path():
     import os
     import pathlib
 
-    path = os.path.realpath(__file__)  # ./tools/bootstrap-*.py
+    path = os.path.realpath(__file__)  # ./tools/configure-*.py
     path = os.path.dirname(path)       # ./tools/
 
     return pathlib.Path(path)
@@ -20,9 +20,9 @@ if __name__ == "__main__":
     import sys
 
     command = [
-        "python3", tool_path() / "bootstrap.py",
+        "python3", tool_path() / "configure.py",
         *sys.argv[1:],
-        "--compiler", "clang-cl",
+        "--compiler", "clang",
         "--generator", "Ninja",
     ]
 

@@ -16,7 +16,7 @@ def root_path():
     """
     import os
 
-    path = os.path.realpath(__file__)  # ./tools/copyright-verifier.py
+    path = os.path.realpath(__file__)  # ./tools/check-copyright.py
     path = os.path.dirname(path)       # ./tools/
     path = os.path.dirname(path)       # ./
 
@@ -226,7 +226,7 @@ def main():
         print("", file=sys.stderr)
         print("This may be autofixed with the following command:", file=sys.stderr)
 
-        command = "copyright-verifier.py --fix " + " ".join(requires_fixing)
+        command = "check-copyright.py --fix " + " ".join(requires_fixing)
 
         print(command)
         exit(1)

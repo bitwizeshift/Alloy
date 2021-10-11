@@ -7,7 +7,7 @@ Script for generating doxygen output
 def root_path():
     import os
 
-    path = os.path.realpath(__file__)  # ./tools/run-doxygen.py
+    path = os.path.realpath(__file__)  # ./tools/generate-documentation.py
     path = os.path.dirname(path)      # ./tools/
     path = os.path.dirname(path)      # ./
 
