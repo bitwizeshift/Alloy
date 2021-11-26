@@ -57,20 +57,23 @@ namespace alloy::core {
   /// \tparam T the type to construct
   //////////////////////////////////////////////////////////////////////////////
   template <typename T>
-  struct ctor_function
+  struct ctor_function_type
   {
     template <typename...Args, typename=std::enable_if_t<std::is_constructible_v<T,Args...>>>
-    constexpr auto operator()(Args&&...args)
+    constexpr auto operator()(Args&&...args) const
       noexcept(std::is_nothrow_constructible_v<T,Args...>) -> T;
   };
+
+  template <typename T>
+  inline constexpr auto ctor_function = ctor_function_type<T>{};
 
 } // namespace alloy::core
 
 template <typename T>
 template <typename... Args, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::ctor_function<T>::operator()(Args&&...args)
-  noexcept(std::is_nothrow_constructible_v<T, Args...>) -> T
+auto alloy::core::ctor_function_type<T>::operator()(Args&&...args)
+  const noexcept(std::is_nothrow_constructible_v<T, Args...>) -> T
 {
   return T(std::forward<Args>(args)...);
 }

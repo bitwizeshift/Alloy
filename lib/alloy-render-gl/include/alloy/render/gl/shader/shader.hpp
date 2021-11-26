@@ -271,7 +271,7 @@ auto alloy::render::gl::basic_shader<Type>::compile_from_source(core::zstring_vi
 {
   const auto result = shader_base::do_compile_from_source(Type, program);
 
-  return result.map(core::ctor_function<basic_shader>{});
+  return result.map(core::ctor_function<basic_shader>);
 }
 
 template <alloy::render::gl::shader_type Type>
@@ -282,7 +282,7 @@ auto alloy::render::gl::basic_shader<Type>::compile_from_file(io::file& file,
 {
   const auto result = shader_base::do_compile_from_file(Type, file, alloc);
 
-  return result.map(core::ctor_function<basic_shader>{});
+  return result.map(core::ctor_function<basic_shader>);
 }
 
 //------------------------------------------------------------------------------
