@@ -32,7 +32,7 @@ jobs:
             sudo dpkg --add-architecture i386
           fi
           sudo apt-get update
-          sudo apt-get install -y ninja-build
+          sudo apt-get install -y ninja-build libgl-dev
           if [[ "${{matrix.compiler.cc}}" =~ "gcc" ]]; then
             sudo apt-get install -y ${{matrix.compiler.cxx}} ${{matrix.compiler.cxx}}-multilib
           else

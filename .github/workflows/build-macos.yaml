@@ -29,6 +29,7 @@ jobs:
           ls -ls /Applications/
           sudo xcode-select -switch /Applications/Xcode_${{matrix.compiler.version}}.app
           brew install ninja
+          brew install glew
 
           cmake -E make_directory ${{env.build-directory}}
 
