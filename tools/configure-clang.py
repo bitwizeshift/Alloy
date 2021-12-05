@@ -1,29 +1,22 @@
 #!/usr/bin/env python3
 """
-Script for bootstrapping cmake for xcode
+Script for bootstrapping cmake for clang builds using ninja
 """
 
 
-def tool_path():
-    import os
-    import pathlib
+def main():
+    import sys
+    from python_utilities.tool import PythonToolScript
 
-    path = os.path.realpath(__file__)  # ./tools/configure-*.py
-    path = os.path.dirname(path)       # ./tools/
+    script = PythonToolScript("configure.py")
 
-    return pathlib.Path(path)
+    return script.execute(
+        *sys.argv[1:],
+        "--compiler", "clang",
+        "--generator", "Ninja"
+    )
 
 
 if __name__ == "__main__":
-
-    import subprocess
     import sys
-
-    command = [
-        "python3", tool_path() / "configure.py",
-        *sys.argv[1:],
-        "--compiler", "clang",
-        "--generator", "Ninja",
-    ]
-
-    subprocess.run(command)
+    sys.exit(main())

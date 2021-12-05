@@ -4,25 +4,18 @@ Script for bootstrapping cmake for xcode
 """
 
 
-def tool_path():
-    import os
-    import pathlib
+def main():
+    import sys
+    from python_utilities.tool import PythonToolScript
 
-    path = os.path.realpath(__file__)  # ./tools/configure-*.py
-    path = os.path.dirname(path)       # ./tools/
+    script = PythonToolScript("configure.py")
 
-    return pathlib.Path(path)
+    return script.execute(
+        *sys.argv[1:],
+        "--generator", "Xcode"
+    )
 
 
 if __name__ == "__main__":
-
-    import subprocess
     import sys
-
-    command = [
-        "python3", tool_path() / "configure.py",
-        *sys.argv[1:],
-        "--generator", "Xcode"
-    ]
-
-    subprocess.run(command)
+    sys.exit(main())

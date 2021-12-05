@@ -4,23 +4,22 @@ Script for generating doxygen output
 """
 
 
-def root_path():
-    import os
+def main():
 
-    path = os.path.realpath(__file__)  # ./tools/generate-documentation.py
-    path = os.path.dirname(path)      # ./tools/
-    path = os.path.dirname(path)      # ./
+    from python_utilities.paths import ProjectPaths
+    import subprocess
 
-    return path
+    doxyfile_path = ProjectPaths.repository_root / ".codedocs"
+
+    process = subprocess.run(
+        ["doxygen", doxyfile_path],
+        cwd=ProjectPaths.repository_root,
+        check=True
+    )
+
+    return process.returncode
 
 
 if __name__ == "__main__":
-
-    import subprocess
-    import os
-
-    doxyfile_path = os.path.join(root_path(), ".codedocs")
-
-    subprocess.run(["doxygen", doxyfile_path],
-                   cwd=root_path(),
-                   check=True)
+    import sys
+    sys.exit(main())
