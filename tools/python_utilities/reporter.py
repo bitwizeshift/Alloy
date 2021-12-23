@@ -39,7 +39,7 @@ class ReportEntry:
             stderr_str = stderr.decode().strip()
             stderr_str = None if stderr_str == "" else stderr_str
 
-        return cls(succeeded, stdout, stderr)
+        return cls(succeeded, stdout_str, stderr_str)
 
     @classmethod
     def from_completed_process(cls, result: subprocess.CompletedProcess):
@@ -241,7 +241,6 @@ class ProgressBar:
             current=current,
             total=self._total
         )
-        self.clear()
         print(formatted_message, end='\r', flush=True)
         self._last_message_length = len(formatted_message)
 
@@ -357,6 +356,9 @@ class Reporter:
         # Wait for all jobs to complete
         executor.shutdown(wait=True)
         self._token.clear()
+
+        self._failing_files.sort()
+        self._passing_files.sort()
 
         if fix:
             return self._report_fix()

@@ -33,8 +33,6 @@ class Tool(ABC):
 
         command = self.command(*args, **kwargs)
 
-        print(" ".join(command))
-
         args: Dict[str, object] = {}
 
         if stdout is not None:
