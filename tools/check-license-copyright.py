@@ -180,7 +180,11 @@ def main():
         show_progress=options.show_progress
     )
 
-    return reporter.report(jobs=options.jobs, verbose=options.verbose)
+    return reporter.report(
+        jobs=options.jobs,
+        verbose=options.verbose,
+        fix=options.fix
+    )
 
 
 if __name__ == "__main__":
