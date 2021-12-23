@@ -80,7 +80,7 @@ class LicenseCopyrightVerifier(Verifier, Fixer):
             if years != expected_years:
                 stderr = stderr or ""
                 stderr += f"{file}:{line_number}: expected '{expected_years}',"
-                stderr += " found '{years}'\n"
+                stderr += f" found '{years}'\n"
                 return ReportEntry(False, stdout=None, stderr=stderr)
 
         return ReportEntry(discovered <= 1, stdout=None, stderr=stderr)
@@ -89,33 +89,35 @@ class LicenseCopyrightVerifier(Verifier, Fixer):
         """
         Fixes the license at the given path, if any fix is required
         """
-
-        if self.verify(file).succeeded:
-            return
-
-        years = self._git.years_modified(file)
-        ranges = LicenseCopyrightVerifier._coallesce_years(years)
-
+        import datetime
         import re
         import fileinput
 
+        years = self._git.years_modified(file)
+        years.append(datetime.datetime.now().year)
+        years = list(dict.fromkeys(years))
+        ranges = LicenseCopyrightVerifier._coallesce_years(years)
+
         expected_years = ", ".join([str(r) for r in ranges])
 
-        for line in fileinput.input(file, inplace=True):
-            years_search = re.search(self._copyright_regex, line)
+        lines = file.read_text().split('\n')
 
-            # Pass the line through if it doesn't contain the copyright
-            if not years_search:
-                print(line, end='')
-                continue
+        with file.open('w') as f:
+            for line in lines:
+                years_search = re.search(self._copyright_regex, line)
 
-            # If it does, validate it
-            years = years_search.group(1)
+                # Pass the line through if it doesn't contain the copyright
+                if not years_search:
+                    print(line, file=f)
+                    continue
 
-            if years != expected_years:
-                content = content.replace(years, expected_years)
+                # If it does, validate it
+                years = years_search.group(1)
 
-            print(content, end='')
+                if years != expected_years:
+                    line = line.replace(years, expected_years)
+
+                print(line, file=f)
         return ReportEntry(True)
 
     @staticmethod
