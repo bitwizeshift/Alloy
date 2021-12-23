@@ -89,7 +89,7 @@ class HookReporter:
 
     def report(self,
                stdout: TextIO = sys.stdout,
-               column_width: int = 80) -> int:
+               column_width: int = None) -> int:
         """
         Generates a report by running each of the scripts in sequence.
 
@@ -102,16 +102,31 @@ class HookReporter:
         :return int: 0 on success, 1 on any hook failure
         """
 
+        import os
         stdout = stdout or sys.stdout
+
+        column_width = column_width or min(os.get_terminal_size().columns, 80)
 
         count = 0
         is_passing = True
         for hook in self._hooks:
             count +=1
 
-            process = hook.execute()
-
             prefix = f"{count}."
+            message = hook.message
+            message_start = f"{prefix: <4}{message}"
+
+            message_end = "Processing"
+            padding_length = column_width - len(message_end)
+
+            print(
+                f"{message_start:.<{padding_length}}"
+                f"{message_end}\r",
+                file=stdout,
+                end=''
+            )
+
+            process = hook.execute()
 
             if process.returncode == 0:
                 lines: bytes = process.stdout
@@ -122,9 +137,7 @@ class HookReporter:
                 color = AnsiFormat.RED
                 state = "Failed"
 
-            message = hook.message
 
-            message_start = f"{prefix: <4}{message}"
             message_end = state
             padding_length = column_width - len(message_end)
 
