@@ -6,7 +6,7 @@
 #include <alloy/extra/sdl2-bindings/sdl2_pump_source.hpp>
 
 #include <SDL2/SDL.h> // ::SDL_Init, ::SDL_Quit, etc
-#include <gl/GL.h>    // ::glClear, ::glClearColor
+#include <GL/gl.h>    // ::glClear, ::glClearColor
 
 #include <iostream> // std::cout, std::endl
 #include <chrono>   // std::chrono::steady_clock

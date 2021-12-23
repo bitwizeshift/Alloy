@@ -64,7 +64,12 @@ auto alloy::render::gl::program::do_link(std::initializer_list<::GLuint> shader_
 
   auto message = core::string{};
   message.resize(length, '\0');
-  ::glGetProgramInfoLog(program_id, message.length(), nullptr, message.data());
+  ::glGetProgramInfoLog(
+    program_id,
+    static_cast<::GLsizei>(message.length()),
+    nullptr,
+    message.data()
+  );
 
   return core::fail(
     gl_error_message::make(std::move(message))

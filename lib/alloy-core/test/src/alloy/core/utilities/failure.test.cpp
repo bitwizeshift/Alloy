@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2020 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -464,6 +464,11 @@ TEST_CASE("failure<E>::error() &&", "[accessor]") {
     STATIC_REQUIRE(std::is_same<decltype(std::move(sut).error()),int&&>::value);
   }
   SECTION("Is equal to the input value") {
+    // clang-tidy incorrectly flags this as "use-after-move" because of the
+    // above test. These cases are independently executed, and thus this
+    // diagnostic is incorrect.
+    //
+    // NOLINTNEXTLINE(bugprone-use-after-move)
     REQUIRE(std::move(sut).error() == expected);
   }
 }
@@ -489,6 +494,11 @@ TEST_CASE("failure<E>::error() const &&", "[accessor]") {
     STATIC_REQUIRE(std::is_same<decltype(std::move(sut).error()),const int&&>::value);
   }
   SECTION("Is equal to the input value") {
+    // clang-tidy incorrectly flags this as "use-after-move" because of the
+    // above test. These cases are independently executed, and thus this
+    // diagnostic is incorrect.
+    //
+    // NOLINTNEXTLINE(bugprone-use-after-move)
     REQUIRE(std::move(sut).error() == expected);
   }
 }

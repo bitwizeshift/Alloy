@@ -114,7 +114,8 @@ auto alloy::engine::tga_image_loader::load(io::file& file)
   auto buffer = core::vector<std::byte>{
     core::stl_allocator_adapter<std::byte>{m_allocator}
   };
-  buffer.resize(image.rowstride * header.height);
+  const auto buffer_size = image.rowstride * header.height;
+  buffer.resize(static_cast<decltype(buffer)::size_type>(buffer_size));
   image.pixels = reinterpret_cast<std::uint8_t*>(&buffer[0]);
 
   if (!decoder.readImage(header, image, nullptr)) {

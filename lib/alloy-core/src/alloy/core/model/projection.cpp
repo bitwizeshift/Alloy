@@ -7,12 +7,14 @@ namespace alloy::core {
   namespace {
 
     template <typename Unnamed>
-    auto to_identity(const Unnamed&, not_null<matrix4*> out) -> void
+    auto to_identity(const Unnamed&, not_null<matrix4*> out)
+      noexcept -> void
     {
       (*out) = matrix4_constants::identity;
     }
 
-    auto to_orthographic(const clip_space& space, not_null<matrix4*> out) -> void
+    auto to_orthographic(const clip_space& space, not_null<matrix4*> out)
+      noexcept -> void
     {
       const auto& left = space.get_horizontal().left;
       const auto& right = space.get_horizontal().right;
@@ -42,7 +44,8 @@ namespace alloy::core {
     }
 
     template <typename Perspective>
-    auto to_perspective(const Perspective& data, not_null<matrix4*> out) -> void
+    auto to_perspective(const Perspective& data, not_null<matrix4*> out)
+      noexcept -> void
     {
       const auto& fov = data.fov;
       const auto& aspect_ratio = data.aspect_ratio;
@@ -134,9 +137,16 @@ auto alloy::core::projection::orthographic(const clip_space& space)
 // Conversion
 //------------------------------------------------------------------------------
 
+// clang-tidy flags this function for throwing exceptions despite being marked
+// noexcept. The only exceptions that can throw are if std::visit throws, and
+// this is insured by being an internal invariant.
+//
+// NOLINTNEXTLINE(bugprone-exception-escape)
 auto alloy::core::projection::extract_matrix(not_null<matrix4*> out)
   const noexcept -> void
 {
+  ALLOY_ASSERT_AND_ASSUME(!m_storage.valueless_by_exception());
+
   std::visit([&out](const auto& data) {
     if constexpr (std::is_same_v<decltype(data), const identity_data&>) {
       to_identity(data, out);

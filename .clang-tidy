@@ -1,11 +1,20 @@
 ---
-Checks:          'clang-diagnostic-*,clang-analyzer-*,bugprone-*,cppcoreguidelines-*,readability-*,portability-*,performance-*,misc-*'
-WarningsAsErrors: 'clang-diagnostic-*,clang-analyzer-*,bugprone-*,cppcoreguidelines-*,readability-*,portability-*,performance-*,misc-*'
-HeaderFilterRegex: ''
+# The following checks are disabled for the reasons described below:
+# * 'bugprone-easily-swappable-parameters' because some APIs make it impossible
+#   to not eventually hit this problem -- such as APIs involving r,g,b color
+#   inputs.
+Checks: >
+  -*,
+  clang-diagnostic-*,
+  modernizer-*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters
+WarningsAsErrors: '*'
+HeaderFilterRegex: 'alloy/.*'
 AnalyzeTemporaryDtors: false
 FormatStyle:     file
 User:            bitwize
-CheckOptions:    
+CheckOptions:
   - key:             bugprone-argument-comment.StrictMode
     value:           '0'
   - key:             bugprone-assert-side-effect.AssertMacros
@@ -88,8 +97,6 @@ CheckOptions:
     value:           '16'
   - key:             modernize-loop-convert.MinConfidence
     value:           reasonable
-  - key:             modernize-loop-convert.NamingStyle
-    value:           snake_case
   - key:             modernize-pass-by-value.IncludeStyle
     value:           llvm
   - key:             modernize-replace-auto-ptr.IncludeStyle
@@ -149,4 +156,3 @@ CheckOptions:
   - key:             readability-static-accessed-through-instance.NameSpecifierNestingThreshold
     value:           '3'
 ...
-

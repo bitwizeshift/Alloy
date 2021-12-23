@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2021 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -1026,8 +1026,11 @@ template <typename T>
 inline T* alloy::core::stl_allocator_adapter<T>::allocate(std::size_t n)
   noexcept
 {
+  // clang-tidy thinks 'sizeof(T)' is an incorrect us of 'sizeof(T*)', which is
+  // incorrect since the `T*` template matching will make `T` be a non-pointer
+  // type. This diagnostic  is wrong.
   auto* const p = m_allocator.allocate_bytes(
-    sizeof(T) * n,
+    sizeof(T) * n,               // NOLINT(bugprone-sizeof-expression)
     std::align_val_t{alignof(T)}
   );
 
@@ -1042,6 +1045,11 @@ inline void alloy::core::stl_allocator_adapter<T>::deallocate(T* p,
                                                               std::size_t n)
   noexcept
 {
+  // clang-tidy thinks 'sizeof(T)' is an incorrect us of 'sizeof(T*)', which is
+  // incorrect since the `T*` template matching will make `T` be a non-pointer
+  // type. This diagnostic  is wrong.
+  //
+  // NOLINTNEXTLINE(bugprone-sizeof-expression)
   return m_allocator.deallocate_bytes(p, sizeof(T) * n);
 }
 

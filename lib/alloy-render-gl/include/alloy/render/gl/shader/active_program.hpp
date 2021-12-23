@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2020 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -369,7 +369,11 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
                                                       core::span<core::color> v)
   noexcept -> void
 {
-  ::glUniform4fv(static_cast<::GLint>(loc), v.size(), v[0].data());
+  ::glUniform4fv(
+    static_cast<::GLint>(loc),
+    static_cast<::GLsizei>(v.size()),
+    v[0].data()
+  );
 }
 
 ALLOY_FORCE_INLINE
@@ -377,7 +381,11 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
                                                       core::span<core::vector2> v)
   noexcept -> void
 {
-  ::glUniform2fv(static_cast<::GLint>(loc), v.size(), v[0].data());
+  ::glUniform2fv(
+    static_cast<::GLint>(loc),
+    static_cast<::GLsizei>(v.size()),
+    v[0].data()
+  );
 }
 
 ALLOY_FORCE_INLINE
@@ -385,7 +393,11 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
                                                       core::span<core::vector3> v)
   noexcept -> void
 {
-  ::glUniform3fv(static_cast<::GLint>(loc), v.size(), v[0].data());
+  ::glUniform3fv(
+    static_cast<::GLint>(loc),
+    static_cast<::GLsizei>(v.size()),
+    v[0].data()
+  );
 }
 
 ALLOY_FORCE_INLINE
@@ -393,7 +405,11 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
                                                       core::span<core::vector4> v)
   noexcept -> void
 {
-  ::glUniform4fv(static_cast<::GLint>(loc), v.size(), v[0].data());
+  ::glUniform4fv(
+    static_cast<::GLint>(loc),
+    static_cast<::GLsizei>(v.size()),
+    v[0].data()
+  );
 }
 
 ALLOY_FORCE_INLINE
@@ -401,7 +417,12 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
                                                       core::span<core::matrix2> v)
   noexcept -> void
 {
-  ::glUniformMatrix2fv(static_cast<::GLint>(loc), v.size(), false, v[0].data());
+  ::glUniformMatrix2fv(
+    static_cast<::GLint>(loc),
+    static_cast<::GLsizei>(v.size()),
+    false,
+    v[0].data()
+  );
 }
 
 ALLOY_FORCE_INLINE
@@ -410,7 +431,12 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
                                                       transpose_type)
   noexcept -> void
 {
-  ::glUniformMatrix2fv(static_cast<::GLint>(loc), v.size(), true, v[0].data());
+  ::glUniformMatrix2fv(
+    static_cast<::GLint>(loc),
+    static_cast<::GLsizei>(v.size()),
+    true,
+    v[0].data()
+  );
 }
 
 ALLOY_FORCE_INLINE
@@ -418,7 +444,12 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
                                                       core::span<core::matrix3> v)
   noexcept -> void
 {
-  ::glUniformMatrix3fv(static_cast<::GLint>(loc), v.size(), false, v[0].data());
+  ::glUniformMatrix3fv(
+    static_cast<::GLint>(loc),
+    static_cast<::GLsizei>(v.size()),
+    false,
+    v[0].data()
+  );
 }
 
 ALLOY_FORCE_INLINE
@@ -427,7 +458,12 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
                                                       transpose_type)
   noexcept -> void
 {
-  ::glUniformMatrix3fv(static_cast<::GLint>(loc), v.size(), true, v[0].data());
+  ::glUniformMatrix3fv(
+    static_cast<::GLint>(loc),
+    static_cast<::GLsizei>(v.size()),
+    true,
+    v[0].data()
+  );
 }
 
 ALLOY_FORCE_INLINE
@@ -435,7 +471,12 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
                                                       core::span<core::matrix4> v)
   noexcept -> void
 {
-  ::glUniformMatrix4fv(static_cast<::GLint>(loc), v.size(), false, v[0].data());
+  ::glUniformMatrix4fv(
+    static_cast<::GLint>(loc),
+    static_cast<::GLsizei>(v.size()),
+    false,
+    v[0].data()
+  );
 }
 
 ALLOY_FORCE_INLINE
@@ -444,7 +485,12 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
                                                       transpose_type)
   noexcept -> void
 {
-  ::glUniformMatrix4fv(static_cast<::GLint>(loc), v.size(), true, v[0].data());
+  ::glUniformMatrix4fv(
+    static_cast<::GLint>(loc),
+    static_cast<::GLsizei>(v.size()),
+    true,
+    v[0].data()
+  );
 }
 
 #endif /* EXTRA_SDL2_BINDINGS_EXAMPLE_SDL2_WINDOW_SRC_GL_ACTIVE_PROGRAM_HPP */

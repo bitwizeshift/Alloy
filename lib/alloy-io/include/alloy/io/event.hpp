@@ -351,7 +351,7 @@ namespace alloy::io {
   struct alloy::io::detail::event_traits<event> final                          \
   {                                                                            \
       static_assert(::alloy::io::is_valid_event<event>::value);                \
-      static constexpr auto id = std::uint32_t{(id_value << offset)};          \
+      static constexpr auto id = std::uint32_t{((id_value) << (offset))};      \
       static constexpr auto priority = ::alloy::io::event_priority::p;         \
   }
 
@@ -726,7 +726,7 @@ auto alloy::io::event::null_handler(operation op, void* payload)
   -> void
 {
   switch (op) {
-    case operation::destroy: [[fallthrough]];
+    case operation::destroy:
     case operation::copy: [[fallthrough]];
     case operation::move: {
       // No operation needed for destroying, copying, or moving, since there is

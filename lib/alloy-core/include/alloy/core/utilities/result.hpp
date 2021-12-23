@@ -17,7 +17,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2017 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -293,11 +293,11 @@ namespace alloy::core {
     /// \param error the error to create a failure from
     template <typename E2,
               typename std::enable_if<detail::failure_is_implicit_value_convertible<E,E2>::value,int>::type = 0>
-    constexpr failure(E2&& error)
+    constexpr failure(E2&& error) // NOLINT(bugprone-forwarding-reference-overload)
       noexcept(std::is_nothrow_constructible<E,E2>::value);
     template <typename E2,
               typename std::enable_if<detail::failure_is_explicit_value_convertible<E,E2>::value,int>::type = 0>
-    constexpr explicit failure(E2&& error)
+    constexpr explicit failure(E2&& error) // NOLINT(bugprone-forwarding-reference-overload)
       noexcept(std::is_nothrow_constructible<E,E2>::value);
     /// \}
 
@@ -1722,11 +1722,11 @@ namespace alloy::core {
     /// \param value the value to copy
     template <typename U,
               typename std::enable_if<detail::result_is_explicit_value_convertible<T,U>::value,int>::type = 0>
-    constexpr explicit result(U&& value)
+    constexpr explicit result(U&& value) // NOLINT(bugprone-forwarding-reference-overload)
       noexcept(std::is_nothrow_constructible<T,U>::value);
     template <typename U,
               typename std::enable_if<detail::result_is_implicit_value_convertible<T,U>::value,int>::type = 0>
-    constexpr /* implicit */ result(U&& value)
+    constexpr /* implicit */ result(U&& value) // NOLINT(bugprone-forwarding-reference-overload)
       noexcept(std::is_nothrow_constructible<T,U>::value);
     /// \}
 
@@ -3333,7 +3333,7 @@ template <typename E>
 template <typename E2,
           typename std::enable_if<alloy::core::detail::failure_is_explicit_value_convertible<E,E2>::value,int>::type>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::failure<E>::failure(E2&& error)
+alloy::core::failure<E>::failure(E2&& error) // NOLINT(bugprone-forwarding-reference-overload)
   noexcept(std::is_nothrow_constructible<E,E2>::value)
   : m_failure(std::forward<E2>(error))
 {
@@ -3344,7 +3344,7 @@ template <typename E>
 template <typename E2,
           typename std::enable_if<alloy::core::detail::failure_is_implicit_value_convertible<E,E2>::value,int>::type>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::failure<E>::failure(E2&& error)
+alloy::core::failure<E>::failure(E2&& error) // NOLINT(bugprone-forwarding-reference-overload)
   noexcept(std::is_nothrow_constructible<E,E2>::value)
   : m_failure(std::forward<E2>(error))
 {
@@ -4181,7 +4181,7 @@ template <typename T, typename E>
 template <typename U,
           typename std::enable_if<alloy::core::detail::result_is_explicit_value_convertible<T,U>::value,int>::type>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::result<T, E>::result(U&& value)
+alloy::core::result<T, E>::result(U&& value) // NOLINT(bugprone-forwarding-reference-overload)
   noexcept(std::is_nothrow_constructible<T,U>::value)
   : m_storage(std::in_place, std::forward<U>(value))
 {
@@ -4192,7 +4192,7 @@ template <typename T, typename E>
 template <typename U,
           typename std::enable_if<alloy::core::detail::result_is_implicit_value_convertible<T,U>::value,int>::type>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::result<T, E>::result(U&& value)
+alloy::core::result<T, E>::result(U&& value) // NOLINT(bugprone-forwarding-reference-overload)
   noexcept(std::is_nothrow_constructible<T,U>::value)
   : m_storage(std::in_place, std::forward<U>(value))
 {

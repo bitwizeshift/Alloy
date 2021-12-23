@@ -1,7 +1,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2020 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -3309,6 +3309,11 @@ TEST_CASE("result<T&,E>::value() &&", "[observers]") {
       STATIC_REQUIRE(std::is_same<decltype(std::move(sut).value()),int&>::value);
     }
     SECTION("Refers to referenced value") {
+      // clang-tidy incorrectly deduces this as a use-after-move due to the
+      // std::move in the section above. These cases are never invoked together,
+      // and thus this use-after-move can never happen.
+      //
+      // NOLINTNEXTLINE(bugprone-use-after-move)
       int& x = std::move(sut).value();
       REQUIRE(&value == &x);
     }
@@ -3327,6 +3332,11 @@ TEST_CASE("result<T&,E>::value() const &&", "[observers]") {
       STATIC_REQUIRE(std::is_same<decltype(std::move(sut).value()),int&>::value);
     }
     SECTION("Refers to referenced value") {
+      // clang-tidy incorrectly deduces this as a use-after-move due to the
+      // std::move in the section above. These cases are never invoked together,
+      // and thus this use-after-move can never happen.
+      //
+      // NOLINTNEXTLINE(bugprone-use-after-move)
       int& x = std::move(sut).value();
       REQUIRE(&value == &x);
     }

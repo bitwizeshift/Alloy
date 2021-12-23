@@ -47,7 +47,7 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
   const auto stride = m.stride().count();
   ::glBindBuffer(GL_ARRAY_BUFFER, vbo);
   ::glBufferData(GL_ARRAY_BUFFER,
-    data.size_bytes(),
+    static_cast<::GLsizei>(data.size_bytes()),
     data.data(),
     GL_STATIC_DRAW
   );
@@ -60,10 +60,10 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     ::glEnableVertexAttribArray(render::attribute_locations::positions);
     ::glVertexAttribPointer(
       render::attribute_locations::positions,
-      components,
+      static_cast<::GLint>(components),
       GL_FLOAT,
       GL_FALSE,
-      stride,
+      static_cast<::GLsizei>(stride),
       offset
     );
   }
@@ -76,10 +76,10 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     ::glEnableVertexAttribArray(render::attribute_locations::colors);
     ::glVertexAttribPointer(
       render::attribute_locations::colors,
-      components,
+      static_cast<::GLint>(components),
       GL_UNSIGNED_BYTE,
       GL_TRUE,
-      stride,
+      static_cast<::GLsizei>(stride),
       offset
     );
   }
@@ -92,10 +92,10 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     ::glEnableVertexAttribArray(render::attribute_locations::uvs);
     ::glVertexAttribPointer(
       render::attribute_locations::uvs,
-      components,
+      static_cast<::GLint>(components),
       GL_FLOAT,
       GL_FALSE,
-      stride,
+      static_cast<::GLsizei>(stride),
       offset
     );
   }
@@ -108,10 +108,10 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     ::glEnableVertexAttribArray(render::attribute_locations::normals);
     ::glVertexAttribPointer(
       render::attribute_locations::normals,
-      components,
+      static_cast<::GLint>(components),
       GL_SHORT,
       GL_TRUE,
-      stride,
+      static_cast<::GLsizei>(stride),
       offset
     );
   }
@@ -124,10 +124,10 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     ::glEnableVertexAttribArray(render::attribute_locations::tangents);
     ::glVertexAttribPointer(
       render::attribute_locations::tangents,
-      components,
+      static_cast<::GLint>(components),
       GL_SHORT,
       GL_TRUE,
-      stride,
+      static_cast<::GLsizei>(stride),
       offset
     );
   }
@@ -140,10 +140,10 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     ::glEnableVertexAttribArray(render::attribute_locations::bitangents);
     ::glVertexAttribPointer(
       render::attribute_locations::bitangents,
-      components,
+      static_cast<::GLint>(components),
       GL_SHORT,
       GL_TRUE,
-      stride,
+      static_cast<::GLsizei>(stride),
       offset
     );
   }
@@ -152,7 +152,7 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
   const auto index_count = m.indices().size();
   ::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
   ::glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-    indices.size_bytes(),
+    static_cast<::GLsizeiptr>(indices.size_bytes()),
     indices.data(),
     GL_STATIC_DRAW
   );
@@ -199,5 +199,10 @@ alloy::render::gl::mesh::~mesh()
 auto alloy::render::gl::mesh::draw() -> void
 {
   ::glBindVertexArray(m_vao);
-  ::glDrawElements(m_topology, m_indices, GL_UNSIGNED_SHORT, nullptr);
+  ::glDrawElements(
+    m_topology,
+    static_cast<::GLsizei>(m_indices),
+    GL_UNSIGNED_SHORT,
+    nullptr
+  );
 }

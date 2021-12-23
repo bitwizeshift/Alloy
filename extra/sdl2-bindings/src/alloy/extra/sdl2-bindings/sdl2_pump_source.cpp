@@ -69,7 +69,7 @@ alloy::io::keyboard::scan_code to_scan_code(::SDL_Scancode code)
       return alloy::io::keyboard::scan_code::f10;
     }
     case SDL_SCANCODE_F11: {
-      return alloy::io::keyboard::scan_code::f10;
+      return alloy::io::keyboard::scan_code::f11;
     }
     case SDL_SCANCODE_F12: {
       return alloy::io::keyboard::scan_code::f12;
@@ -468,7 +468,7 @@ alloy::io::keyboard::key_code to_key_code(::SDL_Keycode code)
       return alloy::io::keyboard::key_code::f10;
     }
     case SDLK_F11: {
-      return alloy::io::keyboard::key_code::f10;
+      return alloy::io::keyboard::key_code::f11;
     }
     case SDLK_F12: {
       return alloy::io::keyboard::key_code::f12;
@@ -1012,6 +1012,10 @@ void alloy::extra::sdl2_pump_source
       break;
     }
 
+    // clang-tidy considers the next two branches as "clones" -- but it would be
+    // bad to fall-through to code that only conditionally exists.
+    //
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     case SDL_WINDOWEVENT_FOCUS_GAINED: {
       p.post_event( io::window_focus_event{window} );
       break;

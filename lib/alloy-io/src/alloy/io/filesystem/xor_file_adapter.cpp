@@ -145,10 +145,10 @@ namespace {
     noexcept
   {
     auto result = m_handle->read(buffer);
-    if (!result) {
+    if (ALLOY_UNLIKELY(!result)) {
       return result;
     }
-    auto new_buffer = result.value();
+    auto new_buffer = *result;
 
     auto* const end   = new_buffer.data() + new_buffer.size();
     auto* const begin = new_buffer.data();

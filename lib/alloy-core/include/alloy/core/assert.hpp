@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2021 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -134,10 +134,15 @@
 //! \param exception the exception to throw
 //! \param message   the message for the failure
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
-# define ALLOY_THROW_IF(condition,exception,message) \
-  static_assert( std::is_constructible<exception,decltype(message)>::value, \
-                 ALLOY_STRINGIZE(exception) " is not constructible from the given message" ); \
-  ((ALLOY_LIKELY(condition)) ? ((void)0) : []{ throw exception{ message }; }())
+# define ALLOY_THROW_IF(condition,exception,message)                           \
+  static_assert(                                                               \
+    std::is_constructible<exception,decltype(message)>::value,                 \
+    ALLOY_STRINGIZE(exception) " is not constructible from the given message"  \
+  );                                                                           \
+  ((ALLOY_LIKELY(condition))                                                   \
+    ? ((void)0)                                                                \
+    : []{ throw exception{ message }; }() /* NOLINT */                         \
+  )
 #else
 # define ALLOY_THROW_IF(condition,exception,message) \
   static_assert( std::is_constructible<exception,decltype(message)>::value, \

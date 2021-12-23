@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2021 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -150,7 +150,8 @@ namespace alloy::core {
     class basic_scope_guard : public ExitPolicy
     {
     public:
-      template <typename ExitFunction>
+      template <typename ExitFunction,
+                typename = std::enable_if_t<std::is_constructible_v<Fn,ExitFunction>>>
       explicit basic_scope_guard(ExitFunction&& fn)
         noexcept(std::is_nothrow_move_constructible<Fn>::value)
         : ExitPolicy{},

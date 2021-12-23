@@ -127,9 +127,6 @@ TEST_CASE("polymorphic_vector::operator=(polymorphic_vector&&)", "[assignment]")
       REQUIRE(v.get() == copy.get());
     }
   }
-  SECTION("Moved-from value is empty") {
-    REQUIRE(original.empty());
-  }
 }
 
 //------------------------------------------------------------------------------

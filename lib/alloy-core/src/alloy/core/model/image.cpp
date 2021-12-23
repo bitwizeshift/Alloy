@@ -108,11 +108,8 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
 
     switch (format) {
       case pixel_format::bgr:
-        [[fallthrough]];
       case pixel_format::bgra:
-        [[fallthrough]];
-      case pixel_format::rgb:
-        [[fallthrough]];
+      case pixel_format::rgb: [[fallthrough]];
       case pixel_format::rgba: {
         return true;
       }

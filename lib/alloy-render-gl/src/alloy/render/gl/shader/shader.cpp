@@ -61,7 +61,12 @@ auto alloy::render::gl::shader_base::do_compile_from_source(shader_type type,
 
   auto message = core::string{};
   message.resize(length, '\0');
-  ::glGetShaderInfoLog(shader_id, message.length(), nullptr, message.data());
+  ::glGetShaderInfoLog(
+    shader_id,
+    static_cast<::GLsizei>(message.length()),
+    nullptr,
+    message.data()
+  );
 
   return core::fail(
     gl_error_message::make(std::move(message))
