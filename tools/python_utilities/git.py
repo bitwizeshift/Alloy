@@ -82,42 +82,35 @@ class Git:
         if cwd is not None:
             self._cwd = Path(cwd).resolve()
 
-    def make_diff_patch(self,
-                        path: Path,
-                        original: str,
-                        modified: str,
-                        patch: Path) -> None:
+    def is_tracked(self, file: Path) -> bool:
         """
-        Produces a patch that consists of the changes between `original` and
-        `modified`
+        Queries whether a specific file is tracked by git
 
-        :param Path original: the original unchanged input file to diff from
+        :param Path file: the file to check
+        :return bool: true if the file is tracked
         """
-        from tempfile import NamedTemporaryFile as temp_file
+        import subprocess
 
-        with temp_file() as from_file, temp_file() as to_file:
-            from_file.write(original)
-            to_file.write(modified)
+        if file.is_absolute() and self._cwd is not None:
+            file = file.relative_to(self._cwd)
 
-            command = [
-                str(self._executable),
-                "diff",
-                "--no-index",
-                "--no-color",
-                str(from_file.name),
-                str(to_file.name),
-            ]
-            output = Git._execute_command(command, cwd=self._cwd)
-            output_file = patch.open('w')
-            for line in output.split('\n'):
-                # Update all paths to only include the origin path
-                line = line.replace(str(from_file.name), str(path))
-                line = line.replace(str(to_file.name), str(path))
+        command = [
+            str(self._executable),
+            "ls-files",
+            "--error-unmatch",
+            str(file)
+        ]
+        process = subprocess.run(
+            command,
+            capture_output=True,
+            cwd=self._cwd
+        )
 
-                print(line, end='\n', file=output_file)
+        return process.returncode == 0
 
     def years_modified(self, file: Path) -> List[int]:
-        """Computes the years in which a specific file was modified
+        """
+        Computes the years in which a specific file was modified
 
         :param Path file: the file to query
         :return List[int]: a list of years indicating the dates modified
@@ -146,7 +139,8 @@ class Git:
              diff_algorithm: str = None,
              lines_of_context: int = 0,
              cached: bool = False) -> List[Git.Diff]:
-        """Computes and returns the result of `git diff`
+        """
+        Computes and returns the result of `git diff`
 
         Invokes `git diff` with the requested arguments, and returns this
         result as a pythonic object that can be inspected and used.
@@ -167,8 +161,14 @@ class Git:
         if commitish is not None:
             command.append(str(commitish))
         if files is not None:
+
+            def make_relative(file: Path):
+                if file.is_absolute() and self._cwd is not None:
+                    return file.relative_to(self._cwd)
+                return file
+
             command.append("--")
-            command.extend([str(file) for file in files])
+            command.extend([str(make_relative(file)) for file in files])
 
         lines = Git._execute_command(
             command, cwd=self._cwd).strip().split('\n')
@@ -240,7 +240,8 @@ class Git:
             if line.startswith('deleted file mode '):
                 change.from_permissions = line[18:].strip()
                 continue
-        result.append(change)
+        if change is not None:
+            result.append(change)
 
         return result
 

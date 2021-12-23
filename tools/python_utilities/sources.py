@@ -38,7 +38,7 @@ class SourceGroup(Enum):
         """
 
         if self == SourceGroup.ALL:
-            return SourceGroup.find_all(filter)
+            return SourceGroup.find_all(git, filter)
         if self == SourceGroup.STAGED:
             return SourceGroup.find_staged(git, filter)
         if self == SourceGroup.MODIFIED:
@@ -88,10 +88,12 @@ class SourceGroup(Enum):
         return [p for p in git.changed_files() if filter(p)]
 
     @staticmethod
-    def find_all(filter: SourceFilter = None) -> List[Path]:
+    def find_all(git: Git,
+                 filter: SourceFilter = None) -> List[Path]:
         """
         Finds all files in the project with an optional filter
 
+        :param Git git: the git instance
         :param SourceFilter filter: the filter
         :return List[Path]: the list of modified file paths
         """
@@ -100,7 +102,10 @@ class SourceGroup(Enum):
         root = ProjectPaths.repository_root
         filter: SourceFilter = filter or (lambda x: True)
 
-        return [p for p in root.rglob('*') if p.is_file() and filter(p)]
+        all_files = [p for p in root.rglob('*') if p.is_file() and filter(p)]
+        tracked_files = [p for p in all_files if git.is_tracked(p)]
+
+        return tracked_files
 
 
 def read_file(file: Path, git: Git = None, staged=False) -> str:
