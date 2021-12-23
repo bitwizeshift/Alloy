@@ -180,11 +180,11 @@ def main():
         message="Checking python codestyle",
         arguments=["--source-group=staged", "--no-progress"]
     )
-    reporter.emplace_hook(
-        script_name="check-cpp-codestyle.py",
-        message="Checking C++ codestyle",
-        arguments=["--source-group=staged", "--no-progress"]
-    )
+    # reporter.emplace_hook(
+    #     script_name="check-cpp-codestyle.py",
+    #     message="Checking C++ codestyle",
+    #     arguments=["--source-group=staged", "--no-progress"]
+    # )
     reporter.emplace_hook(
         script_name="check-cpp-clang-tidy.py",
         message="Checking C++ clang-tidy",
