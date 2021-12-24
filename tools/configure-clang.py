@@ -12,8 +12,7 @@ def main():
 
     return script.execute(
         *sys.argv[1:],
-        "--compiler", "clang",
-        "--generator", "Ninja"
+        "--compiler", "clang++"
     )
 
 
