@@ -1,0 +1,8 @@
+# General configuration
+*.cpp     diff=cpp
+*.hpp     diff=cpp
+*.py      diff=python
+*.md      diff=markdown
+
+# Abnormally named files
+tools/hooks/* diff=python
