@@ -62,6 +62,13 @@ target_link_libraries(${PROJECT_NAME}ExtraSDL2Bindings
   PUBLIC SDL2
   PUBLIC ${PROJECT_NAME}::IO
 )
+if (UNIX)
+  # Workaround for SDL2 not building on *nix platforms due to a bug:
+  # https://bugs.launchpad.net/ubuntu/+source/libsdl2-ttf/+bug/1872023
+  target_include_directories(${PROJECT_NAME}ExtraSDL2Bindings
+    PUBLIC $<BUILD_INTERFACE:/usr/include/SDL2/>
+  )
+endif ()
 
 # Header Self-Containment Tests
 

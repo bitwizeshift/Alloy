@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
+set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 
 set(source_files
