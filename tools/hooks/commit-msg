@@ -1,0 +1,165 @@
+#!/usr/bin/env python3
+
+from pathlib import Path
+import sys  # nopep8
+sys.path.append(str(Path(__file__).resolve().parents[1]))  # nopep8
+
+from typing import List, Sequence
+from python_utilities.checks import CheckReporter, CheckFunction, CheckResult
+
+
+class GitMessage:
+
+    def __init__(self,
+                 message: List[str],
+                 desired_header_length: int = 50,
+                 desired_body_length: int = 72,
+                 prefixes: Sequence[str] = None):
+        self._message = message
+        self._desired_header_length = desired_header_length
+        self._desired_body_length = desired_body_length
+        self._prefixes: Sequence[str] = prefixes
+
+    def check_header(self) -> CheckResult:
+        """
+        Verifies that the commit message
+        """
+        header = self._message[0]
+        result = CheckResult()
+
+        if len(header) >= self._desired_header_length:
+            result.returncode = 1
+            result.print_error(
+                f"Error: Message header length exceeds "
+                f"{self._desired_body_length} characters"
+            )
+
+        if self._prefixes is None:
+            return result
+
+        is_prefixed = False
+        for prefix in self._prefixes:
+            if header.startswith(prefix):
+                is_prefixed = True
+                break
+
+        if not is_prefixed:
+            result.returncode = 1
+            prefixes_string = "`" + "`, `".join(self._prefixes) + "`"
+            result.print_error(
+                f"Message header does not start with valid prefix.",
+                f"Acceptable prefixes are:",
+            )
+            result.print_error(
+                prefixes_string,
+                indent=2
+            )
+
+        return result
+
+    def check_format(self) -> CheckResult:
+        """
+        Verifies that the commit message
+        """
+        result = CheckResult()
+        if len(self._message) < 3:
+            return result
+        if self._message[1] != "":
+            result.print_error(
+                f"The second line of the git commit message must be left blank"
+            )
+        return result
+
+    def check_body(self) -> CheckResult:
+        """
+        Verifies that the commit message
+        """
+        result = CheckResult()
+        if len(self._message) < 3:
+            return result
+        body_lines = self._message[2:]
+        total_lines = len(body_lines)
+        valid_lines = 0
+        for line in self._message[2:]:
+            valid_lines += int(len(line) <= self._desired_body_length)
+
+        percent = float(valid_lines) / float(total_lines)
+
+        if percent <= 0.5:
+            result.returncode = 1
+            result.print_error(
+                f"Too many lines exceed {self._desired_body_length} columns.",
+                f"All commit messages must follow the 50/72 rule. Exceptions ",
+                f"only apply for URLs and code-segments, which should not ",
+                f"account for the whole message.",
+            )
+        return result
+
+
+def main():
+    if len(sys.argv) != 2:
+        return 1
+
+    commit_file_path = Path(sys.argv[1]).resolve()
+
+    if not commit_file_path.exists():
+        return 1
+
+    lines = commit_file_path.read_text().splitlines()
+
+    if len(lines) == 0:
+        return 1
+
+    PREFIXES = [
+        "WIP:",
+        "FIXUP:",
+        "🔖",
+        "📖",
+        "📇",
+        "🚦",
+        "✨",
+        "✏",
+        "🔨",
+        "⚠",
+        "🗑️",
+        "🎨",
+        "🩹",
+        "🧹",
+        "⏱",
+        "🎯",
+        "🔧",
+        "🔐",
+        "♿",
+        "🌐",
+        "🚧",
+    ]
+    message = GitMessage(
+        lines,
+        prefixes=PREFIXES,
+    )
+
+    reporter = CheckReporter(
+        message="Commit Message Verification",
+    )
+
+    reporter.add_check(
+        CheckFunction(
+            "Checking message header", GitMessage.check_header, message
+        )
+    )
+    reporter.add_check(
+        CheckFunction(
+            "Checking message body", GitMessage.check_body, message
+        )
+    )
+    reporter.add_check(
+        CheckFunction(
+            "Checking message format", GitMessage.check_format, message
+        )
+    )
+
+    return reporter.report()
+
+
+if __name__ == "__main__":
+    sys.exit(main())
