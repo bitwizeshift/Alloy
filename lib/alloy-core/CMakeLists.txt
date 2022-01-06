@@ -56,11 +56,13 @@ set(header_files
   include/alloy/core/containers/hash_set.hpp
   include/alloy/core/containers/list.hpp
   include/alloy/core/containers/map.hpp
+  include/alloy/core/containers/map_view.hpp
   include/alloy/core/containers/multimap.hpp
   include/alloy/core/containers/multiset.hpp
   include/alloy/core/containers/priority_queue.hpp
   include/alloy/core/containers/queue.hpp
   include/alloy/core/containers/set.hpp
+  include/alloy/core/containers/set_view.hpp
   include/alloy/core/containers/span.hpp
   include/alloy/core/containers/stack.hpp
   include/alloy/core/containers/vector.hpp
