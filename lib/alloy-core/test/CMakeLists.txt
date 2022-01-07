@@ -17,7 +17,9 @@ set(source_files
   src/alloy/core/string/string_tokenizer.test.cpp
 
   # Containers
+  src/alloy/core/containers/map_view.test.cpp
   src/alloy/core/containers/span.test.cpp
+  src/alloy/core/containers/set_view.test.cpp
   src/alloy/core/containers/polymorphic_vector.test.cpp
 
   # Traits
