@@ -9,7 +9,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -540,7 +540,7 @@ namespace alloy::core {
     /// \param fn the function to execute
     /// \param args arguments to the function
     template <typename Fn, typename...Args>
-    static constexpr void debug_only(Fn&& fn, Args&&...args);
+    static constexpr auto debug_only(Fn&& fn, Args&&...args) -> void;
 
     /// \brief Executes conditional code that only runs in release builds, when
     ///        the symbol NDEBUG is present
@@ -548,7 +548,7 @@ namespace alloy::core {
     /// \param fn the function to execute
     /// \param args arguments to the function
     template <typename Fn, typename...Args>
-    static constexpr void release_only(Fn&& fn, Args&&...args);
+    static constexpr auto release_only(Fn&& fn, Args&&...args) -> void;
 
     //-------------------------------------------------------------------------
     // Unused
@@ -560,7 +560,7 @@ namespace alloy::core {
     /// This is used to suppress 'unused template argument' warnings, and
     /// to indicate to the reader that a type is intentionally unused
     template <typename...>
-    static constexpr void unused() noexcept{}
+    static constexpr auto unused() noexcept -> void{}
 
     /// \brief A meta function to indicate to the compiler that a sequence
     ///        of values is unused
@@ -568,7 +568,7 @@ namespace alloy::core {
     /// This is used to suppress 'unused variable' warnings, and to indicate
     /// to the reader that a variable is intentionally unused
     template <typename...Types>
-    static constexpr void unused([[maybe_unused]] const Types&...) noexcept{}
+    static constexpr auto unused([[maybe_unused]] const Types&...) noexcept -> void{}
 
     /// \brief A meta function to indicate to the compiler that a static value
     ///        is unused
@@ -576,7 +576,7 @@ namespace alloy::core {
     /// This is used to suppress 'unused variable' warnings, and to indicate
     /// to the reader that a variable is intentionally unused
     template <auto...>
-    static constexpr void unused() noexcept{}
+    static constexpr auto unused() noexcept -> void{}
 
     //-------------------------------------------------------------------------
     // Assumptions
@@ -593,7 +593,7 @@ namespace alloy::core {
     /// \return a pointer that the compiler knows is aligned
     template <std::size_t N, typename T>
     [[nodiscard]]
-    static constexpr T* assume_aligned(T* p) noexcept;
+    static constexpr auto assume_aligned(T* p) noexcept -> T*;
 
     /// \brief Provides a hint to the compiler that the pointer \p p is not null
     ///
@@ -610,7 +610,7 @@ namespace alloy::core {
 #if defined(__GNUC__) || defined(__clang__)
     [[gnu::returns_nonnull]]
 #endif
-    static constexpr T* assume_not_null(T* p) noexcept;
+    static constexpr auto assume_not_null(T* p) noexcept -> T*;
 
     /// \brief Assumes that a given function will be a cold path
     ///
@@ -650,7 +650,7 @@ namespace alloy::core {
     /// \brief Provides a hint to the compiler that the code path after this
     ///        function is not reachable
     [[noreturn]]
-    static void unreachable() noexcept;
+    static auto unreachable() noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Debugging
@@ -658,7 +658,7 @@ namespace alloy::core {
 
     /// \brief Produces a breakpoint and crashes the application when invoked
     [[noreturn]]
-    static void breakpoint() noexcept;
+    static auto breakpoint() noexcept -> void;
   };
 
 } // namespace alloy::core
@@ -667,9 +667,10 @@ namespace alloy::core {
 // Conditional Paths
 //-----------------------------------------------------------------------------
 
-template<typename Fn, typename...Args>
-ALLOY_FORCE_INLINE
-constexpr void alloy::core::compiler::debug_only(Fn&& fn, Args&&...args)
+template <typename Fn, typename...Args>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::compiler::debug_only(Fn&& fn, Args&&...args)
+  -> void
 {
 #if !defined(NDEBUG)
   std::invoke(std::forward<Fn>(fn), std::forward<Args>(args)...);
@@ -678,8 +679,9 @@ constexpr void alloy::core::compiler::debug_only(Fn&& fn, Args&&...args)
 #endif
 }
 template <typename Fn, typename...Args>
-ALLOY_FORCE_INLINE
-constexpr void alloy::core::compiler::release_only(Fn&& fn, Args&&...args)
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::compiler::release_only(Fn&& fn, Args&&...args)
+  -> void
 {
 #if defined(NDEBUG)
   std::invoke(std::forward<Fn>(fn), std::forward<Args>(args)...);
@@ -693,9 +695,9 @@ constexpr void alloy::core::compiler::release_only(Fn&& fn, Args&&...args)
 //-----------------------------------------------------------------------------
 
 template <std::size_t N, typename T>
-ALLOY_FORCE_INLINE
-constexpr T* alloy::core::compiler::assume_aligned(T* p)
-  noexcept
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::compiler::assume_aligned(T* p)
+  noexcept -> T*
 {
 #if defined(__clang__) || (defined(__GNUC__) && !defined(__ICC))
   return static_cast<T*>(__builtin_assume_aligned(p, N));
@@ -736,9 +738,9 @@ constexpr T* alloy::core::compiler::assume_aligned(T* p)
 }
 
 template <typename T>
-ALLOY_FORCE_INLINE
-constexpr T* alloy::core::compiler::assume_not_null(T* p)
-  noexcept
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::compiler::assume_not_null(T* p)
+  noexcept -> T*
 {
 #if defined(_MSC_VER)
   if (p != nullptr) {
@@ -757,7 +759,7 @@ constexpr T* alloy::core::compiler::assume_not_null(T* p)
 // Branch Prediction
 //-----------------------------------------------------------------------------
 
-template<typename Fn, typename...Args>
+template <typename Fn, typename...Args>
 ALLOY_COLD
 auto alloy::core::compiler::assume_cold(Fn&& fn, Args&&...args)
   noexcept(std::is_nothrow_invocable<Fn, Args...>::value)
@@ -766,9 +768,9 @@ auto alloy::core::compiler::assume_cold(Fn&& fn, Args&&...args)
   return std::invoke(std::forward<Fn>(fn), std::forward<Args>(args)...);
 }
 
-template<typename Fn, typename...Args>
-ALLOY_HOT ALLOY_FORCE_INLINE
-constexpr auto alloy::core::compiler::assume_hot(Fn&& fn, Args&&...args)
+template <typename Fn, typename...Args>
+ALLOY_HOT ALLOY_FORCE_INLINE constexpr
+auto alloy::core::compiler::assume_hot(Fn&& fn, Args&&...args)
   noexcept(std::is_nothrow_invocable<Fn, Args...>::value)
   -> std::invoke_result_t<Fn, Args...>
 {
@@ -776,8 +778,8 @@ constexpr auto alloy::core::compiler::assume_hot(Fn&& fn, Args&&...args)
 }
 
 ALLOY_FORCE_INLINE
-void alloy::core::compiler::unreachable()
-  noexcept
+auto alloy::core::compiler::unreachable()
+  noexcept -> void
 {
   ALLOY_UNREACHABLE();
 }
@@ -787,8 +789,8 @@ void alloy::core::compiler::unreachable()
 //-----------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE
-void alloy::core::compiler::breakpoint()
-  noexcept
+auto alloy::core::compiler::breakpoint()
+  noexcept -> void
 {
   ALLOY_BREAKPOINT();
 
