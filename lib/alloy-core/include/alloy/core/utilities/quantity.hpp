@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2020 Matthew Rodusek All rights reserved.
+  Copyright (c) 2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -306,6 +306,9 @@ namespace alloy::core {
 
     size_type m_value;
   };
+
+  template <typename T>
+  using uquantity = quantity<T, std::size_t>;
 
   //===========================================================================
   // non-member functions : class : quantity
@@ -870,3 +873,4 @@ auto alloy::core::operator%(const quantity<T,Rep>& lhs, const quantity<U,URep>& 
 }
 
 #endif /* ALLOY_CORE_UTILITIES_QUANTITY_HPP */
+
