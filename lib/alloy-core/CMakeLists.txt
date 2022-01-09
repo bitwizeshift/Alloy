@@ -110,6 +110,7 @@ set(header_files
   include/alloy/core/memory/observer_ptr.hpp
   include/alloy/core/memory/unaligned.hpp
   include/alloy/core/memory/packed_buffer.hpp
+  include/alloy/core/memory/object_storage.hpp
 
   # Math
   include/alloy/core/math/angle.hpp
