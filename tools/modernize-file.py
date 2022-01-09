@@ -54,6 +54,7 @@ def main():
         warnings_as_errors=["-*"],
         use_color=True,
         fix=True,
+        fix_errors=True,
         database_path=str(db_path),
         quiet=not args.verbose,
     )
@@ -72,7 +73,7 @@ def main():
 
     result = tidy.execute(files=files)
 
-    if result == 0:
+    if result.returncode == 0:
         plural = "file was" if len(files) == 1 else "Files were"
         print(f"The following {plural} modernized:")
         for file in files:
@@ -82,7 +83,7 @@ def main():
         if not args.verbose:
             print("Rerun this command with `--verbose` for more details.")
 
-    return result
+    return result.returncode
 
 
 if __name__ == "__main__":
