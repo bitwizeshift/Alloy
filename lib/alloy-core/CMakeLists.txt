@@ -147,6 +147,9 @@ set(header_files
   include/alloy/core/math/vector/vector3_constants.hpp
   include/alloy/core/math/vector/vector4_constants.hpp
 
+  # Threads
+  include/alloy/core/thread/thread_group.hpp
+
   # Geometry
   include/alloy/core/geometry/point/barycentric.hpp
   include/alloy/core/geometry/point/point2.hpp
