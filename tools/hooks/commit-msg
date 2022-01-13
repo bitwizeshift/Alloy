@@ -15,7 +15,8 @@ class GitMessage:
                  desired_header_length: int = 50,
                  desired_body_length: int = 72,
                  prefixes: Sequence[str] = None):
-        self._message = message
+        # Strip out all lines that contain comments.
+        self._message = [line for line in message if not line.startswith("#")]
         self._desired_header_length = desired_header_length
         self._desired_body_length = desired_body_length
         self._prefixes: Sequence[str] = prefixes
@@ -24,8 +25,12 @@ class GitMessage:
         """
         Verifies that the commit message
         """
-        header = self._message[0]
         result = CheckResult()
+        if len(self._message) == 0 or self._message[0].strip() == "":
+            result.print_error("Error: message header is empty")
+            return result
+
+        header = self._message[0]
 
         if len(header) >= self._desired_header_length:
             result.returncode = 1
@@ -44,16 +49,15 @@ class GitMessage:
                 break
 
         if not is_prefixed:
+            first_word = header.split()[0]
             result.returncode = 1
             prefixes_string = "`" + "`, `".join(self._prefixes) + "`"
             result.print_error(
                 f"Message header does not start with valid prefix.",
+                f"'{first_word}' is not a valid prefix. "
                 f"Acceptable prefixes are:",
             )
-            result.print_error(
-                prefixes_string,
-                indent=2
-            )
+            result.print_error(prefixes_string)
 
         return result
 
@@ -62,7 +66,7 @@ class GitMessage:
         Verifies that the commit message
         """
         result = CheckResult()
-        if len(self._message) < 3:
+        if len(self._message) == 1:
             return result
         if self._message[1] != "":
             result.print_error(
@@ -75,7 +79,7 @@ class GitMessage:
         Verifies that the commit message
         """
         result = CheckResult()
-        if len(self._message) < 3:
+        if len(self._message) == 1:
             return result
         body_lines = self._message[2:]
         total_lines = len(body_lines)
