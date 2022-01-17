@@ -1,6 +1,6 @@
 /*****************************************************************************
  * \file int_utilities.hpp
- * 
+ *
  * \brief This header defines utilities relating to construction, composition,
  *        and decomposition of integral values.
  *****************************************************************************/
@@ -272,73 +272,103 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Safely compares equality between two integer values
-    ///
-    /// This is guaranteed to provide the correct result irrespective of the
-    /// sign of both integer values. This allows for a safe way to compare
-    /// signed and unsigned integers.
-    ///
-    /// \param lhs the left integer
-    /// \param rhs the right integer
-    /// \return the result of the equality
-    template <typename T, typename U>
-    static constexpr auto equal(T lhs, U rhs) noexcept -> bool;
+    struct equal_type {
+      using is_transparent = std::true_type;
 
-    /// \brief Safely compares inequality between two integer values
-    ///
-    /// This is guaranteed to provide the correct result irrespective of the
-    /// sign of both integer values. This allows for a safe way to compare
-    /// signed and unsigned integers.
-    ///
-    /// \param lhs the left integer
-    /// \param rhs the right integer
-    /// \return the result of the inequality
-    template <typename T, typename U>
-    static constexpr auto not_equal(T lhs, U rhs) noexcept -> bool;
+      /// \brief Safely compares equality between two integer values
+      ///
+      /// This is guaranteed to provide the correct result irrespective of the
+      /// sign of both integer values. This allows for a safe way to compare
+      /// signed and unsigned integers.
+      ///
+      /// \param lhs the left integer
+      /// \param rhs the right integer
+      /// \return the result of the equality
+      template <typename T, typename U>
+      constexpr auto operator()(T lhs, U rhs) const noexcept -> bool;
+    };
+    struct not_equal_type {
+      using is_transparent = std::true_type;
 
-    /// \brief Safely checks if `lhs` is greater than `rhs`
-    ///
-    /// This is guaranteed to provide the correct result irrespective of the
-    /// sign of both integer values.
-    ///
-    /// \param lhs the left integer
-    /// \param rhs the right integer
-    /// \return the result of `lhs < rhs`
-    template <typename T, typename U>
-    static constexpr auto greater(T lhs, U rhs) noexcept -> bool;
+      /// \brief Safely compares inequality between two integer values
+      ///
+      /// This is guaranteed to provide the correct result irrespective of the
+      /// sign of both integer values. This allows for a safe way to compare
+      /// signed and unsigned integers.
+      ///
+      /// \param lhs the left integer
+      /// \param rhs the right integer
+      /// \return the result of the inequality
+      template <typename T, typename U>
+      constexpr auto operator()(T lhs, U rhs) const noexcept -> bool;
+    };
 
-    /// \brief Safely checks if `lhs` is greater than or equal to `rhs`
-    ///
-    /// This is guaranteed to provide the correct result irrespective of the
-    /// sign of both integer values.
-    ///
-    /// \param lhs the left integer
-    /// \param rhs the right integer
-    /// \return the result of `lhs <= rhs`
-    template <typename T, typename U>
-    static constexpr auto greater_equal(T lhs, U rhs) noexcept -> bool;
+    struct greater_type {
+      using is_transparent = std::true_type;
 
-    /// \brief Safely checks if `lhs` is less than `rhs`
-    ///
-    /// This is guaranteed to provide the correct result irrespective of the
-    /// sign of both integer values.
-    ///
-    /// \param lhs the left integer
-    /// \param rhs the right integer
-    /// \return the result of `lhs > rhs`
-    template <typename T, typename U>
-    static constexpr auto less(T lhs, U rhs) noexcept -> bool;
+      /// \brief Safely checks if `lhs` is greater than `rhs`
+      ///
+      /// This is guaranteed to provide the correct result irrespective of the
+      /// sign of both integer values.
+      ///
+      /// \param lhs the left integer
+      /// \param rhs the right integer
+      /// \return the result of `lhs < rhs`
+      template <typename T, typename U>
+      constexpr auto operator()(T lhs, U rhs) const noexcept -> bool;
+    };
 
-    /// \brief Safely checks if `lhs` is less than or equal to `rhs`
-    ///
-    /// This is guaranteed to provide the correct result irrespective of the
-    /// sign of both integer values.
-    ///
-    /// \param lhs the left integer
-    /// \param rhs the right integer
-    /// \return the result of `lhs >= rhs`
-    template <typename T, typename U>
-    static constexpr auto less_equal(T lhs, U rhs) noexcept -> bool;
+    struct greater_equal_type {
+      using is_transparent = std::true_type;
+
+      /// \brief Safely checks if `lhs` is greater than or equal to `rhs`
+      ///
+      /// This is guaranteed to provide the correct result irrespective of the
+      /// sign of both integer values.
+      ///
+      /// \param lhs the left integer
+      /// \param rhs the right integer
+      /// \return the result of `lhs <= rhs`
+      template <typename T, typename U>
+      constexpr auto operator()(T lhs, U rhs) const noexcept -> bool;
+    };
+
+    struct less_type {
+      using is_transparent = std::true_type;
+
+      /// \brief Safely checks if `lhs` is less than `rhs`
+      ///
+      /// This is guaranteed to provide the correct result irrespective of the
+      /// sign of both integer values.
+      ///
+      /// \param lhs the left integer
+      /// \param rhs the right integer
+      /// \return the result of `lhs > rhs`
+      template <typename T, typename U>
+      constexpr auto operator()(T lhs, U rhs) const noexcept -> bool;
+    };
+
+    struct less_equal_type {
+      using is_transparent = std::true_type;
+
+      /// \brief Safely checks if `lhs` is less than or equal to `rhs`
+      ///
+      /// This is guaranteed to provide the correct result irrespective of the
+      /// sign of both integer values.
+      ///
+      /// \param lhs the left integer
+      /// \param rhs the right integer
+      /// \return the result of `lhs >= rhs`
+      template <typename T, typename U>
+      constexpr auto operator()(T lhs, U rhs) const noexcept -> bool;
+    };
+
+    static constexpr inline auto equal = equal_type{};
+    static constexpr inline auto not_equal = not_equal_type{};
+    static constexpr inline auto greater = greater_type{};
+    static constexpr inline auto greater_equal = greater_equal_type{};
+    static constexpr inline auto less = greater_type{};
+    static constexpr inline auto less_equal = greater_equal_type{};
 
     //--------------------------------------------------------------------------
     // Private: Static Factories
@@ -540,8 +570,8 @@ auto alloy::core::int_utilities::make_u64(
 
 template <typename T, typename U>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::int_utilities::equal(T lhs, U rhs)
-  noexcept -> bool
+auto alloy::core::int_utilities::equal_type::operator()(T lhs, U rhs)
+  const noexcept -> bool
 {
   if constexpr (std::is_signed_v<T> == std::is_signed_v<U>) {
     return lhs == rhs;
@@ -558,16 +588,16 @@ auto alloy::core::int_utilities::equal(T lhs, U rhs)
 
 template <typename T, typename U>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::int_utilities::not_equal(T lhs, U rhs)
-  noexcept -> bool
+auto alloy::core::int_utilities::not_equal_type::operator()(T lhs, U rhs)
+  const noexcept -> bool
 {
   return !equal(lhs, rhs);
 }
 
 template <typename T, typename U>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::int_utilities::greater(T lhs, U rhs)
-  noexcept -> bool
+auto alloy::core::int_utilities::greater_type::operator()(T lhs, U rhs)
+  const noexcept -> bool
 {
   if constexpr (std::is_signed_v<T> == std::is_signed_v<U>) {
     return lhs < rhs;
@@ -584,24 +614,24 @@ auto alloy::core::int_utilities::greater(T lhs, U rhs)
 
 template <typename T, typename U>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::int_utilities::greater_equal(T lhs, U rhs)
-  noexcept -> bool
+auto alloy::core::int_utilities::greater_equal_type::operator()(T lhs, U rhs)
+  const noexcept -> bool
 {
   return !greater(rhs, lhs);
 }
 
 template <typename T, typename U>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::int_utilities::less(T lhs, U rhs)
-  noexcept -> bool
+auto alloy::core::int_utilities::less_type::operator()(T lhs, U rhs)
+  const noexcept -> bool
 {
   return greater(rhs, lhs);
 }
 
 template <typename T, typename U>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::int_utilities::less_equal(T lhs, U rhs)
-  noexcept -> bool
+auto alloy::core::int_utilities::less_equal_type::operator()(T lhs, U rhs)
+  const noexcept -> bool
 {
   return !greater(lhs, rhs);
 }
