@@ -1,6 +1,6 @@
 /*****************************************************************************
  * \file types.hpp
- * 
+ *
  * \brief This header defines the base types used in Alloy
  *****************************************************************************/
 
@@ -48,6 +48,16 @@ namespace alloy::core {
   using s32 = std::int32_t;
   using u64 = std::uint64_t;
   using s64 = std::int64_t;
+
+  using f32 = float;
+  using f64 = double;
+
+  // C++20 introduces 'char8_t', which is a unique char type used for utf-8
+  // encoding.
+  using char8  = decltype(u8' ');
+  using char16 = char16_t;
+  using char32 = char32_t;
+  using wchar  = char16_t;
 
 } // namespace alloy::core
 
