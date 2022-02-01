@@ -66,7 +66,7 @@ class GitMessage:
         Verifies that the commit message
         """
         result = CheckResult()
-        if len(self._message) == 1:
+        if len(self._message) <= 1:
             return result
         if self._message[1] != "":
             result.print_error(
@@ -79,9 +79,10 @@ class GitMessage:
         Verifies that the commit message
         """
         result = CheckResult()
-        if len(self._message) == 1:
+        if len(self._message) <= 2:
             return result
         body_lines = self._message[2:]
+
         total_lines = len(body_lines)
         valid_lines = 0
         for line in self._message[2:]:
