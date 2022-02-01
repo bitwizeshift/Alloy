@@ -57,7 +57,7 @@ namespace alloy::core {
   using char8  = decltype(u8' ');
   using char16 = char16_t;
   using char32 = char32_t;
-  using wchar  = char16_t;
+  using wchar  = wchar_t;
 
 } // namespace alloy::core
 
