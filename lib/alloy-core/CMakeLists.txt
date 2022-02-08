@@ -97,6 +97,15 @@ set(header_files
   include/alloy/core/utilities/mixins.hpp
 
   # Strings
+  include/alloy/core/string/encoding/ansi_encoding.hpp
+  include/alloy/core/string/encoding/encoding_converter.hpp
+  include/alloy/core/string/encoding/encoding_traits.hpp
+  include/alloy/core/string/encoding/encoding_utilities.hpp
+  include/alloy/core/string/encoding/latin1_encoding.hpp
+  include/alloy/core/string/encoding/utf16_encoding.hpp
+  include/alloy/core/string/encoding/utf32_encoding.hpp
+  include/alloy/core/string/encoding/utf8_encoding.hpp
+  include/alloy/core/string/encoding/wide_encoding.hpp
   include/alloy/core/string/hashed_string_view.hpp
   include/alloy/core/string/string_view.hpp
   include/alloy/core/string/string_tokenizer.hpp
