@@ -14,6 +14,13 @@ set(source_files
   src/alloy/core/utilities/int_utilities.test.cpp
 
   # Strings
+  src/alloy/core/string/encoding/ansi_encoding.test.cpp
+  src/alloy/core/string/encoding/encoding_utilities.test.cpp
+  src/alloy/core/string/encoding/latin1_encoding.test.cpp
+  src/alloy/core/string/encoding/utf16_encoding.test.cpp
+  src/alloy/core/string/encoding/utf32_encoding.test.cpp
+  src/alloy/core/string/encoding/utf8_encoding.test.cpp
+  src/alloy/core/string/encoding/wide_encoding.test.cpp
   src/alloy/core/string/string_tokenizer.test.cpp
 
   # Containers
