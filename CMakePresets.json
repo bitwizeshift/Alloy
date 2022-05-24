@@ -1,0 +1,115 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 22,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "Default configuration",
+      "description": "The default configuration without any compilers or generator",
+      "binaryDir": "${sourceDir}/build/cmake-${presetName}",
+      "installDir": "${sourceDir}/install/${presetName}",
+      "cacheVariables": {
+        "ALLOY_COMPILE_TESTS": "ON",
+        "ALLOY_COMPILE_EXTRAS": "ON",
+        "ALLOY_COMPILE_EXAMPLES": "ON",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "ALLOY_PATCH_COMPILE_COMMANDS": "ON"
+      }
+    }, {
+      "name": "ninja-base",
+      "description": "Base build for GNU compilers using Ninja",
+      "hidden": true,
+      "inherits": "default",
+      "generator": "Ninja Multi-Config"
+    }, {
+      "name": "windows-base",
+      "description": "Base build for Windows builds",
+      "hidden": true,
+      "inherits": "default",
+      "generator": "Visual Studio 16 2019",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    }, {
+      "name": "clang",
+      "inherits": "ninja-base",
+      "displayName": "Clang build",
+      "description": "Builds with clang from PATH",
+      "environment": {
+        "CXX": "clang++"
+      }
+    }, {
+      "name": "gcc",
+      "inherits": "ninja-base",
+      "displayName": "GCC build",
+      "description": "Builds with GCC from PATH",
+      "environment": {
+        "CXX": "g++"
+      }
+    }, {
+      "name": "clang-cl",
+      "inherits": "windows-base",
+      "displayName": "Win32 clang-cl build",
+      "description": "Builds with Win32 clang-cl",
+      "toolset": "ClangCL"
+    }, {
+      "name": "msvc",
+      "inherits": "windows-base",
+      "displayName": "Win32 MSVC build",
+      "description": "Builds with Win32 clang-cl"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default",
+      "configurePreset": "default",
+      "configuration": "Debug"
+    }, {
+      "name": "clang",
+      "configurePreset": "clang",
+      "configuration": "Debug"
+    }, {
+      "name": "gcc",
+      "configurePreset": "gcc",
+      "configuration": "Debug"
+    }, {
+      "name": "clang-cl",
+      "configurePreset": "clang-cl",
+      "configuration": "Debug"
+    }, {
+      "name": "msvc",
+      "configurePreset": "msvc",
+      "configuration": "Debug"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "output": {"outputOnFailure": true},
+      "execution": {"noTestsAction": "error", "stopOnFailure": false}
+    }, {
+      "name": "clang",
+      "configurePreset": "clang",
+      "inherits": "default"
+    }, {
+      "name": "gcc",
+      "configurePreset": "gcc",
+      "inherits": "default"
+    }, {
+      "name": "clang-cl",
+      "configurePreset": "clang-cl",
+      "inherits": "default"
+    }, {
+      "name": "msvc",
+      "configurePreset": "msvc",
+      "inherits": "default"
+    }
+  ]
+}
