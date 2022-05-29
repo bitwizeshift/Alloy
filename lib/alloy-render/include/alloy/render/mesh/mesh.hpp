@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -183,7 +183,7 @@ namespace alloy::render {
     /// \brief Moves the contents of \p other
     ///
     /// \param other the other mesh to move
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(mesh&& other) -> mesh& = default;
     auto operator=(const mesh&) -> mesh& = delete;
 
@@ -602,3 +602,4 @@ auto alloy::render::mesh::round_up_power_two(std::size_t v)
 }
 
 #endif /* ALLOY_RENDER_MESH_MESH_HPP */
+

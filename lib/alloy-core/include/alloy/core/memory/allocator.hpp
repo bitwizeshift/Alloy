@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -124,7 +124,7 @@ namespace alloy::core {
     ///
     /// \param p pointer to memory to attempt to resize
     /// \param bytes the new byte size
-    /// \return \c true if the memory was able to be resized
+    /// \return `true` if the memory was able to be resized
     bool resize_bytes(void* p, std::size_t bytes) noexcept;
 
     /// \brief Attempts to resize memory previously allocated, and falls back
@@ -180,7 +180,7 @@ namespace alloy::core {
     ///
     /// \param p pointer to memory to attempt to resize
     /// \param n the new number of objects to resize to
-    /// \return \c true if the memory was able to be resized
+    /// \return `true` if the memory was able to be resized
     template <typename T>
     bool resize_objects(not_null<T*> p,
                         std::size_t n) noexcept;
@@ -1091,3 +1091,4 @@ inline bool alloy::core::operator!=(const stl_allocator_adapter<T>& lhs,
 
 
 #endif /* ALLOY_CORE_MEMORY_ALLOCATOR_HPP */
+

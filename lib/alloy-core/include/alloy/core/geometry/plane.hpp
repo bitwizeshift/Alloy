@@ -121,11 +121,11 @@ namespace alloy::core {
 
     //--------------------------------------------------------------------------
 
-    /// \brief Assigns the contents of \p other to \c this through
+    /// \brief Assigns the contents of \p other to `this` through
     ///        copy-assignment
     ///
     /// \param other the other plane to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const plane& other) -> plane& = default;
 
     //--------------------------------------------------------------------------
@@ -135,12 +135,12 @@ namespace alloy::core {
 
     /// \brief Normalizes this plane
     ///
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto normalize() noexcept -> plane&;
 
     /// \brief Inverts this plane's direction
     ///
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto invert() noexcept -> plane&;
 
     //--------------------------------------------------------------------------
@@ -201,7 +201,7 @@ namespace alloy::core {
     /// \brief Checks if this plane intersects the given point \p p
     ///
     /// \param p the point to check for intersection
-    /// \return \c true if \p p is in the plane
+    /// \return `true` if \p p is in the plane
     [[nodiscard]]
     auto contains(const point3& p) const noexcept -> bool;
 
@@ -210,7 +210,7 @@ namespace alloy::core {
     ///
     /// \param p the point to check for intersection
     /// \param tolerance the tolerance for accepting the containment
-    /// \return \c true if \p p is in the plane
+    /// \return `true` if \p p is in the plane
     [[nodiscard]]
     auto contains(const point3& p, real tolerance) const noexcept -> bool;
 
@@ -247,7 +247,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left plane
   /// \param rhs the right plane
-  /// \return \c true if the two planes contain almost equal values
+  /// \return `true` if the two planes contain almost equal values
   constexpr auto almost_equal(const plane& lhs, const plane& rhs, real tolerance)
     noexcept -> bool;
 
@@ -259,7 +259,7 @@ namespace alloy::core {
   ///
   /// \param p the point
   /// \param plane the plane
-  /// \return \c true if \p p is over the \p plane
+  /// \return `true` if \p p is over the \p plane
   ALLOY_CORE_API
   auto is_point_over_plane(const point3& p, const plane& plane) noexcept -> bool;
 
@@ -267,7 +267,7 @@ namespace alloy::core {
   ///
   /// \param p the point
   /// \param plane the plane
-  /// \return \c true if \p p is under the \p plane
+  /// \return `true` if \p p is under the \p plane
   ALLOY_CORE_API
   auto is_point_under_plane(const point3& p, const plane& plane) noexcept -> bool;
 
@@ -436,4 +436,3 @@ auto alloy::core::almost_equal(const plane& lhs, const plane& rhs, real toleranc
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_PLANE_HPP */
-

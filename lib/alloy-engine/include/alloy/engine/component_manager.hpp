@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -193,7 +193,7 @@ namespace alloy::engine {
     ///        for a given entity \p e
     ///
     /// \param e the entity to query
-    /// \return \c true if t \p e has an attached component
+    /// \return `true` if t \p e has an attached component
     virtual bool has_component(entity e) const noexcept = 0;
   };
 
@@ -268,7 +268,7 @@ namespace alloy::engine {
     ///        for a given entity \p e
     ///
     /// \param e the entity to query
-    /// \return \c true if t \p e has an attached component
+    /// \return `true` if t \p e has an attached component
     bool has_component(entity e) const noexcept override;
 
     //--------------------------------------------------------------------------
@@ -477,3 +477,4 @@ inline alloy::engine::component_manager::storage<Component>&
 }
 
 #endif /* ALLOY_ENGINE_COMPONENT_MANAGER_HPP */
+

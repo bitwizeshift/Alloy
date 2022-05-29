@@ -122,7 +122,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left polar
   /// \param rhs the right polar
-  /// \return \c true if the two polar contain almost equal values
+  /// \return `true` if the two polar contain almost equal values
   constexpr auto almost_equal(const polar& lhs,
                               const polar& rhs,
                               real tolerance) noexcept -> bool;
@@ -291,4 +291,3 @@ auto alloy::core::piecewise_compare<alloy::core::polar>
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 #endif /* ALLOY_CORE_GEOMETRY_POINT_POLAR_HPP */
-

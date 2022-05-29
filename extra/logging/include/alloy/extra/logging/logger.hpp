@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019, 2021-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -227,7 +227,7 @@ namespace alloy::extra {
     /// \brief Move assignment operator
     ///
     /// \param other the other logger to move
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(logger&& other) noexcept -> logger&;
     auto operator=(const logger&) -> logger& = delete;
 
@@ -463,3 +463,4 @@ auto alloy::extra::logger::fatal(std::string_view format, Args&&...args)
 }
 
 #endif /* ALLOY_EXTRA_LOGGING_LOGGER_HPP */
+

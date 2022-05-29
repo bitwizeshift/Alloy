@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -78,7 +78,7 @@ namespace alloy::extra {
     /// \brief Move-assigns a freelist from an existing freelist
     ///
     /// \param other the other freelist to move
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     freelist& operator=(freelist&& other) noexcept = default;
 
     // Deleted copy construction
@@ -91,7 +91,7 @@ namespace alloy::extra {
 
     /// \brief Returns whether or not this memory_block_cache is empty
     ///
-    /// \return \c true if this memory_block_cache is empty, \c false otherwise
+    /// \return `true` if this memory_block_cache is empty, `false` otherwise
     bool empty() const noexcept;
 
     /// \brief Returns the number of entries in this freelist
@@ -127,7 +127,7 @@ namespace alloy::extra {
     /// \brief Stores raw memory into this freelist
     ///
     /// \pre The pointer \p p must point to memory of at least
-    ///      \c sizeof(void*) bytes, and must be suitably aligned to support
+    ///      `sizeof(void*)` bytes, and must be suitably aligned to support
     ///      pointer types.
     ///
     /// \param p pointer to the raw memory to store
@@ -264,3 +264,4 @@ inline bool alloy::extra::operator!=(const freelist& lhs, const freelist& rhs)
 }
 
 #endif /* ALLOY_EXTRA_ALLOCATORS_FREELIST_HPP */
+

@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -53,7 +53,7 @@ namespace alloy::core {
   /// \brief Determines whether a given basic_fixed value \p f is a nan
   ///
   /// \param f the value to check
-  /// \return \c true if \p f is a \c nan
+  /// \return `true` if \p f is a `nan`
   template<std::size_t MantissaBits, std::size_t ExponentBits>
   bool is_nan( const basic_fixed<MantissaBits,ExponentBits>& f ) noexcept;
 
@@ -62,14 +62,14 @@ namespace alloy::core {
   /// \brief Determines whether a given basic_fixed value \p f is finite
   ///
   /// \param f the value to check
-  /// \return \c true if \p f is \c finite
+  /// \return `true` if \p f is `finite`
   template<std::size_t MantissaBits, std::size_t ExponentBits>
   bool is_finite( const basic_fixed<MantissaBits,ExponentBits>& f ) noexcept;
 
   /// \brief Determines whether a given basic_fixed value \p f is infinite
   ///
   /// \param f the value to check
-  /// \return \c true if \p f is \c infinite
+  /// \return `true` if \p f is `infinite`
   template<std::size_t MantissaBits, std::size_t ExponentBits>
   bool is_infinite( const basic_fixed<MantissaBits,ExponentBits>& f ) noexcept;
 
@@ -78,14 +78,14 @@ namespace alloy::core {
   /// \brief Determines whether a given basic_fixed value \p f is normal
   ///
   /// \param f the value to check
-  /// \return \c true if \p f is \c normal
+  /// \return `true` if \p f is `normal`
   template<std::size_t MantissaBits, std::size_t ExponentBits>
   bool is_normal( const basic_fixed<MantissaBits,ExponentBits>& f ) noexcept;
 
   /// \brief Determines whether a given basic_fixed value \p f is subnormal
   ///
   /// \param f the value to check
-  /// \return \c true if \p f is \c subnormal
+  /// \return `true` if \p f is `subnormal`
   template<std::size_t MantissaBits, std::size_t ExponentBits>
   bool is_subnormal( const basic_fixed<MantissaBits,ExponentBits>& f ) noexcept;
 
@@ -174,3 +174,4 @@ inline bool
 //                    for fixed-precision type. Probably match the aliases?
 
 #endif /* ALLOY_CORE_PRECISION_FIXED_HPP */
+

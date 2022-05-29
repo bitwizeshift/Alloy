@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -136,7 +136,7 @@ namespace alloy::core {
     /// \brief Assigns the contents of \p other to this basic_zstring_view
     ///
     /// \param other the other basic_zstring_view to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const basic_zstring_view& other) -> basic_zstring_view& = default;
 
     //-------------------------------------------------------------------------
@@ -280,3 +280,4 @@ alloy::core::basic_zstring_view<CharT,Traits>
 }
 
 #endif /* LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_STRINGS_ZSTRING_VIEW_HPP */
+

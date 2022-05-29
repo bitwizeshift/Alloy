@@ -134,7 +134,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left spherical
   /// \param rhs the right spherical
-  /// \return \c true if the two spherical contain almost equal values
+  /// \return `true` if the two spherical contain almost equal values
   constexpr auto almost_equal(const spherical& lhs,
                               const spherical& rhs,
                               real tolerance) noexcept -> bool;
@@ -332,4 +332,3 @@ auto alloy::core::piecewise_compare<alloy::core::spherical>
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 #endif /* ALLOY_CORE_GEOMETRY_POINT_SPHERICAL_HPP */
-

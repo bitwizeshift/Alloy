@@ -100,7 +100,7 @@ namespace alloy::core {
     /// \brief Copy-assigns the contents of an existing ray
     ///
     /// \param other the other ray to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const ray& other) -> ray& = default;
 
     //--------------------------------------------------------------------------
@@ -110,9 +110,9 @@ namespace alloy::core {
 
     /// \brief Inverts the direction of this ray
     ///
-    /// \post \c this->direction() points in the opposite direction
+    /// \post `this`->direction() points in the opposite direction
     ///
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto invert() noexcept -> ray&;
 
     //--------------------------------------------------------------------------
@@ -155,7 +155,7 @@ namespace alloy::core {
     /// \brief Checks if this ray intersects the given point \p p
     ///
     /// \param p the point to check for intersection
-    /// \return \c true if \p p is in the ray
+    /// \return `true` if \p p is in the ray
     [[nodiscard]]
     auto contains(const point3& p) const noexcept -> bool;
 
@@ -164,7 +164,7 @@ namespace alloy::core {
     ///
     /// \param p the point to check for intersection
     /// \param tolerance the tolerance for accepting the containment
-    /// \return \c true if \p p is in the ray
+    /// \return `true` if \p p is in the ray
     [[nodiscard]]
     auto contains(const point3& p, real tolerance) const noexcept -> bool;
 
@@ -194,7 +194,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left ray
   /// \param rhs the right ray
-  /// \return \c true if the two rays contain almost equal values
+  /// \return `true` if the two rays contain almost equal values
   constexpr auto almost_equal(const ray& lhs, const ray& rhs, real tolerance)
     noexcept -> bool;
 
@@ -304,4 +304,3 @@ auto alloy::core::almost_equal(const ray& lhs, const ray& rhs, real tolerance)
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_RAY_HPP */
-

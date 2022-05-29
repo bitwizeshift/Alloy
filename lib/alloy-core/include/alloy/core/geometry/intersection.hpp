@@ -195,7 +195,7 @@ namespace alloy::core {
   /// \param lhs the left intersection
   /// \param rhs the right intersection
   /// \param tolerance the tolerance value to compare against
-  /// \return \c true if the two intersections contain almost equal values
+  /// \return `true` if the two intersections contain almost equal values
   template<typename... Types>
   constexpr auto almost_equal(const intersection<Types...>& lhs,
                               const intersection<Types...>& rhs,
@@ -356,4 +356,3 @@ auto alloy::core::almost_equal(const intersection<Types...>& lhs,
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_INTERSECTION_HPP */
-

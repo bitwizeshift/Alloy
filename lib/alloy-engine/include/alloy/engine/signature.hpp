@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -106,7 +106,7 @@ namespace alloy::engine {
     /// \brief Checks if this signature contains the desired component \p c
     ///
     /// \param c the component to check
-    /// \return \c true if this signature contains the component \p c
+    /// \return `true` if this signature contains the component \p c
     bool contains(component c) const noexcept;
 
     //--------------------------------------------------------------------------
@@ -244,3 +244,4 @@ inline bool alloy::engine::operator>=(const signature& lhs,
 }
 
 #endif /* ALLOY_ENGINE_SIGNATURE_HPP */
+

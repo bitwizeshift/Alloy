@@ -100,7 +100,7 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
   /// \brief Gets whether the input format is valid
   ///
   /// \param format the fomat
-  /// \return \c true if the format is correct
+  /// \return `true` if the format is correct
   inline bool is_valid_format(alloy::core::image::pixel_format format)
     noexcept
   {

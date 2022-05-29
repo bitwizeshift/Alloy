@@ -79,7 +79,7 @@ namespace alloy::core {
     /// \brief Default-constructs a point at the origin
     constexpr point3() noexcept;
 
-    /// \brief Constructs a point at coordinates \c {x,y,z}
+    /// \brief Constructs a point at coordinates ``{x,y,z}
     ///
     /// \param x the x-coordinate
     /// \param y the y-coordinate
@@ -96,7 +96,7 @@ namespace alloy::core {
     /// \brief Copy-assigns a point from another point
     ///
     /// \param other the other point to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const point3& other) noexcept -> point3& = default;
 
     //--------------------------------------------------------------------------
@@ -187,7 +187,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left point
   /// \param rhs the right point
-  /// \return \c true if the two point contain almost equal values
+  /// \return `true` if the two point contain almost equal values
   constexpr auto almost_equal(const point3& lhs, const point3& rhs, real tolerance)
     noexcept -> bool;
 
@@ -452,4 +452,3 @@ auto alloy::core::piecewise_compare<alloy::core::point3>::operator()(
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 #endif /* ALLOY_CORE_GEOMETRY_POINT_POINT3_HPP */
-

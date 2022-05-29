@@ -8,7 +8,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -61,7 +61,7 @@ namespace alloy::core {
     /// \brief Calculates the cosine of the given \ref radian angle, \p rad
     ///
     /// \param rad the angle
-    /// \return the result of \c cos(rad)
+    /// \return the result of `cos(rad)`
     static auto cos(radian rad) noexcept -> real;
 
     /// \brief Calculates the cosine of the given \p angle
@@ -70,7 +70,7 @@ namespace alloy::core {
     ///       \ref radian first
     ///
     /// \param angle the angle
-    /// \return the result of \c cos(angle)
+    /// \return the result of `cos(angle)`
     template<typename AngleUnit>
     static auto cos(basic_angle<AngleUnit> angle) noexcept -> real;
 
@@ -79,7 +79,7 @@ namespace alloy::core {
     /// \brief Calculates the sine of the given \ref radian angle, \p rad
     ///
     /// \param rad the angle
-    /// \return the result of \c sin(rad)
+    /// \return the result of `sin(rad)`
     static auto sin(radian rad) noexcept -> real;
 
     /// \brief Calculates the sine of the given \p angle
@@ -88,7 +88,7 @@ namespace alloy::core {
     ///       \ref radian first
     ///
     /// \param angle the angle
-    /// \return the result of \c sin(angle)
+    /// \return the result of `sin(angle)`
     template<typename AngleUnit>
     static auto sin(basic_angle<AngleUnit> angle) noexcept -> real;
 
@@ -97,7 +97,7 @@ namespace alloy::core {
     /// \brief Calculates the tangent of the given \ref radian angle, \p rad
     ///
     /// \param rad the angle
-    /// \return the result of \c tan(rad)
+    /// \return the result of `tan(rad)`
     static auto tan(radian rad) noexcept -> real;
 
     /// \brief Calculates the tangent of the given \ref gradian angle, \p grad
@@ -106,7 +106,7 @@ namespace alloy::core {
     ///       \ref radian first
     ///
     /// \param angle the angle
-    /// \return the result of \c tan(angle)
+    /// \return the result of `tan(angle)`
     template<typename AngleUnit>
     static auto tan(basic_angle<AngleUnit> angle) noexcept -> real;
 
@@ -118,7 +118,7 @@ namespace alloy::core {
     ///       \ref radian first
     ///
     /// \param angle the angle
-    /// \return the result of \c sec(angle)
+    /// \return the result of `sec(angle)`
     template<typename AngleUnit>
     static auto sec(basic_angle<AngleUnit> angle) noexcept -> real;
 
@@ -128,7 +128,7 @@ namespace alloy::core {
     ///       \ref radian first
     ///
     /// \param angle the angle
-    /// \return the result of \c csc(angle)
+    /// \return the result of `csc(angle)`
     template<typename AngleUnit>
     static auto csc(basic_angle<AngleUnit> angle) noexcept -> real;
 
@@ -138,7 +138,7 @@ namespace alloy::core {
     ///       \ref radian first
     ///
     /// \param angle the angle
-    /// \return the result of \c cot(angle)
+    /// \return the result of `cot(angle)`
     template<typename AngleUnit>
     static auto cot(basic_angle<AngleUnit> angle) noexcept -> real;
 
@@ -233,3 +233,4 @@ auto alloy::core::trigonometry::cot(basic_angle<AngleUnit> angle)
 }
 
 #endif /* ALLOY_CORE_MATH_TRIGONOMETRY_HPP */
+

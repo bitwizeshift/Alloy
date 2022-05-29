@@ -132,7 +132,7 @@ namespace alloy::core {
     ///        sphere
     ///
     /// \param p the point to check
-    /// \return \c true if the point is contained in this sphere
+    /// \return `true` if the point is contained in this sphere
     [[nodiscard]]
     auto contains(const point3& p) const noexcept -> bool;
 
@@ -234,4 +234,3 @@ alloy::core::frustum::frustum(const plane& left, const plane& right,
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_FRUSTUM_HPP */
-

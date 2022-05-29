@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -82,7 +82,7 @@ namespace alloy::core {
 
   /// \brief Trait to detect whether \p T is a \ref degree
   ///
-  /// The result is aliased as \c ::value
+  /// The result is aliased as `::value`
   template<typename T> struct is_degree : std::false_type{};
 
   template<> struct is_degree<degree> : std::true_type{};
@@ -148,3 +148,4 @@ inline constexpr auto
 }
 
 #endif /* ALLOY_CORE_MATH_ANGLE_DEGREE_HPP */
+

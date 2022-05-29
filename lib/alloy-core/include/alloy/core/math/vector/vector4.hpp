@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ namespace alloy::core {
   //////////////////////////////////////////////////////////////////////////////
   /// \brief This object represents a 4-component vector in linear algebra.
   ///
-  /// Most operations are marked \c constexpr to allow for compile-time
+  /// Most operations are marked `constexpr` to allow for compile-time
   /// forward-calculations of vector sums and products.
   ///
   /// Operations on this type are able to promote results to reduce loss of
@@ -115,10 +115,10 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Copy-assigns \p other to \c this
+    /// \brief Copy-assigns \p other to `this`
     ///
     /// \param other the other vector4 to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const vector4& other) -> vector4& = default;
 
     //--------------------------------------------------------------------------
@@ -201,20 +201,20 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Determines the dot-product of \c this and \p other
+    /// \brief Determines the dot-product of `this` and \p other
     ///
     /// \param other the other vector4 to perform the dot-product with
-    /// \return the dot product of \c this and \p other
+    /// \return the dot product of `this` and \p other
     constexpr auto dot(const vector4& other) const noexcept -> real;
 
-    /// \brief Calculates the cross-product of \c this and \p other
+    /// \brief Calculates the cross-product of `this` and \p other
     ///
     /// \note This cross-product is not a true 4-dimensional cross-product,
     ///       it is a cross product constrained to 3-dimensions, clearing
     ///       the w-entry
     ///
     /// \param other the other vector4 to perform the cross-product with
-    /// \return the cross product of \c this and \p other
+    /// \return the cross product of `this` and \p other
     constexpr auto cross(const vector4& other) const noexcept -> vector4;
 
     /// \brief Gets the square magnitude of this vector4
@@ -227,10 +227,10 @@ namespace alloy::core {
     /// \return the magnitude of the vector4
     auto magnitude() const noexcept -> real;
 
-    /// \brief Gets the midpoint between \c this and \p other
+    /// \brief Gets the midpoint between `this` and \p other
     ///
     /// \param other the vector4 to get the midpoint from
-    /// \return the midpoint between \c this and \p other
+    /// \return the midpoint between `this` and \p other
     constexpr auto midpoint(const vector4& other) const noexcept -> vector4;
 
     /// \brief Projects the components of this vector onto \p vector
@@ -245,19 +245,19 @@ namespace alloy::core {
     /// \return the rejection
     constexpr auto rejection(const vector4& vector) const noexcept -> vector4;
 
-    /// \brief Gets the normalized vector4 of \c this
+    /// \brief Gets the normalized vector4 of `this`
     ///
-    /// \return the normalized vector4 of \c this
+    /// \return the normalized vector4 of `this`
     auto normalized() const noexcept -> vector4;
 
-    /// \brief Gets the inverse of \c this vector4
+    /// \brief Gets the inverse of `this` vector4
     ///
-    /// \return the inverse of \c this vector4
+    /// \return the inverse of `this` vector4
     constexpr auto inverse() const noexcept -> vector4;
 
     /// \brief Queries whether this vector is normalized
     ///
-    /// \return \c true if this vector is normalized
+    /// \return `true` if this vector is normalized
     constexpr auto is_normalized() const noexcept -> bool;
 
     //--------------------------------------------------------------------------
@@ -265,14 +265,14 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Normalizes this vector4 and returns a reference to \c (*this)
+    /// \brief Normalizes this vector4 and returns a reference to `(*this)`
     ///
-    /// \return the reference to \c (*this)
+    /// \return the reference to `(*this)`
     auto normalize() noexcept -> vector4&;
 
-    /// \brief Inverts this vector4 and returns a reference to \c (*this)
+    /// \brief Inverts this vector4 and returns a reference to `(*this)`
     ///
-    /// \return the reference to \c (*this)
+    /// \return the reference to `(*this)`
     constexpr auto invert() noexcept -> vector4&;
 
     //--------------------------------------------------------------------------
@@ -307,7 +307,7 @@ namespace alloy::core {
 
   /// \brief Trait to detect whether \p T is a \ref vector4
   ///
-  /// The result is aliased as \c ::value
+  /// The result is aliased as `::value`
   template<typename T>
   struct is_vector4 : std::false_type{};
 
@@ -315,7 +315,7 @@ namespace alloy::core {
   struct is_vector4<vector4> : std::true_type{};
 
   /// \brief Convenience template variable to extract out
-  ///        \c is_vector4::value
+  ///        `is_vector4::value`
   template<typename T>
   constexpr bool is_vector4_v = is_vector4<T>::value;
 
@@ -350,7 +350,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left vector4
   /// \param rhs the right vector4
-  /// \return \c true if the two vector4 contain almost equal values
+  /// \return `true` if the two vector4 contain almost equal values
   constexpr auto almost_equal(const vector4& lhs,
                               const vector4& rhs,
                               real tolerance) noexcept -> bool;
@@ -436,7 +436,7 @@ namespace std {
 // Constructors
 //------------------------------------------------------------------------------
 
-inline constexpr 
+inline constexpr
 alloy::core::vector4::vector4()
   noexcept
   : m_data{
@@ -449,7 +449,7 @@ alloy::core::vector4::vector4()
 
 }
 
-inline constexpr 
+inline constexpr
 alloy::core::vector4::vector4(real x, real y, real z, real w)
   noexcept
   : m_data{x,y,z,w}
@@ -965,3 +965,4 @@ auto alloy::core::piecewise_compare<alloy::core::vector4>
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 #endif /* ALLOY_CORE_MATH_VECTOR_VECTOR4_HPP */
+

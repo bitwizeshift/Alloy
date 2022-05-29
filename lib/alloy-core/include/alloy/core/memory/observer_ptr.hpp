@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -82,7 +82,7 @@ namespace alloy::core {
     /// \brief Checks whether this observable is being referenced by any
     ///        observer_ptrs
     ///
-    /// \return \c true if this observable is referenced
+    /// \return `true` if this observable is referenced
     bool is_referenced() const noexcept;
 
     //-------------------------------------------------------------------------
@@ -96,7 +96,7 @@ namespace alloy::core {
     /// \brief Constructs this observable by move-constructing from the
     ///        contents of \p other
     ///
-    /// All intrinsic linked pointers are rebound from \p other to \c this
+    /// All intrinsic linked pointers are rebound from \p other to `this`
     ///
     /// \note Due to the pointer-rebinding, move-assignment may be more
     ///       expensive than typical copy-construction in order to preserve the
@@ -139,7 +139,7 @@ namespace alloy::core {
     /// \brief Removes all references to this observable
     ///
     /// \post All observer_ptr instances that were pointing to this are now
-    ///       pointing to \c nullptr
+    ///       pointing to `nullptr`
     void clear_references() noexcept;
 
     /// \brief Rebinds all references to the new observable
@@ -338,19 +338,19 @@ namespace alloy::core {
     /// \brief Assigns the contents of \p other to this observer_ptr
     ///
     /// \param other the other observer_ptr to move
-    /// \return a reference to \c (*this)
+    /// \return a reference to `(*this)`
     observer_ptr& operator=(observer_ptr&& other) noexcept;
 
     /// \brief Assigns the contents of \p other to this observer_ptr
     ///
     /// \param other the other observer_ptr to copy
-    /// \return a reference to \c (*this)
+    /// \return a reference to `(*this)`
     observer_ptr& operator=(const observer_ptr& other) noexcept;
 
     /// \brief Assigns the contents of \p p to this observer_ptr
     ///
     /// \param p the pointer to observe
-    /// \return a reference to \c (*this)
+    /// \return a reference to `(*this)`
     template <typename U,
               typename = std::enable_if_t<std::is_convertible_v<U*,T*>>>
     observer_ptr& operator=(U* p) noexcept;
@@ -389,7 +389,7 @@ namespace alloy::core {
     reference operator*() const noexcept;
     pointer operator->() const noexcept;
 
-    /// \brief Convertible to \c true when this pointer is null, \c false
+    /// \brief Convertible to `true` when this pointer is null, `false`
     ///        otherwise
     explicit operator bool() const noexcept;
 
@@ -934,3 +934,4 @@ inline bool alloy::core::operator!=(std::nullptr_t,
 }
 
 #endif /* ALLOY_CORE_UTILITIES_OBSERVER_PTR_HPP */
+

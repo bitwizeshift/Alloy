@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -120,7 +120,7 @@ namespace alloy::io {
     /// before adopting the file from \p other
     ///
     /// \param other the other file to move
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     file& operator=(file&& other) noexcept;
     file& operator=(const file&) = delete;
 
@@ -130,7 +130,7 @@ namespace alloy::io {
 
     /// \brief Checks whether this file is open
     ///
-    /// \return \c true if the file is open
+    /// \return `true` if the file is open
     bool is_open() const noexcept;
 
     /// \brief Gets the size of this file in bytes
@@ -277,13 +277,13 @@ namespace alloy::io {
     ///
     /// \param f the file to write to
     /// \param in the value to write
-    /// \return \c void on success
+    /// \return `void` on success
     static core::result<void,std::error_code> serialize(file& f, const T& in) noexcept;
 
     /// \brief Reads from the file \p f to \p out
     ///
     /// \param f the file to read from
-    /// \return \c void on success
+    /// \return `void` on success
     static core::result<T,std::error_code> deserialize(file& f) noexcept;
   };
 
@@ -711,3 +711,4 @@ struct alloy::io::file_serializer<std::int64_t>
 };
 
 #endif /* ALLOY_IO_FILESYSTEM_FILE_HPP */
+

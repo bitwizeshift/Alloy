@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -112,7 +112,7 @@ namespace alloy::core {
     /// \brief Copy-assigns the contents of an existing basis3
     ///
     /// \param other the other basis3 to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     basis3& operator=(const basis3& other) noexcept = default;
 
     //--------------------------------------------------------------------------
@@ -181,7 +181,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left basis3
   /// \param rhs the right basis3
-  /// \return \c true if the two basis3 contain almost equal values
+  /// \return `true` if the two basis3 contain almost equal values
   constexpr bool almost_equal(const basis3& lhs,
                               const basis3& rhs) noexcept;
 
@@ -189,7 +189,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left basis3
   /// \param rhs the right basis3
-  /// \return \c true if the two basis3 contain almost equal values
+  /// \return `true` if the two basis3 contain almost equal values
   constexpr bool almost_equal(const basis3& lhs,
                               const basis3& rhs,
                               real tolerance) noexcept;
@@ -314,3 +314,4 @@ inline constexpr bool alloy::core::almost_equal(const basis3& lhs,
 }
 
 #endif /* ALLOY_CORE_MATH_BASIS_BASIS3_HPP */
+

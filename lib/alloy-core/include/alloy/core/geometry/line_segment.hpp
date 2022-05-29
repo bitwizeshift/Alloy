@@ -87,7 +87,7 @@ namespace alloy::core {
     /// \brief Copy-assigns the contents of an existing line_segment
     ///
     /// \param other the other line_segment to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const line_segment& other) -> line_segment& = default;
 
     //--------------------------------------------------------------------------
@@ -141,7 +141,7 @@ namespace alloy::core {
     /// \brief Checks if this line_segment intersects the given point \p p
     ///
     /// \param p the point to check for intersection
-    /// \return \c true if \p p is in the line_segment
+    /// \return `true` if \p p is in the line_segment
     [[nodiscard]]
     auto contains(const point3& p) const noexcept -> bool;
 
@@ -150,7 +150,7 @@ namespace alloy::core {
     ///
     /// \param p the point to check for intersection
     /// \param tolerance the tolerance for accepting the containment
-    /// \return \c true if \p p is in the line_segment
+    /// \return `true` if \p p is in the line_segment
     [[nodiscard]]
     auto contains(const point3& p, real tolerance) const noexcept -> bool;
 
@@ -183,7 +183,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left line_segment
   /// \param rhs the right line_segment
-  /// \return \c true if the two line_segments contain almost equal values
+  /// \return `true` if the two line_segments contain almost equal values
   constexpr auto almost_equal(const line_segment& lhs,
                               const line_segment& rhs,
                               real tolerance) noexcept -> bool;
@@ -291,4 +291,3 @@ auto alloy::core::almost_equal(const line_segment& lhs,
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_LINE_SEGMENT_HPP */
-

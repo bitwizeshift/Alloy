@@ -88,13 +88,13 @@ namespace alloy::core {
     /// \brief Move-assigns the contents of an existing line
     ///
     /// \param other the other line to move
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(line&& other) -> line& = default;
 
     /// \brief Copy-assigns the contents of an existing line
     ///
     /// \param other the other line to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const line& other) -> line& = default;
 
     //--------------------------------------------------------------------------
@@ -127,7 +127,7 @@ namespace alloy::core {
     /// \brief Checks if this line intersects the given point \p p
     ///
     /// \param p the point to check for intersection
-    /// \return \c true if \p p is in the line
+    /// \return `true` if \p p is in the line
     [[nodiscard]]
     auto contains(const point3& p) const noexcept -> bool;
 
@@ -136,7 +136,7 @@ namespace alloy::core {
     ///
     /// \param p the point to check for intersection
     /// \param tolerance the tolerance for accepting the containment
-    /// \return \c true if \p p is in the line
+    /// \return `true` if \p p is in the line
     [[nodiscard]]
     auto contains(const point3& p, real tolerance) const noexcept -> bool;
 
@@ -168,7 +168,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left line
   /// \param rhs the right line
-  /// \return \c true if the two lines contain almost equal values
+  /// \return `true` if the two lines contain almost equal values
   ALLOY_CORE_API
   auto almost_equal(const line& lhs, const line& rhs, real tolerance)
     noexcept -> bool;
@@ -231,4 +231,3 @@ auto alloy::core::operator!=(const line& lhs, const line& rhs)
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_LINE_HPP */
-

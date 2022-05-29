@@ -9,7 +9,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -163,13 +163,13 @@ namespace alloy::core {
     /// \brief Assigns the contents of \p other to this through move assignment
     ///
     /// \param other the other semantic object to move
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     semantic_type& operator=(semantic_type&&) = default;
 
     /// \brief Assigns the contents of \p other to this through copy assignment
     ///
     /// \param other the other semantic object to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     semantic_type& operator=(const semantic_type&) = default;
 
     //-------------------------------------------------------------------------
@@ -639,3 +639,4 @@ inline constexpr SemanticType
 }
 
 #endif /* ALLOY_CORE_UTILITIES_BOXED_TYPE_HPP */
+

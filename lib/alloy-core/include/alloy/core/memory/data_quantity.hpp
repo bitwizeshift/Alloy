@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -129,7 +129,7 @@ namespace alloy::core {
     /// \brief Assigns the contents of \p other to this
     ///
     /// \param other the other data_quantity to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     data_quantity& operator=(const data_quantity& other) noexcept = default;
 
     //-------------------------------------------------------------------------
@@ -1279,3 +1279,4 @@ inline constexpr const std::byte*
 }
 
 #endif /* ALLOY_CORE_DATA_QUANTITY_HPP */
+

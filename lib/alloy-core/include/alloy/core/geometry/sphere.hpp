@@ -83,7 +83,7 @@ namespace alloy::core {
     /// \brief Copy-assigns the contents of an existing sphere
     ///
     /// \param other the other sphere to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const sphere& other) -> sphere& = default;
 
     //--------------------------------------------------------------------------
@@ -107,7 +107,7 @@ namespace alloy::core {
     ///        sphere
     ///
     /// \param p the point to check
-    /// \return \c true if the point is contained in this sphere
+    /// \return `true` if the point is contained in this sphere
     [[nodiscard]]
     auto contains(const point3& p) const noexcept -> bool;
 
@@ -116,7 +116,7 @@ namespace alloy::core {
     ///
     /// \param p the point to check
     /// \param tolerance the error tolerance to accept
-    /// \return \c true if the point is contained in this sphere
+    /// \return `true` if the point is contained in this sphere
     [[nodiscard]] ALLOY_CORE_API
     auto contains(const point3& p, real tolerance) const noexcept -> bool;
 
@@ -146,7 +146,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left sphere
   /// \param rhs the right sphere
-  /// \return \c true if the two spheres contain almost equal values
+  /// \return `true` if the two spheres contain almost equal values
   constexpr auto almost_equal(const sphere& lhs, const sphere& rhs, real tolerance)
     noexcept -> bool;
 
@@ -238,4 +238,3 @@ auto alloy::core::almost_equal(
 
 
 #endif /* ALLOY_CORE_GEOMETRY_SPHERE_HPP */
-

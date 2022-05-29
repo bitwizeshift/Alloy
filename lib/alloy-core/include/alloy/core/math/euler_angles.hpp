@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -105,7 +105,7 @@ namespace alloy::core {
     /// \brief Copy-assigns the contents of an existing euler_angles
     ///
     /// \param other the other euler_angles to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const euler_angles& other) noexcept -> euler_angles& = default;
 
     //--------------------------------------------------------------------------
@@ -182,10 +182,10 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Determines the dot-product of \c this and \p rhs
+    /// \brief Determines the dot-product of `this` and \p rhs
     ///
     /// \param rhs the other euler_angles to perform the dot-product with
-    /// \return the dot product of \c this and \p rhs
+    /// \return the dot product of `this` and \p rhs
     constexpr auto dot(const euler_angles& rhs) const noexcept -> real;
 
     //--------------------------------------------------------------------------
@@ -249,7 +249,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left euler_angles
   /// \param rhs the right euler_angles
-  /// \return \c true if the two euler_angles contain almost equal values
+  /// \return `true` if the two euler_angles contain almost equal values
   constexpr auto almost_equal(const euler_angles& lhs,
                               const euler_angles& rhs,
                               real tolerance) noexcept -> bool;
@@ -539,7 +539,7 @@ auto alloy::core::operator*(real scalar, const euler_angles& rhs)
 }
 
 inline constexpr
-auto alloy::core::operator/(const euler_angles& lhs, real scalar) 
+auto alloy::core::operator/(const euler_angles& lhs, real scalar)
   noexcept -> euler_angles
 {
   const auto reciprocal = real{1} / scalar;
@@ -607,3 +607,4 @@ auto alloy::core::dot(const euler_angles& lhs, const euler_angles& rhs)
 }
 
 #endif /* ALLOY_CORE_MATH_EULER_ANGLES_HPP */
+

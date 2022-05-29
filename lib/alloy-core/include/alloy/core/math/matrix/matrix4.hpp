@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -160,13 +160,13 @@ namespace alloy::core {
     /// \brief Copy-assigns a matrix4 from another matrix4
     ///
     /// \param other the other entry to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const matrix4& other) -> matrix4& = default;
 
     /// \brief Move-assigns a matrix4 from another matrix4
     ///
     /// \param other the other entry to move
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(matrix4&& other) -> matrix4& = default;
 
     //--------------------------------------------------------------------------
@@ -267,10 +267,10 @@ namespace alloy::core {
     /// \return the transpose of this matrix4
     auto transposed() const noexcept -> matrix4;
 
-    /// \brief Combines \c (*this) with \p vec
+    /// \brief Combines `(*this)` with \p vec
     ///
     /// \param vec the vector to combine
-    /// \return the result of \c vec * matrix
+    /// \return the result of `vec` * matrix
     auto combine(const vector4& vec) const noexcept -> vector4;
 
     //--------------------------------------------------------------------------
@@ -279,19 +279,19 @@ namespace alloy::core {
   public:
 
     /// \brief Inverts this current matrix4, and returns a reference to
-    ///        \c (*this)
+    ///        `(*this)`
     ///
     /// If there is no inverse possible, this function returns a
     /// reference to \ref matrix4::identity, and the current matrix4
     /// is left unmodified
     ///
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto invert() noexcept -> matrix4&;
 
     /// \brief Transposes this current matrix4, returning a reference to
-    ///        \c (*this)
+    ///        `(*this)`
     ///
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto transpose() noexcept -> matrix4&;
 
     //--------------------------------------------------------------------------
@@ -344,7 +344,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left matrix4
   /// \param rhs the right matrix4
-  /// \return \c true if the two matrix4 contain almost equal values
+  /// \return `true` if the two matrix4 contain almost equal values
   constexpr auto almost_equal(const matrix4& lhs,
                               const matrix4& rhs,
                               real tolerance) noexcept -> bool;
@@ -355,7 +355,7 @@ namespace alloy::core {
 
   /// \brief Trait to detect whether \p T is a \ref matrix4
   ///
-  /// The result is aliased as \c ::value
+  /// The result is aliased as `::value`
   template<typename T>
   struct is_matrix4 : std::false_type{};
 
@@ -713,3 +713,4 @@ inline constexpr auto
 }
 
 #endif /* ALLOY_CORE_MATH_MATRIX_MATRIX4_HPP */
+

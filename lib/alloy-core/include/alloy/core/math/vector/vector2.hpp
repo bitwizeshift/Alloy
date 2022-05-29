@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ namespace alloy::core {
   /////////////////////////////////////////////////////////////////////////////
   /// \brief This object represents a 2-component vector in linear algebra.
   ///
-  /// Most operations are marked \c constexpr to allow for compile-time
+  /// Most operations are marked `constexpr` to allow for compile-time
   /// forward-calculations of vector sums and products.
   ///
   /// Operations on this type are able to promote results to reduce loss of
@@ -122,10 +122,10 @@ namespace alloy::core {
 
     //-------------------------------------------------------------------------
 
-    /// \brief Copy-assigns \p other to \c this
+    /// \brief Copy-assigns \p other to `this`
     ///
     /// \param other the other vector2 to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const vector2& other) noexcept -> vector2& = default;
 
     //-------------------------------------------------------------------------
@@ -192,16 +192,16 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   public:
 
-    /// \brief Determines the dot-product of \c this and \p other
+    /// \brief Determines the dot-product of `this` and \p other
     ///
     /// \param other the other vector2 to perform the dot-product with
-    /// \return the dot product of \c this and \p other
+    /// \return the dot product of `this` and \p other
     constexpr auto dot(const vector2& other) const noexcept -> real;
 
-    /// \brief Calculates the cross-product of \c this and \p other
+    /// \brief Calculates the cross-product of `this` and \p other
     ///
     /// \param other the other vector2 to perform the cross-product with
-    /// \return the cross product of \c this and \p other
+    /// \return the cross product of `this` and \p other
     constexpr auto cross(const vector2& other) const noexcept -> real;
 
     /// \brief Gets the square magnitude of this vector2
@@ -214,13 +214,13 @@ namespace alloy::core {
     /// \return the magnitude of the vector2
     auto magnitude() const noexcept -> real;
 
-    /// \brief Gets the midpoint between \c this and \p other
+    /// \brief Gets the midpoint between `this` and \p other
     ///
     /// \param other the vector2 to get the midpoint from
-    /// \return the midpoint between \c this and \p other
+    /// \return the midpoint between `this` and \p other
     constexpr auto midpoint(const vector2& other) const noexcept -> vector2;
 
-    /// \brief Gets the reflection vector2 of \c this reflected through the
+    /// \brief Gets the reflection vector2 of `this` reflected through the
     ///        \p normal
     ///
     /// \param normal the normal vector2
@@ -241,34 +241,34 @@ namespace alloy::core {
 
     /// \brief Gets the perpendicular of this vector2
     ///
-    /// \return the perpendicular vector2 to \c this
+    /// \return the perpendicular vector2 to `this`
     constexpr auto perpendicular() const noexcept -> vector2;
 
-    /// \brief Gets the normalized vector2 of \c this
+    /// \brief Gets the normalized vector2 of `this`
     ///
-    /// \return the normalized vector2 of \c this
+    /// \return the normalized vector2 of `this`
     auto normalized() const noexcept -> vector2;
 
-    /// \brief Gets the inverse of \c this vector2
+    /// \brief Gets the inverse of `this` vector2
     ///
-    /// \return the inverse of \c this vector2
+    /// \return the inverse of `this` vector2
     constexpr auto inverse() const noexcept -> vector2;
 
-    /// \brief Determines the angle between \c this and \p other
+    /// \brief Determines the angle between `this` and \p other
     ///
     /// \param other the other vector to determine the angle between
-    /// \return the angle between \c this and \p other
+    /// \return the angle between `this` and \p other
     auto angle_between(const vector2& other) const noexcept -> radian;
 
     /// \brief Determines the angle from \p to \p other
     ///
     /// \param other the other vector to get the angle to
-    /// \return the angle from \c this to \p other
+    /// \return the angle from `this` to \p other
     auto angle_to(const vector2& other) const noexcept -> radian;
 
     /// \brief Queries whether this vector is normalized
     ///
-    /// \return \c true if this vector is normalized
+    /// \return `true` if this vector is normalized
     constexpr auto is_normalized() const noexcept -> bool;
 
     //-------------------------------------------------------------------------
@@ -276,14 +276,14 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   public:
 
-    /// \brief Normalizes this vector2 and returns a reference to \c (*this)
+    /// \brief Normalizes this vector2 and returns a reference to `(*this)`
     ///
-    /// \return the reference to \c (*this)
+    /// \return the reference to `(*this)`
     auto normalize() noexcept -> vector2&;
 
-    /// \brief Inverts this vector2 and returns a reference to \c (*this)
+    /// \brief Inverts this vector2 and returns a reference to `(*this)`
     ///
-    /// \return the reference to \c (*this)
+    /// \return the reference to `(*this)`
     constexpr auto invert() noexcept -> vector2&;
 
     //-------------------------------------------------------------------------
@@ -317,14 +317,14 @@ namespace alloy::core {
 
   /// \brief Trait to detect whether \p T is a \ref vector2
   ///
-  /// The result is aliased as \c ::value
+  /// The result is aliased as `::value`
   template<typename T>
   struct is_vector2 : std::false_type{};
   template<>
   struct is_vector2<vector2> : std::true_type{};
 
   /// \brief Convenience template variable to extract out
-  ///        \c is_vector2<T>::value
+  ///        `is_vector2<T>::value`
   template<typename T>
   inline constexpr bool is_vector2_v = is_vector2<T>::value;
 
@@ -359,7 +359,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left vector2
   /// \param rhs the right vector2
-  /// \return \c true if the two vector2 contain almost equal values
+  /// \return `true` if the two vector2 contain almost equal values
   constexpr auto almost_equal(const vector2& lhs, const vector2& rhs,
                               real tolerance) noexcept -> bool;
 
@@ -371,7 +371,7 @@ namespace alloy::core {
   ///
   /// \param v1 the first vector
   /// \param v2 the second vector
-  /// \return \c true if the two vectors are linearly independent
+  /// \return `true` if the two vectors are linearly independent
   auto are_linearly_independent(const vector2& v1,
                                 const vector2& v2) noexcept -> bool;
 
@@ -903,3 +903,4 @@ auto alloy::core::piecewise_compare<alloy::core::vector2>
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 #endif /* ALLOY_CORE_MATH_VECTOR_VECTOR2_HPP */
+

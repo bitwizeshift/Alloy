@@ -95,9 +95,9 @@ namespace alloy::core {
     /// \brief Constructs an axis-aligned bounding-box from points from two
     ///        opposite ends
     ///
-    /// \pre \c lower_left.x()<=top_right.x()
-    /// \pre \c lower_left.y()<=top_right.y()
-    /// \pre \c lower_left.z()<=top_right.z()
+    /// \pre `lower_left.x()<=top_right.x()`
+    /// \pre `lower_left.y()<=top_right.y()`
+    /// \pre `lower_left.z()<=top_right.z()`
     ///
     /// \param lower_left The first point
     /// \param top_right The second point
@@ -115,7 +115,7 @@ namespace alloy::core {
     /// \brief Assigns the contents of an axis-aligned bounding-box to this one
     ///
     /// \param other the other box to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const axis_aligned_box& other)
       noexcept -> axis_aligned_box& = default;
 
@@ -197,7 +197,7 @@ namespace alloy::core {
     /// \brief Checks if this box contains the given point \p p
     ///
     /// \param p the point to check for intersection
-    /// \return \c true if \p p is in the box
+    /// \return `true` if \p p is in the box
     [[nodiscard]]
     auto contains(const point3& p) const noexcept -> bool;
 
@@ -206,19 +206,19 @@ namespace alloy::core {
     ///
     /// \param p the point to check for intersection
     /// \param tolerance the tolerance for accepting the containment
-    /// \return \c true if \p p is in the box
+    /// \return `true` if \p p is in the box
     [[nodiscard]]
     auto contains(const point3& p, real tolerance) const noexcept -> bool;
 
     /// \brief Checks if this box intersect another box
     ///
-    /// \return \c true if this box intersects another box
+    /// \return `true` if this box intersects another box
     [[nodiscard]]
     auto intersects(const axis_aligned_box& other) const noexcept -> bool;
 
     /// \brief Checks if this box completely encloses another box
     ///
-    /// \return \c true if this box completely encloses another box
+    /// \return `true` if this box completely encloses another box
     [[nodiscard]]
     auto encloses(const axis_aligned_box& other) const noexcept -> bool;
 
@@ -253,7 +253,7 @@ namespace alloy::core {
   /// \param lhs the left plane
   /// \param rhs the right plane
   /// \param tolerance the tolerance for the comparison
-  /// \return \c true if the two planes contain almost equal values
+  /// \return `true` if the two planes contain almost equal values
   ALLOY_CORE_API
   auto almost_equal(const axis_aligned_box& lhs,
                     const axis_aligned_box& rhs,
@@ -347,4 +347,3 @@ auto alloy::core::axis_aligned_box::top_right_point()
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_AXIS_ALIGNED_BOX_HPP */
-

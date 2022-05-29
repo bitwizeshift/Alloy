@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -83,7 +83,7 @@ namespace alloy::core {
 
   /// \brief Trait to detect whether \p T is a \ref radian
   ///
-  /// The result is aliased as \c ::value
+  /// The result is aliased as `::value`
   template<typename T> struct is_radian : std::false_type{};
 
   template<> struct is_radian<radian> : std::true_type{};
@@ -150,3 +150,4 @@ auto alloy::core::literals::operator""_rad(long double x)
 }
 
 #endif /* ALLOY_CORE_MATH_ANGLE_RADIAN_HPP */
+

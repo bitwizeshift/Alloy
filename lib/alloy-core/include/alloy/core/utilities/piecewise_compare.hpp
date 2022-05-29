@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -42,11 +42,11 @@ namespace alloy::core {
   /// \brief A comparator type that is specialized for piecewise comparisons
   ///
   /// This type is intended to be used for piecewise comparisons of the type's
-  /// data-members, where a typical \c operator< would not be idiomatic.
+  /// data-members, where a typical `operator<` would not be idiomatic.
   ///
   /// For example, 2 or 3 dimensional points can be radially sorted by
   /// comparing coordinate values independently -- but this does not make
-  /// sense for a total-ordering operation to define it as the \c operator<
+  /// sense for a total-ordering operation to define it as the `operator<`
   /// default behavior.
   /////////////////////////////////////////////////////////////////////////////
   template<typename T>
@@ -58,7 +58,7 @@ namespace alloy::core {
     ///
     /// \param lhs the left operand
     /// \param rhs the right operance
-    /// \return \c true if \p lhs and \p rhs can compare piecewise
+    /// \return `true` if \p lhs and \p rhs can compare piecewise
     constexpr bool operator()( const T& lhs, const T& rhs ) noexcept;
   };
 
@@ -82,3 +82,4 @@ inline constexpr bool
 }
 
 #endif /* ALLOY_CORE_UTILITIES_PIECEWISE_COMPARE_HPP */
+

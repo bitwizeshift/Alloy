@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -141,7 +141,7 @@ namespace alloy::core {
     /// \brief Copy-assigns a matrix3 from another matrix3
     ///
     /// \param other the other entry to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const matrix3& other) -> matrix3& = default;
 
     //--------------------------------------------------------------------------
@@ -242,10 +242,10 @@ namespace alloy::core {
     /// \return the transpose of this matrix3
     auto transposed() const noexcept -> matrix3;
 
-    /// \brief Combines \c (*this) with \p vec
+    /// \brief Combines `(*this)` with \p vec
     ///
     /// \param vec the vector to combine
-    /// \return the result of \c vec * matrix
+    /// \return the result of `vec` * matrix
     auto combine(const vector3& vec) const noexcept -> vector3;
 
     //--------------------------------------------------------------------------
@@ -254,19 +254,19 @@ namespace alloy::core {
   public:
 
     /// \brief Inverts this current matrix3, and returns a reference to
-    ///        \c (*this)
+    ///        `(*this)`
     ///
     /// If there is no inverse possible, this function returns a
     /// reference to \ref matrix3::identity, and the current matrix3
     /// is left unmodified
     ///
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto invert() noexcept -> matrix3&;
 
     /// \brief Transposes this current matrix3, returning a reference to
-    ///        \c (*this)
+    ///        `(*this)`
     ///
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto transpose() noexcept -> matrix3&;
 
     //--------------------------------------------------------------------------
@@ -317,7 +317,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left matrix3
   /// \param rhs the right matrix3
-  /// \return \c true if the two matrix3 contain almost equal values
+  /// \return `true` if the two matrix3 contain almost equal values
   constexpr auto almost_equal(const matrix3& lhs,
                               const matrix3& rhs,
                               real tolerance) noexcept -> bool;
@@ -328,7 +328,7 @@ namespace alloy::core {
 
   /// \brief Trait to detect whether \p T is a \ref matrix3
   ///
-  /// The result is aliased as \c ::value
+  /// The result is aliased as `::value`
   template<typename T>
   struct is_matrix3 : std::false_type{};
 
@@ -692,3 +692,4 @@ inline constexpr auto
 }
 
 #endif /* ALLOY_CORE_MATH_MATRIX_MATRIX3_HPP */
+

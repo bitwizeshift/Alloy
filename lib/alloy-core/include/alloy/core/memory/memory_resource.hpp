@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -132,7 +132,7 @@ namespace alloy::core {
     ///
     /// \param p the pointer to memory previously allocated with allocate
     /// \param bytes the new size for the memory allocation, in bytes
-    /// \return \c true if \p p was able to be resized
+    /// \return `true` if \p p was able to be resized
     bool resize_allocation(void* p,
                            std::size_t bytes) noexcept;
 
@@ -375,3 +375,4 @@ inline std::string_view
 }
 
 #endif /* ALLOY_CORE_MEMORY_MEMORY_RESOURCE_HPP */
+

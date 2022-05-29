@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -62,7 +62,7 @@ namespace alloy::extra {
     ///        alignment checks)
     ///
     /// \param x the value to check
-    /// \return \c true if the value is a power-of-two
+    /// \return `true` if the value is a power-of-two
     static constexpr bool is_power_of_two(std::size_t x) noexcept;
 
     /// \brief Gets the alignment of the pointer
@@ -213,11 +213,11 @@ namespace alloy::extra {
 
     /// \brief Calculates the difference between two pointers
     ///
-    /// The difference is identical to \c lhs - \c rhs
+    /// The difference is identical to `lhs` - `rhs`
     ///
     /// \param lhs the left pointer
     /// \param rhs the right pointer
-    /// \return the result of \c lhs - \c rhs
+    /// \return the result of `lhs` - `rhs`
     static std::ptrdiff_t difference(const void* lhs,
                                      const void* rhs) noexcept;
 
@@ -237,7 +237,7 @@ namespace alloy::extra {
 
     /// \brief Stores an arbitrary type \p T into unaligned memory
     ///
-    /// \pre \c std::is_trivially_copyable<T>::value is \c true
+    /// \pre `std::is_trivially_copyable<T>::value` is `true`
     ///
     /// \param p the memory to store into
     /// \param val the value to store
@@ -256,7 +256,7 @@ namespace alloy::extra {
     ///       should only be used to load fundamental types, or simple
     ///       pod/aggregate types.
     ///
-    /// \pre \c std::is_trivially_copyable<T>::value is \c true
+    /// \pre `std::is_trivially_copyable<T>::value` is `true`
     ///
     /// \param p pointer to the memory to load from
     /// \return the type \p T
@@ -795,3 +795,4 @@ inline double
 
 
 #endif /* ALLOY_EXTRA_ALLOCATORS_POINTER_UTIL_HPP */
+

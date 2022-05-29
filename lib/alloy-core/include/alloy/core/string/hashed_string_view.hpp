@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -109,7 +109,7 @@ namespace alloy::core {
     /// \brief Copy-assigns the contents of \p other
     ///
     /// \param other the other view to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const basic_hashed_string_view& other) -> basic_hashed_string_view& = default;
 
     //-------------------------------------------------------------------------
@@ -264,3 +264,4 @@ auto alloy::core::hash_value(const basic_hashed_string_view<CharT,Traits>& v)
 
 
 #endif /* ALLOY_CORE_STRINGS_HASHED_STRING_VIEW_HPP */
+

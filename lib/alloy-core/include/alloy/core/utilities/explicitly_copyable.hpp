@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ namespace alloy::core {
   /// \brief A utility for making an underlying type only explicitly copyable
   ///
   /// This utility removes the implicit copy constructor/assignment, and
-  /// instead replaces it with a \c copy() member function that must be
+  /// instead replaces it with a `copy()` member function that must be
   /// explicitly called in order to produce a copy.
   ///
   /// This is intended for use with types that perform heap allocations such
@@ -132,3 +132,4 @@ auto alloy::core::explicitly_copyable<T>::copy_with(const Alloc& alloc)
 }
 
 #endif /* ALLOY_CORE_UTILITIES_EXPLICITLY_COPYABLE_HPP */
+

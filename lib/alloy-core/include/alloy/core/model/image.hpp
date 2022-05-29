@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -87,8 +87,8 @@ namespace alloy::core {
     ///
     /// \pre \p buffer must be of n * d.width * d.height size, where n is the
     ///         number of bytes specified in the pixel_format
-    /// \pre \c d.width must be greater than 0
-    /// \pre \c d.height must be greater than 0
+    /// \pre `d.width` must be greater than 0
+    /// \pre `d.height` must be greater than 0
     ///
     /// \param buffer the underlying byte buffer
     /// \param d the dimensions of the image
@@ -104,8 +104,8 @@ namespace alloy::core {
     ///
     /// \pre \p buffer must be of n * d.width * d.height size, where n is the
     ///         number of bytes specified in the pixel_format
-    /// \pre \c d.width must be greater than 0
-    /// \pre \c d.height must be greater than 0
+    /// \pre `d.width` must be greater than 0
+    /// \pre `d.height` must be greater than 0
     ///
     /// \param d the dimensions of the image
     /// \param format the pixel format of the image
@@ -121,8 +121,8 @@ namespace alloy::core {
     ///
     /// \pre \p buffer must be of n * d.width * d.height size, where n is the
     ///         number of bytes specified in the pixel_format
-    /// \pre \c d.width must be greater than 0
-    /// \pre \c d.height must be greater than 0
+    /// \pre `d.width` must be greater than 0
+    /// \pre `d.height` must be greater than 0
     ///
     /// \param d the dimensions of the image
     /// \param format the pixel format of the image
@@ -304,3 +304,4 @@ inline alloy::core::image::pixel_format alloy::core::image::format()
 }
 
 #endif /* ALLOY_CORE_MODEL_IMAGE_HPP */
+

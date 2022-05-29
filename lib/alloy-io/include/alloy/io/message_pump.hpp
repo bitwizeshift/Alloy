@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -122,7 +122,7 @@ namespace alloy::io {
 
     /// \brief Polls for events from all message_pump event sources
     ///
-    /// Events are accumulated, but will not be dispatched until \c dispatch
+    /// Events are accumulated, but will not be dispatched until `dispatch`
     /// is called
     ///
     /// \note Polling must **not** be done from a dispatched event handler
@@ -309,3 +309,4 @@ inline void alloy::io::message_pump::post_immediate_event(Event&& e)
 }
 
 #endif /* ALLOY_IO_MESSAGE_PUMP_HPP */
+

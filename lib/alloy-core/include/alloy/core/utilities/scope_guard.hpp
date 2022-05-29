@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -246,7 +246,7 @@ namespace alloy::core {
   ///
   /// This will execute as long as an exception has not been thrown in the
   /// same frame the scope was created in. You can manually disengage
-  /// executing this handler by calling \c release.
+  /// executing this handler by calling `release.`
   ///
   /// \code
   /// auto guard = scope::scope_success{[&]{
@@ -284,7 +284,7 @@ namespace alloy::core {
   ///
   /// This will execute when an exception has been thrown in the same frame
   /// the scope was created in. You can manually disengage executing this
-  /// handler by calling \c release.
+  /// handler by calling `release.`
   ///
   /// \code
   /// auto guard = scope::scope_fail{[&]{
@@ -327,3 +327,4 @@ namespace alloy::core {
 } // namespace alloy::core
 
 #endif /* ALLOY_CORE_UTILITIES_SCOPE_GUARD_HPP */
+

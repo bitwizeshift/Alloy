@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -113,7 +113,7 @@ namespace alloy::extra {
     /// \brief Copy-assigns a memory_arena from another memory_arena
     ///
     /// \param other the other memory_arena to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     memory_arena& operator=(const memory_arena& other) noexcept = default;
 
     //--------------------------------------------------------------------------
@@ -128,7 +128,7 @@ namespace alloy::extra {
 
     /// \brief Retrieves the start address of this memory block
     ///
-    /// This is the same as \c data()
+    /// This is the same as `data()`
     ///
     /// \return the pointer to the data block
     void* start_address() const noexcept;
@@ -153,10 +153,10 @@ namespace alloy::extra {
     /// \brief Evaluates whether \p ptr exists within this memory_arena
     ///
     /// \param ptr the pointer to evaluate
-    /// \return \c true whether \p ptr
+    /// \return `true` whether \p ptr
     bool contains(const void* ptr) const noexcept;
 
-    /// \brief Contextually convertible to \c bool
+    /// \brief Contextually convertible to `bool`
     constexpr explicit operator bool() const noexcept;
 
     //--------------------------------------------------------------------------
@@ -335,3 +335,4 @@ inline constexpr bool alloy::extra::operator!=(const memory_arena& lhs,
 }
 
 #endif /* ALLOY_EXTRA_ALLOCATORS_MEMORY_ARENA_HPP */
+

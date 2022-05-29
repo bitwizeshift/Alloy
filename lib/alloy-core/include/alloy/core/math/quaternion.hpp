@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -190,7 +190,7 @@ namespace alloy::core {
     /// \brief Copy-assigns the quaternion
     ///
     /// \param other the quaternion to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const quaternion& other) noexcept -> quaternion& = default;
 
     //--------------------------------------------------------------------------
@@ -306,14 +306,14 @@ namespace alloy::core {
 
     //--------------------------------------------------------------------------
 
-    /// \brief Gets the normalized quaternion of \c this
+    /// \brief Gets the normalized quaternion of `this`
     ///
-    /// \return the normalized quaternion of \c this
+    /// \return the normalized quaternion of `this`
     auto normalized() const noexcept -> quaternion;
 
-    /// \brief Gets the inverse of \c this quaternion
+    /// \brief Gets the inverse of `this` quaternion
     ///
-    /// \return the inverse of \c this quaternion
+    /// \return the inverse of `this` quaternion
     auto inverse() const noexcept -> quaternion;
 
     //--------------------------------------------------------------------------
@@ -356,14 +356,14 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Normalizes this quaternion and returns a reference to \c (*this)
+    /// \brief Normalizes this quaternion and returns a reference to `(*this)`
     ///
-    /// \return the reference to \c (*this)
+    /// \return the reference to `(*this)`
     auto normalize() noexcept -> quaternion&;
 
-    /// \brief Inverts this quaternion and returns a reference to \c (*this)
+    /// \brief Inverts this quaternion and returns a reference to `(*this)`
     ///
-    /// \return the reference to \c (*this)
+    /// \return the reference to `(*this)`
     auto invert() noexcept -> quaternion&;
 
     //--------------------------------------------------------------------------
@@ -371,7 +371,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Computes the dot-product of \p rhs and \c this
+    /// \brief Computes the dot-product of \p rhs and `this`
     ///
     /// \param rhs the quaternion to perform the dot product with
     /// \return the result of the dot product
@@ -484,7 +484,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left quaternion
   /// \param rhs the right quaternion
-  /// \return \c true if \p lhs almost equals \p rhs
+  /// \return `true` if \p lhs almost equals \p rhs
   auto almost_equal(const quaternion& lhs,
                     const quaternion& rhs,
                     real tolerance) noexcept -> bool;
@@ -511,7 +511,7 @@ namespace alloy::core {
 
   /// \brief Trait to detect whether \p T is a \ref quaternion
   ///
-  /// The result is aliased as \c ::value
+  /// The result is aliased as `::value`
   template<typename T> struct is_quaternion : std::false_type{};
 
   template<> struct is_quaternion<quaternion> : std::true_type{};
@@ -850,3 +850,4 @@ auto alloy::core::almost_equal(const quaternion& lhs,
 }
 
 #endif /* ALLOY_CORE_MATH_QUATERNION_HPP */
+

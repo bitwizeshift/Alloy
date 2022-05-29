@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -49,17 +49,17 @@ namespace alloy::core {
   /// \brief This concept defines the required interface and semantics
   ///        expected of an "angle_unit"
   ///
-  /// The \c AngleUnit concept is used to identify the unit definition of one
+  /// The `AngleUnit` concept is used to identify the unit definition of one
   /// full revolution value for a given angle. This allows consuming code,
-  /// e.g. the \c basic_angle type, to calculate revolutions, wrapping, and
+  /// e.g. the `basic_angle` type, to calculate revolutions, wrapping, and
   /// angle conversions in a generic manner.
   ///
-  /// For type \c A to be \c AngleUnit, it must satisfy the following:
+  /// For type `A` to be `AngleUnit`, it must satisfy the following:
   ///
   /// **Provided**
   ///
-  /// - \c A - an AngleUnit type
-  /// - \c r - an instance of \ref core::real
+  /// - `A` - an AngleUnit type
+  /// - `r` - an instance of \ref core::real
   ///
   /// the following expressions must be well-formed with the expected
   /// side-effects:
@@ -67,10 +67,10 @@ namespace alloy::core {
   /// \code
   /// r = AngleUnit::one_revolution();
   /// \endcode
-  /// \c one_revolution() is a static function which returns the numeric
+  /// `one_revolution()` is a static function which returns the numeric
   /// representation of the value of a single revolution in that angular unit.
   ///
-  /// This function must be marked \c constexpr, and must not \c throw an
+  /// This function must be marked `constexpr`, and must not `throw` an
   /// exception.
   //////////////////////////////////////////////////////////////////////////////
 
@@ -157,8 +157,8 @@ namespace alloy::core {
     /// \return the number of revolutions
     constexpr auto revolutions() const noexcept -> real;
 
-    /// \brief Constrains the \ref basic_angle between \c 0 and
-    ///        \c AngleUnit::revolution()
+    /// \brief Constrains the \ref basic_angle between `0` and
+    ///        `AngleUnit::revolution()`
     ///
     /// \return the constrained \ref basic_angle
     auto constrained() const noexcept -> basic_angle;
@@ -245,7 +245,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left basic_angle
   /// \param rhs the right basic_angle
-  /// \return \c true if the two basic_angle contain almost equal values
+  /// \return `true` if the two basic_angle contain almost equal values
   template<typename AngleUnit>
   constexpr auto almost_equal(const basic_angle<AngleUnit>& lhs,
                               const basic_angle<AngleUnit>& rhs,
@@ -302,7 +302,7 @@ namespace alloy::core {
 
   /// \brief Trait to detect whether \p T is a \ref basic_angle type
   ///
-  /// The result is aliased as \c ::value
+  /// The result is aliased as `::value`
   template<typename T>
   struct is_angle : std::false_type{};
 
@@ -675,3 +675,4 @@ auto alloy::core::casts::to_angle(From from) -> To
 }
 
 #endif /* ALLOY_CORE_MATH_ANGLE_BASIC_ANGLE_HPP */
+

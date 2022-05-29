@@ -8,7 +8,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2020 Matthew Rodusek All rights reserved.
+  Copyright (c) 2020-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -238,7 +238,7 @@ namespace alloy::core {
     /// \return the floating point value
     static constexpr auto saturate(element_type value) noexcept -> element_type;
   };
-  
+
   //===========================================================================
   // non-member functions : class : saturated
   //===========================================================================
@@ -330,7 +330,7 @@ namespace alloy::core {
   /// \param lhs the value on the left of the equation
   /// \param rhs the value on the right of the equation
   /// \param tolerance the tolerance to use for comparison
-  /// \return \c true if \p lhs is almost equal to \p rhs
+  /// \return `true` if \p lhs is almost equal to \p rhs
   template <typename Float>
   constexpr auto almost_equal(saturated<Float> lhs,
                               saturated<Float> rhs,
@@ -387,7 +387,7 @@ namespace alloy::core {
   /// \brief Determines whether a given saturated value \p f is a nan
   ///
   /// \param f the value to check
-  /// \return \c true if \p f is a \c nan
+  /// \return `true` if \p f is a `nan`
   template <typename Float>
   auto is_nan(saturated<Float> f) noexcept -> bool;
 
@@ -396,14 +396,14 @@ namespace alloy::core {
   /// \brief Determines whether a given real value \p f is finite
   ///
   /// \param f the value to check
-  /// \return \c true if \p f is \c finite
+  /// \return `true` if \p f is `finite`
   template <typename Float>
   auto is_finite(saturated<Float> f) noexcept -> bool;
 
   /// \brief Determines whether a given real value \p f is infinite
   ///
   /// \param f the value to check
-  /// \return \c true if \p f is \c infinite
+  /// \return `true` if \p f is `infinite`
   template <typename Float>
   auto is_infinite(saturated<Float> f) noexcept -> bool;
 
@@ -412,14 +412,14 @@ namespace alloy::core {
   /// \brief Determines whether a given real value \p f is normal
   ///
   /// \param f the value to check
-  /// \return \c true if \p f is \c normal
+  /// \return `true` if \p f is `normal`
   template <typename Float>
   auto is_normal(saturated<Float> f) noexcept -> bool;
 
   /// \brief Determines whether a given saturated value \p f is subnormal
   ///
   /// \param f the value to check
-  /// \return \c true if \p f is \c subnormal
+  /// \return `true` if \p f is `subnormal`
   template <typename Float>
   auto is_subnormal(saturated<Float> f) noexcept -> bool;
 
@@ -949,3 +949,4 @@ auto alloy::core::is_subnormal(saturated<Float> f)
 }
 
 #endif /* ALLOY_CORE_MATH_SATURATED_HPP */
+

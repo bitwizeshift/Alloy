@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -248,7 +248,7 @@ namespace alloy::core {
 
     ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
 
-    /// \brief Returns \c true if this delegate contains a function
+    /// \brief Returns `true` if this delegate contains a function
     constexpr explicit operator bool() const noexcept;
 
     //-------------------------------------------------------------------------
@@ -749,3 +749,4 @@ inline constexpr alloy::core::delegate<typename alloy::core::function_traits<Mem
 }
 
 #endif /* ALLOY_CORE_UTILITIES_DELEGATE_HPP */
+

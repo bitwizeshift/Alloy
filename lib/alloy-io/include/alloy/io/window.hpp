@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -95,22 +95,22 @@ namespace alloy::io {
 
     /// \brief Checks whether this window is fullscreen
     ///
-    /// \return \c true if the window is fullscreen
+    /// \return `true` if the window is fullscreen
     bool is_fullscreen() const;
 
     /// \brief Checks whether this window is focused
     ///
-    /// \return \c true if the window is focused
+    /// \return `true` if the window is focused
     bool is_focused() const;
 
     /// \brief Checks whether this window is currently shown
     ///
-    /// \return \c true if the window is shown
+    /// \return `true` if the window is shown
     bool is_shown() const;
 
     /// \brief Checks whether this window is hidden
     ///
-    /// \return \c true if the window is hidden
+    /// \return `true` if the window is hidden
     bool is_hidden() const;
 
     //--------------------------------------------------------------------------
@@ -234,3 +234,4 @@ inline void alloy::io::window::set_position(const position& position)
 
 
 #endif /* ALLOY_IO_WINDOW_HPP */
+

@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -317,13 +317,13 @@ namespace alloy::core {
     /// \brief Copy-assigns a color from an existing one
     ///
     /// \param other the other color to copy
-    /// \reference to \c (*this)
+    /// \reference to `(*this)`
     auto operator=(const color& other) -> color& = default;
 
     /// \brief Move-assigns a color from an existing one
     ///
     /// \param other the other color to move
-    /// \reference to \c (*this)
+    /// \reference to `(*this)`
     auto operator=(color&& other) -> color& = default;
 
     //--------------------------------------------------------------------------
@@ -339,14 +339,14 @@ namespace alloy::core {
 
     /// \brief Darkens this color by \p percent
     ///
-    /// A value of \c 1 darkens this to be black
+    /// A value of `1` darkens this to be black
     ///
     /// \param percent the percentage to darken this by
     auto darken(real percent) noexcept -> void;
 
     /// \brief Brightens this color by \p percent
     ///
-    /// A value of \c 1 brightens this to be white
+    /// A value of `1` brightens this to be white
     ///
     /// \param percent the percentage to brighten this by
     auto brighten(real percent) noexcept -> void;
@@ -1338,3 +1338,4 @@ auto alloy::core::blend(const color& c1, const color& c2, const Colors&...colors
 
 
 #endif /* ALLOY_CORE_MODEL_COLOR_HPP */
+

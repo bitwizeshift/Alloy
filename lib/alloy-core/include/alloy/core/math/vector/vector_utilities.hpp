@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,7 @@ namespace alloy::core {
 
   /// \brief Trait to detect whether \p T is a vector type.
   ///
-  /// The result is aliased as \c ::value
+  /// The result is aliased as `::value`
   template<typename T> struct is_vector : std::false_type{};
 
   template<> struct is_vector<vector2> : std::true_type{};
@@ -57,7 +57,7 @@ namespace alloy::core {
   template<> struct is_vector<vector4> : std::true_type{};
 
   /// \brief Convenience template variable to extract out
-  ///        \c is_vector<T>::value
+  ///        `is_vector<T>::value`
   template<typename T>
   inline constexpr bool is_vector_v = is_vector<T>::value;
 
@@ -74,8 +74,8 @@ namespace alloy::core {
   /// This trait is intended to be used to accept arbitrary vector types in
   /// order to access up to 4 components in a generic manner.
   ///
-  /// \note To extend which types are usable by \c vector_traits, explicit
-  ///       specializations of \c is_vector is necessary.
+  /// \note To extend which types are usable by `vector_traits`, explicit
+  ///       specializations of `is_vector` is necessary.
   //////////////////////////////////////////////////////////////////////////////
   template<typename T>
   struct vector_traits
@@ -241,3 +241,4 @@ inline auto alloy::core::casts::to_vector4(const Vector& vec)
 }
 
 #endif /* ALLOY_CORE_MATH_VECTOR_VECTOR_UTILITIES_HPP */
+

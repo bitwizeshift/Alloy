@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -96,14 +96,14 @@ namespace alloy::io {
   /// and this class -- which provides an easy extension mechanism for
   /// introducing custom event types.
   ///
-  /// In order to be used as an event, either \c ALLOY_DEFINE_<USER|SYSTEM>_EVENT
-  /// or \c ALLOY_DEFINE_HIGH_PRIORITY_<USER|SYSTEM>_EVENT must be used to
+  /// In order to be used as an event, either `ALLOY_DEFINE_<USER`|SYSTEM>_EVENT
+  /// or `ALLOY_DEFINE_HIGH_PRIORITY_<USER`|SYSTEM>_EVENT must be used to
   /// assign a **system-wide unique** id to the event type. This allows these
   /// events to be usable in a switch case, or serialized/deserialized in a
   /// consistent form.
   ///
-  /// All events must fit in \c event::max_size, and are required to fit
-  /// in \c event::max_align.
+  /// All events must fit in `event::max_size`, and are required to fit
+  /// in `event::max_align.`
   //////////////////////////////////////////////////////////////////////////////
   class ALLOY_IO_API event
   {
@@ -186,13 +186,13 @@ namespace alloy::io {
     /// \brief Assigns an event by moving the contents of an existing event
     ///
     /// \param other the other event to move
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(event&& other) noexcept -> event&;
 
     /// \brief Assigns an event by copying the contents of an existing event
     ///
     /// \param other the other event to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const event& other) noexcept -> event&;
 
     //--------------------------------------------------------------------------
@@ -213,13 +213,13 @@ namespace alloy::io {
     /// \brief Checks if this event is of type \p Event
     ///
     /// \tparam Event the event to compare against
-    /// \return \c true if this event is of type \p Event
+    /// \return `true` if this event is of type \p Event
     template<typename Event>
     auto is() const noexcept -> bool;
 
     /// \brief Converts this event to the specified \p Event type
     ///
-    /// \pre \c id() matches the result of \c event::is_of<Event>()
+    /// \pre `id()` matches the result of `event::is_of<Event>()`
     /// \tparam Event the event type to convert to
     /// \return the event
     template<typename Event>
@@ -229,10 +229,10 @@ namespace alloy::io {
     ///
     /// If the underlying event is of type \p Event, this function returns a
     /// pointer to the underlying event. If it is not valid, it returns
-    /// \c nullptr
+    /// `nullptr`
     ///
     /// \tparam Event the event type to attempt to convert to
-    /// \return a pointer to the event if successful, \c nullptr otherwise
+    /// \return a pointer to the event if successful, `nullptr` otherwise
     template<typename Event>
     auto try_as() const noexcept -> const Event*;
 
@@ -755,3 +755,4 @@ auto alloy::io::event::storage_as(Storage& storage)
 
 
 #endif /* ALLOY_IO_EVENT_HPP */
+

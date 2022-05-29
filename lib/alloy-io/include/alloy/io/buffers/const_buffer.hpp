@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -115,7 +115,7 @@ namespace alloy::io {
     /// \brief Copies this buffer
     ///
     /// \param other the other buffer to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     const_buffer& operator=(const const_buffer&) = default;
 
     //-------------------------------------------------------------------------
@@ -135,7 +135,7 @@ namespace alloy::io {
 
     /// \brief Gets whether this buffer is empty
     ///
-    /// \return \c true if empty
+    /// \return `true` if empty
     bool empty() const noexcept;
 
     //-------------------------------------------------------------------------
@@ -283,3 +283,4 @@ inline bool alloy::io::operator!=(const const_buffer& lhs,
 }
 
 #endif /* ALLOY_IO_BUFFERS_CONST_BUFFER_HPP */
+

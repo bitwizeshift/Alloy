@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +46,7 @@ namespace alloy::extra {
   /// practice.
   ///
   /// Every memory_arena in the memory_arena_cache must be aligned to at
-  /// least \c alignof(memory_arena) bytes -- otherwise it is undefined
+  /// least `alignof(memory_arena)` bytes -- otherwise it is undefined
   /// behavior
   ///////////////////////////////////////////////////////////////////////////
   class memory_arena_cache
@@ -72,7 +72,7 @@ namespace alloy::extra {
     /// \brief Moves the contents of \p other to this
     ///
     /// \param other the other arena to move
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     memory_arena_cache& operator=(memory_arena_cache&& other) noexcept = default;
 
     // Deleted copy assignment
@@ -85,12 +85,12 @@ namespace alloy::extra {
 
     /// \brief Returns whether or not this memory_arena_cache is empty
     ///
-    /// \return \c true if this memory_arena_cache is empty, \c false otherwise
+    /// \return `true` if this memory_arena_cache is empty, `false` otherwise
     bool empty() const noexcept;
 
     /// \brief Returns the number of memory_arenas in this cache
     ///
-    /// This function is lazily computed, and is written with \c O(n)
+    /// This function is lazily computed, and is written with `O(n)`
     /// complexity
     ///
     /// \return the number of memory_arenas in this cache
@@ -137,10 +137,10 @@ namespace alloy::extra {
 
     /// \brief Stores an arena inside this memory_arena_cache
     ///
-    /// \pre \c arena.data() points to memory that is aligned to at least
-    ///      \c alignof(memory_arena) bytes.
+    /// \pre `arena.data()` points to memory that is aligned to at least
+    ///      `alignof(memory_arena)` bytes.
     ///
-    /// \pre \c arena points to a valid memory_arena
+    /// \pre `arena` points to a valid memory_arena
     ///
     /// \param arena the arena to store
     void store(memory_arena arena) noexcept;
@@ -199,3 +199,4 @@ inline bool alloy::extra::operator!=(const memory_arena_cache& lhs,
 
 
 #endif /* ALLOY_EXTRA_ALLOCATORS_MEMORY_ARENA_CACHE_HPP */
+

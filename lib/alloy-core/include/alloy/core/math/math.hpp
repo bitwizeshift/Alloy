@@ -8,7 +8,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -163,7 +163,7 @@ namespace alloy::core {
   /// \brief Absolute value function specialization for signed types
   ///
   /// \param x the signed value
-  /// \return \p x the absolute value of \p x (\c |x| )
+  /// \return \p x the absolute value of \p x (``|x| )
 #ifndef ALLOY_DOXYGEN
   template<typename Arithmetic,
            std::enable_if_t<!std::is_unsigned<Arithmetic>::value>* = nullptr>
@@ -199,7 +199,7 @@ namespace alloy::core {
   /// \return the clamped value
   constexpr auto clamp(real val, real min, real max) noexcept -> real;
 
-  /// \brief Clamps a floating value between \c [0,1]
+  /// \brief Clamps a floating value between ``[0,1]
   ///
   /// \param val the value to clamp
   /// \return the clamped value
@@ -250,7 +250,7 @@ namespace alloy::core {
   ///
   /// \param lhs the value on the left of the equation
   /// \param rhs the value on the right of the equation
-  /// \return \c true if \p lhs is almost equal to \p rhs
+  /// \return `true` if \p lhs is almost equal to \p rhs
   template <typename T, typename U>
   constexpr auto almost_equal(const T& lhs, const U& rhs) noexcept -> bool;
 
@@ -260,7 +260,7 @@ namespace alloy::core {
   /// \param lhs the value on the left of the equation
   /// \param rhs the value on the right of the equation
   /// \param tolerance the tolerance to use for comparison
-  /// \return \c true if \p lhs is almost equal to \p rhs
+  /// \return `true` if \p lhs is almost equal to \p rhs
   constexpr auto almost_equal(
     real lhs,
     real rhs,
@@ -433,3 +433,4 @@ auto alloy::core::almost_equal(real lhs, real rhs, real tolerance)
 }
 
 #endif /* ALLOY_CORE_MATH_MATH_HPP */
+

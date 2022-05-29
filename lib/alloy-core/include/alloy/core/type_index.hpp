@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -93,14 +93,14 @@ namespace alloy::core {
     ///        of \p other
     ///
     /// \param other the other type_index to move
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     type_index& operator=(type_index&&) noexcept = default;
 
     /// \brief Assigns the content of this type_index by copying the contents
     ///        of \p other
     ///
     /// \param other the other type_index to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     type_index& operator=(const type_index&) noexcept = default;
 
     //-------------------------------------------------------------------------
@@ -240,3 +240,4 @@ inline constexpr bool alloy::core::operator>=(type_index lhs, type_index rhs)
 }
 
 #endif /* ALLOY_CORE_TYPE_INDEX_HPP */
+

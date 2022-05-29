@@ -233,7 +233,7 @@ namespace alloy::core {
     ///
     /// \pre \p other != nullptr
     /// \param other the other pointer to assign
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     template <typename U, typename = enable_if_convertible<U>>
     auto operator=(U&& other) noexcept(std::is_nothrow_assignable<T, U>::value)
       -> not_null&;
@@ -242,7 +242,7 @@ namespace alloy::core {
     ///
     /// \post \p other is left in a valid, but unspecified state.
     /// \param other the other pointer to move
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     template <typename U,
              typename = std::enable_if_t<std::is_convertible_v<U, T>>>
     auto operator=(not_null<U>&& other) noexcept(
@@ -251,7 +251,7 @@ namespace alloy::core {
     /// \brief Copy-assigns the contents from \p other to the underlying pointer
     ///
     /// \param other the other pointer to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     template <typename U,
              typename = std::enable_if_t<std::is_convertible_v<U, T>>>
     auto operator=(const not_null<U>& other) noexcept(
@@ -261,13 +261,13 @@ namespace alloy::core {
     ///
     /// \post \p other is left in a valid, but unspecified state.
     /// \param other the other pointer to move
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(not_null&& other) -> not_null& = default;
 
     /// \brief Copy-assigns the contents from \p other to the underlying pointer
     ///
     /// \param other the other pointer to copy
-    /// \return reference to \c (*this)
+    /// \return reference to `(*this)`
     auto operator=(const not_null& other) -> not_null& = default;
 
     auto operator=(std::nullptr_t) -> not_null& = delete;
@@ -938,4 +938,3 @@ auto alloy::core::operator>=(const T& lhs, const not_null<U>& rhs) noexcept -> b
 }
 
 #endif /* ALLOY_CORE_UTILITIES_NOT_NULL_HPP */
-

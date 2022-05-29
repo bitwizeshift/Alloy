@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -438,7 +438,7 @@ namespace alloy::core {
 
     /// \brief Queries whether this sink has any handlers stored
     ///
-    /// \return \c true if this event has no handlers
+    /// \return `true` if this event has no handlers
     bool empty() const noexcept;
 
     //-------------------------------------------------------------------------
@@ -600,7 +600,7 @@ namespace alloy::core {
 
     /// \brief Queries whether this sink has any handlers stored
     ///
-    /// \return \c true if this event has no handlers
+    /// \return `true` if this event has no handlers
     bool empty() const noexcept;
 
     //-------------------------------------------------------------------------
@@ -676,7 +676,7 @@ namespace alloy::core {
     /// \{
     /// \brief Queries whether the associated slot is still connected
     ///
-    /// \return \c true if connected
+    /// \return `true` if connected
     bool connected() const noexcept;
     explicit operator bool() const noexcept;
     /// \}
@@ -765,7 +765,7 @@ namespace alloy::core {
     /// \{
     /// \brief Queries whether the associated slot is still connected
     ///
-    /// \return \c true if connected
+    /// \return `true` if connected
     bool connected() const noexcept;
     explicit operator bool() const noexcept;
     /// \}
@@ -1425,3 +1425,4 @@ inline void alloy::core::scoped_connection::disconnect()
 }
 
 #endif /* ALLOY_CORE_UTILITIES_SIGNAL_HPP */
+
