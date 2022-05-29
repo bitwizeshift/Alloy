@@ -6,20 +6,20 @@
 // Quantifiers
 //------------------------------------------------------------------------------
 
-alloy::core::point3 alloy::core::line::point_at_distance( real dt )
-  const noexcept
+auto alloy::core::line::point_at_distance(real dt)
+  const noexcept -> point3
 {
   return m_origin + (m_direction * dt);
 }
 
-bool alloy::core::line::contains( const point3& p )
-  const noexcept
+auto alloy::core::line::contains(const point3& p)
+  const noexcept -> bool
 {
   return contains(p, default_tolerance);
 }
 
-bool alloy::core::line::contains( const point3& p, real tolerance )
-  const noexcept
+auto alloy::core::line::contains(const point3& p, real tolerance)
+  const noexcept -> bool
 {
   const auto dx = (p.x() - m_origin.x()) / m_direction.x();
   const auto dy = (p.y() - m_origin.y()) / m_direction.y();
@@ -41,8 +41,8 @@ bool alloy::core::line::contains( const point3& p, real tolerance )
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
-bool alloy::core::operator==( const line& lhs, const line& rhs )
-  noexcept
+auto alloy::core::operator==(const line& lhs, const line& rhs)
+  noexcept -> bool
 {
   const auto& lhs_direction = lhs.direction();
   const auto& rhs_direction = rhs.direction();
@@ -71,10 +71,8 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
 
-bool alloy::core::almost_equal( const line& lhs,
-                                const line& rhs,
-                                real tolerance )
-  noexcept
+auto alloy::core::almost_equal(const line& lhs, const line& rhs, real tolerance)
+  noexcept -> bool
 {
   const auto& lhs_direction = lhs.direction();
   const auto& rhs_direction = rhs.direction();

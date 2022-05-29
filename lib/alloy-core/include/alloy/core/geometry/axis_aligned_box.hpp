@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ namespace alloy::core {
   /// model, and -- if an intersection occurs with this box -- a more
   /// complicated intersection may be performed on all sub-parts of the model.
   //////////////////////////////////////////////////////////////////////////////
-  class axis_aligned_box
+  class ALLOY_CORE_API axis_aligned_box
   {
     //--------------------------------------------------------------------------
     // Static Factory Functions
@@ -69,9 +69,8 @@ namespace alloy::core {
     /// \param p the point
     /// \param size the vector that determines the x, y, z size
     /// \return the created box
-    ALLOY_CORE_API
-    static axis_aligned_box from_point_and_size( const point3& p,
-                                                 const vector3& size ) noexcept;
+    static auto from_point_and_size(const point3& p, const vector3& size)
+      noexcept -> axis_aligned_box;
 
     /// \brief Constructs an aligned box constrainted between the two points
     ///        \p p0 and \p p1
@@ -82,9 +81,8 @@ namespace alloy::core {
     /// \param p0 the first point
     /// \param p1 the second point
     /// \return the created box
-    ALLOY_CORE_API
-    static axis_aligned_box from_points( const point3& p0,
-                                         const point3& p1 ) noexcept;
+    static auto from_points(const point3& p0, const point3& p1)
+      noexcept -> axis_aligned_box;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -103,34 +101,23 @@ namespace alloy::core {
     ///
     /// \param lower_left The first point
     /// \param top_right The second point
-    axis_aligned_box( const point3& lower_left,
-                      const point3& top_right ) noexcept;
-
-    /// \brief Constructs an axis-aligned bounding-box by moving the contents
-    ///        from an existing one
-    ///
-    /// \param other the other box to move
-    axis_aligned_box( axis_aligned_box&& other ) noexcept = default;
+    axis_aligned_box(const point3& lower_left,
+                     const point3& top_right) noexcept;
 
     /// \brief Constructs an axis-aligned bounding-box by copying the contents
     ///        from an existing one
     ///
     /// \param other the other box to copy
-    axis_aligned_box( const axis_aligned_box& other ) noexcept = default;
+    axis_aligned_box(const axis_aligned_box& other) noexcept = default;
 
     //--------------------------------------------------------------------------
 
     /// \brief Assigns the contents of an axis-aligned bounding-box to this one
     ///
-    /// \param other the other box to move
-    /// \return reference to \c (*this)
-    axis_aligned_box& operator=( axis_aligned_box&& other ) noexcept = default;
-
-    /// \brief Assigns the contents of an axis-aligned bounding-box to this one
-    ///
     /// \param other the other box to copy
     /// \return reference to \c (*this)
-    axis_aligned_box& operator=( const axis_aligned_box& other ) noexcept = default;
+    auto operator=(const axis_aligned_box& other)
+      noexcept -> axis_aligned_box& = default;
 
     //--------------------------------------------------------------------------
     // Observers : Normals
@@ -141,12 +128,12 @@ namespace alloy::core {
     /// \brief Get the normal to the specified side
     ///
     /// \return the normal for the specified side
-    vector3 top_normal() const noexcept;
-    vector3 bottom_normal() const noexcept;
-    vector3 front_normal() const noexcept;
-    vector3 back_normal() const noexcept;
-    vector3 left_normal() const noexcept;
-    vector3 right_normal() const noexcept;
+    [[nodiscard]] auto top_normal() const noexcept -> vector3;
+    [[nodiscard]] auto bottom_normal() const noexcept -> vector3;
+    [[nodiscard]] auto front_normal() const noexcept -> vector3;
+    [[nodiscard]] auto back_normal() const noexcept -> vector3;
+    [[nodiscard]] auto left_normal() const noexcept -> vector3;
+    [[nodiscard]] auto right_normal() const noexcept -> vector3;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -158,12 +145,12 @@ namespace alloy::core {
     /// \brief Get the plane that defines the specified side
     ///
     /// \return the plane that define sthe specified side
-    ALLOY_CORE_API plane top_plane() const noexcept;
-    ALLOY_CORE_API plane bottom_plane() const noexcept;
-    ALLOY_CORE_API plane front_plane() const noexcept;
-    ALLOY_CORE_API plane back_plane() const noexcept;
-    ALLOY_CORE_API plane left_plane() const noexcept;
-    ALLOY_CORE_API plane right_plane() const noexcept;
+    [[nodiscard]] auto top_plane() const noexcept -> plane;
+    [[nodiscard]] auto bottom_plane() const noexcept -> plane;
+    [[nodiscard]] auto front_plane() const noexcept -> plane;
+    [[nodiscard]] auto back_plane() const noexcept -> plane;
+    [[nodiscard]] auto left_plane() const noexcept -> plane;
+    [[nodiscard]] auto right_plane() const noexcept -> plane;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -174,12 +161,14 @@ namespace alloy::core {
     /// \brief Gets the point at the bottom left of this box
     ///
     /// \return the point at the bottom-left of this box
-    point3 bottom_left_point() const noexcept;
+    [[nodiscard]]
+    auto bottom_left_point() const noexcept -> point3;
 
     /// \brief Gets the point at the top-right of this box
     ///
     /// \return the point at the top-right of this box
-    point3 top_right_point() const noexcept;
+    [[nodiscard]]
+    auto top_right_point() const noexcept -> point3;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -189,24 +178,28 @@ namespace alloy::core {
     /// \brief Gets an array containing the 6 normals
     ///
     /// \return the normals
-    ALLOY_CORE_API std::array<vector3,6> normals() const noexcept;
+    [[nodiscard]]
+    auto normals() const noexcept -> std::array<vector3, 6>;
 
     /// \brief Gets an array containing the 6 planes that encompass this box
     ///
     /// \return the planes
-    ALLOY_CORE_API std::array<plane,6> planes() const noexcept;
+    [[nodiscard]]
+    auto planes() const noexcept -> std::array<plane, 6>;
 
     /// \brief Gets the distance between this box and the specified \p point
     ///
     /// \param p the point to get the distance to
     /// \return the distance
-    real distance_to( const point3& p ) const noexcept;
+    [[nodiscard]]
+    auto distance_to(const point3& p) const noexcept -> real;
 
     /// \brief Checks if this box contains the given point \p p
     ///
     /// \param p the point to check for intersection
     /// \return \c true if \p p is in the box
-    ALLOY_CORE_API bool contains( const point3& p ) const noexcept;
+    [[nodiscard]]
+    auto contains(const point3& p) const noexcept -> bool;
 
     /// \brief Checks if this box contains the given point \p p
     ///        relative to the given \p tolerance
@@ -214,17 +207,20 @@ namespace alloy::core {
     /// \param p the point to check for intersection
     /// \param tolerance the tolerance for accepting the containment
     /// \return \c true if \p p is in the box
-    ALLOY_CORE_API bool contains( const point3& p, real tolerance ) const noexcept;
+    [[nodiscard]]
+    auto contains(const point3& p, real tolerance) const noexcept -> bool;
 
     /// \brief Checks if this box intersect another box
     ///
     /// \return \c true if this box intersects another box
-    ALLOY_CORE_API bool intersects( const axis_aligned_box& other ) const noexcept;
+    [[nodiscard]]
+    auto intersects(const axis_aligned_box& other) const noexcept -> bool;
 
     /// \brief Checks if this box completely encloses another box
     ///
     /// \return \c true if this box completely encloses another box
-    ALLOY_CORE_API bool encloses( const axis_aligned_box& other ) const noexcept;
+    [[nodiscard]]
+    auto encloses(const axis_aligned_box& other) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -244,11 +240,11 @@ namespace alloy::core {
   //----------------------------------------------------------------------------
 
   ALLOY_CORE_API
-  bool operator==(const axis_aligned_box& lhs,
-                  const axis_aligned_box& rhs) noexcept;
+  auto operator==(const axis_aligned_box& lhs,
+                  const axis_aligned_box& rhs) noexcept -> bool;
   ALLOY_CORE_API
-  bool operator!=(const axis_aligned_box& lhs,
-                  const axis_aligned_box& rhs) noexcept;
+  auto operator!=(const axis_aligned_box& lhs,
+                  const axis_aligned_box& rhs) noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -259,9 +255,9 @@ namespace alloy::core {
   /// \param tolerance the tolerance for the comparison
   /// \return \c true if the two planes contain almost equal values
   ALLOY_CORE_API
-  bool almost_equal(const axis_aligned_box& lhs,
+  auto almost_equal(const axis_aligned_box& lhs,
                     const axis_aligned_box& rhs,
-                    real tolerance) noexcept;
+                    real tolerance) noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -273,9 +269,11 @@ namespace alloy::core {
 // Constructors
 //------------------------------------------------------------------------------
 
-inline alloy::core::axis_aligned_box
-  ::axis_aligned_box( const point3& lower_left, const point3& top_right )
-  noexcept
+inline
+alloy::core::axis_aligned_box::axis_aligned_box(
+  const point3& lower_left,
+  const point3& top_right
+) noexcept
   : m_bottom_left{lower_left},
     m_top_right{top_right}
 {
@@ -288,38 +286,44 @@ inline alloy::core::axis_aligned_box
 // Observers : Normals
 //------------------------------------------------------------------------------
 
-inline alloy::core::vector3 alloy::core::axis_aligned_box::top_normal()
-  const noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::axis_aligned_box::top_normal()
+  const noexcept ->vector3
 {
   return top_plane().normal();
 }
 
-inline alloy::core::vector3 alloy::core::axis_aligned_box::bottom_normal()
-  const noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::axis_aligned_box::bottom_normal()
+  const noexcept -> vector3
 {
   return bottom_plane().normal();
 }
 
-inline alloy::core::vector3 alloy::core::axis_aligned_box::front_normal()
-  const noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::axis_aligned_box::front_normal()
+  const noexcept -> vector3
 {
   return front_plane().normal();
 }
 
-inline alloy::core::vector3 alloy::core::axis_aligned_box::back_normal()
-  const noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::axis_aligned_box::back_normal()
+  const noexcept -> vector3
 {
   return back_plane().normal();
 }
 
-inline alloy::core::vector3 alloy::core::axis_aligned_box::left_normal()
-  const noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::axis_aligned_box::left_normal()
+  const noexcept -> vector3
 {
   return left_plane().normal();
 }
 
-inline alloy::core::vector3 alloy::core::axis_aligned_box::right_normal()
-  const noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::axis_aligned_box::right_normal()
+  const noexcept -> vector3
 {
   return right_plane().normal();
 }
@@ -328,16 +332,19 @@ inline alloy::core::vector3 alloy::core::axis_aligned_box::right_normal()
 // Observers : Points
 //------------------------------------------------------------------------------
 
-inline alloy::core::point3 alloy::core::axis_aligned_box::bottom_left_point()
-  const noexcept
+ALLOY_FORCE_INLINE
+auto  alloy::core::axis_aligned_box::bottom_left_point()
+  const noexcept -> point3
 {
   return m_bottom_left;
 }
 
-inline alloy::core::point3 alloy::core::axis_aligned_box::top_right_point()
-  const noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::axis_aligned_box::top_right_point()
+  const noexcept -> point3
 {
   return m_top_right;
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_AXIS_ALIGNED_BOX_HPP */
+

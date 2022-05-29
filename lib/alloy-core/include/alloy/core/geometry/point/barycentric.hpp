@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -137,11 +137,13 @@ namespace alloy::core {
     /// \brief Gets a pointer to the underlying data
     ///
     /// \return a pointer to the data
+    [[nodiscard]]
     constexpr auto data() const noexcept -> const real*;
 
     /// \brief Gets the number of components in this barycentric coordinate
     ///
     /// \return 3u
+    [[nodiscard]]
     constexpr auto size() const noexcept -> std::size_t;
 
     //--------------------------------------------------------------------------
@@ -207,56 +209,56 @@ auto alloy::core::barycentric::from_cartesion(const point2& p,
   return barycentric{u, v, w};
 }
 
-inline constexpr 
+inline constexpr
 auto alloy::core::barycentric::u()
   noexcept -> real&
 {
   return m_data[0];
 }
 
-inline constexpr 
+inline constexpr
 auto alloy::core::barycentric::u()
   const noexcept -> real
 {
   return m_data[0];
 }
 
-inline constexpr 
+inline constexpr
 auto alloy::core::barycentric::v()
   noexcept -> real&
 {
   return m_data[1];
 }
 
-inline constexpr 
+inline constexpr
 auto alloy::core::barycentric::v()
   const noexcept -> real
 {
   return m_data[1];
 }
 
-inline constexpr 
+inline constexpr
 auto alloy::core::barycentric::w()
   noexcept -> real&
 {
   return m_data[2];
 }
 
-inline constexpr 
+inline constexpr
 auto alloy::core::barycentric::w()
   const noexcept -> real
 {
   return m_data[2];
 }
 
-inline constexpr 
+inline constexpr
 auto alloy::core::barycentric::data()
   const noexcept -> const real*
 {
   return m_data;
 }
 
-inline constexpr 
+inline constexpr
 auto alloy::core::barycentric::size()
   const noexcept -> std::size_t
 {
@@ -264,3 +266,4 @@ auto alloy::core::barycentric::size()
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_POINT_BARYCENTRIC_HPP */
+

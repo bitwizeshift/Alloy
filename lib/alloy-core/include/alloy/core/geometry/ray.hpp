@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019, 2021-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -53,7 +53,7 @@ namespace alloy::core {
   /// \ingroup geometry
   /// \ingroup value_type
   //////////////////////////////////////////////////////////////////////////////
-  class ray
+  class ALLOY_CORE_API ray
   {
     //--------------------------------------------------------------------------
     // Static Factory Functions
@@ -66,7 +66,7 @@ namespace alloy::core {
     /// \param origin the start of the ray
     /// \param p a point that this ray passes through
     /// \return a ray that starts at \p origin and travels through \p p
-    static ray from_points( const point3& origin,  const point3& p ) noexcept;
+    static auto from_points(const point3& origin, const point3& p) noexcept -> ray;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -88,31 +88,20 @@ namespace alloy::core {
     ///
     /// \param origin the point where the ray begins
     /// \param direction the direction the ray travels in
-    ray( const point3& origin, const vector3& direction ) noexcept;
-
-    /// \brief Constructs a ray by moving an existing instance
-    ///
-    /// \param other the other ray to move
-    constexpr ray( ray&& other ) noexcept = default;
+    ray(const point3& origin, const vector3& direction) noexcept;
 
     /// \brief Constructs a ray by copying an existing instance
     ///
     /// \param other the other ray to copy
-    constexpr ray( const ray& other ) noexcept = default;
+    ray(const ray& other) = default;
 
     //--------------------------------------------------------------------------
-
-    /// \brief Move-assigns the contents of an existing ray
-    ///
-    /// \param other the other ray to move
-    /// \return reference to \c (*this)
-    ray& operator=( ray&& other ) noexcept = default;
 
     /// \brief Copy-assigns the contents of an existing ray
     ///
     /// \param other the other ray to copy
     /// \return reference to \c (*this)
-    ray& operator=( const ray& other ) noexcept = default;
+    auto operator=(const ray& other) -> ray& = default;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -121,10 +110,10 @@ namespace alloy::core {
 
     /// \brief Inverts the direction of this ray
     ///
-    /// \post \c this->direction() points in the oposite direction
+    /// \post \c this->direction() points in the opposite direction
     ///
     /// \return reference to \c (*this)
-    ray& invert() noexcept;
+    auto invert() noexcept -> ray&;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -134,12 +123,14 @@ namespace alloy::core {
     /// \brief Gets the origin of this ray
     ///
     /// \return the origin of this ray
-    constexpr const point3& origin() const noexcept;
+    [[nodiscard]]
+    constexpr auto origin() const noexcept -> const point3&;
 
     /// \brief Gets the direction this ray faces
     ///
     /// \return the direction of this ray
-    constexpr const vector3& direction() const noexcept;
+    [[nodiscard]]
+    constexpr auto direction() const noexcept -> const vector3&;
 
     //--------------------------------------------------------------------------
     // Quantifiers
@@ -150,20 +141,23 @@ namespace alloy::core {
     ///        in-tact
     ///
     /// \return an inverted ray
-    ray inverse() const noexcept;
+    [[nodiscard]]
+    auto inverse() const noexcept -> ray;
 
     /// \brief Gets the point at distance \p dt from the origin of this ray
     ///
     /// \pre \p dt must be greater than 0
     /// \param dt the distance to get this point at
     /// \return the point at the distance
-    point3 point_at_distance( real dt ) const noexcept;
+    [[nodiscard]]
+    auto point_at_distance(real dt) const noexcept -> point3;
 
     /// \brief Checks if this ray intersects the given point \p p
     ///
     /// \param p the point to check for intersection
     /// \return \c true if \p p is in the ray
-    bool contains( const point3& p ) const noexcept;
+    [[nodiscard]]
+    auto contains(const point3& p) const noexcept -> bool;
 
     /// \brief Checks if this ray intersects the given point \p p relative to
     ///        the given \p tolerance
@@ -171,7 +165,8 @@ namespace alloy::core {
     /// \param p the point to check for intersection
     /// \param tolerance the tolerance for accepting the containment
     /// \return \c true if \p p is in the ray
-    bool contains( const point3& p, real tolerance ) const noexcept;
+    [[nodiscard]]
+    auto contains(const point3& p, real tolerance) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -190,8 +185,8 @@ namespace alloy::core {
   // Equality
   //----------------------------------------------------------------------------
 
-  constexpr bool operator==( const ray& lhs, const ray& rhs ) noexcept;
-  constexpr bool operator!=( const ray& lhs, const ray& rhs ) noexcept;
+  constexpr auto operator==(const ray& lhs, const ray& rhs) noexcept -> bool;
+  constexpr auto operator!=(const ray& lhs, const ray& rhs) noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -200,9 +195,8 @@ namespace alloy::core {
   /// \param lhs the left ray
   /// \param rhs the right ray
   /// \return \c true if the two rays contain almost equal values
-  constexpr bool almost_equal( const ray& lhs,
-                               const ray& rhs,
-                               real tolerance ) noexcept;
+  constexpr auto almost_equal(const ray& lhs, const ray& rhs, real tolerance)
+    noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -214,7 +208,8 @@ namespace alloy::core {
 // Constructors
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::ray::ray()
+inline constexpr
+alloy::core::ray::ray()
   noexcept
   : m_origin{0,0,0},
     m_direction{1,0,0}
@@ -222,8 +217,8 @@ inline constexpr alloy::core::ray::ray()
 
 }
 
-inline alloy::core::ray::ray( const point3& origin,
-                              const vector3& direction )
+inline
+alloy::core::ray::ray(const point3& origin, const vector3& direction)
   noexcept
   : m_origin{origin},
     m_direction{direction}
@@ -237,8 +232,9 @@ inline alloy::core::ray::ray( const point3& origin,
 // Modifiers
 //------------------------------------------------------------------------------
 
-inline alloy::core::ray& alloy::core::ray::invert()
-  noexcept
+inline
+auto alloy::core::ray::invert()
+  noexcept -> ray&
 {
   m_direction.invert();
   return (*this);
@@ -248,14 +244,16 @@ inline alloy::core::ray& alloy::core::ray::invert()
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr const alloy::core::point3& alloy::core::ray::origin()
-  const noexcept
+inline constexpr
+auto alloy::core::ray::origin()
+  const noexcept -> const point3&
 {
   return m_origin;
 }
 
-inline constexpr const alloy::core::vector3& alloy::core::ray::direction()
-  const noexcept
+inline constexpr
+auto alloy::core::ray::direction()
+  const noexcept -> const vector3&
 {
   return m_direction;
 }
@@ -264,11 +262,13 @@ inline constexpr const alloy::core::vector3& alloy::core::ray::direction()
 // Quantifiers
 //------------------------------------------------------------------------------
 
-inline alloy::core::ray alloy::core::ray::inverse()
-  const noexcept
+inline
+auto alloy::core::ray::inverse()
+  const noexcept -> ray
 {
   auto copy = (*this);
-  return copy.invert();
+  copy.invert();
+  return copy;
 }
 
 //==============================================================================
@@ -279,27 +279,29 @@ inline alloy::core::ray alloy::core::ray::inverse()
 // Equality
 //------------------------------------------------------------------------------
 
-inline constexpr bool alloy::core::operator==( const ray& lhs, const ray& rhs )
-  noexcept
+inline constexpr
+auto alloy::core::operator==(const ray& lhs, const ray& rhs)
+  noexcept -> bool
 {
   return lhs.origin() == rhs.origin() && lhs.direction() == rhs.direction();
 }
 
-inline constexpr bool alloy::core::operator!=( const ray& lhs, const ray& rhs )
-  noexcept
+inline constexpr
+auto alloy::core::operator!=(const ray& lhs, const ray& rhs)
+  noexcept -> bool
 {
   return !(lhs==rhs);
 }
 
 //------------------------------------------------------------------------------
 
-inline constexpr bool alloy::core::almost_equal( const ray& lhs,
-                                                 const ray& rhs,
-                                                 real tolerance )
-  noexcept
+inline constexpr
+auto alloy::core::almost_equal(const ray& lhs, const ray& rhs, real tolerance)
+  noexcept -> bool
 {
   return almost_equal(lhs.origin(), rhs.origin(), tolerance) &&
          almost_equal(lhs.direction(), rhs.direction(), tolerance);
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_RAY_HPP */
+

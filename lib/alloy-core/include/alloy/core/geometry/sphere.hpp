@@ -8,7 +8,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -71,31 +71,20 @@ namespace alloy::core {
     ///
     /// \param center the center point
     /// \param radius the radius of the sphere
-    sphere( const point3& center, real radius ) noexcept;
-
-    /// \brief Constructs a sphere by moving an existing instance
-    ///
-    /// \param other the other sphere to move
-    constexpr sphere( sphere&& other ) noexcept = default;
+    sphere(const point3& center, real radius) noexcept;
 
     /// \brief Constructs a sphere by copying an existing instance
     ///
     /// \param other the other sphere to copy
-    constexpr sphere( const sphere& other ) noexcept = default;
+    sphere(const sphere& other) = default;
 
     //--------------------------------------------------------------------------
-
-    /// \brief Move-assigns the contents of an existing sphere
-    ///
-    /// \param other the other sphere to move
-    /// \return reference to \c (*this)
-    sphere& operator=( sphere&& other ) noexcept = default;
 
     /// \brief Copy-assigns the contents of an existing sphere
     ///
     /// \param other the other sphere to copy
     /// \return reference to \c (*this)
-    sphere& operator=( const sphere& other ) noexcept = default;
+    auto operator=(const sphere& other) -> sphere& = default;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -105,20 +94,22 @@ namespace alloy::core {
     /// \brief Gets the center point of this sphere
     ///
     /// \return the center point
-    constexpr const point3& center() const noexcept;
+    [[nodiscard]]
+    constexpr auto center() const noexcept -> const point3&;
 
     /// \brief Gets the radius of this sphere
     ///
     /// \return the radius
-    constexpr const real& radius() const noexcept;
+    [[nodiscard]]
+    constexpr auto radius() const noexcept -> const real&;
 
     /// \brief Checks whether a given point \p p is contained within this
     ///        sphere
     ///
     /// \param p the point to check
     /// \return \c true if the point is contained in this sphere
-    ALLOY_CORE_API
-    bool contains( const point3& p ) const noexcept;
+    [[nodiscard]]
+    auto contains(const point3& p) const noexcept -> bool;
 
     /// \brief Checks whether a given point \p p is contained within this
     ///        sphere within a specified error \p tolerance
@@ -126,8 +117,8 @@ namespace alloy::core {
     /// \param p the point to check
     /// \param tolerance the error tolerance to accept
     /// \return \c true if the point is contained in this sphere
-    ALLOY_CORE_API
-    bool contains( const point3& p, real tolerance ) const noexcept;
+    [[nodiscard]] ALLOY_CORE_API
+    auto contains(const point3& p, real tolerance) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -146,8 +137,8 @@ namespace alloy::core {
   // Equality
   //----------------------------------------------------------------------------
 
-  constexpr bool operator==( const sphere& lhs, const sphere& rhs ) noexcept;
-  constexpr bool operator!=( const sphere& lhs, const sphere& rhs ) noexcept;
+  constexpr auto operator==(const sphere& lhs, const sphere& rhs) noexcept -> bool;
+  constexpr auto operator!=(const sphere& lhs, const sphere& rhs) noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -156,9 +147,8 @@ namespace alloy::core {
   /// \param lhs the left sphere
   /// \param rhs the right sphere
   /// \return \c true if the two spheres contain almost equal values
-  constexpr bool almost_equal( const sphere& lhs,
-                               const sphere& rhs,
-                               real tolerance ) noexcept;
+  constexpr auto almost_equal(const sphere& lhs, const sphere& rhs, real tolerance)
+    noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -170,7 +160,8 @@ namespace alloy::core {
 // Constructors
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::sphere::sphere()
+inline constexpr
+alloy::core::sphere::sphere()
   noexcept
   : m_center{0,0,0},
     m_radius{0}
@@ -178,7 +169,8 @@ inline constexpr alloy::core::sphere::sphere()
 
 }
 
-inline alloy::core::sphere::sphere( const point3& center, real radius )
+inline
+alloy::core::sphere::sphere(const point3& center, real radius)
   noexcept
   : m_center{center},
     m_radius{radius}
@@ -190,14 +182,16 @@ inline alloy::core::sphere::sphere( const point3& center, real radius )
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr const alloy::core::point3& alloy::core::sphere::center()
-  const noexcept
+inline constexpr
+auto alloy::core::sphere::center()
+  const noexcept -> const point3&
 {
   return m_center;
 }
 
-inline constexpr const alloy::core::real& alloy::core::sphere::radius()
-  const noexcept
+inline constexpr
+auto alloy::core::sphere::radius()
+  const noexcept -> const real&
 {
   return m_radius;
 }
@@ -213,16 +207,16 @@ inline constexpr const alloy::core::real& alloy::core::sphere::radius()
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
-inline constexpr bool alloy::core::operator==( const sphere& lhs,
-                                               const sphere& rhs )
-  noexcept
+inline constexpr
+auto alloy::core::operator==(const sphere& lhs, const sphere& rhs)
+  noexcept -> bool
 {
   return lhs.center() == rhs.center() && lhs.radius() == rhs.radius();
 }
 
-inline constexpr bool alloy::core::operator!=( const sphere& lhs,
-                                               const sphere& rhs )
-  noexcept
+inline constexpr
+auto alloy::core::operator!=(const sphere& lhs, const sphere& rhs)
+  noexcept -> bool
 {
   return !(lhs==rhs);
 }
@@ -231,10 +225,12 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 //------------------------------------------------------------------------------
 
-inline constexpr bool alloy::core::almost_equal( const sphere& lhs,
-                                                 const sphere& rhs,
-                                                 real tolerance )
-  noexcept
+inline constexpr
+auto alloy::core::almost_equal(
+  const sphere& lhs,
+  const sphere& rhs,
+  real tolerance
+) noexcept -> bool
 {
   return almost_equal(lhs.center(), rhs.center(), tolerance) &&
          almost_equal(lhs.radius(), rhs.radius(), tolerance);
@@ -242,3 +238,4 @@ inline constexpr bool alloy::core::almost_equal( const sphere& lhs,
 
 
 #endif /* ALLOY_CORE_GEOMETRY_SPHERE_HPP */
+

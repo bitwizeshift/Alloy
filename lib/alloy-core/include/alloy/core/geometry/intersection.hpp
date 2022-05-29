@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2020 Matthew Rodusek All rights reserved.
+  Copyright (c) 2020-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -98,12 +98,12 @@ namespace alloy::core {
     /// \brief Constructs a intersection by moving an existing instance
     ///
     /// \param other the other intersection to move
-    constexpr intersection(intersection&& other) noexcept = default;
+    intersection(intersection&& other) = default;
 
     /// \brief Constructs a intersection by copying an existing instance
     ///
     /// \param other the other intersection to copy
-    constexpr intersection(const intersection& other) noexcept = default;
+    intersection(const intersection& other) = default;
 
     //--------------------------------------------------------------------------
 
@@ -111,13 +111,13 @@ namespace alloy::core {
     ///
     /// \param other the other intersection to move
     /// \return reference to (*this)
-    constexpr intersection& operator=(intersection&& other) noexcept = default;
+    auto operator=(intersection&& other) -> intersection& = default;
 
     /// \brief Copy-assigns the contents of an existing intersection
     ///
     /// \param other the other intersection to copy
     /// \return reference to (*this)
-    constexpr intersection& operator=(const intersection& other) noexcept = default;
+    auto operator=(const intersection& other) -> intersection& = default;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -127,29 +127,31 @@ namespace alloy::core {
     /// \brief Checks whether there is an intersection
     ///
     /// \return true if there is an intersection
-    constexpr bool has_intersection() const noexcept;
+    [[nodiscard]]
+    constexpr auto has_intersection() const noexcept -> bool;
 
     /// \brief Checks if this intersection contains the geometric type Type
     ///
     /// \tparam Type the geometric type
     /// \return true if this intersection contains the specified type
-    template <typename Type>
-    constexpr bool contains() const noexcept;
+    template<typename Type>
+    [[nodiscard]]
+    constexpr auto contains() const noexcept -> bool;
 
     /// \brief Attempts to get the underlying intersection type as Type
     ///
     /// \tparam Type the type to try to get from the intersection
     /// \return nullptr on failure, a pointer to Type on success
-    template <typename Type>
-    constexpr const Type* try_as() const noexcept;
+    template<typename Type>
+    constexpr auto try_as() const noexcept -> const Type*;
 
     /// \brief Gets the underlying intersection type as Type
     ///
     /// \pre Type is the correct underlying type
     /// \tparam Type the type to try to get from the intersection
     /// \return a reference to Type on success
-    template <typename Type>
-    constexpr const Type& as() const;
+    template<typename Type>
+    constexpr auto as() const -> const Type&;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -160,14 +162,14 @@ namespace alloy::core {
 
     variant_type m_intersection_types;
 
-    template <typename...UTypes>
-    friend constexpr bool operator==(const intersection<UTypes...>&,
-                                     const intersection<UTypes...>&) noexcept;
+    template<typename... UTypes>
+    friend constexpr auto operator==(const intersection<UTypes...>&,
+                                     const intersection<UTypes...>&) noexcept -> bool;
 
-    template <typename...UTypes>
-    friend constexpr bool almost_equal(const intersection<UTypes...>&,
+    template<typename... UTypes>
+    friend constexpr auto almost_equal(const intersection<UTypes...>&,
                                        const intersection<UTypes...>&,
-                                       real) noexcept;
+                                       real) noexcept -> bool;
   };
 
   //============================================================================
@@ -178,12 +180,12 @@ namespace alloy::core {
   // Equality
   //----------------------------------------------------------------------------
 
-  template <typename...Types>
-  constexpr bool operator==(const intersection<Types...>& lhs,
-                            const intersection<Types...>& rhs) noexcept;
-  template <typename...Types>
-  constexpr bool operator!=(const intersection<Types...>& lhs,
-                            const intersection<Types...>& rhs) noexcept;
+  template<typename... Types>
+  constexpr auto operator==(const intersection<Types...>& lhs,
+                            const intersection<Types...>& rhs) noexcept -> bool;
+  template<typename... Types>
+  constexpr auto operator!=(const intersection<Types...>& lhs,
+                            const intersection<Types...>& rhs) noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -194,10 +196,10 @@ namespace alloy::core {
   /// \param rhs the right intersection
   /// \param tolerance the tolerance value to compare against
   /// \return \c true if the two intersections contain almost equal values
-  template <typename...Types>
-  constexpr bool almost_equal(const intersection<Types...>& lhs,
+  template<typename... Types>
+  constexpr auto almost_equal(const intersection<Types...>& lhs,
                               const intersection<Types...>& rhs,
-                              real tolerance) noexcept;
+                              real tolerance) noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -230,33 +232,33 @@ inline constexpr alloy::core::intersection<Types...>::intersection(Type&& type)
 // Observers
 //------------------------------------------------------------------------------
 
-template <typename...Types>
-inline constexpr bool alloy::core::intersection<Types...>::has_intersection()
-  const noexcept
+template<typename... Types>
+inline constexpr auto
+  alloy::core::intersection<Types...>::has_intersection() const noexcept -> bool
 {
   return std::holds_alternative<std::monostate>(m_intersection_types);
 }
 
-template <typename...Types>
-template <typename Type>
-inline constexpr bool alloy::core::intersection<Types...>::contains()
-  const noexcept
+template<typename... Types>
+template<typename Type>
+inline constexpr auto
+  alloy::core::intersection<Types...>::contains() const noexcept -> bool
 {
   return std::holds_alternative<Type>(m_intersection_types);
 }
 
-template <typename...Types>
-template <typename Type>
-inline constexpr const Type* alloy::core::intersection<Types...>::try_as()
-  const noexcept
+template<typename... Types>
+template<typename Type>
+inline constexpr auto
+  alloy::core::intersection<Types...>::try_as() const noexcept -> const Type*
 {
   return std::get_if<Type>(m_intersection_types);
 }
 
-template <typename...Types>
-template <typename Type>
-inline constexpr const Type& alloy::core::intersection<Types...>::as()
-  const
+template<typename... Types>
+template<typename Type>
+inline constexpr auto
+  alloy::core::intersection<Types...>::as() const -> const Type&
 {
   const auto* p = try_as<Type>();
 
@@ -282,37 +284,37 @@ namespace alloy::core::detail {
   {
     real tolerance;
 
-    template <typename T>
-    inline constexpr bool operator()(const std::monostate&, const std::monostate&)
-      noexcept
+    template<typename T>
+    inline constexpr
+    auto operator()(const std::monostate&, const std::monostate&) noexcept -> bool
     {
       return true; // two monostates are always equal
     }
 
-    template <typename T>
-    inline constexpr bool operator()(const T&, const std::monostate&)
-      noexcept
+    template<typename T>
+    inline constexpr
+    auto operator()(const T&, const std::monostate&) noexcept -> bool
     {
       return false;
     }
 
-    template <typename T>
-    inline constexpr bool operator()(const std::monostate&, const T&)
-      noexcept
+    template<typename T>
+    inline constexpr
+    auto operator()(const std::monostate&, const T&) noexcept -> bool
     {
       return false;
     }
 
-    template <typename T>
-    inline constexpr bool operator()(const T& lhs, const T& rhs)
-      noexcept
+    template<typename T>
+    inline constexpr
+    auto operator()(const T& lhs, const T& rhs) noexcept -> bool
     {
       return almost_equal(lhs, rhs, tolerance);
     }
 
-    template <typename T, typename U>
-    inline constexpr bool operator()(const T&, const U&)
-      noexcept
+    template<typename T, typename U>
+    inline constexpr
+    auto operator()(const T&, const U&) noexcept -> bool
     {
       return false;
     }
@@ -320,32 +322,31 @@ namespace alloy::core::detail {
 
 } // namespace alloy::core::detail
 
-template <typename...Types>
-inline constexpr bool
-  alloy::core::operator==(const intersection<Types...>& lhs,
-                          const intersection<Types...>& rhs)
-  noexcept
+template<typename... Types>
+inline constexpr
+auto alloy::core::operator==(const intersection<Types...>& lhs,
+                             const intersection<Types...>& rhs)
+  noexcept -> bool
 {
   return lhs.m_intersection_types == rhs.m_intersection_types;
 }
 
-template <typename...Types>
-inline constexpr bool
-  alloy::core::operator!=(const intersection<Types...>& lhs,
-                          const intersection<Types...>& rhs)
-  noexcept
+template<typename... Types>
+inline constexpr
+auto alloy::core::operator!=(const intersection<Types...>& lhs,
+                             const intersection<Types...>& rhs)
+  noexcept -> bool
 {
   return !(lhs == rhs);
 }
 
 //------------------------------------------------------------------------------
 
-template <typename...Types>
-inline constexpr bool
-  alloy::core::almost_equal(const intersection<Types...>& lhs,
-                            const intersection<Types...>& rhs,
-                            real tolerance)
-  noexcept
+template<typename... Types>
+inline constexpr
+auto alloy::core::almost_equal(const intersection<Types...>& lhs,
+                               const intersection<Types...>& rhs,
+                               real tolerance) noexcept -> bool
 {
   return std::visit(
     detail::intersection_almost_equal_visitor{tolerance},
@@ -355,3 +356,4 @@ inline constexpr bool
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_INTERSECTION_HPP */
+

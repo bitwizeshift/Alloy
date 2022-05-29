@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -85,7 +85,7 @@ namespace alloy::core {
     ///
     /// \return reference to the distance component
     constexpr auto r() noexcept -> real&;
-    constexpr auto r() const noexcept-> real;
+    constexpr auto r() const noexcept -> real;
     /// \}
 
     /// \{
@@ -218,13 +218,15 @@ ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr
-auto alloy::core::operator==(const polar& lhs, const polar& rhs) noexcept -> bool
+auto alloy::core::operator==(const polar& lhs, const polar& rhs)
+  noexcept -> bool
 {
   return lhs.r() == rhs.r() && lhs.theta() == rhs.theta();
 }
 
 inline constexpr
-auto alloy::core::operator!=(const polar& lhs, const polar& rhs) noexcept -> bool
+auto alloy::core::operator!=(const polar& lhs, const polar& rhs)
+  noexcept -> bool
 {
   return !(lhs == rhs);
 }
@@ -234,9 +236,7 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::almost_equal(const polar& lhs,
-                               const polar& rhs,
-                               real tolerance)
+auto alloy::core::almost_equal(const polar& lhs, const polar& rhs, real tolerance)
   noexcept -> bool
 {
   return (
@@ -291,3 +291,4 @@ auto alloy::core::piecewise_compare<alloy::core::polar>
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 #endif /* ALLOY_CORE_GEOMETRY_POINT_POLAR_HPP */
+

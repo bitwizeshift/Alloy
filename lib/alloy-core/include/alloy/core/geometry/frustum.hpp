@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -77,7 +77,8 @@ namespace alloy::core {
     /// \return the frustum
     static constexpr auto make_unchecked(const plane& left, const plane& right,
                                          const plane& top, const plane& bottom,
-                                         const plane& near, const plane& far) noexcept -> frustum;
+                                         const plane& near, const plane& far)
+      noexcept -> frustum;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -99,12 +100,12 @@ namespace alloy::core {
     /// \brief Gets the specified plane of this frustum
     ///
     /// \return the left plane
-    constexpr auto left() const noexcept -> const plane&;
-    constexpr auto right() const noexcept -> const plane&;
-    constexpr auto top() const noexcept -> const plane&;
-    constexpr auto bottom() const noexcept -> const plane&;
-    constexpr auto near() const noexcept -> const plane&;
-    constexpr auto far() const noexcept -> const plane&;
+    [[nodiscard]] constexpr auto left() const noexcept -> const plane&;
+    [[nodiscard]] constexpr auto right() const noexcept -> const plane&;
+    [[nodiscard]] constexpr auto top() const noexcept -> const plane&;
+    [[nodiscard]] constexpr auto bottom() const noexcept -> const plane&;
+    [[nodiscard]] constexpr auto near() const noexcept -> const plane&;
+    [[nodiscard]] constexpr auto far() const noexcept -> const plane&;
     /// \}
 
     /// \brief Returns the underlying planes in this frustum
@@ -119,6 +120,7 @@ namespace alloy::core {
     /// 5. far
     ///
     /// \return the 6 underlying planes
+    [[nodiscard]]
     constexpr auto planes() const noexcept -> span<const plane, 6u>;
 
     //--------------------------------------------------------------------------
@@ -131,6 +133,7 @@ namespace alloy::core {
     ///
     /// \param p the point to check
     /// \return \c true if the point is contained in this sphere
+    [[nodiscard]]
     auto contains(const point3& p) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
@@ -167,49 +170,49 @@ auto alloy::core::frustum::make_unchecked(const plane& left,
 // Element Access
 //------------------------------------------------------------------------------
 
-inline constexpr
+ALLOY_FORCE_INLINE constexpr
 auto alloy::core::frustum::left()
   const noexcept -> const plane&
 {
   return m_planes[0];
 }
 
-inline constexpr
+ALLOY_FORCE_INLINE constexpr
 auto alloy::core::frustum::right()
   const noexcept -> const alloy::core::plane&
 {
   return m_planes[1];
 }
 
-inline constexpr
+ALLOY_FORCE_INLINE constexpr
 auto alloy::core::frustum::top()
   const noexcept -> const plane&
 {
   return m_planes[2];
 }
 
-inline constexpr
+ALLOY_FORCE_INLINE constexpr
 auto alloy::core::frustum::bottom()
   const noexcept -> const plane&
 {
   return m_planes[3];
 }
 
-inline constexpr
+ALLOY_FORCE_INLINE constexpr
 auto alloy::core::frustum::near()
   const noexcept -> const plane&
 {
   return m_planes[4];
 }
 
-inline constexpr
+ALLOY_FORCE_INLINE constexpr
 auto alloy::core::frustum::far()
   const noexcept -> const plane&
 {
   return m_planes[5];
 }
 
-inline constexpr
+ALLOY_FORCE_INLINE constexpr
 auto alloy::core::frustum::planes()
   const noexcept -> span<const plane, 6u>
 {
@@ -231,3 +234,4 @@ alloy::core::frustum::frustum(const plane& left, const plane& right,
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_FRUSTUM_HPP */
+

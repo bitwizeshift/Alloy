@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -85,23 +85,12 @@ namespace alloy::core {
     /// \param z the z-coordinate
     constexpr point2(real x, real y) noexcept;
 
-    /// \brief Move-constructs a point from another point
-    ///
-    /// \param other the other point to move
-    constexpr point2(point2&& other) noexcept = default;
-
     /// \brief Copy-constructs a point from another point
     ///
     /// \param other the other point to copy
     constexpr point2(const point2& other) noexcept = default;
 
     //--------------------------------------------------------------------------
-
-    /// \brief Move-assigns a point from another point
-    ///
-    /// \param other the other point to move
-    /// \return reference to \c (*this)
-    auto operator=(point2&& other) noexcept -> point2& = default;
 
     /// \brief Copy-assigns a point from another point
     ///
@@ -127,7 +116,7 @@ namespace alloy::core {
     ///
     /// \return reference to the x component
     constexpr auto x() noexcept -> reference;
-    constexpr auto x() const noexcept-> const_reference;
+    constexpr auto x() const noexcept -> const_reference;
     /// \}
 
     /// \{
@@ -444,3 +433,4 @@ auto alloy::core::piecewise_compare<alloy::core::point2>
 ALLOY_COMPILER_DIAGNOSTIC_POP()
 
 #endif /* ALLOY_CORE_GEOMETRY_POINT_POINT2_HPP */
+

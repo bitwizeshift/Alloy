@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,7 @@ namespace alloy::core {
   /// \ingroup geometry
   /// \ingroup value_type
   //////////////////////////////////////////////////////////////////////////////
-  class line
+  class ALLOY_CORE_API line
   {
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -71,17 +71,17 @@ namespace alloy::core {
     /// \pre \p direction is normalized
     /// \param origin a point to intersect
     /// \param direction the direction the line extends toward
-    constexpr line( const point3& origin, const vector3& direction ) noexcept;
+    constexpr line(const point3& origin, const vector3& direction) noexcept;
 
     /// \brief Constructs a line by moving an existing instance
     ///
     /// \param other the other line to move
-    constexpr line( line&& other ) noexcept = default;
+    line(line&& other) = default;
 
     /// \brief Constructs a line by copying an existing instance
     ///
     /// \param other the other line to copy
-    constexpr line( const line& other ) noexcept = default;
+    line(const line& other) = default;
 
     //--------------------------------------------------------------------------
 
@@ -89,13 +89,13 @@ namespace alloy::core {
     ///
     /// \param other the other line to move
     /// \return reference to \c (*this)
-    line& operator=( line&& other ) noexcept = default;
+    auto operator=(line&& other) -> line& = default;
 
     /// \brief Copy-assigns the contents of an existing line
     ///
     /// \param other the other line to copy
     /// \return reference to \c (*this)
-    line& operator=( const line& other ) noexcept = default;
+    auto operator=(const line& other) -> line& = default;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -104,12 +104,12 @@ namespace alloy::core {
     /// \brief Gets the origin point of this line
     ///
     /// \return the origin point of the line
-    constexpr const point3& origin() const noexcept;
+    [[nodiscard]] constexpr auto origin() const noexcept -> const point3&;
 
     /// \brief Gets the direction that this line extends in
     ///
     /// \return the direction
-    constexpr const vector3& direction() const noexcept;
+    [[nodiscard]] constexpr auto direction() const noexcept -> const vector3&;
 
     //--------------------------------------------------------------------------
     // Quantifiers
@@ -121,15 +121,15 @@ namespace alloy::core {
     ///
     /// \param dt the distance to get this point at
     /// \return the point at the distance
-    ALLOY_CORE_API
-    point3 point_at_distance( real dt ) const noexcept;
+    [[nodiscard]]
+    auto point_at_distance(real dt) const noexcept -> point3;
 
     /// \brief Checks if this line intersects the given point \p p
     ///
     /// \param p the point to check for intersection
     /// \return \c true if \p p is in the line
-    ALLOY_CORE_API
-    bool contains( const point3& p ) const noexcept;
+    [[nodiscard]]
+    auto contains(const point3& p) const noexcept -> bool;
 
     /// \brief Checks if this line intersects the given point \p p
     ///        relative to the given \p tolerance
@@ -137,8 +137,8 @@ namespace alloy::core {
     /// \param p the point to check for intersection
     /// \param tolerance the tolerance for accepting the containment
     /// \return \c true if \p p is in the line
-    ALLOY_CORE_API
-    bool contains( const point3& p, real tolerance ) const noexcept;
+    [[nodiscard]]
+    auto contains(const point3& p, real tolerance) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -158,8 +158,8 @@ namespace alloy::core {
   //----------------------------------------------------------------------------
 
   ALLOY_CORE_API
-  bool operator==( const line& lhs, const line& rhs ) noexcept;
-  bool operator!=( const line& lhs, const line& rhs ) noexcept;
+  auto operator==(const line& lhs, const line& rhs) noexcept -> bool;
+  auto operator!=(const line& lhs, const line& rhs) noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -170,7 +170,8 @@ namespace alloy::core {
   /// \param rhs the right line
   /// \return \c true if the two lines contain almost equal values
   ALLOY_CORE_API
-  bool almost_equal( const line& lhs, const line& rhs, real tolerance ) noexcept;
+  auto almost_equal(const line& lhs, const line& rhs, real tolerance)
+    noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -182,7 +183,8 @@ namespace alloy::core {
 // Constructors
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::line::line()
+inline constexpr
+alloy::core::line::line()
   noexcept
   : m_origin{real{0}, real{0}, real{0}},
     m_direction{real{1}, real{0}, real{0}}
@@ -190,8 +192,8 @@ inline constexpr alloy::core::line::line()
 
 }
 
-inline constexpr alloy::core::line::line( const point3& origin,
-                                          const vector3& direction )
+inline constexpr
+alloy::core::line::line(const point3& origin, const vector3& direction)
   noexcept
   : m_origin{origin},
     m_direction{direction}
@@ -203,14 +205,16 @@ inline constexpr alloy::core::line::line( const point3& origin,
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr const alloy::core::point3& alloy::core::line::origin()
-  const noexcept
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::line::origin()
+  const noexcept -> const point3&
 {
   return m_origin;
 }
 
-inline constexpr const alloy::core::vector3& alloy::core::line::direction()
-  const noexcept
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::line::direction()
+  const noexcept -> const vector3&
 {
   return m_direction;
 }
@@ -219,10 +223,12 @@ inline constexpr const alloy::core::vector3& alloy::core::line::direction()
 // non-member functions : class : line
 //==============================================================================
 
-inline bool alloy::core::operator!=( const line& lhs, const line& rhs )
-  noexcept
+inline
+auto alloy::core::operator!=(const line& lhs, const line& rhs)
+  noexcept -> bool
 {
   return !(lhs==rhs);
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_LINE_HPP */
+
