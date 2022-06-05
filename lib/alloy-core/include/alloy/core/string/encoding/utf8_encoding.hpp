@@ -204,6 +204,10 @@ auto alloy::core::utf8_encoding::decode(
   char32 replacement
 ) noexcept -> std::pair<char32,ForwardIt>
 {
+  if (ALLOY_UNLIKELY(begin == end)) {
+    return {replacement, end};
+  }
+
   // decode the character
   const auto trailing_bytes  = s_trailing[static_cast<u8>(*begin)];
   const auto required_bytes  = trailing_bytes + 1u;
@@ -212,6 +216,17 @@ auto alloy::core::utf8_encoding::decode(
   if (available_bytes < required_bytes) {
     return {replacement, end};
   }
+
+  // NOTE:
+  // This function trades off accuracy for general conversion speed. Rather than
+  // testing each bytes for having an appropriate `0b10` prefix, as is required
+  // for UTF-8, this assumes the bytes are correct. This means that malformed
+  // input cannot be correctly detected from these conversion functions, and
+  // may have a slight disparity with the number of detected codepoints from
+  // the `length` implementation which makes the same "correctness" assumption
+  // and skips continuation prefixes.
+  //
+  // This may be a todo to fix in the future.
 
   auto output = char32{};
   switch (trailing_bytes) {
@@ -223,6 +238,8 @@ auto alloy::core::utf8_encoding::decode(
     case 1u: output += static_cast<u8>(*begin++); output <<= 6u; [[fallthrough]];
     case 0u: output += static_cast<u8>(*begin++);
   }
+  // The additions above result in the prefix bits being added; these need to
+  // be removed from the final value.
   output -= s_offsets[trailing_bytes];
 
   return {output, begin};

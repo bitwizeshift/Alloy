@@ -65,7 +65,7 @@ namespace alloy::core {
     template <typename Encoding>
     struct encoded_length_functor {
       template <typename ForwardIt>
-      constexpr auto operator()(ForwardIt first, ForwardIt last)
+      auto operator()(ForwardIt first, ForwardIt last)
         const noexcept -> uquantity<char32>
       {
         return encoding_traits<Encoding>::length(first, last);

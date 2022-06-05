@@ -35,9 +35,11 @@
 #endif
 
 #include "alloy/core/types.hpp" // char32
+#include "alloy/core/assert.hpp"
 #include "alloy/core/traits/detected.hpp"    // is_detected
 #include "alloy/core/utilities/quantity.hpp" // uquantity
 
+#include <algorithm>   // std::find
 #include <utility>     // std::declval, std::pair
 #include <tuple>       // std::tie
 #include <iterator>    // std::distance
@@ -77,6 +79,15 @@ namespace alloy::core {
   {
     static_assert(std::is_class_v<Encoding>);
 
+    template <typename T>
+    using detect_is_multi_unit = decltype(T::is_multi_unit);
+
+    template <typename T, bool HasMultiUnit = is_detected_v<detect_is_multi_unit, T>>
+    struct is_multi_unit_impl : std::false_type{};
+
+    template <typename T>
+    struct is_multi_unit_impl<T,true> : std::bool_constant<T::is_multi_unit>{};
+
     //-------------------------------------------------------------------------
     // Public Member Types
     //-------------------------------------------------------------------------
@@ -91,7 +102,7 @@ namespace alloy::core {
 
     static inline constexpr auto decode_sentinel = Encoding::decode_sentinel;
     static inline constexpr auto encode_sentinel = Encoding::encode_sentinel;
-    static inline constexpr auto is_multi_unit   = Encoding::is_multi_unit;
+    static inline constexpr auto is_multi_unit   = is_multi_unit_impl<Encoding>::value;
 
     //-------------------------------------------------------------------------
     // Encoding
@@ -154,6 +165,16 @@ namespace alloy::core {
     static constexpr auto next(ForwardIt begin, ForwardIt end)
       noexcept -> ForwardIt;
 
+    /// \brief Advances `begin` to the start of the nth codepoint
+    ///
+    /// \param begin the beginning of the range
+    /// \param end the end of the range
+    /// \param n the nth index to move to
+    /// \return the incremented iterator
+    template <typename ForwardIt>
+    static constexpr auto next(ForwardIt begin, ForwardIt end, uquantity<char32> n)
+      noexcept -> ForwardIt;
+
     //-------------------------------------------------------------------------
     // Operations
     //-------------------------------------------------------------------------
@@ -195,9 +216,9 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   private:
 
-    template <typename UEncoding, typename ForwardIt>
+    template <typename UEncoding, typename ForwardIt, typename...Args>
     using detect_next = decltype(
-      UEncoding::next(std::declval<ForwardIt>(), std::declval<ForwardIt>())
+      UEncoding::next(std::declval<ForwardIt>(), std::declval<ForwardIt>(), std::declval<Args>()...)
     );
 
     template <typename UEncoding, typename ForwardIt>
@@ -263,6 +284,33 @@ auto alloy::core::encoding_traits<Encoding>::next(ForwardIt begin, ForwardIt end
     return Encoding::next(begin, end);
   } else {
     return decode(begin, end).second;
+  }
+}
+
+template <typename Encoding>
+template <typename ForwardIt>
+inline constexpr
+auto alloy::core::encoding_traits<Encoding>::next(
+  ForwardIt begin,
+  ForwardIt end,
+  uquantity<char32> n
+) noexcept -> ForwardIt
+{
+  if constexpr (is_detected_v<detect_next,Encoding,ForwardIt, uquantity<char32>>) {
+    return Encoding::next(begin, end, n);
+  } else if constexpr (is_multi_unit) {
+    ALLOY_ASSERT(n <= length(begin, end));
+
+    // Multi-unit requires decoding n characters before it's possible to get a
+    // value
+    for (; n != 0u; --n) {
+      begin = next(begin, end);
+    }
+    return begin;
+  } else {
+    ALLOY_ASSERT(n <= std::distance(begin, end));
+
+    return std::next(begin, n);
   }
 }
 

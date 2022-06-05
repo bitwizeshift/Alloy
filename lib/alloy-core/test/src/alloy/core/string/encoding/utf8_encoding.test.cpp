@@ -30,9 +30,25 @@
 #include <array>
 
 namespace alloy::core::test {
-namespace {
 
 TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
+  SECTION("Input is empty") {
+    const auto input = std::array<char8,0>{};
+    const auto bad_output = char32{};
+
+    const auto [value,iter] = utf8_encoding::decode(
+      input.begin(),
+      input.end(),
+      bad_output
+    );
+
+    SECTION("Does not advance iterator") {
+      REQUIRE(iter == input.end());
+    }
+    SECTION("Output is replacement value") {
+      REQUIRE(value == bad_output);
+    }
+  }
   SECTION("Input is one-byte codepoint") {
     SECTION("Input is invalid byte") {
       const auto input = std::array<char8,1u>{{static_cast<char8>(255)}};
@@ -69,6 +85,25 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
     }
   }
   SECTION("Input is two-byte codepoint") {
+    SECTION("Input is incomplete") {
+      const auto input = std::array<char8,1u>{{
+        static_cast<char8>(0xc2),
+      }};
+      const auto bad_output = U'_';
+
+      const auto [value, iter] = utf8_encoding::decode(
+        input.begin(),
+        input.end(),
+        bad_output
+      );
+
+      SECTION("Advances iterator") {
+        REQUIRE(iter == input.end());
+      }
+      SECTION("Output is replacement value") {
+        REQUIRE(value == bad_output);
+      }
+    };
     SECTION("Input is invalid") {
       const auto input = std::array<char8,2u>{{
         static_cast<char8>(0xff),
@@ -110,6 +145,25 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
     }
   }
   SECTION("Input is three-byte codepoint") {
+    SECTION("Input is incomplete") {
+      const auto input = std::array<char8,1u>{{
+        static_cast<char8>(0xe0),
+      }};
+      const auto bad_output = U'_';
+
+      const auto [value, iter] = utf8_encoding::decode(
+        input.begin(),
+        input.end(),
+        bad_output
+      );
+
+      SECTION("Advances iterator") {
+        REQUIRE(iter == input.end());
+      }
+      SECTION("Output is replacement value") {
+        REQUIRE(value == bad_output);
+      }
+    };
     SECTION("Input is invalid") {
       const auto input = std::array<char8,3u>{{
         static_cast<char8>(0xff),
@@ -153,6 +207,25 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
     }
   }
   SECTION("Input is four-byte codepoint") {
+    SECTION("Input is incomplete") {
+      const auto input = std::array<char8,1u>{{
+        static_cast<char8>(0xf0),
+      }};
+      const auto bad_output = U'_';
+
+      const auto [value, iter] = utf8_encoding::decode(
+        input.begin(),
+        input.end(),
+        bad_output
+      );
+
+      SECTION("Advances iterator") {
+        REQUIRE(iter == input.end());
+      }
+      SECTION("Output is replacement value") {
+        REQUIRE(value == bad_output);
+      }
+    };
     SECTION("Input is invalid") {
       const auto input = std::array<char8,4u>{{
         static_cast<char8>(0xff),
@@ -207,5 +280,4 @@ TEST_CASE("utf8_encoding::length(ForwardIt, ForwardIt)") {
   // TODO(bitwize): add tests
 }
 
-} // namespace <anonymous>
 } // namespace alloy::core::test

@@ -51,10 +51,11 @@ namespace {
 
 TEST_CASE("encoding_utilities::ansi::to_ansi(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::ansi;
-  using char_type = char;
+  using sut_type   = encoding_utilities::ansi;
+  using other_type = encoding_utilities::ansi;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -67,6 +68,12 @@ TEST_CASE("encoding_utilities::ansi::to_ansi(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces identical output") {
     REQUIRE(output_string == expected);
   }
@@ -82,10 +89,11 @@ TEST_CASE("encoding_utilities::ansi::to_ansi(ForwardIt, ForwardIt, char32)") {
 // set.
 TEST_CASE("encoding_utilities::ansi::to_latin1(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::ansi;
-  using char_type = char;
+  using sut_type   = encoding_utilities::ansi;
+  using other_type = encoding_utilities::latin1;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -98,6 +106,12 @@ TEST_CASE("encoding_utilities::ansi::to_latin1(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces identical output") {
     REQUIRE(output_string == expected);
   }
@@ -110,10 +124,11 @@ TEST_CASE("encoding_utilities::ansi::to_latin1(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::ansi::to_wide(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::ansi;
-  using char_type = wchar;
+  using sut_type   = encoding_utilities::ansi;
+  using other_type = encoding_utilities::wide;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -128,6 +143,12 @@ TEST_CASE("encoding_utilities::ansi::to_wide(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -140,10 +161,11 @@ TEST_CASE("encoding_utilities::ansi::to_wide(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::ansi::to_utf8(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::ansi;
-  using char_type = char8;
+  using sut_type   = encoding_utilities::ansi;
+  using other_type = encoding_utilities::utf8;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -158,6 +180,12 @@ TEST_CASE("encoding_utilities::ansi::to_utf8(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -170,10 +198,11 @@ TEST_CASE("encoding_utilities::ansi::to_utf8(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::ansi::to_utf16(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::ansi;
-  using char_type = char16;
+  using sut_type   = encoding_utilities::ansi;
+  using other_type = encoding_utilities::utf16;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -188,6 +217,12 @@ TEST_CASE("encoding_utilities::ansi::to_utf16(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -200,10 +235,11 @@ TEST_CASE("encoding_utilities::ansi::to_utf16(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::ansi::to_utf32(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::ansi;
-  using char_type = char32;
+  using sut_type   = encoding_utilities::ansi;
+  using other_type = encoding_utilities::utf32;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -218,6 +254,12 @@ TEST_CASE("encoding_utilities::ansi::to_utf32(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -235,7 +277,7 @@ TEST_CASE("encoding_utilities::ansi::length(ForwardIt, ForwardIt)") {
     constexpr auto data = std::array<char,0u>{};
 
     SECTION("Returns 0") {
-      constexpr auto result = sut_type::length(data.begin(), data.end());
+      const auto result = sut_type::length(data.begin(), data.end());
 
       REQUIRE(result == uquantity<char32>{0u});
     }
@@ -244,7 +286,7 @@ TEST_CASE("encoding_utilities::ansi::length(ForwardIt, ForwardIt)") {
     constexpr auto data = std::array<char,12u>{"Hello world"};
 
     SECTION("Returns length") {
-      constexpr auto result = sut_type::length(data.begin(), data.end());
+      const auto result = sut_type::length(data.begin(), data.end());
 
       REQUIRE(result == uquantity<char32>{data.size()});
     }
@@ -281,10 +323,11 @@ TEST_CASE("encoding_utilities::ansi::range_from(ForwardIt, ForwardIt)") {
 
 TEST_CASE("encoding_utilities::latin1::to_ansi(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::latin1;
-  using char_type = char;
+  using sut_type   = encoding_utilities::latin1;
+  using other_type = encoding_utilities::ansi;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -301,6 +344,12 @@ TEST_CASE("encoding_utilities::latin1::to_ansi(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces output with untranslatable characters") {
     REQUIRE(output_string == expected);
   }
@@ -313,10 +362,11 @@ TEST_CASE("encoding_utilities::latin1::to_ansi(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::latin1::to_latin1(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::latin1;
-  using char_type = char;
+  using sut_type   = encoding_utilities::latin1;
+  using other_type = encoding_utilities::latin1;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -330,6 +380,12 @@ TEST_CASE("encoding_utilities::latin1::to_latin1(ForwardIt, ForwardIt, char32)")
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces identical output") {
     REQUIRE(output_string == expected);
   }
@@ -342,10 +398,11 @@ TEST_CASE("encoding_utilities::latin1::to_latin1(ForwardIt, ForwardIt, char32)")
 
 TEST_CASE("encoding_utilities::latin1::to_wide(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::latin1;
-  using char_type = wchar;
+  using sut_type   = encoding_utilities::latin1;
+  using other_type = encoding_utilities::wide;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -362,6 +419,12 @@ TEST_CASE("encoding_utilities::latin1::to_wide(ForwardIt, ForwardIt, char32)") {
   auto it = sut_type::to_wide(input.begin(), input.end(), output.begin());
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -374,10 +437,11 @@ TEST_CASE("encoding_utilities::latin1::to_wide(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::latin1::to_utf8(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::latin1;
-  using char_type = char8;
+  using sut_type   = encoding_utilities::latin1;
+  using other_type = encoding_utilities::utf8;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -394,6 +458,12 @@ TEST_CASE("encoding_utilities::latin1::to_utf8(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -406,10 +476,11 @@ TEST_CASE("encoding_utilities::latin1::to_utf8(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::latin1::to_utf16(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::latin1;
-  using char_type = char16;
+  using sut_type   = encoding_utilities::latin1;
+  using other_type = encoding_utilities::utf16;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -426,6 +497,12 @@ TEST_CASE("encoding_utilities::latin1::to_utf16(ForwardIt, ForwardIt, char32)") 
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -438,10 +515,11 @@ TEST_CASE("encoding_utilities::latin1::to_utf16(ForwardIt, ForwardIt, char32)") 
 
 TEST_CASE("encoding_utilities::latin1::to_utf32(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::latin1;
-  using char_type = char32;
+  using sut_type   = encoding_utilities::latin1;
+  using other_type = encoding_utilities::utf32;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -458,6 +536,12 @@ TEST_CASE("encoding_utilities::latin1::to_utf32(ForwardIt, ForwardIt, char32)") 
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -495,10 +579,11 @@ TEST_CASE("encoding_utilities::latin1::range_from(ForwardIt, ForwardIt)") {
 
 TEST_CASE("encoding_utilities::wide::to_ansi(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::wide;
-  using char_type = char;
+  using sut_type   = encoding_utilities::wide;
+  using other_type = encoding_utilities::ansi;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -515,6 +600,12 @@ TEST_CASE("encoding_utilities::wide::to_ansi(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -527,10 +618,11 @@ TEST_CASE("encoding_utilities::wide::to_ansi(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::wide::to_latin1(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::wide;
-  using char_type = char;
+  using sut_type   = encoding_utilities::wide;
+  using other_type = encoding_utilities::latin1;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -547,6 +639,12 @@ TEST_CASE("encoding_utilities::wide::to_latin1(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -559,10 +657,11 @@ TEST_CASE("encoding_utilities::wide::to_latin1(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::wide::to_wide(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::wide;
-  using char_type = wchar;
+  using sut_type   = encoding_utilities::wide;
+  using other_type = encoding_utilities::wide;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -579,6 +678,12 @@ TEST_CASE("encoding_utilities::wide::to_wide(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -591,10 +696,11 @@ TEST_CASE("encoding_utilities::wide::to_wide(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::wide::to_utf8(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::wide;
-  using char_type = char8;
+  using sut_type   = encoding_utilities::wide;
+  using other_type = encoding_utilities::utf8;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -611,6 +717,12 @@ TEST_CASE("encoding_utilities::wide::to_utf8(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -623,10 +735,11 @@ TEST_CASE("encoding_utilities::wide::to_utf8(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::wide::to_utf16(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::wide;
-  using char_type = char16;
+  using sut_type   = encoding_utilities::wide;
+  using other_type = encoding_utilities::utf16;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -643,6 +756,12 @@ TEST_CASE("encoding_utilities::wide::to_utf16(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -655,10 +774,11 @@ TEST_CASE("encoding_utilities::wide::to_utf16(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::wide::to_utf32(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::wide;
-  using char_type = char32;
+  using sut_type   = encoding_utilities::wide;
+  using other_type = encoding_utilities::utf32;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -675,6 +795,12 @@ TEST_CASE("encoding_utilities::wide::to_utf32(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -713,10 +839,11 @@ TEST_CASE("encoding_utilities::wide::range_from(ForwardIt, ForwardIt)") {
 
 TEST_CASE("encoding_utilities::utf8::to_ansi(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf8;
-  using char_type = char;
+  using sut_type   = encoding_utilities::utf8;
+  using other_type = encoding_utilities::ansi;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     u8"abcdefghijk"
@@ -728,8 +855,8 @@ TEST_CASE("encoding_utilities::utf8::to_ansi(ForwardIt, ForwardIt, char32)") {
   constexpr auto expected = encoded_string{
     "abcdefghijk"
     "_____________"
-    "____________"
-    "______"
+    "_____________"
+    "_______"
     "________"
   };
   auto output = std::array<char_type,expected.size()>{};
@@ -739,6 +866,12 @@ TEST_CASE("encoding_utilities::utf8::to_ansi(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -751,10 +884,11 @@ TEST_CASE("encoding_utilities::utf8::to_ansi(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::utf8::to_latin1(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf8;
-  using char_type = char;
+  using sut_type   = encoding_utilities::utf8;
+  using other_type = encoding_utilities::latin1;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     u8"abcdefghijk"
@@ -766,10 +900,11 @@ TEST_CASE("encoding_utilities::utf8::to_latin1(ForwardIt, ForwardIt, char32)") {
   constexpr auto expected = encoded_string{
     "abcdefghijk"
     "\xae\xaf\xb0\xb1\xb2\xb3\xb4\xb5\xb6\xb7\xb8\xb9\xba"
-    "____________"
-    "______"
+    "\xb5\xa2_\xc6\xc7\xd8_______"
+    "_______"
     "________"
   };
+
   auto output = std::array<char_type,expected.size()>{};
 
   // Act
@@ -777,6 +912,12 @@ TEST_CASE("encoding_utilities::utf8::to_latin1(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -829,10 +970,11 @@ TEST_CASE("encoding_utilities::utf8::to_wide(ForwardIt, ForwardIt, char32)","[sk
 
 TEST_CASE("encoding_utilities::utf8::to_utf8(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf8;
-  using char_type = char8;
+  using sut_type   = encoding_utilities::utf8;
+  using other_type = sut_type;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     u8"abcdefghijk"
@@ -849,6 +991,12 @@ TEST_CASE("encoding_utilities::utf8::to_utf8(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -861,10 +1009,11 @@ TEST_CASE("encoding_utilities::utf8::to_utf8(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::utf8::to_utf16(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf8;
-  using char_type = char16;
+  using sut_type   = encoding_utilities::utf8;
+  using other_type = encoding_utilities::utf16;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     u8"abcdefghijk"
@@ -887,6 +1036,12 @@ TEST_CASE("encoding_utilities::utf8::to_utf16(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    auto input_length = sut_type::length(input.begin(), input.end());
+    auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length.count() == output_length.count());
+  }
   SECTION("Produces expected output") {
     REQUIRE(expected == output_string);
   }
@@ -899,10 +1054,11 @@ TEST_CASE("encoding_utilities::utf8::to_utf16(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::utf8::to_utf32(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf8;
-  using char_type = char32;
+  using sut_type   = encoding_utilities::utf8;
+  using other_type = encoding_utilities::utf32;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     u8"abcdefghijk"
@@ -925,6 +1081,12 @@ TEST_CASE("encoding_utilities::utf8::to_utf32(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(expected == output_string);
   }
@@ -968,10 +1130,11 @@ TEST_CASE("encoding_utilities::utf8::range_from(ForwardIt, ForwardIt)") {
 
 TEST_CASE("encoding_utilities::utf16::to_ansi(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf16;
-  using char_type = char;
+  using sut_type   = encoding_utilities::utf16;
+  using other_type = encoding_utilities::ansi;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     u"abcdefghijk"
@@ -983,8 +1146,8 @@ TEST_CASE("encoding_utilities::utf16::to_ansi(ForwardIt, ForwardIt, char32)") {
   constexpr auto expected = encoded_string{
     "abcdefghijk"
     "_____________"
-    "____________"
-    "______"
+    "_____________"
+    "_______"
     "________"
   };
   auto output = std::array<char_type,expected.size()>{};
@@ -994,6 +1157,12 @@ TEST_CASE("encoding_utilities::utf16::to_ansi(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length.count() == output_length.count());
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -1006,10 +1175,11 @@ TEST_CASE("encoding_utilities::utf16::to_ansi(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::utf16::to_latin1(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf16;
-  using char_type = char;
+  using sut_type   = encoding_utilities::utf16;
+  using other_type = encoding_utilities::latin1;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     u"abcdefghijk"
@@ -1021,8 +1191,8 @@ TEST_CASE("encoding_utilities::utf16::to_latin1(ForwardIt, ForwardIt, char32)") 
   constexpr auto expected = encoded_string{
     "abcdefghijk"
     "\xae\xaf\xb0\xb1\xb2\xb3\xb4\xb5\xb6\xb7\xb8\xb9\xba"
-    "____________"
-    "______"
+    "\xb5\xa2_\xc6\xc7\xd8_______"
+    "_______"
     "________"
   };
   auto output = std::array<char_type,expected.size()>{};
@@ -1032,6 +1202,12 @@ TEST_CASE("encoding_utilities::utf16::to_latin1(ForwardIt, ForwardIt, char32)") 
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -1050,10 +1226,11 @@ TEST_CASE("encoding_utilities::utf16::to_wide(ForwardIt, ForwardIt, char32)", "[
 
 TEST_CASE("encoding_utilities::utf16::to_utf8(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf16;
-  using char_type = char8;
+  using sut_type   = encoding_utilities::utf16;
+  using other_type = encoding_utilities::utf8;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     u"abcdefghijk"
@@ -1072,10 +1249,16 @@ TEST_CASE("encoding_utilities::utf16::to_utf8(ForwardIt, ForwardIt, char32)") {
   auto output = std::array<char_type,expected.size()>{};
 
   // Act
-  auto it = sut_type::to_utf32(input.begin(), input.end(), output.begin());
+  auto it = sut_type::to_utf8(input.begin(), input.end(), output.begin());
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(expected == output_string);
   }
@@ -1088,10 +1271,11 @@ TEST_CASE("encoding_utilities::utf16::to_utf8(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::utf16::to_utf16(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf16;
-  using char_type = char16;
+  using sut_type   = encoding_utilities::utf16;
+  using other_type = encoding_utilities::utf16;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     u"abcdefghijk"
@@ -1104,10 +1288,16 @@ TEST_CASE("encoding_utilities::utf16::to_utf16(ForwardIt, ForwardIt, char32)") {
   auto output = std::array<char_type,expected.size()>{};
 
   // Act
-  auto it = sut_type::to_utf8(input.begin(), input.end(), output.begin());
+  auto it = sut_type::to_utf16(input.begin(), input.end(), output.begin());
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -1120,10 +1310,11 @@ TEST_CASE("encoding_utilities::utf16::to_utf16(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::utf16::to_utf32(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf16;
-  using char_type = char32;
+  using sut_type   = encoding_utilities::utf16;
+  using other_type = encoding_utilities::utf32;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     u"abcdefghijk"
@@ -1146,6 +1337,12 @@ TEST_CASE("encoding_utilities::utf16::to_utf32(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(expected == output_string);
   }
@@ -1189,10 +1386,11 @@ TEST_CASE("encoding_utilities::utf16::range_from(ForwardIt, ForwardIt)") {
 
 TEST_CASE("encoding_utilities::utf32::to_ansi(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf32;
-  using char_type = char;
+  using sut_type   = encoding_utilities::utf32;
+  using other_type = encoding_utilities::ansi;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     U"abcdefghijk"
@@ -1204,8 +1402,8 @@ TEST_CASE("encoding_utilities::utf32::to_ansi(ForwardIt, ForwardIt, char32)") {
   constexpr auto expected = encoded_string{
     "abcdefghijk"
     "_____________"
-    "____________"
-    "______"
+    "_____________"
+    "_______"
     "________"
   };
   auto output = std::array<char_type,expected.size()>{};
@@ -1215,6 +1413,12 @@ TEST_CASE("encoding_utilities::utf32::to_ansi(ForwardIt, ForwardIt, char32)") {
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length.count() == output_length.count());
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -1227,10 +1431,11 @@ TEST_CASE("encoding_utilities::utf32::to_ansi(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::utf32::to_latin1(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf32;
-  using char_type = char;
+  using sut_type   = encoding_utilities::utf32;
+  using other_type = encoding_utilities::latin1;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     U"abcdefghijk"
@@ -1242,8 +1447,8 @@ TEST_CASE("encoding_utilities::utf32::to_latin1(ForwardIt, ForwardIt, char32)") 
   constexpr auto expected = encoded_string{
     "abcdefghijk"
     "\xae\xaf\xb0\xb1\xb2\xb3\xb4\xb5\xb6\xb7\xb8\xb9\xba"
-    "____________"
-    "______"
+    "\xb5\xa2_\xc6\xc7\xd8_______"
+    "_______"
     "________"
   };
   auto output = std::array<char_type,expected.size()>{};
@@ -1253,6 +1458,12 @@ TEST_CASE("encoding_utilities::utf32::to_latin1(ForwardIt, ForwardIt, char32)") 
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -1271,10 +1482,11 @@ TEST_CASE("encoding_utilities::utf32::to_wide(ForwardIt, ForwardIt, char32)", "[
 
 TEST_CASE("encoding_utilities::utf32::to_utf8(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf32;
-  using char_type = char8;
+  using sut_type   = encoding_utilities::utf32;
+  using other_type = encoding_utilities::utf8;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     U"abcdefghijk"
@@ -1293,10 +1505,16 @@ TEST_CASE("encoding_utilities::utf32::to_utf8(ForwardIt, ForwardIt, char32)") {
   auto output = std::array<char_type,expected.size()>{};
 
   // Act
-  auto it = sut_type::to_utf32(input.begin(), input.end(), output.begin());
+  auto it = sut_type::to_utf8(input.begin(), input.end(), output.begin());
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(expected == output_string);
   }
@@ -1309,10 +1527,11 @@ TEST_CASE("encoding_utilities::utf32::to_utf8(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::utf32::to_utf16(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf32;
-  using char_type = char16;
+  using sut_type   = encoding_utilities::utf32;
+  using other_type = encoding_utilities::utf16;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     U"abcdefghijk"
@@ -1331,10 +1550,16 @@ TEST_CASE("encoding_utilities::utf32::to_utf16(ForwardIt, ForwardIt, char32)") {
   auto output = std::array<char_type,expected.size()>{};
 
   // Act
-  auto it = sut_type::to_utf32(input.begin(), input.end(), output.begin());
+  auto it = sut_type::to_utf16(input.begin(), input.end(), output.begin());
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(expected == output_string);
   }
@@ -1347,10 +1572,11 @@ TEST_CASE("encoding_utilities::utf32::to_utf16(ForwardIt, ForwardIt, char32)") {
 
 TEST_CASE("encoding_utilities::utf32::to_utf32(ForwardIt, ForwardIt, char32)") {
   // Arrange
-  using sut_type = encoding_utilities::utf32;
-  using char_type = char32;
+  using sut_type   = encoding_utilities::utf32;
+  using other_type = encoding_utilities::utf32;
+  using char_type  = typename other_type::char_type;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
-  using encoded_string = std::basic_string_view<char_type>;
+  using encoded_string     = std::basic_string_view<char_type>;
 
   constexpr auto input = pre_encoded_string{
     U"abcdefghijk"
@@ -1363,10 +1589,16 @@ TEST_CASE("encoding_utilities::utf32::to_utf32(ForwardIt, ForwardIt, char32)") {
   auto output = std::array<char_type,expected.size()>{};
 
   // Act
-  auto it = sut_type::to_utf8(input.begin(), input.end(), output.begin());
+  auto it = sut_type::to_utf32(input.begin(), input.end(), output.begin());
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+  SECTION("Contains the same codepoints as input") {
+    const auto input_length = sut_type::length(input.begin(), input.end());
+    const auto output_length = other_type::length(expected.begin(), expected.end());
+
+    REQUIRE(input_length == output_length);
+  }
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }

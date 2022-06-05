@@ -76,7 +76,9 @@
 
 #include "alloy/core/types.hpp"      // char32
 #include "alloy/core/intrinsics.hpp" // ALLOY_UNLIKELY, compiler::unused
+#include "alloy/core/utilities/quantity.hpp"
 
+#include <iterator>
 #include <utility> // std::pair
 
 namespace alloy::core {
@@ -147,6 +149,19 @@ namespace alloy::core {
       char_type replacement = encode_sentinel
     ) noexcept -> OutputIt;
 
+    /// \brief Computes the number of codepoints in this utf32 range
+    ///
+    /// Since utf32 is single-unit encoding, this is simply the distance from
+    /// begin to end
+    ///
+    /// \param begin the start of the range
+    /// \param end the end of the range
+    /// \return `end - begin`
+    template <typename ForwardIt>
+    [[nodiscard]]
+    static constexpr auto length(ForwardIt begin, ForwardIt end)
+      noexcept -> uquantity<char32>;
+
     /// \brief Advance to the next UTF-32 character
     ///
     /// \note This function is trivial for UTF-32, which can store every
@@ -206,6 +221,13 @@ auto alloy::core::utf32_encoding::encode(
   return output;
 }
 
+template <typename ForwardIt>
+inline constexpr
+auto alloy::core::utf32_encoding::length(ForwardIt begin, ForwardIt end)
+  noexcept -> uquantity<char32>
+{
+  return std::distance(begin, end);
+}
 
 template <typename ForwardIt>
 inline constexpr

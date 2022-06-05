@@ -185,7 +185,7 @@ auto alloy::core::wide_encoding::decode(
   // The encoding of wide characters is not well defined and is left to the
   // system; however we can safely assume that it is UCS-2 on Windows and
   // UCS-4 on Unix systems.
-  // ForwardIt both cases, a simple copy is enough (UCS-2 is a subset of UCS-4,
+  // In both cases, a simple copy is enough (UCS-2 is a subset of UCS-4,
   // and UCS-4 *is* UTF-32).
   const auto value = static_cast<char32>(*begin);
   ++begin;
