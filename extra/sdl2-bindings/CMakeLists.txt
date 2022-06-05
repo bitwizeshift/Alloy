@@ -59,7 +59,7 @@ target_include_directories(${PROJECT_NAME}ExtraSDL2Bindings
 )
 
 target_link_libraries(${PROJECT_NAME}ExtraSDL2Bindings
-  PUBLIC SDL2
+  PUBLIC SDL2::SDL2
   PUBLIC ${PROJECT_NAME}::IO
 )
 if (UNIX)

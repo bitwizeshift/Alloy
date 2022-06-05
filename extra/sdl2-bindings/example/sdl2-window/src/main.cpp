@@ -5,8 +5,13 @@
 #include <alloy/extra/sdl2-bindings/sdl2_gl_window.hpp>
 #include <alloy/extra/sdl2-bindings/sdl2_pump_source.hpp>
 
-#include <SDL2/SDL.h> // ::SDL_Init, ::SDL_Quit, etc
-#include <GL/gl.h>    // ::glClear, ::glClearColor
+#include <SDL.h> // ::SDL_Init, ::SDL_Quit, etc
+
+#if defined(__APPLE__)
+# include <OpenGL/gl.h> // ::glClear, ::glClearColor
+#else
+# include <GL/gl.h> // ::glClear, ::glClearColor
+#endif
 
 #include <iostream> // std::cout, std::endl
 #include <chrono>   // std::chrono::steady_clock

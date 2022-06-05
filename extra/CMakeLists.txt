@@ -1,7 +1,6 @@
 # Extras
 include(CMakeDependentOption)
-find_package(SDL2 QUIET)
-find_package(fmt QUIET)
+find_package(SDL2 REQUIRED)
 
 cmake_dependent_option(ALLOY_COMPILE_EXTRAS_USE_DISCRETE_GPU
   "Compiles the Discrete GPU-enabling static library" ON

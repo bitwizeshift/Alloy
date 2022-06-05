@@ -7,7 +7,7 @@
 #include "alloy/io/events/keyboard_events.hpp"
 #include "alloy/io/events/mouse_events.hpp"
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 
 namespace {
