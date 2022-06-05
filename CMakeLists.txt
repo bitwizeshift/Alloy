@@ -156,6 +156,11 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
   # Don't warn on ignored attributes; this breaks builds using dllexport/dllimport on
   # classes that may also define inline functions
   add_compile_options(-Wno-ignored-attributes)
+
+  # Necessary for any uses of OpenGL on Apple
+  if (APPLE)
+    add_compile_options(-Wno-deprecated-declarations)
+  endif ()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   add_compile_options(/W4 /WX)
 endif ()
