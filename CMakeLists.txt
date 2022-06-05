@@ -30,6 +30,7 @@ option(ALLOY_COMPILE_EXTRAS "Compiles extras that ship with this library" OFF)
 option(ALLOY_COMPILE_EXAMPLES "Compiles example programs that use this library" OFF)
 option(ALLOY_ENABLE_CLANG_TIDY "Enables clang-tidy integration" OFF)
 option(ALLOY_ENABLE_EXCEPTIONS "Enable exception handling" ON)
+option(ALLOY_PATCH_COMPILE_COMMANDS "Patches the 'compile_commands.json' file to the build directory" OFF)
 
 # Core settings
 
@@ -225,9 +226,14 @@ endif ()
 # Installation
 ##############################################################################
 
-#if (ALLOY_IS_SUBPROJECT)
+if (ALLOY_IS_SUBPROJECT)
   return()
-#endif ()
+endif ()
+
+include(PatchCompileCommands)
+
+# Temporary, until installation code is fixed
+return ()
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
