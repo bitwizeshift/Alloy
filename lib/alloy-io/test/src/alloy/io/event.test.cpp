@@ -1,3 +1,7 @@
+/*
+ Any copyright for test files is dedicated to the Public Domain.
+ https://creativecommons.org/publicdomain/zero/1.0/
+*/
 #include <alloy/io/event.hpp>
 #include <alloy/io/events/window_events.hpp>
 

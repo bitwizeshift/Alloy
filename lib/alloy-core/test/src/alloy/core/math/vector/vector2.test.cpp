@@ -1,3 +1,7 @@
+/*
+ Any copyright for test files is dedicated to the Public Domain.
+ https://creativecommons.org/publicdomain/zero/1.0/
+*/
 #include <alloy/core/math/vector/vector2.hpp>
 #include <alloy/core/math/vector/vector2_constants.hpp>
 #include <alloy/core/math/vector/vector_utilities.hpp>
