@@ -226,7 +226,7 @@ inline constexpr
 auto alloy::core::utf32_encoding::length(ForwardIt begin, ForwardIt end)
   noexcept -> uquantity<char32>
 {
-  return std::distance(begin, end);
+  return uquantity<char32>{std::distance(begin, end)};
 }
 
 template <typename ForwardIt>

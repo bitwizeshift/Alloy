@@ -303,7 +303,7 @@ auto alloy::core::encoding_traits<Encoding>::next(
 
     // Multi-unit requires decoding n characters before it's possible to get a
     // value
-    for (; n != 0u; --n) {
+    for (; n != uquantity<char32>{0u}; --n) {
       begin = next(begin, end);
     }
     return begin;
