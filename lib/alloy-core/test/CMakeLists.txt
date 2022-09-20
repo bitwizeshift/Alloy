@@ -32,6 +32,9 @@ set(source_files
   # Traits
   src/alloy/core/traits/function_traits.test.cpp
 
+  # Geometry
+  src/alloy/core/geometry/sphere.test.cpp
+
   # Model
   src/alloy/core/model/color.test.cpp
 
