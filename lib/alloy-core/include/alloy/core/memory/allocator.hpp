@@ -34,6 +34,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include "alloy/core/memory/lifetime_utilities.hpp"
 #include "alloy/core/memory/memory_resource.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/scope_guard.hpp"
@@ -67,9 +68,7 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   public:
 
-    static constexpr auto default_align = std::align_val_t{
-      alignof(std::max_align_t)
-    };
+    static constexpr auto default_align = alignof(std::max_align_t);
 
     //-------------------------------------------------------------------------
     // Constructors / Assignment
@@ -90,8 +89,8 @@ namespace alloy::core {
 
     //-------------------------------------------------------------------------
 
-    allocator& operator=(allocator&&) noexcept = default;
-    allocator& operator=(const allocator&) noexcept = default;
+    auto operator=(allocator&&) noexcept -> allocator& = default;
+    auto operator=(const allocator&) noexcept -> allocator& = default;
 
     //-------------------------------------------------------------------------
     // Allocation : Bytes
@@ -104,8 +103,10 @@ namespace alloy::core {
     /// \param align the alignment of the allocation
     /// \return a pointer to the allocated bytes on success, nullptr on failure
     [[nodiscard]]
-    void* allocate_bytes(std::size_t bytes,
-                         std::align_val_t align = default_align) noexcept;
+    auto allocate_bytes(
+      std::size_t bytes,
+      std::size_t align = default_align
+    ) noexcept -> void*;
 
     /// \brief Deallocates memory pointer to by \p p of size \p bytes
     ///
@@ -116,16 +117,19 @@ namespace alloy::core {
     /// \param p pointer to the memory to deallocate
     /// \param bytes the number of bytes to deallocate
     /// \param align the alignment of the allocation
-    void deallocate_bytes(void* p,
-                          std::size_t bytes,
-                          std::align_val_t align = default_align) noexcept;
+    auto deallocate_bytes(
+      void* p,
+      std::size_t bytes,
+      std::size_t align = default_align
+    ) noexcept -> void;
 
     /// \brief Attempts to resizes memory previously allocated
     ///
     /// \param p pointer to memory to attempt to resize
     /// \param bytes the new byte size
     /// \return `true` if the memory was able to be resized
-    bool resize_bytes(void* p, std::size_t bytes) noexcept;
+    [[nodiscard]]
+    auto resize_bytes(void* p, std::size_t bytes) noexcept -> bool;
 
     /// \brief Attempts to resize memory previously allocated, and falls back
     ///        to allocating new memory instead
@@ -139,10 +143,12 @@ namespace alloy::core {
     /// \param align the alignment previously requested when allocating
     /// \return a pointer to the allocated bytes
     [[nodiscard]]
-    void* reallocate_bytes(void* p,
-                           std::size_t old_size,
-                           std::size_t new_size,
-                           std::align_val_t align = default_align) noexcept;
+    auto reallocate_bytes(
+      void* p,
+      std::size_t old_size,
+      std::size_t new_size,
+      std::size_t align = default_align
+    ) noexcept -> void*;
 
     //-------------------------------------------------------------------------
     // Allocation : Object
@@ -154,10 +160,12 @@ namespace alloy::core {
     /// \param n the number of objects to allocate
     /// \param align the alignment of the allocation
     /// \return a pointer to the allocated objects on success, nullptr on failure
-    template <typename T>
+    template<typename T>
     [[nodiscard]]
-    T* allocate_objects(std::size_t n = 1u,
-                        std::align_val_t align = std::align_val_t{alignof(T)}) noexcept;
+    auto allocate_objects(
+      std::size_t n = 1u,
+      std::size_t align = std::size_t{alignof(T)}
+    ) noexcept -> T*;
 
     /// \brief Deallocates memory pointed to by \p p of size \p n
     ///
@@ -172,18 +180,19 @@ namespace alloy::core {
     /// \param n the number of objects to deallocate
     /// \param align the alignment of the allocation
     template <typename T>
-    void deallocate_objects(not_null<T*> p,
-                            std::size_t n = 1u,
-                            std::align_val_t align = std::align_val_t{alignof(T)}) noexcept;
+    auto deallocate_objects(
+      not_null<T*> p,
+      std::size_t n = 1u,
+      std::size_t align = std::size_t{alignof(T)}
+    ) noexcept -> void;
 
     /// \brief Attempts to resizes memory previously allocated
     ///
     /// \param p pointer to memory to attempt to resize
     /// \param n the new number of objects to resize to
     /// \return `true` if the memory was able to be resized
-    template <typename T>
-    bool resize_objects(not_null<T*> p,
-                        std::size_t n) noexcept;
+    template<typename T>
+    auto resize_objects(not_null<T*> p, std::size_t n) noexcept -> bool;
 
     /// \brief Attempts to resize memory previously allocated, and falls back
     ///        to allocating new memory instead
@@ -195,12 +204,14 @@ namespace alloy::core {
     /// \param new_size the new size that has been requested
     /// \param align the alignment previously requested when allocating
     /// \return a pointer to the allocated bytes
-    template <typename T>
+    template<typename T>
     [[nodiscard]]
-    T* reallocate_objects(not_null<T*> p,
-                          std::size_t old_size,
-                          std::size_t new_size,
-                          std::align_val_t align = std::align_val_t{alignof(T)}) noexcept;
+    auto reallocate_objects(
+      not_null<T*> p,
+      std::size_t old_size,
+      std::size_t new_size,
+      std::size_t align = std::size_t{alignof(T)}
+    ) noexcept -> T*;
 
     //-------------------------------------------------------------------------
     // Make / Dispose
@@ -213,11 +224,13 @@ namespace alloy::core {
     /// \param args the arguments to forward to T's constructor
     /// \throws anything T's constructor may throw
     /// \return a pointer to a constructed T on success, nullptr on failure
-    template <typename T, typename...Args,
-              typename = std::enable_if_t<std::is_constructible<T,Args...>::value>>
+    template<
+      typename T,
+      typename... Args,
+      typename = std::enable_if_t<std::is_constructible<T, Args...>::value>>
     [[nodiscard]]
-    T* make(Args&&...args)
-      noexcept(std::is_nothrow_constructible<T,Args...>::value);
+    auto make(Args&&...args)
+      noexcept(std::is_nothrow_constructible<T, Args...>::value) -> T*;
 
     /// \brief Allocates memory for an array of default-constructed T's
     ///
@@ -226,11 +239,11 @@ namespace alloy::core {
     /// \throws anything T's constructor may throw
     /// \return a pointer to a constructed T array on success,
     ///         nullptr on failure
-    template <typename T,
-              typename = std::enable_if_t<std::is_constructible<T>::value>>
+    template<typename T,
+             typename = std::enable_if_t<std::is_constructible<T>::value>>
     [[nodiscard]]
-    T* make_array(std::size_t n)
-      noexcept(std::is_nothrow_constructible<T>::value);
+    auto make_array(std::size_t n)
+      noexcept(std::is_nothrow_constructible<T>::value) -> T*;
 
     /// \brief Allocates memory for an array of copy-constructed T's
     ///
@@ -239,11 +252,13 @@ namespace alloy::core {
     /// \param u a type copy-convertable to T
     /// \throws anything T's constructor may throw
     /// \return a pointer to a constructed T array on success, nullptr on failure
-    template <typename T, typename U,
-              typename = std::enable_if_t<std::is_constructible<T,const U&>::value>>
+    template<
+      typename T,
+      typename U,
+      typename = std::enable_if_t<std::is_constructible<T, const U&>::value>>
     [[nodiscard]]
-    T* make_array(std::size_t n, const U& u)
-      noexcept(std::is_nothrow_constructible<T, const U&>::value);
+    auto make_array(std::size_t n, const U& u)
+      noexcept(std::is_nothrow_constructible<T, const U&>::value) -> T*;
 
     /// \brief Deallocates memory previously allocated with a call to 'make'
     ///        for a given type \p T
@@ -251,7 +266,7 @@ namespace alloy::core {
     /// \tparam T the type to dispose
     /// \param p the pointer to deallocate memory for
     template <typename T>
-    void dispose(not_null<T*> p) noexcept;
+    auto dispose(not_null<T*> p) noexcept -> void;
 
     /// \brief Deallocates memory previously allocated with a call to
     ///        'make_array' for a given type \p T
@@ -260,7 +275,7 @@ namespace alloy::core {
     /// \param p the pointer to deallocate memory for
     /// \param n the size of the array to deallocate
     template <typename T>
-    void dispose_array(not_null<T*> p, std::size_t n) noexcept;
+    auto dispose_array(not_null<T*> p, std::size_t n) noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Aligned Make / Dispose
@@ -277,11 +292,13 @@ namespace alloy::core {
     /// \param args the arguments to forward to T's constructor
     /// \throws anything T's constructor may throw
     /// \return a pointer to a constructed T on success, nullptr on failure
-    template <typename T, typename...Args,
-              typename = std::enable_if_t<std::is_constructible<T,Args...>::value>>
+    template<
+      typename T,
+      typename... Args,
+      typename = std::enable_if_t<std::is_constructible<T, Args...>::value>>
     [[nodiscard]]
-    T* aligned_make(std::align_val_t align, Args&&...args)
-      noexcept(std::is_nothrow_constructible<T,Args...>::value);
+    auto aligned_make(std::size_t align, Args&&... args)
+      noexcept(std::is_nothrow_constructible<T, Args...>::value) -> T*;
 
     /// \brief Allocates over-aligned memory for an array of
     ///        default-constructed T's
@@ -294,12 +311,11 @@ namespace alloy::core {
     /// \throws anything T's constructor may throw
     /// \return a pointer to a constructed T array on success,
     ///         nullptr on failure
-    template <typename T,
-              typename = std::enable_if_t<std::is_constructible<T>::value>>
+    template<typename T,
+             typename = std::enable_if_t<std::is_constructible<T>::value>>
     [[nodiscard]]
-    T* aligned_make_array(std::size_t n, std::align_val_t align)
-      noexcept(std::is_nothrow_constructible<T>::value);
-
+    auto aligned_make_array(std::size_t n, std::size_t align)
+      noexcept(std::is_nothrow_constructible<T>::value) -> T*;
 
     /// \brief Allocates over-aligned memory for an array of
     ///        copy-constructed T's
@@ -313,12 +329,16 @@ namespace alloy::core {
     /// \throws anything T's constructor may throw
     /// \return a pointer to a constructed T array on success,
     ///         nullptr on failure
-    template <typename T, typename U,
-              typename = std::enable_if_t<std::is_constructible<T,const U&>::value>>
+    template<
+      typename T,
+      typename U,
+      typename = std::enable_if_t<std::is_constructible<T, const U&>::value>>
     [[nodiscard]]
-    T* aligned_make_array(std::size_t n, std::align_val_t align, const U& u)
-      noexcept(std::is_nothrow_constructible<T,const U&>::value);
-
+    auto aligned_make_array(
+      std::size_t n,
+      std::size_t align,
+      const U& u
+    ) noexcept(std::is_nothrow_constructible<T, const U&>::value) -> T*;
 
     /// \brief Deallocates over-aligned memory previously allocated with a
     ///        call to 'aligned_make' for a given type \p T
@@ -327,8 +347,7 @@ namespace alloy::core {
     /// \param p the pointer to deallocate memory for
     /// \param align the alignment of the over-aligned type
     template <typename T>
-    void aligned_dispose(not_null<T*> p, std::align_val_t align) noexcept;
-
+    auto aligned_dispose(not_null<T*> p, std::size_t align) noexcept -> void;
 
     /// \brief Deallocates over-aligned memory previously allocated with a
     ///        call to 'aligned_make_array' for a given type \p T
@@ -338,9 +357,11 @@ namespace alloy::core {
     /// \param n the number of entries in the array
     /// \param align the alignment of the over-aligned type
     template <typename T>
-    void aligned_dispose_array(not_null<T*> p,
-                               std::size_t n,
-                               std::align_val_t align) noexcept;
+    auto aligned_dispose_array(
+      not_null<T*> p,
+      std::size_t n,
+      std::size_t align
+    ) noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -350,7 +371,21 @@ namespace alloy::core {
     /// \brief Gets a pointer to the underlying memory resource
     ///
     /// \return a pointer to the underlying resource
-    memory_resource* resource() const noexcept;
+    [[nodiscard]]
+    auto resource() const noexcept -> not_null<memory_resource*>;
+
+    //-------------------------------------------------------------------------
+    // Private: Make
+    //-------------------------------------------------------------------------
+  private:
+
+    template <typename T, typename...Args>
+    [[nodiscard]]
+    auto aligned_make_array_impl(
+      std::size_t n,
+      std::size_t align,
+      const Args&...args
+    ) noexcept(std::is_nothrow_constructible<T, const Args&...>::value) -> T*;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -362,9 +397,9 @@ namespace alloy::core {
     /// \brief Gets the default resource
     ///
     /// \return the default resource
-    static default_resource& get_default_resource() noexcept;
+    static auto get_default_resource() noexcept -> default_resource&;
 
-    memory_resource* m_resource;
+    not_null<memory_resource*> m_resource;
   };
 
   //===========================================================================
@@ -385,13 +420,14 @@ namespace alloy::core {
     default_resource() noexcept = default;
 
   private:
+    auto do_allocate(std::size_t size, std::size_t align) noexcept
+      -> void* override;
 
-    void* do_allocate(std::size_t size,
-                      std::align_val_t align) noexcept override;
-
-    void do_deallocate(void* p,
-                       std::size_t size,
-                       std::align_val_t align) noexcept override;
+    auto do_deallocate(
+      void* p,
+      std::size_t size,
+      std::size_t align
+    ) noexcept -> void override;
   };
 
   //===========================================================================
@@ -444,21 +480,23 @@ namespace alloy::core {
     template <typename U>
     stl_allocator_adapter(const stl_allocator_adapter<U>& other) noexcept;
 
-    stl_allocator_adapter& operator=(stl_allocator_adapter&&) noexcept = default;
-    stl_allocator_adapter& operator=(const stl_allocator_adapter&) noexcept = default;
+    auto operator=(stl_allocator_adapter&&)
+      noexcept -> stl_allocator_adapter& = default;
+    auto operator=(const stl_allocator_adapter&)
+      noexcept -> stl_allocator_adapter& = default;
 
     //-------------------------------------------------------------------------
     // Allocation
     //-------------------------------------------------------------------------
 
-    T* allocate(std::size_t n) noexcept;
+    auto allocate(std::size_t n) noexcept -> T*;
 
-    void deallocate(T* p, std::size_t n) noexcept;
+    auto deallocate(T* p, std::size_t n) noexcept -> void;
 
     /// \brief Gets a reference to the underlying Alloy allocator
     ///
     /// \return a reference to the underlying allocator
-    const allocator& underlying() const noexcept;
+    [[nodiscard]] auto underlying() const noexcept -> const allocator&;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -478,13 +516,13 @@ namespace alloy::core {
   // Equality
   //---------------------------------------------------------------------------
 
-  template <typename T, typename U>
-  bool operator==(const stl_allocator_adapter<T>& lhs,
-                  const stl_allocator_adapter<U>& rhs) noexcept;
+  template<typename T, typename U>
+  auto operator==(const stl_allocator_adapter<T>& lhs,
+                  const stl_allocator_adapter<U>& rhs) noexcept -> bool;
 
-  template <typename T, typename U>
-  bool operator!=(const stl_allocator_adapter<T>& lhs,
-                  const stl_allocator_adapter<U>& rhs) noexcept;
+  template<typename T, typename U>
+  auto operator!=(const stl_allocator_adapter<T>& lhs,
+                  const stl_allocator_adapter<U>& rhs) noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -496,16 +534,16 @@ namespace alloy::core {
 // Constructors
 //-----------------------------------------------------------------------------
 
-
-inline alloy::core::allocator::allocator()
+inline
+alloy::core::allocator::allocator()
   noexcept
   : m_resource{&get_default_resource()}
 {
 
 }
 
-
-inline alloy::core::allocator::allocator(not_null<memory_resource*> resource)
+inline
+alloy::core::allocator::allocator(not_null<memory_resource*> resource)
   noexcept
   : m_resource{resource.get()}
 {
@@ -516,36 +554,40 @@ inline alloy::core::allocator::allocator(not_null<memory_resource*> resource)
 // Allocation : Bytes
 //-----------------------------------------------------------------------------
 
-inline void* alloy::core::allocator::allocate_bytes(std::size_t bytes,
-                                                    std::align_val_t align)
-  noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::allocate_bytes(
+  std::size_t bytes,
+  std::size_t align
+) noexcept -> void*
 {
   return m_resource->allocate(bytes, align);
 }
 
 
-inline void alloy::core::allocator::deallocate_bytes(void* p,
-                                                     std::size_t bytes,
-                                                     std::align_val_t align)
-  noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::deallocate_bytes(
+  void* p,
+  std::size_t bytes,
+  std::size_t align
+) noexcept -> void
 {
   return m_resource->deallocate(p, bytes, align);
 }
 
-
-inline bool alloy::core::allocator::resize_bytes(void* p,
-                                                 std::size_t bytes)
-  noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::resize_bytes(void* p, std::size_t bytes)
+  noexcept -> bool
 {
   return m_resource->resize_allocation(p, bytes);
 }
 
-
-inline void* alloy::core::allocator::reallocate_bytes(void* p,
-                                                      std::size_t old_size,
-                                                      std::size_t new_size,
-                                                      std::align_val_t align)
-  noexcept
+inline
+auto alloy::core::allocator::reallocate_bytes(
+  void* p,
+  std::size_t old_size,
+  std::size_t new_size,
+  std::size_t align
+) noexcept -> void*
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 
@@ -560,7 +602,7 @@ inline void* alloy::core::allocator::reallocate_bytes(void* p,
   auto guard = scope_exit{[&]{
     deallocate_bytes(p, old_size, align);
   }};
-  (void) guard;
+  compiler::unused(guard);
 
   if (ALLOY_UNLIKELY(new_p == nullptr)) {
     return nullptr;
@@ -577,40 +619,44 @@ inline void* alloy::core::allocator::reallocate_bytes(void* p,
 // Allocation : Objects
 //-----------------------------------------------------------------------------
 
-template <typename T>
-inline T* alloy::core::allocator::allocate_objects(std::size_t n,
-                                                   std::align_val_t align)
-  noexcept
+template<typename T>
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::allocate_objects(
+  std::size_t n,
+  std::size_t align
+) noexcept -> T*
 {
   return static_cast<T*>(allocate_bytes(sizeof(T) * n, align));
 }
 
 
 template <typename T>
-inline void alloy::core::allocator::deallocate_objects(not_null<T*> p,
-                                                       std::size_t n,
-                                                       std::align_val_t align)
-  noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::deallocate_objects(
+  not_null<T*> p,
+  std::size_t n,
+  std::size_t align
+) noexcept -> void
 {
   deallocate_bytes(p.get(), sizeof(T) * n, align);
 }
 
-
-template <typename T>
-inline bool alloy::core::allocator::resize_objects(not_null<T*> p,
-                                                   std::size_t n)
-  noexcept
+template<typename T>
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::resize_objects(not_null<T*> p, std::size_t n)
+  noexcept -> bool
 {
   return m_resource->resize_allocation(p.get(), sizeof(T) * n);
 }
 
-
-template <typename T>
-inline T* alloy::core::allocator::reallocate_objects(not_null<T*> p,
-                                                     std::size_t old_size,
-                                                     std::size_t new_size,
-                                                     std::align_val_t align)
-  noexcept
+template<typename T>
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::reallocate_objects(
+  not_null<T*> p,
+  std::size_t old_size,
+  std::size_t new_size,
+  std::size_t align
+) noexcept -> T*
 {
   static_assert(
     std::is_trivially_copyable_v<T>,
@@ -630,27 +676,27 @@ inline T* alloy::core::allocator::reallocate_objects(not_null<T*> p,
 // Make / Dispose
 //-----------------------------------------------------------------------------
 
-template <typename T, typename...Args, typename>
-inline T* alloy::core::allocator::make(Args&&...args)
-  noexcept(std::is_nothrow_constructible<T,Args...>::value)
+template<typename T, typename... Args, typename>
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::make(Args&&... args)
+  noexcept(std::is_nothrow_constructible<T, Args...>::value) -> T*
 {
   static_assert(!std::is_abstract<T>::value);
   static_assert(!std::is_void<T>::value);
   static_assert(!std::is_const<T>::value);
   static_assert(!std::is_volatile<T>::value);
   static_assert(!std::is_array<T>::value);
-  static_assert(!std::is_reference<T>::value);
 
   return aligned_make<T>(
-    std::align_val_t{alignof(T)},
+    alignof(T),
     std::forward<Args>(args)...
   );
 }
 
-
-template <typename T, typename>
-inline T* alloy::core::allocator::make_array(std::size_t n)
-  noexcept(std::is_nothrow_constructible<T>::value)
+template<typename T, typename>
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::make_array(std::size_t n)
+  noexcept(std::is_nothrow_constructible<T>::value) -> T*
 {
   static_assert(!std::is_abstract<T>::value);
   static_assert(!std::is_void<T>::value);
@@ -659,13 +705,13 @@ inline T* alloy::core::allocator::make_array(std::size_t n)
   static_assert(!std::is_array<T>::value);
   static_assert(!std::is_reference<T>::value);
 
-  return aligned_make_array<T>(std::align_val_t{alignof(T)}, n);
+  return aligned_make_array<T>(n, alignof(T));
 }
 
-
-template <typename T, typename U, typename>
-inline T* alloy::core::allocator::make_array(std::size_t n, const U& u)
-  noexcept(std::is_nothrow_constructible<T, const U&>::value)
+template<typename T, typename U, typename>
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::make_array(std::size_t n, const U& u)
+  noexcept(std::is_nothrow_constructible<T, const U&>::value) -> T*
 {
   static_assert(!std::is_abstract<T>::value);
   static_assert(!std::is_void<T>::value);
@@ -674,47 +720,37 @@ inline T* alloy::core::allocator::make_array(std::size_t n, const U& u)
   static_assert(!std::is_array<T>::value);
   static_assert(!std::is_reference<T>::value);
 
-  return aligned_make_array<T>(n, std::align_val_t{alignof(T)}, u);
-}
-
-
-template <typename T>
-inline void alloy::core::allocator::dispose(not_null<T*> p)
-  noexcept
-{
-  static_assert(!std::is_abstract<T>::value);
-  static_assert(!std::is_void<T>::value);
-  static_assert(!std::is_const<T>::value);
-  static_assert(!std::is_volatile<T>::value);
-  static_assert(!std::is_array<T>::value);
-  static_assert(!std::is_reference<T>::value);
-
-  aligned_dispose<T>(p, std::align_val_t{alignof(T)});
+  return aligned_make_array<T>(n, alignof(T), u);
 }
 
 
 template <typename T>
-inline void alloy::core::allocator::dispose_array(not_null<T*> p,
-                                                  std::size_t n)
-  noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::dispose(not_null<T*> p)
+  noexcept -> void
 {
-  static_assert(!std::is_abstract<T>::value);
-  static_assert(!std::is_void<T>::value);
-  static_assert(!std::is_const<T>::value);
-  static_assert(!std::is_volatile<T>::value);
-  static_assert(!std::is_array<T>::value);
-  static_assert(!std::is_reference<T>::value);
+  aligned_dispose<T>(p, std::size_t{alignof(T)});
+}
 
-  aligned_dispose_array<T>(p, n, std::align_val_t{alignof(T)});
+
+template <typename T>
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::dispose_array(not_null<T*> p, std::size_t n)
+  noexcept -> void
+{
+  aligned_dispose_array<T>(p, n, alignof(T));
 }
 
 //-----------------------------------------------------------------------------
 // Aligned Make / Dispose
 //-----------------------------------------------------------------------------
 
-template <typename T, typename...Args, typename>
-inline T* alloy::core::allocator::aligned_make(std::align_val_t align, Args&&...args)
-  noexcept(std::is_nothrow_constructible<T,Args...>::value)
+template<typename T, typename... Args, typename>
+inline
+auto alloy::core::allocator::aligned_make(
+  std::size_t align,
+  Args&&... args
+) noexcept(std::is_nothrow_constructible<T, Args...>::value) -> T*
 {
   static_assert(!std::is_abstract<T>::value);
   static_assert(!std::is_void<T>::value);
@@ -724,7 +760,7 @@ inline T* alloy::core::allocator::aligned_make(std::align_val_t align, Args&&...
   static_assert(!std::is_reference<T>::value);
 
   ALLOY_ASSERT(
-    align >= std::align_val_t{alignof(T)},
+    align >= std::size_t{alignof(T)},
     "Alignment must be greater than the required alignment of T"
   );
   auto* const p = static_cast<T*>(allocate_bytes(sizeof(T), align));
@@ -735,189 +771,81 @@ inline T* alloy::core::allocator::aligned_make(std::align_val_t align, Args&&...
 
 #ifdef ALLOY_CORE_EXCEPTIONS_ENABLED
   if constexpr(std::is_nothrow_constructible<T,Args...>::value) {
-    return new (p) T(std::forward<Args>(args)...);
+    return lifetime_utilities::make_at<T>(p, std::forward<Args>(args)...).get();
   } else {
     try {
-      return new (p) T(std::forward<Args>(args)...);
+      return lifetime_utilities::make_at<T>(p, std::forward<Args>(args)...).get();
     } catch (...) {
       deallocate_bytes(p, sizeof(T), align);
       throw;
     }
   }
 #else
-  return new (p) T(std::forward<Args>(args)...);
+  return lifetime_utilities::make_at<T>(p, std::forward<Args>(args)...).get();
 #endif
 }
 
-template <typename T, typename>
-inline T* alloy::core::allocator::aligned_make_array(std::size_t n,
-                                                     std::align_val_t align)
-  noexcept(std::is_nothrow_constructible<T>::value)
+template<typename T, typename>
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::aligned_make_array(
+  std::size_t n,
+  std::size_t align
+) noexcept(std::is_nothrow_constructible<T>::value) -> T*
 {
-  static_assert(!std::is_abstract<T>::value);
-  static_assert(!std::is_void<T>::value);
-  static_assert(!std::is_const<T>::value);
-  static_assert(!std::is_volatile<T>::value);
-  static_assert(!std::is_array<T>::value);
-  static_assert(!std::is_reference<T>::value);
-
-  ALLOY_ASSERT(
-    align >= std::align_val_t{alignof(T)},
-    "Alignment must be at least the required alignment of T"
-  );
-  ALLOY_ASSERT(
-    n != 0,
-    "Array must be non-zero size"
-  );
-
-  const auto bytes = sizeof(T) * n;
-  auto* const p = static_cast<T*>(allocate_bytes(bytes, align));
-
-  if (ALLOY_UNLIKELY(p == nullptr)) {
-    return p;
-  }
-
-  auto* const begin = p;
-  auto* const end   = begin + n;
-  auto* current = begin;
-  auto* result = static_cast<T*>(begin);
-#ifdef ALLOY_CORE_EXCEPTIONS_ENABLED
-  if constexpr(std::is_nothrow_constructible<T>::value) {
-    result = new (current++) T();
-    for (; current < end; ++current) {
-      new (current) T();
-    }
-  } else {
-    try {
-      result = new (current++) T();
-      for (; current < end; ++current) {
-        new (current) T();
-      }
-    } catch (...) {
-      // Call destructor on T's that have already constructed...
-      --current;
-
-      for (; current >= begin; --current) {
-        current->~T();
-      }
-      deallocate_bytes(p, bytes, align);
-      throw;
-    }
-  }
-#else
-  result = new (current++) T();
-  for (; current < end; ++current) {
-    new (current) T();
-  }
-#endif
-  return result;
+  return aligned_make_array_impl<T>(n, align);
 }
 
-template <typename T, typename U, typename>
-inline T* alloy::core::allocator::aligned_make_array(std::size_t n,
-                                                     std::align_val_t align,
-                                                     const U& u)
-  noexcept(std::is_nothrow_constructible<T,const U&>::value)
+template<typename T, typename U, typename>
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::aligned_make_array(
+  std::size_t n,
+  std::size_t align,
+  const U& u
+) noexcept(std::is_nothrow_constructible<T, const U&>::value) -> T*
 {
-  static_assert(!std::is_abstract<T>::value);
-  static_assert(!std::is_void<T>::value);
-  static_assert(!std::is_const<T>::value);
-  static_assert(!std::is_volatile<T>::value);
-  static_assert(!std::is_array<T>::value);
-  static_assert(!std::is_reference<T>::value);
-
-  ALLOY_ASSERT(
-    align >= std::align_val_t{alignof(T)},
-    "Alignment must be at least the required alignment of T"
-  );
-  ALLOY_ASSERT(
-    n != 0,
-    "Array must be non-zero size"
-  );
-
-  const auto bytes = sizeof(T) * n;
-  auto* const p = static_cast<T*>(allocate_bytes(bytes, align));
-
-  if (ALLOY_UNLIKELY(p == nullptr)) {
-    return p;
-  }
-
-  auto* const begin = p;
-  auto* const end   = begin + n;
-  auto* current = begin;
-  auto* result = static_cast<T*>(begin);
-#ifdef ALLOY_CORE_EXCEPTIONS_ENABLED
-  if constexpr(std::is_nothrow_constructible<T>::value) {
-    result = new (current++) T(u);
-    for (; current < end; ++current) {
-      new (current) T(u);
-    }
-  } else {
-    try {
-      result = new (current++) T(u);
-      for (; current < end; ++current) {
-        new (current) T(u);
-      }
-    } catch (...) {
-      // Call destructor on T's that have already constructed...
-      --current;
-
-      for (; current >= begin; --current) {
-        current->~T();
-      }
-      deallocate_bytes(p, bytes, align);
-      throw;
-    }
-  }
-#else
-  result = new (current++) T(u);
-  for (; current < end; ++current) {
-    new (current) T(u);
-  }
-#endif
-  return result;
+  return aligned_make_array_impl<T>(n, align, u);
 }
 
 
 template <typename T>
-inline void alloy::core::allocator::aligned_dispose(not_null<T*> p,
-                                                    std::align_val_t align)
-  noexcept
+inline
+auto alloy::core::allocator::aligned_dispose(
+  not_null<T*> p,
+  std::size_t align
+) noexcept -> void
 {
   static_assert(!std::is_abstract<T>::value);
   static_assert(!std::is_void<T>::value);
   static_assert(!std::is_const<T>::value);
   static_assert(!std::is_volatile<T>::value);
   static_assert(!std::is_array<T>::value);
-  static_assert(!std::is_reference<T>::value);
 
   ALLOY_ASSERT(
-    align >= std::align_val_t{alignof(T)},
+    align >= std::size_t{alignof(T)},
     "Alignment must be at least the required alignment of T"
   );
 
-  auto* const t = p.get();
-
-  t->~T();
-  deallocate_bytes(t, sizeof(T), align);
+  lifetime_utilities::destroy(p);
+  deallocate_objects(p, align);
 }
 
 
 template <typename T>
-inline void alloy::core::allocator::aligned_dispose_array(not_null<T*> p,
-                                                          std::size_t n,
-                                                          std::align_val_t align)
-  noexcept
+inline
+auto alloy::core::allocator::aligned_dispose_array(
+  not_null<T*> p,
+  std::size_t n,
+  std::size_t align
+) noexcept -> void
 {
   static_assert(!std::is_abstract<T>::value);
   static_assert(!std::is_void<T>::value);
   static_assert(!std::is_const<T>::value);
   static_assert(!std::is_volatile<T>::value);
   static_assert(!std::is_array<T>::value);
-  static_assert(!std::is_reference<T>::value);
 
   ALLOY_ASSERT(
-    align >= std::align_val_t{alignof(T)},
+    align >= alignof(T),
     "Alignment must be at least the required alignment of T"
   );
   ALLOY_ASSERT(
@@ -925,38 +853,78 @@ inline void alloy::core::allocator::aligned_dispose_array(not_null<T*> p,
     "Array must be non-zero size"
   );
 
-  const auto bytes = sizeof(T) * n;
-
-  // Destructor is called in reverse order to preserve standard C++
-  // destroy semantics
-  auto* const t = p.get();
-  auto* const rbegin = t + (n - 1);
-  auto* const rend   = t;
-  auto* current = rbegin;
-  for (; current >= rend; --current) {
-    current->~T();
-  }
-
-  deallocate_bytes(t, bytes, align);
+  lifetime_utilities::destroy_array(p, n);
+  deallocate_objects(p, n, align);
 }
 
 //-----------------------------------------------------------------------------
 // Observers
 //-----------------------------------------------------------------------------
 
-inline alloy::core::memory_resource* alloy::core::allocator::resource()
-  const noexcept
+inline
+auto alloy::core::allocator::resource()
+  const noexcept -> not_null<memory_resource*>
 {
   return m_resource;
+}
+
+//-----------------------------------------------------------------------------
+// Private: Make
+//-----------------------------------------------------------------------------
+
+template<typename T, typename...Args>
+inline
+auto alloy::core::allocator::aligned_make_array_impl(
+  std::size_t n,
+  std::size_t align,
+  const Args&...args
+) noexcept(std::is_nothrow_constructible<T, const Args&...>::value) -> T*
+{
+  static_assert(!std::is_abstract<T>::value);
+  static_assert(!std::is_void<T>::value);
+  static_assert(!std::is_const<T>::value);
+  static_assert(!std::is_volatile<T>::value);
+  static_assert(!std::is_array<T>::value);
+
+  ALLOY_ASSERT(
+    align >= std::size_t{alignof(T)},
+    "Alignment must be at least the required alignment of T"
+  );
+  ALLOY_ASSERT(
+    n != 0,
+    "Array must be non-zero size"
+  );
+
+  const auto bytes = sizeof(T) * n;
+  auto* const p = static_cast<T*>(allocate_bytes(bytes, align));
+
+  if (ALLOY_UNLIKELY(p == nullptr)) {
+    return p;
+  }
+
+#ifdef ALLOY_CORE_EXCEPTIONS_ENABLED
+  if constexpr(std::is_nothrow_constructible<T>::value) {
+    return lifetime_utilities::make_array_at<T>(assume_not_null(p), args...).get();
+  } else {
+    try {
+      return lifetime_utilities::make_array_at<T>(assume_not_null(p), args...).get();
+    } catch (...) {
+      deallocate_bytes(p, bytes, align);
+      throw;
+    }
+  }
+#else
+  return lifetime_utilities::make_array_at<T>(p, args...).get();
+#endif
 }
 
 //-----------------------------------------------------------------------------
 // Private Members
 //-----------------------------------------------------------------------------
 
-inline alloy::core::allocator::default_resource&
-  alloy::core::allocator::get_default_resource()
-  noexcept
+inline
+auto alloy::core::allocator::get_default_resource()
+  noexcept -> default_resource&
 {
   static auto s_resource = default_resource{};
 
@@ -971,23 +939,24 @@ inline alloy::core::allocator::default_resource&
 // Virtual Hooks : Allocation
 //-----------------------------------------------------------------------------
 
-inline void*
-  alloy::core::allocator::default_resource::do_allocate(std::size_t bytes,
-                                                        std::align_val_t align)
-  noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::default_resource::do_allocate(
+  std::size_t bytes,
+  std::size_t align
+) noexcept -> void*
 {
-  return ::operator new(bytes, align);
+  return ::operator new(bytes, static_cast<std::align_val_t>(align));
 }
 
-
-inline void
-  alloy::core::allocator::default_resource::do_deallocate(void* p,
-                                                          std::size_t bytes,
-                                                          std::align_val_t align)
-  noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::allocator::default_resource::do_deallocate(
+  void* p,
+  std::size_t bytes,
+  std::size_t align
+) noexcept -> void
 {
-  compiler::unused(bytes);
-  ::operator delete(p, align);
+  compiler::unused(bytes, align);
+  ::operator delete(p, static_cast<std::align_val_t>(align));
 }
 
 //=============================================================================
@@ -999,8 +968,8 @@ inline void
 //-----------------------------------------------------------------------------
 
 template <typename T>
-inline alloy::core::stl_allocator_adapter<T>
-  ::stl_allocator_adapter(allocator alloc)
+ALLOY_FORCE_INLINE
+alloy::core::stl_allocator_adapter<T>::stl_allocator_adapter(allocator alloc)
   noexcept
   : m_allocator{alloc}
 {
@@ -1010,9 +979,10 @@ inline alloy::core::stl_allocator_adapter<T>
 
 template <typename T>
 template <typename U>
-inline alloy::core::stl_allocator_adapter<T>
-  ::stl_allocator_adapter(const stl_allocator_adapter<U>& other)
-  noexcept
+ALLOY_FORCE_INLINE
+alloy::core::stl_allocator_adapter<T>::stl_allocator_adapter(
+  const stl_allocator_adapter<U>& other
+) noexcept
   : m_allocator{other.m_allocator}
 {
 
@@ -1022,16 +992,17 @@ inline alloy::core::stl_allocator_adapter<T>
 // Allocation
 //-----------------------------------------------------------------------------
 
-template <typename T>
-inline T* alloy::core::stl_allocator_adapter<T>::allocate(std::size_t n)
-  noexcept
+template<typename T>
+inline
+auto alloy::core::stl_allocator_adapter<T>::allocate(std::size_t n)
+  noexcept -> T*
 {
-  // clang-tidy thinks 'sizeof(T)' is an incorrect us of 'sizeof(T*)', which is
+  // clang-tidy thinks 'sizeof(T)' is an incorrect use of 'sizeof(T*)', which is
   // incorrect since the `T*` template matching will make `T` be a non-pointer
   // type. This diagnostic  is wrong.
   auto* const p = m_allocator.allocate_bytes(
-    sizeof(T) * n,               // NOLINT(bugprone-sizeof-expression)
-    std::align_val_t{alignof(T)}
+    sizeof(T) * n, // NOLINT(bugprone-sizeof-expression)
+    alignof(T)
   );
 
   ALLOY_ASSERT(p != nullptr);
@@ -1041,9 +1012,9 @@ inline T* alloy::core::stl_allocator_adapter<T>::allocate(std::size_t n)
 
 
 template <typename T>
-inline void alloy::core::stl_allocator_adapter<T>::deallocate(T* p,
-                                                              std::size_t n)
-  noexcept
+ALLOY_FORCE_INLINE
+auto alloy::core::stl_allocator_adapter<T>::deallocate(T* p, std::size_t n)
+  noexcept -> void
 {
   // clang-tidy thinks 'sizeof(T)' is an incorrect us of 'sizeof(T*)', which is
   // incorrect since the `T*` template matching will make `T` be a non-pointer
@@ -1053,15 +1024,13 @@ inline void alloy::core::stl_allocator_adapter<T>::deallocate(T* p,
   return m_allocator.deallocate_bytes(p, sizeof(T) * n);
 }
 
-
-template <typename T>
-inline const alloy::core::allocator&
-  alloy::core::stl_allocator_adapter<T>::underlying()
-  const noexcept
+template<typename T>
+ALLOY_FORCE_INLINE
+auto alloy::core::stl_allocator_adapter<T>::underlying()
+  const noexcept -> const allocator&
 {
   return m_allocator;
 }
-
 
 //=============================================================================
 // non-member functions : class : stl_allocator_adapter
@@ -1071,24 +1040,24 @@ inline const alloy::core::allocator&
 // Equality
 //-----------------------------------------------------------------------------
 
-
-template <typename T, typename U>
-inline bool alloy::core::operator==(const stl_allocator_adapter<T>& lhs,
-                                    const stl_allocator_adapter<U>& rhs)
-  noexcept
+template<typename T, typename U>
+inline
+auto alloy::core::operator==(
+  const stl_allocator_adapter<T>& lhs,
+  const stl_allocator_adapter<U>& rhs
+) noexcept -> bool
 {
   return lhs.underlying().resource() == rhs.underlying().resource();
 }
 
-
-template <typename T, typename U>
-inline bool alloy::core::operator!=(const stl_allocator_adapter<T>& lhs,
-                                    const stl_allocator_adapter<U>& rhs)
-  noexcept
+template<typename T, typename U>
+inline
+auto alloy::core::operator!=(
+  const stl_allocator_adapter<T>& lhs,
+  const stl_allocator_adapter<U>& rhs
+) noexcept -> bool
 {
   return lhs.underlying().resource() != rhs.underlying().resource();
 }
 
-
 #endif /* ALLOY_CORE_MEMORY_ALLOCATOR_HPP */
-
