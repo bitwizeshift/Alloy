@@ -71,7 +71,7 @@ namespace alloy::core {
     ///
     /// \param center the center point
     /// \param radius the radius of the sphere
-    sphere(const point3& center, real radius) noexcept;
+    constexpr sphere(const point3& center, real radius) noexcept;
 
     /// \brief Constructs a sphere by copying an existing instance
     ///
@@ -169,7 +169,7 @@ alloy::core::sphere::sphere()
 
 }
 
-inline
+inline constexpr
 alloy::core::sphere::sphere(const point3& center, real radius)
   noexcept
   : m_center{center},
@@ -182,14 +182,14 @@ alloy::core::sphere::sphere(const point3& center, real radius)
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr
+ALLOY_FORCE_INLINE constexpr
 auto alloy::core::sphere::center()
   const noexcept -> const point3&
 {
   return m_center;
 }
 
-inline constexpr
+ALLOY_FORCE_INLINE constexpr
 auto alloy::core::sphere::radius()
   const noexcept -> const real&
 {
