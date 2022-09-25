@@ -21,6 +21,7 @@ set(header_files
   include/alloy/render/mesh/3d/cube_builder.hpp
   include/alloy/render/mesh/3d/sphere_builder.hpp
   include/alloy/render/mesh/attribute_locations.hpp
+  include/alloy/render/mesh/unsafe_mesh_builder.hpp
 )
 
 source_group(
@@ -35,7 +36,6 @@ set(source_files
   src/alloy/render/mesh/3d/polygon_3d_builder.cpp
   src/alloy/render/mesh/3d/cube_builder.cpp
   src/alloy/render/mesh/3d/sphere_builder.cpp
-  src/alloy/render/mesh/unsafe_mesh_builder.hpp
   src/alloy/render/mesh/unsafe_mesh_builder.cpp
   src/alloy/render/mesh/attribute_packer.hpp
 )

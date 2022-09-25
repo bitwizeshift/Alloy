@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,8 @@
   SOFTWARE.
 */
 
-#ifndef SRC_ALLOY_RENDER_MESH_UNSAFE_MESH_BUILDER_HPP
-#define SRC_ALLOY_RENDER_MESH_UNSAFE_MESH_BUILDER_HPP
+#ifndef ALLOY_RENDER_MESH_UNSAFE_MESH_BUILDER_HPP
+#define ALLOY_RENDER_MESH_UNSAFE_MESH_BUILDER_HPP
 
 #include "alloy/render/mesh/mesh_builder.hpp"
 #include "alloy/render/mesh/mesh.hpp"
@@ -64,7 +64,13 @@ namespace alloy::render {
   /// * tangent,
   /// * bitangent
   ///
-  /// This is a private type for a reason; use at your own risk.
+  /// \warning
+  /// This type has a strict requirement on the order of attributes being
+  /// stored, and no automatic checking to ensure it's being used correctly.
+  /// This can be dangerous if misused.
+  /// Use at your own risk.
+  /// In general, this exists to be used in the creation of other
+  /// `mesh_builders`
   //////////////////////////////////////////////////////////////////////////////
   class unsafe_mesh_builder : public mesh_builder
   {
@@ -154,4 +160,4 @@ namespace alloy::render {
 
 } // namespace alloy::render
 
-#endif /* SRC_ALLOY_RENDER_MESH_UNSAFE_MESH_BUILDER_HPP */
+#endif /* ALLOY_RENDER_MESH_UNSAFE_MESH_BUILDER_HPP */
