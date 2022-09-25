@@ -402,7 +402,7 @@ inline
 auto alloy::core::basic_angle<AngleUnit>::constrained()
   const noexcept -> basic_angle<AngleUnit>
 {
-  const auto angle = std::fmod(m_angle, AngleUnit::revolution());
+  auto angle = std::fmod(m_angle, AngleUnit::revolution());
 
   if (angle < 0) {
     angle += AngleUnit::revolution();
