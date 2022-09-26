@@ -142,6 +142,16 @@ namespace alloy::core {
     auto operator=(const basic_angle& other) noexcept -> basic_angle& = default;
 
     //--------------------------------------------------------------------------
+    // Modifiers
+    //--------------------------------------------------------------------------
+  public:
+
+    /// \brief Constrains this basic_angle to be within one revolution
+    ///
+    /// \return a reference to `(*this)`
+    auto constrain() noexcept -> basic_angle&;
+
+    //--------------------------------------------------------------------------
     // Observers
     //--------------------------------------------------------------------------
   public:
@@ -149,18 +159,21 @@ namespace alloy::core {
     /// \brief Gets the value decimal value of the angle
     ///
     /// \return the value of the angle
+    [[nodiscard]]
     constexpr auto value() const noexcept -> real;
 
     /// \brief Counts the number of revolutions for the current
     ///        \ref basic_angle
     ///
     /// \return the number of revolutions
+    [[nodiscard]]
     constexpr auto revolutions() const noexcept -> real;
 
     /// \brief Constrains the \ref basic_angle between `0` and
     ///        `AngleUnit::revolution()`
     ///
     /// \return the constrained \ref basic_angle
+    [[nodiscard]]
     auto constrained() const noexcept -> basic_angle;
 
     //--------------------------------------------------------------------------
@@ -378,6 +391,23 @@ alloy::core::basic_angle<AngleUnit>::basic_angle(real angle)
 }
 
 //------------------------------------------------------------------------------
+// Modifiers
+//------------------------------------------------------------------------------
+
+template<typename AngleUnit>
+auto alloy::core::basic_angle<AngleUnit>::constrain()
+  noexcept -> basic_angle&
+{
+  m_angle = std::fmod(m_angle, AngleUnit::revolution());
+
+  if (m_angle < 0) {
+    m_angle += AngleUnit::revolution();
+  }
+
+  return (*this);
+}
+
+//------------------------------------------------------------------------------
 // Observers
 //------------------------------------------------------------------------------
 
@@ -402,13 +432,7 @@ inline
 auto alloy::core::basic_angle<AngleUnit>::constrained()
   const noexcept -> basic_angle<AngleUnit>
 {
-  auto angle = std::fmod(m_angle, AngleUnit::revolution());
-
-  if (angle < 0) {
-    angle += AngleUnit::revolution();
-  }
-
-  return basic_angle{ real(angle) };
+  return basic_angle{*this}.constrain();
 }
 
 //------------------------------------------------------------------------------
@@ -644,7 +668,8 @@ auto alloy::core::abs(basic_angle<AngleUnit> angle)
 
 namespace alloy::core::detail {
   // case: From != To
-  template<typename AngleUnitTo, typename AngleUnitFrom>
+  template<typename AngleUnitTo, typename AngleUnitFrom,
+           typename = std::enable_if_t<!std::is_same_v<AngleUnitTo, AngleUnitFrom>>>
   inline constexpr
   auto angle_cast(basic_angle<AngleUnitFrom> from)
     noexcept -> basic_angle<AngleUnitTo>
@@ -661,7 +686,7 @@ namespace alloy::core::detail {
   template<typename AngleUnit>
   inline constexpr
   auto angle_cast(basic_angle<AngleUnit> from)
-    noexcept -> const basic_angle<AngleUnit>&
+    noexcept -> basic_angle<AngleUnit>
   {
     return from;
   }
