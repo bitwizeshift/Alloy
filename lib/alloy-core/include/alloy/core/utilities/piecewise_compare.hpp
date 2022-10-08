@@ -59,7 +59,7 @@ namespace alloy::core {
     /// \param lhs the left operand
     /// \param rhs the right operance
     /// \return `true` if \p lhs and \p rhs can compare piecewise
-    constexpr bool operator()( const T& lhs, const T& rhs ) noexcept;
+    constexpr auto operator()( const T& lhs, const T& rhs ) const noexcept -> bool;
   };
 
 } // namespace alloy::core
@@ -72,14 +72,15 @@ namespace alloy::core::detail {
 } // namespace alloy::core::detail
 
 template<typename T>
-inline constexpr bool
-  alloy::core::piecewise_compare<T>::operator()( const T& lhs, const T& rhs )
-  noexcept
+inline constexpr
+auto alloy::core::piecewise_compare<T>::operator()(const T& lhs, const T& rhs)
+  const noexcept -> bool
 {
-  static_assert( detail::piecewise_compare_not_implemented<T>::value,
-                 "piecewise_compare<T> must be specialized to be used." );
+  static_assert(
+    detail::piecewise_compare_not_implemented<T>::value,
+    "piecewise_compare<T> must be specialized to be used."
+  );
   return lhs < rhs;
 }
 
 #endif /* ALLOY_CORE_UTILITIES_PIECEWISE_COMPARE_HPP */
-

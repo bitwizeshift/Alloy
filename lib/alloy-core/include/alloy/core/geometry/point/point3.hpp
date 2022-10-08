@@ -209,7 +209,7 @@ namespace alloy::core {
   struct piecewise_compare<point3>
   {
     constexpr auto operator()(const point3& lhs, const point3& rhs)
-      noexcept -> bool;
+      const noexcept -> bool;
   };
 
 } // namespace alloy::core
@@ -440,7 +440,7 @@ inline constexpr
 auto alloy::core::piecewise_compare<alloy::core::point3>::operator()(
   const point3& lhs,
   const point3& rhs
-) noexcept -> bool
+) const noexcept -> bool
 {
   return (lhs.x() == rhs.x()) ?
            (lhs.y() == rhs.y()) ?

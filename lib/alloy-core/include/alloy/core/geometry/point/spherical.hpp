@@ -164,7 +164,7 @@ namespace alloy::core {
   struct piecewise_compare<spherical>
   {
     constexpr auto operator()(const spherical& lhs, const spherical& rhs)
-      noexcept -> bool;
+      const noexcept -> bool;
   };
 
 } // namespace alloy::core
@@ -320,7 +320,7 @@ ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 inline constexpr
 auto alloy::core::piecewise_compare<alloy::core::spherical>
   ::operator()(const spherical& lhs, const spherical& rhs)
-  noexcept -> bool
+  const noexcept -> bool
 {
   return (lhs.rho() == rhs.rho()) ?
            (lhs.phi() == rhs.phi()) ?

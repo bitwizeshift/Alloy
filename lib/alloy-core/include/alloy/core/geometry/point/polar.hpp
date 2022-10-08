@@ -152,7 +152,7 @@ namespace alloy::core {
   struct piecewise_compare<polar>
   {
     constexpr auto operator()(const polar& lhs, const polar& rhs)
-      noexcept -> bool;
+      const noexcept -> bool;
   };
 
 } // namespace alloy::core
@@ -281,7 +281,7 @@ ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 inline constexpr
 auto alloy::core::piecewise_compare<alloy::core::polar>
   ::operator()(const polar& lhs, const polar& rhs)
-  noexcept -> bool
+  const noexcept -> bool
 {
   return (lhs.r() == rhs.r()) ?
            (lhs.theta() < rhs.theta()) :

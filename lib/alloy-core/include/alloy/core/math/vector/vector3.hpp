@@ -424,7 +424,7 @@ namespace alloy::core {
   struct piecewise_compare<vector3>
   {
     constexpr auto operator()(const vector3& lhs,
-                              const vector3& rhs) noexcept -> bool;
+                              const vector3& rhs) const noexcept -> bool;
   };
 
   //===========================================================================
@@ -912,7 +912,7 @@ ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 inline constexpr
 auto alloy::core::piecewise_compare<alloy::core::vector3>
   ::operator()(const vector3& lhs, const vector3& rhs)
-  noexcept -> bool
+  const noexcept -> bool
 {
   return (lhs.x() == rhs.x()) ?
            (lhs.y() == rhs.y()) ?
