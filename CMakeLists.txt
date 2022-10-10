@@ -27,6 +27,7 @@ option(BUILD_SHARED_LIBS "Whether to build this library as a shared library" ON)
 
 option(ALLOY_COMPILE_SELF_CONTAINMENT_TESTS "Include each public header independently in a .cpp file to determine header self-containment" ON)
 option(ALLOY_COMPILE_TESTS "Compile and run the unit tests for this library" OFF)
+option(ALLOY_COMPILE_BENCHMARKS "Compile and run the benchmarks for this library" OFF)
 option(ALLOY_COMPILE_EXTRAS "Compiles extras that ship with this library" OFF)
 option(ALLOY_COMPILE_EXAMPLES "Compiles example programs that use this library" OFF)
 option(ALLOY_ENABLE_CLANG_TIDY "Enables clang-tidy integration" OFF)

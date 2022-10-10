@@ -14,6 +14,7 @@
       "installDir": "${sourceDir}/install/${presetName}",
       "cacheVariables": {
         "ALLOY_COMPILE_TESTS": "ON",
+        "ALLOY_COMPILE_BENCHMARKS": "ON",
         "ALLOY_COMPILE_EXTRAS": "ON",
         "ALLOY_COMPILE_EXAMPLES": "ON",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",

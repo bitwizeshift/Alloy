@@ -288,6 +288,9 @@ endif ()
 if (ALLOY_COMPILE_TESTS)
   add_subdirectory("test")
 endif ()
+if (ALLOY_COMPILE_BENCHMARKS)
+  add_subdirectory("benchmark")
+endif ()
 
 ##############################################################################
 # Installation
