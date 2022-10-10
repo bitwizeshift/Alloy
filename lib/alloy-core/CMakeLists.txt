@@ -82,6 +82,7 @@ set(header_files
   include/alloy/core/utilities/aligned_storage.hpp
   include/alloy/core/utilities/int_utilities.hpp
   include/alloy/core/utilities/casts.hpp
+  include/alloy/core/utilities/compare.hpp
   include/alloy/core/utilities/delegate.hpp
   include/alloy/core/utilities/signal.hpp
   include/alloy/core/utilities/result.hpp
@@ -98,6 +99,11 @@ set(header_files
   include/alloy/core/utilities/enum_traits.hpp
   include/alloy/core/utilities/hash.hpp
   include/alloy/core/utilities/mixins.hpp
+
+  # Algorithms
+  include/alloy/core/algorithms/compare_reduce.hpp
+  include/alloy/core/algorithms/max.hpp
+  include/alloy/core/algorithms/min.hpp
 
   # Strings
   include/alloy/core/string/encoding/ansi_encoding.hpp
