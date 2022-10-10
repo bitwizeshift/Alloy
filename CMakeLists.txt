@@ -106,6 +106,15 @@ if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif ()
 
 #-----------------------------------------------------------------------------
+# Dependencies
+#-----------------------------------------------------------------------------
+
+# Dependencies are managed before compile-flags to ensure that we don't
+# trip on our dependency's errors.
+
+add_subdirectory("third_party")
+
+#-----------------------------------------------------------------------------
 
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
     "${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC")
@@ -180,10 +189,6 @@ endif ()
 ##############################################################################
 # Targets
 ##############################################################################
-
-# Dependencies
-
-add_subdirectory("third_party")
 
 # Library Targets
 
