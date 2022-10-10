@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -46,11 +46,11 @@ namespace alloy::core {
   ///        value definitions
   ///
   /// This trait should be specialized for each enum whose definitions are
-  /// purey contiguous.
+  /// purely contiguous.
   ///
   /// \tparam Enum the enum type
   template <typename Enum>
-  struct enum_is_contiguous : std::true_type {};
+  struct enum_is_contiguous : std::false_type {};
 
   template <typename Enum>
   inline constexpr auto enum_is_contiguous_v = enum_is_contiguous<Enum>::value;
