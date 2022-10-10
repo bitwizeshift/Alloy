@@ -95,9 +95,9 @@ namespace alloy::core {
     /// \brief Constructs an axis-aligned bounding-box from points from two
     ///        opposite ends
     ///
-    /// \pre `lower_left.x()<=top_right.x()`
-    /// \pre `lower_left.y()<=top_right.y()`
-    /// \pre `lower_left.z()<=top_right.z()`
+    /// \pre `lower_left.x() <= top_right.x()`
+    /// \pre `lower_left.y() <= top_right.y()`
+    /// \pre `lower_left.z() <= top_right.z()`
     ///
     /// \param lower_left The first point
     /// \param top_right The second point
@@ -187,12 +187,31 @@ namespace alloy::core {
     [[nodiscard]]
     auto planes() const noexcept -> std::array<plane, 6>;
 
-    /// \brief Gets the distance between this box and the specified \p point
+    /// \brief Gets the distance between this box and the specified point \p p
     ///
     /// \param p the point to get the distance to
     /// \return the distance
     [[nodiscard]]
     auto distance_to(const point3& p) const noexcept -> real;
+
+    /// \brief Gets the squared distance between this box and the specified point
+    ///        \p p
+    ///
+    /// \note This function exists for quicker checks that don't rely on the
+    ///       `sqrt` operation (as is needed in conventional magnitude
+    ///       calculations).
+    ///
+    /// \param p the point to get the distance to
+    /// \return the squared distance to \p p
+    [[nodiscard]]
+    auto square_distance_to(const point3& p) const noexcept -> real;
+
+    /// \brief Gets the nearest point on this box to the point \p p
+    ///
+    /// \param p the point to find the nearest point to
+    /// \return the point
+    [[nodiscard]]
+    auto nearest_point(const point3& p) const noexcept -> point3;
 
     /// \brief Checks if this box contains the given point \p p
     ///

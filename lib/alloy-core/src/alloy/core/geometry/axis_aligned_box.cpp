@@ -1,4 +1,29 @@
+/*
+  The MIT License (MIT)
+
+  Copyright (c) 2019, 2021-2022 Matthew Rodusek All rights reserved.
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+*/
+
 #include "alloy/core/geometry/axis_aligned_box.hpp"
+#include "alloy/core/math/vector/vector3_constants.hpp"
 
 #include <algorithm> // std::min, std::max
 
@@ -22,14 +47,14 @@ auto alloy::core::axis_aligned_box::from_points(const point3& p0, const point3& 
   noexcept -> axis_aligned_box
 {
   const auto min_point = point3{
-    std::min(p0.x(),p1.x()),
-    std::min(p0.y(),p1.y()),
-    std::min(p0.z(),p1.z())
+    std::min(p0.x(), p1.x()),
+    std::min(p0.y(), p1.y()),
+    std::min(p0.z(), p1.z())
   };
   const auto max_point = point3{
-    std::max(p0.x(),p1.x()),
-    std::max(p0.y(),p1.y()),
-    std::max(p0.z(),p1.z())
+    std::max(p0.x(), p1.x()),
+    std::max(p0.y(), p1.y()),
+    std::max(p0.z(), p1.z())
   };
   return axis_aligned_box{min_point, max_point};
 }
@@ -41,7 +66,7 @@ auto alloy::core::axis_aligned_box::from_points(const point3& p0, const point3& 
 auto alloy::core::axis_aligned_box::top_plane()
   const noexcept -> plane
 {
-  const auto normal = vector3{0, 1, 0};
+  const auto normal = vector3_constants::unit_y;
   const auto distance = m_top_right.y();
 
   return plane{normal, distance};
@@ -50,7 +75,7 @@ auto alloy::core::axis_aligned_box::top_plane()
 auto alloy::core::axis_aligned_box::bottom_plane()
   const noexcept -> plane
 {
-  const auto normal = vector3{0, -1, 0};
+  const auto normal = vector3_constants::neg_unit_y;
   const auto distance = m_bottom_left.y();
 
   return plane{normal, distance};
@@ -59,7 +84,7 @@ auto alloy::core::axis_aligned_box::bottom_plane()
 auto alloy::core::axis_aligned_box::front_plane()
   const noexcept -> plane
 {
-  const auto normal = vector3{0, 0, 1};
+  const auto normal = vector3_constants::unit_z;
   const auto distance = m_top_right.z();
 
   return plane{normal, distance};
@@ -68,7 +93,7 @@ auto alloy::core::axis_aligned_box::front_plane()
 auto alloy::core::axis_aligned_box::back_plane()
   const noexcept -> plane
 {
-  const auto normal = vector3{0, 0, -1};
+  const auto normal = vector3_constants::neg_unit_z;
   const auto distance = m_bottom_left.z();
 
   return plane{normal, distance};
@@ -77,7 +102,7 @@ auto alloy::core::axis_aligned_box::back_plane()
 auto alloy::core::axis_aligned_box::left_plane()
   const noexcept -> plane
 {
-  const auto normal = vector3{-1, 0, 0};
+  const auto normal = vector3_constants::neg_unit_x;
   const auto distance = m_bottom_left.x();
 
   return plane{normal, distance};
@@ -86,7 +111,7 @@ auto alloy::core::axis_aligned_box::left_plane()
 auto alloy::core::axis_aligned_box::right_plane()
   const noexcept -> plane
 {
-  const auto normal = vector3{1, 0, 0};
+  const auto normal = vector3_constants::unit_x;
   const auto distance = m_top_right.x();
 
   return plane{normal, distance};
@@ -122,6 +147,28 @@ auto alloy::core::axis_aligned_box::planes()
   };
 }
 
+auto alloy::core::axis_aligned_box::distance_to(const point3& p)
+  const noexcept -> real
+{
+  return (p - nearest_point(p)).magnitude();
+}
+
+auto alloy::core::axis_aligned_box::square_distance_to(const point3& p)
+  const noexcept -> real
+{
+  return (p - nearest_point(p)).square_magnitude();
+}
+
+auto alloy::core::axis_aligned_box::nearest_point(const point3& p)
+  const noexcept -> point3
+{
+  return point3{
+    clamp(p.x(), m_bottom_left.x(), m_top_right.x()),
+    clamp(p.y(), m_bottom_left.y(), m_top_right.y()),
+    clamp(p.z(), m_bottom_left.z(), m_top_right.z())
+  };
+}
+
 auto alloy::core::axis_aligned_box::contains(const point3& p)
   const noexcept -> bool
 {
@@ -148,18 +195,17 @@ auto alloy::core::axis_aligned_box::intersects(const axis_aligned_box& other)
   if (m_bottom_left.x() > other.m_top_right.x()) {
     return false;
   }
-  if (m_top_right.x() < other.m_bottom_left.x()) {
-    return false;
-  }
-
   if (m_bottom_left.y() > other.m_top_right.y()) {
     return false;
   }
-  if (m_top_right.y() < other.m_top_right.y()) {
+  if (m_bottom_left.z() > other.m_top_right.z()) {
     return false;
   }
 
-  if (m_bottom_left.z() > other.m_top_right.z()) {
+  if (m_top_right.x() < other.m_bottom_left.x()) {
+    return false;
+  }
+  if (m_top_right.y() < other.m_bottom_left.y()) {
     return false;
   }
   if (m_top_right.z() < other.m_bottom_left.z()) {
@@ -173,10 +219,10 @@ auto alloy::core::axis_aligned_box::encloses(const axis_aligned_box& other)
   const noexcept -> bool
 {
   return (m_bottom_left.x() <= other.m_bottom_left.x()) &&
-         (m_top_right.x() >= other.m_top_right.x()) &&
          (m_bottom_left.y() <= other.m_bottom_left.y()) &&
-         (m_top_right.y() >= other.m_top_right.y()) &&
          (m_bottom_left.z() <= other.m_bottom_left.z()) &&
+         (m_top_right.x() >= other.m_top_right.x()) &&
+         (m_top_right.y() >= other.m_top_right.y()) &&
          (m_top_right.z() >= other.m_top_right.z());
 }
 

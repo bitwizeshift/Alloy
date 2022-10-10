@@ -34,6 +34,7 @@ set(source_files
 
   # Geometry
   src/alloy/core/geometry/sphere.test.cpp
+  src/alloy/core/geometry/axis_aligned_box.test.cpp
 
   # Model
   src/alloy/core/model/color.test.cpp
