@@ -74,6 +74,9 @@ set(header_files
   include/alloy/core/traits/is_function_pointer.hpp
   include/alloy/core/traits/for_each_member.hpp
   include/alloy/core/traits/detected.hpp
+  include/alloy/core/traits/common_reference.hpp
+  include/alloy/core/traits/copy_cv.hpp
+  include/alloy/core/traits/copy_cvref.hpp
 
   # Utilities
   include/alloy/core/utilities/aligned_storage.hpp
