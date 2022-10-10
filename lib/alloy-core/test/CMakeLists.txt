@@ -44,6 +44,7 @@ set(source_files
   src/alloy/core/math/angle/basic_angle.test.cpp
   src/alloy/core/math/clamped.test.cpp
   src/alloy/core/math/saturated.test.cpp
+  src/alloy/core/math/simd.test.cpp
 
   # Memory
   src/alloy/core/memory/packed_buffer.test.cpp

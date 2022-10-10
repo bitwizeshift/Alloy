@@ -146,6 +146,7 @@ set(header_files
   include/alloy/core/math/quaternion.hpp
   include/alloy/core/math/quaternion_constants.hpp
   include/alloy/core/math/simplex.hpp
+  include/alloy/core/math/simd.hpp
   include/alloy/core/math/trigonometry.hpp
   include/alloy/core/math/vector.hpp
   include/alloy/core/math/vector/vector_utilities.hpp
