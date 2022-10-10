@@ -74,27 +74,3 @@ if (ALLOY_COMPILE_TESTS)
       "TROMPELOEIL_INSTALL_DOCS OFF"
   )
 endif ()
-
-#===============================================================================
-# Benchmark Dependencies
-#===============================================================================
-
-if (ALLOY_COMPILE_BENCHMARKS)
-
-  #-----------------------------------------------------------------------------
-  # Google Benchmark
-  #-----------------------------------------------------------------------------
-
-  CPMAddPackage(
-    NAME benchmark
-    GITHUB_REPOSITORY google/benchmark
-    VERSION 1.5.2
-    OPTIONS
-      "BENCHMARK_ENABLE_TESTING Off"
-      "BENCHMARK_ENABLE_INSTALL Off"
-  )
-
-  if (benchmark_ADDED)
-    set_target_properties(benchmark PROPERTIES CXX_STANDARD 17)
-  endif ()
-endif ()
