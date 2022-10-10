@@ -904,17 +904,17 @@ auto alloy::core::allocator::aligned_make_array_impl(
 
 #ifdef ALLOY_CORE_EXCEPTIONS_ENABLED
   if constexpr(std::is_nothrow_constructible<T>::value) {
-    return lifetime_utilities::make_array_at<T>(assume_not_null(p), args...).get();
+    return lifetime_utilities::make_array_at<T>(assume_not_null(p), n, args...).get();
   } else {
     try {
-      return lifetime_utilities::make_array_at<T>(assume_not_null(p), args...).get();
+      return lifetime_utilities::make_array_at<T>(assume_not_null(p), n, args...).get();
     } catch (...) {
       deallocate_bytes(p, bytes, align);
       throw;
     }
   }
 #else
-  return lifetime_utilities::make_array_at<T>(p, args...).get();
+  return lifetime_utilities::make_array_at<T>(assume_not_null(p), n, args...).get();
 #endif
 }
 

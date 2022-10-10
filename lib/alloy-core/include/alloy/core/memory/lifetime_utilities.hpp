@@ -193,8 +193,9 @@ auto alloy::core::lifetime_utilities::destroy_range(It begin, It end)
   const auto rbegin = std::make_reverse_iterator(end);
   const auto rend   = std::make_reverse_iterator(begin);
 
+  using value_type = typename std::iterator_traits<It>::value_type;
   for (auto it = rbegin; it != rend; ++it) {
-    it->~T();
+    it->~value_type();
   }
 }
 
