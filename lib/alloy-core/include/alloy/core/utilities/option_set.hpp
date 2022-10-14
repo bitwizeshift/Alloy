@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -176,8 +176,8 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    auto to_ulong() const -> unsigned long;
-    auto to_ullong() const -> unsigned long long;
+    auto to_ulong() const noexcept -> unsigned long;
+    auto to_ullong() const noexcept -> unsigned long long;
 
     //--------------------------------------------------------------------------
     // Equality
@@ -388,6 +388,26 @@ auto alloy::core::option_set<Enum>::flip(Enum e)
 {
   m_bitset.flip(static_cast<std::size_t>(e));
   return (*this);
+}
+
+//------------------------------------------------------------------------------
+// Conversions
+//------------------------------------------------------------------------------
+
+template <typename Enum>
+inline
+auto alloy::core::option_set<Enum>::to_ulong()
+  const noexcept -> unsigned long
+{
+  return m_bitset.to_ulong();
+}
+
+template <typename Enum>
+inline
+auto alloy::core::option_set<Enum>::to_ullong()
+  const noexcept -> unsigned long long
+{
+  return m_bitset.to_ullong();
 }
 
 //------------------------------------------------------------------------------
