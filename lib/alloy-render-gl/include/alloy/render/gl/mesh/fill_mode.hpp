@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -44,11 +44,12 @@ namespace alloy::render::gl {
   ///
   /// \param f the fill mode
   /// \return the GLenum for the primitive
+  constexpr
   auto to_opengl_type(fill_mode f) noexcept -> ::GLenum;
 
 } // namespace alloy::render::gl
 
-inline
+inline constexpr
 auto alloy::render::gl::to_opengl_type(fill_mode f)
   noexcept -> ::GLenum
 {
