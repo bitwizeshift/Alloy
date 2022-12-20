@@ -98,7 +98,7 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   public:
 
-    static constexpr auto decode_sentinel = char32{};
+    static constexpr auto decode_sentinel = char32{U'\uFFFD'};
     static constexpr auto encode_sentinel = char_type{};
     static constexpr auto is_multi_unit = true;
 
