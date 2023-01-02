@@ -47,7 +47,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022-2023 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -164,6 +164,10 @@ auto alloy::core::utf16_encoding::decode(
   char32 replacement
 ) noexcept -> std::pair<char32,ForwardIt>
 {
+  if (ALLOY_UNLIKELY(begin == end)) {
+    return {replacement, end};
+  }
+
   auto it = begin;
 
   const auto first = *it;

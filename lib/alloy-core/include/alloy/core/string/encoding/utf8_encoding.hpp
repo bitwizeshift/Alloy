@@ -47,7 +47,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022-2023 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -213,7 +213,7 @@ auto alloy::core::utf8_encoding::decode(
   const auto required_bytes  = trailing_bytes + 1u;
   const auto available_bytes = std::distance(begin, end);
 
-  if (available_bytes < required_bytes) {
+  if (ALLOY_UNLIKELY(available_bytes < required_bytes)) {
     return {replacement, end};
   }
 
