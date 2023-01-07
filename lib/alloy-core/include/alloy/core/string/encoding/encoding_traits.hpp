@@ -48,30 +48,6 @@
 
 namespace alloy::core {
 
-  namespace detail {
-
-    template <typename Encoding, typename...Args>
-    using detect_decode = decltype(Encoding::decode(std::declval<Args>()...));
-
-    template <typename Encoding, typename...Args>
-    using detect_rdecode = decltype(Encoding::rdecode(std::declval<Args>()...));
-
-    template <typename Encoding, typename...Args>
-    using detect_encode = decltype(Encoding::encode(std::declval<Args>()...));
-
-    template <typename Encoding, typename ForwardIt, typename...Args>
-    static inline constexpr auto decodeable = is_detected_v<
-      detect_decode, Encoding, ForwardIt, ForwardIt, char32, Args...
-    >;
-    template <typename Encoding, typename ForwardIt, typename...Args>
-    static inline constexpr auto rdecodeable = is_detected_v<
-      detect_rdecode, Encoding, ForwardIt, ForwardIt, char32, Args...
-    >;
-    template <typename Encoding, typename OutputIt, typename...Args>
-    static inline constexpr auto encodeable = is_detected_v<
-      detect_encode, Encoding, char32, OutputIt, typename Encoding::char_type, Args...
-    >;
-  } // namespace detail
 
   /////////////////////////////////////////////////////////////////////////////
   /// \brief Traits for character encodings
@@ -90,6 +66,15 @@ namespace alloy::core {
     template <typename T>
     using detect_max_units_per_char = decltype(T::max_units_per_char);
 
+    template <typename UEncoding, typename...Args>
+    using detect_decode = decltype(UEncoding::decode(std::declval<Args>()...));
+
+    template <typename UEncoding, typename...Args>
+    using detect_rdecode = decltype(UEncoding::rdecode(std::declval<Args>()...));
+
+    template <typename UEncoding, typename...Args>
+    using detect_encode = decltype(UEncoding::encode(std::declval<Args>()...));
+
     template <typename T, bool HasMaxUnits = is_detected_v<detect_max_units_per_char, T>>
     struct max_units_per_char_impl : std::integral_constant<std::size_t,1>{};
 
@@ -100,6 +85,19 @@ namespace alloy::core {
     using detect_is_char_boundary = decltype(
       UEncoding::is_char_boundary(std::declval<typename UEncoding::char_type>())
     );
+
+    template <typename UEncoding, typename ForwardIt, typename...Args>
+    static inline constexpr auto decodeable = is_detected_v<
+      detect_decode, UEncoding, ForwardIt, ForwardIt, char32, Args...
+    >;
+    template <typename UEncoding, typename ForwardIt, typename...Args>
+    static inline constexpr auto rdecodeable = is_detected_v<
+      detect_rdecode, UEncoding, ForwardIt, ForwardIt, char32, Args...
+    >;
+    template <typename UEncoding, typename OutputIt, typename...Args>
+    static inline constexpr auto encodeable = is_detected_v<
+      detect_encode, UEncoding, char32, OutputIt, typename UEncoding::char_type, Args...
+    >;
 
     template <typename UEncoding>
     static inline constexpr auto has_is_char_boundary = is_detected_convertible_v<
@@ -158,7 +156,7 @@ namespace alloy::core {
     /// \return A pair containing the read UTF-32 codepoint, along with the
     ///         iterator
     template <typename ForwardIt, typename...Args,
-              typename = std::enable_if_t<detail::decodeable<Encoding,ForwardIt,Args...>>>
+              typename = std::enable_if_t<decodeable<Encoding,ForwardIt,Args...>>>
     [[nodiscard]]
     static constexpr auto decode(
       ForwardIt begin,
@@ -180,8 +178,8 @@ namespace alloy::core {
     ///         iterator
     template <typename ForwardIt, typename...Args,
               typename = std::enable_if_t<(
-                detail::rdecodeable<Encoding, ForwardIt, Args...> ||
-                detail::decodeable<Encoding, ForwardIt, Args...>
+                rdecodeable<Encoding, ForwardIt, Args...> ||
+                decodeable<Encoding, ForwardIt, Args...>
               )>>
     [[nodiscard]]
     static constexpr auto rdecode(
@@ -205,7 +203,7 @@ namespace alloy::core {
     /// \return Iterator to the end of the output sequence which has been
     ///         written
     template <typename OutputIt, typename...Args,
-              typename = std::enable_if_t<detail::encodeable<Encoding, OutputIt, Args...>>>
+              typename = std::enable_if_t<encodeable<Encoding, OutputIt, Args...>>>
     static constexpr auto encode(
       char32 input,
       OutputIt output,
@@ -413,7 +411,7 @@ auto alloy::core::encoding_traits<Encoding>::rdecode(
   Args&&...args
 ) noexcept -> std::pair<char32,ForwardIt>
 {
-  if constexpr (detail::rdecodeable<Encoding,ForwardIt,Args...>) {
+  if constexpr (rdecodeable<Encoding,ForwardIt,Args...>) {
     return Encoding::rdecode(begin, end, replacement, std::forward<Args>(args)...);
   } else if constexpr (!is_multi_unit) {
     // single-unit encodings will decode the same forward as they will backwards.
