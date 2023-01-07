@@ -69,6 +69,7 @@ set(header_files
   include/alloy/core/containers/polymorphic_vector.hpp
 
   # Traits
+  include/alloy/core/traits/always_false.hpp
   include/alloy/core/traits/select_nth.hpp
   include/alloy/core/traits/function_traits.hpp
   include/alloy/core/traits/is_function_pointer.hpp
