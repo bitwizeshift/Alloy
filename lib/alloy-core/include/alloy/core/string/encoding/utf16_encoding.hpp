@@ -146,6 +146,19 @@ namespace alloy::core {
       OutputIt output,
       char_type replacement = encode_sentinel
     ) noexcept -> OutputIt;
+
+    /// \brief A helper function to detect if a given unit is the start of a
+    ///        code-point boundary
+    ///
+    /// This is determined by checking the leading bits of the unit.
+    ///
+    /// For non-multibyte code-points, the first two bits are unset. For multibyte
+    /// code-points, the unit will start with the bit pattern `0b1101` followed
+    /// by `10` for the start boundary, and `11` for the completion boundary.
+    ///
+    /// \param unit the code unit to check
+    /// \return true if this is the start of a code-unit sequence
+    static constexpr auto is_char_boundary(char16 unit) noexcept -> bool;
   };
 
 } // namespace alloy::core
@@ -235,6 +248,19 @@ auto alloy::core::utf16_encoding::encode(
   }
 
   return output;
+}
+
+inline constexpr
+auto alloy::core::utf16_encoding::is_char_boundary(char16 unit)
+  noexcept -> bool
+{
+  constexpr auto non_multi_unit_prefix = char16{0b1100'0000'0000'0000};
+  constexpr auto multi_unit_mask       = char16{0b1101'1100'0000'0000};
+  constexpr auto multi_unit_prefix     = char16{0b1101'1000'0000'0000};
+  return (
+    ((unit & non_multi_unit_prefix) == 0) ||
+    ((unit & multi_unit_mask) == multi_unit_prefix)
+  );
 }
 
 #endif /* ALLOY_CORE_STRING_ENCODING_UTF16_ENCODING_HPP */

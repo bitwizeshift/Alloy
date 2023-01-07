@@ -165,6 +165,19 @@ namespace alloy::core {
     static constexpr auto length(ForwardIt begin, ForwardIt end)
       noexcept -> uquantity<char32>;
 
+    /// \brief A helper function to detect if a given unit is the start of a
+    ///        code-point boundary
+    ///
+    /// This is determined by checking the leading bits of the unit.
+    ///
+    /// For non-multibyte code-points, the first bit is unset. For multibyte
+    /// code-points, the first bit is set, along with following bits indicating
+    /// the encoded length.
+    ///
+    /// \param unit the code unit to check
+    /// \return true if this is the start of a code-unit sequence
+    static constexpr auto is_char_boundary(char8 unit) noexcept -> bool;
+
     //-------------------------------------------------------------------------
     // Private Static Constants
     //-------------------------------------------------------------------------
@@ -304,15 +317,28 @@ auto alloy::core::utf8_encoding::length(ForwardIt begin, ForwardIt end)
 {
   auto count = uquantity<char32>{0u};
   for (auto it = begin; it != end; ++it) {
-    // Only count code units that either don't have the first bit set (which is
-    // a single-character codepoint), or has the first two bits set, which is
-    // common for all multi-byte sequences (either 110, 1110, or 11110).
-    // These all indicate the first character in the multi-unit sequence.
-    if ((*it & 0b10000000) == 0u || (*it & 0b11000000) == 0b11000000) {
+    // Only count the beginning of a code-point boundary, since this *should*
+    // give us the appropriate length. Or at least, the best estimate we could
+    // provide -- since a malformed UTF-8 string that contains an invalid number
+    // of follow-code-units would not be able to compute the appropriate "size"
+    // anyway.
+    //
+    // This could be estimated differently by skipping the number of units that
+    // are identified to "follow" this code-point, and treating invalid characters
+    // as 1-byte-characters -- but ultimately this is an error-case anyway, and
+    // so the length reported here will not be useful.
+    if (is_char_boundary(*it)) {
       ++count;
     }
   }
   return count;
+}
+
+inline constexpr
+auto alloy::core::utf8_encoding::is_char_boundary(char8 unit)
+  noexcept -> bool
+{
+  return ((unit & 0b10000000) == 0u || (unit & 0b11000000) == 0b11000000);
 }
 
 #endif /* ALLOY_CORE_STRING_ENCODING_UTF8_ENCODING_HPP */

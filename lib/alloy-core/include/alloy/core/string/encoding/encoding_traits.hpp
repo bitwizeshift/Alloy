@@ -38,6 +38,7 @@
 #include "alloy/core/assert.hpp"
 #include "alloy/core/traits/detected.hpp"    // is_detected
 #include "alloy/core/utilities/quantity.hpp" // uquantity
+#include "alloy/core/traits/always_false.hpp"
 
 #include <algorithm>   // std::find
 #include <utility>     // std::declval, std::pair
@@ -88,6 +89,16 @@ namespace alloy::core {
     template <typename T>
     struct max_units_per_char_impl<T,true> : std::integral_constant<std::size_t,T::max_units_per_char>{};
 
+    template <typename UEncoding>
+    using detect_is_char_boundary = decltype(
+      UEncoding::is_char_boundary(std::declval<typename UEncoding::char_type>())
+    );
+
+    template <typename UEncoding>
+    static inline constexpr auto has_is_char_boundary = is_detected_convertible_v<
+      bool, detect_is_char_boundary, UEncoding
+    >;
+
     //-------------------------------------------------------------------------
     // Public Member Types
     //-------------------------------------------------------------------------
@@ -105,6 +116,24 @@ namespace alloy::core {
 
     static inline constexpr auto max_units_per_char = max_units_per_char_impl<Encoding>::value;
     static inline constexpr auto is_multi_unit      = max_units_per_char != 1u;
+
+    //-------------------------------------------------------------------------
+    // Queries
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \brief A helper function to detect if a given unit is the start of a
+    ///        code-point boundary
+    ///
+    /// This function only participates in overload resolution if the underlying
+    /// encoding either defines `is_char_boundary(char_type)`, or the encoding
+    /// is a non-multi-unit encoded system.
+    ///
+    /// \param unit the code unit to check
+    /// \return true if this is the start of a code-unit sequence
+    template <typename E=Encoding,
+              typename = std::enable_if_t<(has_is_char_boundary<E> || !is_multi_unit)>>
+    static constexpr auto is_char_boundary(char_type unit) noexcept -> bool;
 
     //-------------------------------------------------------------------------
     // Encoding
@@ -243,6 +272,27 @@ namespace alloy::core {
 //=============================================================================
 // Inline definitions
 //=============================================================================
+
+template <typename Encoding>
+template <typename E, typename>
+inline constexpr
+auto alloy::core::encoding_traits<Encoding>::is_char_boundary(char_type unit)
+  noexcept -> bool
+{
+  if constexpr (has_is_char_boundary<Encoding>) {
+    return Encoding::is_char_boundary(unit);
+  } else if constexpr (!is_multi_unit) {
+    compiler::unused(unit);
+    return true;
+  } else {
+    static_assert(
+      always_false_v<Encoding>,
+      "Supplied encoding is multi-unit encoded, but does not provide an implementation "
+      "of `is_char_boundary(...)`. "
+      "This should be unreachable due to SFINAE."
+    );
+  }
+}
 
 //-----------------------------------------------------------------------------
 // Encoding
