@@ -54,11 +54,18 @@ namespace alloy::core {
     using detect_decode = decltype(Encoding::decode(std::declval<Args>()...));
 
     template <typename Encoding, typename...Args>
+    using detect_rdecode = decltype(Encoding::rdecode(std::declval<Args>()...));
+
+    template <typename Encoding, typename...Args>
     using detect_encode = decltype(Encoding::encode(std::declval<Args>()...));
 
     template <typename Encoding, typename ForwardIt, typename...Args>
     static inline constexpr auto decodeable = is_detected_v<
       detect_decode, Encoding, ForwardIt, ForwardIt, char32, Args...
+    >;
+    template <typename Encoding, typename ForwardIt, typename...Args>
+    static inline constexpr auto rdecodeable = is_detected_v<
+      detect_rdecode, Encoding, ForwardIt, ForwardIt, char32, Args...
     >;
     template <typename Encoding, typename OutputIt, typename...Args>
     static inline constexpr auto encodeable = is_detected_v<
@@ -160,6 +167,32 @@ namespace alloy::core {
       Args&&...args
     ) noexcept -> std::pair<char32,ForwardIt>;
 
+    /// \brief Decodes a reverse-sequence of code-units into a codepoint
+    ///
+    /// This will forward to `Encoding::rdecode` if an implementation is present,
+    /// or to `decode` for single-unit encodings like UTF-32 or ANSI.
+    ///
+    /// \param begin the beginning of the reverse-sequence to decode
+    /// \param end the end of the reverse-sequence to decode
+    /// \param replacement the character to replace on failure to decode
+    /// \param args additional arguments to forward to the underlying decoder
+    /// \return A pair containing the read UTF-32 codepoint, along with the
+    ///         iterator
+    template <typename ForwardIt, typename...Args,
+              typename = std::enable_if_t<(
+                detail::rdecodeable<Encoding, ForwardIt, Args...> ||
+                detail::decodeable<Encoding, ForwardIt, Args...>
+              )>>
+    [[nodiscard]]
+    static constexpr auto rdecode(
+      ForwardIt begin,
+      ForwardIt end,
+      char32 replacement = decode_sentinel,
+      Args&&...args
+    ) noexcept -> std::pair<char32,ForwardIt>;
+
+    //-------------------------------------------------------------------------
+
     /// \brief Encode a single UTF-32 codepoint into a stream of ansi characters
     ///
     /// A character is only valid if its numeric representation is valid for
@@ -203,7 +236,37 @@ namespace alloy::core {
     /// \param n the nth index to move to
     /// \return the incremented iterator
     template <typename ForwardIt>
+    [[nodiscard]]
     static constexpr auto next(ForwardIt begin, ForwardIt end, uquantity<char32> n)
+      noexcept -> ForwardIt;
+
+    //-------------------------------------------------------------------------
+
+    /// \brief Advances `begin` to the end of the previous (possibly
+    ///        multi-code-unit) codepoint
+    ///
+    /// This function operates on code-units from reverse-ordering.
+    ///
+    /// \param begin the beginning of the range
+    /// \param end the end of the range
+    /// \return the incremented iterator
+    template <typename ForwardIt>
+    [[nodiscard]]
+    static constexpr auto rnext(ForwardIt begin, ForwardIt end)
+      noexcept -> ForwardIt;
+
+    /// \brief Advances `begin` to the end of the previous (possibly
+    ///        multi-code-unit) codepoint
+    ///
+    /// This function operates on code-units from reverse-ordering.
+    ///
+    /// \param begin the beginning of the range
+    /// \param end the end of the range
+    /// \param n the nth index to move to
+    /// \return the incremented iterator
+    template <typename ForwardIt>
+    [[nodiscard]]
+    static constexpr auto rnext(ForwardIt begin, ForwardIt end, uquantity<char32> n)
       noexcept -> ForwardIt;
 
     //-------------------------------------------------------------------------
@@ -242,6 +305,21 @@ namespace alloy::core {
     static constexpr auto find(ForwardIt first, ForwardIt last, char32 ch)
       noexcept -> ForwardIt;
 
+    /// \brief Finds the first occurrence of the character \p ch in the reverse-range
+    ///        `[first, last)`
+    ///
+    /// This will return an iterator to the end of the code-point sequence that
+    /// forms \p ch so that subsequent calls with `rdecode` will form \p ch.
+    ///
+    /// \param first an iterator to the start of the reverse-range
+    /// \param last an iterator to the end of the reverse-range
+    /// \param ch the character to find
+    /// \return an iterator to where the codepoint starts, if found, or the end
+    template <typename ForwardIt>
+    [[nodiscard]]
+    static constexpr auto rfind(ForwardIt first, ForwardIt last, char32 ch)
+      noexcept -> ForwardIt;
+
     //-------------------------------------------------------------------------
     // Private Members
     //-------------------------------------------------------------------------
@@ -252,6 +330,11 @@ namespace alloy::core {
       UEncoding::next(std::declval<ForwardIt>(), std::declval<ForwardIt>(), std::declval<Args>()...)
     );
 
+    template <typename UEncoding, typename ForwardIt, typename...Args>
+    using detect_rnext = decltype(
+      UEncoding::rnext(std::declval<ForwardIt>(), std::declval<ForwardIt>(), std::declval<Args>()...)
+    );
+
     template <typename UEncoding, typename ForwardIt>
     using detect_length = decltype(
       UEncoding::length(std::declval<ForwardIt>(), std::declval<ForwardIt>())
@@ -260,6 +343,15 @@ namespace alloy::core {
     template <typename UEncoding, typename ForwardIt>
     using detect_find = decltype(
       UEncoding::find(
+        std::declval<ForwardIt>(),
+        std::declval<ForwardIt>(),
+        std::declval<char32>()
+      )
+    );
+
+    template <typename UEncoding, typename ForwardIt>
+    using detect_rfind = decltype(
+      UEncoding::rfind(
         std::declval<ForwardIt>(),
         std::declval<ForwardIt>(),
         std::declval<char32>()
@@ -311,6 +403,50 @@ auto alloy::core::encoding_traits<Encoding>::decode(
   return Encoding::decode(begin, end, replacement, std::forward<Args>(args)...);
 }
 
+template <typename Encoding>
+template <typename ForwardIt, typename...Args, typename>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::encoding_traits<Encoding>::rdecode(
+  ForwardIt begin,
+  ForwardIt end,
+  char32 replacement,
+  Args&&...args
+) noexcept -> std::pair<char32,ForwardIt>
+{
+  if constexpr (detail::rdecodeable<Encoding,ForwardIt,Args...>) {
+    return Encoding::rdecode(begin, end, replacement, std::forward<Args>(args)...);
+  } else if constexpr (!is_multi_unit) {
+    // single-unit encodings will decode the same forward as they will backwards.
+    return Encoding::decode(begin, end, replacement, std::forward<Args>(args)...);
+  } else {
+    auto units = std::array<char_type,max_units_per_char>{};
+
+    // Copy at most N units to decode using the forward-method. This searches for
+    // the first code-unit in a multi-unit sequence, reconstructs it in-order, and
+    // then decodes the value.
+    auto it  = begin;
+    auto unit_it = units.rbegin();
+    const auto unit_end = units.rend();
+    while ((it != end) && (unit_it != unit_end)) {
+      const auto unit = *it;
+      *unit_it = unit;
+      ++unit_it;
+      ++it;
+      if (is_char_boundary(unit)) {
+        break;
+      }
+    }
+    const auto offset = unit_end - unit_it;
+
+    const auto codepoint = decode(
+      std::next(units.begin(), offset),
+      units.end(),
+      replacement
+    ).first;
+
+    return {codepoint, it};
+  }
+}
 
 template <typename Encoding>
 template <typename OutputIt, typename...Args, typename>
@@ -348,7 +484,7 @@ auto alloy::core::encoding_traits<Encoding>::next(
   uquantity<char32> n
 ) noexcept -> ForwardIt
 {
-  if constexpr (is_detected_v<detect_next,Encoding,ForwardIt, uquantity<char32>>) {
+  if constexpr (is_detected_v<detect_next,Encoding,ForwardIt,uquantity<char32>>) {
     return Encoding::next(begin, end, n);
   } else if constexpr (is_multi_unit) {
     ALLOY_ASSERT(n <= length(begin, end));
@@ -357,6 +493,47 @@ auto alloy::core::encoding_traits<Encoding>::next(
     // value
     for (; n != uquantity<char32>{0u}; --n) {
       begin = next(begin, end);
+    }
+    return begin;
+  } else {
+    ALLOY_ASSERT(n <= std::distance(begin, end));
+
+    return std::next(begin, n);
+  }
+}
+
+
+template <typename Encoding>
+template <typename ForwardIt>
+inline constexpr
+auto alloy::core::encoding_traits<Encoding>::rnext(ForwardIt begin, ForwardIt end)
+  noexcept -> ForwardIt
+{
+  if constexpr (is_detected_v<detect_rnext,Encoding,ForwardIt>) {
+    return Encoding::rnext(begin, end);
+  } else {
+    return rdecode(begin, end).second;
+  }
+}
+
+template <typename Encoding>
+template <typename ForwardIt>
+inline constexpr
+auto alloy::core::encoding_traits<Encoding>::rnext(
+  ForwardIt begin,
+  ForwardIt end,
+  uquantity<char32> n
+) noexcept -> ForwardIt
+{
+  if constexpr (is_detected_v<detect_rnext,Encoding,ForwardIt,uquantity<char32>>) {
+    return Encoding::rnext(begin, end, n);
+  } else if constexpr (is_multi_unit) {
+    ALLOY_ASSERT(n <= length(begin, end));
+
+    // Multi-unit requires decoding n characters before it's possible to get a
+    // value
+    for (; n != uquantity<char32>{0u}; --n) {
+      begin = rnext(begin, end);
     }
     return begin;
   } else {
@@ -419,4 +596,31 @@ auto alloy::core::encoding_traits<Encoding>::find(
   }
 }
 
+template <typename Encoding>
+template <typename ForwardIt>
+inline constexpr
+auto alloy::core::encoding_traits<Encoding>::rfind(
+  ForwardIt first,
+  ForwardIt last,
+  char32 ch
+) noexcept -> ForwardIt
+{
+  if constexpr (is_detected_v<detect_rfind,Encoding,ForwardIt>) {
+    return Encoding::rfind(first, last, ch);
+  } else if constexpr (!is_multi_unit && is_detected_v<detect_find,Encoding,ForwardIt>) {
+    // Single-unit encodings will search the same forward as they do backwards,
+    // since there are no multi-units to decode first.
+    return Encoding::find(first, last, ch);
+  } else {
+    auto codepoint = char32{};
+    while (first != last) {
+      const auto it = first;
+      std::tie(codepoint, first) = rdecode(first, last, ch);
+      if (codepoint == ch) {
+        return it;
+      }
+    }
+    return last;
+  }
+}
 #endif /* ALLOY_CORE_STIRNG_ENCODING_ENCODING_TRAITS_HPP */
