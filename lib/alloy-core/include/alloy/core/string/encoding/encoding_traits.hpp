@@ -7,7 +7,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022-2023 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -80,13 +80,13 @@ namespace alloy::core {
     static_assert(std::is_class_v<Encoding>);
 
     template <typename T>
-    using detect_is_multi_unit = decltype(T::is_multi_unit);
+    using detect_max_units_per_char = decltype(T::max_units_per_char);
 
-    template <typename T, bool HasMultiUnit = is_detected_v<detect_is_multi_unit, T>>
-    struct is_multi_unit_impl : std::false_type{};
+    template <typename T, bool HasMaxUnits = is_detected_v<detect_max_units_per_char, T>>
+    struct max_units_per_char_impl : std::integral_constant<std::size_t,1>{};
 
     template <typename T>
-    struct is_multi_unit_impl<T,true> : std::bool_constant<T::is_multi_unit>{};
+    struct max_units_per_char_impl<T,true> : std::integral_constant<std::size_t,T::max_units_per_char>{};
 
     //-------------------------------------------------------------------------
     // Public Member Types
@@ -102,7 +102,9 @@ namespace alloy::core {
 
     static inline constexpr auto decode_sentinel = Encoding::decode_sentinel;
     static inline constexpr auto encode_sentinel = Encoding::encode_sentinel;
-    static inline constexpr auto is_multi_unit   = is_multi_unit_impl<Encoding>::value;
+
+    static inline constexpr auto max_units_per_char = max_units_per_char_impl<Encoding>::value;
+    static inline constexpr auto is_multi_unit      = max_units_per_char != 1u;
 
     //-------------------------------------------------------------------------
     // Encoding

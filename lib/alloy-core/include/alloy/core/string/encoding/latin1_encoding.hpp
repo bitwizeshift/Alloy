@@ -46,7 +46,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022-2023 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -99,7 +99,6 @@ namespace alloy::core {
 
     static constexpr auto decode_sentinel = char32{U'\uFFFD'};
     static constexpr auto encode_sentinel = char_type{};
-    static constexpr auto is_multi_unit = false;
 
     //-------------------------------------------------------------------------
     // Encoding

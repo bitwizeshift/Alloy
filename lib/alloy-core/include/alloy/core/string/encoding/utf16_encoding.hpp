@@ -100,7 +100,9 @@ namespace alloy::core {
 
     static constexpr auto decode_sentinel = char32{U'\uFFFD'};
     static constexpr auto encode_sentinel = char_type{};
-    static constexpr auto is_multi_unit = true;
+
+    /// The max number of code-units per code-point
+    static inline constexpr auto max_units_per_char = 2u;
 
     //-------------------------------------------------------------------------
     // Encoding
