@@ -433,6 +433,22 @@ namespace alloy::core {
     static inline constexpr auto to_utf32  = to<utf32_encoding>;
     /// \}
 
+    /// \brief Converts from `FromEncoding` to this encoding
+    ///
+    /// This is a convenience function that is the inverse of "to".
+    template <typename FromEncoding>
+    static inline constexpr auto from = convert<FromEncoding,encoding_type>;
+
+    /// \{
+    /// \brief Converts from the specified encoding to this encoding
+    static inline constexpr auto from_ansi   = from<ansi_encoding>;
+    static inline constexpr auto from_wide   = from<wide_encoding>;
+    static inline constexpr auto from_latin1 = from<latin1_encoding>;
+    static inline constexpr auto from_utf8   = from<utf8_encoding>;
+    static inline constexpr auto from_utf16  = from<utf16_encoding>;
+    static inline constexpr auto from_utf32  = from<utf32_encoding>;
+    /// \}
+
     /// \brief Computes the length of the specified string, in codepoints
     static inline constexpr auto length = encoded_length<encoding_type>;
 
