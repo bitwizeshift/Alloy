@@ -10,7 +10,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022-2023 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,7 @@
 #include "alloy/core/types.hpp" // char32
 #include "alloy/core/utilities/mixins.hpp"   // uninstantiable
 #include "alloy/core/utilities/quantity.hpp" // uquantity
+#include "alloy/core/utilities/optional.hpp"
 
 #include "alloy/core/string/encoding/ansi_encoding.hpp"
 #include "alloy/core/string/encoding/latin1_encoding.hpp"
@@ -93,7 +94,7 @@ namespace alloy::core {
 
     template <typename Encoding,
               typename Iterator = const typename Encoding::char_type*>
-    class basic_range;
+    class chars_range;
 
     //-------------------------------------------------------------------------
     // Public Utilities
@@ -255,51 +256,125 @@ namespace alloy::core {
     Iterator m_end;
   };
 
-  //===========================================================================
-  // class : encoding_utilities::basic_range
-  //===========================================================================
-
   /////////////////////////////////////////////////////////////////////////////
-  /// \brief An iterator type for converting encoded sequences into char32
-  ///        sequences
+  /// \brief A representation of code-points in a range from an iterator to a
+  ///        sequence of `Encoding` code-units.
   ///
   /// Encoding iterators are only capable of immutable views of the data, since
   /// writes may require relocating the rest of the sequence.
+  ///
+  /// \note chars_range is a VIEW of data that presents a projection. It must not
+  ///       outlive its source string, otherwise it can dangle, much like a
+  ///       `string_view`. This type only exists to present "standard" string
+  ///       accessing options on a UTF string, which would otherwise present
+  ///       costly linear-time access to each individual code-point.
   ///
   /// \tparam Encoding the encoding type
   /// \tparam Iterator the underlying iterator to wrap
   /////////////////////////////////////////////////////////////////////////////
   template <typename Encoding, typename Iterator>
-  class encoding_utilities::basic_range
+  class encoding_utilities::chars_range
   {
+    template <typename It>
+    using iterator_category_t = typename std::iterator_traits<It>::iterator_category;
+
     //-------------------------------------------------------------------------
     // Public Member Types
     //-------------------------------------------------------------------------
   public:
 
-    using iterator = basic_iterator<Encoding,Iterator>;
+    using value_type     = char32;
+    using size_type      = uquantity<value_type>;
+    using traits_type    = encoding_traits<Encoding>;
+    using iterator       = basic_iterator<Encoding, Iterator>;
+    using const_iterator = iterator;
 
     //-------------------------------------------------------------------------
-    // Constructors / Assignment
+    // Constructors
     //-------------------------------------------------------------------------
   public:
 
-    basic_range() = default;
-    constexpr basic_range(Iterator begin, Iterator end) noexcept;
-
-    basic_range(const basic_range& other) = default;
-    basic_range(basic_range&& other) = default;
-
-    auto operator=(const basic_range& other) -> basic_range& = default;
-    auto operator=(basic_range&& other) -> basic_range& = default;
+    /// \brief Constructs this chars object from the given iterator range and the
+    ///        known code-points.
+    ///
+    /// \param it the iterator
+    /// \param end the end iterator
+    constexpr chars_range(Iterator it, Iterator end) noexcept;
 
     //-------------------------------------------------------------------------
-    // Iteration
+    // Constructors
+    //-------------------------------------------------------------------------
+  public:
+
+    chars_range(const chars_range&) = default;
+    chars_range(chars_range&&) = default;
+
+    auto operator=(const chars_range&) -> chars_range& = default;
+    auto operator=(chars_range&&) -> chars_range& = default;
+
+    //-------------------------------------------------------------------------
+    // Element Access
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \brief Accesses the nth character in this encoding, if it exists
+    ///
+    /// \note Access of characters is only constant-time if `traits_type::is_multi_unit`
+    ///       is `false`, otherwise it's linear-time `O(n)`. This function exists
+    ///       instead of `operator[]` explicitly to indicate this, to prevent
+    ///       the expectation that `str[i]` be a constant access in a loop.
+    ///
+    /// \note This function returns an optional codepoint if one exists. If the
+    ///       index refers to an invalid character in the sequence, this function
+    ///       returns null.
+    ///
+    /// \param n the index
+    /// \return the code-point at index \p n
+    constexpr auto nth(
+      uquantity<char32> n,
+      char32 replacement = traits_type::decode_sentinel
+    ) const noexcept -> optional<char32>;
+
+    /// \brief Accesses the underlying character at index \p n without any
+    ///        validity checking
+    ///
+    /// \note Access of characters is only constant-time if `traits_type::is_multi_unit`
+    ///       is `false`, otherwise it's linear-time `O(n)`. This function exists
+    ///       instead of `operator[]` explicitly to indicate this, to prevent
+    ///       the expectation that `str[i]` be a constant access in a loop.
+    ///
+    /// \note This function is unchecked, meaning it's up to the caller to ensure
+    ///       that the boundary is correct.
+    ///
+    /// \pre `n <= self->length()`
+    /// \param n the index at n
+    /// \param replacement the optional replacement character to use if the string
+    ///                    is not correctly encoded
+    constexpr auto nth_unchecked(
+      uquantity<char32> n,
+      char32 replacement = traits_type::decode_sentinel
+    ) const noexcept -> char32;
+
+    //-------------------------------------------------------------------------
+    // Capacity
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \brief Counts the number of code-points in this range
+    ///
+    /// \return the number of code-points in this string
+    constexpr auto count() const noexcept -> uquantity<char32>;
+
+    //-------------------------------------------------------------------------
+    // Iterator
     //-------------------------------------------------------------------------
   public:
 
     constexpr auto begin() const noexcept -> iterator;
+    constexpr auto cbegin() const noexcept -> const_iterator;
+
     constexpr auto end() const noexcept -> iterator;
+    constexpr auto cend() const noexcept -> const_iterator;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -337,8 +412,8 @@ namespace alloy::core {
     using iterator = basic_iterator<const char_type*>;
 
     template <typename Iterator>
-    using basic_range = encoding_utilities::basic_range<Encoding,Iterator>;
-    using range = basic_range<const char_type*>;
+    using chars_range = encoding_utilities::chars_range<Encoding,Iterator>;
+    using range = chars_range<const char_type*>;
 
     //-------------------------------------------------------------------------
     // Utilities
@@ -370,7 +445,7 @@ namespace alloy::core {
     /// \param end the end of the range
     template <typename ForwardIt>
     static constexpr auto range_from(ForwardIt begin, ForwardIt end)
-      noexcept -> basic_range<ForwardIt>;
+      noexcept -> chars_range<ForwardIt>;
   };
 
 } // namespace alloy::core
@@ -463,13 +538,17 @@ auto alloy::core::encoding_utilities::basic_iterator<Encoding,Iterator>::operato
 // class : encoding_utilities::basic_range
 //=============================================================================
 
+//=============================================================================
+// class : encoding_utilities::chars_range<Encoding,Iterator>
+//=============================================================================
+
 //-----------------------------------------------------------------------------
 // Constructors
 //-----------------------------------------------------------------------------
 
 template <typename Encoding, typename Iterator>
 inline constexpr
-alloy::core::encoding_utilities::basic_range<Encoding,Iterator>::basic_range(
+alloy::core::encoding_utilities::chars_range<Encoding,Iterator>::chars_range(
   Iterator begin,
   Iterator end
 ) noexcept
@@ -480,12 +559,69 @@ alloy::core::encoding_utilities::basic_range<Encoding,Iterator>::basic_range(
 }
 
 //-----------------------------------------------------------------------------
+// Element Access
+//-----------------------------------------------------------------------------
+
+template <typename Encoding, typename Iterator>
+inline constexpr
+auto alloy::core::encoding_utilities::chars_range<Encoding,Iterator>::nth(
+  uquantity<char32> n,
+  char32 replacement
+) const noexcept -> optional<char32>
+{
+  // TODO: optimize for single-unit encoding, which could use std::distance
+  // for the length if the Iterator is random-access.
+
+  auto count = uquantity<char32>{0u};
+  auto it = m_begin;
+  while (count != n && it != m_end) {
+    it = traits_type::next(it, m_end);
+    ++count;
+  }
+
+  if (ALLOY_UNLIKELY(it == m_end)) {
+    // This check is marked unlikely since it's uncommon to _intentionally_
+    // select an out-of-bounds character, and it would be better to optimize the
+    // likely path instead.
+    return std::nullopt;
+  }
+
+  return traits_type::decode(it, m_end, replacement).first;
+}
+
+template <typename Encoding, typename Iterator>
+inline constexpr
+auto alloy::core::encoding_utilities::chars_range<Encoding,Iterator>::nth_unchecked(
+  uquantity<char32> n,
+  char32 replacement
+) const noexcept -> char32
+{
+  const auto it = traits_type::next(m_begin, m_end, n);
+
+  auto result = char32{};
+  std::tie(result, std::ignore) = traits_type::decode(it, m_end, replacement);
+  return result;
+}
+
+//-----------------------------------------------------------------------------
+// Capacity
+//-----------------------------------------------------------------------------
+
+template <typename Encoding, typename Iterator>
+inline constexpr
+auto alloy::core::encoding_utilities::chars_range<Encoding,Iterator>::count()
+  const noexcept -> uquantity<char32>
+{
+  return traits_type::length(m_begin, m_end);
+}
+
+//-----------------------------------------------------------------------------
 // Iteration
 //-----------------------------------------------------------------------------
 
 template <typename Encoding, typename Iterator>
 inline constexpr
-auto alloy::core::encoding_utilities::basic_range<Encoding,Iterator>::begin()
+auto alloy::core::encoding_utilities::chars_range<Encoding,Iterator>::begin()
   const noexcept -> iterator
 {
   return iterator{m_begin, m_end};
@@ -493,10 +629,26 @@ auto alloy::core::encoding_utilities::basic_range<Encoding,Iterator>::begin()
 
 template <typename Encoding, typename Iterator>
 inline constexpr
-auto alloy::core::encoding_utilities::basic_range<Encoding,Iterator>::end()
+auto alloy::core::encoding_utilities::chars_range<Encoding,Iterator>::cbegin()
+  const noexcept -> const_iterator
+{
+  return begin();
+}
+
+template <typename Encoding, typename Iterator>
+inline constexpr
+auto alloy::core::encoding_utilities::chars_range<Encoding,Iterator>::end()
   const noexcept -> iterator
 {
   return iterator{m_end, m_end};
+}
+
+template <typename Encoding, typename Iterator>
+inline constexpr
+auto alloy::core::encoding_utilities::chars_range<Encoding,Iterator>::cend()
+  const noexcept -> const_iterator
+{
+  return end();
 }
 
 //=============================================================================
@@ -509,9 +661,9 @@ inline constexpr
 auto alloy::core::encoding_utilities::encoding<Encoding>::range_from(
   ForwardIt begin,
   ForwardIt end
-) noexcept -> basic_range<ForwardIt>
+) noexcept -> chars_range<ForwardIt>
 {
-  return basic_range<ForwardIt>{begin, end};
+  return chars_range<ForwardIt>{begin, end};
 }
 
 
