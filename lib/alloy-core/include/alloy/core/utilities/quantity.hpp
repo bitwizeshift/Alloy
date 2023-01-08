@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2020, 2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2020, 2022-2023 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -202,7 +202,7 @@ namespace alloy::core {
     /// \brief Constructs this quantity with the specified count
     ///
     /// \param count the count to construct this with
-    explicit constexpr quantity(const Rep& count) noexcept;
+    constexpr quantity(const Rep& count) noexcept;
 
     /// \brief Explicitly converts a quantity of U type to a quantity of T
     ///
