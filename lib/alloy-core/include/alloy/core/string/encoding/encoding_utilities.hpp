@@ -43,6 +43,7 @@
 #include "alloy/core/utilities/optional.hpp"
 
 #include "alloy/core/string/encoding/ansi_encoding.hpp"
+#include "alloy/core/string/encoding/ascii_encoding.hpp"
 #include "alloy/core/string/encoding/latin1_encoding.hpp"
 #include "alloy/core/string/encoding/wide_encoding.hpp"
 #include "alloy/core/string/encoding/utf8_encoding.hpp"
@@ -151,6 +152,7 @@ namespace alloy::core {
     struct encoding;
 
     using ansi   = encoding<ansi_encoding>;
+    using ascii  = encoding<ascii_encoding>;
     using latin1 = encoding<latin1_encoding>;
     using wide   = encoding<wide_encoding>;
     using utf8   = encoding<utf8_encoding>;
@@ -426,6 +428,7 @@ namespace alloy::core {
     /// \{
     /// \brief Converts this encoding to the specified encoding
     static inline constexpr auto to_ansi   = to<ansi_encoding>;
+    static inline constexpr auto to_ascii  = to<ascii_encoding>;
     static inline constexpr auto to_wide   = to<wide_encoding>;
     static inline constexpr auto to_latin1 = to<latin1_encoding>;
     static inline constexpr auto to_utf8   = to<utf8_encoding>;
@@ -442,6 +445,7 @@ namespace alloy::core {
     /// \{
     /// \brief Converts from the specified encoding to this encoding
     static inline constexpr auto from_ansi   = from<ansi_encoding>;
+    static inline constexpr auto from_ascii  = from<ascii_encoding>;
     static inline constexpr auto from_wide   = from<wide_encoding>;
     static inline constexpr auto from_latin1 = from<latin1_encoding>;
     static inline constexpr auto from_utf8   = from<utf8_encoding>;

@@ -108,6 +108,7 @@ set(header_files
 
   # Strings
   include/alloy/core/string/encoding/ansi_encoding.hpp
+  include/alloy/core/string/encoding/ascii_encoding.hpp
   include/alloy/core/string/encoding/encoding_converter.hpp
   include/alloy/core/string/encoding/encoding_traits.hpp
   include/alloy/core/string/encoding/encoding_utilities.hpp
