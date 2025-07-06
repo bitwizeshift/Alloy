@@ -177,6 +177,10 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   add_compile_options(/W4 /WX)
 endif ()
 
+if (ALLOY_COMPILE_TESTS)
+  include(CTest)
+endif ()
+
 ##############################################################################
 # Clang Tidy
 ##############################################################################
