@@ -1,22 +1,28 @@
-![Alloy Engine](doc/src/images/alloy-logo.png)
+# ![Alloy Engine](doc/src/images/alloy-logo.png)
 
-[![Release](https://img.shields.io/github/release/bitwizeshift/Alloy.svg)](https://github.com/bitwizeshift/Alloy/releases/latest)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/bitwizeshift/Alloy/master/LICENSE)
-[![Github Issues](https://img.shields.io/github/issues/bitwizeshift/Alloy.svg)](https://github.com/bitwizeshift/Alloy/issues)
+[![Release][release-badge]][release-link]
+[![License][license-badge]][license-link]
+[![Github Issues][issue-badge]][issue-link]
 
-## <a name="summary"></a>Summary
+[release-badge]: https://img.shields.io/github/release/bitwizeshift/Alloy.svg
+[release-link]:https://github.com/bitwizeshift/Alloy/releases/latest
+[license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
+[license-link]: https://raw.githubusercontent.com/bitwizeshift/Alloy/master/LICENSE
+[issue-badge]: https://img.shields.io/github/issues/bitwizeshift/Alloy.svg
+[issue-link]: https://github.com/bitwizeshift/Alloy/issues
 
-**Alloy** is a flexible game-engine and development kit under active
+## Summary
+
+**Alloy** is a flexible game-engine and development kit under semi-active
 development written in C++.
 
-It is characterized by upholding a strict set of design-goals which
-center around maintainability and readability through proper
-software engineering practices. The overall goal for this project
-is to be a well-rounded and easy-to-use, efficient game-engine.
+It is characterized by upholding a strict set of design-goals which center
+around maintainability and readability through proper software engineering
+practices. The overall goal for this project is to be a well-rounded and
+easy-to-use, efficient game-engine.
 
-It is inspired by many great open-source projects that
-have come before it, the complete list can be seen
-[below](#inspirations).
+It is inspired by many great open-source projects that have come before it, the
+complete list can be seen [below](#inspirations).
 
 ## Table of Contents
 
@@ -37,7 +43,7 @@ have come before it, the complete list can be seen
 * [Contributing Guidelines](.github/CONTRIBUTING.md) \
   Guidelines that must be followed in order to contribute to the project
 
-## <a name="features"></a>Features
+## Features
 
 * [x] Written with Modern C++ (C++17)
   * [x] Supports for `constexpr` wherever possible
@@ -54,7 +60,7 @@ have come before it, the complete list can be seen
 * [ ] Easily build scene graphs and skeletons
 * [ ] Manages game objects using entity-component system
 
-## <a name="components"></a>Components
+## Components
 
 **Alloy** is designed using component-based architecture in order to promote
 better logical design and reusability through code-sharing.
@@ -82,63 +88,40 @@ The library and application components are detailed below:
 
 TODO detail applications
 
-## <a name="inspirations"></a>Inspirations
+## Inspirations
 
 **Alloy** was inspired by a variety of existing open-source projects.
 Some of these projects are listed below:
 
-- [Godot](https://github.com/godotengine/godot)
-- [Blade](https://github.com/crazii/blade)
-- [Ogre](https://github.com/OGRECave/ogre/pulls)
-- [Nomad](https://github.com/taurheim/NomadECS)
-- [easy-engine](https://github.com/callebstrom/easy-engine)
+* [Godot](https://github.com/godotengine/godot)
+* [Blade](https://github.com/crazii/blade)
+* [Ogre](https://github.com/OGRECave/ogre/pulls)
+* [Nomad](https://github.com/taurheim/NomadECS)
+* [easy-engine](https://github.com/callebstrom/easy-engine)
 
 **Note:** _inspired_ does not mean that any code was taken without following
 proper license attribution. It simply means that certain designs and concepts
 may have been adjusted to align with what other existing projects are
 already doing.
 
-## <a name="tested-compilers"></a>Tested Compilers
+## Continuous Integration
 
-The following compilers are currently being tested through
-[continuous integration](#continuous-integration) with
-[Travis](https://travis-ci.com/bitwizeshift/Alloy) and
-[AppVeyor](https://ci.appveyor.com/project/bitwizeshift/Alloy/)
+* **Windows:** [![Windows Build Status][windows-status-badge]][windows-status-link]
+* **Linux:** [![Linux Build Status][linux-status-badge]][linux-status-link]
+* **macOS:** [![macOS Build Status][macos-status-badge]][macos-status-link]
 
-| Compiler              | Operating System  | Architectures |
-|-----------------------|-------------------|---------------|
-| g++-9                 | Ubuntu 18.04      | x86, x86_64   |
-| clang++-9             | Ubuntu 18.04      | x86, x86_64   |
-| clang xcode 11.3      | macOS (Latest)    | x86_64        |
-| Visual Studio 2019    | Windows (Latest)  | x86, x86_64   |
-| clang-cl              | Windows (Latest)  | x86, x86_64   |
-| clang++-9             | Windows (Latest)  | x86, x86_64   |
+[windows-status-badge]: https://github.com/bitwizeshift/Alloy/workflows/build-windows/badge.svg
+[windows-status-link]: https://github.com/bitwizeshift/Alloy/actions/workflows/build-windows.yaml
+[linux-status-badge]: https://github.com/bitwizeshift/Alloy/workflows/build-linux/badge.svg
+[linux-status-link]: https://github.com/bitwizeshift/Alloy/actions/workflows/build-linux.yaml
+[macos-status-badge]: https://github.com/bitwizeshift/Alloy/workflows/build-macos/badge.svg
+[macos-status-link]: https://github.com/bitwizeshift/Alloy/actions/workflows/build-macos.yaml
 
-## <a name="continuous-integration"></a>Continuous Integration
+## License
 
-| **Build**     | **Status**      |
-|---------------|-----------------|
-| Windows       | [![Windows Build Status](https://github.com/bitwizeshift/Alloy/workflows/build-windows/badge.svg)](https://github.com/bitwizeshift/Alloy/actions?query=workflow%3Abuild-windows) |
-| Linux        | [![Linux Build Status](https://github.com/bitwizeshift/Alloy/workflows/build-linux/badge.svg)](https://github.com/bitwizeshift/Alloy/actions?query=workflow%3Abuild-linux) |
-| macOS         | [![macOS Build Status](https://github.com/bitwizeshift/Alloy/workflows/build-macos/badge.svg)](https://github.com/bitwizeshift/Alloy/actions?query=workflow%3Abuild-macos) |
+**Alloy** is licensed under the [MIT License]
 
-
-
-## <a name="packaging"></a>Current Releases
-
-| **Host**            | **Release**      |
-|---------------------|------------------|
-| Github              | [![Release](https://img.shields.io/github/release/bitwizeshift/Alloy.svg)](https://github.com/bitwizeshift/Alloy/releases/latest) |
-| Conan               | [![Release](https://img.shields.io/github/release/bitwizeshift/Alloy.svg)](#)
-
-## <a name="license"></a>License
-
-<img align="right" src="http://opensource.org/trademarks/opensource/OSI-Approved-License-100x137.png">
-
-**Alloy** is licensed under the
-[MIT License](http://opensource.org/licenses/MIT):
-
-> Copyright &copy; 2018 Matthew Rodusek
+> Copyright &copy; 2018-2025 Matthew Rodusek
 >
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal
@@ -157,3 +140,5 @@ The following compilers are currently being tested through
 > LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 > OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 > SOFTWARE.
+
+[MIT License]: http://opensource.org/licenses/MIT
