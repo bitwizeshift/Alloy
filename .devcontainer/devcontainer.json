@@ -1,0 +1,92 @@
+{
+  "name": "Alloy Dev Container",
+  "build": {
+    "dockerfile": "../tools/dev-container.dockerfile",
+    "context": ".."
+  },
+  "postCreateCommand": "go mod download",
+  "customizations": {
+    "codespaces": {
+      "openFiles": [
+        "README.md"
+      ]
+    },
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.cpptools-themes",
+        "ms-vscode.cmake-tools",
+        "vadimcn.vscode-lldb",
+        "matepek.vscode-catch2-test-adapter",
+        "llvm-vs-code-extensions.vscode-clangd",
+
+        "bierner.markdown-mermaid",
+        "bierner.markdown-preview-github-styles",
+        "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
+        "davidanson.vscode-markdownlint",
+        "eamodio.gitlens",
+        "github.copilot-chat",
+        "github.copilot",
+        "github.vscode-github-actions",
+        "ms-azuretools.vscode-docker",
+        "redhat.vscode-yaml",
+        "yzhang.markdown-all-in-one"
+      ],
+      "settings": {
+        "[git-commit]": {
+          "editor.rulers": [
+            50,
+            72
+          ]
+        },
+        "[go]": {
+          "editor.insertSpaces": false
+        },
+        "editor.tabSize": 2,
+        "editor.formatOnSave": true,
+        "markdown.extension.list.indentationSize": "adaptive",
+        "markdown.extension.italic.indicator": "_",
+        "markdown.extension.bold.indicator": "**",
+        "markdown.extension.orderedList.marker": "ordered",
+        "cmake.exportCompileCommandsFile": true,
+        "clangd.arguments": [
+          "--compile-commands-dir=${workspaceFolder}/build/cmake-clang"
+        ],
+        "cmake.configureOnOpen": true,
+        "cmake.configureArgs": [
+          "-DALLOY_COMPILE_TESTS=ON",
+          "-DALLOY_COMPILE_EXAMPLES=ON",
+          "-DALLOY_COMPILE_EXTRAS=ON",
+          "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+          "-DALLOY_COMPILE_EXTRAS_SDL2=ON"
+        ],
+        "cmake.useCMakePresets": "always",
+        "cmake.buildDirectory": "${workspaceFolder}/build/cmake-clang",
+        "cmake.preferredGenerators": [
+          "Ninja Multi-Config",
+          "Ninja",
+          "Unix Makefiles",
+          "NMake Makefiles",
+          "MinGW Makefiles",
+          "MSYS Makefiles",
+          "Xcode"
+        ],
+        "files.associations": {
+          "list": "cpp",
+          "unordered_map": "cpp",
+          "regex": "cpp",
+          "bitset": "cpp",
+          "any": "cpp"
+        }
+      }
+    }
+  },
+  "remoteEnv": {
+    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  }
+}
