@@ -27,7 +27,7 @@ RUN mkdir -p /opt/local/ninja/bin &&                                           \
     if [ "$(uname -i)" = "aarch64" ]; then                                     \
       export archive=ninja-linux-aarch64;                                      \
     else                                                                       \
-      export archive=ninja-linux.zip;                                          \
+      export archive=ninja-linux;                                              \
     fi &&                                                                      \
     curl -fsSL -o "${archive}.zip"                                             \
       https://github.com/ninja-build/ninja/releases/download/v${NINJA_VERSION}/${archive}.zip && \
