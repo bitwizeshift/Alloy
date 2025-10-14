@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+    paths:
+      - .github/workflows/build-dev-container.yaml
+      - tools/dev-container.dockerfile
 
 permissions:
   contents: read
@@ -14,6 +17,7 @@ permissions:
 jobs:
   build-and-push:
     name: Build and Push dev-container
+    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
