@@ -15,12 +15,7 @@ messages are formed.
 
 * must be no longer than 50 characters
 
-* must be prefixed by an [emoji key](#emoji-key) to indicate what the change
-  is, followed by a space
-
-  * If a commit may use more than one emoji to identify the change, it might
-    indicate that the change is _not granular enough_, and you may be a
-    candidate to be broken down into smaller commits for easier consumption
+* must summarize the change being performed
 
 **Commit messages:**
 
@@ -34,13 +29,60 @@ messages are formed.
   * In general, more details are always better to help identify the cause of
     changes in a repository
 
-## Emoji Key
+* Should contain a `Change-Category:` Git Trailer to help categorize the commit.
+  See [Trailers](#trailers) for more information.
 
-Emojis are used to prefix commit titles in order to simplify categorization
+## Trailers
+
+### `Fixes`
+
+The `Fixes` Git Trailer is used to indicate that a commit resolves an issue
+tracked in the project's issue tracker.
+
+This borrows from GitHub's automatic issue closing syntax. The format is as
+follows:
+
+```text
+Fixes: #<issue-number>
+```
+
+### `Change-Category`
+
+`Change-Category` is a Git Trailer that may be added to commit messages to help
+categorize the type of change being performed.
+
+The following categories are supported:
+
+* `trivial` - A commit that makes a trivial change that does not affect the
+  codebase in any meaningful way. Examples include changes to documentation,
+  comments, infrastructure, or other non-functional changes.
+
+* `bugfix` - A commit that fixed a bug or regression in the codebase. Commits
+  documented with this category should only be fixing unintended behaviors
+  without adding new functionality or breaking existing functionality. This is
+  analogous to a "patch" change in semantic versioning.
+
+* `improvement` - A commit that improves existing functionality without
+  adding new features. This is analogous to a "minor" change in semantic
+  versioning.
+
+* `breaking-change` - A commit that introduces a change that is not backward
+  compatible. This is analogous to a "major" change in semantic versioning.
+
+## Legacy
+
+When viewing the history of this project, you may see commits following
+different standards than are outlined here. The documentation for this practice
+is preserved to help understand the initial intent of the commits, but going
+forward, all commits should follow the standards outlined above.
+
+### Emoji Keys
+
+Emojis were used to prefix commit titles in order to simplify categorization
 of git log messages.
 
-Use the table below to identify which prefixes should be used for the
-respective change:
+The table below identifies which prefixes should be used for the respective
+change:
 
 | Emoji | Reason                                                              |
 |---|-------------------------------------------------------------------------|
@@ -63,8 +105,3 @@ respective change:
 | ♿ | Accessibility                                                           |
 | 🌐 | Localization / Internationalization                                    |
 | 🚧 | WIP                                                                    |
-
-**Note:** This list may be incomplete, and not cover all possible areas that
-would be needed. Please feel free to start a discussion if new tags would be
-more appropriate. Similarly, if there are more appropriate emojis to use as
-tags, feel free to provide suggestions!

@@ -138,9 +138,10 @@ def main():
         "🌐",
         "🚧",
     ]
+    _ = PREFIXES
     message = GitMessage(
         lines,
-        prefixes=PREFIXES,
+        prefixes=None,
     )
 
     reporter = CheckReporter(
