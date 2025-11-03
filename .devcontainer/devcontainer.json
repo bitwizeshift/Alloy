@@ -4,7 +4,6 @@
     "dockerfile": "../tools/dev-container.dockerfile",
     "context": ".."
   },
-  "postCreateCommand": "go mod download",
   "customizations": {
     "codespaces": {
       "openFiles": [

@@ -2,7 +2,7 @@
 CPMAddPackage(
   NAME CPMLicenses.cmake
   GITHUB_REPOSITORY cpm-cmake/CPMLicenses.cmake
-  VERSION 0.0.5
+  VERSION 0.0.7
 )
 
 #===============================================================================
@@ -27,7 +27,7 @@ set_property(
 
 CPMAddPackage(
   GITHUB_REPOSITORY fmtlib/fmt
-  GIT_TAG 8.0.1
+  GIT_TAG 12.1.0
   OPTIONS
     "FMT_INSTALL OFF"
     "FMT_DOC OFF"
@@ -61,7 +61,7 @@ if (ALLOY_COMPILE_TESTS)
 
   CPMAddPackage(
     GITHUB_REPOSITORY catchorg/Catch2
-    VERSION 2.13.7
+    VERSION 2.13.8
     OPTIONS
       "CATCH_USE_VALGRIND OFF"
       "CATCH_BUILD_TESTING OFF"
@@ -81,7 +81,7 @@ if (ALLOY_COMPILE_TESTS)
 
   CPMAddPackage(
     GITHUB_REPOSITORY rollbear/trompeloeil
-    VERSION 41
+    VERSION 49
     OPTIONS
       "TROMPELOEIL_INSTALL_DOCS OFF"
   )

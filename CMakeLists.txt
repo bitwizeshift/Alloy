@@ -169,6 +169,8 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
   # classes that may also define inline functions
   add_compile_options(-Wno-ignored-attributes)
 
+  add_compile_options(-Wno-c++20-extensions)
+
   # Necessary for any uses of OpenGL on Apple
   if (APPLE)
     add_compile_options(-Wno-deprecated-declarations)
