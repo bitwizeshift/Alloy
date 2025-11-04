@@ -7,7 +7,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022-2023 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022-2023, 2025 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -48,6 +48,37 @@
 
 namespace alloy::core {
 
+  /// \brief A trait for identifying encodings that may be subsets of other
+  ///        encodings.
+  ///
+  /// This should be specialized for any encoding wanting to identify being a
+  /// subset of another one, such as ascii and utf8, or wide and utf16 on Windows.
+  ///
+  /// This trait enables optimizations for certain operations since they can be
+  /// treated as the same underlying encoding type.
+  ///
+  /// \tparam SubsetEncoding the encoding to test is a subset
+  /// \tparam FullEncoding the encoding to test is the superset
+  template <typename SubsetEncoding, typename FullEncoding>
+  struct is_subset_encoding_of : std::false_type{};
+
+  /// \brief A trait for identifying compatible encodings which may be compared
+  ///        directly with one-another without requiring decoding of code-points.
+  ///
+  /// This trait should NOT be specialized or modified. Specialize
+  /// `is_subset_encoding_of` instead, and allow this trait to pick up that the
+  /// two are compatible.
+  ///
+  /// This trait is effectively an aggregate that checks `is_subset_encoding_of`
+  /// bidirectionally between `Encoding1` and `Encoding2`.
+  ///
+  /// \tparam Encoding1 the first encoding to compare
+  /// \tparam Encoding2 the second encoding to compare
+  template <typename Encoding1, typename Encoding2>
+  struct is_compatible_encoding : std::disjunction<
+    is_subset_encoding_of<Encoding1, Encoding2>,
+    is_subset_encoding_of<Encoding2, Encoding1>
+  >{};
 
   /////////////////////////////////////////////////////////////////////////////
   /// \brief Traits for character encodings

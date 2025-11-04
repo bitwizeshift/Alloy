@@ -10,7 +10,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022-2023 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022-2023, 2025 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -467,6 +467,20 @@ namespace alloy::core {
     static constexpr auto range_from(ForwardIt begin, ForwardIt end)
       noexcept -> chars_range<ForwardIt>;
   };
+
+  template <>
+  struct is_subset_encoding_of<ansi_encoding, utf8_encoding> : std::true_type{};
+
+  template <>
+  struct is_subset_encoding_of<ansi_encoding, latin1_encoding> : std::true_type{};
+
+#if defined(_WIN32)
+  template <>
+  struct is_subset_encoding_of<wide_encoding, utf16_encoding> : std::true_type{};
+#else
+  template <>
+  struct is_subset_encoding_of<wide_encoding, utf32_encoding> : std::true_type{};
+#endif
 
 } // namespace alloy::core
 
