@@ -1,13 +1,14 @@
-////////////////////////////////////////////////////////////////////////////////
-/// \file span.hpp
-///
-/// \brief This header provides definitions from the C++ header <span>
-////////////////////////////////////////////////////////////////////////////////
+/*****************************************************************************
+ * \file span.hpp
+ *
+ * \brief This header provides a span implementation similar to `std::span` in
+ *        C++20.
+ *****************************************************************************/
 
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2020 Matthew Rodusek All rights reserved.
+  Copyright (c) 2020, 2025 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +47,6 @@ namespace alloy::core {
 // https://github.com/bitwizeshift/backportcpp
 
 #include <cstddef>     // byte
-#include <memory>      // to_address
 #include <type_traits> // conjunction, remove_cvref_t, etc
 
 #include <cstddef>  // std::size_t

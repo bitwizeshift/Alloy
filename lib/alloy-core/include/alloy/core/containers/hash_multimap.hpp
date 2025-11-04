@@ -1,13 +1,14 @@
 /*****************************************************************************
  * \file hash_multimap.hpp
  *
- * \todo
+ * \brief This header provides a hash_multimap container wrapper around the
+ *        `std::unordered_multimap`, which makes it explicitly copyable.
  *****************************************************************************/
 
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019, 2025 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +39,6 @@
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 
 #include <unordered_map> // std::unordered_multimap
-#include <memory>        // std::allocator
 #include <functional>    // std::equal_to, std::hash
 #include <utility>       // std::pair
 

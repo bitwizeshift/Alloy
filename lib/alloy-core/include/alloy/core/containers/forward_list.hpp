@@ -1,13 +1,14 @@
 /*****************************************************************************
  * \file forward_list.hpp
  *
- * \todo
+ * \brief This header provides a forward_list container wrapper around the
+ *        `std::forward_list`, which makes it explicitly copyable.
  *****************************************************************************/
 
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019, 2025 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -38,8 +39,6 @@
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 
 #include <forward_list> // std::forward_list
-#include <memory>       // std::allocator
-
 
 namespace alloy::core {
 

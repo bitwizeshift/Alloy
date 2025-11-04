@@ -1,13 +1,14 @@
 /*****************************************************************************
  * \file queue.hpp
  *
- * \todo
+ * \brief This header provides a stack container wrapper around the
+ *        `std::stack`, which makes it explicitly copyable.
  *****************************************************************************/
 
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019, 2025 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +35,6 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 #include "alloy/core/containers/deque.hpp"
 
