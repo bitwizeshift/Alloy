@@ -4,7 +4,7 @@ from pathlib import Path
 import sys  # nopep8
 sys.path.append(str(Path(__file__).resolve().parents[1]))  # nopep8
 
-from typing import List, Sequence
+from typing import List, Sequence, Union, Mapping
 from python_utilities.checks import CheckReporter, CheckFunction, CheckResult
 
 
@@ -14,12 +14,23 @@ class GitMessage:
                  message: List[str],
                  desired_header_length: int = 50,
                  desired_body_length: int = 72,
-                 prefixes: Sequence[str] = None):
+                 prefixes: Union[Sequence[str],None] = None,
+                 change_categories: Union[Sequence[str],None] = None
+                 ):
         # Strip out all lines that contain comments.
-        self._message = [line for line in message if not line.startswith("#")]
+        self._message = []
+        for line in message:
+            line = line.strip()
+            if line.startswith("#"):
+                if "--- >8 ---" in line:
+                    break
+                continue
+            self._message.append(line)
+
         self._desired_header_length = desired_header_length
         self._desired_body_length = desired_body_length
-        self._prefixes: Sequence[str] = prefixes
+        self._prefixes = prefixes
+        self._change_categories = change_categories
 
     def check_header(self) -> CheckResult:
         """
@@ -100,6 +111,48 @@ class GitMessage:
             )
         return result
 
+    def check_change_category(self) -> CheckResult:
+        TRAILER_KEY="Change-Category"
+        trailers = self._extract_trailers()
+        result = CheckResult()
+
+        if self._change_categories is None:
+            return result
+
+        if TRAILER_KEY not in trailers:
+            result.returncode = 1
+            result.print_error(
+                f"Error: Commit message is missing '{TRAILER_KEY}' trailer."
+            )
+            return result
+
+        categories = trailers[TRAILER_KEY]
+        for category in categories:
+            if category not in self._change_categories:
+                result.returncode = 1
+                categories_string = "`" + "`, `".join(self._change_categories) + "`"
+                result.print_error(
+                    f"Error: Invalid change-category '{category}'.",
+                    f"Acceptable change-categories are:",
+                )
+                result.print_error(categories_string)
+        return result
+
+    def _extract_trailers(self) -> Mapping[str,List[str]]:
+        trailers: Mapping[str,List[str]] = {}
+        for line in reversed(self._message):
+            if line.strip() == "":
+                continue
+            if ':' not in line:
+                break
+            key, value = line.split(':', 1)
+            key = key.strip()
+            value = value.strip()
+            if key not in trailers:
+                trailers[key] = []
+            trailers[key].append(value)
+        return trailers
+
 
 def main():
     if len(sys.argv) != 2:
@@ -138,10 +191,17 @@ def main():
         "🌐",
         "🚧",
     ]
+    CHANGE_CATEGORIES=[
+        "trivial",
+        "bugfix",
+        "improvement",
+        "breaking-change",
+    ]
     _ = PREFIXES
     message = GitMessage(
         lines,
         prefixes=None,
+        change_categories=CHANGE_CATEGORIES,
     )
 
     reporter = CheckReporter(
@@ -161,6 +221,11 @@ def main():
     reporter.add_check(
         CheckFunction(
             "Checking message format", GitMessage.check_format, message
+        )
+    )
+    reporter.add_check(
+        CheckFunction(
+            "Checking change-category trailer", GitMessage.check_change_category, message
         )
     )
 
