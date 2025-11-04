@@ -47,7 +47,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022-2023 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022-2023, 2025 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -225,7 +225,7 @@ inline constexpr
 auto alloy::core::utf32_encoding::length(ForwardIt begin, ForwardIt end)
   noexcept -> uquantity<char32>
 {
-  return uquantity<char32>{std::distance(begin, end)};
+  return uquantity<char32>{static_cast<std::size_t>(std::distance(begin, end))};
 }
 
 template <typename ForwardIt>
@@ -243,3 +243,4 @@ auto alloy::core::utf32_encoding::next(
 }
 
 #endif /* ALLOY_CORE_STRING_ENCODING_UTF32_ENCODING_HPP */
+

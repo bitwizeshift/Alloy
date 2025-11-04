@@ -596,7 +596,7 @@ auto alloy::core::encoding_traits<Encoding>::length(
     return count;
   } else {
     // Non-multi-unit codepoints can be computed by counting distance
-    return uquantity<char32>{std::distance(first, last)};
+    return uquantity<char32>{static_cast<std::size_t>(std::distance(first, last))};
   }
 }
 
