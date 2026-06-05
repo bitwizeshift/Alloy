@@ -157,6 +157,9 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
   # classes that may also define inline functions
   add_compile_options(-Wno-ignored-attributes)
 
+  # imgui has non-trivial memcopy calls
+  add_compile_options(-Wno-nontrivial-memcall)
+
 elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
         "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   add_compile_options(-Wall -Werror -Wextra -pedantic -pedantic-errors)
@@ -170,6 +173,9 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
   add_compile_options(-Wno-ignored-attributes)
 
   add_compile_options(-Wno-c++20-extensions)
+
+  # imgui has non-trivial memcopy calls
+  add_compile_options(-Wno-nontrivial-memcall)
 
   # Necessary for any uses of OpenGL on Apple
   if (APPLE)
