@@ -55,6 +55,30 @@
         "CXX": "g++"
       }
     }, {
+      "name": "coverage-clang",
+      "inherits": "clang",
+      "displayName": "Clang coverage build",
+      "description": "Clang build with the 'coverage' target enabled",
+      "cacheVariables": {
+        "ALLOY_ENABLE_COVERAGE": "ON",
+        "ALLOY_COMPILE_BENCHMARKS": "OFF",
+        "ALLOY_COMPILE_EXAMPLES": "OFF",
+        "ALLOY_COMPILE_EXTRAS": "OFF",
+        "ALLOY_COMPILE_SURROGATE_TESTS": "OFF"
+      }
+    }, {
+      "name": "coverage-gcc",
+      "inherits": "gcc",
+      "displayName": "GCC coverage build",
+      "description": "GCC build with the 'coverage' target enabled",
+      "cacheVariables": {
+        "ALLOY_ENABLE_COVERAGE": "ON",
+        "ALLOY_COMPILE_BENCHMARKS": "OFF",
+        "ALLOY_COMPILE_EXAMPLES": "OFF",
+        "ALLOY_COMPILE_EXTRAS": "OFF",
+        "ALLOY_COMPILE_SURROGATE_TESTS": "OFF"
+      }
+    }, {
       "name": "clang-cl",
       "inherits": "windows-base",
       "displayName": "Win32 clang-cl build",
@@ -81,6 +105,14 @@
       "configurePreset": "gcc",
       "configuration": "Debug"
     }, {
+      "name": "coverage-clang",
+      "configurePreset": "coverage-clang",
+      "configuration": "Coverage"
+    }, {
+      "name": "coverage-gcc",
+      "configurePreset": "coverage-gcc",
+      "configuration": "Coverage"
+    }, {
       "name": "clang-cl",
       "configurePreset": "clang-cl",
       "configuration": "Debug"
@@ -93,9 +125,15 @@
   "testPresets": [
     {
       "name": "default",
+      "output": {
+        "outputOnFailure": true
+      },
       "hidden": true,
-      "output": {"outputOnFailure": true},
-      "execution": {"noTestsAction": "error", "stopOnFailure": false}
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": false,
+        "jobs": 8
+      }
     }, {
       "name": "clang",
       "configurePreset": "clang",
@@ -103,6 +141,14 @@
     }, {
       "name": "gcc",
       "configurePreset": "gcc",
+      "inherits": "default"
+    }, {
+      "name": "coverage-clang",
+      "configurePreset": "coverage-clang",
+      "inherits": "default"
+    }, {
+      "name": "coverage-gcc",
+      "configurePreset": "coverage-gcc",
       "inherits": "default"
     }, {
       "name": "clang-cl",

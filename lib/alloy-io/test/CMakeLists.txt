@@ -12,7 +12,7 @@ source_group(
   FILES ${source_files}
 )
 
-add_executable(${PROJECT_NAME}IOTest
+add_test_executable(${PROJECT_NAME}IOTest
   ${source_files}
 )
 add_executable(${PROJECT_NAME}::IO::Test ALIAS ${PROJECT_NAME}IOTest)

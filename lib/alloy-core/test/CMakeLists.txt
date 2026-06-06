@@ -58,7 +58,7 @@ source_group(
   FILES ${source_files}
 )
 
-add_executable(${PROJECT_NAME}CoreTest
+add_test_executable(${PROJECT_NAME}CoreTest
   ${source_files}
 )
 add_executable(${PROJECT_NAME}::Core::Test ALIAS ${PROJECT_NAME}CoreTest)

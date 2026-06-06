@@ -9,7 +9,6 @@ set(ALLOY_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 set(CMAKE_MODULE_PATH "${ALLOY_MODULE_PATH}" "${CMAKE_MODULE_PATH}")
 
 include(CPM)
-include(BuildConfigurations)
 
 ##############################################################################
 # Project Options
@@ -26,6 +25,7 @@ option(ALLOY_COMPILE_BENCHMARKS "Compile and run the benchmarks for this library
 option(ALLOY_COMPILE_EXTRAS "Compiles extras that ship with this library" OFF)
 option(ALLOY_COMPILE_EXAMPLES "Compiles example programs that use this library" OFF)
 option(ALLOY_ENABLE_CLANG_TIDY "Enables clang-tidy integration" OFF)
+option(ALLOY_ENABLE_COVERAGE "Instrument the build and enable the 'coverage' target" OFF)
 option(ALLOY_ENABLE_EXCEPTIONS "Enable exception handling" ON)
 option(ALLOY_PATCH_COMPILE_COMMANDS "Patches the 'compile_commands.json' file to the build directory" OFF)
 
@@ -185,6 +185,15 @@ if (ALLOY_COMPILE_TESTS)
 endif ()
 
 ##############################################################################
+# Build Configurations
+##############################################################################
+
+# Included after project() so the compiler is known: this registers the custom
+# build configurations (sanitizers and 'Coverage') and their flags, which must
+# be set before any library targets are created.
+include(BuildConfigurations)
+
+##############################################################################
 # Clang Tidy
 ##############################################################################
 
@@ -197,6 +206,9 @@ endif ()
 ##############################################################################
 # Targets
 ##############################################################################
+
+# Include utilities
+include(AddTestExecutable)
 
 # Library Targets
 
@@ -235,6 +247,13 @@ endif ()
 
 if (ALLOY_COMPILE_EXAMPLES)
   add_subdirectory("example")
+endif ()
+
+# Coverage target (created last, once every test target has been registered)
+
+if (ALLOY_ENABLE_COVERAGE)
+  include(CodeCoverage)
+  enable_coverage_target()
 endif ()
 
 ##############################################################################

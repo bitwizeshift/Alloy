@@ -6,7 +6,7 @@
 #[[
   The MIT License (MIT)
 
-  Copyright (c) 2022 Matthew Rodusek
+  Copyright (c) 2022, 2026 Matthew Rodusek
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -33,11 +33,39 @@ if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "The active build configuration")
 endif ()
 
-# Add additional build configurations if unspecified, and building for Clang
-# without cross-compiling
+# The custom build configurations below are only meaningful for a native
+# GCC/Clang toolchain. Anything else (e.g. MSVC, or cross-compiling) gets only
+# the standard configurations.
 
-if (NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CROSSCOMPILING)
-  message(STATUS "Sanitizers and coverage builds not currently supported")
+if (CMAKE_CROSSCOMPILING OR NOT
+    (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU"))
+  return ()
+endif ()
+
+#------------------------------------------------------------------------------
+# Coverage
+#------------------------------------------------------------------------------
+#
+# Supported on both GCC and Clang. Building this configuration instruments every
+# source compiled after this point; the 'coverage' target (see CodeCoverage)
+# turns the resulting data into a coverage report.
+
+list(APPEND CMAKE_CONFIGURATION_TYPES "Coverage")
+
+set(coverage_compile_flags "-O0" "-g" "--coverage")
+
+foreach (flag IN LISTS coverage_compile_flags)
+  string(APPEND CMAKE_C_FLAGS_COVERAGE " ${flag}")
+  string(APPEND CMAKE_CXX_FLAGS_COVERAGE " ${flag}")
+  add_compile_options($<$<CONFIG:Coverage>:${flag}>)
+endforeach ()
+
+string(APPEND CMAKE_EXE_LINKER_FLAGS_COVERAGE " --coverage")
+string(APPEND CMAKE_SHARED_LINKER_FLAGS_COVERAGE " --coverage")
+add_link_options($<$<CONFIG:Coverage>:--coverage>)
+
+# The sanitizer configurations below are currently only set up for Clang.
+if (NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   return ()
 endif ()
 
@@ -127,18 +155,4 @@ foreach (flag IN LISTS lsan_link_flags)
   string(APPEND CMAKE_EXE_LINKER_FLAGS_LSAN " ${flag}")
   string(APPEND CMAKE_SHARED_LINKER_FLAGS_LSAN " ${flag}")
   add_link_options($<$<CONFIG:LSan>:${flag}>)
-endforeach ()
-
-#------------------------------------------------------------------------------
-# Coverage
-#------------------------------------------------------------------------------
-
-list(APPEND CMAKE_CONFIGURATION_TYPES "Coverage")
-
-set(coverage_compile_flags "-O0" "-g" "--coverage")
-
-foreach (flag IN LISTS coverage_compile_flags)
-  string(APPEND CMAKE_C_FLAGS_COVERAGE " ${flag}")
-  string(APPEND CMAKE_CXX_FLAGS_COVERAGE " ${flag}")
-  add_compile_options($<$<CONFIG:Coverage>:${flag}>)
 endforeach ()

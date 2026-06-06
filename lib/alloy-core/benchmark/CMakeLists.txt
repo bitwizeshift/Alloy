@@ -32,4 +32,3 @@ set_target_properties(${PROJECT_NAME}CoreBenchmark
 ##############################################################################
 
 include(Catch)
-catch_discover_tests(${PROJECT_NAME}CoreBenchmark)
