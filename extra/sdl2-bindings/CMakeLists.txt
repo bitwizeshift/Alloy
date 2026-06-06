@@ -8,11 +8,6 @@ set(header_files
   include/alloy/extra/sdl2-bindings/sdl2_gl_window.hpp
   include/alloy/extra/sdl2-bindings/sdl2_pump_source.hpp
 )
-source_group(
-  TREE "${CMAKE_CURRENT_LIST_DIR}/include"
-  PREFIX "Header Files"
-  FILES ${header_files}
-)
 
 set(source_files
   src/alloy/extra/sdl2-bindings/sdl2_window.cpp
@@ -25,12 +20,18 @@ source_group(
   FILES ${source_files}
 )
 
-add_library(${PROJECT_NAME}ExtraSDL2Bindings
-  ${header_files}
-  ${source_files}
-)
+add_library(${PROJECT_NAME}ExtraSDL2Bindings)
 add_library(${PROJECT_NAME}::Extra::SDL2Bindings ALIAS
   ${PROJECT_NAME}ExtraSDL2Bindings
+)
+
+target_sources(${PROJECT_NAME}ExtraSDL2Bindings
+  PUBLIC
+    FILE_SET HEADERS
+      BASE_DIRS include
+      FILES ${header_files}
+  PRIVATE
+    ${source_files}
 )
 
 target_compile_features(${PROJECT_NAME}ExtraSDL2Bindings
@@ -53,11 +54,6 @@ else()
   )
 endif()
 
-target_include_directories(${PROJECT_NAME}ExtraSDL2Bindings
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
-  PUBLIC $<INSTALL_INTERFACE:include>
-)
-
 target_link_libraries(${PROJECT_NAME}ExtraSDL2Bindings
   PUBLIC SDL2::SDL2
   PUBLIC ${PROJECT_NAME}::IO
@@ -72,12 +68,11 @@ endif ()
 
 # Header Self-Containment Tests
 
-include(AddSelfContainmentTest)
+include(SurrogateTarget)
 
-if (ALLOY_COMPILE_SELF_CONTAINMENT_TESTS)
-  add_self_containment_test(${PROJECT_NAME}ExtraSDL2Bindings.SelfContainmentTest
+if (ALLOY_COMPILE_SURROGATE_TESTS)
+  add_surrogate_target(${PROJECT_NAME}ExtraSDL2Bindings.Surrogate
     TARGET ${PROJECT_NAME}ExtraSDL2Bindings
-    HEADERS ${header_files}
   )
 endif ()
 

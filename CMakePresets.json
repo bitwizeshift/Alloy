@@ -1,8 +1,8 @@
 {
   "version": 3,
   "cmakeMinimumRequired": {
-    "major": 3,
-    "minor": 22,
+    "major": 4,
+    "minor": 3,
     "patch": 0
   },
   "configurePresets": [
@@ -17,6 +17,7 @@
         "ALLOY_COMPILE_BENCHMARKS": "ON",
         "ALLOY_COMPILE_EXTRAS": "ON",
         "ALLOY_COMPILE_EXAMPLES": "ON",
+        "ALLOY_COMPILE_SURROGATE_TESTS": "ON",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "ALLOY_PATCH_COMPILE_COMMANDS": "ON"
       }

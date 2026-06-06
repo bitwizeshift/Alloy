@@ -6,11 +6,6 @@ set(header_files
   include/alloy/extra/win32-bindings/api.hpp
   include/alloy/extra/win32-bindings/win32_filesystem_monitor.hpp
 )
-source_group(
-  TREE "${CMAKE_CURRENT_LIST_DIR}/include"
-  PREFIX "Header Files"
-  FILES ${header_files}
-)
 
 set(source_files
   src/alloy/extra/win32-bindings/win32_filesystem_monitor.cpp
@@ -22,11 +17,17 @@ source_group(
   FILES ${source_files}
 )
 
-add_library(${PROJECT_NAME}ExtraWin32Bindings
-  ${header_files}
-  ${source_files}
-)
+add_library(${PROJECT_NAME}ExtraWin32Bindings)
 add_library(${PROJECT_NAME}::Extra::Win32Bindings ALIAS ${PROJECT_NAME}ExtraWin32Bindings)
+
+target_sources(${PROJECT_NAME}ExtraWin32Bindings
+  PUBLIC
+    FILE_SET HEADERS
+      BASE_DIRS include
+      FILES ${header_files}
+  PRIVATE
+    ${source_files}
+)
 
 target_compile_features(${PROJECT_NAME}ExtraWin32Bindings
   PUBLIC cxx_std_17
@@ -48,23 +49,17 @@ else()
   )
 endif()
 
-target_include_directories(${PROJECT_NAME}ExtraWin32Bindings
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
-  PUBLIC $<INSTALL_INTERFACE:include>
-)
-
 target_link_libraries(${PROJECT_NAME}ExtraWin32Bindings
   PUBLIC ${PROJECT_NAME}::IO
 )
 
 # Header Self-Containment Tests
 
-include(AddSelfContainmentTest)
+include(SurrogateTarget)
 
-if (ALLOY_COMPILE_SELF_CONTAINMENT_TESTS)
-  add_self_containment_test(${PROJECT_NAME}ExtraWin32Bindings.SelfContainmentTest
+if (ALLOY_COMPILE_SURROGATE_TESTS)
+  add_surrogate_target(${PROJECT_NAME}ExtraWin32Bindings.Surrogate
     TARGET ${PROJECT_NAME}ExtraWin32Bindings
-    HEADERS ${header_files}
   )
 endif ()
 

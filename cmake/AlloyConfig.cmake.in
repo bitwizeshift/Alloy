@@ -1,8 +1,11 @@
 @PACKAGE_INIT@
 
+include(CMakeFindDependencyMacro)
+
+# Public, system dependencies pulled in by the rendering components.
+find_dependency(OpenGL)
+find_dependency(GLEW)
+
 if (NOT TARGET Alloy::Core)
-  include("${CMAKE_CURRENT_LIST_DIR}/AlloyCoreTargets.cmake")
-endif ()
-if (NOT TARGET Alloy::Alloy)
   include("${CMAKE_CURRENT_LIST_DIR}/AlloyTargets.cmake")
 endif ()

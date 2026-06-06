@@ -1,8 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
-
-# Disable defaulting the warning flags for MSVC
-# this isn't bad, it's just inconvenient
-cmake_policy(SET CMP0092 NEW)
+cmake_minimum_required(VERSION 4.3)
 
 if (PROJECT_NAME)
   set(ALLOY_IS_SUBPROJECT TRUE)
@@ -22,10 +18,10 @@ include(BuildConfigurations)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-option(CMAKE_EXPORT_COMPILE_COMMANDS "Enable exporting compile-commands within CMake" ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Enable exporting compile-commands within CMake")
 option(BUILD_SHARED_LIBS "Whether to build this library as a shared library" ON)
 
-option(ALLOY_COMPILE_SELF_CONTAINMENT_TESTS "Include each public header independently in a .cpp file to determine header self-containment" ON)
+option(ALLOY_COMPILE_SURROGATE_TESTS "Compile each public header independently in a surrogate .cpp file to verify header self-containment" ON)
 option(ALLOY_COMPILE_TESTS "Compile and run the unit tests for this library" OFF)
 option(ALLOY_COMPILE_BENCHMARKS "Compile and run the benchmarks for this library" OFF)
 option(ALLOY_COMPILE_EXTRAS "Compiles extras that ship with this library" OFF)
@@ -216,11 +212,12 @@ add_subdirectory("lib/alloy-engine")
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME}
-  INTERFACE Alloy::Core
-  INTERFACE Alloy::IO
-# INTERFACE Alloy::Render
-# INTERFACE Alloy::Audio
-# INTERFACE Alloy::Engine
+  INTERFACE
+    Alloy::Core
+    Alloy::IO
+#   Alloy::Render
+#   Alloy::Audio
+#   Alloy::Engine
 )
 
 # Binary Targets
@@ -251,7 +248,9 @@ endif ()
 
 include(PatchCompileCommands)
 
-# Temporary, until installation code is fixed
+# Installation is currently disabled: exporting AlloyEngine pulls the vendored
+# tga-lib into the AlloyTargets export set, which is not yet packaged. The
+# install rules below are kept modern and ready for when that is resolved.
 return ()
 
 include(GNUInstallDirs)

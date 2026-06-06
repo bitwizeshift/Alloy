@@ -40,11 +40,6 @@ set(header_files
   include/alloy/engine/image/tga_image_loader.hpp
   include/alloy/engine/image/image_manager.hpp
 )
-source_group(
-  TREE "${CMAKE_CURRENT_LIST_DIR}/include"
-  PREFIX "Header Files"
-  FILES ${header_files}
-)
 
 set(source_files
   src/alloy/engine/entity_manager.cpp
@@ -58,12 +53,20 @@ source_group(
   FILES ${source_files}
 )
 
-add_library(${PROJECT_NAME}Engine
-  ${header_files}
-  ${generated_header_files}
-  ${source_files}
-)
+add_library(${PROJECT_NAME}Engine)
 add_library(${PROJECT_NAME}::Engine ALIAS ${PROJECT_NAME}Engine)
+
+target_sources(${PROJECT_NAME}Engine
+  PUBLIC
+    FILE_SET HEADERS
+      BASE_DIRS include
+      FILES ${header_files}
+    FILE_SET generated TYPE HEADERS
+      BASE_DIRS "${CMAKE_CURRENT_BINARY_DIR}/include"
+      FILES ${generated_header_files}
+  PRIVATE
+    ${source_files}
+)
 
 target_compile_features(${PROJECT_NAME}Engine
   PUBLIC cxx_std_17
@@ -71,15 +74,13 @@ target_compile_features(${PROJECT_NAME}Engine
 set_target_properties(${PROJECT_NAME}Engine
   PROPERTIES
     OUTPUT_NAME "alloy-engine"
+    EXPORT_NAME "Engine"
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
     FOLDER "Component Targets"
 )
 
 target_include_directories(${PROJECT_NAME}Engine
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-  PUBLIC $<INSTALL_INTERFACE:include>
   PRIVATE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party>
 )
 
@@ -91,12 +92,11 @@ target_link_libraries(${PROJECT_NAME}Engine
 
 # Header Self-Containment Tests
 
-include(AddSelfContainmentTest)
+include(SurrogateTarget)
 
-if (ALLOY_COMPILE_SELF_CONTAINMENT_TESTS)
-  add_self_containment_test(${PROJECT_NAME}Engine.SelfContainmentTest
+if (ALLOY_COMPILE_SURROGATE_TESTS)
+  add_surrogate_target(${PROJECT_NAME}Engine.Surrogate
     TARGET ${PROJECT_NAME}Engine
-    HEADERS ${header_files}
   )
 endif ()
 
@@ -110,32 +110,19 @@ endif ()
 # Installation
 ##############################################################################
 
-#if (ALLOY_IS_SUBPROJECT)
-  return()
-#endif ()
+# Installation is currently disabled: exporting AlloyEngine pulls the vendored
+# tga-lib into the AlloyTargets export set, which is not yet packaged. The
+# install rules below are kept modern and ready for when that is resolved.
+return ()
 
 include(GNUInstallDirs)
 
-set(ALLOY_CMAKE_CONFIG_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
-
-# Targets
 install(
   TARGETS "${PROJECT_NAME}Engine"
-  EXPORT "${PROJECT_NAME}EngineTargets"
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-)
-install(
-  EXPORT "${PROJECT_NAME}EngineTargets"
-  NAMESPACE "${PROJECT_NAME}::"
-  DESTINATION "${ALLOY_CMAKE_CONFIG_DESTINATION}"
-)
-
-# Includes
-install(
-  DIRECTORY "include/"
-  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-)
-install(
-  DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include/"
-  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+  EXPORT AlloyTargets
+  RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  FILE_SET HEADERS   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+  FILE_SET generated DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
 )

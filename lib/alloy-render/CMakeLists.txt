@@ -24,12 +24,6 @@ set(header_files
   include/alloy/render/mesh/unsafe_mesh_builder.hpp
 )
 
-source_group(
-  TREE "${CMAKE_CURRENT_LIST_DIR}/include"
-  PREFIX "Header Files"
-  FILES ${header_files}
-)
-
 set(source_files
   src/alloy/render/mesh/mesh.cpp
   src/alloy/render/mesh/2d/polygon_2d_builder.cpp
@@ -46,11 +40,17 @@ source_group(
   FILES ${source_files}
 )
 
-add_library(${PROJECT_NAME}Render
-  ${header_files}
-  ${source_files}
-)
+add_library(${PROJECT_NAME}Render)
 add_library(${PROJECT_NAME}::Render ALIAS ${PROJECT_NAME}Render)
+
+target_sources(${PROJECT_NAME}Render
+  PUBLIC
+    FILE_SET HEADERS
+      BASE_DIRS include
+      FILES ${header_files}
+  PRIVATE
+    ${source_files}
+)
 
 target_compile_features(${PROJECT_NAME}Render
   PUBLIC cxx_std_17
@@ -58,6 +58,7 @@ target_compile_features(${PROJECT_NAME}Render
 set_target_properties(${PROJECT_NAME}Render
   PROPERTIES
     OUTPUT_NAME "alloy-render"
+    EXPORT_NAME "Render"
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
     FOLDER "Component Targets"
@@ -72,24 +73,17 @@ else()
   )
 endif()
 
-target_include_directories(${PROJECT_NAME}Render
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-  PUBLIC $<INSTALL_INTERFACE:include>
-)
-
 target_link_libraries(${PROJECT_NAME}Render
   PUBLIC ${PROJECT_NAME}::Core
 )
 
 # Header Self-Containment Tests
 
-include(AddSelfContainmentTest)
+include(SurrogateTarget)
 
-if (ALLOY_COMPILE_SELF_CONTAINMENT_TESTS)
-  add_self_containment_test(${PROJECT_NAME}Render.SelfContainmentTest
+if (ALLOY_COMPILE_SURROGATE_TESTS)
+  add_surrogate_target(${PROJECT_NAME}Render.Surrogate
     TARGET ${PROJECT_NAME}Render
-    HEADERS ${header_files}
   )
 endif ()
 
@@ -103,32 +97,18 @@ endif ()
 # Installation
 ##############################################################################
 
-#if (ALLOY_IS_SUBPROJECT)
-  return()
-#endif ()
+# Installation is currently disabled: exporting AlloyEngine pulls the vendored
+# tga-lib into the AlloyTargets export set, which is not yet packaged. The
+# install rules below are kept modern and ready for when that is resolved.
+return ()
 
 include(GNUInstallDirs)
 
-set(ALLOY_CMAKE_CONFIG_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
-
-# Targets
 install(
   TARGETS "${PROJECT_NAME}Render"
-  EXPORT "${PROJECT_NAME}RenderTargets"
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-)
-install(
-  EXPORT "${PROJECT_NAME}RenderTargets"
-  NAMESPACE "${PROJECT_NAME}::"
-  DESTINATION "${ALLOY_CMAKE_CONFIG_DESTINATION}"
-)
-
-# Includes
-install(
-  DIRECTORY "include/"
-  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-)
-install(
-  DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/include/"
-  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+  EXPORT AlloyTargets
+  RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
 )
