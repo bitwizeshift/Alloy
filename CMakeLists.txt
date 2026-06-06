@@ -209,6 +209,7 @@ endif ()
 
 # Include utilities
 include(AddTestExecutable)
+include(AddBenchmarkExecutable)
 
 # Library Targets
 
@@ -254,6 +255,10 @@ endif ()
 if (ALLOY_ENABLE_COVERAGE)
   include(CodeCoverage)
   enable_coverage_target()
+endif ()
+
+if (ALLOY_COMPILE_BENCHMARKS)
+  enable_benchmark_target()
 endif ()
 
 ##############################################################################

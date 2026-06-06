@@ -12,7 +12,7 @@ source_group(
   FILES ${source_files}
 )
 
-add_executable(${PROJECT_NAME}CoreBenchmark
+add_benchmark_executable(${PROJECT_NAME}CoreBenchmark
   ${source_files}
 )
 add_executable(${PROJECT_NAME}::Core::Benchmark ALIAS ${PROJECT_NAME}CoreBenchmark)
@@ -26,9 +26,3 @@ set_target_properties(${PROJECT_NAME}CoreBenchmark
     OUTPUT_NAME "alloy-core-benchmark"
     FOLDER "Benchmark Targets"
 )
-
-##############################################################################
-# CTest
-##############################################################################
-
-include(Catch)
