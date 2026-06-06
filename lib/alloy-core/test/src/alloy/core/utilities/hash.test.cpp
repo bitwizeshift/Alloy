@@ -4,7 +4,7 @@
 */
 #include "alloy/core/utilities/hash.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 namespace alloy::core::test {
 namespace {

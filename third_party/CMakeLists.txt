@@ -61,19 +61,15 @@ if (ALLOY_COMPILE_TESTS)
 
   CPMAddPackage(
     GITHUB_REPOSITORY catchorg/Catch2
-    VERSION 2.13.8
+    VERSION 3.15.0
+    SYSTEM YES
     OPTIONS
-      "CATCH_USE_VALGRIND OFF"
-      "CATCH_BUILD_TESTING OFF"
-      "CATCH_BUILD_EXAMPLES OFF"
-      "CATCH_BUILD_EXTRA_TESTS OFF"
-      "CATCH_ENABLE_COVERAGE OFF"
-      "CATCH_ENABLE_WERROR OFF"
+      "CATCH_DEVELOPMENT_BUILD OFF"
       "CATCH_INSTALL_DOCS OFF"
-      "CATCH_INSTALL_HELPERS OFF"
+      "CATCH_INSTALL_EXTRAS OFF"
   )
 
-  set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${Catch2_SOURCE_DIR}/contrib" PARENT_SCOPE)
+  set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${Catch2_SOURCE_DIR}/extras" PARENT_SCOPE)
 
   #-----------------------------------------------------------------------------
   # Trompeloeil

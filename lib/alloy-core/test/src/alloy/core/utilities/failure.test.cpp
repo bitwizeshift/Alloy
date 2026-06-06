@@ -4,7 +4,7 @@
 */
 #include "alloy/core/utilities/result.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include <utility> // std::reference_wrapper
 #include <type_traits>

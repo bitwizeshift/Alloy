@@ -5,7 +5,7 @@
 #include <alloy/core/utilities/delegate.hpp>
 
 #include <memory>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 namespace alloy::core::test {
 namespace {

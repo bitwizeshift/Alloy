@@ -5,7 +5,7 @@
 #include "alloy/core/utilities/int_utilities.hpp"
 #include "alloy/core/types.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include <vector>
 #include <iterator>

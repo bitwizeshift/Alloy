@@ -4,7 +4,8 @@
 */
 #include "alloy/core/math/angle/basic_angle.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
 
 namespace alloy::core::test {
 namespace {

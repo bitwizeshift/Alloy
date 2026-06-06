@@ -5,9 +5,8 @@ if (PROJECT_NAME)
 endif ()
 
 set(ALLOY_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-set(CATCH_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/third_party/catch/contrib")
 
-set(CMAKE_MODULE_PATH "${ALLOY_MODULE_PATH}" "${CMAKE_MODULE_PATH}" "${CATCH_MODULE_PATH}")
+set(CMAKE_MODULE_PATH "${ALLOY_MODULE_PATH}" "${CMAKE_MODULE_PATH}")
 
 include(CPM)
 include(BuildConfigurations)

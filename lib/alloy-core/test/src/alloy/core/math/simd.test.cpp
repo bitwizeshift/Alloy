@@ -6,8 +6,8 @@
 #include "alloy/core/math/math_constants.hpp"
 #include "alloy/core/math/math.hpp"
 
-#define CATCH_CONFIG_ENABLE_BENCHMARKING
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 #include <array>
 
 namespace alloy::core::test {

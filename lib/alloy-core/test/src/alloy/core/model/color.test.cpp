@@ -5,7 +5,9 @@
 #include "alloy/core/model/color.hpp"
 #include "alloy/core/model/color_constants.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
+#include <catch2/catch_tostring.hpp>
 
 namespace Catch {
   template<>

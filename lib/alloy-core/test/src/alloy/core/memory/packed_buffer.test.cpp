@@ -5,7 +5,7 @@
 #include <alloy/core/memory/data_quantity.hpp>
 #include <alloy/core/memory/packed_buffer.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include <array>     // std::array
 #include <algorithm> // std::equal

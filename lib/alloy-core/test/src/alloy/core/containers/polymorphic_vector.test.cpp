@@ -4,7 +4,7 @@
 */
 #include "alloy/core/containers/polymorphic_vector.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 namespace alloy::core {
 namespace {

@@ -5,7 +5,7 @@
 #include <alloy/io/sequence_detector.hpp>
 #include <alloy/core/containers/vector.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 namespace alloy::io::test {
 

@@ -5,7 +5,6 @@
 set(source_files
   src/alloy/io/event.test.cpp
   src/alloy/io/sequence_detector.test.cpp
-  src/main.cpp
 )
 source_group(
   TREE "${CMAKE_CURRENT_LIST_DIR}/src"
@@ -19,7 +18,7 @@ add_executable(${PROJECT_NAME}IOTest
 add_executable(${PROJECT_NAME}::IO::Test ALIAS ${PROJECT_NAME}IOTest)
 
 target_link_libraries(${PROJECT_NAME}IOTest
-  PRIVATE Catch2::Catch2
+  PRIVATE Catch2::Catch2WithMain
   PRIVATE ${PROJECT_NAME}::IO
 )
 set_target_properties(${PROJECT_NAME}IOTest

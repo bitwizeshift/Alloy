@@ -50,8 +50,6 @@ set(source_files
 
   # Memory
   src/alloy/core/memory/packed_buffer.test.cpp
-
-  src/main.cpp
 )
 
 source_group(
@@ -80,7 +78,7 @@ endif ()
 
 
 target_link_libraries(${PROJECT_NAME}CoreTest
-  PRIVATE Catch2::Catch2
+  PRIVATE Catch2::Catch2WithMain
   PRIVATE ${PROJECT_NAME}::Core
 )
 set_target_properties(${PROJECT_NAME}CoreTest

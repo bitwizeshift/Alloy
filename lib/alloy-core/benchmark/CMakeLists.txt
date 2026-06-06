@@ -3,7 +3,6 @@
 ##############################################################################
 
 set(source_files
-  src/main.cpp
   src/alloy/core/math/simd.benchmark.cpp
 )
 
@@ -18,12 +17,8 @@ add_executable(${PROJECT_NAME}CoreBenchmark
 )
 add_executable(${PROJECT_NAME}::Core::Benchmark ALIAS ${PROJECT_NAME}CoreBenchmark)
 
-target_compile_definitions(${PROJECT_NAME}CoreBenchmark
-  PRIVATE CATCH_CONFIG_ENABLE_BENCHMARKING=1
-)
-
 target_link_libraries(${PROJECT_NAME}CoreBenchmark
-  PRIVATE Catch2::Catch2
+  PRIVATE Catch2::Catch2WithMain
   PRIVATE ${PROJECT_NAME}::Core
 )
 set_target_properties(${PROJECT_NAME}CoreBenchmark

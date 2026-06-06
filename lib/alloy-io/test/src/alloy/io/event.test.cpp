@@ -5,7 +5,7 @@
 #include <alloy/io/event.hpp>
 #include <alloy/io/events/window_events.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 namespace {
 struct move_event{

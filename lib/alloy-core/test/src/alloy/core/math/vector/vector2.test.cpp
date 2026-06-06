@@ -8,7 +8,7 @@
 #include <alloy/core/math/angle/radian.hpp>
 #include <alloy/core/math/math.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 namespace alloy::core::test {
 

@@ -4,7 +4,7 @@
 */
 #include <alloy/core/containers/span.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include <type_traits> // std::is_default_constructible
 #include <vector>      // std::vector

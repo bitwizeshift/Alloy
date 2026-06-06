@@ -9,7 +9,8 @@
 #include "alloy/core/memory/allocator.hpp"
 
 #include <array>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/benchmark/catch_benchmark_all.hpp>
 #include <cstdlib>
 #include <random>
 #include <string>
