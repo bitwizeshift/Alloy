@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -1288,7 +1288,7 @@ inline void alloy::core::sink<R(Args...)>::disconnect(Callable* callable, void* 
   const auto it = std::remove(
     listeners.begin(),
     listeners.end(),
-    listener_type::template make(callable)
+    listener_type::make(callable)
   );
   listeners.erase(it, listeners.cend());
 }
