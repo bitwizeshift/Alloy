@@ -34,58 +34,16 @@ set(source_files
   src/alloy/render/mesh/attribute_packer.hpp
 )
 
-source_group(
-  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
-  PREFIX "Source Files"
-  FILES ${source_files}
+add_alloy_library(${PROJECT_NAME}Render
+  ALIAS       ${PROJECT_NAME}::Render
+  OUTPUT_NAME alloy-render
+  EXPORT_NAME Render
+  API_PREFIX  ALLOY_RENDER
+  HEADERS     ${header_files}
+  SOURCES     ${source_files}
+  DEPENDENCIES
+    PUBLIC ${PROJECT_NAME}::Core
 )
-
-add_library(${PROJECT_NAME}Render)
-add_library(${PROJECT_NAME}::Render ALIAS ${PROJECT_NAME}Render)
-
-target_sources(${PROJECT_NAME}Render
-  PUBLIC
-    FILE_SET HEADERS
-      BASE_DIRS include
-      FILES ${header_files}
-  PRIVATE
-    ${source_files}
-)
-
-target_compile_features(${PROJECT_NAME}Render
-  PUBLIC cxx_std_17
-)
-set_target_properties(${PROJECT_NAME}Render
-  PROPERTIES
-    OUTPUT_NAME "alloy-render"
-    EXPORT_NAME "Render"
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSIONS OFF
-    FOLDER "Component Targets"
-)
-if (BUILD_SHARED_LIBS)
-  target_compile_definitions(${PROJECT_NAME}Render
-    PRIVATE ALLOY_RENDER_EXPORT=1
-  )
-else()
-  target_compile_definitions(${PROJECT_NAME}Render
-    PUBLIC ALLOY_RENDER_STATIC=1
-  )
-endif()
-
-target_link_libraries(${PROJECT_NAME}Render
-  PUBLIC ${PROJECT_NAME}::Core
-)
-
-# Header Self-Containment Tests
-
-include(SurrogateTarget)
-
-if (ALLOY_COMPILE_SURROGATE_TESTS)
-  add_surrogate_target(${PROJECT_NAME}Render.Surrogate
-    TARGET ${PROJECT_NAME}Render
-  )
-endif ()
 
 # Unit Tests
 

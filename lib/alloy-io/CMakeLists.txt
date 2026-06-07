@@ -23,11 +23,6 @@ unset(ALLOY_IO_EVENT_ALIGN)
 set(generated_header_files
   ${CMAKE_CURRENT_BINARY_DIR}/include/alloy/io/config.hpp
 )
-source_group(
-  TREE "${CMAKE_CURRENT_BINARY_DIR}/include"
-  PREFIX "Generated Header Files"
-  FILES ${generated_header_files}
-)
 
 set(header_files
   include/alloy/io/api.hpp
@@ -64,61 +59,18 @@ set(source_files
   src/alloy/io/filesystem/memory_filesystem.cpp
   src/alloy/io/filesystem/xor_file_adapter.cpp
 )
-source_group(
-  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
-  PREFIX "Source Files"
-  FILES ${source_files}
+add_alloy_library(${PROJECT_NAME}IO
+  ALIAS             ${PROJECT_NAME}::IO
+  OUTPUT_NAME       alloy-io
+  EXPORT_NAME       IO
+  API_PREFIX        ALLOY_IO
+  HIDDEN_VISIBILITY
+  HEADERS           ${header_files}
+  GENERATED_HEADERS ${generated_header_files}
+  SOURCES           ${source_files}
+  DEPENDENCIES
+    PUBLIC ${PROJECT_NAME}::Core
 )
-
-add_library(${PROJECT_NAME}IO)
-add_library(${PROJECT_NAME}::IO ALIAS ${PROJECT_NAME}IO)
-
-target_sources(${PROJECT_NAME}IO
-  PUBLIC
-    FILE_SET HEADERS
-      BASE_DIRS include
-      FILES ${header_files}
-    FILE_SET generated TYPE HEADERS
-      BASE_DIRS "${CMAKE_CURRENT_BINARY_DIR}/include"
-      FILES ${generated_header_files}
-  PRIVATE
-    ${source_files}
-)
-
-target_compile_features(${PROJECT_NAME}IO
-  PUBLIC cxx_std_17
-)
-set_target_properties(${PROJECT_NAME}IO
-  PROPERTIES
-    OUTPUT_NAME "alloy-io"
-    EXPORT_NAME "IO"
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSIONS OFF
-    FOLDER "Component Targets"
-)
-if (BUILD_SHARED_LIBS)
-  target_compile_definitions(${PROJECT_NAME}IO
-    PRIVATE ALLOY_IO_EXPORT=1
-  )
-else()
-  target_compile_definitions(${PROJECT_NAME}IO
-    PUBLIC ALLOY_IO_STATIC=1
-  )
-endif()
-
-target_link_libraries(${PROJECT_NAME}IO
-  PUBLIC ${PROJECT_NAME}::Core
-)
-
-# Header Self-Containment Tests
-
-include(SurrogateTarget)
-
-if (ALLOY_COMPILE_SURROGATE_TESTS)
-  add_surrogate_target(${PROJECT_NAME}IO.Surrogate
-    TARGET ${PROJECT_NAME}IO
-  )
-endif ()
 
 # Unit Tests
 

@@ -1,8 +1,8 @@
 {
-  "version": 3,
+  "version": 6,
   "cmakeMinimumRequired": {
-    "major": 4,
-    "minor": 3,
+    "major": 3,
+    "minor": 25,
     "patch": 0
   },
   "configurePresets": [
@@ -32,7 +32,7 @@
       "description": "Base build for Windows builds",
       "hidden": true,
       "inherits": "default",
-      "generator": "Visual Studio 16 2019",
+      "generator": "Visual Studio 17 2022",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -158,6 +158,41 @@
       "name": "msvc",
       "configurePreset": "msvc",
       "inherits": "default"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "clang",
+      "displayName": "Clang configure, build and test",
+      "steps": [
+        { "type": "configure", "name": "clang" },
+        { "type": "build", "name": "clang" },
+        { "type": "test", "name": "clang" }
+      ]
+    }, {
+      "name": "gcc",
+      "displayName": "GCC configure, build and test",
+      "steps": [
+        { "type": "configure", "name": "gcc" },
+        { "type": "build", "name": "gcc" },
+        { "type": "test", "name": "gcc" }
+      ]
+    }, {
+      "name": "coverage-clang",
+      "displayName": "Clang coverage configure, build and test",
+      "steps": [
+        { "type": "configure", "name": "coverage-clang" },
+        { "type": "build", "name": "coverage-clang" },
+        { "type": "test", "name": "coverage-clang" }
+      ]
+    }, {
+      "name": "coverage-gcc",
+      "displayName": "GCC coverage configure, build and test",
+      "steps": [
+        { "type": "configure", "name": "coverage-gcc" },
+        { "type": "build", "name": "coverage-gcc" },
+        { "type": "test", "name": "coverage-gcc" }
+      ]
     }
   ]
 }

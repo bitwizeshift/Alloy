@@ -52,50 +52,24 @@ set(source_files
   src/alloy/core/memory/packed_buffer.test.cpp
 )
 
-source_group(
-  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
-  PREFIX "Source Files"
-  FILES ${source_files}
+add_alloy_test(${PROJECT_NAME}CoreTest
+  ALIAS       ${PROJECT_NAME}::Core::Test
+  OUTPUT_NAME alloy-core-test
+  SOURCES     ${source_files}
+  LIBRARIES   ${PROJECT_NAME}::Core
 )
-
-add_test_executable(${PROJECT_NAME}CoreTest
-  ${source_files}
-)
-add_executable(${PROJECT_NAME}::Core::Test ALIAS ${PROJECT_NAME}CoreTest)
 
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
     "${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC")
 
-  # clang-cl complains about truncating 64 to 32 bits of values in the unit tests.
+  # clang-cl complains about truncating 64 to 32 bits of values in the unit tests,
+  # and about float equality comparisons.
   target_compile_options(${PROJECT_NAME}CoreTest
     PRIVATE
       -Wno-shorten-64-to-32
       -Wno-sign-conversion
       -Wno-unneeded-member-function
       -Wno-unused-member-function
+      -Wno-float-equal
   )
 endif ()
-
-
-target_link_libraries(${PROJECT_NAME}CoreTest
-  PRIVATE Catch2::Catch2WithMain
-  PRIVATE ${PROJECT_NAME}::Core
-)
-set_target_properties(${PROJECT_NAME}CoreTest
-  PROPERTIES
-    OUTPUT_NAME "alloy-core-test"
-    FOLDER "Unit Test Targets"
-)
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
-    "${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC")
-  target_compile_options(${PROJECT_NAME}CoreTest
-    PRIVATE -Wno-float-equal
-  )
-endif ()
-
-##############################################################################
-# CTest
-##############################################################################
-
-include(Catch)
-catch_discover_tests(${PROJECT_NAME}CoreTest)

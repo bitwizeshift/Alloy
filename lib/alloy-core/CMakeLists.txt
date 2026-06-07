@@ -24,11 +24,6 @@ unset(ALLOY_CORE_EXCEPTIONS_ENABLED)
 set(generated_header_files
   ${CMAKE_CURRENT_BINARY_DIR}/include/alloy/core/config.hpp
 )
-source_group(
-  TREE "${CMAKE_CURRENT_BINARY_DIR}/include"
-  PREFIX "Generated Header Files"
-  FILES ${generated_header_files}
-)
 
 set(header_files
   # Core
@@ -238,57 +233,16 @@ set(source_files
 
 )
 
-source_group(
-  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
-  PREFIX "Source Files"
-  FILES ${source_files}
+add_alloy_library(${PROJECT_NAME}Core
+  ALIAS             ${PROJECT_NAME}::Core
+  OUTPUT_NAME       alloy-core
+  EXPORT_NAME       Core
+  API_PREFIX        ALLOY_CORE
+  HIDDEN_VISIBILITY
+  HEADERS           ${header_files}
+  GENERATED_HEADERS ${generated_header_files}
+  SOURCES           ${source_files}
 )
-
-add_library(${PROJECT_NAME}Core)
-add_library(${PROJECT_NAME}::Core ALIAS ${PROJECT_NAME}Core)
-
-target_sources(${PROJECT_NAME}Core
-  PUBLIC
-    FILE_SET HEADERS
-      BASE_DIRS include
-      FILES ${header_files}
-    FILE_SET generated TYPE HEADERS
-      BASE_DIRS "${CMAKE_CURRENT_BINARY_DIR}/include"
-      FILES ${generated_header_files}
-  PRIVATE
-    ${source_files}
-)
-
-target_compile_features(${PROJECT_NAME}Core
-  PUBLIC cxx_std_17
-)
-set_target_properties(${PROJECT_NAME}Core
-  PROPERTIES
-    OUTPUT_NAME "alloy-core"
-    EXPORT_NAME "Core"
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSIONS OFF
-    FOLDER "Component Targets"
-)
-if (BUILD_SHARED_LIBS)
-  target_compile_definitions(${PROJECT_NAME}Core
-    PRIVATE ALLOY_CORE_EXPORT=1
-  )
-else()
-  target_compile_definitions(${PROJECT_NAME}Core
-    PUBLIC ALLOY_CORE_STATIC=1
-  )
-endif()
-
-# Header Self-Containment Tests
-
-include(SurrogateTarget)
-
-if (ALLOY_COMPILE_SURROGATE_TESTS)
-  add_surrogate_target(${PROJECT_NAME}Core.Surrogate
-    TARGET ${PROJECT_NAME}Core
-  )
-endif ()
 
 # Unit Tests
 

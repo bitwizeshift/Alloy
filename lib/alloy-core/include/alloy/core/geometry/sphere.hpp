@@ -8,7 +8,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -108,7 +108,7 @@ namespace alloy::core {
     ///
     /// \param p the point to check
     /// \return `true` if the point is contained in this sphere
-    [[nodiscard]]
+    [[nodiscard]] ALLOY_CORE_API
     auto contains(const point3& p) const noexcept -> bool;
 
     /// \brief Checks whether a given point \p p is contained within this

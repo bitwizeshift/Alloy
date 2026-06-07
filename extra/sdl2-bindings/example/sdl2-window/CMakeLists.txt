@@ -23,6 +23,7 @@ if (MINGW)
 endif ()
 
 target_link_libraries(${PROJECT_NAME}SDL2WindowExample
+  PRIVATE Alloy::CommonFlags
   PRIVATE Alloy::Core
   PRIVATE Alloy::IO
   PRIVATE Alloy::Extra::SDL2Bindings

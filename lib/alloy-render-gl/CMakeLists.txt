@@ -31,62 +31,21 @@ set(source_files
   src/alloy/render/gl/state_cache.cpp
 )
 
-source_group(
-  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
-  PREFIX "Source Files"
-  FILES ${source_files}
+add_alloy_library(${PROJECT_NAME}RenderGL
+  ALIAS       ${PROJECT_NAME}::Render::GL
+  OUTPUT_NAME alloy-render-gl
+  EXPORT_NAME Render::GL
+  API_PREFIX  ALLOY_RENDER_GL
+  HEADERS     ${header_files}
+  SOURCES     ${source_files}
+  DEPENDENCIES
+    PUBLIC
+      ${PROJECT_NAME}::Core
+      ${PROJECT_NAME}::IO
+      ${PROJECT_NAME}::Render
+      OpenGL::GL
+      GLEW::GLEW
 )
-
-add_library(${PROJECT_NAME}RenderGL)
-add_library(${PROJECT_NAME}::Render::GL ALIAS ${PROJECT_NAME}RenderGL)
-
-target_sources(${PROJECT_NAME}RenderGL
-  PUBLIC
-    FILE_SET HEADERS
-      BASE_DIRS include
-      FILES ${header_files}
-  PRIVATE
-    ${source_files}
-)
-
-target_compile_features(${PROJECT_NAME}RenderGL
-  PUBLIC cxx_std_17
-)
-set_target_properties(${PROJECT_NAME}RenderGL
-  PROPERTIES
-    OUTPUT_NAME "alloy-render-gl"
-    EXPORT_NAME "Render::GL"
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSIONS OFF
-    FOLDER "Component Targets"
-)
-if (BUILD_SHARED_LIBS)
-  target_compile_definitions(${PROJECT_NAME}RenderGL
-    PRIVATE ALLOY_RENDER_GL_EXPORT=1
-  )
-else()
-  target_compile_definitions(${PROJECT_NAME}RenderGL
-    PUBLIC ALLOY_RENDER_GL_STATIC=1
-  )
-endif()
-
-target_link_libraries(${PROJECT_NAME}RenderGL
-  PUBLIC ${PROJECT_NAME}::Core
-  PUBLIC ${PROJECT_NAME}::IO
-  PUBLIC ${PROJECT_NAME}::Render
-  PUBLIC OpenGL::GL
-  PUBLIC GLEW::GLEW
-)
-
-# Header Self-Containment Tests
-
-include(SurrogateTarget)
-
-if (ALLOY_COMPILE_SURROGATE_TESTS)
-  add_surrogate_target(${PROJECT_NAME}RenderGL.Surrogate
-    TARGET ${PROJECT_NAME}RenderGL
-  )
-endif ()
 
 # Unit Tests
 

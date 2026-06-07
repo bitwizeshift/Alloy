@@ -15,54 +15,18 @@ set(source_files
   src/alloy/extra/logging/console_log_stream.cpp
   src/alloy/extra/logging/file_log_stream.cpp
 )
-source_group(
-  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
-  PREFIX "Source Files"
-  FILES ${source_files}
+add_alloy_library(${PROJECT_NAME}ExtraLogging
+  ALIAS       ${PROJECT_NAME}::Extra::Logging
+  OUTPUT_NAME alloy-extra-logging
+  FOLDER      "Optional Component Targets"
+  HEADERS     ${header_files}
+  SOURCES     ${source_files}
+  DEPENDENCIES
+    PUBLIC
+      fmt::fmt
+      ${PROJECT_NAME}::Core
+      ${PROJECT_NAME}::IO
 )
-
-add_library(${PROJECT_NAME}ExtraLogging)
-add_library(${PROJECT_NAME}::Extra::Logging ALIAS
-  ${PROJECT_NAME}ExtraLogging
-)
-
-target_sources(${PROJECT_NAME}ExtraLogging
-  PUBLIC
-    FILE_SET HEADERS
-      BASE_DIRS include
-      FILES ${header_files}
-  PRIVATE
-    ${source_files}
-)
-
-target_compile_features(${PROJECT_NAME}ExtraLogging
-  PUBLIC cxx_std_17
-)
-target_link_libraries(${PROJECT_NAME}ExtraLogging
-  PUBLIC fmt::fmt
-)
-set_target_properties(${PROJECT_NAME}ExtraLogging
-  PROPERTIES
-    OUTPUT_NAME "alloy-extra-logging"
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSIONS OFF
-    FOLDER "Optional Component Targets"
-)
-
-target_link_libraries(${PROJECT_NAME}ExtraLogging
-  PUBLIC ${PROJECT_NAME}::Core
-  PUBLIC ${PROJECT_NAME}::IO
-)
-
-# Header Self-Containment Tests
-
-include(SurrogateTarget)
-
-if (ALLOY_COMPILE_SURROGATE_TESTS)
-  add_surrogate_target(${PROJECT_NAME}ExtraLogging.Surrogate
-    TARGET ${PROJECT_NAME}ExtraLogging
-  )
-endif ()
 
 # Examples
 

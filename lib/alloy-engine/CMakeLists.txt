@@ -21,11 +21,6 @@ unset(ALLOY_ENGINE_ENTITY_TYPE)
 set(generated_header_files
   ${CMAKE_CURRENT_BINARY_DIR}/include/alloy/engine/config.hpp
 )
-source_group(
-  TREE "${CMAKE_CURRENT_BINARY_DIR}/include"
-  PREFIX "Generated Header Files"
-  FILES ${generated_header_files}
-)
 
 set(header_files
   include/alloy/engine/component.hpp
@@ -47,58 +42,21 @@ set(source_files
   src/alloy/engine/image/tga_image_loader.cpp
   src/alloy/engine/image/image_manager.cpp
 )
-source_group(
-  TREE "${CMAKE_CURRENT_LIST_DIR}/src"
-  PREFIX "Source Files"
-  FILES ${source_files}
-)
-
-add_library(${PROJECT_NAME}Engine)
-add_library(${PROJECT_NAME}::Engine ALIAS ${PROJECT_NAME}Engine)
-
-target_sources(${PROJECT_NAME}Engine
-  PUBLIC
-    FILE_SET HEADERS
-      BASE_DIRS include
-      FILES ${header_files}
-    FILE_SET generated TYPE HEADERS
-      BASE_DIRS "${CMAKE_CURRENT_BINARY_DIR}/include"
-      FILES ${generated_header_files}
-  PRIVATE
-    ${source_files}
-)
-
-target_compile_features(${PROJECT_NAME}Engine
-  PUBLIC cxx_std_17
-)
-set_target_properties(${PROJECT_NAME}Engine
-  PROPERTIES
-    OUTPUT_NAME "alloy-engine"
-    EXPORT_NAME "Engine"
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSIONS OFF
-    FOLDER "Component Targets"
+add_alloy_library(${PROJECT_NAME}Engine
+  ALIAS             ${PROJECT_NAME}::Engine
+  OUTPUT_NAME       alloy-engine
+  EXPORT_NAME       Engine
+  HEADERS           ${header_files}
+  GENERATED_HEADERS ${generated_header_files}
+  SOURCES           ${source_files}
+  DEPENDENCIES
+    PUBLIC  ${PROJECT_NAME}::Core ${PROJECT_NAME}::IO
+    PRIVATE tga-lib
 )
 
 target_include_directories(${PROJECT_NAME}Engine
   PRIVATE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party>
 )
-
-target_link_libraries(${PROJECT_NAME}Engine
-  PUBLIC ${PROJECT_NAME}::Core
-  PUBLIC ${PROJECT_NAME}::IO
-  PRIVATE tga-lib
-)
-
-# Header Self-Containment Tests
-
-include(SurrogateTarget)
-
-if (ALLOY_COMPILE_SURROGATE_TESTS)
-  add_surrogate_target(${PROJECT_NAME}Engine.Surrogate
-    TARGET ${PROJECT_NAME}Engine
-  )
-endif ()
 
 # Unit Tests
 

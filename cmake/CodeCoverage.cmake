@@ -47,7 +47,7 @@ find_program(ALLOY_GENHTML NAMES genhtml)
 #
 #   Defines the explicit ``coverage`` target -- and ``coverage-html`` when
 #   ``genhtml`` is available. Call once, after every test executable has been
-#   declared with ``add_test_executable``.
+#   declared with ``add_alloy_test``.
 #
 #   ::
 #
