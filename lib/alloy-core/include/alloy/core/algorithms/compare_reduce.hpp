@@ -7,7 +7,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022, 2026 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,6 @@
 #define ALLOY_CORE_ALGORITHM_COMPARE_REDUCE_HPP
 
 #include "alloy/core/macros.hpp"
-#include "alloy/core/traits/common_reference.hpp"
 #include "alloy/core/intrinsics.hpp"
 
 #include <type_traits>
@@ -86,7 +85,7 @@ namespace alloy::core {
 
     template <typename...Ts>
     constexpr auto operator()(Ts&&...values)
-      const noexcept -> common_reference_t<Ts...>;
+      const noexcept -> std::common_reference_t<Ts...>;
 
     //-------------------------------------------------------------------------
     // Private Implementation
@@ -103,7 +102,7 @@ namespace alloy::core {
     /// \return the maximum value
     template <typename T0, typename T1, typename...TRest>
     constexpr auto reduce(T0&& v0, T1&& v1, TRest&&...vn)
-      const noexcept -> common_reference_t<T0, T1, TRest...>;
+      const noexcept -> std::common_reference_t<T0, T1, TRest...>;
 
     /// \brief Performs the comparison between \p lhs and \p rhs
     ///
@@ -147,7 +146,7 @@ template <typename Compare>
 template <typename...Ts>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::compare_reducer<Compare>::operator()(Ts&&...values)
-  const noexcept -> common_reference_t<Ts...>
+  const noexcept -> std::common_reference_t<Ts...>
 {
   // This function is force-inlined because `reduce` is where all the work is
   // done.
@@ -162,7 +161,7 @@ template <typename Compare>
 template <typename T0, typename T1, typename...TRest>
 inline constexpr
 auto alloy::core::compare_reducer<Compare>::reduce(T0&& v0, T1&& v1, TRest&&...vn)
-  const noexcept -> common_reference_t<T0, T1, TRest...>
+  const noexcept -> std::common_reference_t<T0, T1, TRest...>
 {
   if constexpr (sizeof...(TRest) == 0U) {
     return do_compare(v0,v1) ? std::forward<T0>(v0) : std::forward<T1>(v1);

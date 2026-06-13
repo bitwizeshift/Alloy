@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@
 
 #include <cstdint> // std::uint32_t, std::uint64_t
 #include <cstddef> // std::byte, std::size_t
-#include <type_traits> // std::enable_if
+#include <type_traits> // sizeof checks
 
 namespace alloy::core {
 
@@ -80,8 +80,8 @@ namespace alloy::core {
   /// \tparam Bits the number of bits to use in this fnv1a hash
   /// \param p a pointer to data
   /// \param bytes the number of bytes to process
-  template <std::size_t Bits, typename Byte,
-            typename = std::enable_if_t<sizeof(Byte)==1>>
+  template <std::size_t Bits, typename Byte>
+    requires (sizeof(Byte) == 1)
   constexpr typename fnv1a_traits<Bits>::hash_type
     fnv1a_hash(const Byte* p, std::size_t bytes) noexcept;
 
@@ -93,8 +93,8 @@ namespace alloy::core {
   ///
   /// \tparam Bits the number of bits to use in this fnv1a hash
   /// \param p a pointer to null-terminated data
-  template <std::size_t Bits, typename Byte,
-            typename = std::enable_if_t<sizeof(Byte)==1>>
+  template <std::size_t Bits, typename Byte>
+    requires (sizeof(Byte) == 1)
   constexpr typename fnv1a_traits<Bits>::hash_type
     fnv1a_hash(const Byte* p) noexcept;
 
@@ -108,7 +108,8 @@ namespace alloy::core {
 // Utilities
 //-----------------------------------------------------------------------------
 
-template <std::size_t Bits, typename Byte, typename>
+template <std::size_t Bits, typename Byte>
+  requires (sizeof(Byte) == 1)
 inline constexpr typename alloy::core::fnv1a_traits<Bits>::hash_type
   alloy::core::fnv1a_hash(const Byte* p, std::size_t bytes)
   noexcept
@@ -123,7 +124,8 @@ inline constexpr typename alloy::core::fnv1a_traits<Bits>::hash_type
   return result;
 }
 
-template <std::size_t Bits, typename Byte, typename>
+template <std::size_t Bits, typename Byte>
+  requires (sizeof(Byte) == 1)
 inline constexpr typename alloy::core::fnv1a_traits<Bits>::hash_type
   alloy::core::fnv1a_hash(const Byte* p)
   noexcept

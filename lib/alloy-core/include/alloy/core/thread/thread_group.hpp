@@ -7,7 +7,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022, 2026 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/utilities/quantity.hpp"
 
+#include <concepts>
 #include <thread>
 
 #if defined(_MSC_VER)
@@ -83,8 +84,8 @@ namespace alloy::core {
     /// \brief Constructs and stores a thraed in this group
     ///
     /// \param args the arguments to forward to the thread
-    template <typename...Args,
-              typename = std::enable_if_t<std::is_constructible_v<std::thread,Args...>>>
+    template <typename...Args>
+      requires std::constructible_from<std::thread, Args...>
     auto emplace_thread(Args&&...args) -> void;
 
     /// \brief Attaches a thread to this group
@@ -157,7 +158,8 @@ alloy::core::thread_group::thread_group(allocator alloc)
 // Modifiers
 //------------------------------------------------------------------------------
 
-template <typename...Args, typename>
+template <typename...Args>
+  requires std::constructible_from<std::thread, Args...>
 ALLOY_FORCE_INLINE
 auto alloy::core::thread_group::emplace_thread(Args&&...args)
   -> void

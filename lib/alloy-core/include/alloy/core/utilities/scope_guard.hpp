@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -39,6 +39,7 @@
 
 #include <exception>   // std::uncaught_exceptions
 #include <utility>     // std::move
+#include <concepts>
 #include <type_traits> // std::is_nothrow_move_constructible, std::decay_t
 #include <limits>
 
@@ -150,8 +151,8 @@ namespace alloy::core {
     class basic_scope_guard : public ExitPolicy
     {
     public:
-      template <typename ExitFunction,
-                typename = std::enable_if_t<std::is_constructible_v<Fn,ExitFunction>>>
+      template <typename ExitFunction>
+        requires std::constructible_from<Fn, ExitFunction>
       explicit basic_scope_guard(ExitFunction&& fn)
         noexcept(std::is_nothrow_move_constructible<Fn>::value)
         : ExitPolicy{},

@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,8 @@
 
 #include "alloy/core/utilities/enum_traits.hpp"
 
-#include <bitset>  // std::bitset
+#include <bitset>   // std::bitset
+#include <concepts> // std::same_as
 #include <utility> // std::index_sequence
 
 namespace alloy::core {
@@ -47,6 +48,12 @@ namespace alloy::core {
   ///
   /// \tparam Enum the enum type to store in this set
   //////////////////////////////////////////////////////////////////////////////
+  namespace detail {
+    /// \brief True when every type in `Enums` is the same as `Enum`
+    template <typename Enum, typename...Enums>
+    concept all_same_as = (std::same_as<Enums, Enum> && ...);
+  } // namespace detail
+
   template <typename Enum>
   class option_set
   {
@@ -67,8 +74,8 @@ namespace alloy::core {
     /// \brief Constructs this container with only the specified \p enums set
     ///
     /// \param enums the enumerators to set
-    template <typename...Enums,
-              typename = std::enable_if_t<std::conjunction_v<std::is_same<Enums,Enum>...>>>
+    template <typename...Enums>
+      requires alloy::core::detail::all_same_as<Enum, Enums...>
     constexpr option_set(Enums...enums) noexcept;
 
     /// \brief Copies the contents of \p other
@@ -226,7 +233,8 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 template <typename Enum>
-template <typename...Enums, typename>
+template <typename...Enums>
+  requires alloy::core::detail::all_same_as<Enum, Enums...>
 inline constexpr
 alloy::core::option_set<Enum>::option_set(Enums...enums)
   noexcept

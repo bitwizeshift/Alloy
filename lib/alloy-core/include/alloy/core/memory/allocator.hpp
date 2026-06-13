@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,8 @@
 
 #include <cstring>     // std::memcpy
 #include <cstddef>     // std::size_t, std::max_align_t
-#include <type_traits> // std::enable_if, etc
+#include <concepts>
+#include <type_traits> // std::is_constructible, etc
 #include <cstdlib>     // std::aligned_alloc, std::free
 #include <new>         // ::operator new, ::operator delete
 #include <algorithm>   // std::copy
@@ -224,10 +225,8 @@ namespace alloy::core {
     /// \param args the arguments to forward to T's constructor
     /// \throws anything T's constructor may throw
     /// \return a pointer to a constructed T on success, nullptr on failure
-    template<
-      typename T,
-      typename... Args,
-      typename = std::enable_if_t<std::is_constructible<T, Args...>::value>>
+    template<typename T, typename... Args>
+      requires std::constructible_from<T, Args...>
     [[nodiscard]]
     auto make(Args&&...args)
       noexcept(std::is_nothrow_constructible<T, Args...>::value) -> T*;
@@ -239,8 +238,8 @@ namespace alloy::core {
     /// \throws anything T's constructor may throw
     /// \return a pointer to a constructed T array on success,
     ///         nullptr on failure
-    template<typename T,
-             typename = std::enable_if_t<std::is_constructible<T>::value>>
+    template<typename T>
+      requires std::constructible_from<T>
     [[nodiscard]]
     auto make_array(std::size_t n)
       noexcept(std::is_nothrow_constructible<T>::value) -> T*;
@@ -252,10 +251,8 @@ namespace alloy::core {
     /// \param u a type copy-convertable to T
     /// \throws anything T's constructor may throw
     /// \return a pointer to a constructed T array on success, nullptr on failure
-    template<
-      typename T,
-      typename U,
-      typename = std::enable_if_t<std::is_constructible<T, const U&>::value>>
+    template<typename T, typename U>
+      requires std::constructible_from<T, const U&>
     [[nodiscard]]
     auto make_array(std::size_t n, const U& u)
       noexcept(std::is_nothrow_constructible<T, const U&>::value) -> T*;
@@ -292,10 +289,8 @@ namespace alloy::core {
     /// \param args the arguments to forward to T's constructor
     /// \throws anything T's constructor may throw
     /// \return a pointer to a constructed T on success, nullptr on failure
-    template<
-      typename T,
-      typename... Args,
-      typename = std::enable_if_t<std::is_constructible<T, Args...>::value>>
+    template<typename T, typename... Args>
+      requires std::constructible_from<T, Args...>
     [[nodiscard]]
     auto aligned_make(std::size_t align, Args&&... args)
       noexcept(std::is_nothrow_constructible<T, Args...>::value) -> T*;
@@ -311,8 +306,8 @@ namespace alloy::core {
     /// \throws anything T's constructor may throw
     /// \return a pointer to a constructed T array on success,
     ///         nullptr on failure
-    template<typename T,
-             typename = std::enable_if_t<std::is_constructible<T>::value>>
+    template<typename T>
+      requires std::constructible_from<T>
     [[nodiscard]]
     auto aligned_make_array(std::size_t n, std::size_t align)
       noexcept(std::is_nothrow_constructible<T>::value) -> T*;
@@ -329,10 +324,8 @@ namespace alloy::core {
     /// \throws anything T's constructor may throw
     /// \return a pointer to a constructed T array on success,
     ///         nullptr on failure
-    template<
-      typename T,
-      typename U,
-      typename = std::enable_if_t<std::is_constructible<T, const U&>::value>>
+    template<typename T, typename U>
+      requires std::constructible_from<T, const U&>
     [[nodiscard]]
     auto aligned_make_array(
       std::size_t n,
@@ -676,7 +669,8 @@ auto alloy::core::allocator::reallocate_objects(
 // Make / Dispose
 //-----------------------------------------------------------------------------
 
-template<typename T, typename... Args, typename>
+template<typename T, typename... Args>
+  requires std::constructible_from<T, Args...>
 ALLOY_FORCE_INLINE
 auto alloy::core::allocator::make(Args&&... args)
   noexcept(std::is_nothrow_constructible<T, Args...>::value) -> T*
@@ -693,7 +687,8 @@ auto alloy::core::allocator::make(Args&&... args)
   );
 }
 
-template<typename T, typename>
+template<typename T>
+  requires std::constructible_from<T>
 ALLOY_FORCE_INLINE
 auto alloy::core::allocator::make_array(std::size_t n)
   noexcept(std::is_nothrow_constructible<T>::value) -> T*
@@ -708,7 +703,8 @@ auto alloy::core::allocator::make_array(std::size_t n)
   return aligned_make_array<T>(n, alignof(T));
 }
 
-template<typename T, typename U, typename>
+template<typename T, typename U>
+  requires std::constructible_from<T, const U&>
 ALLOY_FORCE_INLINE
 auto alloy::core::allocator::make_array(std::size_t n, const U& u)
   noexcept(std::is_nothrow_constructible<T, const U&>::value) -> T*
@@ -745,7 +741,8 @@ auto alloy::core::allocator::dispose_array(not_null<T*> p, std::size_t n)
 // Aligned Make / Dispose
 //-----------------------------------------------------------------------------
 
-template<typename T, typename... Args, typename>
+template<typename T, typename... Args>
+  requires std::constructible_from<T, Args...>
 inline
 auto alloy::core::allocator::aligned_make(
   std::size_t align,
@@ -785,7 +782,8 @@ auto alloy::core::allocator::aligned_make(
 #endif
 }
 
-template<typename T, typename>
+template<typename T>
+  requires std::constructible_from<T>
 ALLOY_FORCE_INLINE
 auto alloy::core::allocator::aligned_make_array(
   std::size_t n,
@@ -795,7 +793,8 @@ auto alloy::core::allocator::aligned_make_array(
   return aligned_make_array_impl<T>(n, align);
 }
 
-template<typename T, typename U, typename>
+template<typename T, typename U>
+  requires std::constructible_from<T, const U&>
 ALLOY_FORCE_INLINE
 auto alloy::core::allocator::aligned_make_array(
   std::size_t n,

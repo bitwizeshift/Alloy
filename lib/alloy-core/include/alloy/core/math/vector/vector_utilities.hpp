@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -97,24 +97,24 @@ namespace alloy::core {
     ///
     /// \param vec the vector to convert to a vector2
     /// \return the vector2
-    template<typename Vector,
-             typename = std::enable_if_t<is_vector<Vector>::value>>
+    template<typename Vector>
+      requires is_vector<Vector>::value
     auto to_vector2(const Vector& vec) noexcept -> vector2;
 
     /// \brief Converts a vector to a vector3
     ///
     /// \param vec the vector to convert to a vector3
     /// \return the vector3
-    template<typename Vector,
-             typename = std::enable_if_t<is_vector<Vector>::value>>
+    template<typename Vector>
+      requires is_vector<Vector>::value
     auto to_vector3(const Vector& vec) noexcept -> vector3;
 
     /// \brief Converts a vector to a vector3
     ///
     /// \param vec the vector to convert to a vector3
     /// \return the vector3
-    template<typename Vector,
-             typename = std::enable_if_t<is_vector<Vector>::value>>
+    template<typename Vector>
+      requires is_vector<Vector>::value
     auto to_vector4(const Vector& vec) noexcept -> vector4;
 
   } // inline namespace casts
@@ -207,7 +207,8 @@ auto alloy::core::vector_traits<T>::w(const T& vec)
 // Casting
 //------------------------------------------------------------------------------
 
-template<typename Vector, typename>
+template<typename Vector>
+  requires alloy::core::is_vector<Vector>::value
 inline auto alloy::core::casts::to_vector2(const Vector& vec)
   noexcept -> vector2
 {
@@ -217,7 +218,8 @@ inline auto alloy::core::casts::to_vector2(const Vector& vec)
   };
 }
 
-template<typename Vector, typename>
+template<typename Vector>
+  requires alloy::core::is_vector<Vector>::value
 inline auto alloy::core::casts::to_vector3(const Vector& vec)
   noexcept -> vector3
 {
@@ -228,7 +230,8 @@ inline auto alloy::core::casts::to_vector3(const Vector& vec)
   };
 }
 
-template<typename Vector, typename>
+template<typename Vector>
+  requires alloy::core::is_vector<Vector>::value
 inline auto alloy::core::casts::to_vector4(const Vector& vec)
   noexcept -> vector4
 {

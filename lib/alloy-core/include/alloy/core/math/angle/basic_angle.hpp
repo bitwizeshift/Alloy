@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -39,6 +39,7 @@
 #include "alloy/core/intrinsics.hpp" // ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE
 
 #include <cmath>       // std::fmod
+#include <concepts>   // std::same_as
 #include <type_traits> // std::true_type / std::false_type
 
 namespace alloy::core {
@@ -668,8 +669,8 @@ auto alloy::core::abs(basic_angle<AngleUnit> angle)
 
 namespace alloy::core::detail {
   // case: From != To
-  template<typename AngleUnitTo, typename AngleUnitFrom,
-           typename = std::enable_if_t<!std::is_same_v<AngleUnitTo, AngleUnitFrom>>>
+  template<typename AngleUnitTo, typename AngleUnitFrom>
+    requires (!std::same_as<AngleUnitTo, AngleUnitFrom>)
   inline constexpr
   auto angle_cast(basic_angle<AngleUnitFrom> from)
     noexcept -> basic_angle<AngleUnitTo>

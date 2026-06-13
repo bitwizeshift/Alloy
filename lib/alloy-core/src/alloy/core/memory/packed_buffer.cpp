@@ -1,5 +1,6 @@
 #include "alloy/core/memory/packed_buffer.hpp"
 
+#include <span>
 #include <utility>   // std::move
 
 //=============================================================================
@@ -58,7 +59,7 @@ auto alloy::core::packed_buffer::push_byte(std::byte b)
   m_buffer.push_back(b);
 }
 
-auto alloy::core::packed_buffer::push_bytes(span<const std::byte> bytes)
+auto alloy::core::packed_buffer::push_bytes(std::span<const std::byte> bytes)
   -> void
 {
   m_buffer.insert(m_buffer.end(), bytes.begin(), bytes.end());
@@ -111,11 +112,11 @@ auto alloy::core::packed_buffer_reader::seek(std::size_t index)
 // Reading
 //-----------------------------------------------------------------------------
 
-auto alloy::core::packed_buffer_reader::read_bytes(span<std::byte> destination)
-  noexcept -> span<std::byte>
+auto alloy::core::packed_buffer_reader::read_bytes(std::span<std::byte> destination)
+  noexcept -> std::span<std::byte>
 {
   if (m_read_index >= m_buffer->size().count()) {
-    return span<std::byte>{destination.data(), std::size_t{0}};
+    return std::span<std::byte>{destination.data(), std::size_t{0}};
   }
 
   const auto requested = destination.size();
@@ -130,7 +131,7 @@ auto alloy::core::packed_buffer_reader::read_bytes(span<std::byte> destination)
 
   m_read_index += to_read;
 
-  return span<std::byte>{destination.data(), to_read};
+  return std::span<std::byte>{destination.data(), to_read};
 }
 
 //=============================================================================

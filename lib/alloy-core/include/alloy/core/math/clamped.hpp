@@ -8,7 +8,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2020-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2020-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -38,6 +38,7 @@
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/core/math/saturated.hpp"
 
+#include <concepts>    // std::convertible_to
 #include <type_traits> // std::is_floating_point
 #include <functional>  // std::hash
 #include <cstdint>     // std::uint8_t
@@ -191,8 +192,8 @@ namespace alloy::core {
     /// ```
     ///
     /// \param other the other object to copy
-    template <typename UFloat,
-              typename = std::enable_if_t<std::is_convertible<UFloat, Float>::value>>
+    template <typename UFloat>
+      requires std::convertible_to<UFloat, Float>
     constexpr explicit clamped(const saturated<UFloat>& other) noexcept;
 
     /// \brief Convert-constructs this clamped from a clamped of a different
@@ -209,8 +210,8 @@ namespace alloy::core {
     /// ```
     ///
     /// \param other the other object to copy
-    template <typename UFloat,
-              typename = std::enable_if_t<std::is_convertible<UFloat, Float>::value>>
+    template <typename UFloat>
+      requires std::convertible_to<UFloat, Float>
     constexpr explicit clamped(const clamped<UFloat>& other) noexcept;
 
     //-------------------------------------------------------------------------
@@ -447,7 +448,8 @@ auto alloy::core::clamped<Float>::make_unchecked(element_type value)
 //-----------------------------------------------------------------------------
 
 template <typename Float>
-template <typename UFloat, typename>
+template <typename UFloat>
+  requires std::convertible_to<UFloat, Float>
 ALLOY_FORCE_INLINE constexpr
 alloy::core::clamped<Float>::clamped(const saturated<UFloat>& other)
   noexcept
@@ -457,7 +459,8 @@ alloy::core::clamped<Float>::clamped(const saturated<UFloat>& other)
 }
 
 template <typename Float>
-template <typename UFloat, typename>
+template <typename UFloat>
+  requires std::convertible_to<UFloat, Float>
 ALLOY_FORCE_INLINE constexpr
 alloy::core::clamped<Float>::clamped(const clamped<UFloat>& other)
   noexcept

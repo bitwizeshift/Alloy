@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,9 @@
 
 #include "alloy/core/utilities/result.hpp"
 
+#include <concepts> // std::convertible_to
 #include <optional> // std::optional
+#include <type_traits> // std::constructible_from
 #include <utility>  // std::reference_wrapper
 
 namespace alloy::core {
@@ -59,7 +61,8 @@ namespace alloy::core {
     /// \brief Allow construction from an optional reference
     ///
     /// \param other the other object to attempt to use to construct this
-    template <typename U, typename=std::enable_if_t<std::is_constructible_v<T,U&>>>
+    template <typename U>
+      requires std::constructible_from<T, U&>
     explicit optional(const optional<U&> other);
     optional(const optional&) = default;
     optional(optional&&) = default;
@@ -171,7 +174,8 @@ namespace alloy::core {
     /// \brief Constructs this optional reference by binding \p ref to it
     ///
     /// \param ref the reference to bind
-    template <typename U, typename = std::enable_if_t<std::is_convertible_v<U&,T&>>>
+    template <typename U>
+      requires std::convertible_to<U&, T&>
     constexpr optional(U& ref) noexcept;
 
     /// \brief Constructs this optional reference without a binding
@@ -186,7 +190,8 @@ namespace alloy::core {
     ///
     /// \param ref the new reference to bind
     /// \return reference to (*this)
-    template <typename U, typename = std::enable_if_t<std::is_convertible_v<U&,T&>>>
+    template <typename U>
+      requires std::convertible_to<U&, T&>
     auto operator=(U& ref) noexcept -> optional&;
 
     /// \brief Rebinds this optional reference to null
@@ -387,7 +392,8 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 template <typename T>
-template <typename U, typename>
+template <typename U>
+  requires std::constructible_from<T, U&>
 inline
 alloy::core::optional<T>::optional(const optional<U&> other)
   : optional{}
@@ -502,7 +508,8 @@ alloy::core::optional<T&>::optional()
 }
 
 template <typename T>
-template <typename U, typename>
+template <typename U>
+  requires std::convertible_to<U&, T&>
 inline constexpr
 alloy::core::optional<T&>::optional(U& ref)
   noexcept
@@ -521,7 +528,8 @@ alloy::core::optional<T&>::optional(null_type)
 }
 
 template <typename T>
-template <typename U, typename>
+template <typename U>
+  requires std::convertible_to<U&, T&>
 inline
 auto alloy::core::optional<T&>::operator=(U& ref)
    noexcept -> optional&

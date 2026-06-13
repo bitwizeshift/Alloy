@@ -8,7 +8,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2020-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2020-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@
 #include "alloy/core/intrinsics.hpp"     // ALLOY_FORCE_INLINE
 #include "alloy/core/assert.hpp"
 
+#include <concepts>    // std::convertible_to
 #include <type_traits> // std::is_floating_point
 #include <functional>  // std::hash
 
@@ -161,8 +162,8 @@ namespace alloy::core {
     /// ```
     ///
     /// \param other the other object to copy
-    template <typename UFloat,
-              typename = std::enable_if_t<std::is_convertible<UFloat, Float>::value>>
+    template <typename UFloat>
+      requires std::convertible_to<UFloat, Float>
     constexpr explicit saturated(const saturated<UFloat>& other) noexcept;
 
     //-------------------------------------------------------------------------
@@ -497,7 +498,8 @@ auto alloy::core::saturated<Float>::make_unchecked(element_type value)
 //-----------------------------------------------------------------------------
 
 template <typename Float>
-template <typename UFloat, typename>
+template <typename UFloat>
+  requires std::convertible_to<UFloat, Float>
 ALLOY_FORCE_INLINE constexpr
 alloy::core::saturated<Float>::saturated(const saturated<UFloat>& other)
   noexcept

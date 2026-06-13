@@ -45,7 +45,7 @@ complete list can be seen [below](#inspirations).
 
 ## Features
 
-* [x] Written with Modern C++ (C++17)
+* [x] Written with Modern C++ (C++20)
   * [x] Supports for `constexpr` wherever possible
 * [x] Designed using componentized architecture (easier reuse)
 * [x] Strong focus on readability and design

@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,8 @@
 #include <cstdint> // std::uint64_t, etc
 #include <climits> // CHAR_BIT
 #include <cstddef> // std::byte
-#include <type_traits> // std::enable_if, std::common_type
+#include <concepts>    // std::convertible_to
+#include <type_traits> // std::common_type
 #include <limits> // std::numeric_limits
 
 namespace alloy::core {
@@ -104,8 +105,8 @@ namespace alloy::core {
     /// \brief Constructs this data_quantity from an underlying representation
     ///
     /// \param r the value
-    template <typename URep,
-              typename = std::enable_if_t<std::is_convertible<URep,Rep>::value>>
+    template <typename URep>
+      requires std::convertible_to<URep, Rep>
     constexpr explicit data_quantity(const URep& r) noexcept;
 
     /// \brief Converts \p other to this data_quantity
@@ -114,9 +115,9 @@ namespace alloy::core {
     /// loss-of-precision. To have a lossy conversion, see data_quantity_cast
     ///
     /// \param other the other data_quantity to convert
-    template <typename URep, typename UBase,
-              typename = std::enable_if_t<std::ratio_divide<UBase, Base>::den == 1 &&
-                                          std::is_convertible<URep,Rep>::value>>
+    template <typename URep, typename UBase>
+      requires (std::ratio_divide<UBase, Base>::den == 1 &&
+                std::convertible_to<URep, Rep>)
     constexpr data_quantity(data_quantity<URep,UBase> other) noexcept;
 
     /// \brief Copy-constructs this \p data_quantity from \p other
@@ -344,9 +345,9 @@ namespace alloy::core {
   /// \tparam ToCapacity the data_quantity to convert to
   /// \param from the data_quantity to convert
   /// \return the converted data_quantity
-  template <typename ToCapacity, typename FromCapacity,
-            typename = std::enable_if_t<is_data_quantity_v<ToCapacity> &&
-                                        is_data_quantity_v<FromCapacity>>>
+  template <typename ToCapacity, typename FromCapacity>
+    requires (alloy::core::is_data_quantity_v<ToCapacity> &&
+              alloy::core::is_data_quantity_v<FromCapacity>)
   constexpr ToCapacity data_quantity_cast(const FromCapacity& from);
 
   //---------------------------------------------------------------------------
@@ -366,8 +367,8 @@ namespace alloy::core {
   /// \tparam ToCapacity the data_quantity to round down to
   /// \param c the data_quantity
   /// \return the rounded data_quantity
-  template <typename ToCapacity, typename Rep, typename Base,
-            typename = std::enable_if_t<is_data_quantity_v<ToCapacity>>>
+  template <typename ToCapacity, typename Rep, typename Base>
+    requires alloy::core::is_data_quantity_v<ToCapacity>
   constexpr ToCapacity floor(const data_quantity<Rep, Base>& c) noexcept;
 
 
@@ -376,8 +377,8 @@ namespace alloy::core {
   /// \tparam ToCapacity the data_quantity to round up to
   /// \param c the data_quantity
   /// \return the rounded data_quantity
-  template <typename ToCapacity, typename Rep, typename Base,
-            typename = std::enable_if_t<is_data_quantity_v<ToCapacity>>>
+  template <typename ToCapacity, typename Rep, typename Base>
+    requires alloy::core::is_data_quantity_v<ToCapacity>
   constexpr ToCapacity ceil(const data_quantity<Rep, Base>& c) noexcept;
 
   /// \brief Rounds the specified data_quantity \p c to the nearest ToCapacity
@@ -388,8 +389,8 @@ namespace alloy::core {
   /// \tparam ToCapacity the data_quantity to round to
   /// \param c the data_quantity to round
   /// \return the rounded data_quantity
-  template <typename ToCapacity, typename Rep, typename Base,
-            typename = std::enable_if_t<is_data_quantity_v<ToCapacity>>>
+  template <typename ToCapacity, typename Rep, typename Base>
+    requires alloy::core::is_data_quantity_v<ToCapacity>
   constexpr ToCapacity round(const data_quantity<Rep, Base>& c) noexcept;
 
   /// \brief Gets the absolute value of the specified data_quantity
@@ -473,23 +474,23 @@ namespace alloy::core {
   // Arithmetic Operators
   //---------------------------------------------------------------------------
 
-  template <typename Rep, typename Base,
-            typename = std::enable_if_t<Base::den == 1>>
+  template <typename Rep, typename Base>
+    requires (Base::den == 1)
   constexpr std::byte* operator+(std::byte* p, data_quantity<Rep,Base> offset)
     noexcept;
 
-  template <typename Rep, typename Base,
-            typename = std::enable_if_t<Base::den == 1>>
+  template <typename Rep, typename Base>
+    requires (Base::den == 1)
   constexpr const std::byte* operator+(const std::byte* p, data_quantity<Rep,Base> offset)
     noexcept;
 
-  template <typename Rep, typename Base,
-            typename = std::enable_if_t<Base::den == 1>>
+  template <typename Rep, typename Base>
+    requires (Base::den == 1)
   constexpr std::byte* operator-(std::byte* p, data_quantity<Rep,Base> offset)
     noexcept;
 
-  template <typename Rep, typename Base,
-            typename = std::enable_if_t<Base::den == 1>>
+  template <typename Rep, typename Base>
+    requires (Base::den == 1)
   constexpr const std::byte* operator-(const std::byte* p, data_quantity<Rep,Base> offset)
     noexcept;
 
@@ -557,7 +558,8 @@ inline constexpr alloy::core::data_quantity<Rep,Base>
 //-----------------------------------------------------------------------------
 
 template <typename Rep, typename Base>
-template <typename URep, typename>
+template <typename URep>
+  requires std::convertible_to<URep, Rep>
 inline constexpr alloy::core::data_quantity<Rep,Base>::data_quantity(const URep& r)
   noexcept
   : m_count{static_cast<Rep>(r)}
@@ -566,7 +568,9 @@ inline constexpr alloy::core::data_quantity<Rep,Base>::data_quantity(const URep&
 }
 
 template <typename Rep, typename Base>
-template <typename URep, typename UBase, typename>
+template <typename URep, typename UBase>
+  requires (std::ratio_divide<UBase, Base>::den == 1 &&
+           std::convertible_to<URep, Rep>)
 inline constexpr alloy::core::data_quantity<Rep,Base>
   ::data_quantity(data_quantity<URep,UBase> other)
   noexcept
@@ -938,7 +942,9 @@ inline constexpr bool alloy::core::operator>=(const data_quantity<Rep1, Base1>& 
 // Utilities
 //-----------------------------------------------------------------------------
 
-template <typename ToCapacity, typename FromCapacity, typename>
+template <typename ToCapacity, typename FromCapacity>
+  requires (alloy::core::is_data_quantity_v<ToCapacity> &&
+           alloy::core::is_data_quantity_v<FromCapacity>)
 inline constexpr ToCapacity alloy::core::data_quantity_cast(const FromCapacity& from)
 {
   using from_base = typename FromCapacity::base;
@@ -976,7 +982,8 @@ inline constexpr std::common_type_t<alloy::core::data_quantity<Rep1,Base1>,
 }
 
 
-template <typename ToCapacity, typename Rep, typename Base, typename>
+template <typename ToCapacity, typename Rep, typename Base>
+  requires alloy::core::is_data_quantity_v<ToCapacity>
 inline constexpr ToCapacity alloy::core::floor(const data_quantity<Rep, Base>& c)
   noexcept
 {
@@ -988,7 +995,8 @@ inline constexpr ToCapacity alloy::core::floor(const data_quantity<Rep, Base>& c
 }
 
 
-template <typename ToCapacity, typename Rep, typename Base, typename>
+template <typename ToCapacity, typename Rep, typename Base>
+  requires alloy::core::is_data_quantity_v<ToCapacity>
 inline constexpr ToCapacity alloy::core::ceil(const data_quantity<Rep, Base>& c)
   noexcept
 {
@@ -1000,7 +1008,8 @@ inline constexpr ToCapacity alloy::core::ceil(const data_quantity<Rep, Base>& c)
 }
 
 
-template <typename ToCapacity, typename Rep, typename Base, typename>
+template <typename ToCapacity, typename Rep, typename Base>
+  requires alloy::core::is_data_quantity_v<ToCapacity>
 inline constexpr ToCapacity alloy::core::round(const data_quantity<Rep, Base>& c)
   noexcept
 {
@@ -1241,7 +1250,8 @@ inline constexpr alloy::core::pebibits
   return pebibits{static_cast<pebibits::rep>(x)};
 }
 
-template <typename Rep, typename Base, typename>
+template <typename Rep, typename Base>
+  requires (Base::den == 1)
 inline constexpr std::byte*
   alloy::core::operator+(std::byte* p, data_quantity<Rep,Base> offset)
   noexcept
@@ -1250,7 +1260,8 @@ inline constexpr std::byte*
   return p + b.count();
 }
 
-template <typename Rep, typename Base, typename>
+template <typename Rep, typename Base>
+  requires (Base::den == 1)
 inline constexpr const std::byte*
   alloy::core::operator+(const std::byte* p, data_quantity<Rep,Base> offset)
   noexcept
@@ -1260,7 +1271,8 @@ inline constexpr const std::byte*
 }
 
 
-template <typename Rep, typename Base, typename>
+template <typename Rep, typename Base>
+  requires (Base::den == 1)
 inline constexpr std::byte*
   alloy::core::operator-(std::byte* p, data_quantity<Rep,Base> offset)
   noexcept
@@ -1269,7 +1281,8 @@ inline constexpr std::byte*
   return p - b.count();
 }
 
-template <typename Rep, typename Base, typename>
+template <typename Rep, typename Base>
+  requires (Base::den == 1)
 inline constexpr const std::byte*
   alloy::core::operator-(const std::byte* p, data_quantity<Rep,Base> offset)
   noexcept

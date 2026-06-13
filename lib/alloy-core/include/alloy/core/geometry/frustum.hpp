@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,8 @@
 #include "alloy/core/api.hpp"
 #include "alloy/core/geometry/plane.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
-#include "alloy/core/containers/span.hpp"
+
+#include <span>
 
 #if defined(near)
 # undef near
@@ -121,7 +122,7 @@ namespace alloy::core {
     ///
     /// \return the 6 underlying planes
     [[nodiscard]]
-    constexpr auto planes() const noexcept -> span<const plane, 6u>;
+    constexpr auto planes() const noexcept -> std::span<const plane, 6u>;
 
     //--------------------------------------------------------------------------
     // Contains
@@ -214,9 +215,9 @@ auto alloy::core::frustum::far()
 
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::frustum::planes()
-  const noexcept -> span<const plane, 6u>
+  const noexcept -> std::span<const plane, 6u>
 {
-  return span<const plane, 6u>{m_planes};
+  return std::span<const plane, 6u>{m_planes};
 }
 
 //------------------------------------------------------------------------------

@@ -7,7 +7,7 @@
  
 /*
  The MIT License (MIT)
- Copyright (c) 2021 Matthew Rodusek. All rights reserved.
+ Copyright (c) 2021, 2026 Matthew Rodusek. All rights reserved.
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the \Software\), to deal
  in the Software without restriction, including without limitation the rights
@@ -36,7 +36,8 @@
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/memory/allocator.hpp"
 
-#include <type_traits> // std::add_const, std::enable_if
+#include <concepts>
+#include <type_traits> // std::add_const, etc
 #include <iterator>    // std::reverse_iterator
 #include <cstddef>     // std::size_t, std::ptrdiff_t
 
@@ -130,8 +131,8 @@ namespace alloy::core {
     ///
     /// \param n the number to copy
     /// \param copy the value to copy into the container
-    template <typename Derived,
-              typename = std::enable_if_t<std::is_base_of_v<Interface,Derived>>>
+    template <typename Derived>
+      requires std::derived_from<Derived, Interface>
     polymorphic_vector(size_type n, const Derived& copy);
 
     /// \brief Moves the contents of \p other
@@ -226,11 +227,9 @@ namespace alloy::core {
     /// \tparam Derived the type to construct
     /// \param args the arguments to forward to `Derived`
     /// \return a reference to the `Derived` object
-    template <typename Derived, typename...Args,
-              typename = std::enable_if_t<(
-                std::is_base_of_v<Interface,Derived> &&
-                std::is_constructible_v<Derived,Args...>
-              )>>
+    template <typename Derived, typename...Args>
+      requires (std::derived_from<Derived, Interface> &&
+                std::constructible_from<Derived, Args...>)
     auto emplace_back(Args&&...args) -> Derived&;
 
     /// \brief Emplaces an object at the specified position \p pos
@@ -239,11 +238,9 @@ namespace alloy::core {
     /// \param pos the position to construct the element at
     /// \param args the arguments to forward to `Derived`
     /// \return an iterator after the constructed element
-    template <typename Derived, typename...Args,
-              typename = std::enable_if_t<(
-                std::is_base_of_v<Interface,Derived> &&
-                std::is_constructible_v<Derived,Args...>
-              )>>
+    template <typename Derived, typename...Args>
+      requires (std::derived_from<Derived, Interface> &&
+                std::constructible_from<Derived, Args...>)
     auto emplace(const_iterator pos, Args&&...args) -> const_iterator;
 
     /// \brief Removes the last element in this vector
@@ -704,7 +701,8 @@ alloy::core::polymorphic_vector<Interface>::polymorphic_vector(allocator alloc)
 }
 
 template <typename Interface>
-template <typename Derived, typename>
+template <typename Derived>
+  requires std::derived_from<Derived, Interface>
 inline
 alloy::core::polymorphic_vector<Interface>::polymorphic_vector(
   size_type n, const Derived& copy
@@ -849,7 +847,9 @@ auto alloy::core::polymorphic_vector<Interface>::clear()
 }
 
 template <typename Interface>
-template <typename Derived, typename... Args, typename>
+template <typename Derived, typename... Args>
+  requires (std::derived_from<Derived, Interface> &&
+           std::constructible_from<Derived, Args...>)
 inline
 auto alloy::core::polymorphic_vector<Interface>::emplace_back(Args&&...args)
   -> Derived&
@@ -864,7 +864,9 @@ auto alloy::core::polymorphic_vector<Interface>::emplace_back(Args&&...args)
 }
 
 template <typename Interface>
-template <typename Derived, typename... Args, typename>
+template <typename Derived, typename... Args>
+  requires (std::derived_from<Derived, Interface> &&
+           std::constructible_from<Derived, Args...>)
 inline
 auto alloy::core::polymorphic_vector<Interface>::emplace(const_iterator pos, Args&&...args)
   -> const_iterator

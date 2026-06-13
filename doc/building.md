@@ -8,9 +8,9 @@ dependencies in order to build the **Alloy** game-engine.
 ### Required Binaries
 
 - [x] [CMake 3.5](https://cmake.org) or greater
-- [x] C++17 compatible compiler
-  * `g++-8` or greater
-  * `clang++-6` or greater
+- [x] C++20 compatible compiler
+  * `g++-10` or greater
+  * `clang++-10` or greater
   * `MSVC`
   * etc
 

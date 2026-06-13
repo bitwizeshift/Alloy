@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -39,6 +39,7 @@
 #include "alloy/core/traits/function_traits.hpp" // function_traits
 #include "alloy/core/traits/is_function_pointer.hpp"
 
+#include <concepts>
 #include <type_traits> // std::true_type
 #include <functional>  // std::invoke
 #include <cstddef>     // std::nullptr_t
@@ -91,6 +92,18 @@ namespace alloy::core {
   template <typename Fn>
   class delegate;
 
+  namespace detail {
+
+    /// \brief True when `F` is invocable with `Ts...` and the result is
+    ///        convertible to `R` (or `R` is `void`)
+    template <typename R, typename F, typename...Ts>
+    concept invocable_returns =
+      std::invocable<F, Ts...> &&
+      (std::is_void_v<R> ||
+       std::convertible_to<std::invoke_result_t<F, Ts...>, R>);
+
+  } // namespace detail
+
   /////////////////////////////////////////////////////////////////////////////
   /// \brief A class for makeing light-weight non-owning functions
   ///
@@ -100,17 +113,6 @@ namespace alloy::core {
   template <typename R, typename...Args>
   class delegate<R(Args...)>
   {
-    template <typename F, typename...Ts>
-    using enable_if_invocable_t = std::enable_if_t<
-      std::conjunction_v<
-        std::is_invocable<F, Ts...>,
-        std::disjunction<
-          std::is_void<R>,
-          std::is_convertible<std::invoke_result_t<F, Ts...>,R>
-        >
-      >
-    >;
-
     //-------------------------------------------------------------------------
     // Public Member Types
     //-------------------------------------------------------------------------
@@ -126,24 +128,24 @@ namespace alloy::core {
     ///
     /// \tparam Fn the function pointer to make
     /// \return the bound delegate
-    template <auto Fn,
-              typename=enable_if_invocable_t<decltype(Fn),Args...>>
+    template <auto Fn>
+      requires (alloy::core::detail::invocable_returns<R, decltype(Fn),Args...>)
     static constexpr delegate make() noexcept;
 
     /// \brief Binds a member function pointer to this delegate
     ///
     /// \tparam MemberFn the member function pointer to make
     /// \return the bound delegate
-    template <auto MemberFn, typename C,
-              typename=enable_if_invocable_t<decltype(MemberFn),C*,Args...>>
+    template <auto MemberFn, typename C>
+      requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),C*,Args...>)
     static constexpr delegate make(C* c) noexcept;
 
     /// \brief Binds a const member function pointer to this delegate
     ///
     /// \tparam MemberFn the const member function pointer to make
     /// \return the bound delegate
-    template <auto MemberFn, typename C,
-              typename=enable_if_invocable_t<decltype(MemberFn),const C*,Args...>>
+    template <auto MemberFn, typename C>
+      requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),const C*,Args...>)
     static constexpr delegate make(const C* c) noexcept;
 
     /// \{
@@ -151,11 +153,11 @@ namespace alloy::core {
     ///
     /// \param callable the callable to make
     /// \return the bound delegate
-    template <typename Callable,
-              typename=enable_if_invocable_t<Callable&,Args...>>
+    template <typename Callable>
+      requires (alloy::core::detail::invocable_returns<R, Callable&,Args...>)
     static constexpr delegate make(Callable* callable) noexcept;
-    template <typename Callable,
-              typename=enable_if_invocable_t<const Callable&,Args...>>
+    template <typename Callable>
+      requires (alloy::core::detail::invocable_returns<R, const Callable&,Args...>)
     static constexpr delegate make(const Callable* callable) noexcept;
     /// \}
 
@@ -184,33 +186,33 @@ namespace alloy::core {
     /// \brief Binds a non-member function pointer to this delegate
     ///
     /// \tparam Fn the function pointer to bind
-    template <auto Fn,
-              typename=enable_if_invocable_t<decltype(Fn),Args...>>
+    template <auto Fn>
+      requires (alloy::core::detail::invocable_returns<R, decltype(Fn),Args...>)
     void bind() noexcept;
 
     /// \brief Binds a member function pointer to this delegate
     ///
     /// \tparam MemberFn the member function pointer to bind
-    template <auto MemberFn, typename C,
-              typename=enable_if_invocable_t<decltype(MemberFn),C*,Args...>>
+    template <auto MemberFn, typename C>
+      requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),C*,Args...>)
     void bind(C* c) noexcept;
 
     /// \brief Binds a const member function pointer to this delegate
     ///
     /// \tparam MemberFn the const member function pointer to bind
-    template <auto MemberFn, typename C,
-              typename=enable_if_invocable_t<decltype(MemberFn),const C*,Args...>>
+    template <auto MemberFn, typename C>
+      requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),const C*,Args...>)
     void bind(const C* c) noexcept;
 
     /// \{
     /// \brief Binds a callable to this delegate
     ///
     /// \param callable the callable to bind
-    template <typename Callable,
-              typename=enable_if_invocable_t<Callable&,Args...>>
+    template <typename Callable>
+      requires (alloy::core::detail::invocable_returns<R, Callable&,Args...>)
     void bind(Callable* callable) noexcept;
-    template <typename Callable,
-              typename=enable_if_invocable_t<const Callable&,Args...>>
+    template <typename Callable>
+      requires (alloy::core::detail::invocable_returns<R, const Callable&,Args...>)
     void bind(const Callable* callable) noexcept;
     /// \}
 
@@ -242,8 +244,8 @@ namespace alloy::core {
     ///
     /// \param args the arguments
     /// \return the result of the function
-    template <typename...UArgs,
-              typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>>
+    template <typename...UArgs>
+      requires (std::invocable<R(*)(Args...), UArgs...>)
     R operator()(UArgs&&...args) const;
 
     ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
@@ -343,8 +345,8 @@ namespace alloy::core {
   /// \brief Makes a delegate from a function pointer
   ///
   /// \return a delegate from a function pointer
-  template <auto Fn,
-            typename = std::enable_if_t<detail::enable_make_delegate_function<Fn>::value>>
+  template <auto Fn>
+    requires (alloy::core::detail::enable_make_delegate_function<Fn>::value)
   constexpr delegate<typename alloy::core::function_traits<Fn>::signature_type>
     make_delegate() noexcept;
 
@@ -352,12 +354,12 @@ namespace alloy::core {
   /// \brief Makes a delegate from a member function pointer and a bound class
   ///
   /// \return a delegate from a function pointer
-  template <auto MemberFn, typename C,
-            typename = std::enable_if_t<detail::enable_make_delegate_member<MemberFn,C>::value>>
+  template <auto MemberFn, typename C>
+    requires (alloy::core::detail::enable_make_delegate_member<MemberFn,C>::value)
   constexpr delegate<typename alloy::core::function_traits<MemberFn>::signature_type>
     make_delegate(C* c) noexcept;
-  template <auto MemberFn, typename C,
-            typename = std::enable_if_t<detail::enable_make_delegate_member<MemberFn,const C>::value>>
+  template <auto MemberFn, typename C>
+    requires (alloy::core::detail::enable_make_delegate_member<MemberFn,const C>::value)
   constexpr delegate<typename alloy::core::function_traits<MemberFn>::signature_type>
     make_delegate(const C* c) noexcept;
   /// \}
@@ -418,7 +420,8 @@ namespace alloy::core::detail {
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-template <auto Fn, typename>
+template <auto Fn>
+  requires (alloy::core::detail::invocable_returns<R, decltype(Fn),Args...>)
 inline constexpr alloy::core::delegate<R(Args...)>
   alloy::core::delegate<R(Args...)>::make()
   noexcept
@@ -431,7 +434,8 @@ inline constexpr alloy::core::delegate<R(Args...)>
 
 
 template <typename R, typename...Args>
-template <auto MemberFn, typename C, typename>
+template <auto MemberFn, typename C>
+  requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),C*,Args...>)
 inline constexpr alloy::core::delegate<R(Args...)>
   alloy::core::delegate<R(Args...)>::make(C* c)
   noexcept
@@ -446,7 +450,8 @@ inline constexpr alloy::core::delegate<R(Args...)>
 
 
 template <typename R, typename...Args>
-template <auto MemberFn, typename C, typename>
+template <auto MemberFn, typename C>
+  requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),const C*,Args...>)
 inline constexpr alloy::core::delegate<R(Args...)>
   alloy::core::delegate<R(Args...)>::make(const C* c)
   noexcept
@@ -461,7 +466,8 @@ inline constexpr alloy::core::delegate<R(Args...)>
 
 
 template <typename R, typename...Args>
-template <typename Callable, typename>
+template <typename Callable>
+  requires (alloy::core::detail::invocable_returns<R, Callable&,Args...>)
 inline constexpr alloy::core::delegate<R(Args...)>
   alloy::core::delegate<R(Args...)>::make(Callable* callable)
   noexcept
@@ -476,7 +482,8 @@ inline constexpr alloy::core::delegate<R(Args...)>
 
 
 template <typename R, typename...Args>
-template <typename Callable, typename>
+template <typename Callable>
+  requires (alloy::core::detail::invocable_returns<R, const Callable&,Args...>)
 inline constexpr alloy::core::delegate<R(Args...)>
   alloy::core::delegate<R(Args...)>::make(const Callable* callable)
   noexcept
@@ -504,7 +511,8 @@ inline constexpr alloy::core::delegate<R(Args...)>::delegate()
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-template <auto Fn, typename>
+template <auto Fn>
+  requires (alloy::core::detail::invocable_returns<R, decltype(Fn),Args...>)
 inline void alloy::core::delegate<R(Args...)>::bind()
   noexcept
 {
@@ -513,7 +521,8 @@ inline void alloy::core::delegate<R(Args...)>::bind()
 
 
 template <typename R, typename...Args>
-template <auto MemberFn, typename C, typename>
+template <auto MemberFn, typename C>
+  requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),C*,Args...>)
 inline void alloy::core::delegate<R(Args...)>::bind(C* c)
   noexcept
 {
@@ -522,7 +531,8 @@ inline void alloy::core::delegate<R(Args...)>::bind(C* c)
 
 
 template <typename R, typename...Args>
-template <auto MemberFn, typename C, typename>
+template <auto MemberFn, typename C>
+  requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),const C*,Args...>)
 inline void alloy::core::delegate<R(Args...)>::bind(const C* c)
   noexcept
 {
@@ -531,7 +541,8 @@ inline void alloy::core::delegate<R(Args...)>::bind(const C* c)
 
 
 template <typename R, typename...Args>
-template <typename Callable, typename>
+template <typename Callable>
+  requires (alloy::core::detail::invocable_returns<R, Callable&,Args...>)
 inline void alloy::core::delegate<R(Args...)>::bind(Callable* callable)
   noexcept
 {
@@ -540,7 +551,8 @@ inline void alloy::core::delegate<R(Args...)>::bind(Callable* callable)
 
 
 template <typename R, typename...Args>
-template <typename Callable, typename>
+template <typename Callable>
+  requires (alloy::core::detail::invocable_returns<R, const Callable&,Args...>)
 inline void alloy::core::delegate<R(Args...)>::bind(const Callable* callable)
   noexcept
 {
@@ -564,7 +576,8 @@ inline void alloy::core::delegate<R(Args...)>::reset()
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-template <typename...UArgs, typename>
+template <typename...UArgs>
+  requires (std::invocable<R(*)(Args...), UArgs...>)
 inline R alloy::core::delegate<R(Args...)>::operator()(UArgs&&...args)
   const
 {
@@ -718,7 +731,8 @@ inline constexpr bool
 // Utilities
 //-----------------------------------------------------------------------------
 
-template <auto Fn, typename>
+template <auto Fn>
+  requires (alloy::core::detail::enable_make_delegate_function<Fn>::value)
 inline constexpr alloy::core::delegate<typename alloy::core::function_traits<Fn>::signature_type>
   alloy::core::make_delegate()
   noexcept
@@ -728,7 +742,8 @@ inline constexpr alloy::core::delegate<typename alloy::core::function_traits<Fn>
   return delegate_type::template make<Fn>();
 }
 
-template <auto MemberFn, typename C, typename>
+template <auto MemberFn, typename C>
+  requires (alloy::core::detail::enable_make_delegate_member<MemberFn,C>::value)
 inline constexpr alloy::core::delegate<typename alloy::core::function_traits<MemberFn>::signature_type>
   alloy::core::make_delegate(C* c)
   noexcept
@@ -738,7 +753,8 @@ inline constexpr alloy::core::delegate<typename alloy::core::function_traits<Mem
   return delegate_type::template make<MemberFn>(c);
 }
 
-template <auto MemberFn, typename C, typename>
+template <auto MemberFn, typename C>
+  requires (alloy::core::detail::enable_make_delegate_member<MemberFn,const C>::value)
 inline constexpr alloy::core::delegate<typename alloy::core::function_traits<MemberFn>::signature_type>
   alloy::core::make_delegate(const C* c)
   noexcept

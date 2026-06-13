@@ -7,7 +7,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022-2023, 2025 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022-2023, 2025-2026 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -167,9 +167,9 @@ namespace alloy::core {
     ///
     /// \param unit the code unit to check
     /// \return true if this is the start of a code-unit sequence
-    template <typename E=Encoding,
-              typename = std::enable_if_t<(has_is_char_boundary<E> || !is_multi_unit)>>
-    static constexpr auto is_char_boundary(char_type unit) noexcept -> bool;
+    template <typename E=Encoding>
+    static constexpr auto is_char_boundary(char_type unit) noexcept -> bool
+      requires (has_is_char_boundary<E> || !is_multi_unit);
 
     //-------------------------------------------------------------------------
     // Encoding
@@ -186,15 +186,15 @@ namespace alloy::core {
     /// \param args additional arguments to forward to the underlying decoder
     /// \return A pair containing the read UTF-32 codepoint, along with the
     ///         iterator
-    template <typename ForwardIt, typename...Args,
-              typename = std::enable_if_t<decodeable<Encoding,ForwardIt,Args...>>>
+    template <typename ForwardIt, typename...Args>
     [[nodiscard]]
     static constexpr auto decode(
       ForwardIt begin,
       ForwardIt end,
       char32 replacement = decode_sentinel,
       Args&&...args
-    ) noexcept -> std::pair<char32,ForwardIt>;
+    ) noexcept -> std::pair<char32,ForwardIt>
+      requires decodeable<Encoding, ForwardIt, Args...>;
 
     /// \brief Decodes a reverse-sequence of code-units into a codepoint
     ///
@@ -207,18 +207,16 @@ namespace alloy::core {
     /// \param args additional arguments to forward to the underlying decoder
     /// \return A pair containing the read UTF-32 codepoint, along with the
     ///         iterator
-    template <typename ForwardIt, typename...Args,
-              typename = std::enable_if_t<(
-                rdecodeable<Encoding, ForwardIt, Args...> ||
-                decodeable<Encoding, ForwardIt, Args...>
-              )>>
+    template <typename ForwardIt, typename...Args>
     [[nodiscard]]
     static constexpr auto rdecode(
       ForwardIt begin,
       ForwardIt end,
       char32 replacement = decode_sentinel,
       Args&&...args
-    ) noexcept -> std::pair<char32,ForwardIt>;
+    ) noexcept -> std::pair<char32,ForwardIt>
+      requires (rdecodeable<Encoding, ForwardIt, Args...> ||
+                decodeable<Encoding, ForwardIt, Args...>);
 
     //-------------------------------------------------------------------------
 
@@ -233,14 +231,14 @@ namespace alloy::core {
     ///                    (use 0 to skip them)
     /// \return Iterator to the end of the output sequence which has been
     ///         written
-    template <typename OutputIt, typename...Args,
-              typename = std::enable_if_t<encodeable<Encoding, OutputIt, Args...>>>
+    template <typename OutputIt, typename...Args>
     static constexpr auto encode(
       char32 input,
       OutputIt output,
       char_type replacement = encode_sentinel,
       Args&&...args
-    ) noexcept -> OutputIt;
+    ) noexcept -> OutputIt
+      requires encodeable<Encoding, OutputIt, Args...>;
 
     //-------------------------------------------------------------------------
     // Advancing
@@ -395,10 +393,11 @@ namespace alloy::core {
 //=============================================================================
 
 template <typename Encoding>
-template <typename E, typename>
+template <typename E>
 inline constexpr
 auto alloy::core::encoding_traits<Encoding>::is_char_boundary(char_type unit)
   noexcept -> bool
+  requires (has_is_char_boundary<E> || !is_multi_unit)
 {
   if constexpr (has_is_char_boundary<Encoding>) {
     return Encoding::is_char_boundary(unit);
@@ -420,7 +419,7 @@ auto alloy::core::encoding_traits<Encoding>::is_char_boundary(char_type unit)
 //-----------------------------------------------------------------------------
 
 template <typename Encoding>
-template <typename ForwardIt, typename...Args, typename>
+template <typename ForwardIt, typename...Args>
 inline constexpr
 auto alloy::core::encoding_traits<Encoding>::decode(
   ForwardIt begin,
@@ -428,12 +427,13 @@ auto alloy::core::encoding_traits<Encoding>::decode(
   char32 replacement,
   Args&&...args
 ) noexcept -> std::pair<char32,ForwardIt>
+  requires decodeable<Encoding, ForwardIt, Args...>
 {
   return Encoding::decode(begin, end, replacement, std::forward<Args>(args)...);
 }
 
 template <typename Encoding>
-template <typename ForwardIt, typename...Args, typename>
+template <typename ForwardIt, typename...Args>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::encoding_traits<Encoding>::rdecode(
   ForwardIt begin,
@@ -441,6 +441,8 @@ auto alloy::core::encoding_traits<Encoding>::rdecode(
   char32 replacement,
   Args&&...args
 ) noexcept -> std::pair<char32,ForwardIt>
+  requires (rdecodeable<Encoding, ForwardIt, Args...> ||
+           decodeable<Encoding, ForwardIt, Args...>)
 {
   if constexpr (rdecodeable<Encoding,ForwardIt,Args...>) {
     return Encoding::rdecode(begin, end, replacement, std::forward<Args>(args)...);
@@ -478,7 +480,7 @@ auto alloy::core::encoding_traits<Encoding>::rdecode(
 }
 
 template <typename Encoding>
-template <typename OutputIt, typename...Args, typename>
+template <typename OutputIt, typename...Args>
 inline constexpr
 auto alloy::core::encoding_traits<Encoding>::encode(
   char32 input,
@@ -486,6 +488,7 @@ auto alloy::core::encoding_traits<Encoding>::encode(
   char_type replacement,
   Args&&...args
 ) noexcept -> OutputIt
+  requires encodeable<Encoding, OutputIt, Args...>
 {
   return Encoding::encode(input, output, replacement, std::forward<Args>(args)...);
 }

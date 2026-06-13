@@ -7,7 +7,7 @@
 
 /*
  The MIT License (MIT)
- Copyright (c) 2021 Matthew Rodusek. All rights reserved.
+ Copyright (c) 2021, 2026 Matthew Rodusek. All rights reserved.
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the \Software\), to deal
  in the Software without restriction, including without limitation the rights
@@ -44,6 +44,12 @@ namespace alloy::core {
   //////////////////////////////////////////////////////////////////////////////
   /// \brief A collection of useful utilities for integral values
   //////////////////////////////////////////////////////////////////////////////
+  namespace detail {
+    /// \brief True when `sizeof(Int)` equals the combined size of all `Ints`
+    template <typename Int, typename...Ints>
+    concept exact_size_sum = (sizeof(Int) == (sizeof(Ints) + ...));
+  } // namespace detail
+
   class int_utilities final
   {
     int_utilities() = delete;
@@ -62,8 +68,8 @@ namespace alloy::core {
     /// \param ints the integers to concatenate. Size of each type must sum to
     ///             the size of the receiver
     /// \return the integer
-    template <typename Int, typename...Ints,
-              typename = std::enable_if_t<sizeof(Int) == (sizeof(Ints) + ...)>>
+    template <typename Int, typename...Ints>
+      requires alloy::core::detail::exact_size_sum<Int, Ints...>
     static constexpr auto make(const Ints&...ints) noexcept -> Int;
 
     /// \brief Converts an `s8` into a `u8`
@@ -450,7 +456,8 @@ auto alloy::core::int_utilities::make_impl(
 // Static Factories
 //------------------------------------------------------------------------------
 
-template <typename Int, typename... Ints, typename>
+template <typename Int, typename... Ints>
+  requires alloy::core::detail::exact_size_sum<Int, Ints...>
 inline constexpr
 auto alloy::core::int_utilities::make(const Ints&...ints)
   noexcept -> Int

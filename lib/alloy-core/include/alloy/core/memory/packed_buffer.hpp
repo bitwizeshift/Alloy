@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2020 Matthew Rodusek All rights reserved.
+  Copyright (c) 2020, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -40,9 +40,9 @@
 #include "alloy/core/memory/allocator.hpp"
 
 #include "alloy/core/containers/vector.hpp"
-#include "alloy/core/containers/span.hpp"
 
 #include <cstddef>      // std::byte
+#include <span>         // std::span
 #include <system_error> // std::error_code
 #include <type_traits>  // std::true_type
 
@@ -175,7 +175,7 @@ namespace alloy::core {
     /// \brief Pushes a series of bytes into the packed_buffer
     ///
     /// \param bytes the bytes to push
-    auto push_bytes(span<const std::byte> bytes) -> void;
+    auto push_bytes(std::span<const std::byte> bytes) -> void;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -250,7 +250,7 @@ namespace alloy::core {
     ///
     /// This operation can only fail if not enough memory is available
     /// \param source the buffer of data to write
-    auto write_bytes(span<const std::byte> source) -> void;
+    auto write_bytes(std::span<const std::byte> source) -> void;
 
     /// \brief Writes a trivially copyable object to the underlying
     ///        packed_buffer by ignoring any alignment requirements, as if by
@@ -378,7 +378,7 @@ namespace alloy::core {
     ///
     /// \param destination the buffer to write to
     /// \return the span of read bytes
-    auto read_bytes(span<std::byte> destination) noexcept -> span<std::byte>;
+    auto read_bytes(std::span<std::byte> destination) noexcept -> std::span<std::byte>;
 
     /// \brief Reads a trivially copyable object to the underlying
     ///        packed_buffer by ignoring any alignment requirements, as if by
@@ -537,7 +537,7 @@ inline auto
 //-----------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE auto
-  alloy::core::packed_buffer_writer::write_bytes(span<const std::byte> source)
+  alloy::core::packed_buffer_writer::write_bytes(std::span<const std::byte> source)
   -> void
 {
   m_buffer->push_bytes(source);
@@ -627,7 +627,7 @@ ALLOY_FORCE_INLINE auto
                                               const T& v)
   const noexcept -> void
 {
-  auto s = span<const T>{&v, std::size_t{1}};
+  auto s = std::span<const T>{&v, std::size_t{1}};
 
   buffer.write_bytes(as_bytes(s));
 }
@@ -638,7 +638,7 @@ inline auto
   const noexcept -> result<T,std::error_code>
 {
   auto out = T{};
-  auto s = span<T>{&out,std::size_t{1}};
+  auto s = std::span<T>{&out,std::size_t{1}};
   auto input = as_writable_bytes(s);
   const auto result = buffer.read_bytes(input);
 

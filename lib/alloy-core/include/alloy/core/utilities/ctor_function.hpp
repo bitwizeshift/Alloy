@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,8 @@
 
 #include "alloy/core/intrinsics.hpp"
 
-#include <type_traits> // std::enable_if
+#include <concepts>
+#include <type_traits> // std::constructible_from
 #include <utility>     // std::forward
 
 namespace alloy::core {
@@ -59,7 +60,8 @@ namespace alloy::core {
   template <typename T>
   struct ctor_function_type
   {
-    template <typename...Args, typename=std::enable_if_t<std::is_constructible_v<T,Args...>>>
+    template <typename...Args>
+      requires std::constructible_from<T, Args...>
     constexpr auto operator()(Args&&...args) const
       noexcept(std::is_nothrow_constructible_v<T,Args...>) -> T;
   };
@@ -70,7 +72,8 @@ namespace alloy::core {
 } // namespace alloy::core
 
 template <typename T>
-template <typename... Args, typename>
+template <typename... Args>
+  requires std::constructible_from<T, Args...>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::ctor_function_type<T>::operator()(Args&&...args)
   const noexcept(std::is_nothrow_constructible_v<T, Args...>) -> T

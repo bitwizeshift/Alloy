@@ -8,7 +8,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022, 2026 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -41,6 +41,7 @@
 #include "alloy/core/utilities/delegate.hpp"
 
 #include <cstddef>     // std::size_t
+#include <concepts>
 #include <type_traits> // std::decay_t
 #include <memory>      // std::addressof
 
@@ -286,8 +287,8 @@ namespace alloy::core {
     /// \note There is no way to early-terminate iteration from this function.
     ///
     /// \param cb the callback to invoke on each entry
-    template <typename Callback,
-              typename = std::enable_if_t<std::is_invocable_v<Callback,const K&, const V&>>>
+    template <typename Callback>
+      requires std::invocable<Callback, const K&, const V&>
     constexpr auto for_each(Callback&& cb) const -> void;
 
     //--------------------------------------------------------------------------
@@ -508,7 +509,8 @@ auto alloy::core::map_view<K,V>::at(const key_type& key)
 //------------------------------------------------------------------------------
 
 template <typename K, typename V>
-template <typename Callback, typename>
+template <typename Callback>
+  requires std::invocable<Callback, const K&, const V&>
 inline constexpr
 auto alloy::core::map_view<K,V>::for_each(Callback&& cb)
   const -> void

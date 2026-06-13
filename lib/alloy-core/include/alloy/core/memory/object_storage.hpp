@@ -8,7 +8,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022, 2026 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -42,6 +42,8 @@
 #include <cstddef>          // std::byte
 #include <initializer_list> // std::initialize_list
 #include <new>              // std::launder, placement-new
+#include <concepts>
+#include <type_traits>     // std::constructible_from
 #include <utility>          // std::forward
 
 namespace alloy::core {
@@ -93,8 +95,8 @@ namespace alloy::core {
     ///
     /// \param args the arguments to forward to `T`'s constructor
     /// \return a reference to the constructed `T`
-    template <typename T, typename...Args,
-              typename = std::enable_if_t<std::is_constructible_v<T,Args...>>>
+    template <typename T, typename...Args>
+      requires std::constructible_from<T, Args...>
     auto emplace(Args&&...args)
       noexcept(std::is_nothrow_constructible_v<T,Args...>) -> T&;
 
@@ -103,8 +105,8 @@ namespace alloy::core {
     /// \param ilist an initializer list of arguments
     /// \param args the arguments to forward to `T`'s constructor
     /// \return a reference to the constructed `T`
-    template <typename T, typename U, typename...Args,
-              typename = std::enable_if_t<std::is_constructible_v<T,std::initializer_list<U>,Args...>>>
+    template <typename T, typename U, typename...Args>
+      requires std::constructible_from<T, std::initializer_list<U>, Args...>
     auto emplace(std::initializer_list<U> ilist, Args&&...args)
       noexcept(std::is_nothrow_constructible_v<T,std::initializer_list<U>,Args...>) -> T&;
 
@@ -194,8 +196,8 @@ namespace alloy::core {
     ///
     /// \param args the arguments to forward to `T`'s constructor
     /// \return a reference to the constructed `T`
-    template <typename...Args,
-              typename = std::enable_if_t<std::is_constructible_v<T,Args...>>>
+    template <typename...Args>
+      requires std::constructible_from<T, Args...>
     auto emplace(Args&&...args)
       noexcept(std::is_nothrow_constructible_v<T,Args...>) -> T&;
 
@@ -204,8 +206,8 @@ namespace alloy::core {
     /// \param ilist an initializer list of arguments
     /// \param args the arguments to forward to `T`'s constructor
     /// \return a reference to the constructed `T`
-    template <typename U, typename...Args,
-              typename = std::enable_if_t<std::is_constructible_v<T,std::initializer_list<U>,Args...>>>
+    template <typename U, typename...Args>
+      requires std::constructible_from<T, std::initializer_list<U>, Args...>
     auto emplace(std::initializer_list<U> ilist, Args&&...args)
       noexcept(std::is_nothrow_constructible_v<T,std::initializer_list<U>,Args...>) -> T&;
 
@@ -259,7 +261,8 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 template <std::size_t Size, std::size_t Align>
-template <typename T, typename...Args, typename>
+template <typename T, typename...Args>
+  requires std::constructible_from<T, Args...>
 inline
 auto alloy::core::any_object_storage<Size,Align>::emplace(Args&&...args)
   noexcept(std::is_nothrow_constructible_v<T,Args...>) -> T&
@@ -274,7 +277,8 @@ auto alloy::core::any_object_storage<Size,Align>::emplace(Args&&...args)
 }
 
 template <std::size_t Size, std::size_t Align>
-template <typename T, typename U, typename...Args, typename>
+template <typename T, typename U, typename...Args>
+  requires std::constructible_from<T, std::initializer_list<U>, Args...>
 inline
 auto alloy::core::any_object_storage<Size,Align>::emplace(
   std::initializer_list<U> ilist,
@@ -341,7 +345,8 @@ auto alloy::core::any_object_storage<Size,Align>::data()
 //------------------------------------------------------------------------------
 
 template <typename T>
-template <typename...Args, typename>
+template <typename...Args>
+  requires std::constructible_from<T, Args...>
 inline
 auto alloy::core::object_storage<T>::emplace(Args&&...args)
   noexcept(std::is_nothrow_constructible_v<T,Args...>) -> T&
@@ -350,7 +355,8 @@ auto alloy::core::object_storage<T>::emplace(Args&&...args)
 }
 
 template <typename T>
-template <typename U, typename...Args, typename>
+template <typename U, typename...Args>
+  requires std::constructible_from<T, std::initializer_list<U>, Args...>
 inline
 auto alloy::core::object_storage<T>::emplace(
   std::initializer_list<U> ilist,

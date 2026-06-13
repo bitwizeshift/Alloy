@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2020-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2020-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -39,6 +39,7 @@
 #include "alloy/core/math/math.hpp"          // default_tolerance
 #include "alloy/core/utilities/result.hpp"   // result
 
+#include <concepts>
 #include <type_traits> // std::conjunction, std::negation, std::is_reference
 #include <variant>
 
@@ -91,8 +92,8 @@ namespace alloy::core {
     /// \brief Constructs an intersection with the given type
     ///
     /// \param type the type of intersection
-    template <typename Type,
-              typename = std::enable_if_t<std::is_constructible<std::variant<Types...>,Type>::value>>
+    template <typename Type>
+      requires std::constructible_from<std::variant<Types...>, Type>
     constexpr intersection(Type&& type) noexcept;
 
     /// \brief Constructs a intersection by moving an existing instance
@@ -230,7 +231,8 @@ inline constexpr alloy::core::intersection<Types...>::intersection()
 }
 
 template <typename...Types>
-template <typename Type, typename>
+template <typename Type>
+  requires std::constructible_from<std::variant<Types...>, Type>
 inline constexpr alloy::core::intersection<Types...>::intersection(Type&& type)
   noexcept
   : m_intersection_types{std::forward<Type>(type)}

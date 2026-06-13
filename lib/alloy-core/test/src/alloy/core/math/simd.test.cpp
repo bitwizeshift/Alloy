@@ -9,6 +9,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
 #include <array>
+#include <span>
 
 namespace alloy::core::test {
 
@@ -16,7 +17,7 @@ namespace alloy::core::test {
 // Factories
 //-----------------------------------------------------------------------------
 
-TEMPLATE_TEST_CASE("simd<T>::load(span<f32,4>)", "[factory]", f32, u32, s32) {
+TEMPLATE_TEST_CASE("simd<T>::load(std::span<f32,4>)", "[factory]", f32, u32, s32) {
   // Arrange
   const auto values = simd_aligned_array<TestType, 4>{{
     1, 2, 3, 4
@@ -40,7 +41,7 @@ TEMPLATE_TEST_CASE("simd<T>::load(span<f32,4>)", "[factory]", f32, u32, s32) {
   }
 }
 
-TEMPLATE_TEST_CASE("simd<T>::load_unaligned(span<f32,4>)", "[factory]", f32, u32, s32) {
+TEMPLATE_TEST_CASE("simd<T>::load_unaligned(std::span<f32,4>)", "[factory]", f32, u32, s32) {
   // Arrange
   const auto values = std::array<TestType, 4>{{
     1, 2, 3, 4
@@ -721,7 +722,7 @@ TEST_CASE("simd_max(simd<f32>)", "[algorithm][math]") {
 
 namespace {
   template <std::size_t Lane>
-  auto unrolled_dot4(span<const simd<f32>,4> lhs, span<const simd<f32>,4> rhs)
+  auto unrolled_dot4(std::span<const simd<f32>,4> lhs, std::span<const simd<f32>,4> rhs)
     noexcept -> f32
   {
     auto result = f32{0};
@@ -732,7 +733,7 @@ namespace {
   }
 }
 
-TEST_CASE("simd_dot4(span<simd<f32>,4>,span<simd<f32>,4>)", "[algorithm][math]") {
+TEST_CASE("simd_dot4(std::span<simd<f32>,4>,std::span<simd<f32>,4>)", "[algorithm][math]") {
   // Arrange
 
   const auto lhs = std::array<simd<f32>,4>{{
@@ -776,7 +777,7 @@ TEST_CASE("simd_dot4(span<simd<f32>,4>,span<simd<f32>,4>)", "[algorithm][math]")
 
 namespace {
   template <std::size_t Lane>
-  auto strided_dot(span<const f32,16> lhs, span<const f32,16> rhs)
+  auto strided_dot(std::span<const f32,16> lhs, std::span<const f32,16> rhs)
     noexcept -> f32
   {
     auto result = f32{0};
@@ -788,7 +789,7 @@ namespace {
   }
 }
 
-TEST_CASE("simd_dot4(span<f32,16>,span<f32,16>)", "[algorithm][math]") {
+TEST_CASE("simd_dot4(std::span<f32,16>,std::span<f32,16>)", "[algorithm][math]") {
   // Arrange
 
   const auto lhs = simd_aligned_array<f32,16>{{

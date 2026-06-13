@@ -13,6 +13,7 @@
 #include <catch2/benchmark/catch_benchmark_all.hpp>
 #include <cstdlib>
 #include <random>
+#include <span>
 #include <string>
 #include <utility>
 
@@ -65,7 +66,7 @@ struct DotFixture {
 
 namespace {
 // A baseline "dot" product implementation written in terms of spans
-auto dot(span<const f32,4> lhs, span<const f32,4> rhs) noexcept -> f32 {
+auto dot(std::span<const f32,4> lhs, std::span<const f32,4> rhs) noexcept -> f32 {
   auto result = f32{0};
 
   for (auto i = 0; i < 4; ++i) {
@@ -74,7 +75,7 @@ auto dot(span<const f32,4> lhs, span<const f32,4> rhs) noexcept -> f32 {
   return result;
 }
 // A simplified operation for computing 4 dot products
-auto dot4(span<const f32,16> lhs, span<const f32,16> rhs) noexcept -> std::array<f32,4> {
+auto dot4(std::span<const f32,16> lhs, std::span<const f32,16> rhs) noexcept -> std::array<f32,4> {
   return {
     dot(lhs.subspan<0,4>(), rhs.subspan<0,4>()),
     dot(lhs.subspan<4,4>(), rhs.subspan<4,4>()),
@@ -101,30 +102,30 @@ TEST_CASE_METHOD(DotFixture, "Dot Product", "[benchmark][dot]") {
 
   BENCHMARK("Baseline 4 dot products") {
     return dot4(
-      span<const f32,16>{lhs.get(), 16u},
-      span<const f32,16>{rhs.get(), 16u}
+      std::span<const f32,16>{lhs.get(), 16u},
+      std::span<const f32,16>{rhs.get(), 16u}
     );
   };
 
   BENCHMARK("Simd dot4 with loading") {
     return simd_dot4(
-      span<const f32,16>{lhs.get(), 16u},
-      span<const f32,16>{rhs.get(), 16u}
+      std::span<const f32,16>{lhs.get(), 16u},
+      std::span<const f32,16>{rhs.get(), 16u}
     );
   };
 
   BENCHMARK_ADVANCED("Simd dot4 without loading")(Catch::Benchmark::Chronometer meter) {
     const simd<f32> lhs_simd[4] = {
-      simd<f32>::load(span<const f32,4>{lhs.get() + 0u, 4u}),
-      simd<f32>::load(span<const f32,4>{lhs.get() + 4u, 4u}),
-      simd<f32>::load(span<const f32,4>{lhs.get() + 8u, 4u}),
-      simd<f32>::load(span<const f32,4>{lhs.get() + 12u, 4u})
+      simd<f32>::load(std::span<const f32,4>{lhs.get() + 0u, 4u}),
+      simd<f32>::load(std::span<const f32,4>{lhs.get() + 4u, 4u}),
+      simd<f32>::load(std::span<const f32,4>{lhs.get() + 8u, 4u}),
+      simd<f32>::load(std::span<const f32,4>{lhs.get() + 12u, 4u})
     };
     const simd<f32> rhs_simd[4] = {
-      simd<f32>::load(span<const f32,4>{rhs.get() + 0u, 4u}),
-      simd<f32>::load(span<const f32,4>{rhs.get() + 4u, 4u}),
-      simd<f32>::load(span<const f32,4>{rhs.get() + 8u, 4u}),
-      simd<f32>::load(span<const f32,4>{rhs.get() + 12u, 4u})
+      simd<f32>::load(std::span<const f32,4>{rhs.get() + 0u, 4u}),
+      simd<f32>::load(std::span<const f32,4>{rhs.get() + 4u, 4u}),
+      simd<f32>::load(std::span<const f32,4>{rhs.get() + 8u, 4u}),
+      simd<f32>::load(std::span<const f32,4>{rhs.get() + 12u, 4u})
     };
 
     meter.measure([&]{

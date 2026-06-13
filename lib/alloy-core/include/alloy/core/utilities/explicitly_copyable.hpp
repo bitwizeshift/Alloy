@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@
 
 #include "alloy/core/intrinsics.hpp"
 
+#include <concepts>
 #include <type_traits> // std::is_final, std::is_copy_constructible, etc
 
 namespace alloy::core {
@@ -94,8 +95,8 @@ namespace alloy::core {
     ///
     /// \param alloc the allocator to use for the copy
     /// \return a copy of the underlying type using \p alloc
-    template <typename Alloc = typename T::allocator_type,
-              typename = std::enable_if_t<std::is_constructible<T,const T&, const Alloc&>::value>>
+    template <typename Alloc = typename T::allocator_type>
+      requires std::constructible_from<T, const T&, const Alloc&>
     auto copy_with(const Alloc& alloc)
      const noexcept(std::is_nothrow_constructible<T, const T&, const Alloc&>::value)
      -> explicitly_copyable;
@@ -122,7 +123,8 @@ auto alloy::core::explicitly_copyable<T>::copy()
 }
 
 template <typename T>
-template <typename Alloc, typename>
+template <typename Alloc>
+  requires std::constructible_from<T, const T&, const Alloc&>
 ALLOY_FORCE_INLINE
 auto alloy::core::explicitly_copyable<T>::copy_with(const Alloc& alloc)
   const noexcept(std::is_nothrow_constructible<T, const T&, const Alloc&>::value)

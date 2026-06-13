@@ -7,7 +7,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022, 2026 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -110,17 +110,15 @@ namespace alloy::core {
     /// \param output the iterator to write to
     /// \param replacement the character to replace on failure
     /// \param args additional arguments to forward to the encoding(s)
-    template <typename ForwardIt, typename OutputIt, typename...Args,
-              typename = std::enable_if_t<(
-                decodeable<ForwardIt,Args...> || encodeable<OutputIt,Args...>
-              )>>
+    template <typename ForwardIt, typename OutputIt, typename...Args>
     constexpr auto operator()(
       ForwardIt begin,
       ForwardIt end,
       OutputIt output,
       char_type replacement = encode_sentinel,
       Args&&...args
-    ) const noexcept -> OutputIt;
+    ) const noexcept -> OutputIt
+      requires (decodeable<ForwardIt,Args...> || encodeable<OutputIt,Args...>);
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -154,7 +152,7 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 template <typename FromEncoding, typename ToEncoding>
-template <typename ForwardIt, typename OutputIt, typename...Args, typename>
+template <typename ForwardIt, typename OutputIt, typename...Args>
 inline constexpr
 auto alloy::core::encoding_converter<FromEncoding,ToEncoding>::operator()(
   ForwardIt begin,
@@ -163,6 +161,7 @@ auto alloy::core::encoding_converter<FromEncoding,ToEncoding>::operator()(
   char_type replacement,
   Args&&...args
 ) const noexcept -> OutputIt
+  requires (decodeable<ForwardIt,Args...> || encodeable<OutputIt,Args...>)
 {
   if constexpr (std::is_same_v<FromEncoding, ToEncoding>) {
     compiler::unused(replacement, args...);

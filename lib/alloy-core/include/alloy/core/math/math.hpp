@@ -8,7 +8,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -39,6 +39,7 @@
 
 #include "alloy/core/precision.hpp" // core::real
 
+#include <concepts>
 #include <type_traits> // std::common_type, std::conditional_t, etc
 #include <cstddef>     // std::size_t
 #include <cmath>       // std::fmod
@@ -165,8 +166,8 @@ namespace alloy::core {
   /// \param x the signed value
   /// \return \p x the absolute value of \p x (``|x| )
 #ifndef ALLOY_DOXYGEN
-  template<typename Arithmetic,
-           std::enable_if_t<!std::is_unsigned<Arithmetic>::value>* = nullptr>
+  template<typename Arithmetic>
+    requires (!std::unsigned_integral<Arithmetic>)
 #else
   template<typename Arithmetic>
 #endif
@@ -180,8 +181,8 @@ namespace alloy::core {
   /// \param x the unsigned value
   /// \return \p x
 #ifndef ALLOY_DOXYGEN
-  template<typename Arithmetic,
-           std::enable_if_t<std::is_unsigned<Arithmetic>::value>* = nullptr>
+  template<typename Arithmetic>
+    requires std::unsigned_integral<Arithmetic>
 #else
   template<typename Arithmetic>
 #endif
@@ -370,8 +371,8 @@ auto alloy::core::log2(Arithmetic a)
 // Absolute Values
 //-----------------------------------------------------------------------------
 
-template<typename Arithmetic,
-         std::enable_if_t<!std::is_unsigned<Arithmetic>::value>*>
+template<typename Arithmetic>
+  requires (!std::unsigned_integral<Arithmetic>)
 inline constexpr
 auto alloy::core::abs(Arithmetic x)
   noexcept -> Arithmetic
@@ -379,8 +380,8 @@ auto alloy::core::abs(Arithmetic x)
   return ((x < 0) ? -x : x);
 }
 
-template<typename Arithmetic,
-         std::enable_if_t<std::is_unsigned<Arithmetic>::value>*>
+template<typename Arithmetic>
+  requires std::unsigned_integral<Arithmetic>
 inline constexpr
 auto alloy::core::abs(Arithmetic x)
   noexcept -> Arithmetic

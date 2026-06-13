@@ -41,7 +41,8 @@
 #include "alloy/core/utilities/delegate.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
-#include <type_traits> // std::enable_if_t, etc
+#include <concepts>
+#include <type_traits> // std::is_void_v, etc
 #include <algorithm>   // std::remove
 
 namespace alloy::core {
@@ -163,9 +164,8 @@ namespace alloy::core {
     ///         member function of Listener, but could be a non-member function
     ///         accepting a 'listener' as the first argument
     /// \param args the arguments to forward to the handlers
-    template <auto Handler,
-              typename...UArgs,
-              typename=std::enable_if_t<std::is_invocable_v<decltype(Handler),Listener&,UArgs...>>>
+    template <auto Handler, typename...UArgs>
+      requires (std::invocable<decltype(Handler), Listener&, UArgs...>)
     void emit(UArgs&&...args) const;
 
     /// \brief Emits a signal to all handlers of the event sink, collecting the
@@ -185,10 +185,8 @@ namespace alloy::core {
     ///         accepting a 'listener' as the first argument
     /// \param collector a function to invoke on each return argument
     /// \param args the arguments to forward to the handlers
-    template <auto Handler,
-              typename CollectorFn,
-              typename...UArgs,
-              typename=std::enable_if_t<std::is_invocable_v<decltype(Handler),Listener&,UArgs...>>>
+    template <auto Handler, typename CollectorFn, typename...UArgs>
+      requires (std::invocable<decltype(Handler), Listener&, UArgs...>)
     void emit(CollectorFn&& collector,
               UArgs&&...args) const;
 
@@ -262,17 +260,6 @@ namespace alloy::core {
   template <typename R, typename...Args>
   class signal<R(Args...)>
   {
-    template <typename F, typename...Ts>
-    using enable_if_invocable_t = std::enable_if_t<
-      std::conjunction_v<
-        std::is_invocable<F, Ts...>,
-        std::disjunction<
-          std::is_void<R>,
-          std::is_convertible<std::invoke_result_t<F, Ts...>,R>
-        >
-      >
-    >;
-
     //-------------------------------------------------------------------------
     // Public Member Types
     //-------------------------------------------------------------------------
@@ -312,8 +299,8 @@ namespace alloy::core {
     /// \brief Emits a signal to all handlers of the event sink
     ///
     /// \param args the arguments to forward to the handlers
-    template <typename...UArgs,
-              typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>>
+    template <typename...UArgs>
+      requires (std::invocable<R(*)(Args...), UArgs...>)
     void emit(UArgs&&...args) const;
 
     /// \brief Emits a signal to all handlers of the event sink, collecting the
@@ -330,10 +317,8 @@ namespace alloy::core {
     ///
     /// \param collector a function to invoke on each return argument
     /// \param args the arguments to forward to the handlers
-    template <typename CollectorFn,
-              typename...UArgs,
-              typename R2=R,
-              typename=std::enable_if_t<std::is_invocable_v<R(*)(Args...),UArgs...>>>
+    template <typename CollectorFn, typename...UArgs, typename R2=R>
+      requires (std::invocable<R(*)(Args...), UArgs...>)
     void emit(CollectorFn&& collector, UArgs&&...args) const;
 
     //-------------------------------------------------------------------------
@@ -478,17 +463,6 @@ namespace alloy::core {
   template <typename R, typename...Args>
   class sink<R(Args...)>
   {
-    template <typename F, typename...Ts>
-    using enable_if_invocable_t = std::enable_if_t<
-      std::conjunction_v<
-        std::is_invocable<F, Ts...>,
-        std::disjunction<
-          std::is_void<R>,
-          std::is_convertible<std::invoke_result_t<F, Ts...>,R>
-        >
-      >
-    >;
-
     //-------------------------------------------------------------------------
     // Public Member Types
     //-------------------------------------------------------------------------
@@ -529,8 +503,8 @@ namespace alloy::core {
     ///
     /// \tparam Fn the function pointer to bind
     /// \return a connection object
-    template <auto Fn,
-              typename=enable_if_invocable_t<decltype(Fn),Args...>>
+    template <auto Fn>
+      requires (alloy::core::detail::invocable_returns<R, decltype(Fn),Args...>)
     connection connect() noexcept;
 
     /// \brief Adds a member function pointer listener to this event
@@ -540,8 +514,8 @@ namespace alloy::core {
     /// \tparam MemberFn the member function pointer to bind
     /// \param c a pointer to the underlying instance
     /// \return a connection object
-    template <auto MemberFn, typename C,
-              typename=enable_if_invocable_t<decltype(MemberFn),C*,Args...>>
+    template <auto MemberFn, typename C>
+      requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),C*,Args...>)
     connection connect(C* c) noexcept;
 
     /// \brief Adds a const member function pointer listener to this event
@@ -551,8 +525,8 @@ namespace alloy::core {
     /// \tparam MemberFn the const member function pointer to bind
     /// \param c a pointer to the underlying instance
     /// \return a connection object
-    template <auto MemberFn, typename C,
-              typename=enable_if_invocable_t<decltype(MemberFn),const C*,Args...>>
+    template <auto MemberFn, typename C>
+      requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),const C*,Args...>)
     connection connect(const C* c) noexcept;
 
     /// \{
@@ -560,11 +534,11 @@ namespace alloy::core {
     ///
     /// \param callable the callable to bind
     /// \return a connection object
-    template <typename Callable,
-              typename=enable_if_invocable_t<Callable&,Args...>>
+    template <typename Callable>
+      requires (alloy::core::detail::invocable_returns<R, Callable&,Args...>)
     connection connect(Callable* callable) noexcept;
-    template <typename Callable,
-              typename=enable_if_invocable_t<const Callable&,Args...>>
+    template <typename Callable>
+      requires (alloy::core::detail::invocable_returns<R, const Callable&,Args...>)
     connection connect(const Callable* callable) noexcept;
     /// \}
 
@@ -818,7 +792,8 @@ inline alloy::core::signal<Listener>::signal(size_type size, allocator alloc)
 //-----------------------------------------------------------------------------
 
 template <typename Listener>
-template <auto Handler, typename...UArgs, typename>
+template <auto Handler, typename...UArgs>
+  requires (std::invocable<decltype(Handler), Listener&, UArgs...>)
 inline void alloy::core::signal<Listener>::emit(UArgs&&...args)
   const
 {
@@ -829,7 +804,8 @@ inline void alloy::core::signal<Listener>::emit(UArgs&&...args)
 
 
 template <typename Listener>
-template <auto Handler, typename CollectorFn, typename...UArgs, typename>
+template <auto Handler, typename CollectorFn, typename...UArgs>
+  requires (std::invocable<decltype(Handler), Listener&, UArgs...>)
 inline void alloy::core::signal<Listener>::emit(CollectorFn&& collector,
                                                 UArgs&&...args)
   const
@@ -893,7 +869,8 @@ inline alloy::core::signal<R(Args...)>::signal(size_type size, allocator alloc)
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-template <typename...UArgs, typename>
+template <typename...UArgs>
+  requires (std::invocable<R(*)(Args...), UArgs...>)
 inline void alloy::core::signal<R(Args...)>::emit(UArgs&&...args)
   const
 {
@@ -904,7 +881,8 @@ inline void alloy::core::signal<R(Args...)>::emit(UArgs&&...args)
 
 
 template <typename R, typename...Args>
-template <typename CollectorFn, typename...UArgs, typename, typename>
+template <typename CollectorFn, typename...UArgs, typename>
+  requires (std::invocable<R(*)(Args...), UArgs...>)
 inline void alloy::core::signal<R(Args...)>::emit(CollectorFn&& collector,
                                                   UArgs&&...args)
   const
@@ -1076,7 +1054,8 @@ inline alloy::core::sink<R(Args...)>::sink(signal_type* signal)
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-template <auto Fn, typename>
+template <auto Fn>
+  requires (alloy::core::detail::invocable_returns<R, decltype(Fn),Args...>)
 inline alloy::core::connection
   alloy::core::sink<R(Args...)>::connect()
   noexcept
@@ -1099,7 +1078,8 @@ inline alloy::core::connection
 
 
 template <typename R, typename...Args>
-template <auto MemberFn, typename C, typename>
+template <auto MemberFn, typename C>
+  requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),C*,Args...>)
 inline alloy::core::connection
   alloy::core::sink<R(Args...)>::connect(C* c)
   noexcept
@@ -1123,7 +1103,8 @@ inline alloy::core::connection
 
 
 template <typename R, typename...Args>
-template <auto MemberFn, typename C, typename>
+template <auto MemberFn, typename C>
+  requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),const C*,Args...>)
 inline alloy::core::connection
   alloy::core::sink<R(Args...)>::connect(const C* c)
   noexcept
@@ -1147,7 +1128,8 @@ inline alloy::core::connection
 
 
 template <typename R, typename...Args>
-template <typename Callable, typename>
+template <typename Callable>
+  requires (alloy::core::detail::invocable_returns<R, Callable&,Args...>)
 inline alloy::core::connection
   alloy::core::sink<R(Args...)>::connect(Callable* callable)
   noexcept
@@ -1171,7 +1153,8 @@ inline alloy::core::connection
 
 
 template <typename R, typename...Args>
-template <typename Callable, typename>
+template <typename Callable>
+  requires (alloy::core::detail::invocable_returns<R, const Callable&,Args...>)
 inline alloy::core::connection
   alloy::core::sink<R(Args...)>::connect(const Callable* callable)
   noexcept

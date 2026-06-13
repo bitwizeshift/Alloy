@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -556,8 +556,8 @@ namespace alloy::core {
 
   constexpr auto blend(const color& c1, const color& c2) -> color;
 
-  template<typename...Colors,
-           typename=std::enable_if_t<(sizeof...(Colors) != 0)>>
+  template<typename...Colors>
+    requires (sizeof...(Colors) != 0)
   constexpr auto blend(const color& c1,
                        const color& c2,
                        const Colors&...colors) -> color;
@@ -1327,7 +1327,8 @@ auto alloy::core::blend(const color& c1, const color& c2)
   return result;
 }
 
-template<typename...Colors, typename>
+template<typename...Colors>
+  requires (sizeof...(Colors) != 0)
 inline constexpr
 auto alloy::core::blend(const color& c1, const color& c2, const Colors&...colors)
   -> color

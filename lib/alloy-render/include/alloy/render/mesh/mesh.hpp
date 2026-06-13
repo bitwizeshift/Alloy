@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,6 @@
 #define ALLOY_RENDER_MESH_MESH_HPP
 
 #include "alloy/render/mesh/primitive_topology.hpp"
-#include "alloy/core/containers/span.hpp"
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/memory/data_quantity.hpp"
 #include "alloy/core/memory/packed_buffer.hpp"
@@ -43,6 +42,7 @@
 
 #include <cstddef> // std::byte
 #include <cstdint> // std::uint8_t, std::uint16_t, etc
+#include <span>
 
 namespace alloy::render {
 
@@ -272,12 +272,12 @@ namespace alloy::render {
     /// \brief Gets the (compressed) data associated with this mesh
     ///
     /// \return the data as a span
-    auto data() const noexcept -> core::span<const std::byte>;
+    auto data() const noexcept -> std::span<const std::byte>;
 
     /// \brief Gets the mesh indices
     ///
     /// \return the mesh indices
-    auto indices() const noexcept -> core::span<const index_type>;
+    auto indices() const noexcept -> std::span<const index_type>;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -568,9 +568,9 @@ auto alloy::render::mesh::topology()
 
 inline
 auto alloy::render::mesh::data()
-  const noexcept -> core::span<const std::byte>
+  const noexcept -> std::span<const std::byte>
 {
-  return core::span<const std::byte>{
+  return std::span<const std::byte>{
     m_compressed_data.data(),
     m_compressed_data.size().count(),
   };
@@ -578,9 +578,9 @@ auto alloy::render::mesh::data()
 
 inline
 auto alloy::render::mesh::indices()
-  const noexcept -> core::span<const index_type>
+  const noexcept -> std::span<const index_type>
 {
-  return core::span<const index_type>{
+  return std::span<const index_type>{
     m_indices.data(),
     m_indices.size(),
   };

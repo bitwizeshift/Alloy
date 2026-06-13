@@ -133,7 +133,7 @@ TEST_CASE("packed_buffer::push_byte(std::byte)", "[modifiers]")
   }
 }
 
-TEST_CASE("packed_buffer::push_bytes(span<const std::byte>)", "[modifiers]")
+TEST_CASE("packed_buffer::push_bytes(std::span<const std::byte>)", "[modifiers]")
 {
   const auto array = std::array<std::byte, 4>{
     std::byte{1}, std::byte{2}, std::byte{3}, std::byte{4},

@@ -58,7 +58,6 @@ set(header_files
   include/alloy/core/containers/queue.hpp
   include/alloy/core/containers/set.hpp
   include/alloy/core/containers/set_view.hpp
-  include/alloy/core/containers/span.hpp
   include/alloy/core/containers/stack.hpp
   include/alloy/core/containers/vector.hpp
   include/alloy/core/containers/polymorphic_vector.hpp
@@ -70,7 +69,6 @@ set(header_files
   include/alloy/core/traits/is_function_pointer.hpp
   include/alloy/core/traits/for_each_member.hpp
   include/alloy/core/traits/detected.hpp
-  include/alloy/core/traits/common_reference.hpp
   include/alloy/core/traits/copy_cv.hpp
   include/alloy/core/traits/copy_cvref.hpp
 

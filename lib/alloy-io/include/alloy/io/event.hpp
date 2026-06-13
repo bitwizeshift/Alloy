@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,8 @@
 
 #include <cstdint>     // std::uint32_t
 #include <cstddef>     // std::size_t
-#include <type_traits> // std::enable_if
+#include <concepts>    // std::same_as
+#include <type_traits> // std::decay_t, std::is_nothrow_constructible
 #include <utility>     // std::forward, std::move
 #include <new>         // placement ::new
 
@@ -162,8 +163,8 @@ namespace alloy::io {
     ///        type
     ///
     /// \param e the underlying event to construct this event from
-    template <typename Event,
-              typename = std::enable_if_t<!std::is_same_v<std::decay_t<Event>,event>>>
+    template <typename Event>
+      requires (!std::same_as<std::decay_t<Event>, event>)
     /* IMPLICIT */ event(Event&& e)
       noexcept(std::is_nothrow_constructible<std::decay_t<Event>,Event>::value);
 
@@ -500,7 +501,8 @@ alloy::io::event::event()
 }
 
 
-template <typename Event, typename>
+template <typename Event>
+  requires (!std::same_as<std::decay_t<Event>, alloy::io::event>)
 inline
 alloy::io::event::event(Event&& e)
   noexcept(std::is_nothrow_constructible<std::decay_t<Event>,Event>::value)

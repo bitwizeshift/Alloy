@@ -9,7 +9,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019-2020, 2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019-2020, 2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
+#include <concepts>
 #include <type_traits> // std::true_type, std::false_type
 #include <utility>     // std::forward
 
@@ -142,8 +143,8 @@ namespace alloy::core {
     /// \brief Constructs the underlying semantic object by forwarding \p u
     ///
     /// \param u the underlying value to forward to T's constructor
-    template <typename U,
-              typename = std::enable_if_t<std::is_constructible_v<T,U>>>
+    template <typename U>
+      requires std::constructible_from<T, U>
     constexpr explicit semantic_type(U&& u)
       noexcept(std::is_nothrow_constructible_v<T,U>);
 
@@ -190,19 +191,23 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   public:
 
-    template <typename U=T, typename=decltype(++std::declval<U&>())>
+    template <typename U=T>
+      requires requires { ++std::declval<U&>(); }
     constexpr semantic_type& operator++()
       noexcept(noexcept(++std::declval<U&>()));
 
-    template <typename U=T, typename=decltype(std::declval<U&>()++)>
+    template <typename U=T>
+      requires requires { std::declval<U&>()++; }
     constexpr semantic_type operator++(int)
       noexcept(noexcept(std::declval<U&>()++));
 
-    template <typename U=T, typename=decltype(--std::declval<U&>())>
+    template <typename U=T>
+      requires requires { --std::declval<U&>(); }
     constexpr semantic_type& operator--()
       noexcept(noexcept(--std::declval<U&>()));
 
-    template <typename U=T, typename=decltype(std::declval<U&>()--)>
+    template <typename U=T>
+      requires requires { std::declval<U&>()--; }
     constexpr semantic_type operator--(int)
       noexcept(noexcept(std::declval<U&>()--));
 
@@ -328,9 +333,9 @@ namespace alloy::core {
     /// \tparam SemanticType the semantic type being cast to
     /// \param other the other type to cast from
     /// \return the new semantic type
-    template <typename SemanticType, typename T, typename Tag,
-              typename = std::enable_if_t<is_semantic_type_v<SemanticType>>,
-              typename = decltype(SemanticType{static_cast<typename SemanticType::value_type>(std::declval<const T&>())})>
+    template <typename SemanticType, typename T, typename Tag>
+      requires (alloy::core::is_semantic_type_v<SemanticType> &&
+                requires { SemanticType{static_cast<typename SemanticType::value_type>(std::declval<const T&>())}; })
     constexpr SemanticType semantic_cast(const semantic_type<T,Tag>& other);
 
   } // inline namespace casts
@@ -345,7 +350,8 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 template <typename T, typename Tag>
-template <typename U, typename>
+template <typename U>
+  requires std::constructible_from<T, U>
 inline constexpr alloy::core::semantic_type<T,Tag>::semantic_type(U&& u)
   noexcept(std::is_nothrow_constructible_v<T,U>)
   : m_value{std::forward<U>(u)}
@@ -379,7 +385,8 @@ inline constexpr typename alloy::core::semantic_type<T,Tag>::const_reference
 
 
 template <typename T, typename Tag>
-template <typename U, typename>
+template <typename U>
+  requires requires { ++std::declval<U&>(); }
 inline constexpr alloy::core::semantic_type<T,Tag>&
   alloy::core::semantic_type<T,Tag>::operator++()
   noexcept(noexcept(++std::declval<U&>()))
@@ -389,7 +396,8 @@ inline constexpr alloy::core::semantic_type<T,Tag>&
 }
 
 template <typename T, typename Tag>
-template <typename U, typename>
+template <typename U>
+  requires requires { std::declval<U&>()++; }
 inline constexpr alloy::core::semantic_type<T,Tag>
   alloy::core::semantic_type<T,Tag>::operator++(int)
   noexcept(noexcept(std::declval<U&>()++))
@@ -398,7 +406,8 @@ inline constexpr alloy::core::semantic_type<T,Tag>
 }
 
 template <typename T, typename Tag>
-template <typename U, typename>
+template <typename U>
+  requires requires { --std::declval<U&>(); }
 inline constexpr alloy::core::semantic_type<T,Tag>&
   alloy::core::semantic_type<T,Tag>::operator--()
   noexcept(noexcept(--std::declval<U&>()))
@@ -408,7 +417,8 @@ inline constexpr alloy::core::semantic_type<T,Tag>&
 }
 
 template <typename T, typename Tag>
-template <typename U, typename>
+template <typename U>
+  requires requires { std::declval<U&>()--; }
 inline constexpr alloy::core::semantic_type<T,Tag>
   alloy::core::semantic_type<T,Tag>::operator--(int)
   noexcept(noexcept(std::declval<U&>()--))
@@ -626,7 +636,9 @@ inline constexpr alloy::core::semantic_type<T,Tag>
 // Utilities
 //---------------------------------------------------------------------------
 
-template <typename SemanticType, typename T, typename Tag, typename, typename>
+template <typename SemanticType, typename T, typename Tag>
+  requires (alloy::core::is_semantic_type_v<SemanticType> &&
+            requires { SemanticType{static_cast<typename SemanticType::value_type>(std::declval<const T&>())}; })
 inline constexpr SemanticType
   alloy::core::casts::semantic_cast(const semantic_type<T,Tag>& other)
 {

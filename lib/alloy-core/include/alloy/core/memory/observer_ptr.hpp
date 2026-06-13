@@ -7,7 +7,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2019, 2022 Matthew Rodusek All rights reserved.
+  Copyright (c) 2019, 2022, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,8 @@
 
 #include "alloy/core/utilities/not_null.hpp"
 
-#include <type_traits> // std::enable_if_t, etc
+#include <concepts>    // std::convertible_to
+#include <type_traits> // type traits
 #include <cstddef> // std::nullptr_t
 #include <utility> // std::move
 
@@ -303,8 +304,8 @@ namespace alloy::core {
     ///        convertible to T*
     ///
     /// \param p the pointer to observe
-    template <typename U,
-              typename = std::enable_if_t<std::is_convertible_v<U*,T*>>>
+    template <typename U>
+      requires std::convertible_to<U*, T*>
     explicit observer_ptr(U* p) noexcept;
 
     /// \brief Constructs this observer_ptr through move-construction
@@ -321,16 +322,16 @@ namespace alloy::core {
     ///        similar observer_ptr
     ///
     /// \param other the other observer_ptr to move
-    template <typename U,
-              typename = std::enable_if_t<std::is_convertible_v<U*,T*>>>
+    template <typename U>
+      requires std::convertible_to<U*, T*>
     observer_ptr(observer_ptr<U>&& other) noexcept;
 
     /// \brief Constructs this observer_ptr through copy-construction of a
     ///        similar observer_ptr
     ///
     /// \param other the other observer_ptr to copy
-    template <typename U,
-              typename = std::enable_if_t<std::is_convertible_v<U*,T*>>>
+    template <typename U>
+      requires std::convertible_to<U*, T*>
     observer_ptr(const observer_ptr<U>& other) noexcept;
 
     //-------------------------------------------------------------------------
@@ -351,8 +352,8 @@ namespace alloy::core {
     ///
     /// \param p the pointer to observe
     /// \return a reference to `(*this)`
-    template <typename U,
-              typename = std::enable_if_t<std::is_convertible_v<U*,T*>>>
+    template <typename U>
+      requires std::convertible_to<U*, T*>
     observer_ptr& operator=(U* p) noexcept;
 
     //-------------------------------------------------------------------------
@@ -716,7 +717,8 @@ inline alloy::core::observer_ptr<T>::observer_ptr(std::nullptr_t)
 
 
 template <typename T>
-template <typename U, typename>
+template <typename U>
+  requires std::convertible_to<U*, T*>
 inline alloy::core::observer_ptr<T>::observer_ptr(U* p)
   noexcept
   : observer_ptr_base{p}
@@ -744,7 +746,8 @@ inline alloy::core::observer_ptr<T>::observer_ptr(const observer_ptr& other)
 
 
 template <typename T>
-template <typename U, typename>
+template <typename U>
+  requires std::convertible_to<U*, T*>
 inline alloy::core::observer_ptr<T>::observer_ptr(observer_ptr<U>&& other)
   noexcept
   : observer_ptr_base{std::move(other)}
@@ -754,7 +757,8 @@ inline alloy::core::observer_ptr<T>::observer_ptr(observer_ptr<U>&& other)
 
 
 template <typename T>
-template <typename U, typename>
+template <typename U>
+  requires std::convertible_to<U*, T*>
 inline alloy::core::observer_ptr<T>::observer_ptr(const observer_ptr<U>& other)
   noexcept
   : observer_ptr_base{other}
@@ -785,7 +789,8 @@ inline alloy::core::observer_ptr<T>&
 
 
 template <typename T>
-template <typename U, typename>
+template <typename U>
+  requires std::convertible_to<U*, T*>
 inline alloy::core::observer_ptr<T>&
   alloy::core::observer_ptr<T>::operator=(U* p)
   noexcept

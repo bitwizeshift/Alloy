@@ -7,7 +7,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2022 Matthew Rodusek All rights reserved.
+ Copyright (c) 2022, 2026 Matthew Rodusek All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -36,10 +36,10 @@
 
 #include "alloy/core/types.hpp"
 #include "alloy/core/intrinsics.hpp"
-#include "alloy/core/containers/span.hpp"
 #include "alloy/core/math/math.hpp" // sqrt
 #include <cstddef>
 #include <algorithm> // std::min
+#include <span>
 
 // Detect target platform and include appropriate SIMD support
 #if !ALLOY_DISABLE_SIMD
@@ -200,13 +200,13 @@ namespace alloy::core {
     ///
     /// \param p a pointer to a sequence of aligned values
     /// \return the simd value
-    static auto load(span<const T,4> p) noexcept -> simd<T>;
+    static auto load(std::span<const T,4> p) noexcept -> simd<T>;
 
     /// \brief Loads a SIMD value from a possibly unaligned array of values
     ///
     /// \param p a pointer to a sequence of values
     /// \return the simd value
-    static auto load_unaligned(span<const T,4> p) noexcept -> simd<T>;
+    static auto load_unaligned(std::span<const T,4> p) noexcept -> simd<T>;
 
     /// \brief Sets a single scalar \p f into all simd lanes
     ///
@@ -239,12 +239,12 @@ namespace alloy::core {
     ///
     /// \pre \p out is aligned to a 16-byte boundary
     /// \param out the output buffer to store to
-    auto store(span<T,4> out) const noexcept -> void;
+    auto store(std::span<T,4> out) const noexcept -> void;
 
     /// \brief Stores this SIMD object to the specified unaligned output buffer
     ///
     /// \param out the output buffer to store to
-    auto store_unaligned(span<T,4> out) const noexcept -> void;
+    auto store_unaligned(std::span<T,4> out) const noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Element Access
@@ -495,48 +495,48 @@ namespace alloy::core {
 
   //---------------------------------------------------------------------------
 
-  auto simd_dot4(span<const simd<f32>,4> lhs, span<const simd<f32>,4> rhs)
+  auto simd_dot4(std::span<const simd<f32>,4> lhs, std::span<const simd<f32>,4> rhs)
     noexcept -> simd<f32>;
 
-  auto simd_dot4(span<const f32,16> lhs, span<const f32,16> rhs)
+  auto simd_dot4(std::span<const f32,16> lhs, std::span<const f32,16> rhs)
     noexcept -> simd<f32>;
 
   //---------------------------------------------------------------------------
 
-  template <std::size_t N,
-            typename = std::enable_if_t<((N % 4) == 0)>>
-  auto simd_dot(span<const simd<f32>, N> lhs, span<const simd<f32>, N> rhs)
+  template <std::size_t N>
+    requires ((N % 4) == 0)
+  auto simd_dot(std::span<const simd<f32>, N> lhs, std::span<const simd<f32>, N> rhs)
     noexcept -> std::array<simd<f32>, (N / 4)>;
 
-  template <std::size_t N,
-            typename = std::enable_if_t<((N % 4) == 0)>>
-  auto simd_dot(span<const f32, N> lhs, span<const f32, N> rhs)
+  template <std::size_t N>
+    requires ((N % 4) == 0)
+  auto simd_dot(std::span<const f32, N> lhs, std::span<const f32, N> rhs)
     noexcept -> std::array<simd<f32>, (N / 16)>;
 
   //---------------------------------------------------------------------------
 
-  template <std::size_t N,
-            typename = std::enable_if_t<(N % 16 == 0)>>
+  template <std::size_t N>
+    requires (N % 16 == 0)
   auto simd_dot4_to(
-    span<const f32,N> lhs,
-    span<const f32,N> rhs,
-    span<f32,(N / 4)> out
+    std::span<const f32,N> lhs,
+    std::span<const f32,N> rhs,
+    std::span<f32,(N / 4)> out
   ) noexcept -> void;
 
-  template <std::size_t N,
-            typename = std::enable_if_t<(N % 16 == 0)>>
+  template <std::size_t N>
+    requires (N % 16 == 0)
   auto simd_dot4_to(
-    span<const f32,N> lhs,
-    span<const f32,N> rhs,
-    span<simd<f32>,(N/16)> out
+    std::span<const f32,N> lhs,
+    std::span<const f32,N> rhs,
+    std::span<simd<f32>,(N/16)> out
   ) noexcept -> void;
 
-  template <std::size_t N,
-            typename = std::enable_if_t<((N % 4) == 0)>>
+  template <std::size_t N>
+    requires ((N % 4) == 0)
   auto simd_dot4_to(
-    span<simd<f32>,N> lhs,
-    span<simd<f32>,N> rhs,
-    span<simd<f32>,N> out
+    std::span<simd<f32>,N> lhs,
+    std::span<simd<f32>,N> rhs,
+    std::span<simd<f32>,N> out
   ) noexcept -> void;
 
 } // namespace alloy::core
@@ -547,7 +547,7 @@ namespace alloy::core {
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd<T>::load(span<const T, 4> p)
+auto alloy::core::simd<T>::load(std::span<const T, 4> p)
   noexcept -> simd<T>
 {
 #if defined(ALLOY_SIMD_NEON)
@@ -571,7 +571,7 @@ auto alloy::core::simd<T>::load(span<const T, 4> p)
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd<T>::load_unaligned(span<const T, 4> p)
+auto alloy::core::simd<T>::load_unaligned(std::span<const T, 4> p)
   noexcept -> simd<T>
 {
 #if defined(ALLOY_SIMD_NEON)
@@ -682,7 +682,7 @@ auto alloy::core::simd<T>::set(T v0, T v1, T v2, T v3)
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd<T>::store(span<T,4> out)
+auto alloy::core::simd<T>::store(std::span<T,4> out)
   const noexcept -> void
 {
 #if defined(ALLOY_SIMD_NEON)
@@ -706,7 +706,7 @@ auto alloy::core::simd<T>::store(span<T,4> out)
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd<T>::store_unaligned(span<T,4> out)
+auto alloy::core::simd<T>::store_unaligned(std::span<T,4> out)
   const noexcept -> void
 {
 #if defined(ALLOY_SIMD_NEON)
@@ -1341,7 +1341,7 @@ auto alloy::core::simd_max(simd<f32> lhs, simd<f32> rhs)
 }
 
 inline
-auto alloy::core::simd_dot4(span<const simd<f32>,4> lhs, span<const simd<f32>,4> rhs)
+auto alloy::core::simd_dot4(std::span<const simd<f32>,4> lhs, std::span<const simd<f32>,4> rhs)
   noexcept -> simd<f32>
 {
   // Fused multiply-add instructions result in a data-dependency/stall between
@@ -1361,7 +1361,7 @@ auto alloy::core::simd_dot4(span<const simd<f32>,4> lhs, span<const simd<f32>,4>
 }
 
 inline
-auto alloy::core::simd_dot4(span<const f32,16> lhs, span<const f32,16> rhs)
+auto alloy::core::simd_dot4(std::span<const f32,16> lhs, std::span<const f32,16> rhs)
   noexcept -> simd<f32>
 {
   const auto lhs_array = std::array<simd<f32>,4>{{
@@ -1382,9 +1382,10 @@ auto alloy::core::simd_dot4(span<const f32,16> lhs, span<const f32,16> rhs)
 
 //-----------------------------------------------------------------------------
 
-template <std::size_t N, typename>
+template <std::size_t N>
+  requires ((N % 4) == 0)
 inline
-auto alloy::core::simd_dot(span<const simd<f32>, N> lhs, span<const simd<f32>, N> rhs)
+auto alloy::core::simd_dot(std::span<const simd<f32>, N> lhs, std::span<const simd<f32>, N> rhs)
   noexcept -> std::array<simd<f32>, (N / 4)>
 {
   // Fused multiply-add instructions result in a data-dependency/stall between
@@ -1408,9 +1409,10 @@ auto alloy::core::simd_dot(span<const simd<f32>, N> lhs, span<const simd<f32>, N
   return dot_result;
 }
 
-template <std::size_t N, typename>
+template <std::size_t N>
+  requires ((N % 4) == 0)
 inline
-auto alloy::core::simd_dot(span<const f32, N> lhs, span<const f32, N> rhs)
+auto alloy::core::simd_dot(std::span<const f32, N> lhs, std::span<const f32, N> rhs)
   noexcept -> std::array<simd<f32>, (N / 16)>
 {
   std::array<simd<f32>, (N/16)> dot_result;
@@ -1428,12 +1430,13 @@ auto alloy::core::simd_dot(span<const f32, N> lhs, span<const f32, N> rhs)
 }
 
 
-template <std::size_t N, typename>
+template <std::size_t N>
+  requires (N % 16 == 0)
 inline
 auto alloy::core::simd_dot4_to(
-  span<const f32,N> lhs,
-  span<const f32,N> rhs,
-  span<f32,(N/4)> out
+  std::span<const f32,N> lhs,
+  std::span<const f32,N> rhs,
+  std::span<f32,(N/4)> out
 ) noexcept -> void
 {
   constexpr auto n = (N / 4);
@@ -1454,12 +1457,13 @@ auto alloy::core::simd_dot4_to(
 }
 
 
-template <std::size_t N, typename>
+template <std::size_t N>
+  requires (N % 16 == 0)
 inline
 auto alloy::core::simd_dot4_to(
-  span<const f32,N> lhs,
-  span<const f32,N> rhs,
-  span<simd<f32>,(N/16)> out
+  std::span<const f32,N> lhs,
+  std::span<const f32,N> rhs,
+  std::span<simd<f32>,(N/16)> out
 ) noexcept -> void
 {
   constexpr auto n = (N / 4);
@@ -1473,12 +1477,13 @@ auto alloy::core::simd_dot4_to(
   }
 }
 
-template <std::size_t N, typename>
+template <std::size_t N>
+  requires ((N % 4) == 0)
 inline
 auto alloy::core::simd_dot4_to(
-  span<simd<f32>,N> lhs,
-  span<simd<f32>,N> rhs,
-  span<simd<f32>,N> out
+  std::span<simd<f32>,N> lhs,
+  std::span<simd<f32>,N> rhs,
+  std::span<simd<f32>,N> out
 ) noexcept -> void
 {
   for (auto i = 0u; i < N; i++) {
