@@ -71,15 +71,4 @@ if (ALLOY_COMPILE_TESTS)
   )
 
   set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${Catch2_SOURCE_DIR}/extras" PARENT_SCOPE)
-
-  #-----------------------------------------------------------------------------
-  # Trompeloeil
-  #-----------------------------------------------------------------------------
-
-  CPMAddPackage(
-    GITHUB_REPOSITORY rollbear/trompeloeil
-    VERSION 49
-    OPTIONS
-      "TROMPELOEIL_INSTALL_DOCS OFF"
-  )
 endif ()
