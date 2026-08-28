@@ -60,6 +60,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         # dllexport/dllimport on classes with inline functions trips this.
         -Wno-ignored-attributes
         -Wno-c++20-extensions
+        $<$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},22>:-Wno-c2y-extensions>
         # imgui has non-trivial memcopy calls.
         -Wno-nontrivial-memcall
     )
