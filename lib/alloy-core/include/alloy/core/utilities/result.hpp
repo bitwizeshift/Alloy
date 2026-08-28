@@ -17,7 +17,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021, 2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -58,12 +58,6 @@
 # include <cstdio> // std::fprintf, stderr
 #endif
 
-// clang's `-Wdocumentation-unknown-command` flag is bugged and does not
-// understand `\copydoc` tags, despite this being a valid doxygen tag.
-#if defined(__clang__)
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wdocumentation-unknown-command"
-#endif
 
 namespace alloy::core {
 
@@ -5653,9 +5647,5 @@ auto alloy::core::swap(result<void,E>& lhs, result<void,E>& rhs)
     rhs = static_cast<result<void,E>&&>(temp);
   }
 }
-
-#if defined(__clang__)
-# pragma clang diagnostic pop
-#endif
 
 #endif /* ALLOY_CORE_RESULT_HPP */
