@@ -324,6 +324,9 @@ auto alloy::core::basic_string_tokenizer<CharT, Traits>
 // Private Member Functions
 //-----------------------------------------------------------------------------
 
+// 'substr' only throws when its position exceeds the size, and every 'start'
+// here is bounded by the loop condition.
+// NOLINTBEGIN(bugprone-exception-escape)
 template <typename CharT, typename Traits>
 inline
 auto alloy::core::basic_string_tokenizer<CharT,Traits>
@@ -356,5 +359,6 @@ auto alloy::core::basic_string_tokenizer<CharT,Traits>
 
   return fail(tokenizer_error::out_of_tokens);
 }
+// NOLINTEND(bugprone-exception-escape)
 
 #endif /* ALLOY_CORE_STRINGS_STRING_TOKENIZER_HPP */
