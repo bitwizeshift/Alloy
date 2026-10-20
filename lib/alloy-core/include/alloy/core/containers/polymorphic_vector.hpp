@@ -720,7 +720,7 @@ template <typename Interface>
 inline
 alloy::core::polymorphic_vector<Interface>::polymorphic_vector(polymorphic_vector&& other)
 noexcept
-  : m_entries{std::move(other).m_entries}
+  : m_entries{std::move(other.m_entries)}
 {
   // Clear, to prevent polymorphic vector from attempting to iterate.
   other.m_entries.clear();
