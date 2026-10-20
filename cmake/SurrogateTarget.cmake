@@ -1,3 +1,9 @@
+#[[
+  Copyright (c) Matthew Rodusek
+  SPDX-License-Identifier: MIT
+  See the LICENSE file at the root of this repository for the full text.
+]]
+
 cmake_minimum_required(VERSION 4.3)
 
 #.rst:

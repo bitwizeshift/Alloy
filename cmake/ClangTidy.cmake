@@ -1,6 +1,8 @@
-# Copyright (c) Matthew Rodusek
-# Distributed under the OSI-approved MIT License. See accompanying
-# file LICENSE.txt or https://opensource.org/licenses/MIT for details.
+#[[
+  Copyright (c) Matthew Rodusek
+  SPDX-License-Identifier: MIT
+  See the LICENSE file at the root of this repository for the full text.
+]]
 
 #.rst:
 # ClangTidy
