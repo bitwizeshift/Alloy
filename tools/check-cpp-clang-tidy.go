@@ -14,13 +14,12 @@
 package main
 
 import (
-	"bytes"
+	"context"
 	"errors"
 	"flag"
 	"fmt"
 	"io/fs"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"runtime"
 	"sync"
@@ -79,30 +78,10 @@ func warnMissingDatabase(buildDir string) {
 	}
 }
 
-// changedRanges returns the lines of each path that differ from HEAD, or from
-// the empty tree before the first commit.
+// changedRanges returns the lines of each path that differ from HEAD.
 func changedRanges(paths []string) (map[string][]diff.Range, error) {
-	base := "HEAD"
-	if exec.Command("git", "rev-parse", "--verify", "--quiet", "HEAD").Run() != nil {
-		out, err := exec.Command("git", "hash-object", "-t", "tree", "/dev/null").Output()
-		if err != nil {
-			return nil, fmt.Errorf("git hash-object: %w", err)
-		}
-		base = string(bytes.TrimSpace(out))
-	}
-
-	args := []string{
-		"-c", "core.quotePath=false",
-		"diff", base,
-		"--no-color", "--no-ext-diff", "--no-prefix",
-		fmt.Sprintf("--unified=%d", contextLines),
-		"--",
-	}
-	out, err := exec.Command("git", append(args, paths...)...).Output()
-	if err != nil {
-		return nil, fmt.Errorf("git diff: %w", err)
-	}
-	files, err := diff.Parse(bytes.NewReader(out))
+	git := diff.Git{Context: contextLines}
+	files, err := git.Changes(context.Background(), paths...)
 	if err != nil {
 		return nil, err
 	}
@@ -131,8 +110,7 @@ func tidy(cmd *clangtidy.Command, ranges map[string][]diff.Range, paths []string
 			limit <- struct{}{}
 			defer func() { <-limit }()
 
-			tidy := exec.Command("clang-tidy", cmd.Args(path, ranges[path])...)
-			output, err := tidy.CombinedOutput()
+			output, err := cmd.Tidy(context.Background(), path, ranges[path])
 			results[i] = result{path: path, output: output, err: err}
 		})
 	}
