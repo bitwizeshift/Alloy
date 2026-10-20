@@ -24,7 +24,6 @@
 #include "alloy/core/string/string_utilities.hpp"
 
 #include <charconv>
-#include <cerrno>
 #include <system_error> // std::errc
 
 namespace alloy::core {
@@ -49,7 +48,7 @@ namespace {
   }
 
   template <typename T>
-  auto to_integer(string_view in)
+  auto to_number(string_view in)
     noexcept -> result<T,string_utilities::parse_error>
   {
     const auto* const first = in.data();
@@ -75,25 +74,25 @@ namespace {
 auto alloy::core::string_utilities::to_int8(string_view in)
   noexcept -> result<std::int8_t,parse_error>
 {
-  return to_integer<std::int8_t>(in);
+  return to_number<std::int8_t>(in);
 }
 
 auto alloy::core::string_utilities::to_int16(string_view in)
   noexcept -> result<std::int16_t,parse_error>
 {
-  return to_integer<std::int16_t>(in);
+  return to_number<std::int16_t>(in);
 }
 
 auto alloy::core::string_utilities::to_int32(string_view in)
   noexcept -> result<std::int32_t,parse_error>
 {
-  return to_integer<std::int32_t>(in);
+  return to_number<std::int32_t>(in);
 }
 
 auto alloy::core::string_utilities::to_int64(string_view in)
   noexcept -> result<std::int64_t,parse_error>
 {
-  return to_integer<std::int64_t>(in);
+  return to_number<std::int64_t>(in);
 }
 
 //-----------------------------------------------------------------------------
@@ -103,60 +102,41 @@ auto alloy::core::string_utilities::to_int64(string_view in)
 auto alloy::core::string_utilities::to_uint8(string_view in)
   noexcept -> result<std::uint8_t,parse_error>
 {
-  return to_integer<std::uint8_t>(in);
+  return to_number<std::uint8_t>(in);
 }
 
 auto alloy::core::string_utilities::to_uint16(string_view in)
   noexcept -> result<std::uint16_t,parse_error>
 {
-  return to_integer<std::uint16_t>(in);
+  return to_number<std::uint16_t>(in);
 }
 
 auto alloy::core::string_utilities::to_uint32(string_view in)
   noexcept -> result<std::uint32_t,parse_error>
 {
-  return to_integer<std::uint32_t>(in);
+  return to_number<std::uint32_t>(in);
 }
 
 auto alloy::core::string_utilities::to_uint64(string_view in)
   noexcept -> result<std::uint64_t,parse_error>
 {
-  return to_integer<std::uint64_t>(in);
+  return to_number<std::uint64_t>(in);
 }
 
 //-----------------------------------------------------------------------------
 // Floating Point Parsing
 //-----------------------------------------------------------------------------
 
-// libstd++ does not yet support from_chars for float/double. For now, this must
-// be std::strtof/std::strtod/etc
-
 auto alloy::core::string_utilities::to_float(string_view in)
   noexcept -> result<float,parse_error>
 {
-  auto* last_entry = static_cast<char*>(nullptr);
-
-  errno = 0;
-  const auto result = std::strtof(in.data(), &last_entry);
-
-  if (errno != 0) {
-    return fail(to_parse_error(static_cast<std::errc>(errno)));
-  }
-  return result;
+  return to_number<float>(in);
 }
 
 auto alloy::core::string_utilities::to_double(string_view in)
   noexcept -> result<double,parse_error>
 {
-  auto* last_entry = static_cast<char*>(nullptr);
-
-  errno = 0;
-  const auto result = std::strtod(in.data(), &last_entry);
-
-  if (errno != 0) {
-    return fail(to_parse_error(static_cast<std::errc>(errno)));
-  }
-  return result;
+  return to_number<double>(in);
 }
 
 auto alloy::core::string_utilities::to_real(string_view in)
