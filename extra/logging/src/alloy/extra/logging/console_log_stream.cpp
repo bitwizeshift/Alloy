@@ -51,6 +51,7 @@ namespace {
     }
     return "";
 #else
+    core::compiler::unused(level);
     return "";
 #endif
   }
