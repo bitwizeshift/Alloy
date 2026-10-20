@@ -51,6 +51,10 @@ struct move_only : public T
   auto operator=(const move_only&) -> move_only& = delete;
 };
 
+// This deliberately claims 'noexcept' regardless of T, so that types like
+// std::string can be used where 'result' requires nothrow construction or
+// assignment.
+// NOLINTBEGIN(bugprone-exception-escape)
 template <typename T>
 struct nonthrowing : public T
 {
@@ -84,6 +88,7 @@ struct nonthrowing : public T
     return (*this);
   }
 };
+// NOLINTEND(bugprone-exception-escape)
 
 template <typename T>
 struct throwing : public T
@@ -3735,6 +3740,10 @@ TEST_CASE("result<void,E>::operator=(const result& other)", "[assign]") {
       SECTION("Original contains error") {
         const auto output = fail(std::io_errc::stream);
         const sut_type copy{output};
+        // Start from an error other than 'stream' so the assignment is
+        // observable. 'io_errc' is a scoped enum, so zero is a valid value
+        // even though no enumerator names it.
+        // NOLINTNEXTLINE(bugprone-invalid-enum-default-initialization)
         sut_type sut{fail(std::io_errc{})};
 
         sut = copy;
@@ -3802,6 +3811,10 @@ TEST_CASE("result<void,E>::operator=(result&& other)", "[assign]") {
       SECTION("Original contains error") {
         const auto output = fail(std::io_errc::stream);
         sut_type other{output};
+        // Start from an error other than 'stream' so the assignment is
+        // observable. 'io_errc' is a scoped enum, so zero is a valid value
+        // even though no enumerator names it.
+        // NOLINTNEXTLINE(bugprone-invalid-enum-default-initialization)
         sut_type sut{fail(std::io_errc{})};
 
         sut = std::move(other);
@@ -3896,6 +3909,10 @@ TEST_CASE("result<void,E>::operator=(const result<void,E2>&)", "[assign]") {
       SECTION("Sut contains error") {
         const auto output = fail(std::io_errc::stream);
         const copy_type other{output};
+        // Start from an error other than 'stream' so the assignment is
+        // observable. 'io_errc' is a scoped enum, so zero is a valid value
+        // even though no enumerator names it.
+        // NOLINTNEXTLINE(bugprone-invalid-enum-default-initialization)
         sut_type sut{fail(std::io_errc{})};
 
         sut = other;
@@ -3955,6 +3972,10 @@ TEST_CASE("result<void,E>::operator=(result<void,E2>&&)", "[assign]") {
       SECTION("Original contains error") {
         const auto output = fail(std::io_errc::stream);
         sut_type other{output};
+        // Start from an error other than 'stream' so the assignment is
+        // observable. 'io_errc' is a scoped enum, so zero is a valid value
+        // even though no enumerator names it.
+        // NOLINTNEXTLINE(bugprone-invalid-enum-default-initialization)
         sut_type sut{fail(std::io_errc{})};
 
         sut = std::move(other);
