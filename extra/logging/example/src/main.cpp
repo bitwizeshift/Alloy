@@ -15,6 +15,8 @@ namespace {
   auto format_buffer = std::array<char,1024>{};
 }
 
+// An exception escaping an example should simply terminate it.
+// NOLINTNEXTLINE(bugprone-exception-escape)
 int main()
 {
   auto disk_filesystem = alloy::io::disk_filesystem{};

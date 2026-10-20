@@ -54,6 +54,8 @@ namespace {
   }
 }
 
+// An exception escaping an example should simply terminate it.
+// NOLINTNEXTLINE(bugprone-exception-escape)
 int main(int argc, char** argv)
 {
   alloy::core::compiler::unused(argc);
