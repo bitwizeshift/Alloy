@@ -791,6 +791,9 @@ inline alloy::core::signal<Listener>::signal(size_type size, allocator alloc)
 // Emission
 //-----------------------------------------------------------------------------
 
+// Arguments are forwarded to every listener on purpose. Whether to pass
+// rvalues, and so allow a listener to move from them, is the caller's choice.
+// NOLINTBEGIN(bugprone-use-after-move)
 template <typename Listener>
 template <auto Handler, typename...UArgs>
   requires (std::invocable<decltype(Handler), Listener&, UArgs...>)
@@ -839,6 +842,7 @@ inline void alloy::core::signal<Listener>::emit(CollectorFn&& collector,
     }
   }
 }
+// NOLINTEND(bugprone-use-after-move)
 
 //=============================================================================
 // definition : class : signal<R(Args...)>
@@ -868,6 +872,9 @@ inline alloy::core::signal<R(Args...)>::signal(size_type size, allocator alloc)
 // Emission
 //-----------------------------------------------------------------------------
 
+// Arguments are forwarded to every listener on purpose. Whether to pass
+// rvalues, and so allow a listener to move from them, is the caller's choice.
+// NOLINTBEGIN(bugprone-use-after-move)
 template <typename R, typename...Args>
 template <typename...UArgs>
   requires (std::invocable<R(*)(Args...), UArgs...>)
@@ -914,6 +921,7 @@ inline void alloy::core::signal<R(Args...)>::emit(CollectorFn&& collector,
     }
   }
 }
+// NOLINTEND(bugprone-use-after-move)
 
 //=============================================================================
 // inline definition : class : sink<Listener>
