@@ -1,7 +1,7 @@
 min_version: 2.0.0
 
 templates:
-  tool: go -C tools run
+  check: go -C tools run ./alloy-cli check
 
 pre-commit:
   parallel: true
@@ -14,22 +14,22 @@ pre-commit:
 
     - name: c++ clang-tidy
       glob: "*.{h,hpp,c,cpp}"
-      run: "{tool} ./check-cpp-clang-tidy.go {staged_files}"
+      run: "{check} cpp-clang-tidy {staged_files}"
       fail_text: Fix with `lefthook run fix --job "c++ clang-tidy"`
 
     - name: license copyright
       glob: "*.{h,hpp,c,cpp}"
-      run: "{tool} ./check-license-copyright.go {staged_files}"
+      run: "{check} license-copyright {staged_files}"
       fail_text: Fix with `lefthook run fix --job "license copyright"`
 
     - name: trailing newline
       glob: "*.{h,hpp,c,cpp,md,py}"
-      run: "{tool} ./check-trailing-newline.go {staged_files}"
+      run: "{check} trailing-newline {staged_files}"
       fail_text: Fix with `lefthook run fix --job "trailing newline"`
 
     - name: whitespace
       glob: "*.{h,hpp,c,cpp,md,py}"
-      run: "{tool} ./check-whitespace.go {staged_files}"
+      run: "{check} whitespace {staged_files}"
       fail_text: Fix with `lefthook run fix --job "whitespace"`
 
 commit-msg:
@@ -50,7 +50,7 @@ commit-msg:
         fi
 
     - name: commit message
-      run: "{tool} ./check-commit-msg.go {1}"
+      run: "{check} commit-msg {1}"
 
 fix:
   jobs:
@@ -61,19 +61,19 @@ fix:
 
     - name: c++ clang-tidy
       glob: "*.{h,hpp,c,cpp}"
-      run: "{tool} ./check-cpp-clang-tidy.go -fix {staged_files}"
+      run: "{check} cpp-clang-tidy --fix {staged_files}"
 
     - name: license copyright
       glob: "*.{h,hpp,c,cpp}"
-      run: "{tool} ./check-license-copyright.go -fix {staged_files}"
+      run: "{check} license-copyright --fix {staged_files}"
 
     - name: trailing newline
       glob: "*.{h,hpp,c,cpp,md,py}"
-      run: "{tool} ./check-trailing-newline.go -fix {staged_files}"
+      run: "{check} trailing-newline --fix {staged_files}"
 
     - name: whitespace
       glob: "*.{h,hpp,c,cpp,md,py}"
-      run: "{tool} ./check-whitespace.go -fix {staged_files}"
+      run: "{check} whitespace --fix {staged_files}"
 
 modernize:
   jobs:
