@@ -1,7 +1,7 @@
-/*
- Any copyright for test files is dedicated to the Public Domain.
- https://creativecommons.org/publicdomain/zero/1.0/
-*/
+// SPDX-License-Identifier: CC0-1.0
+// Any copyright for this file is dedicated to the Public Domain.
+// See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
+
 #include "alloy/core/containers/polymorphic_vector.hpp"
 
 #include <catch2/catch_test_macros.hpp>
