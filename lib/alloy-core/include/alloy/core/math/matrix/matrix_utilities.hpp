@@ -95,7 +95,7 @@ namespace alloy::core::detail {
   {
     static constexpr
     auto cast(const matrix2& from)
-      noexcept -> const matrix2&
+      noexcept -> matrix2
     {
       return from;
     }
@@ -153,7 +153,7 @@ namespace alloy::core::detail {
   {
     static constexpr
     auto cast(const matrix3& from)
-      noexcept -> const matrix3&
+      noexcept -> matrix3
     {
       return from;
     }
@@ -211,7 +211,7 @@ namespace alloy::core::detail {
   {
     static constexpr
     auto cast(const matrix4& from)
-      noexcept -> const matrix4&
+      noexcept -> matrix4
     {
       return from;
     }
