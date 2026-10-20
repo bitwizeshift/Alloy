@@ -944,6 +944,10 @@ void alloy::extra::sdl2_pump_source::poll( io::message_pump& p )
         handle_mouse_event(event, p);
         break;
       }
+      default: {
+        // Events that have no message_pump equivalent are ignored.
+        break;
+      }
     }
   }
 }
