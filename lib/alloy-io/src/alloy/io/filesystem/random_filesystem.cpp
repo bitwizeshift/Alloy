@@ -228,6 +228,9 @@ namespace {
 // Filesystem
 //-----------------------------------------------------------------------------
 
+// std::random_device may throw if no entropy source is available, or on
+// allocation failure. Either is treated as fatal.
+// NOLINTNEXTLINE(bugprone-exception-escape)
 alloy::io::file alloy::io::random_filesystem::open()
   noexcept
 {
