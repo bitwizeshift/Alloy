@@ -1,0 +1,82 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bitwizeshift/go-cli/refs/heads/master/command.schema.json
+name: alloy-cli
+summary: Developer tooling for the Alloy repository
+description: |
+  alloy-cli bundles the developer tooling for the Alloy repository: the
+  checks that the git hooks run, and the generators for derived artifacts.
+
+  File paths given to any command are relative to the repository root, which
+  is located with git. This matches the paths that lefthook passes to its
+  jobs, regardless of the directory the tool is run from.
+issue-url: https://github.com/bitwizeshift/alloy/issues
+
+commands:
+  Hooks:
+    - name: check
+      summary: Check files and commit messages against the project standards
+      description: |
+        Checks that files and commit messages follow the project standards.
+        Each check is run by a lefthook job, and can be run by hand over any
+        files.
+
+        Checks that can repair the problems they find do so with --fix.
+      commands:
+        Commit:
+          - name: commit-msg
+            summary: Check a commit message against the commit standards
+            description: |
+              Checks that a commit message follows doc/commit-standards.md:
+              the 50/72 formatting rules, a single Change-Category and
+              Change-Impact trailer, and Component trailers naming components
+              of the repository.
+
+              Comment lines, and everything below a scissors line, are
+              ignored, as git does when it records the commit.
+            examples:
+              - alloy-cli check commit-msg .git/COMMIT_EDITMSG
+        Files:
+          - name: cpp-clang-tidy
+            summary: Run clang-tidy over the changed lines of C and C++ files
+            description: |
+              Runs clang-tidy over C and C++ files, reporting only the
+              diagnostics on lines that differ from HEAD, plus five lines of
+              context around each change. A file without such changes is
+              checked in full.
+
+              clang-tidy reads how each file is compiled from the
+              compile_commands.json in the build directory.
+            examples:
+              - alloy-cli check cpp-clang-tidy lib/alloy-core/src/alloy/core/assert.cpp
+              - alloy-cli check cpp-clang-tidy --fix -j 4 lib/alloy-core/src/alloy/core/assert.cpp
+          - name: license-copyright
+            summary: Check that copyright notices list the modification years
+            description: |
+              Checks that the years in each file's copyright notice are the
+              years in which git recorded a change to the file, plus the
+              current year.
+            examples:
+              - alloy-cli check license-copyright lib/alloy-core/src/alloy/core/assert.cpp
+              - alloy-cli check license-copyright --fix lib/alloy-core/src/alloy/core/assert.cpp
+          - name: trailing-newline
+            summary: Check that files end with a newline
+            examples:
+              - alloy-cli check trailing-newline README.md
+              - alloy-cli check trailing-newline --fix README.md
+          - name: whitespace
+            summary: Check that lines have no trailing whitespace
+            examples:
+              - alloy-cli check whitespace README.md
+              - alloy-cli check whitespace --fix README.md
+
+  Tools:
+    - name: generate
+      summary: Generate artifacts from the repository sources
+      commands:
+        default:
+          - name: documentation
+            aliases:
+              - docs
+            summary: Generate the API documentation with doxygen
+            description: |
+              Generates the API documentation by running doxygen with the
+              .codedocs configuration at the repository root.
