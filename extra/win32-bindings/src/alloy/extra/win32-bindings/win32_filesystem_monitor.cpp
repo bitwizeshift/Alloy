@@ -1,3 +1,7 @@
+// Copyright (c) Matthew Rodusek
+// SPDX-License-Identifier: MIT
+// See the LICENSE file at the root of this repository for the full text.
+
 #include "alloy/extra/win32-bindings/win32_filesystem_monitor.hpp"
 #include "alloy/core/utilities/aligned_storage.hpp"
 #include "alloy/core/intrinsics.hpp"

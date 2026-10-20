@@ -1,3 +1,6 @@
+// Copyright (c) Matthew Rodusek
+// SPDX-License-Identifier: MIT
+// See the LICENSE file at the root of this repository for the full text.
 
 // Visual Studios requires this define before including cstdio in order to be
 // allowed to use 'std::fopen', which Microsoft decided to deprecate.

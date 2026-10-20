@@ -1,3 +1,7 @@
+// Copyright (c) Matthew Rodusek
+// SPDX-License-Identifier: MIT
+// See the LICENSE file at the root of this repository for the full text.
+
 #include "alloy/extra/sdl2-bindings/sdl2_gl_window.hpp"
 
 #include "alloy/core/assert.hpp"

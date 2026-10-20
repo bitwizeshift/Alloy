@@ -1,3 +1,7 @@
+// Copyright (c) Matthew Rodusek
+// SPDX-License-Identifier: MIT
+// See the LICENSE file at the root of this repository for the full text.
+
 #if defined(WIN32) || defined(_WIN32)
 # define ALLOY_EXTRA_API_EXPORT __declspec(dllexport)
 #else

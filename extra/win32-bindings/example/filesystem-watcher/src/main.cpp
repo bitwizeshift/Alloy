@@ -1,3 +1,7 @@
+// Copyright (c) Matthew Rodusek
+// SPDX-License-Identifier: MIT
+// See the LICENSE file at the root of this repository for the full text.
+
 #include <alloy/core/utilities/signal.hpp>
 #include <alloy/io/message_pump.hpp>
 #include <alloy/io/filesystem/filesystem_monitor.hpp>

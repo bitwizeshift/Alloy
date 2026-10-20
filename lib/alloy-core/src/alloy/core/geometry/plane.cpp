@@ -1,3 +1,7 @@
+// Copyright (c) Matthew Rodusek
+// SPDX-License-Identifier: MIT
+// See the LICENSE file at the root of this repository for the full text.
+
 #include "alloy/core/geometry/plane.hpp"
 
 #include "alloy/core/math/matrix/matrix3.hpp"

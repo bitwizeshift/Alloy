@@ -1,3 +1,7 @@
+// Copyright (c) Matthew Rodusek
+// SPDX-License-Identifier: MIT
+// See the LICENSE file at the root of this repository for the full text.
+
 #include "alloy/io/filesystem/random_filesystem.hpp"
 #include "alloy/io/filesystem/file_stream.hpp"
 #include "alloy/io/filesystem/file_stream_finalizer.hpp"

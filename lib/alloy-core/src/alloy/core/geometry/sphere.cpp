@@ -1,3 +1,7 @@
+// Copyright (c) Matthew Rodusek
+// SPDX-License-Identifier: MIT
+// See the LICENSE file at the root of this repository for the full text.
+
 #include "alloy/core/geometry/sphere.hpp"
 
 auto alloy::core::sphere::contains(const point3& p)
