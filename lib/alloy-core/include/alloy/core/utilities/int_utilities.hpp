@@ -254,7 +254,7 @@ namespace alloy::core {
     /// \param o the iterator to split into
     /// \param from the value to split
     template <typename To = u8, typename OutputIt, typename From>
-    static constexpr auto split_into(OutputIt o, const From& from) noexcept -> void;
+    static constexpr auto split_into(OutputIt o, const From& from) -> void;
 
     //--------------------------------------------------------------------------
     // Extraction
@@ -399,7 +399,7 @@ namespace alloy::core {
       OutputIt o,
       const From& from,
       std::index_sequence<Idxs...>
-    ) noexcept -> void;
+    ) -> void;
   };
 
 } // namespace alloy::core
@@ -659,7 +659,7 @@ auto alloy::core::int_utilities::split(const From& from)
 
 template <typename To, typename OutputIt, typename From>
 constexpr
-auto alloy::core::int_utilities::split_into(OutputIt o, const From& from) noexcept -> void
+auto alloy::core::int_utilities::split_into(OutputIt o, const From& from) -> void
 {
   constexpr auto size = sizeof(From) / sizeof(To);
 
@@ -730,7 +730,7 @@ auto alloy::core::int_utilities::split_into_impl(
   OutputIt o,
   const From& from,
   std::index_sequence<Idxs...>
-) noexcept -> void
+) -> void
 {
   ((*o = extract<Idxs,To>(from), ++o), ...);
 }
