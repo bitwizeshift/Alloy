@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_GEOMETRY_POINT_POINT2_HPP
 #define ALLOY_CORE_GEOMETRY_POINT_POINT2_HPP
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER)
+#endif
 
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/intrinsics.hpp"

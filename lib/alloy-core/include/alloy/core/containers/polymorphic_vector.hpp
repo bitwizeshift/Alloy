@@ -12,9 +12,9 @@
 #ifndef ALLOY_CORE_CONTAINERS_POLYMORPHIC_VECTOR_HPP
 #define ALLOY_CORE_CONTAINERS_POLYMORPHIC_VECTOR_HPP
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 # pragma once
-#endif 
+#endif
 
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/memory/allocator.hpp"

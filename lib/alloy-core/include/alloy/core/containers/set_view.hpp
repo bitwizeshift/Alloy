@@ -12,7 +12,7 @@
 #ifndef ALLOY_CORE_CONTAINERS_SET_VIEW_HPP
 #define ALLOY_CORE_CONTAINERS_SET_VIEW_HPP
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 # pragma once
 #endif
 

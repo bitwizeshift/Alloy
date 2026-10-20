@@ -11,7 +11,7 @@
 #ifndef ALLOY_CORE_MATH_SIMD_HPP
 #define ALLOY_CORE_MATH_SIMD_HPP
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 # pragma once
 #endif
 

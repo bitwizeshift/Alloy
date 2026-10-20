@@ -11,7 +11,7 @@
 #ifndef ALLOY_CORE_STIRNG_ENCODING_ENCODING_TRAITS_HPP
 #define ALLOY_CORE_STIRNG_ENCODING_ENCODING_TRAITS_HPP
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 # pragma once
 #endif
 

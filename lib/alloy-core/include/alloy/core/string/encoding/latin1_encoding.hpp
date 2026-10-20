@@ -69,7 +69,7 @@
 #ifndef ALLOY_CORE_STIRNG_ENCODING_LATIN1_ENCODING_HPP
 #define ALLOY_CORE_STIRNG_ENCODING_LATIN1_ENCODING_HPP
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 # pragma once
 #endif
 

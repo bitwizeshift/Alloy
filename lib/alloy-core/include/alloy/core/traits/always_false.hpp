@@ -11,7 +11,7 @@
 #ifndef ALLOY_CORE_TRAITS_ALWAYS_FALSE_HPP
 #define ALLOY_CORE_TRAITS_ALWAYS_FALSE_HPP
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 # pragma once
 #endif
 

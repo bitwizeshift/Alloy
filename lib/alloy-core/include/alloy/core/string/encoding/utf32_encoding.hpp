@@ -70,7 +70,7 @@
 #ifndef ALLOY_CORE_STRING_ENCODING_UTF32_ENCODING_HPP
 #define ALLOY_CORE_STRING_ENCODING_UTF32_ENCODING_HPP
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 # pragma once
 #endif
 
