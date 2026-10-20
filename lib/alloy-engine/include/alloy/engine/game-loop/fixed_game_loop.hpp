@@ -169,4 +169,4 @@ auto alloy::engine::fixed_game_loop<Derived,Clock>::stop()
   m_is_running.store(false);
 }
 
-#endif /* ALLOY_ENGINE_GAME_LOOP_VARIABLE_GAME_LOOP_HPP */
+#endif /* ALLOY_ENGINE_GAME_LOOP_FIXED_GAME_LOOP_HPP */
