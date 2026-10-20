@@ -9,8 +9,8 @@
  *        objects.
  *****************************************************************************/
 
-#ifndef ALLOY_CORE_CONTAINERS_SET_VIEW_HPP
-#define ALLOY_CORE_CONTAINERS_SET_VIEW_HPP
+#ifndef ALLOY_CORE_CONTAINERS_MAP_VIEW_HPP
+#define ALLOY_CORE_CONTAINERS_MAP_VIEW_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -503,4 +503,4 @@ auto alloy::core::map_view<K,V>::for_each(Callback&& cb)
   (*m_vtable->for_each_function)(m_instance, callback);
 }
 
-#endif /* ALLOY_CORE_CONTAINERS_SET_VIEW_HPP */
+#endif /* ALLOY_CORE_CONTAINERS_MAP_VIEW_HPP */

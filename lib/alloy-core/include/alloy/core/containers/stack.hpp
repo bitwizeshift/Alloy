@@ -9,8 +9,8 @@
  *        `std::stack`, which makes it explicitly copyable.
  *****************************************************************************/
 
-#ifndef ALLOY_CORE_CONTAINERS_QUEUE_HPP
-#define ALLOY_CORE_CONTAINERS_QUEUE_HPP
+#ifndef ALLOY_CORE_CONTAINERS_STACK_HPP
+#define ALLOY_CORE_CONTAINERS_STACK_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -28,4 +28,4 @@ namespace alloy::core {
 
 } // namespace alloy::core
 
-#endif /* ALLOY_CORE_CONTAINERS_QUEUE_HPP */
+#endif /* ALLOY_CORE_CONTAINERS_STACK_HPP */
