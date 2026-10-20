@@ -2,45 +2,23 @@ package checkcmd
 
 import (
 	"context"
-	"regexp"
-	"time"
 
 	"github.com/bitwizeshift/go-cli"
 	"github.com/bitwizeshift/go-cli/arg"
 
 	"github.com/bitwizeshift/alloy/tools/alloy-cli/internal/stream"
 	"github.com/bitwizeshift/alloy/tools/internal/check"
-	"github.com/bitwizeshift/alloy/tools/internal/copyright"
 	"github.com/bitwizeshift/alloy/tools/internal/newline"
 	"github.com/bitwizeshift/alloy/tools/internal/root"
 	"github.com/bitwizeshift/alloy/tools/internal/whitespace"
 )
 
-var copyrightPattern = regexp.MustCompile(`Copyright \(c\) (.*) Matthew Rodusek All rights reserved\.`)
-
-// LicenseCopyright returns a [FileBuilder] for the check that copyright
-// notices list the years in which each file was modified.
-func LicenseCopyright(rooter root.Rooter) *FileBuilder {
-	return &FileBuilder{
-		Rooter: rooter,
-		NewChecker: func(dir string) check.CheckFixer {
-			return &copyright.Checker{
-				Pattern: copyrightPattern,
-				History: copyright.Git{Dir: dir},
-				Year:    time.Now().Year(),
-			}
-		},
-	}
-}
-
 // TrailingNewline returns a [FileBuilder] for the check that files end with a
 // newline.
 func TrailingNewline(rooter root.Rooter) *FileBuilder {
 	return &FileBuilder{
-		Rooter: rooter,
-		NewChecker: func(string) check.CheckFixer {
-			return newline.Checker{}
-		},
+		Rooter:  rooter,
+		Checker: newline.Checker{},
 	}
 }
 
@@ -48,10 +26,8 @@ func TrailingNewline(rooter root.Rooter) *FileBuilder {
 // whitespace.
 func Whitespace(rooter root.Rooter) *FileBuilder {
 	return &FileBuilder{
-		Rooter: rooter,
-		NewChecker: func(string) check.CheckFixer {
-			return whitespace.Checker{}
-		},
+		Rooter:  rooter,
+		Checker: whitespace.Checker{},
 	}
 }
 
@@ -61,9 +37,8 @@ type FileBuilder struct {
 	// Rooter reports the repository root that file paths are relative to.
 	Rooter root.Rooter
 
-	// NewChecker returns the check to apply to files in the repository rooted
-	// at dir.
-	NewChecker func(dir string) check.CheckFixer
+	// Checker is the check applied to each file.
+	Checker check.CheckFixer
 
 	fix   bool
 	paths []string
@@ -93,7 +68,7 @@ func (fb *FileBuilder) Build(ctx context.Context) (cli.Runner, error) {
 		return nil, err
 	}
 	return &FileRunner{
-		Checker: fb.NewChecker(dir),
+		Checker: fb.Checker,
 		FS:      check.OS{Dir: dir},
 		Fix:     fb.fix,
 		Paths:   fb.paths,
@@ -131,8 +106,32 @@ func (fr *FileRunner) Run(ctx context.Context) error {
 		runner := &check.Runner{FS: fr.FS, Out: stream.Verbatim(cli.OutStream(ctx))}
 		return runner.Fix(fr.Checker, fr.Paths...)
 	}
-	runner := &check.Runner{FS: fr.FS, Out: stream.Verbatim(cli.ErrStream(ctx))}
-	return runner.Check(fr.Checker, fr.Paths...)
+	runner := &CheckRunner{Checker: fr.Checker, FS: fr.FS, Paths: fr.Paths}
+	return runner.Run(ctx)
 }
 
 var _ cli.Runner = (*FileRunner)(nil)
+
+// CheckRunner reports the problems that a [check.Checker] finds in a list of
+// files.
+type CheckRunner struct {
+	// Checker is the check applied to each file.
+	Checker check.Checker
+
+	// FS is the filesystem that the files are read from.
+	FS check.FS
+
+	// Paths are the files to check.
+	Paths []string
+}
+
+// Run checks each file and writes each problem found to the error stream.
+//
+// [check.ErrFindings] is returned if the check reports any problem. Any other
+// error is returned if a file cannot be read or checked.
+func (cr *CheckRunner) Run(ctx context.Context) error {
+	runner := &check.Runner{FS: cr.FS, Out: stream.Verbatim(cli.ErrStream(ctx))}
+	return runner.Check(cr.Checker, cr.Paths...)
+}
+
+var _ cli.Runner = (*CheckRunner)(nil)

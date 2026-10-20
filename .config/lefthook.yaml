@@ -17,10 +17,25 @@ pre-commit:
       run: "{check} cpp-clang-tidy {staged_files}"
       fail_text: Fix with `lefthook run fix --job "c++ clang-tidy"`
 
-    - name: license copyright
+    - name: license header
       glob: "*.{h,hpp,c,cpp}"
-      run: "{check} license-copyright {staged_files}"
-      fail_text: Fix with `lefthook run fix --job "license copyright"`
+      # Sources adapted from other projects keep the license notices of the
+      # projects that they came from.
+      exclude:
+        - lib/alloy-core/include/alloy/core/string/encoding/ansi_encoding.hpp
+        - lib/alloy-core/include/alloy/core/string/encoding/latin1_encoding.hpp
+        - lib/alloy-core/include/alloy/core/string/encoding/utf16_encoding.hpp
+        - lib/alloy-core/include/alloy/core/string/encoding/utf32_encoding.hpp
+        - lib/alloy-core/include/alloy/core/string/encoding/utf8_encoding.hpp
+        - lib/alloy-core/include/alloy/core/string/encoding/wide_encoding.hpp
+        - lib/alloy-core/include/alloy/core/utilities/result.hpp
+        - lib/alloy-core/src/alloy/core/math/quaternion.cpp
+      run: "{check} license-header {staged_files}"
+      fail_text: See `go -C tools run ./alloy-cli check license-header --help`
+
+    - name: license year
+      run: "{check} license-year"
+      fail_text: Fix with `lefthook run fix --job "license year"`
 
     - name: trailing newline
       glob: "*.{h,hpp,c,cpp,md,py}"
@@ -63,9 +78,8 @@ fix:
       glob: "*.{h,hpp,c,cpp}"
       run: "{check} cpp-clang-tidy --fix {staged_files}"
 
-    - name: license copyright
-      glob: "*.{h,hpp,c,cpp}"
-      run: "{check} license-copyright --fix {staged_files}"
+    - name: license year
+      run: "{check} license-year --fix"
 
     - name: trailing newline
       glob: "*.{h,hpp,c,cpp,md,py}"
