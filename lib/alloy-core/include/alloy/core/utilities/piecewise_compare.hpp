@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_UTILITIES_PIECEWISE_COMPARE_HPP
 #define ALLOY_CORE_UTILITIES_PIECEWISE_COMPARE_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include <type_traits> // std::false_type
 

@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_MATH_EULER_ANGLES_HPP
 #define ALLOY_CORE_MATH_EULER_ANGLES_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/config.hpp"            // ALLOY_CORE_EXCEPTIONS_ENABLED
 #include "alloy/core/intrinsics.hpp"        // ALLOY_COMPILER_DIAGNOSTIC_PUSH

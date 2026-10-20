@@ -12,9 +12,9 @@
 #ifndef ALLOY_CORE_MATH_VECTOR_HPP
 #define ALLOY_CORE_MATH_VECTOR_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 // Vectors
 #include "alloy/core/math/vector/vector2.hpp" // IWYU pragma: export

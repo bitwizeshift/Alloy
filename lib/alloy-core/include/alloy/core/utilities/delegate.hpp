@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_UTILITIES_DELEGATE_HPP
 #define ALLOY_CORE_UTILITIES_DELEGATE_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/assert.hpp" // ALLOY_ASSERT
 #include "alloy/core/config.hpp" // ALLOY_CORE_EXCEPTIONS_ENABLE

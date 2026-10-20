@@ -11,9 +11,9 @@
 #ifndef ALLOY_EXTRA_WIN32_BINDINGS_WINDOWS_HPP
 #define ALLOY_EXTRA_WIN32_BINDINGS_WINDOWS_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #ifndef WIN32_LEAN_AND_MEAN
 # define WIN32_LEAN_AND_MEAN 1

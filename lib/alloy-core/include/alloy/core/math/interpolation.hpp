@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_MATH_INTERPOLATION_HPP
 #define ALLOY_CORE_MATH_INTERPOLATION_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/math/math_constants.hpp" // math_constants::half_pi, etc
 #include "alloy/core/math/trigonometry.hpp"   // trigonometry::cos, etc

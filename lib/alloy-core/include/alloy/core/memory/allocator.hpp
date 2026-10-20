@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_MEMORY_ALLOCATOR_HPP
 #define ALLOY_CORE_MEMORY_ALLOCATOR_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/memory/lifetime_utilities.hpp"
 #include "alloy/core/memory/memory_resource.hpp"

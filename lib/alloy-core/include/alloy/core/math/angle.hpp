@@ -12,9 +12,9 @@
 #ifndef ALLOY_CORE_MATH_ANGLE_HPP
 #define ALLOY_CORE_MATH_ANGLE_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/math/angle/basic_angle.hpp" // IWYU pragma: export
 #include "alloy/core/math/angle/radian.hpp" // IWYU pragma: export

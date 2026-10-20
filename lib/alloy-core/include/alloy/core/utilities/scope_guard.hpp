@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_UTILITIES_SCOPE_GUARD_HPP
 #define ALLOY_CORE_UTILITIES_SCOPE_GUARD_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/config.hpp" // ALLOY_CORE_EXCEPTIONS_ENABLED
 #include "alloy/core/macros.hpp" // ALLOY_UNIQUE_NAME

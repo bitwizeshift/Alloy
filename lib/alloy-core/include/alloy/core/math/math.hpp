@@ -12,9 +12,9 @@
 #ifndef ALLOY_CORE_MATH_MATH_HPP
 #define ALLOY_CORE_MATH_MATH_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 // TODO(bitwize): Come up with a better group name than 'math' for this.
 

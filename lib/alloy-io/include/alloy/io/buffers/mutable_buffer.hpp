@@ -11,9 +11,9 @@
 #ifndef ALLOY_IO_BUFFERS_MUTABLE_BUFFER_HPP
 #define ALLOY_IO_BUFFERS_MUTABLE_BUFFER_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include <cstddef> // std::byte, std::size_t
 #include <memory>  // std::addressof

@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_MATH_MATRIX_MATRIX_UTILITIES_HPP
 #define ALLOY_CORE_MATH_MATRIX_MATRIX_UTILITIES_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/math/matrix/matrix2.hpp"
 #include "alloy/core/math/matrix/matrix3.hpp"

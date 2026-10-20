@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_UTILITIES_SIGNAL_HPP
 #define ALLOY_CORE_UTILITIES_SIGNAL_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/assert.hpp" // ALLOY_ASSERT
 #include "alloy/core/intrinsics.hpp" // ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH

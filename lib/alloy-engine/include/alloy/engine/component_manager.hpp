@@ -11,9 +11,9 @@
 #ifndef ALLOY_ENGINE_COMPONENT_MANAGER_HPP
 #define ALLOY_ENGINE_COMPONENT_MANAGER_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/engine/component.hpp"
 #include "alloy/engine/entity.hpp"

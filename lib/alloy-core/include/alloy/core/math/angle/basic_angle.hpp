@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_MATH_ANGLE_BASIC_ANGLE_HPP
 #define ALLOY_CORE_MATH_ANGLE_BASIC_ANGLE_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/math/math.hpp" // core::almost_equal

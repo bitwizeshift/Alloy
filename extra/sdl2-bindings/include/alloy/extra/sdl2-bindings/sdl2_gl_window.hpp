@@ -11,9 +11,9 @@
 #ifndef ALLOY_IO_SDL2_GL_WINDOW_HPP
 #define ALLOY_IO_SDL2_GL_WINDOW_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/extra/sdl2-bindings/api.hpp"
 #include "alloy/extra/sdl2-bindings/sdl2_window.hpp"

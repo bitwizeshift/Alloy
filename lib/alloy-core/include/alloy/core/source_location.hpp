@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_UTILITIES_SOURCE_LOCATION_HPP
 #define ALLOY_CORE_UTILITIES_SOURCE_LOCATION_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include <cstdint>     // std::uint_least32_t
 

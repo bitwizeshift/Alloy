@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_MATH_BASIS_HPP
 #define ALLOY_CORE_MATH_BASIS_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/math/basis/basis2.hpp" // IWYU pragma: export
 #include "alloy/core/math/basis/basis3.hpp" // IWYU pragma: export

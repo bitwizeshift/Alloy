@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_GEOMETRY_RAY_HPP
 #define ALLOY_CORE_GEOMETRY_RAY_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/math/vector/vector3.hpp" // core::vector3

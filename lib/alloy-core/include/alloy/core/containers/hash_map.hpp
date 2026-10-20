@@ -12,9 +12,9 @@
 #ifndef ALLOY_CORE_CONTAINERS_HASH_MAP_HPP
 #define ALLOY_CORE_CONTAINERS_HASH_MAP_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/explicitly_copyable.hpp"

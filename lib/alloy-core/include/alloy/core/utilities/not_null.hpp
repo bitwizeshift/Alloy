@@ -12,9 +12,9 @@
 #ifndef ALLOY_CORE_UTILITIES_NOT_NULL_HPP
 #define ALLOY_CORE_UTILITIES_NOT_NULL_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/assert.hpp"
 #include "alloy/core/intrinsics.hpp"

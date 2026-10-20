@@ -11,9 +11,9 @@
 #ifndef ALLOY_CORE_MATH_VECTOR_VECTOR3_HPP
 #define ALLOY_CORE_MATH_VECTOR_VECTOR3_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/api.hpp"    // ALLOY_CORE_API
 #include "alloy/core/intrinsics.hpp"

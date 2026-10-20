@@ -11,9 +11,9 @@
 #ifndef ALLOY_EXTRA_ALLOCATORS_POINTER_UTIL_HPP
 #define ALLOY_EXTRA_ALLOCATORS_POINTER_UTIL_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#ifdef _MSC_VER
 # pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#endif
 
 #include "alloy/core/assert.hpp"
 #include "alloy/core/utilities/not_null.hpp"
