@@ -39,12 +39,12 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/utilities/option_set.hpp"
 
-#include <fmt/format.h>
-
+#include <cstddef>     // std::ptrdiff_t
 #include <cstdint>     // std::uint8_t
 #include <string_view> // std::string_views
 #include <optional>    // std::optional
 #include <chrono>      // std::chrono
+#include <format>      // std::format_to_n, std::format_string
 
 namespace alloy::extra {
 
@@ -192,10 +192,10 @@ namespace alloy::extra {
   /// The log streams are intrinsically linked together, so that the overhead
   /// of connecting arbitrary loggers is minimal.
   ///
-  /// This logger uses the C++ 'fmt' library to provide python-style format
-  /// strings with minimal overhead and type-safety/flexibility. For more
-  /// information on the formatting, please refer to their documentation at
-  /// https://fmt.dev/5.3.0/
+  /// This logger uses C++20 `std::format` to provide python-style format
+  /// strings with minimal overhead and compile-time checked type-safety. For
+  /// more information on the formatting, please refer to the documentation at
+  /// https://en.cppreference.com/w/cpp/utility/format/spec
   ///
   /// \note It is an error to attach a log stream to multiple logger instances
   //////////////////////////////////////////////////////////////////////////////
@@ -261,66 +261,72 @@ namespace alloy::extra {
 
     /// \brief Logs a formatted message
     ///
-    /// The syntax of the format strings can be found at https://fmt.dev/5.3.0/
+    /// The syntax of the format strings can be found at
+    /// https://en.cppreference.com/w/cpp/utility/format/spec
     ///
     /// \param level the log level
     /// \param format the format string for the log
     /// \param args the arguments for formatting
     template <typename...Args>
     auto log(log_level level,
-             std::string_view format,
+             std::format_string<Args...> format,
              Args&&...args) -> void;
 
     //--------------------------------------------------------------------------
 
     /// \brief Logs a formatted debug message
     ///
-    /// The syntax of the format strings can be found at https://fmt.dev/5.3.0/
+    /// The syntax of the format strings can be found at
+    /// https://en.cppreference.com/w/cpp/utility/format/spec
     ///
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    auto debug(std::string_view format,
+    auto debug(std::format_string<Args...> format,
                Args&&...args) -> void;
 
     /// \brief Logs a formatted info message
     ///
-    /// The syntax of the format strings can be found at https://fmt.dev/5.3.0/
+    /// The syntax of the format strings can be found at
+    /// https://en.cppreference.com/w/cpp/utility/format/spec
     ///
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    auto info(std::string_view format,
+    auto info(std::format_string<Args...> format,
               Args&&...args) -> void;
 
     /// \brief Logs a formatted warning message
     ///
-    /// The syntax of the format strings can be found at https://fmt.dev/5.3.0/
+    /// The syntax of the format strings can be found at
+    /// https://en.cppreference.com/w/cpp/utility/format/spec
     ///
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    auto warn(std::string_view format,
+    auto warn(std::format_string<Args...> format,
               Args&&...args) -> void;
 
     /// \brief Logs a formatted error message
     ///
-    /// The syntax of the format strings can be found at https://fmt.dev/5.3.0/
+    /// The syntax of the format strings can be found at
+    /// https://en.cppreference.com/w/cpp/utility/format/spec
     ///
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    auto error(std::string_view format,
+    auto error(std::format_string<Args...> format,
                Args&&...args) -> void;
 
     /// \brief Logs a formatted fatal message
     ///
-    /// The syntax of the format strings can be found at https://fmt.dev/5.3.0/
+    /// The syntax of the format strings can be found at
+    /// https://en.cppreference.com/w/cpp/utility/format/spec
     ///
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    auto fatal(std::string_view format,
+    auto fatal(std::format_string<Args...> format,
                Args&&...args) -> void;
 
     //--------------------------------------------------------------------------
@@ -375,7 +381,7 @@ template <typename...Args>
 inline
 auto alloy::extra::logger::log(
   log_level level,
-  std::string_view format,
+  std::format_string<Args...> format,
   Args&&...args
 ) -> void
 {
@@ -387,19 +393,19 @@ auto alloy::extra::logger::log(
 
   const auto time = std::chrono::system_clock::now();
 
-  // use 'fmt' library for log formatting
-  const auto [it,size] = fmt::format_to_n(
-    reinterpret_cast<char*>(m_buffer.data()),
-    m_buffer.size(),
+  auto* const first = reinterpret_cast<char*>(m_buffer.data());
+
+  // `out` is clamped to the buffer, whereas the returned `size` is the
+  // untruncated length of the formatted message.
+  const auto [out,size] = std::format_to_n(
+    first,
+    static_cast<std::ptrdiff_t>(m_buffer.size()),
     format,
     std::forward<Args>(args)...
   );
-  core::compiler::unused(it);
+  core::compiler::unused(size);
 
-  const auto message = std::string_view{
-    reinterpret_cast<const char*>(m_buffer.data()),
-    size
-  };
+  const auto message = std::string_view{first, out};
 
   auto* current = m_head;
   while (current != nullptr) {
@@ -416,8 +422,10 @@ auto alloy::extra::logger::log(
 
 template<typename...Args>
 inline
-auto alloy::extra::logger::debug(std::string_view format, Args&&...args)
-  -> void
+auto alloy::extra::logger::debug(
+  std::format_string<Args...> format,
+  Args&&...args
+) -> void
 {
   log(log_level::debug, format, std::forward<Args>(args)...);
 }
@@ -426,8 +434,10 @@ auto alloy::extra::logger::debug(std::string_view format, Args&&...args)
 
 template<typename...Args>
 inline
-auto alloy::extra::logger::info(std::string_view format, Args&&...args)
-  -> void
+auto alloy::extra::logger::info(
+  std::format_string<Args...> format,
+  Args&&...args
+) -> void
 {
   log(log_level::info, format, std::forward<Args>(args)...);
 }
@@ -436,8 +446,10 @@ auto alloy::extra::logger::info(std::string_view format, Args&&...args)
 
 template<typename...Args>
 inline
-auto alloy::extra::logger::warn(std::string_view format, Args&&...args)
-  -> void
+auto alloy::extra::logger::warn(
+  std::format_string<Args...> format,
+  Args&&...args
+) -> void
 {
   log(log_level::warning, format, std::forward<Args>(args)...);
 }
@@ -446,8 +458,10 @@ auto alloy::extra::logger::warn(std::string_view format, Args&&...args)
 
 template<typename...Args>
 inline
-auto alloy::extra::logger::error(std::string_view format, Args&&...args)
-  -> void
+auto alloy::extra::logger::error(
+  std::format_string<Args...> format,
+  Args&&...args
+) -> void
 {
   log(log_level::error, format, std::forward<Args>(args)...);
 }
@@ -456,8 +470,10 @@ auto alloy::extra::logger::error(std::string_view format, Args&&...args)
 
 template<typename...Args>
 inline
-auto alloy::extra::logger::fatal(std::string_view format, Args&&...args)
-  -> void
+auto alloy::extra::logger::fatal(
+  std::format_string<Args...> format,
+  Args&&...args
+) -> void
 {
   log(log_level::fatal, format, std::forward<Args>(args)...);
 }

@@ -23,7 +23,6 @@ add_alloy_library(${PROJECT_NAME}ExtraLogging
   SOURCES     ${source_files}
   DEPENDENCIES
     PUBLIC
-      fmt::fmt
       ${PROJECT_NAME}::Core
       ${PROJECT_NAME}::IO
 )
