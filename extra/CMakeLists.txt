@@ -8,7 +8,7 @@ cmake_dependent_option(ALLOY_COMPILE_EXTRAS_USE_DISCRETE_GPU
 )
 cmake_dependent_option(ALLOY_COMPILE_EXTRAS_LOGGING
   "Compiles the logging library" ON
-  "ALLOY_COMPILE_EXTRAS;fmt_FOUND" OFF
+  "ALLOY_COMPILE_EXTRAS" OFF
 )
 cmake_dependent_option(ALLOY_COMPILE_EXTRAS_SDL2
   "Compiles the SDL implementation of the 'io' library" ON
