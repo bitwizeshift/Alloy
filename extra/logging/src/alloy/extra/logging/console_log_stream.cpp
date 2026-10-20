@@ -107,10 +107,11 @@ auto alloy::extra::console_log_stream::on_log_message(
   // print format is:
   // time | level | message
   std::printf(
-    "%s%.*s | %-7s | %.*s%s\n",
+    "%s%.*s | %-7.*s | %.*s%s\n",
     color_code,
     static_cast<int>(time_string.size()),
     time_string.data(),
+    static_cast<int>(level_string.size()),
     level_string.data(),
     static_cast<int>(message.size()),
     message.data(),
