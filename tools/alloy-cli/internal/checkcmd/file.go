@@ -8,10 +8,21 @@ import (
 
 	"github.com/bitwizeshift/alloy/tools/alloy-cli/internal/stream"
 	"github.com/bitwizeshift/alloy/tools/internal/check"
+	"github.com/bitwizeshift/alloy/tools/internal/guard"
 	"github.com/bitwizeshift/alloy/tools/internal/newline"
 	"github.com/bitwizeshift/alloy/tools/internal/root"
 	"github.com/bitwizeshift/alloy/tools/internal/whitespace"
 )
+
+// HeaderGuard returns a [FileBuilder] for the check that C and C++ headers
+// have an include guard named after their path relative to an include or src
+// directory.
+func HeaderGuard(rooter root.Rooter) *FileBuilder {
+	return &FileBuilder{
+		Rooter:  rooter,
+		Checker: &guard.Checker{Roots: []string{"include", "src"}},
+	}
+}
 
 // TrailingNewline returns a [FileBuilder] for the check that files end with a
 // newline.

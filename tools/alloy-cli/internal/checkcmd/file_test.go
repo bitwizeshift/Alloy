@@ -17,6 +17,7 @@ import (
 	"github.com/bitwizeshift/alloy/tools/alloy-cli/internal/checkcmd"
 	"github.com/bitwizeshift/alloy/tools/internal/check"
 	"github.com/bitwizeshift/alloy/tools/internal/check/checktest"
+	"github.com/bitwizeshift/alloy/tools/internal/guard"
 	"github.com/bitwizeshift/alloy/tools/internal/newline"
 	"github.com/bitwizeshift/alloy/tools/internal/root/roottest"
 	"github.com/bitwizeshift/alloy/tools/internal/whitespace"
@@ -75,6 +76,17 @@ func TestFileBuilderBuild(t *testing.T) {
 				FS:      check.OS{Dir: "/repo"},
 				Fix:     true,
 				Paths:   []string{"a.cpp"},
+			},
+			wantErr: nil,
+		}, {
+			name:    "header guard",
+			builder: checkcmd.HeaderGuard(roottest.Rooter("/repo")),
+			args:    []string{"a.hpp"},
+			want: &checkcmd.FileRunner{
+				Checker: &guard.Checker{Roots: []string{"include", "src"}},
+				FS:      check.OS{Dir: "/repo"},
+				Fix:     false,
+				Paths:   []string{"a.hpp"},
 			},
 			wantErr: nil,
 		}, {

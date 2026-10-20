@@ -48,6 +48,35 @@ commands:
             examples:
               - alloy-cli check cpp-clang-tidy lib/alloy-core/src/alloy/core/assert.cpp
               - alloy-cli check cpp-clang-tidy --fix -j 4 lib/alloy-core/src/alloy/core/assert.cpp
+          - name: header-guard
+            summary: Check that C and C++ headers have a well-formed include guard
+            description: |
+              Checks that each C and C++ header is wrapped in an include guard
+              named after its path, relative to the first include or src
+              directory in it, in uppercase and with every separator and dot
+              replaced with an underscore. The guard of
+              lib/alloy-core/include/alloy/core/assert.hpp is
+              ALLOY_CORE_ASSERT_HPP.
+
+              The #ifndef and #define of the guard are the first lines after
+              the comments that open the header, and are followed by a block
+              that makes MSVC skip the header once it has been included:
+
+              * #ifdef _MSC_VER
+              * # pragma once
+              * #endif
+
+              The last line of the header is the #endif that closes the guard,
+              with the guard name in a comment, as in
+              "#endif /* ALLOY_CORE_ASSERT_HPP */".
+
+              With --fix, the names in the guard are corrected, the MSVC block
+              is added or replaced, and the comment on the closing #endif is
+              rewritten. Headers without an #ifndef and #define at the top and
+              an #endif at the bottom are left for a manual fix.
+            examples:
+              - alloy-cli check header-guard lib/alloy-core/include/alloy/core/assert.hpp
+              - alloy-cli check header-guard --fix lib/alloy-core/include/alloy/core/assert.hpp
           - name: license-header
             summary: Check that C, C++ and CMake files start with their license header
             description: |

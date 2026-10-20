@@ -18,6 +18,7 @@ func main() {
 	cli.FromBytes(specYAML,
 		cli.BindBuilder("alloy-cli.check.commit-msg", &checkcmd.CommitMsgBuilder{Rooter: rooter}),
 		cli.BindBuilder("alloy-cli.check.cpp-clang-tidy", &checkcmd.ClangTidyBuilder{Rooter: rooter}),
+		cli.BindBuilder("alloy-cli.check.header-guard", checkcmd.HeaderGuard(rooter)),
 		cli.BindBuilder("alloy-cli.check.license-header", &checkcmd.LicenseHeaderBuilder{Rooter: rooter}),
 		cli.BindBuilder("alloy-cli.check.license-year", &checkcmd.LicenseYearBuilder{Rooter: rooter}),
 		cli.BindBuilder("alloy-cli.check.trailing-newline", checkcmd.TrailingNewline(rooter)),

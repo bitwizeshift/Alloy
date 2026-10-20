@@ -17,6 +17,11 @@ pre-commit:
       run: "{check} cpp-clang-tidy {staged_files}"
       fail_text: Fix with `lefthook run fix --job "c++ clang-tidy"`
 
+    - name: header guard
+      glob: "{lib,extra,bin,example}/**/*.{h,hpp}"
+      run: "{check} header-guard {staged_files}"
+      fail_text: Fix with `lefthook run fix --job "header guard"`
+
     - name: license header
       glob: "*.{h,hpp,c,cpp,cmake}"
       # Sources adapted from other projects keep the license notices of the
@@ -78,6 +83,10 @@ fix:
     - name: c++ clang-tidy
       glob: "*.{h,hpp,c,cpp}"
       run: "{check} cpp-clang-tidy --fix {staged_files}"
+
+    - name: header guard
+      glob: "{lib,extra,bin,example}/**/*.{h,hpp}"
+      run: "{check} header-guard --fix {staged_files}"
 
     - name: license year
       run: "{check} license-year --fix"
