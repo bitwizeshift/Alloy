@@ -128,6 +128,7 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
       case 0: return rgba::b;
       case 1: return rgba::g;
       case 2: return rgba::r;
+      default: break;
     }
     ALLOY_UNREACHABLE();
   }
@@ -142,6 +143,7 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
       case 1: return rgba::g;
       case 2: return rgba::b;
       case 3: return rgba::a;
+      default: break;
     }
     ALLOY_UNREACHABLE();
   }
@@ -156,6 +158,7 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
       case 1: return rgba::g;
       case 2: return rgba::r;
       case 3: return rgba::a;
+      default: break;
     }
     ALLOY_UNREACHABLE();
   }
@@ -168,6 +171,7 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
       case 0: return rgba::r;
       case 1: return rgba::g;
       case 2: return rgba::b;
+      default: break;
     }
     ALLOY_UNREACHABLE();
   }
