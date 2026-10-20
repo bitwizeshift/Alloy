@@ -26,15 +26,16 @@ TEST_CASE("scope_exit( Fn&& fn )", "[raii]")
 
   SECTION("Executes on exception scope exit")
   {
-    try {
+    const auto throw_in_scope = [&]()
+    {
       auto scope = scope_exit{[&]()
       {
         flag = true;
       }};
       throw std::exception{};
-    } catch (...) {
-      // do nothing
-    }
+    };
+
+    REQUIRE_THROWS( throw_in_scope() );
 
     REQUIRE( flag == true );
   }
@@ -58,15 +59,16 @@ TEST_CASE("ALLOY_ON_SCOPE_EXIT(x)", "[raii]")
 
   SECTION("Executes on exception scope exit")
   {
-    try {
+    const auto throw_in_scope = [&]()
+    {
       ALLOY_ON_SCOPE_EXIT([&]()
       {
         flag = true;
       });
       throw std::exception{};
-    } catch (...) {
-      // do nothing
-    }
+    };
+
+    REQUIRE_THROWS( throw_in_scope() );
 
     REQUIRE( flag == true );
   }
