@@ -1,0 +1,92 @@
+min_version: 2.0.0
+
+templates:
+  tool: go -C tools run
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: c++ codestyle
+      skip: true
+      glob: "*.{h,hpp,c,cpp}"
+      run: clang-format --dry-run --Werror {staged_files}
+      fail_text: Fix with `lefthook run fix --job "c++ codestyle"`
+
+    - name: c++ clang-tidy
+      glob: "*.{h,hpp,c,cpp}"
+      run: "{tool} ./check-cpp-clang-tidy.go {staged_files}"
+      fail_text: Fix with `lefthook run fix --job "c++ clang-tidy"`
+
+    - name: license copyright
+      glob: "*.{h,hpp,c,cpp}"
+      run: "{tool} ./check-license-copyright.go {staged_files}"
+      fail_text: Fix with `lefthook run fix --job "license copyright"`
+
+    - name: trailing newline
+      glob: "*.{h,hpp,c,cpp,md,py}"
+      run: "{tool} ./check-trailing-newline.go {staged_files}"
+      fail_text: Fix with `lefthook run fix --job "trailing newline"`
+
+    - name: whitespace
+      glob: "*.{h,hpp,c,cpp,md,py}"
+      run: "{tool} ./check-whitespace.go {staged_files}"
+      fail_text: Fix with `lefthook run fix --job "whitespace"`
+
+commit-msg:
+  jobs:
+    # Lefthook hides unstaged changes while pre-commit runs, so files with
+    # both staged and unstaged changes can only be found after it finishes.
+    - name: partially staged files
+      files: git diff --cached --name-only --diff-filter=d
+      run: |
+        partial=$(git diff --name-only -- {files})
+        if [ -n "$partial" ]; then
+          {
+            printf '\033[33m%s\n' \
+              "CAUTION: The following staged files have unstaged modifications:"
+            printf '%s\n' "$partial" | sed 's/^/ • /'
+            printf '%s\033[0m\n' "This can be ignored if this was intentional."
+          } >&2
+        fi
+
+    - name: commit message
+      run: "{tool} ./check-commit-msg.go {1}"
+
+fix:
+  jobs:
+    - name: c++ codestyle
+      skip: true
+      glob: "*.{h,hpp,c,cpp}"
+      run: clang-format -i {staged_files}
+
+    - name: c++ clang-tidy
+      glob: "*.{h,hpp,c,cpp}"
+      run: "{tool} ./check-cpp-clang-tidy.go -fix {staged_files}"
+
+    - name: license copyright
+      glob: "*.{h,hpp,c,cpp}"
+      run: "{tool} ./check-license-copyright.go -fix {staged_files}"
+
+    - name: trailing newline
+      glob: "*.{h,hpp,c,cpp,md,py}"
+      run: "{tool} ./check-trailing-newline.go -fix {staged_files}"
+
+    - name: whitespace
+      glob: "*.{h,hpp,c,cpp,md,py}"
+      run: "{tool} ./check-whitespace.go -fix {staged_files}"
+
+modernize:
+  jobs:
+    - name: c++ modernize
+      glob: "*.{hpp,cpp}"
+      run: >-
+        clang-tidy
+        -p=build
+        --format-style=file
+        --checks='-*,modernize-*'
+        --warnings-as-errors='-*'
+        --use-color
+        --fix
+        --fix-errors
+        --quiet
+        {staged_files}
