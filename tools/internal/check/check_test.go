@@ -3,6 +3,7 @@ package check_test
 import (
 	"errors"
 	"io/fs"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -176,4 +177,71 @@ func TestRunnerFix_WriteFails_ReturnsError(t *testing.T) {
 	if got, want := out.String(), ""; !cmp.Equal(got, want) {
 		t.Errorf("Runner.Fix() output = %q, want %q", got, want)
 	}
+}
+
+func TestOSReadFile(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name    string
+		dir     string
+		file    string
+		want    []byte
+		wantErr error
+	}{
+		{
+			name:    "working directory",
+			dir:     "",
+			file:    "testdata/hello.txt",
+			want:    []byte("hello\n"),
+			wantErr: nil,
+		}, {
+			name:    "relative to dir",
+			dir:     "testdata",
+			file:    "hello.txt",
+			want:    []byte("hello\n"),
+			wantErr: nil,
+		}, {
+			name:    "absolute ignores dir",
+			dir:     "missing",
+			file:    absPath(t, "testdata/hello.txt"),
+			want:    []byte("hello\n"),
+			wantErr: nil,
+		}, {
+			name:    "missing file",
+			dir:     "testdata",
+			file:    "missing.txt",
+			want:    nil,
+			wantErr: fs.ErrNotExist,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			// Arrange
+			sut := check.OS{Dir: tc.dir}
+
+			// Act
+			data, err := sut.ReadFile(tc.file)
+
+			// Assert
+			if got, want := err, tc.wantErr; !cmp.Equal(got, want, cmpopts.EquateErrors()) {
+				t.Fatalf("OS.ReadFile() = %v, want %v", got, want)
+			}
+			if got, want := data, tc.want; !cmp.Equal(got, want) {
+				t.Errorf("OS.ReadFile() = %q, want %q", got, want)
+			}
+		})
+	}
+}
+
+func absPath(t *testing.T, path string) string {
+	t.Helper()
+	abs, err := filepath.Abs(path)
+	if err != nil {
+		t.Fatalf("filepath.Abs() = %v", err)
+	}
+	return abs
 }

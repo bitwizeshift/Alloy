@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 // ErrFindings is returned by [Runner.Check] when at least one file has a
@@ -54,21 +55,33 @@ type FS interface {
 }
 
 // OS is an [FS] backed by the operating system's filesystem.
-type OS struct{}
+type OS struct {
+	// Dir is the directory that relative names are resolved against. The
+	// working directory is used when Dir is empty.
+	Dir string
+}
 
 // ReadFile returns the contents of the file name.
-func (OS) ReadFile(name string) ([]byte, error) {
-	return os.ReadFile(name)
+func (o OS) ReadFile(name string) ([]byte, error) {
+	return os.ReadFile(o.path(name))
 }
 
 // WriteFile replaces the contents of the existing file name with data,
 // preserving its permissions.
-func (OS) WriteFile(name string, data []byte) error {
-	info, err := os.Stat(name)
+func (o OS) WriteFile(name string, data []byte) error {
+	path := o.path(name)
+	info, err := os.Stat(path)
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(name, data, info.Mode().Perm())
+	return os.WriteFile(path, data, info.Mode().Perm())
+}
+
+func (o OS) path(name string) string {
+	if filepath.IsAbs(name) {
+		return name
+	}
+	return filepath.Join(o.Dir, name)
 }
 
 var _ FS = OS{}
