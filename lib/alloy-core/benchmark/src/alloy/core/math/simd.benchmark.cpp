@@ -24,6 +24,9 @@ namespace alloy::core::benchmark {
 ///        way
 ///////////////////////////////////////////////////////////////////////////////
 struct DotFixture {
+  // A predictable sequence is intended, so that every run benchmarks the
+  // same inputs.
+  // NOLINTNEXTLINE(bugprone-random-generator-seed)
   std::mt19937 engine{};
   std::uniform_real_distribution<f32> distribution{
     -100.0f,
