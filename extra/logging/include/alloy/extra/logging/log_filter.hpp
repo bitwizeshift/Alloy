@@ -162,6 +162,9 @@ auto alloy::extra::log_filter::none()
 // Modifiers
 //------------------------------------------------------------------------------
 
+// option_set's bounds-checked accessors can only throw for indices beyond its
+// bitset, which every log_level is well within.
+// NOLINTBEGIN(bugprone-exception-escape)
 inline constexpr
 auto alloy::extra::log_filter::allow(log_level level)
   noexcept -> log_filter&
@@ -188,6 +191,7 @@ auto alloy::extra::log_filter::is_allowed(log_level level)
 {
   return m_allowed.test(level);
 }
+// NOLINTEND(bugprone-exception-escape)
 
 //------------------------------------------------------------------------------
 // Private Constructors
