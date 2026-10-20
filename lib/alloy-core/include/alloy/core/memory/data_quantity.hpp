@@ -8,8 +8,8 @@
  * \brief A header for representing quantities of data (bytes, etc)
  *****************************************************************************/
 
-#ifndef ALLOY_CORE_DATA_QUANTITY_HPP
-#define ALLOY_CORE_DATA_QUANTITY_HPP
+#ifndef ALLOY_CORE_MEMORY_DATA_QUANTITY_HPP
+#define ALLOY_CORE_MEMORY_DATA_QUANTITY_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -1276,5 +1276,5 @@ inline constexpr const std::byte*
   return p - b.count();
 }
 
-#endif /* ALLOY_CORE_DATA_QUANTITY_HPP */
+#endif /* ALLOY_CORE_MEMORY_DATA_QUANTITY_HPP */
 

@@ -8,8 +8,8 @@
  * \brief This header defines a utility for handling the location of a source
  *****************************************************************************/
 
-#ifndef ALLOY_CORE_UTILITIES_SOURCE_LOCATION_HPP
-#define ALLOY_CORE_UTILITIES_SOURCE_LOCATION_HPP
+#ifndef ALLOY_CORE_SOURCE_LOCATION_HPP
+#define ALLOY_CORE_SOURCE_LOCATION_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -121,4 +121,4 @@ auto alloy::core::source_location::line()
   return m_line_number;
 }
 
-#endif /* ALLOY_CORE_UTILITIES_SOURCE_LOCATION_HPP */
+#endif /* ALLOY_CORE_SOURCE_LOCATION_HPP */

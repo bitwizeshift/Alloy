@@ -8,8 +8,8 @@
  * \todo description
  *****************************************************************************/
 
-#ifndef ALLOY_IO_WINDOW_EVENTS_HPP
-#define ALLOY_IO_WINDOW_EVENTS_HPP
+#ifndef ALLOY_IO_EVENTS_WINDOW_EVENTS_HPP
+#define ALLOY_IO_EVENTS_WINDOW_EVENTS_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -126,4 +126,4 @@ ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::window_unfocus_event, 0x000A);
 // ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x000E);
 // ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x000F);
 
-#endif /* ALLOY_IO_WINDOW_EVENTS_HPP */
+#endif /* ALLOY_IO_EVENTS_WINDOW_EVENTS_HPP */

@@ -8,8 +8,8 @@
 /// \brief TODO(Bitwize): Add description
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_MATH_QUATERNION_CONSTANTS_HPP
-#define LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_MATH_QUATERNION_CONSTANTS_HPP
+#ifndef ALLOY_CORE_MATH_QUATERNION_CONSTANTS_HPP
+#define ALLOY_CORE_MATH_QUATERNION_CONSTANTS_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -39,4 +39,4 @@ namespace alloy::core {
 
 } // namespace alloy::core
 
-#endif /* LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_MATH_QUATERNION_CONSTANTS_HPP */
+#endif /* ALLOY_CORE_MATH_QUATERNION_CONSTANTS_HPP */

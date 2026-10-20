@@ -8,8 +8,8 @@
  * \brief This header contains the definition for observer_ptr
  *****************************************************************************/
 
-#ifndef ALLOY_CORE_UTILITIES_OBSERVER_PTR_HPP
-#define ALLOY_CORE_UTILITIES_OBSERVER_PTR_HPP
+#ifndef ALLOY_CORE_MEMORY_OBSERVER_PTR_HPP
+#define ALLOY_CORE_MEMORY_OBSERVER_PTR_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -923,5 +923,5 @@ inline bool alloy::core::operator!=(std::nullptr_t,
   return nullptr != rhs.get();
 }
 
-#endif /* ALLOY_CORE_UTILITIES_OBSERVER_PTR_HPP */
+#endif /* ALLOY_CORE_MEMORY_OBSERVER_PTR_HPP */
 

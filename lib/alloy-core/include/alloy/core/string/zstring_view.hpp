@@ -8,8 +8,8 @@
 /// \brief TODO(Bitwize): Add description
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_STRINGS_ZSTRING_VIEW_HPP
-#define LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_STRINGS_ZSTRING_VIEW_HPP
+#ifndef ALLOY_CORE_STRING_ZSTRING_VIEW_HPP
+#define ALLOY_CORE_STRING_ZSTRING_VIEW_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -263,5 +263,5 @@ alloy::core::basic_zstring_view<CharT,Traits>
 
 }
 
-#endif /* LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_STRINGS_ZSTRING_VIEW_HPP */
+#endif /* ALLOY_CORE_STRING_ZSTRING_VIEW_HPP */
 

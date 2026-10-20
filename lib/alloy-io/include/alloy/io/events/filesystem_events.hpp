@@ -8,8 +8,8 @@
  * \todo description
  *****************************************************************************/
 
-#ifndef ALLOY_IO_FILESYSTEM_FILESYSTEM_EVENTS_HPP
-#define ALLOY_IO_FILESYSTEM_FILESYSTEM_EVENTS_HPP
+#ifndef ALLOY_IO_EVENTS_FILESYSTEM_EVENTS_HPP
+#define ALLOY_IO_EVENTS_FILESYSTEM_EVENTS_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -71,4 +71,4 @@ ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::file_update_event, 0x0012);
 // ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x001E);
 // ALLOY_DEFINE_SYSTEM_EVENT(::alloy::io::..., 0x001F);
 
-#endif /* ALLOY_IO_FILESYSTEM_FILESYSTEM_EVENTS_HPP */
+#endif /* ALLOY_IO_EVENTS_FILESYSTEM_EVENTS_HPP */

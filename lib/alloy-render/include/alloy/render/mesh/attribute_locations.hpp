@@ -8,8 +8,8 @@
 /// \brief TODO(Bitwize): Add description
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ALLOY_RENDER_MESH_VERTEX_ATTRIBUTES_HPP
-#define ALLOY_RENDER_MESH_VERTEX_ATTRIBUTES_HPP
+#ifndef ALLOY_RENDER_MESH_ATTRIBUTE_LOCATIONS_HPP
+#define ALLOY_RENDER_MESH_ATTRIBUTE_LOCATIONS_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -44,4 +44,4 @@ namespace alloy::render {
 
 } // namespace alloy::render
 
-#endif /* ALLOY_RENDER_MESH_VERTEX_ATTRIBUTES_HPP */
+#endif /* ALLOY_RENDER_MESH_ATTRIBUTE_LOCATIONS_HPP */

@@ -8,8 +8,8 @@
  * \brief
  *****************************************************************************/
 
-#ifndef ALLOY_CORE_ALGORITHM_COMPARE_REDUCE_HPP
-#define ALLOY_CORE_ALGORITHM_COMPARE_REDUCE_HPP
+#ifndef ALLOY_CORE_ALGORITHMS_COMPARE_REDUCE_HPP
+#define ALLOY_CORE_ALGORITHMS_COMPARE_REDUCE_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -167,4 +167,4 @@ auto alloy::core::compare_reducer<Compare>::do_compare(const T& lhs, const U& rh
   return std::get<0>(static_cast<const base_type&>(*this))(lhs, rhs);
 }
 
-#endif /* ALLOY_CORE_ALGORITHM_COMPARE_REDUCE_HPP */
+#endif /* ALLOY_CORE_ALGORITHMS_COMPARE_REDUCE_HPP */

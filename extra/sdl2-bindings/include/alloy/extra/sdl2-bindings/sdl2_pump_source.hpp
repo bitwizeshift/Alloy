@@ -8,8 +8,8 @@
  * \brief
  *****************************************************************************/
 
-#ifndef ALLOY_IO_SDL2_PUMP_SOURCE_HPP
-#define ALLOY_IO_SDL2_PUMP_SOURCE_HPP
+#ifndef ALLOY_EXTRA_SDL2_BINDINGS_SDL2_PUMP_SOURCE_HPP
+#define ALLOY_EXTRA_SDL2_BINDINGS_SDL2_PUMP_SOURCE_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -146,4 +146,4 @@ namespace alloy::extra {
 
 } // namespace alloy::io
 
-#endif /* ALLOY_IO_SDL2_PUMP_SOURCE_HPP */
+#endif /* ALLOY_EXTRA_SDL2_BINDINGS_SDL2_PUMP_SOURCE_HPP */

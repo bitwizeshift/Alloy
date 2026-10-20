@@ -8,8 +8,8 @@
  * \todo description
  *****************************************************************************/
 
-#ifndef ALLOY_CORE_MODEL_LIGHT_POINT_LIGHT_HPP
-#define ALLOY_CORE_MODEL_LIGHT_POINT_LIGHT_HPP
+#ifndef ALLOY_RENDER_LIGHT_POINT_LIGHT_HPP
+#define ALLOY_RENDER_LIGHT_POINT_LIGHT_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -41,4 +41,4 @@ namespace alloy::render {
 
 } // namespace alloy::render
 
-#endif /* ALLOY_CORE_MODEL_LIGHT_POINT_LIGHT_HPP */
+#endif /* ALLOY_RENDER_LIGHT_POINT_LIGHT_HPP */

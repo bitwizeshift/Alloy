@@ -8,8 +8,8 @@
 /// \brief TODO(Bitwize): Add description
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ALLOY_RENDER_GL_MATERIAL_SHADER_HPP
-#define ALLOY_RENDER_GL_MATERIAL_SHADER_HPP
+#ifndef ALLOY_RENDER_GL_SHADER_SHADER_HPP
+#define ALLOY_RENDER_GL_SHADER_SHADER_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -362,4 +362,4 @@ auto alloy::render::gl::basic_shader<Type>::reset()
   }
 }
 
-#endif /* ALLOY_RENDER_GL_MATERIAL_SHADER_HPP */
+#endif /* ALLOY_RENDER_GL_SHADER_SHADER_HPP */

@@ -8,8 +8,8 @@
  * \brief This header defines a hashed string_view
  *****************************************************************************/
 
-#ifndef ALLOY_CORE_STRINGS_HASHED_STRING_VIEW_HPP
-#define ALLOY_CORE_STRINGS_HASHED_STRING_VIEW_HPP
+#ifndef ALLOY_CORE_STRING_HASHED_STRING_VIEW_HPP
+#define ALLOY_CORE_STRING_HASHED_STRING_VIEW_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -248,5 +248,5 @@ auto alloy::core::hash_value(const basic_hashed_string_view<CharT,Traits>& v)
 }
 
 
-#endif /* ALLOY_CORE_STRINGS_HASHED_STRING_VIEW_HPP */
+#endif /* ALLOY_CORE_STRING_HASHED_STRING_VIEW_HPP */
 

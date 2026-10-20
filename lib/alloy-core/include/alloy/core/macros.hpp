@@ -8,8 +8,8 @@
  * \brief
  *****************************************************************************/
 
-#ifndef ALLOY_GRAPHICS_MACROS_HPP
-#define ALLOY_GRAPHICS_MACROS_HPP
+#ifndef ALLOY_CORE_MACROS_HPP
+#define ALLOY_CORE_MACROS_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -688,4 +688,4 @@
 #define ALLOY_VA_REST_H0(first) // no remaining args
 #define ALLOY_VA_REST_H1(first,...) __VA_ARGS__
 
-#endif /* ALLOY_GRAPHICS_MACROS_HPP */
+#endif /* ALLOY_CORE_MACROS_HPP */

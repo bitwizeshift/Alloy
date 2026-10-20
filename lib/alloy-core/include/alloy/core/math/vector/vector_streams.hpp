@@ -14,8 +14,8 @@
 /// use ostream for the vector types other than perhaps for debugging
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ALLOY_CORE_MATH_VECTOR_VECTOR_OSTREAMS_HPP
-#define ALLOY_CORE_MATH_VECTOR_VECTOR_OSTREAMS_HPP
+#ifndef ALLOY_CORE_MATH_VECTOR_VECTOR_STREAMS_HPP
+#define ALLOY_CORE_MATH_VECTOR_VECTOR_STREAMS_HPP
 
 #ifdef _MSC_VER
 # pragma once

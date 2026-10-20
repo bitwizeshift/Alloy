@@ -8,8 +8,8 @@
 /// \brief TODO(Bitwize): Add description
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ALLOY_RENDER_MESH_MESH_2D_BUILDER_HPP
-#define ALLOY_RENDER_MESH_MESH_2D_BUILDER_HPP
+#ifndef ALLOY_RENDER_MESH_2D_POLYGON_2D_BUILDER_HPP
+#define ALLOY_RENDER_MESH_2D_POLYGON_2D_BUILDER_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -200,4 +200,4 @@ namespace alloy::render {
 
 } // namespace alloy::render
 
-#endif /* ALLOY_RENDER_MESH_MESH_2D_BUILDER_HPP */
+#endif /* ALLOY_RENDER_MESH_2D_POLYGON_2D_BUILDER_HPP */

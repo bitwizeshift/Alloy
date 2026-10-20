@@ -8,8 +8,8 @@
  * \brief
  *****************************************************************************/
 
-#ifndef ALLOY_CORE_ALGORITHM_MAX_HPP
-#define ALLOY_CORE_ALGORITHM_MAX_HPP
+#ifndef ALLOY_CORE_ALGORITHMS_MAX_HPP
+#define ALLOY_CORE_ALGORITHMS_MAX_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -34,5 +34,5 @@ namespace alloy::core {
 
 } // namespace alloy::core
 
-#endif /* ALLOY_CORE_ALGORITHM_MAX_HPP */
+#endif /* ALLOY_CORE_ALGORITHMS_MAX_HPP */
 

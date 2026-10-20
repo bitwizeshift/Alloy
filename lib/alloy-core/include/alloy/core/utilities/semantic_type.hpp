@@ -10,8 +10,8 @@
  *        types
  *****************************************************************************/
 
-#ifndef ALLOY_CORE_UTILITIES_BOXED_TYPE_HPP
-#define ALLOY_CORE_UTILITIES_BOXED_TYPE_HPP
+#ifndef ALLOY_CORE_UTILITIES_SEMANTIC_TYPE_HPP
+#define ALLOY_CORE_UTILITIES_SEMANTIC_TYPE_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -631,5 +631,5 @@ inline constexpr SemanticType
   }
 }
 
-#endif /* ALLOY_CORE_UTILITIES_BOXED_TYPE_HPP */
+#endif /* ALLOY_CORE_UTILITIES_SEMANTIC_TYPE_HPP */
 

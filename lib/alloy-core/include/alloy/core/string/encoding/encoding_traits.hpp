@@ -8,8 +8,8 @@
  * \brief This header defines general traits for encoding logic
  *****************************************************************************/
 
-#ifndef ALLOY_CORE_STIRNG_ENCODING_ENCODING_TRAITS_HPP
-#define ALLOY_CORE_STIRNG_ENCODING_ENCODING_TRAITS_HPP
+#ifndef ALLOY_CORE_STRING_ENCODING_ENCODING_TRAITS_HPP
+#define ALLOY_CORE_STRING_ENCODING_ENCODING_TRAITS_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -636,4 +636,4 @@ auto alloy::core::encoding_traits<Encoding>::rfind(
     return last;
   }
 }
-#endif /* ALLOY_CORE_STIRNG_ENCODING_ENCODING_TRAITS_HPP */
+#endif /* ALLOY_CORE_STRING_ENCODING_ENCODING_TRAITS_HPP */

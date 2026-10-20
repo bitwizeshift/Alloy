@@ -38,8 +38,8 @@
   SOFTWARE.
 */
 
-#ifndef ALLOY_CORE_RESULT_HPP
-#define ALLOY_CORE_RESULT_HPP
+#ifndef ALLOY_CORE_UTILITIES_RESULT_HPP
+#define ALLOY_CORE_UTILITIES_RESULT_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -5652,4 +5652,4 @@ auto alloy::core::swap(result<void,E>& lhs, result<void,E>& rhs)
   }
 }
 
-#endif /* ALLOY_CORE_RESULT_HPP */
+#endif /* ALLOY_CORE_UTILITIES_RESULT_HPP */

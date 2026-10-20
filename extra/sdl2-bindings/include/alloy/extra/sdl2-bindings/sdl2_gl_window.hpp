@@ -8,8 +8,8 @@
  * \brief
  *****************************************************************************/
 
-#ifndef ALLOY_IO_SDL2_GL_WINDOW_HPP
-#define ALLOY_IO_SDL2_GL_WINDOW_HPP
+#ifndef ALLOY_EXTRA_SDL2_BINDINGS_SDL2_GL_WINDOW_HPP
+#define ALLOY_EXTRA_SDL2_BINDINGS_SDL2_GL_WINDOW_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -164,4 +164,4 @@ namespace alloy::extra {
   };
 } // namespace alloy::io
 
-#endif /* ALLOY_IO_SDL2_GL_WINDOW_HPP */
+#endif /* ALLOY_EXTRA_SDL2_BINDINGS_SDL2_GL_WINDOW_HPP */

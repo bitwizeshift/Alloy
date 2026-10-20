@@ -8,8 +8,8 @@
 /// \todo(Bitwize): Document this
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef ALLOY_CORE_STRINGS_STRING_TOKENIZER_HPP
-#define ALLOY_CORE_STRINGS_STRING_TOKENIZER_HPP
+#ifndef ALLOY_CORE_STRING_STRING_TOKENIZER_HPP
+#define ALLOY_CORE_STRING_STRING_TOKENIZER_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -346,4 +346,4 @@ auto alloy::core::basic_string_tokenizer<CharT,Traits>
 }
 // NOLINTEND(bugprone-exception-escape)
 
-#endif /* ALLOY_CORE_STRINGS_STRING_TOKENIZER_HPP */
+#endif /* ALLOY_CORE_STRING_STRING_TOKENIZER_HPP */

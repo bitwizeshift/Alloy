@@ -8,8 +8,8 @@
 /// \brief TODO(Bitwize): Add description
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef EXTRA_SDL2_BINDINGS_EXAMPLE_SDL2_WINDOW_SRC_GL_ACTIVE_PROGRAM_HPP
-#define EXTRA_SDL2_BINDINGS_EXAMPLE_SDL2_WINDOW_SRC_GL_ACTIVE_PROGRAM_HPP
+#ifndef ALLOY_RENDER_GL_SHADER_ACTIVE_PROGRAM_HPP
+#define ALLOY_RENDER_GL_SHADER_ACTIVE_PROGRAM_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -477,4 +477,4 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
   );
 }
 
-#endif /* EXTRA_SDL2_BINDINGS_EXAMPLE_SDL2_WINDOW_SRC_GL_ACTIVE_PROGRAM_HPP */
+#endif /* ALLOY_RENDER_GL_SHADER_ACTIVE_PROGRAM_HPP */

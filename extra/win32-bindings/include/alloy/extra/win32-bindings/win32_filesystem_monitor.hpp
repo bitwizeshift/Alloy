@@ -8,8 +8,8 @@
  * \brief
  *****************************************************************************/
 
-#ifndef ALLOY_IO_FILESYSTEM_WIN32_FILESYSTEM_MONITOR_HPP
-#define ALLOY_IO_FILESYSTEM_WIN32_FILESYSTEM_MONITOR_HPP
+#ifndef ALLOY_EXTRA_WIN32_BINDINGS_WIN32_FILESYSTEM_MONITOR_HPP
+#define ALLOY_EXTRA_WIN32_BINDINGS_WIN32_FILESYSTEM_MONITOR_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -79,4 +79,4 @@ namespace alloy::extra {
 } // namespace alloy::io
 
 
-#endif /* ALLOY_IO_FILESYSTEM_WIN32_FILESYSTEM_MONITOR_HPP */
+#endif /* ALLOY_EXTRA_WIN32_BINDINGS_WIN32_FILESYSTEM_MONITOR_HPP */

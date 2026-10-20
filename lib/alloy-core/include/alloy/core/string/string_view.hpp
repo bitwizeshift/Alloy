@@ -9,8 +9,8 @@
  *        string_view equivalent.
  *****************************************************************************/
 
-#ifndef ALLOY_CORE_STRINGS_STRING_VIEW_HPP
-#define ALLOY_CORE_STRINGS_STRING_VIEW_HPP
+#ifndef ALLOY_CORE_STRING_STRING_VIEW_HPP
+#define ALLOY_CORE_STRING_STRING_VIEW_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -44,4 +44,4 @@ namespace alloy::core {
 
 } // namespace alloy::core
 
-#endif /* ALLOY_CORE_STRINGS_STRING_VIEW_HPP */
+#endif /* ALLOY_CORE_STRING_STRING_VIEW_HPP */

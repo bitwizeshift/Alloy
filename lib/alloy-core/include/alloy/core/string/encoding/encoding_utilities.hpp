@@ -11,8 +11,8 @@
  * project work.
  *****************************************************************************/
 
-#ifndef ALLOY_CORE_STIRNG_ENCODING_ENCODING_UTILITIES_HPP
-#define ALLOY_CORE_STIRNG_ENCODING_ENCODING_UTILITIES_HPP
+#ifndef ALLOY_CORE_STRING_ENCODING_ENCODING_UTILITIES_HPP
+#define ALLOY_CORE_STRING_ENCODING_ENCODING_UTILITIES_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -682,4 +682,4 @@ auto alloy::core::encoding_utilities::encoding<Encoding>::range_from(
 }
 
 
-#endif /* ALLOY_CORE_STIRNG_ENCODING_ENCODING_UTILITIES_HPP */
+#endif /* ALLOY_CORE_STRING_ENCODING_ENCODING_UTILITIES_HPP */

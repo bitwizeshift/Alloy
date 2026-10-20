@@ -8,8 +8,8 @@
 /// \brief TODO(Bitwize): Add description
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ALLOY_RENDER_GL_MATERIAL_PROGRAM_HPP
-#define ALLOY_RENDER_GL_MATERIAL_PROGRAM_HPP
+#ifndef ALLOY_RENDER_GL_SHADER_PROGRAM_HPP
+#define ALLOY_RENDER_GL_SHADER_PROGRAM_HPP
 
 #ifdef _MSC_VER
 # pragma once
@@ -370,4 +370,4 @@ auto alloy::render::gl::use_program(const program& p)
   ::glUseProgram(p.id());
 }
 
-#endif /* ALLOY_RENDER_GL_MATERIAL_PROGRAM_HPP */
+#endif /* ALLOY_RENDER_GL_SHADER_PROGRAM_HPP */
