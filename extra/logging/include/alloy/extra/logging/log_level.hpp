@@ -8,7 +8,7 @@
 /*
   The MIT License (MIT)
 
-  Copyright (c) 2021 Matthew Rodusek All rights reserved.
+  Copyright (c) 2021,2026 Matthew Rodusek All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,9 @@
 #define ALLOY_EXTRA_LOGGING_LOG_LEVEL_HPP
 
 #include "alloy/core/types.hpp"
+#include "alloy/core/utilities/enum_traits.hpp"
 
+#include <type_traits> // std::true_type
 
 namespace alloy::extra {
 
@@ -50,5 +52,9 @@ namespace alloy::extra {
   };
 
 } // namespace alloy::extra
+
+template <>
+struct alloy::core::enum_is_contiguous<alloy::extra::log_level>
+  : std::true_type {};
 
 #endif /* ALLOY_EXTRA_LOGGING_LOG_LEVEL_HPP */
