@@ -1020,7 +1020,7 @@ auto alloy::core::stl_allocator_adapter<T>::deallocate(T* p, std::size_t n)
   // type. This diagnostic  is wrong.
   //
   // NOLINTNEXTLINE(bugprone-sizeof-expression)
-  return m_allocator.deallocate_bytes(p, sizeof(T) * n);
+  return m_allocator.deallocate_bytes(static_cast<void*>(p), sizeof(T) * n);
 }
 
 template<typename T>
