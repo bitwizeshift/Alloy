@@ -11,6 +11,10 @@
 #ifndef LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_MATH_QUATERNION_CONSTANTS_HPP
 #define LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_MATH_QUATERNION_CONSTANTS_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/math/quaternion.hpp"
 
 namespace alloy::core {

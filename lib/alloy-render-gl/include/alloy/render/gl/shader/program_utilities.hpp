@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_GL_SHADER_PROGRAM_UTILITIES_HPP
 #define ALLOY_RENDER_GL_SHADER_PROGRAM_UTILITIES_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/io/filesystem/file.hpp"

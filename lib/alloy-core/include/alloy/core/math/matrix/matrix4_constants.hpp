@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_MATH_MATRIX_MATRIX4_CONSTANTS_HPP
 #define ALLOY_CORE_MATH_MATRIX_MATRIX4_CONSTANTS_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/math/matrix/matrix4.hpp"
 
 namespace alloy::core {

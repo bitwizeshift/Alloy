@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_GL_MESH_PRIMITIVE_TOPOLOGY_HPP
 #define ALLOY_RENDER_GL_MESH_PRIMITIVE_TOPOLOGY_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/render/mesh/primitive_topology.hpp"
 
 #include "alloy/core/intrinsics.hpp"

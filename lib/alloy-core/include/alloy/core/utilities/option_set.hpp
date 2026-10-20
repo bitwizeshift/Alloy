@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_UTILITIES_OPTION_SET_HPP
 #define ALLOY_CORE_UTILITIES_OPTION_SET_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/utilities/enum_traits.hpp"
 
 #include <bitset>   // std::bitset

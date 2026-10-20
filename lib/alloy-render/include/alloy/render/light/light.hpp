@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_MODEL_LIGHT_LIGHT_HPP
 #define ALLOY_CORE_MODEL_LIGHT_LIGHT_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 namespace alloy::render {
 
   //============================================================================

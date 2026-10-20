@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_MEMORY_LIFETIME_UTILITIES_HPP
 #define ALLOY_CORE_MEMORY_LIFETIME_UTILITIES_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/utilities/not_null.hpp"
 #if defined(_MSC_VER)
 # pragma once

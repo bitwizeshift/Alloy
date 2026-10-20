@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_MODEL_INTERPOLATED_TRANSFORM_HPP
 #define ALLOY_CORE_MODEL_INTERPOLATED_TRANSFORM_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/model/transform.hpp"
 #include "alloy/core/model/camera.hpp"
 #include "alloy/core/model/projection.hpp"

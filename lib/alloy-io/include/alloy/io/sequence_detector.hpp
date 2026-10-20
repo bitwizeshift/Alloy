@@ -11,6 +11,10 @@
 #ifndef ALLOY_IO_SEQUENCE_DETECTOR_HPP
 #define ALLOY_IO_SEQUENCE_DETECTOR_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include <alloy/core/assert.hpp>
 #include <alloy/core/containers/vector.hpp>
 

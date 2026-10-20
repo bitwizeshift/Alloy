@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_GL_MATERIAL_BLEND_EQUATION_HPP
 #define ALLOY_RENDER_GL_MATERIAL_BLEND_EQUATION_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/render/material/blend_equation.hpp"
 
 #include "alloy/core/intrinsics.hpp"

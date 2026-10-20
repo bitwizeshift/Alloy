@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_GEOMETRY_POINT_POLAR_HPP
 #define ALLOY_CORE_GEOMETRY_POINT_POLAR_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/math/trigonometry.hpp"
 #include "alloy/core/math/angle/radian.hpp"
 #include "alloy/core/math/vector/vector2.hpp"

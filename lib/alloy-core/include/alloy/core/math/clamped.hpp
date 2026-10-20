@@ -12,6 +12,10 @@
 #ifndef ALLOY_CORE_MATH_CLAMPED_HPP
 #define ALLOY_CORE_MATH_CLAMPED_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/assert.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/precision/real.hpp"

@@ -11,6 +11,10 @@
 #ifndef ALLOY_EXTRA_LOGGING_LOGGER_HPP
 #define ALLOY_EXTRA_LOGGING_LOGGER_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/extra/logging/log_level.hpp"
 #include "alloy/extra/logging/log_filter.hpp"
 

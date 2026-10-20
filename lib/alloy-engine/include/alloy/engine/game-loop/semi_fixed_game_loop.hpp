@@ -11,6 +11,10 @@
 #ifndef ALLOY_ENGINE_GAME_LOOP_SEMI_FIXED_GAME_LOOP_HPP
 #define ALLOY_ENGINE_GAME_LOOP_SEMI_FIXED_GAME_LOOP_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/engine/frame_clock.hpp"
 
 #include <atomic>    // std::atomic

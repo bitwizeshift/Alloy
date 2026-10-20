@@ -11,6 +11,10 @@
 #ifndef ALLOY_EXTRA_ALLOCATORS_MEMORY_ARENA_CACHE_HPP
 #define ALLOY_EXTRA_ALLOCATORS_MEMORY_ARENA_CACHE_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/extra/allocators/memory_arena.hpp"
 
 #include <cstddef> // std::size_t

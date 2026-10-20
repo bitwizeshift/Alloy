@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_UTILITIES_FNV1A_HASH_HPP
 #define ALLOY_CORE_UTILITIES_FNV1A_HASH_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include <cstdint> // std::uint32_t, std::uint64_t
 #include <cstddef> // std::byte, std::size_t
 #include <type_traits> // sizeof checks

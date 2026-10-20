@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_STRINGS_HASHED_STRING_VIEW_HPP
 #define ALLOY_CORE_STRINGS_HASHED_STRING_VIEW_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/utilities/hash.hpp"
 #include "alloy/core/utilities/fnv1a_hash.hpp"
 #include "alloy/core/string/string_view.hpp"

@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_MODEL_CAMERA_HPP
 #define ALLOY_CORE_MODEL_CAMERA_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/api.hpp"
 #include "alloy/core/math/quaternion.hpp"
 #include "alloy/core/math/euler_angles.hpp"

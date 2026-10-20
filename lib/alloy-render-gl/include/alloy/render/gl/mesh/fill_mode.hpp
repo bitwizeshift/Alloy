@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_GL_MESH_FILL_MODE_HPP
 #define ALLOY_RENDER_GL_MESH_FILL_MODE_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/render/mesh/fill_mode.hpp"
 
 #include "alloy/core/intrinsics.hpp"

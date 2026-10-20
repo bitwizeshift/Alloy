@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_UTILITIES_QUANTITY_HPP
 #define ALLOY_CORE_UTILITIES_QUANTITY_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include <concepts>
 #include <type_traits> // std::make_signed_t
 #include <cstddef>     // std::size_t

@@ -11,6 +11,10 @@
 #ifndef ALLOY_ENGINE_IMAGE_IMAGE_LOADER_HPP
 #define ALLOY_ENGINE_IMAGE_IMAGE_LOADER_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/core/model/image.hpp"
 #include "alloy/io/filesystem/file.hpp"

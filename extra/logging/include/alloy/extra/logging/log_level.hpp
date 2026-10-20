@@ -12,6 +12,10 @@
 #ifndef ALLOY_EXTRA_LOGGING_LOG_LEVEL_HPP
 #define ALLOY_EXTRA_LOGGING_LOG_LEVEL_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/types.hpp"
 #include "alloy/core/utilities/enum_traits.hpp"
 

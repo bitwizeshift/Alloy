@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_GL_MATERIAL_PROGRAM_HPP
 #define ALLOY_RENDER_GL_MATERIAL_PROGRAM_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/render/gl/shader/shader.hpp"
 #include "alloy/render/gl/error.hpp"
 

@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_UTILITIES_HASH_HPP
 #define ALLOY_CORE_UTILITIES_HASH_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/intrinsics.hpp" // ALLOY_FORCE_INLINE
 #include "alloy/core/traits/for_each_member.hpp"
 

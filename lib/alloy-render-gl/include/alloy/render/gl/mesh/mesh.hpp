@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_GL_MESH_MESH_HPP
 #define ALLOY_RENDER_GL_MESH_MESH_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/render/mesh/mesh.hpp"
 
 #include <GL/glew.h>

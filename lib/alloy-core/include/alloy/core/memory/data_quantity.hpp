@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_DATA_QUANTITY_HPP
 #define ALLOY_CORE_DATA_QUANTITY_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include <ratio>   // std::ratio
 #include <cstdint> // std::uint64_t, etc
 #include <climits> // CHAR_BIT

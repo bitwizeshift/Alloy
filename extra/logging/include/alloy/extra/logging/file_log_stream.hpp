@@ -11,6 +11,10 @@
 #ifndef ALLOY_EXTRA_LOGGING_FILE_LOG_STREAM_HPP
 #define ALLOY_EXTRA_LOGGING_FILE_LOG_STREAM_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/extra/logging/logger.hpp"
 #include "alloy/io/filesystem/file.hpp"
 

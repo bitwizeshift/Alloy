@@ -11,6 +11,10 @@
 #ifndef ALLOY_IO_EVENTS_MOUSE_EVENTS_HPP
 #define ALLOY_IO_EVENTS_MOUSE_EVENTS_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/io/event.hpp"
 
 #include <cstdint>

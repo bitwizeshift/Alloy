@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_MODEL_COLOR_CONSTANTS_HPP
 #define ALLOY_CORE_MODEL_COLOR_CONSTANTS_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/model/color.hpp"
 
 namespace alloy::core {

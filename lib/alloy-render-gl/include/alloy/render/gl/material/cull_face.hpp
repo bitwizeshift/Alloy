@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_GL_MATERIAL_CULL_FACE_HPP
 #define ALLOY_RENDER_GL_MATERIAL_CULL_FACE_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/render/material/cull_face.hpp"
 
 #include "alloy/core/intrinsics.hpp"

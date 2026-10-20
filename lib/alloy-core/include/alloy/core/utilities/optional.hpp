@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_UTILITIES_OPTIONAL_HPP
 #define ALLOY_CORE_UTILITIES_OPTIONAL_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/utilities/result.hpp"
 
 #include <concepts> // std::convertible_to

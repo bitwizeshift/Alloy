@@ -12,6 +12,10 @@
 #ifndef ALLOY_CORE_UTILITIES_ALIGNED_STORAGE_HPP
 #define ALLOY_CORE_UTILITIES_ALIGNED_STORAGE_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include <cstddef>
 
 namespace alloy::core {

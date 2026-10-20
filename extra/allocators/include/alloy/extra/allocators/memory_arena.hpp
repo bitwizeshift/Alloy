@@ -11,6 +11,10 @@
 #ifndef ALLOY_EXTRA_ALLOCATORS_MEMORY_ARENA_HPP
 #define ALLOY_EXTRA_ALLOCATORS_MEMORY_ARENA_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include <cstddef>     // std::size_t
 #include <type_traits> // std::is_const_v
 #include <memory>      // std::addressof

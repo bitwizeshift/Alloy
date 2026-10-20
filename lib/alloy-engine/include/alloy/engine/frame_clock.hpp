@@ -11,6 +11,10 @@
 #ifndef ALLOY_ENGINE_FRAME_CLOCK_HPP
 #define ALLOY_ENGINE_FRAME_CLOCK_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/intrinsics.hpp"
 
 #include <chrono> // std::chrono::...

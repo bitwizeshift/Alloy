@@ -11,6 +11,10 @@
 #ifndef ALLOY_EXTRA_ALLOCATORS_FREELIST_HPP
 #define ALLOY_EXTRA_ALLOCATORS_FREELIST_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/extra/allocators/pointer_util.hpp"
 
 #include "alloy/core/assert.hpp"

@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_MODEL_LIGHT_GLOBAL_LIGHT_HPP
 #define ALLOY_CORE_MODEL_LIGHT_GLOBAL_LIGHT_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/render/light/light.hpp"
 #include "alloy/core/model/color.hpp"
 

@@ -12,6 +12,10 @@
 #ifndef ALLOY_CORE_API_HPP
 #define ALLOY_CORE_API_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #ifdef ALLOY_CORE_API_EXPORT
 # error "ALLOY_CORE_API_EXPORT defined before inclusion of the config header"
 #endif

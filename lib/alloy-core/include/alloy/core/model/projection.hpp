@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_MODEL_PROJECTION_HPP
 #define ALLOY_CORE_MODEL_PROJECTION_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/api.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"

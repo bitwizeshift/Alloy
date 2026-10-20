@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_GL_ERROR_HPP
 #define ALLOY_RENDER_GL_ERROR_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/string/string.hpp"
 #include "alloy/core/string/zstring_view.hpp"

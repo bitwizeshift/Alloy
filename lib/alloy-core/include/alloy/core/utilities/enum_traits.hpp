@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_UTILITIES_ENUM_TRAITS_HPP
 #define ALLOY_CORE_UTILITIES_ENUM_TRAITS_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include <type_traits> // std::true_type, std::underlying_type, etc
 #include <limits>      // std::numeric_limits
 #include <iterator>    // std::*_iterator_category

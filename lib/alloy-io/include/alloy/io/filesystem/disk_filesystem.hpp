@@ -11,6 +11,10 @@
 #ifndef ALLOY_IO_FILESYSTEM_DISK_FILESYSTEM_HPP
 #define ALLOY_IO_FILESYSTEM_DISK_FILESYSTEM_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/io/api.hpp"
 #include "alloy/io/filesystem/file.hpp"
 #include "alloy/io/filesystem/file_stream.hpp"

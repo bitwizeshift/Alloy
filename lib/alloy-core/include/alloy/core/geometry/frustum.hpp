@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_GEOMETRY_FRUSTUM_HPP
 #define ALLOY_CORE_GEOMETRY_FRUSTUM_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/api.hpp"
 #include "alloy/core/geometry/plane.hpp"
 #include "alloy/core/geometry/point/point3.hpp"

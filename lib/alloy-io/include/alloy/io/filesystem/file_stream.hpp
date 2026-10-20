@@ -11,6 +11,10 @@
 #ifndef ALLOY_IO_FILESYSTEM_FILE_STREAM_HPP
 #define ALLOY_IO_FILESYSTEM_FILE_STREAM_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/io/api.hpp"
 #include "alloy/io/buffers/const_buffer.hpp"
 #include "alloy/io/buffers/mutable_buffer.hpp"

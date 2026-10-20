@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_UTILITIES_CASTS_HPP
 #define ALLOY_CORE_UTILITIES_CASTS_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/assert.hpp"
 #include "alloy/core/intrinsics.hpp"
 

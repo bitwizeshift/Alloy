@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_MEMORY_UNALIGNED_HPP
 #define ALLOY_CORE_MEMORY_UNALIGNED_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/precision/real.hpp"
 #include "alloy/core/assert.hpp"

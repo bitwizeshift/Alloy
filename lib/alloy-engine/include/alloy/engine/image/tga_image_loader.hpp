@@ -11,6 +11,10 @@
 #ifndef ALLOY_ENGINE_IMAGE_TGA_IMAGE_LOADER_HPP
 #define ALLOY_ENGINE_IMAGE_TGA_IMAGE_LOADER_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/engine/image/image_loader.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/result.hpp"

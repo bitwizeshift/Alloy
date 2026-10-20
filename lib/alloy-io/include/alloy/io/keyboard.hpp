@@ -11,6 +11,10 @@
 #ifndef ALLOY_IO_KEYBOARD_HPP
 #define ALLOY_IO_KEYBOARD_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include <cstdint>     // std::uint8_t, std::uint16_t, etc
 #include <type_traits> // std::underlying_type_t
 

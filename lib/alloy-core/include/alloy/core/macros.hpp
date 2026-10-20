@@ -11,6 +11,10 @@
 #ifndef ALLOY_GRAPHICS_MACROS_HPP
 #define ALLOY_GRAPHICS_MACROS_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #ifdef ALLOY_STRINGIZE
 # error ALLOY_STRINGIZE defined before macros.hpp included
 #endif

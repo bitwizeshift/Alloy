@@ -41,6 +41,10 @@
 #ifndef ALLOY_CORE_RESULT_HPP
 #define ALLOY_CORE_RESULT_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/intrinsics.hpp" // ALLOY_FORCE_INLINE
 
 #include <cstddef>      // std::size_t

@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_TRAITS_COPY_CVREF_HPP
 #define ALLOY_CORE_TRAITS_COPY_CVREF_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 namespace alloy::core {
 
   template <typename From, typename To>

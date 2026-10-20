@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_MESH_ATTRIBUTE_PACKER_HPP
 #define ALLOY_RENDER_MESH_ATTRIBUTE_PACKER_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/memory/packed_buffer.hpp"
 #include "alloy/core/math/vector/vector2.hpp"
 #include "alloy/core/math/vector/vector3.hpp"

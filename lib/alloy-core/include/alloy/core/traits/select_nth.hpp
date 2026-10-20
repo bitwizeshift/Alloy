@@ -12,6 +12,10 @@
 #ifndef ALLOY_CORE_TRAITS_SELECT_NTH_HPP
 #define ALLOY_CORE_TRAITS_SELECT_NTH_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include <cstddef>
 #include <type_traits>
 

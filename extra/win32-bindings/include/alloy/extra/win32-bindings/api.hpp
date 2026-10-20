@@ -12,6 +12,10 @@
 #ifndef ALLOY_EXTRA_WIN32_BINDINGS_API_HPP
 #define ALLOY_EXTRA_WIN32_BINDINGS_API_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #ifdef ALLOY_EXTRA_WIN32_API_EXPORT
 # error "ALLOY_EXTRA_WIN32_API_EXPORT defined before inclusion of the config header"
 #endif

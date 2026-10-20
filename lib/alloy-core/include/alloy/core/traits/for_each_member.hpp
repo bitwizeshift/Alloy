@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_TRAITS_FOR_EACH_MEMBER_HPP
 #define ALLOY_CORE_TRAITS_FOR_EACH_MEMBER_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/intrinsics.hpp"
 
 #include <cstddef>

@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_MESH_3D_CUBE_BUILDER_HPP
 #define ALLOY_RENDER_MESH_3D_CUBE_BUILDER_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/mesh/mesh_builder.hpp"
 

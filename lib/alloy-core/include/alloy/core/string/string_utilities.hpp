@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_STRINGS_STRING_UTILITIES_HPP
 #define ALLOY_CORE_STRINGS_STRING_UTILITIES_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/api.hpp"
 #include "alloy/core/string/string_view.hpp"
 #include "alloy/core/string/zstring_view.hpp"

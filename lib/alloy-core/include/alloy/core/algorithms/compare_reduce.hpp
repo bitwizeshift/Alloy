@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_ALGORITHM_COMPARE_REDUCE_HPP
 #define ALLOY_CORE_ALGORITHM_COMPARE_REDUCE_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/macros.hpp"
 #include "alloy/core/intrinsics.hpp"
 

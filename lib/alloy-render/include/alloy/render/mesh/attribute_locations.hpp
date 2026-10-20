@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_MESH_VERTEX_ATTRIBUTES_HPP
 #define ALLOY_RENDER_MESH_VERTEX_ATTRIBUTES_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 namespace alloy::render {
 
   //////////////////////////////////////////////////////////////////////////////

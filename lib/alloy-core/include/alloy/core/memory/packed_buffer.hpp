@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_MEMORY_PACKED_BUFFER_HPP
 #define ALLOY_CORE_MEMORY_PACKED_BUFFER_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/api.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/result.hpp"

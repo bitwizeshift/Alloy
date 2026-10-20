@@ -11,6 +11,10 @@
 #ifndef EXTRA_SDL2_BINDINGS_EXAMPLE_SDL2_WINDOW_SRC_GL_ACTIVE_PROGRAM_HPP
 #define EXTRA_SDL2_BINDINGS_EXAMPLE_SDL2_WINDOW_SRC_GL_ACTIVE_PROGRAM_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/render/gl/shader/program.hpp"
 
 #include "alloy/core/precision/real.hpp"

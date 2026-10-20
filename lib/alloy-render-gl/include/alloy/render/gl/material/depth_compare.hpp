@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_GL_MATERIAL_DEPTH_COMPARE_HPP
 #define ALLOY_RENDER_GL_MATERIAL_DEPTH_COMPARE_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/render/material/depth_compare.hpp"
 
 #include "alloy/core/intrinsics.hpp"

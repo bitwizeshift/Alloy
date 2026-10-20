@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_THREAD_THREAD_GROUP_HPP
 #define ALLOY_CORE_THREAD_THREAD_GROUP_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/utilities/quantity.hpp"

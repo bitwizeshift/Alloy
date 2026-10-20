@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_MESH_MESH_HPP
 #define ALLOY_RENDER_MESH_MESH_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/render/mesh/primitive_topology.hpp"
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/memory/data_quantity.hpp"

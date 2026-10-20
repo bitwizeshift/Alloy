@@ -12,6 +12,10 @@
 #ifndef ALLOY_CORE_TRAITS_FUNCTION_TRAITS_HPP
 #define ALLOY_CORE_TRAITS_FUNCTION_TRAITS_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/traits/select_nth.hpp"
 
 #include <cstddef> // std::size_t

@@ -17,6 +17,10 @@
 #ifndef ALLOY_CORE_MATH_VECTOR_VECTOR_OSTREAMS_HPP
 #define ALLOY_CORE_MATH_VECTOR_VECTOR_OSTREAMS_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/math/vector/vector2.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/math/vector/vector4.hpp"

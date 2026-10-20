@@ -11,6 +11,10 @@
 #ifndef LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_STRINGS_ZSTRING_VIEW_HPP
 #define LIB_ALLOY_CORE_INCLUDE_ALLOY_CORE_STRINGS_ZSTRING_VIEW_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/string/string_view.hpp"
 
 namespace alloy::core {

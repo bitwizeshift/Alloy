@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_GEOMETRY_POINT_BARYCENTRIC_HPP
 #define ALLOY_CORE_GEOMETRY_POINT_BARYCENTRIC_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/precision.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/geometry/point/point3.hpp"

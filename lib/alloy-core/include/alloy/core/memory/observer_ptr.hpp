@@ -11,6 +11,10 @@
 #ifndef ALLOY_CORE_UTILITIES_OBSERVER_PTR_HPP
 #define ALLOY_CORE_UTILITIES_OBSERVER_PTR_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/core/utilities/not_null.hpp"
 
 #include <concepts>    // std::convertible_to

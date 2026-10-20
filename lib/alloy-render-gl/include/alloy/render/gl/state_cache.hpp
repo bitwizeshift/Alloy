@@ -11,6 +11,10 @@
 #ifndef ALLOY_RENDER_GL_STATE_CACHE_HPP
 #define ALLOY_RENDER_GL_STATE_CACHE_HPP
 
+#ifdef _MSC_VER
+# pragma once
+#endif
+
 #include "alloy/render/mesh/fill_mode.hpp"
 #include "alloy/render/material/blend_equation.hpp"
 #include "alloy/render/material/blend_factor.hpp"
