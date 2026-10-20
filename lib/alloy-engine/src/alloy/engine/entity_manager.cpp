@@ -20,6 +20,8 @@ alloy::engine::entity_manager::entity_manager()
 // Modifiers
 //------------------------------------------------------------------------------
 
+// Only allocation failure can throw here, which is treated as fatal.
+// NOLINTNEXTLINE(bugprone-exception-escape)
 alloy::engine::entity alloy::engine::entity_manager::create()
   noexcept
 {
@@ -50,6 +52,8 @@ alloy::engine::entity alloy::engine::entity_manager::create()
   return e;
 }
 
+// Only allocation failure can throw here, which is treated as fatal.
+// NOLINTNEXTLINE(bugprone-exception-escape)
 void alloy::engine::entity_manager::destroy(entity e)
   noexcept
 {

@@ -621,6 +621,8 @@ ALLOY_FORCE_INLINE auto
 // class : trivial_object_packer<T>
 //=============================================================================
 
+// Only allocation failure can throw here, which is treated as fatal.
+// NOLINTBEGIN(bugprone-exception-escape)
 template <typename T>
 ALLOY_FORCE_INLINE auto
   alloy::core::trivial_object_packer<T>::pack(packed_buffer_writer& buffer,
@@ -631,6 +633,7 @@ ALLOY_FORCE_INLINE auto
 
   buffer.write_bytes(as_bytes(s));
 }
+// NOLINTEND(bugprone-exception-escape)
 
 template <typename T>
 inline auto

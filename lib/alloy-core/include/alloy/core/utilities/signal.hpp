@@ -940,6 +940,8 @@ inline alloy::core::sink<Listener>::sink(signal_type* signal)
 ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE(4834)
 
+// Only allocation failure can throw here, which is treated as fatal.
+// NOLINTBEGIN(bugprone-exception-escape)
 template <typename Listener>
 inline alloy::core::connection
   alloy::core::sink<Listener>::connect(Listener* listener)
@@ -964,6 +966,7 @@ inline alloy::core::connection
     m_signal
   };
 }
+// NOLINTEND(bugprone-exception-escape)
 
 ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP()
 
