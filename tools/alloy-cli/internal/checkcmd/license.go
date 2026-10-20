@@ -20,6 +20,15 @@ const MITHeader = `// Copyright (c) Matthew Rodusek
 // See the LICENSE file at the root of this repository for the full text.
 `
 
+// CMakeMITHeader is the license header that every CMake module starts with.
+// It holds the same lines as [MITHeader], in a bracket comment.
+const CMakeMITHeader = `#[[
+  Copyright (c) Matthew Rodusek
+  SPDX-License-Identifier: MIT
+  See the LICENSE file at the root of this repository for the full text.
+]]
+`
+
 // PublicDomainHeader is the license header that every C and C++ test and
 // benchmark file starts with.
 const PublicDomainHeader = `// SPDX-License-Identifier: CC0-1.0
@@ -27,9 +36,9 @@ const PublicDomainHeader = `// SPDX-License-Identifier: CC0-1.0
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 `
 
-// LicenseRules returns the license headers of the repository's C and C++
-// files: tests and benchmarks are dedicated to the public domain, and every
-// other file is MIT licensed.
+// LicenseRules returns the license headers of the repository's C, C++ and
+// CMake files: C and C++ tests and benchmarks are dedicated to the public
+// domain, and every other file is MIT licensed.
 func LicenseRules() []license.Rule {
 	return []license.Rule{
 		{
@@ -38,6 +47,9 @@ func LicenseRules() []license.Rule {
 		}, {
 			Path:   regexp.MustCompile(`\.(h|hpp|c|cpp)$`),
 			Header: MITHeader,
+		}, {
+			Path:   regexp.MustCompile(`\.cmake$`),
+			Header: CMakeMITHeader,
 		},
 	}
 }
@@ -57,7 +69,7 @@ func (lhb *LicenseHeaderBuilder) RegisterArgs(cl *arg.CommandLine) {
 		arg.Unmatched("file", &lhb.paths,
 			arg.Usage("the files to check, relative to the repository root"),
 			arg.Required(),
-			arg.CompleteFilesMatching("h", "hpp", "c", "cpp"),
+			arg.CompleteFilesMatching("h", "hpp", "c", "cpp", "cmake"),
 		),
 	)
 }

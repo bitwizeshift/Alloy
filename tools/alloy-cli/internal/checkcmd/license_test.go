@@ -61,6 +61,21 @@ func TestLicenseRules(t *testing.T) {
 			content: checkcmd.MITHeader,
 			want:    []check.Finding{{Line: 1, Message: "missing license header"}},
 		}, {
+			name:    "cmake module with cmake header",
+			path:    "cmake/ClangTidy.cmake",
+			content: checkcmd.CMakeMITHeader + "\nfind_program(CLANG_TIDY clang-tidy)\n",
+			want:    nil,
+		}, {
+			name:    "cmake module with MIT header",
+			path:    "cmake/ClangTidy.cmake",
+			content: checkcmd.MITHeader,
+			want:    []check.Finding{{Line: 1, Message: "missing license header"}},
+		}, {
+			name:    "cmake module under test with cmake header",
+			path:    "lib/alloy-core/test/Catch.cmake",
+			content: checkcmd.CMakeMITHeader,
+			want:    nil,
+		}, {
 			name:    "other file",
 			path:    "README.md",
 			content: "# Alloy\n",

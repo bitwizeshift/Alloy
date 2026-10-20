@@ -18,7 +18,7 @@ pre-commit:
       fail_text: Fix with `lefthook run fix --job "c++ clang-tidy"`
 
     - name: license header
-      glob: "*.{h,hpp,c,cpp}"
+      glob: "*.{h,hpp,c,cpp,cmake}"
       # Sources adapted from other projects keep the license notices of the
       # projects that they came from.
       exclude:
@@ -30,6 +30,7 @@ pre-commit:
         - lib/alloy-core/include/alloy/core/string/encoding/wide_encoding.hpp
         - lib/alloy-core/include/alloy/core/utilities/result.hpp
         - lib/alloy-core/src/alloy/core/math/quaternion.cpp
+        - cmake/CPM.cmake
       run: "{check} license-header {staged_files}"
       fail_text: See `go -C tools run ./alloy-cli check license-header --help`
 

@@ -49,18 +49,22 @@ commands:
               - alloy-cli check cpp-clang-tidy lib/alloy-core/src/alloy/core/assert.cpp
               - alloy-cli check cpp-clang-tidy --fix -j 4 lib/alloy-core/src/alloy/core/assert.cpp
           - name: license-header
-            summary: Check that C and C++ files start with their license header
+            summary: Check that C, C++ and CMake files start with their license header
             description: |
-              Checks that each C and C++ file starts with the short license
-              header that refers to the LICENSE file at the repository root,
-              made of the lines:
+              Checks that each C, C++ and CMake file starts with the short
+              license header that refers to the LICENSE file at the repository
+              root. In C and C++ files, it is made of the lines:
 
               * // Copyright (c) Matthew Rodusek
               * // SPDX-License-Identifier: MIT
               * // See the LICENSE file at the root of this repository for the full text.
 
-              Files under a test or benchmark directory are dedicated to the
-              public domain instead, and start with the lines:
+              CMake modules hold the same lines, without the leading //, in a
+              bracket comment: #[[ on the first line, each line of the header
+              indented by two spaces, and ]] on the line after them.
+
+              C and C++ files under a test or benchmark directory are dedicated
+              to the public domain instead, and start with the lines:
 
               * // SPDX-License-Identifier: CC0-1.0
               * // Any copyright for this file is dedicated to the Public Domain.
