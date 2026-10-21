@@ -225,6 +225,7 @@ set(source_files
 
   # IO
   src/alloy/core/io/error.cpp
+  src/alloy/core/io/reader.cpp
 
   # Memory
   src/alloy/core/memory/packed_buffer.cpp
