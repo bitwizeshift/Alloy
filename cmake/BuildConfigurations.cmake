@@ -99,23 +99,39 @@ endforeach ()
 # MSan
 #------------------------------------------------------------------------------
 
-list(APPEND CMAKE_CONFIGURATION_TYPES "MSan")
+#
+# MemorySanitizer is only available on some targets, and not on macOS, so the
+# configuration is only added when the compiler can build and link with it.
 
-# Flags are from https://clang.llvm.org/docs/MemorySanitizer.html
-set(msan_compile_flags "-O2" "-g" "-fsanitize=memory" "-fno-omit-frame-pointer")
-set(msan_link_flags "-fsanitize=memory")
+include(CheckCXXSourceCompiles)
+include(CMakePushCheckState)
 
-foreach (flag IN LISTS msan_compile_flags)
-  string(APPEND CMAKE_C_FLAGS_MSAN " ${flag}")
-  string(APPEND CMAKE_CXX_FLAGS_MSAN " ${flag}")
-  add_compile_options($<$<CONFIG:MSan>:${flag}>)
-endforeach ()
+cmake_push_check_state(RESET)
+set(CMAKE_REQUIRED_FLAGS "-fsanitize=memory")
+set(CMAKE_REQUIRED_LINK_OPTIONS "-fsanitize=memory")
+set(CMAKE_REQUIRED_QUIET ON)
+check_cxx_source_compiles("int main() { return 0; }" ALLOY_MSAN_SUPPORTED)
+cmake_pop_check_state()
 
-foreach (flag IN LISTS msan_link_flags)
-  string(APPEND CMAKE_EXE_LINKER_FLAGS_MSAN " ${flag}")
-  string(APPEND CMAKE_SHARED_LINKER_FLAGS_MSAN " ${flag}")
-  add_link_options($<$<CONFIG:MSan>:${flag}>)
-endforeach ()
+if (ALLOY_MSAN_SUPPORTED)
+  list(APPEND CMAKE_CONFIGURATION_TYPES "MSan")
+
+  # Flags are from https://clang.llvm.org/docs/MemorySanitizer.html
+  set(msan_compile_flags "-O2" "-g" "-fsanitize=memory" "-fno-omit-frame-pointer")
+  set(msan_link_flags "-fsanitize=memory")
+
+  foreach (flag IN LISTS msan_compile_flags)
+    string(APPEND CMAKE_C_FLAGS_MSAN " ${flag}")
+    string(APPEND CMAKE_CXX_FLAGS_MSAN " ${flag}")
+    add_compile_options($<$<CONFIG:MSan>:${flag}>)
+  endforeach ()
+
+  foreach (flag IN LISTS msan_link_flags)
+    string(APPEND CMAKE_EXE_LINKER_FLAGS_MSAN " ${flag}")
+    string(APPEND CMAKE_SHARED_LINKER_FLAGS_MSAN " ${flag}")
+    add_link_options($<$<CONFIG:MSan>:${flag}>)
+  endforeach ()
+endif ()
 
 #------------------------------------------------------------------------------
 # Leak
