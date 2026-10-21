@@ -64,14 +64,33 @@ ENV PATH="/opt/local/llvm-${LLVM_VERSION}/bin:${PATH}"
 ENV CC="/opt/local/llvm-${LLVM_VERSION}/bin/clang"
 ENV CXX="/opt/local/llvm-${LLVM_VERSION}/bin/clang++"
 
-# Install SDL2, OpenGL, GLEW, and GLFW
+# Install OpenGL, GLEW, and GLFW, and the system headers that SDL3 needs to
+# build its video, audio, and input backends from source
 RUN apt update &&                                                              \
     apt install -y                                                             \
       libglew-dev                                                              \
       libgl-dev                                                                \
       libglfw3-dev                                                             \
-      libsdl2-dev                                                              \
-      libsdl2-2.0-0 &&                                                         \
+      pkg-config                                                               \
+      libx11-dev                                                               \
+      libxext-dev                                                              \
+      libxrandr-dev                                                            \
+      libxcursor-dev                                                           \
+      libxfixes-dev                                                            \
+      libxi-dev                                                                \
+      libxss-dev                                                               \
+      libxtst-dev                                                              \
+      libxkbcommon-dev                                                         \
+      libwayland-dev                                                           \
+      libdecor-0-dev                                                           \
+      libdrm-dev                                                               \
+      libgbm-dev                                                               \
+      libegl-dev                                                               \
+      libasound2-dev                                                           \
+      libpulse-dev                                                             \
+      libpipewire-0.3-dev                                                      \
+      libdbus-1-dev                                                            \
+      libudev-dev &&                                                           \
     rm -rf /var/lib/apt/lists/*
 
 # Install Vulkan SDK
