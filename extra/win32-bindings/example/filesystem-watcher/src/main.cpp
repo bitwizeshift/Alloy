@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 // See the LICENSE file at the root of this repository for the full text.
 
+#include <alloy/core/intrinsics.hpp>
 #include <alloy/core/utilities/signal.hpp>
 #include <alloy/platform/message_pump.hpp>
 #include <alloy/platform/filesystem/filesystem_monitor.hpp>
@@ -30,6 +31,11 @@ namespace {
         std::cout << "file_update_event{" << event->name << "}" << std::endl;
         break;
       }
+
+      // The filesystem monitor is the only source connected to the pump, and
+      // it only posts the events above.
+      default:
+        ALLOY_UNREACHABLE();
     }
   }
 
