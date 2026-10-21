@@ -117,6 +117,9 @@ set(header_files
   include/alloy/core/string/string.hpp
   include/alloy/core/string/zstring_view.hpp
 
+  # IO
+  include/alloy/core/io/error.hpp
+
   # Memory
   include/alloy/core/memory/memory_resource.hpp
   include/alloy/core/memory/data_quantity.hpp
@@ -218,6 +221,9 @@ set(source_files
   src/alloy/core/geometry/plane.cpp
   src/alloy/core/geometry/ray.cpp
   src/alloy/core/geometry/sphere.cpp
+
+  # IO
+  src/alloy/core/io/error.cpp
 
   # Memory
   src/alloy/core/memory/packed_buffer.cpp

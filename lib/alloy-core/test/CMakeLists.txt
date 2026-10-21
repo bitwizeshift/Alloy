@@ -50,6 +50,9 @@ set(source_files
 
   # Memory
   src/alloy/core/memory/packed_buffer.test.cpp
+
+  # IO
+  src/alloy/core/io/error.test.cpp
 )
 
 add_alloy_test(${PROJECT_NAME}CoreTest
