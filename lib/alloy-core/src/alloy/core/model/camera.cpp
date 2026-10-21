@@ -171,14 +171,14 @@ auto alloy::core::camera::set_yaw(radian angle)
   m_orientation.extract_axes(&m_right, &m_up, &m_forward);
 }
 
-auto alloy::core::camera::set_orientation(const quaternion& orientation) 
+auto alloy::core::camera::set_orientation(const quaternion& orientation)
   noexcept -> void
 {
   m_orientation = orientation;
   m_orientation.extract_axes(&m_right, &m_up, &m_forward);
 }
 
-auto alloy::core::camera::set_orientation(const euler_angles& angles) 
+auto alloy::core::camera::set_orientation(const euler_angles& angles)
   noexcept -> void
 {
   m_orientation = quaternion::from_angles(angles);
@@ -207,7 +207,7 @@ auto alloy::core::camera::look_at(real x, real y, real z, const vector3& up)
 // Observers
 //-----------------------------------------------------------------------------
 
-auto alloy::core::camera::translation() 
+auto alloy::core::camera::translation()
   const noexcept -> vector3
 {
   return m_translation;

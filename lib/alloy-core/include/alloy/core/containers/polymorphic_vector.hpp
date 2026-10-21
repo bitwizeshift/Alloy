@@ -4,7 +4,7 @@
 
 /*****************************************************************************
  * \file polymorphic_vector.hpp
- * 
+ *
  * \brief This header defines the container `ptr_container` which allows for
  *        storing heterogenous types in a homogeneous way.
  *****************************************************************************/

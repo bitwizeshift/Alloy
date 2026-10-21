@@ -210,7 +210,7 @@ auto alloy::core::simplex::octave_noise(real octaves,
                                         real scale,
                                         real x,
                                         real y,
-                                        real z) 
+                                        real z)
   noexcept -> real
 {
 
