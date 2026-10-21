@@ -127,15 +127,15 @@ namespace alloy::core {
     // Observers
     //--------------------------------------------------------------------------
   public:
-    [[nodiscard ]] constexpr auto a() const noexcept -> real;
-    [[nodiscard ]] constexpr auto b() const noexcept -> real;
-    [[nodiscard ]] constexpr auto c() const noexcept -> real;
-    [[nodiscard ]] constexpr auto d() const noexcept -> real;
+    [[nodiscard]] constexpr auto a() const noexcept -> real;
+    [[nodiscard]] constexpr auto b() const noexcept -> real;
+    [[nodiscard]] constexpr auto c() const noexcept -> real;
+    [[nodiscard]] constexpr auto d() const noexcept -> real;
 
     /// \brief Gets the normal of this plane
     ///
     /// \return the normal of this plane
-    [[nodiscard ]] constexpr auto normal() const noexcept -> vector3;
+    [[nodiscard]] constexpr auto normal() const noexcept -> vector3;
 
     //--------------------------------------------------------------------------
     // Quantifiers

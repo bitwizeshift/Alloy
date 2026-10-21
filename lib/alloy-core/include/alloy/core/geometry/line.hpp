@@ -85,12 +85,12 @@ namespace alloy::core {
     /// \brief Gets the origin point of this line
     ///
     /// \return the origin point of the line
-    [[nodiscard ]] constexpr auto origin() const noexcept -> const point3&;
+    [[nodiscard]] constexpr auto origin() const noexcept -> const point3&;
 
     /// \brief Gets the direction that this line extends in
     ///
     /// \return the direction
-    [[nodiscard ]] constexpr auto direction() const noexcept -> const vector3&;
+    [[nodiscard]] constexpr auto direction() const noexcept -> const vector3&;
 
     //--------------------------------------------------------------------------
     // Quantifiers

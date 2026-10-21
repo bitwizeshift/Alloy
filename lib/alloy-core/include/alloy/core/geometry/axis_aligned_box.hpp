@@ -109,12 +109,12 @@ namespace alloy::core {
     /// \brief Get the normal to the specified side
     ///
     /// \return the normal for the specified side
-    [[nodiscard ]] auto top_normal() const noexcept -> vector3;
-    [[nodiscard ]] auto bottom_normal() const noexcept -> vector3;
-    [[nodiscard ]] auto front_normal() const noexcept -> vector3;
-    [[nodiscard ]] auto back_normal() const noexcept -> vector3;
-    [[nodiscard ]] auto left_normal() const noexcept -> vector3;
-    [[nodiscard ]] auto right_normal() const noexcept -> vector3;
+    [[nodiscard]] auto top_normal() const noexcept -> vector3;
+    [[nodiscard]] auto bottom_normal() const noexcept -> vector3;
+    [[nodiscard]] auto front_normal() const noexcept -> vector3;
+    [[nodiscard]] auto back_normal() const noexcept -> vector3;
+    [[nodiscard]] auto left_normal() const noexcept -> vector3;
+    [[nodiscard]] auto right_normal() const noexcept -> vector3;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -126,12 +126,12 @@ namespace alloy::core {
     /// \brief Get the plane that defines the specified side
     ///
     /// \return the plane that define sthe specified side
-    [[nodiscard ]] auto top_plane() const noexcept -> plane;
-    [[nodiscard ]] auto bottom_plane() const noexcept -> plane;
-    [[nodiscard ]] auto front_plane() const noexcept -> plane;
-    [[nodiscard ]] auto back_plane() const noexcept -> plane;
-    [[nodiscard ]] auto left_plane() const noexcept -> plane;
-    [[nodiscard ]] auto right_plane() const noexcept -> plane;
+    [[nodiscard]] auto top_plane() const noexcept -> plane;
+    [[nodiscard]] auto bottom_plane() const noexcept -> plane;
+    [[nodiscard]] auto front_plane() const noexcept -> plane;
+    [[nodiscard]] auto back_plane() const noexcept -> plane;
+    [[nodiscard]] auto left_plane() const noexcept -> plane;
+    [[nodiscard]] auto right_plane() const noexcept -> plane;
     /// \}
 
     //--------------------------------------------------------------------------

@@ -94,12 +94,12 @@ namespace alloy::core {
     /// \brief Gets the specified plane of this frustum
     ///
     /// \return the left plane
-    [[nodiscard ]] constexpr auto left() const noexcept -> const plane&;
-    [[nodiscard ]] constexpr auto right() const noexcept -> const plane&;
-    [[nodiscard ]] constexpr auto top() const noexcept -> const plane&;
-    [[nodiscard ]] constexpr auto bottom() const noexcept -> const plane&;
-    [[nodiscard ]] constexpr auto near() const noexcept -> const plane&;
-    [[nodiscard ]] constexpr auto far() const noexcept -> const plane&;
+    [[nodiscard]] constexpr auto left() const noexcept -> const plane&;
+    [[nodiscard]] constexpr auto right() const noexcept -> const plane&;
+    [[nodiscard]] constexpr auto top() const noexcept -> const plane&;
+    [[nodiscard]] constexpr auto bottom() const noexcept -> const plane&;
+    [[nodiscard]] constexpr auto near() const noexcept -> const plane&;
+    [[nodiscard]] constexpr auto far() const noexcept -> const plane&;
     /// \}
 
     /// \brief Returns the underlying planes in this frustum

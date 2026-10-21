@@ -459,7 +459,7 @@ namespace alloy::core {
     /// \brief Gets a reference to the underlying Alloy allocator
     ///
     /// \return a reference to the underlying allocator
-    [[nodiscard ]] auto underlying() const noexcept -> const allocator&;
+    [[nodiscard]] auto underlying() const noexcept -> const allocator&;
 
     //-------------------------------------------------------------------------
     // Private Members
