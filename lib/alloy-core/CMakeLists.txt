@@ -119,6 +119,7 @@ set(header_files
 
   # IO
   include/alloy/core/io/buffered_reader.hpp
+  include/alloy/core/io/buffered_writer.hpp
   include/alloy/core/io/error.hpp
   include/alloy/core/io/reader.hpp
   include/alloy/core/io/writer.hpp
@@ -227,6 +228,7 @@ set(source_files
 
   # IO
   src/alloy/core/io/buffered_reader.cpp
+  src/alloy/core/io/buffered_writer.cpp
   src/alloy/core/io/error.cpp
   src/alloy/core/io/reader.cpp
   src/alloy/core/io/writer.cpp

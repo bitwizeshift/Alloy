@@ -53,6 +53,7 @@ set(source_files
 
   # IO
   src/alloy/core/io/buffered_reader.test.cpp
+  src/alloy/core/io/buffered_writer.test.cpp
   src/alloy/core/io/error.test.cpp
   src/alloy/core/io/reader.test.cpp
   src/alloy/core/io/writer.test.cpp
