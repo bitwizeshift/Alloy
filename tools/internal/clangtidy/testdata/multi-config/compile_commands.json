@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/repo/build",
+  "command": "/usr/bin/clang++ -DCMAKE_INTDIR=\\\"Debug\\\" -g -o a.dir/Debug/a.cpp.o -c /repo/a.cpp",
+  "file": "/repo/a.cpp",
+  "output": "a.dir/Debug/a.cpp.o"
+},
+{
+  "directory": "/repo/build",
+  "command": "/usr/bin/clang++ -DCMAKE_INTDIR=\\\"Release\\\" -O3 -o a.dir/Release/a.cpp.o -c /repo/a.cpp",
+  "file": "/repo/a.cpp",
+  "output": "a.dir/Release/a.cpp.o"
+}
+]
