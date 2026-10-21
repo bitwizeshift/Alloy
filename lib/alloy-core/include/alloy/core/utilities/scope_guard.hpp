@@ -145,9 +145,9 @@ namespace alloy::core {
       basic_scope_guard(basic_scope_guard&& other)
         noexcept(std::is_nothrow_move_constructible<Fn>::value)
         : ExitPolicy{other},
-          m_function{std::move(other)}
+          m_function{std::move(other.m_function)}
       {
-
+        other.release();
       }
 
       ~basic_scope_guard() noexcept(noexcept(std::declval<Fn&>()()))
