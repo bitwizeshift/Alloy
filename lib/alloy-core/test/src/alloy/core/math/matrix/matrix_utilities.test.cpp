@@ -176,6 +176,31 @@ TEST_CASE("matrix_cast<matrix2>( const matrix4& )", "[casts]")
   }
 }
 
+TEST_CASE("matrix_cast<matrix3>( const matrix4& )", "[casts]")
+{
+  // Arrange
+  const auto sut = matrix4{
+     1,  2,  3,  4,
+     5,  6,  7,  8,
+     9, 10, 11, 12,
+    13, 14, 15, 16
+  };
+  const auto expected = matrix3{
+    1,  2,  3,
+    5,  6,  7,
+    9, 10, 11
+  };
+
+  // Act
+  const auto result = matrix_cast<matrix3>(sut);
+
+  // Assert
+  SECTION("Truncates to the upper-left entries")
+  {
+    REQUIRE( result == expected );
+  }
+}
+
 TEST_CASE("matrix_cast<matrix4>( const matrix4& )", "[casts]")
 {
   // Arrange

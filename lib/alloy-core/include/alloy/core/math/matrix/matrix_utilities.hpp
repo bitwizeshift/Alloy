@@ -172,9 +172,9 @@ namespace alloy::core::detail {
     auto cast(const matrix4& from) noexcept -> matrix3
     {
       return matrix3{
-        from[0][0], from[0][1], from[0][3],
-        from[1][0], from[1][1], from[1][3],
-        from[3][0], from[3][1], from[3][3]
+        from[0][0], from[0][1], from[0][2],
+        from[1][0], from[1][1], from[1][2],
+        from[2][0], from[2][1], from[2][2]
       };
     }
   };
