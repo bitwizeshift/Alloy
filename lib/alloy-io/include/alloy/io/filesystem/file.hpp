@@ -602,7 +602,7 @@ struct alloy::io::file_serializer<std::uint32_t>
 template <>
 struct alloy::io::file_serializer<std::int32_t>
 {
-  static auto serialize(file& f, std::int16_t in)
+  static auto serialize(file& f, std::int32_t in)
     noexcept -> core::result<void,std::error_code>
   {
     return file_serializer<std::uint32_t>::serialize(
@@ -682,7 +682,7 @@ struct alloy::io::file_serializer<std::uint64_t>
 template <>
 struct alloy::io::file_serializer<std::int64_t>
 {
-  static auto serialize(file& f, std::int16_t in)
+  static auto serialize(file& f, std::int64_t in)
     noexcept -> core::result<void,std::error_code>
   {
     return file_serializer<std::uint64_t>::serialize(

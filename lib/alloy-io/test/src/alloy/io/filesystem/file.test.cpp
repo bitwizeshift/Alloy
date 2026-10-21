@@ -289,4 +289,106 @@ TEST_CASE("file::read_object<std::uint64_t>()", "[serialization]")
   }
 }
 
+//------------------------------------------------------------------------------
+// file_serializer<std::int32_t>
+//------------------------------------------------------------------------------
+
+TEST_CASE("file_serializer<std::int32_t>::serialize( file&, std::int32_t )",
+          "[serialization]")
+{
+  using sut_type = file_serializer<std::int32_t>;
+
+  // Arrange
+  auto storage = std::array<std::uint8_t,4>{};
+  auto filesystem = memory_filesystem{};
+  auto f = filesystem.open(mutable_buffer::from_container(storage));
+  const auto value = std::int32_t{-19088744};
+  const auto expected = std::array<std::uint8_t,4>{
+    0xfe, 0xdc, 0xba, 0x98
+  };
+
+  // Act
+  const auto result = sut_type::serialize(f, value);
+
+  // Assert
+  SECTION("Writes every byte of the value in big-endian order")
+  {
+    REQUIRE( result.has_value() );
+    REQUIRE( storage == expected );
+  }
+}
+
+TEST_CASE("file::read_object<std::int32_t>()", "[serialization]")
+{
+  // Arrange
+  auto storage = std::array<std::uint8_t,4>{};
+  auto filesystem = memory_filesystem{};
+  auto sut = filesystem.open(mutable_buffer::from_container(storage));
+  const auto value = std::int32_t{-19088744};
+
+  REQUIRE( sut.write_object(value).has_value() );
+  REQUIRE( sut.reset().has_value() );
+
+  // Act
+  const auto result = sut.read_object<std::int32_t>();
+
+  // Assert
+  SECTION("Reads back the value that was written")
+  {
+    REQUIRE( result.has_value() );
+    REQUIRE( *result == value );
+  }
+}
+
+//------------------------------------------------------------------------------
+// file_serializer<std::int64_t>
+//------------------------------------------------------------------------------
+
+TEST_CASE("file_serializer<std::int64_t>::serialize( file&, std::int64_t )",
+          "[serialization]")
+{
+  using sut_type = file_serializer<std::int64_t>;
+
+  // Arrange
+  auto storage = std::array<std::uint8_t,8>{};
+  auto filesystem = memory_filesystem{};
+  auto f = filesystem.open(mutable_buffer::from_container(storage));
+  const auto value = std::int64_t{-81985529216486896};
+  const auto expected = std::array<std::uint8_t,8>{
+    0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54, 0x32, 0x10
+  };
+
+  // Act
+  const auto result = sut_type::serialize(f, value);
+
+  // Assert
+  SECTION("Writes every byte of the value in big-endian order")
+  {
+    REQUIRE( result.has_value() );
+    REQUIRE( storage == expected );
+  }
+}
+
+TEST_CASE("file::read_object<std::int64_t>()", "[serialization]")
+{
+  // Arrange
+  auto storage = std::array<std::uint8_t,8>{};
+  auto filesystem = memory_filesystem{};
+  auto sut = filesystem.open(mutable_buffer::from_container(storage));
+  const auto value = std::int64_t{-81985529216486896};
+
+  REQUIRE( sut.write_object(value).has_value() );
+  REQUIRE( sut.reset().has_value() );
+
+  // Act
+  const auto result = sut.read_object<std::int64_t>();
+
+  // Assert
+  SECTION("Reads back the value that was written")
+  {
+    REQUIRE( result.has_value() );
+    REQUIRE( *result == value );
+  }
+}
+
 } // namespace alloy::io::test
