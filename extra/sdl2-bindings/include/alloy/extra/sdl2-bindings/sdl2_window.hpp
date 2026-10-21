@@ -19,7 +19,7 @@
 #include "alloy/io/window.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 namespace alloy::extra {
 

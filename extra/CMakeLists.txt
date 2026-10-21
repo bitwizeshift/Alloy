@@ -1,6 +1,5 @@
 # Extras
 include(CMakeDependentOption)
-find_package(SDL2 REQUIRED)
 
 cmake_dependent_option(ALLOY_COMPILE_EXTRAS_USE_DISCRETE_GPU
   "Compiles the Discrete GPU-enabling static library" ON
@@ -12,7 +11,7 @@ cmake_dependent_option(ALLOY_COMPILE_EXTRAS_LOGGING
 )
 cmake_dependent_option(ALLOY_COMPILE_EXTRAS_SDL2
   "Compiles the SDL implementation of the 'io' library" ON
-  "ALLOY_COMPILE_EXTRAS;SDL2_FOUND" OFF
+  "ALLOY_COMPILE_EXTRAS" OFF
 )
 cmake_dependent_option(ALLOY_COMPILE_EXTRAS_IO_WIN32
   "Compiles the Win32 implementation of the 'io' library" ON

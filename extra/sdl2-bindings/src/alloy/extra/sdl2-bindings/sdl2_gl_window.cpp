@@ -33,14 +33,17 @@ alloy::extra::sdl2_gl_window
                                                   const dimensions& dimensions,
                                                   sdl_gl_version version )
 {
-  const auto flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL;
+  const auto properties = ::SDL_CreateProperties();
+  ::SDL_SetStringProperty(properties, SDL_PROP_WINDOW_CREATE_TITLE_STRING, title);
+  ::SDL_SetNumberProperty(properties, SDL_PROP_WINDOW_CREATE_X_NUMBER, position.x);
+  ::SDL_SetNumberProperty(properties, SDL_PROP_WINDOW_CREATE_Y_NUMBER, position.y);
+  ::SDL_SetNumberProperty(properties, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, dimensions.width);
+  ::SDL_SetNumberProperty(properties, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, dimensions.height);
+  ::SDL_SetBooleanProperty(properties, SDL_PROP_WINDOW_CREATE_RESIZABLE_BOOLEAN, true);
+  ::SDL_SetBooleanProperty(properties, SDL_PROP_WINDOW_CREATE_OPENGL_BOOLEAN, true);
 
-  auto window = ::SDL_CreateWindow(
-    title,
-    position.x, position.y,
-    dimensions.width, dimensions.height,
-    flags
-  );
+  auto window = ::SDL_CreateWindowWithProperties(properties);
+  ::SDL_DestroyProperties(properties);
 
   if (window == nullptr) {
     auto message = std::string{::SDL_GetError()};
@@ -88,7 +91,7 @@ alloy::extra::sdl2_gl_window::~sdl2_gl_window()
 {
   ALLOY_ASSERT(m_gl_context != nullptr);
 
-  ::SDL_GL_DeleteContext(m_gl_context);
+  ::SDL_GL_DestroyContext(m_gl_context);
 }
 
 //------------------------------------------------------------------------------

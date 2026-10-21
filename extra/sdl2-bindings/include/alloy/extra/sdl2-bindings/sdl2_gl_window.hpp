@@ -19,7 +19,7 @@
 #include "alloy/extra/sdl2-bindings/sdl2_window.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <cstdint> // std::uint32_t
 

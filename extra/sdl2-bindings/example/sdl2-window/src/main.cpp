@@ -9,7 +9,8 @@
 #include <alloy/extra/sdl2-bindings/sdl2_gl_window.hpp>
 #include <alloy/extra/sdl2-bindings/sdl2_pump_source.hpp>
 
-#include <SDL.h> // ::SDL_Init, ::SDL_Quit, etc
+#include <SDL3/SDL.h>      // ::SDL_Init, ::SDL_Quit, etc
+#include <SDL3/SDL_main.h> // main
 
 #if defined(__APPLE__)
 # include <OpenGL/gl.h> // ::glClear, ::glClearColor

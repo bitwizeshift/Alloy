@@ -11,10 +11,18 @@
 #include "alloy/io/events/keyboard_events.hpp"
 #include "alloy/io/events/mouse_events.hpp"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
+
+#include <cstdint> // std::int32_t
 
 
 namespace {
+
+auto is_window_event(const ::SDL_Event& event) -> bool
+{
+  return event.type >= SDL_EVENT_WINDOW_FIRST &&
+         event.type <= SDL_EVENT_WINDOW_LAST;
+}
 
 auto to_mouse_button(::Uint8 code) -> std::optional<alloy::io::mouse::button>
 {
@@ -553,82 +561,82 @@ alloy::io::keyboard::key_code to_key_code(::SDL_Keycode code)
     // Letters
     //-------------------------------------------------------------------------
 
-    case SDLK_a: {
+    case SDLK_A: {
       return alloy::io::keyboard::key_code::letter_a;
     }
-    case SDLK_b: {
+    case SDLK_B: {
       return alloy::io::keyboard::key_code::letter_b;
     }
-    case SDLK_c: {
+    case SDLK_C: {
       return alloy::io::keyboard::key_code::letter_c;
     }
-    case SDLK_d: {
+    case SDLK_D: {
       return alloy::io::keyboard::key_code::letter_d;
     }
-    case SDLK_e: {
+    case SDLK_E: {
       return alloy::io::keyboard::key_code::letter_e;
     }
-    case SDLK_f: {
+    case SDLK_F: {
       return alloy::io::keyboard::key_code::letter_f;
     }
-    case SDLK_g: {
+    case SDLK_G: {
       return alloy::io::keyboard::key_code::letter_g;
     }
-    case SDLK_h: {
+    case SDLK_H: {
       return alloy::io::keyboard::key_code::letter_h;
     }
-    case SDLK_i: {
+    case SDLK_I: {
       return alloy::io::keyboard::key_code::letter_i;
     }
-    case SDLK_j: {
+    case SDLK_J: {
       return alloy::io::keyboard::key_code::letter_j;
     }
-    case SDLK_k: {
+    case SDLK_K: {
       return alloy::io::keyboard::key_code::letter_k;
     }
-    case SDLK_l: {
+    case SDLK_L: {
       return alloy::io::keyboard::key_code::letter_l;
     }
-    case SDLK_m: {
+    case SDLK_M: {
       return alloy::io::keyboard::key_code::letter_m;
     }
-    case SDLK_n: {
+    case SDLK_N: {
       return alloy::io::keyboard::key_code::letter_n;
     }
-    case SDLK_o: {
+    case SDLK_O: {
       return alloy::io::keyboard::key_code::letter_o;
     }
-    case SDLK_p: {
+    case SDLK_P: {
       return alloy::io::keyboard::key_code::letter_p;
     }
-    case SDLK_q: {
+    case SDLK_Q: {
       return alloy::io::keyboard::key_code::letter_q;
     }
-    case SDLK_r: {
+    case SDLK_R: {
       return alloy::io::keyboard::key_code::letter_r;
     }
-    case SDLK_s: {
+    case SDLK_S: {
       return alloy::io::keyboard::key_code::letter_s;
     }
-    case SDLK_t: {
+    case SDLK_T: {
       return alloy::io::keyboard::key_code::letter_t;
     }
-    case SDLK_u: {
+    case SDLK_U: {
       return alloy::io::keyboard::key_code::letter_u;
     }
-    case SDLK_v: {
+    case SDLK_V: {
       return alloy::io::keyboard::key_code::letter_v;
     }
-    case SDLK_w: {
+    case SDLK_W: {
       return alloy::io::keyboard::key_code::letter_w;
     }
-    case SDLK_x: {
+    case SDLK_X: {
       return alloy::io::keyboard::key_code::letter_x;
     }
-    case SDLK_y: {
+    case SDLK_Y: {
       return alloy::io::keyboard::key_code::letter_y;
     }
-    case SDLK_z: {
+    case SDLK_Z: {
       return alloy::io::keyboard::key_code::letter_z;
     }
 
@@ -686,7 +694,7 @@ alloy::io::keyboard::key_code to_key_code(::SDL_Keycode code)
     case SDLK_SEMICOLON: {
       return alloy::io::keyboard::key_code::semicolon;
     }
-    case SDLK_QUOTE: {
+    case SDLK_APOSTROPHE: {
       return alloy::io::keyboard::key_code::apostrophe;
     }
     case SDLK_COMMA: {
@@ -834,47 +842,47 @@ alloy::io::keyboard::key_code to_key_code(::SDL_Keycode code)
   return alloy::io::keyboard::key_code::unknown;
 }
 
-alloy::io::keyboard::modifiers to_modifiers(::Uint16 modifiers)
+alloy::io::keyboard::modifiers to_modifiers(::SDL_Keymod modifiers)
 {
-  const auto mod = static_cast<::SDL_Keymod>(modifiers);
+  const auto mod = modifiers;
 
   auto result = alloy::io::keyboard::modifiers::none;
 
-  if (mod & ::KMOD_LSHIFT) {
+  if (mod & SDL_KMOD_LSHIFT) {
     result |= alloy::io::keyboard::modifiers::left_shift;
   }
-  if (mod & ::KMOD_RSHIFT) {
+  if (mod & SDL_KMOD_RSHIFT) {
     result |= alloy::io::keyboard::modifiers::right_shift;
   }
 
-  if (mod & ::KMOD_LCTRL) {
+  if (mod & SDL_KMOD_LCTRL) {
     result |= alloy::io::keyboard::modifiers::left_control;
   }
-  if (mod & ::KMOD_RCTRL) {
+  if (mod & SDL_KMOD_RCTRL) {
     result |= alloy::io::keyboard::modifiers::right_control;
   }
 
-  if (mod & ::KMOD_LALT) {
+  if (mod & SDL_KMOD_LALT) {
     result |= alloy::io::keyboard::modifiers::left_alt;
   }
-  if (mod & ::KMOD_RALT) {
+  if (mod & SDL_KMOD_RALT) {
     result |= alloy::io::keyboard::modifiers::right_alt;
   }
 
-  if (mod & ::KMOD_LGUI) {
+  if (mod & SDL_KMOD_LGUI) {
     result |= alloy::io::keyboard::modifiers::left_host;
   }
-  if (mod & ::KMOD_RGUI) {
+  if (mod & SDL_KMOD_RGUI) {
     result |= alloy::io::keyboard::modifiers::right_host;
   }
 
-  if (mod & ::KMOD_NUM) {
+  if (mod & SDL_KMOD_NUM) {
     result |= alloy::io::keyboard::modifiers::num_lock;
   }
-  if (mod & ::KMOD_CAPS) {
+  if (mod & SDL_KMOD_CAPS) {
     result |= alloy::io::keyboard::modifiers::caps_lock;
   }
-  if (mod & ::KMOD_MODE) {
+  if (mod & SDL_KMOD_MODE) {
     result |= alloy::io::keyboard::modifiers::mode;
   }
 
@@ -928,23 +936,23 @@ void alloy::extra::sdl2_pump_source::poll( io::message_pump& p )
 
   // Poll all events and translate them
   while (::SDL_PollEvent(&event)) {
+    if (is_window_event(event)) {
+      handle_window_event(event, p);
+      continue;
+    }
     switch (event.type) {
-      case SDL_WINDOWEVENT: {
-        handle_window_event(event, p);
-        break;
-      }
-      case SDL_KEYUP: {
+      case SDL_EVENT_KEY_UP: {
         handle_keyboard_event(event, io::keyboard::key_state::depressed, p);
         break;
       }
-      case SDL_KEYDOWN: {
+      case SDL_EVENT_KEY_DOWN: {
         handle_keyboard_event(event, io::keyboard::key_state::pressed, p);
         break;
       }
-      case SDL_MOUSEWHEEL:
-      case SDL_MOUSEMOTION:
-      case SDL_MOUSEBUTTONUP:
-      case SDL_MOUSEBUTTONDOWN: {
+      case SDL_EVENT_MOUSE_WHEEL:
+      case SDL_EVENT_MOUSE_MOTION:
+      case SDL_EVENT_MOUSE_BUTTON_UP:
+      case SDL_EVENT_MOUSE_BUTTON_DOWN: {
         handle_mouse_event(event, p);
         break;
       }
@@ -963,7 +971,7 @@ void alloy::extra::sdl2_pump_source
   const auto id = event.window.windowID;
   const auto it = m_windows.find(id);
 
-  ALLOY_ASSERT(event.type == SDL_WINDOWEVENT);
+  ALLOY_ASSERT(is_window_event(event));
 
   // Ignore windows that aren't attached; no reason to fire these events.
   if (it == m_windows.end()) {
@@ -972,47 +980,47 @@ void alloy::extra::sdl2_pump_source
 
   const auto window = it->second;
 
-  switch (event.window.event) {
+  switch (event.type) {
 
-    case SDL_WINDOWEVENT_CLOSE: {
+    case SDL_EVENT_WINDOW_CLOSE_REQUESTED: {
       // Close events should be listened to as soon as possible;
       // so this is posted as a high-priority event
       p.post_immediate_event( io::window_close_event{window} );
       break;
     }
 
-    case SDL_WINDOWEVENT_MINIMIZED: {
+    case SDL_EVENT_WINDOW_MINIMIZED: {
       p.post_event( io::window_minimize_event{window} );
       break;
     }
-    case SDL_WINDOWEVENT_MAXIMIZED: {
+    case SDL_EVENT_WINDOW_MAXIMIZED: {
       p.post_event( io::window_maximize_event{window} );
       break;
     }
-    case SDL_WINDOWEVENT_RESTORED: {
+    case SDL_EVENT_WINDOW_RESTORED: {
       p.post_event( io::window_restore_event{window} );
       break;
     }
 
-    case SDL_WINDOWEVENT_HIDDEN: {
+    case SDL_EVENT_WINDOW_HIDDEN: {
       p.post_event( io::window_hide_event{window} );
       break;
     }
-    case SDL_WINDOWEVENT_EXPOSED: {
+    case SDL_EVENT_WINDOW_EXPOSED: {
       // TODO(bitwizeshift):
       //   only fire this event if window was hidden before this change
       p.post_event( io::window_show_event{window} );
       break;
     }
 
-    case SDL_WINDOWEVENT_MOVED: {
+    case SDL_EVENT_WINDOW_MOVED: {
       const auto x = event.window.data1;
       const auto y = event.window.data2;
 
       p.post_event( io::window_move_event{window, x, y} );
       break;
     }
-    case SDL_WINDOWEVENT_SIZE_CHANGED: {
+    case SDL_EVENT_WINDOW_RESIZED: {
       const auto width = event.window.data1;
       const auto height = event.window.data2;
 
@@ -1020,21 +1028,11 @@ void alloy::extra::sdl2_pump_source
       break;
     }
 
-    // clang-tidy considers the next two branches as "clones" -- but it would be
-    // bad to fall-through to code that only conditionally exists.
-    //
-    // NOLINTNEXTLINE(bugprone-branch-clone)
-    case SDL_WINDOWEVENT_FOCUS_GAINED: {
+    case SDL_EVENT_WINDOW_FOCUS_GAINED: {
       p.post_event( io::window_focus_event{window} );
       break;
     }
-#if SDL_VERSION_ATLEAST(2, 0, 5)
-    case SDL_WINDOWEVENT_TAKE_FOCUS: {
-      p.post_event( io::window_focus_event{window} );
-      break;
-    }
-#endif
-    case SDL_WINDOWEVENT_FOCUS_LOST: {
+    case SDL_EVENT_WINDOW_FOCUS_LOST: {
       p.post_event( io::window_unfocus_event{window} );
       break;
     }
@@ -1053,7 +1051,7 @@ void alloy::extra::sdl2_pump_source
   const auto id = event.window.windowID;
   const auto it = m_windows.find(id);
 
-  ALLOY_ASSERT(event.type == SDL_KEYUP || event.type == SDL_KEYDOWN);
+  ALLOY_ASSERT(event.type == SDL_EVENT_KEY_UP || event.type == SDL_EVENT_KEY_DOWN);
 
   // Ignore windows that aren't attached; no reason to fire these events.
   if (it == m_windows.end()) {
@@ -1062,9 +1060,9 @@ void alloy::extra::sdl2_pump_source
 
   const auto window = it->second;
 
-  const auto scan_code = ::to_scan_code(event.key.keysym.scancode);
-  const auto key_code  = ::to_key_code(event.key.keysym.sym);
-  const auto modifiers = ::to_modifiers(event.key.keysym.mod);
+  const auto scan_code = ::to_scan_code(event.key.scancode);
+  const auto key_code  = ::to_key_code(event.key.key);
+  const auto modifiers = ::to_modifiers(event.key.mod);
 
   p.post_event(io::keyboard_event{
     window,
@@ -1088,25 +1086,27 @@ void alloy::extra::sdl2_pump_source::handle_mouse_event(const SDL_Event& event,
   const auto window = it->second;
 
   switch (event.type) {
-    case SDL_MOUSEWHEEL: {
+    case SDL_EVENT_MOUSE_WHEEL: {
       p.post_event(io::mouse_scroll_event{
         window,
-        event.wheel.x, event.wheel.y
+        event.wheel.integer_x, event.wheel.integer_y
       });
       return;
     }
-    case SDL_MOUSEMOTION: {
+    case SDL_EVENT_MOUSE_MOTION: {
       p.post_event(io::mouse_move_event{
         window,
-        event.motion.x, event.motion.y,
-        event.motion.xrel, event.motion.yrel,
+        static_cast<std::int32_t>(event.motion.x),
+        static_cast<std::int32_t>(event.motion.y),
+        static_cast<std::int32_t>(event.motion.xrel),
+        static_cast<std::int32_t>(event.motion.yrel),
       });
       return;
     }
-    case SDL_MOUSEBUTTONDOWN: [[fallthrough]];
-    case SDL_MOUSEBUTTONUP: {
+    case SDL_EVENT_MOUSE_BUTTON_DOWN: [[fallthrough]];
+    case SDL_EVENT_MOUSE_BUTTON_UP: {
       const auto button = to_mouse_button(event.button.button);
-      const auto state = (event.button.state == SDL_PRESSED)
+      const auto state = event.button.down
         ? io::mouse::button_state::pressed
         : io::mouse::button_state::depressed;
 
@@ -1114,7 +1114,8 @@ void alloy::extra::sdl2_pump_source::handle_mouse_event(const SDL_Event& event,
 
       p.post_event(io::mouse_button_event{
         window,
-        event.button.x, event.button.y,
+        static_cast<std::int32_t>(event.button.x),
+        static_cast<std::int32_t>(event.button.y),
         *button, state
       });
       return;

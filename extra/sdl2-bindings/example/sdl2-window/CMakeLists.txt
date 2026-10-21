@@ -16,18 +16,11 @@ add_executable(${PROJECT_NAME}SDL2WindowExample
   ${source_files}
 )
 
-if (MINGW)
-  target_link_libraries(${PROJECT_NAME}SDL2WindowExample
-    PRIVATE mingw32
-  )
-endif ()
-
 target_link_libraries(${PROJECT_NAME}SDL2WindowExample
   PRIVATE Alloy::CommonFlags
   PRIVATE Alloy::Core
   PRIVATE Alloy::IO
   PRIVATE Alloy::Extra::SDL2Bindings
-  PRIVATE SDL2::SDL2main
   PRIVATE OpenGL::GL
 )
 

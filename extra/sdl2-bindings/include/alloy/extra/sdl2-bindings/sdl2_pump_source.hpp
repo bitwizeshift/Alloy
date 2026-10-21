@@ -20,7 +20,7 @@
 #include "alloy/io/message_pump.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <alloy/io/keyboard.hpp>
 #include <map>
 

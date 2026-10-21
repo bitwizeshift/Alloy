@@ -81,7 +81,7 @@ bool alloy::extra::sdl2_window::do_is_focused()
 {
   ALLOY_ASSERT(m_window != nullptr);
 
-  static constexpr auto mask = SDL_WINDOW_INPUT_GRABBED |
+  static constexpr auto mask = SDL_WINDOW_MOUSE_GRABBED |
                                SDL_WINDOW_INPUT_FOCUS |
                                SDL_WINDOW_MOUSE_FOCUS;
   const auto flags = ::SDL_GetWindowFlags(m_window);
@@ -96,7 +96,7 @@ bool alloy::extra::sdl2_window::do_is_shown()
 
   const auto flags = ::SDL_GetWindowFlags(m_window);
 
-  return static_cast<bool>(flags & SDL_WINDOW_SHOWN);
+  return !static_cast<bool>(flags & SDL_WINDOW_HIDDEN);
 }
 
 bool alloy::extra::sdl2_window::do_is_hidden()
@@ -135,14 +135,14 @@ void alloy::extra::sdl2_window::do_fullscreen()
 {
   ALLOY_ASSERT(m_window != nullptr);
 
-  ::SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
+  ::SDL_SetWindowFullscreen(m_window, true);
 }
 
 void alloy::extra::sdl2_window::do_focus()
 {
   ALLOY_ASSERT(m_window != nullptr);
 
-  ::SDL_SetWindowInputFocus(m_window);
+  ::SDL_RaiseWindow(m_window);
 }
 
 void alloy::extra::sdl2_window::do_show()
