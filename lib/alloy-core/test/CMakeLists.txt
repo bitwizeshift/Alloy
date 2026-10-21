@@ -53,6 +53,7 @@ set(source_files
 
   # IO
   src/alloy/core/io/error.test.cpp
+  src/alloy/core/io/reader.test.cpp
 )
 
 add_alloy_test(${PROJECT_NAME}CoreTest
