@@ -16,7 +16,9 @@
 # pragma once
 #endif
 
+#include "alloy/core/api.hpp"
 #include "alloy/core/assert.hpp"
+#include "alloy/core/io/reader.hpp"
 #include "alloy/core/utilities/result.hpp"
 
 #include <cstddef>      // std::byte, std::size_t
@@ -85,6 +87,55 @@ namespace alloy::core {
     virtual auto do_write(std::span<const std::byte> buffer)
       noexcept -> result<std::size_t,std::error_code> = 0;
   };
+
+  //===========================================================================
+  // non-member functions : class : writer
+  //===========================================================================
+
+  //---------------------------------------------------------------------------
+  // Utilities
+  //---------------------------------------------------------------------------
+
+  /// \brief Writes every byte of \p buffer to \p destination
+  ///
+  /// On failure, an unspecified prefix of \p buffer has been written to
+  /// \p destination.
+  ///
+  /// \param destination the writer to write to
+  /// \param buffer the bytes to write
+  /// \return `void` on success, `io_error::write_zero` if \p destination
+  ///         stops accepting bytes before every byte is written, or the error
+  ///         of \p destination if it fails
+  ALLOY_CORE_API
+  auto write_all(writer& destination, std::span<const std::byte> buffer)
+    noexcept -> result<void,std::error_code>;
+
+  /// \brief Copies every remaining byte of \p source to \p destination
+  ///
+  /// \param source the reader to copy from
+  /// \param destination the writer to copy to
+  /// \return the number of bytes copied on success, `io_error::write_zero` if
+  ///         \p destination stops accepting bytes, or the error of \p source
+  ///         or \p destination if either fails
+  ALLOY_CORE_API
+  auto copy(reader& source, writer& destination)
+    noexcept -> result<std::size_t,std::error_code>;
+
+  /// \brief Copies exactly \p n bytes of \p source to \p destination
+  ///
+  /// No more than \p n bytes are read from \p source, so the bytes after
+  /// them remain to be read.
+  ///
+  /// \param source the reader to copy from
+  /// \param destination the writer to copy to
+  /// \param n the number of bytes to copy
+  /// \return `void` on success, `io_error::unexpected_eof` if \p source ends
+  ///         before \p n bytes are copied, `io_error::write_zero` if
+  ///         \p destination stops accepting bytes, or the error of \p source
+  ///         or \p destination if either fails
+  ALLOY_CORE_API
+  auto copy_n(reader& source, writer& destination, std::size_t n)
+    noexcept -> result<void,std::error_code>;
 
 } // namespace alloy::core
 
