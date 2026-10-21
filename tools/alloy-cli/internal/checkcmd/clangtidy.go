@@ -40,12 +40,21 @@ type Differ interface {
 	Changes(ctx context.Context, paths ...string) ([]diff.File, error)
 }
 
+// DatabaseWriter writes the compilation database that clang-tidy reads.
+type DatabaseWriter interface {
+	// WriteDatabase returns the directory that contains the compilation
+	// database, and a function that removes it once it is no longer needed.
+	// It returns an error if the database cannot be written.
+	WriteDatabase() (dir string, remove func() error, err error)
+}
+
 // Tidier runs clang-tidy over a file.
 type Tidier interface {
-	// Tidy runs clang-tidy over the file at path, reporting only diagnostics
-	// within ranges, or on every line when ranges is empty. It returns the
-	// output of clang-tidy, and an error if it reported a failure.
-	Tidy(ctx context.Context, path string, ranges []diff.Range) ([]byte, error)
+	// Tidy runs clang-tidy over the file at path with the compilation database
+	// in buildDir, reporting only diagnostics within ranges, or on every line
+	// when ranges is empty. It returns the output of clang-tidy, and an error
+	// if it reported a failure.
+	Tidy(ctx context.Context, buildDir, path string, ranges []diff.Range) ([]byte, error)
 }
 
 // ClangTidyBuilder builds a [ClangTidyRunner] for the C and C++ files named on
@@ -57,12 +66,13 @@ type ClangTidyBuilder struct {
 
 	fix      bool
 	buildDir string
+	config   string
 	jobs     int
 	paths    []string
 }
 
-// RegisterArgs registers the --fix, --build-dir, and --jobs flags, and the
-// files to check.
+// RegisterArgs registers the --fix, --build-dir, --config, and --jobs flags,
+// and the files to check.
 func (cb *ClangTidyBuilder) RegisterArgs(cl *arg.CommandLine) {
 	fix := arg.Flag("fix", &cb.fix,
 		arg.Usage("apply the suggested fixes in place"),
@@ -73,6 +83,11 @@ func (cb *ClangTidyBuilder) RegisterArgs(cl *arg.CommandLine) {
 		arg.Usage("the directory containing compile_commands.json, relative to the repository root"),
 		arg.DefaultValue("build"),
 		arg.CompleteDirs(),
+	)
+	config := arg.Flag("config", &cb.config,
+		arg.ValueLabel("name"),
+		arg.Usage("the build configuration whose compile commands are used"),
+		arg.DefaultValue("Debug"),
 	)
 	jobs := arg.Flag("jobs", &cb.jobs,
 		arg.Shorthand("j"),
@@ -86,8 +101,8 @@ func (cb *ClangTidyBuilder) RegisterArgs(cl *arg.CommandLine) {
 		arg.Required(),
 		arg.CompleteFilesMatching("h", "hpp", "c", "cpp"),
 	)
-	cl.Add(fix, buildDir, jobs, files)
-	arg.Group("clang-tidy Flags", buildDir, jobs)
+	cl.Add(fix, buildDir, config, jobs, files)
+	arg.Group("clang-tidy Flags", buildDir, config, jobs)
 }
 
 func (*ClangTidyBuilder) defaultJobs(context.Context) (string, error) {
@@ -115,14 +130,19 @@ func (cb *ClangTidyBuilder) Build(ctx context.Context) (cli.Runner, error) {
 	cb.warnMissingDatabase(ctx, dir)
 	return &ClangTidyRunner{
 		Differ: diff.Git{Dir: dir, Context: contextLines},
-		Tidier: &clangtidy.Command{Dir: dir, BuildDir: cb.buildDir, Fix: cb.fix},
+		Database: &clangtidy.ConfigDatabase{
+			Dir:      dir,
+			BuildDir: cb.buildDir,
+			Config:   cb.config,
+		},
+		Tidier: &clangtidy.Command{Dir: dir, Fix: cb.fix},
 		Jobs:   cb.jobs,
 		Paths:  cb.paths,
 	}, nil
 }
 
 func (cb *ClangTidyBuilder) warnMissingDatabase(ctx context.Context, dir string) {
-	database := filepath.Join(cb.buildDir, "compile_commands.json")
+	database := filepath.Join(cb.buildDir, clangtidy.DatabaseFile)
 	if !filepath.IsAbs(database) {
 		database = filepath.Join(dir, database)
 	}
@@ -142,6 +162,9 @@ type ClangTidyRunner struct {
 	// Differ reports the changed lines of each file.
 	Differ Differ
 
+	// Database writes the compilation database that Tidier reads.
+	Database DatabaseWriter
+
 	// Tidier runs clang-tidy over each file.
 	Tidier Tidier
 
@@ -158,15 +181,22 @@ type ClangTidyRunner struct {
 // stream, in the order of Paths.
 //
 // [ErrClangTidy] is returned if clang-tidy fails for any file. Any other error
-// is returned if the changes cannot be read from Differ.
-func (cr *ClangTidyRunner) Run(ctx context.Context) error {
+// is returned if the changes cannot be read from Differ, or if the compilation
+// database cannot be written or removed by Database.
+func (cr *ClangTidyRunner) Run(ctx context.Context) (err error) {
 	ranges, err := cr.ranges(ctx)
 	if err != nil {
 		return err
 	}
+	buildDir, remove, err := cr.Database.WriteDatabase()
+	if err != nil {
+		return err
+	}
+	defer func() { err = errors.Join(err, remove()) }()
+
 	out := stream.Verbatim(cli.ErrStream(ctx))
 	failed := false
-	for _, result := range cr.tidy(ctx, ranges) {
+	for _, result := range cr.tidy(ctx, buildDir, ranges) {
 		if result.err == nil {
 			continue
 		}
@@ -200,7 +230,7 @@ type tidyResult struct {
 
 // tidy runs the Tidier over each of Paths with up to Jobs running at once, and
 // returns the results in the same order as Paths.
-func (cr *ClangTidyRunner) tidy(ctx context.Context, ranges map[string][]diff.Range) []tidyResult {
+func (cr *ClangTidyRunner) tidy(ctx context.Context, buildDir string, ranges map[string][]diff.Range) []tidyResult {
 	results := make([]tidyResult, len(cr.Paths))
 	limit := make(chan struct{}, max(cr.Jobs, 1))
 	var wg sync.WaitGroup
@@ -209,7 +239,7 @@ func (cr *ClangTidyRunner) tidy(ctx context.Context, ranges map[string][]diff.Ra
 			limit <- struct{}{}
 			defer func() { <-limit }()
 
-			output, err := cr.Tidier.Tidy(ctx, path, ranges[path])
+			output, err := cr.Tidier.Tidy(ctx, buildDir, path, ranges[path])
 			results[i] = tidyResult{path: path, output: output, err: err}
 		})
 	}

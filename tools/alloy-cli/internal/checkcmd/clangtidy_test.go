@@ -36,6 +36,7 @@ func TestClangTidyBuilderRegisterArgs(t *testing.T) {
 	unmatched := argtest.GetUnmatched(cl)
 	wantFlags := []*argtest.Flag{
 		{Long: "build-dir", Shorthand: "p", ValueLabel: "dir", Group: "clang-tidy Flags"},
+		{Long: "config", ValueLabel: "name", Group: "clang-tidy Flags"},
 		{Long: "fix", ValueLabel: "bool"},
 		{Long: "jobs", Shorthand: "j", ValueLabel: "count", Group: "clang-tidy Flags"},
 	}
@@ -82,7 +83,12 @@ func TestClangTidyBuilderBuild(t *testing.T) {
 			args:    []string{"a.cpp", "b.cpp"},
 			want: &checkcmd.ClangTidyRunner{
 				Differ: diff.Git{Dir: "/repo", Context: 5},
-				Tidier: &clangtidy.Command{Dir: "/repo", BuildDir: "build", Fix: false},
+				Database: &clangtidy.ConfigDatabase{
+					Dir:      "/repo",
+					BuildDir: "build",
+					Config:   "Debug",
+				},
+				Tidier: &clangtidy.Command{Dir: "/repo", Fix: false},
 				Jobs:   runtime.NumCPU(),
 				Paths:  []string{"a.cpp", "b.cpp"},
 			},
@@ -90,10 +96,15 @@ func TestClangTidyBuilderBuild(t *testing.T) {
 		}, {
 			name:    "flags",
 			builder: &checkcmd.ClangTidyBuilder{Rooter: roottest.Rooter("/repo")},
-			args:    []string{"--fix", "-p", "out", "-j", "3", "a.cpp"},
+			args:    []string{"--fix", "-p", "out", "--config", "Release", "-j", "3", "a.cpp"},
 			want: &checkcmd.ClangTidyRunner{
 				Differ: diff.Git{Dir: "/repo", Context: 5},
-				Tidier: &clangtidy.Command{Dir: "/repo", BuildDir: "out", Fix: true},
+				Database: &clangtidy.ConfigDatabase{
+					Dir:      "/repo",
+					BuildDir: "out",
+					Config:   "Release",
+				},
+				Tidier: &clangtidy.Command{Dir: "/repo", Fix: true},
 				Jobs:   3,
 				Paths:  []string{"a.cpp"},
 			},
@@ -158,6 +169,7 @@ func TestClangTidyRunnerRun(t *testing.T) {
 	testCases := []struct {
 		name       string
 		differ     checkcmd.Differ
+		database   checkcmd.DatabaseWriter
 		tidier     checkcmd.Tidier
 		paths      []string
 		wantStderr string
@@ -168,6 +180,7 @@ func TestClangTidyRunnerRun(t *testing.T) {
 			differ: differ{
 				{Path: "a.cpp", Ranges: []diff.Range{{Start: 1, End: 3}}},
 			},
+			database:   databaseWriter{dir: "db"},
 			tidier:     noOpTidier{},
 			paths:      []string{"a.cpp", "b.cpp"},
 			wantStderr: "",
@@ -183,16 +196,34 @@ func TestClangTidyRunnerRun(t *testing.T) {
 					},
 				},
 			},
-			tidier: echoTidier{err: testErr},
-			paths:  []string{"a.cpp", "b.cpp"},
-			wantStderr: "a.cpp []\n" +
+			database: databaseWriter{dir: "db"},
+			tidier:   echoTidier{err: testErr},
+			paths:    []string{"a.cpp", "b.cpp"},
+			wantStderr: "db a.cpp []\n" +
 				"a.cpp: test error\n" +
-				"b.cpp [{1 3} {9 12}]\n" +
+				"db b.cpp [{1 3} {9 12}]\n" +
 				"b.cpp: test error\n",
 			wantErr: checkcmd.ErrClangTidy,
 		}, {
 			name:       "differ error",
 			differ:     errDiffer{err: testErr},
+			database:   databaseWriter{dir: "db"},
+			tidier:     noOpTidier{},
+			paths:      []string{"a.cpp"},
+			wantStderr: "",
+			wantErr:    testErr,
+		}, {
+			name:       "database error",
+			differ:     differ{},
+			database:   errDatabaseWriter{err: testErr},
+			tidier:     noOpTidier{},
+			paths:      []string{"a.cpp"},
+			wantStderr: "",
+			wantErr:    testErr,
+		}, {
+			name:       "database removal error",
+			differ:     differ{},
+			database:   databaseWriter{dir: "db", removeErr: testErr},
 			tidier:     noOpTidier{},
 			paths:      []string{"a.cpp"},
 			wantStderr: "",
@@ -207,10 +238,11 @@ func TestClangTidyRunnerRun(t *testing.T) {
 			// Arrange
 			ctx, output := clitest.WithCaptureWriters(context.Background())
 			sut := &checkcmd.ClangTidyRunner{
-				Differ: tc.differ,
-				Tidier: tc.tidier,
-				Jobs:   2,
-				Paths:  tc.paths,
+				Differ:   tc.differ,
+				Database: tc.database,
+				Tidier:   tc.tidier,
+				Jobs:     2,
+				Paths:    tc.paths,
 			}
 
 			// Act

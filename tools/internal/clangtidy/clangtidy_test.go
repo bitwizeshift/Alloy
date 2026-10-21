@@ -13,22 +13,25 @@ func TestCommandArgs(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
-		name   string
-		fix    bool
-		path   string
-		ranges []diff.Range
-		want   []string
+		name     string
+		fix      bool
+		buildDir string
+		path     string
+		ranges   []diff.Range
+		want     []string
 	}{
 		{
-			name:   "whole file",
-			fix:    false,
-			path:   "src/a.cpp",
-			ranges: nil,
-			want:   []string{"-p=build", "src/a.cpp"},
+			name:     "whole file",
+			fix:      false,
+			buildDir: "build",
+			path:     "src/a.cpp",
+			ranges:   nil,
+			want:     []string{"-p=build", "src/a.cpp"},
 		}, {
-			name: "changed ranges",
-			fix:  false,
-			path: "src/a.cpp",
+			name:     "changed ranges",
+			fix:      false,
+			buildDir: "build",
+			path:     "src/a.cpp",
 			ranges: []diff.Range{
 				{Start: 1, End: 4},
 				{Start: 21, End: 22},
@@ -39,10 +42,11 @@ func TestCommandArgs(t *testing.T) {
 				"src/a.cpp",
 			},
 		}, {
-			name:   "fix",
-			fix:    true,
-			path:   "src/a.cpp",
-			ranges: []diff.Range{{Start: 3, End: 3}},
+			name:     "fix",
+			fix:      true,
+			buildDir: "build",
+			path:     "src/a.cpp",
+			ranges:   []diff.Range{{Start: 3, End: 3}},
 			want: []string{
 				"-p=build",
 				"--fix",
@@ -57,10 +61,10 @@ func TestCommandArgs(t *testing.T) {
 			t.Parallel()
 
 			// Arrange
-			sut := &clangtidy.Command{BuildDir: "build", Fix: tc.fix}
+			sut := &clangtidy.Command{Fix: tc.fix}
 
 			// Act
-			args := sut.Args(tc.path, tc.ranges)
+			args := sut.Args(tc.buildDir, tc.path, tc.ranges)
 
 			// Assert
 			if got, want := args, tc.want; !cmp.Equal(got, want) {

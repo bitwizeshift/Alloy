@@ -14,18 +14,16 @@ type Command struct {
 	// resolved against. The working directory is used when Dir is empty.
 	Dir string
 
-	// BuildDir is the directory that contains compile_commands.json.
-	BuildDir string
-
 	// Fix applies the suggested fixes to the file in place.
 	Fix bool
 }
 
-// Args returns the arguments to clang-tidy that check the file at path, and
-// report only the diagnostics on lines within ranges. When ranges is empty,
-// diagnostics on every line are reported.
-func (c *Command) Args(path string, ranges []diff.Range) []string {
-	args := []string{"-p=" + c.BuildDir}
+// Args returns the arguments to clang-tidy that check the file at path with
+// the compilation database in buildDir, and report only the diagnostics on
+// lines within ranges. When ranges is empty, diagnostics on every line are
+// reported.
+func (c *Command) Args(buildDir, path string, ranges []diff.Range) []string {
+	args := []string{"-p=" + buildDir}
 	if c.Fix {
 		args = append(args, "--fix")
 	}
@@ -40,8 +38,8 @@ func (c *Command) Args(path string, ranges []diff.Range) []string {
 //
 // An error is returned if clang-tidy cannot be run, or if it reports a failure,
 // such as a diagnostic promoted to an error.
-func (c *Command) Tidy(ctx context.Context, path string, ranges []diff.Range) ([]byte, error) {
-	cmd := exec.CommandContext(ctx, "clang-tidy", c.Args(path, ranges)...)
+func (c *Command) Tidy(ctx context.Context, buildDir, path string, ranges []diff.Range) ([]byte, error) {
+	cmd := exec.CommandContext(ctx, "clang-tidy", c.Args(buildDir, path, ranges)...)
 	cmd.Dir = c.Dir
 	return cmd.CombinedOutput()
 }
