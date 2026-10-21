@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // See the LICENSE file at the root of this repository for the full text.
 
-#include <alloy/io/filesystem/disk_filesystem.hpp>
+#include <alloy/platform/filesystem/disk_filesystem.hpp>
 #include "alloy/render/gl/shader/program_utilities.hpp"
 
 auto alloy::render::gl::program_utilities::make_program_from_sources(
@@ -55,8 +55,8 @@ auto alloy::render::gl::program_utilities::make_program_from_sources(
 }
 
 auto alloy::render::gl::program_utilities::make_program_from_files(
-  io::file& vertex,
-  io::file& fragment
+  platform::file& vertex,
+  platform::file& fragment
 ) -> core::result<program, gl_error_message>
 {
   auto v_shader = vertex_shader::compile_from_file(vertex);
@@ -76,9 +76,9 @@ auto alloy::render::gl::program_utilities::make_program_from_files(
 }
 
 auto alloy::render::gl::program_utilities::make_program_from_files(
-  io::file& vertex,
-  io::file& geometry,
-  io::file& fragment
+  platform::file& vertex,
+  platform::file& geometry,
+  platform::file& fragment
 ) -> core::result<program, gl_error_message>
 {
   auto v_shader = vertex_shader::compile_from_file(vertex);
@@ -108,9 +108,9 @@ auto alloy::render::gl::program_utilities::make_program_from_paths(
   core::zstring_view fragment_path
 ) -> core::result<program, gl_error_message>
 {
-  constexpr auto flags = io::open_mode::read;
+  constexpr auto flags = platform::open_mode::read;
 
-  auto filesystem = io::disk_filesystem{};
+  auto filesystem = platform::disk_filesystem{};
 
   auto vf = filesystem.open(vertex_path, flags);
   auto ff = filesystem.open(fragment_path, flags);
@@ -124,9 +124,9 @@ auto alloy::render::gl::program_utilities::make_program_from_paths(
   core::zstring_view fragment_path
 ) -> core::result<program, gl_error_message>
 {
-  constexpr auto flags = io::open_mode::read;
+  constexpr auto flags = platform::open_mode::read;
 
-  auto filesystem = io::disk_filesystem{};
+  auto filesystem = platform::disk_filesystem{};
 
   auto vf = filesystem.open(vertex_path, flags);
   auto gf = filesystem.open(geometry_path, flags);

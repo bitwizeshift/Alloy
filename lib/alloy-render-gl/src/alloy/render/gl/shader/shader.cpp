@@ -56,7 +56,7 @@ auto alloy::render::gl::shader_base::do_compile_from_source(
 
 auto alloy::render::gl::shader_base::do_compile_from_file(
   shader_type type,
-  io::file& file,
+  platform::file& file,
   core::allocator alloc
 ) -> core::result<::GLuint, gl_error_message>
 {
@@ -69,7 +69,7 @@ auto alloy::render::gl::shader_base::do_compile_from_file(
   auto source = core::string{core::stl_allocator_adapter<core::string>{alloc}};
   source.resize(*size);
 
-  file.read(io::mutable_buffer::from_data(source.data(), source.size())).expect("Failed to read shader");
+  file.read(platform::mutable_buffer::from_data(source.data(), source.size())).expect("Failed to read shader");
 
   return do_compile_from_source(type, source);
 }

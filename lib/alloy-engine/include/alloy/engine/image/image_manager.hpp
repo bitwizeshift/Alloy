@@ -84,7 +84,7 @@ namespace alloy::engine {
     /// \param file_type the type of file to load
     /// \param file the file to load from
     /// \return the image, on success
-    auto load(const std::string& file_type, io::file& file)
+    auto load(const std::string& file_type, platform::file& file)
       -> core::result<core::image,std::error_code>;
 
     //--------------------------------------------------------------------------

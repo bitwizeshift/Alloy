@@ -6,7 +6,7 @@
 
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/containers/vector.hpp"
-#include "alloy/io/filesystem/file.hpp"
+#include "alloy/platform/filesystem/file.hpp"
 
 #include <tga.h>
 
@@ -16,7 +16,7 @@ namespace {
   class tga_file_interface : public tga::FileInterface
   {
   public:
-    tga_file_interface(core::not_null<io::file*> file)
+    tga_file_interface(core::not_null<platform::file*> file)
       : m_file{file},
         m_ok{true}
     {
@@ -37,7 +37,7 @@ namespace {
     }
 
   private:
-    core::not_null<io::file*> m_file;
+    core::not_null<platform::file*> m_file;
     bool m_ok;
   };
 
@@ -76,7 +76,7 @@ alloy::engine::tga_image_loader::tga_image_loader(core::allocator alloc)
 
 }
 
-auto alloy::engine::tga_image_loader::load(io::file& file)
+auto alloy::engine::tga_image_loader::load(platform::file& file)
   -> core::result<core::image,std::error_code>
 {
   auto interface = tga_file_interface{&file};

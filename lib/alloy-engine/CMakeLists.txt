@@ -50,7 +50,7 @@ add_alloy_library(${PROJECT_NAME}Engine
   GENERATED_HEADERS ${generated_header_files}
   SOURCES           ${source_files}
   DEPENDENCIES
-    PUBLIC  ${PROJECT_NAME}::Core ${PROJECT_NAME}::IO
+    PUBLIC  ${PROJECT_NAME}::Core ${PROJECT_NAME}::Platform
     PRIVATE tga-lib
 )
 

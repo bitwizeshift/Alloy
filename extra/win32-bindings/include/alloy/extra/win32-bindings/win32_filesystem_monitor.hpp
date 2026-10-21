@@ -16,9 +16,9 @@
 #endif
 
 #include "alloy/extra/win32-bindings/api.hpp"
-#include "alloy/io/events/filesystem_events.hpp"
-#include "alloy/io/filesystem/filesystem_monitor.hpp"
-#include "alloy/io/message_pump.hpp"
+#include "alloy/platform/events/filesystem_events.hpp"
+#include "alloy/platform/filesystem/filesystem_monitor.hpp"
+#include "alloy/platform/message_pump.hpp"
 
 #include <string_view> // std::string_view
 #include <memory>      // std::unique_ptr
@@ -30,7 +30,7 @@ namespace alloy::extra {
   ///
   //////////////////////////////////////////////////////////////////////////////
   class win32_filesystem_monitor
-    : public io::filesystem_monitor
+    : public platform::filesystem_monitor
   {
     //--------------------------------------------------------------------------
     // Constructors / Destructor / Assignment
@@ -68,7 +68,7 @@ namespace alloy::extra {
     /// message_pump \p p
     ///
     /// \param p the message_pump to push new messages to
-    auto poll(io::message_pump& p) noexcept -> void override;
+    auto poll(platform::message_pump& p) noexcept -> void override;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -79,7 +79,7 @@ namespace alloy::extra {
     std::unique_ptr<impl> m_impl;
   };
 
-} // namespace alloy::io
+} // namespace alloy::platform
 
 
 #endif /* ALLOY_EXTRA_WIN32_BINDINGS_WIN32_FILESYSTEM_MONITOR_HPP */

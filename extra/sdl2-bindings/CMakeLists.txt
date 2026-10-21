@@ -25,7 +25,7 @@ add_alloy_library(${PROJECT_NAME}ExtraSDL2Bindings
   DEPENDENCIES
     PUBLIC
       SDL3::SDL3-static
-      ${PROJECT_NAME}::IO
+      ${PROJECT_NAME}::Platform
 )
 
 # Examples

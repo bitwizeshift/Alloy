@@ -4,7 +4,7 @@
 
 #include "alloy/extra/logging/file_log_stream.hpp"
 
-#include "alloy/io/buffers/const_buffer.hpp"
+#include "alloy/platform/buffers/const_buffer.hpp"
 
 #include <array>  // std::array
 #include <ctime>  // std::localtime
@@ -39,7 +39,7 @@ namespace {
 } // namespace <anonymous>
 
 
-alloy::extra::file_log_stream::file_log_stream(io::file destination) noexcept
+alloy::extra::file_log_stream::file_log_stream(platform::file destination) noexcept
   : m_destination{std::move(destination)}
 {
 
@@ -66,15 +66,15 @@ auto alloy::extra::file_log_stream::on_log_message(
   const auto level_string = ::to_string(level);
 
   // write time
-  (void) m_destination.write(io::const_buffer::from_container(time_string));
+  (void) m_destination.write(platform::const_buffer::from_container(time_string));
   (void) m_destination.write_object('\t');
 
   // write level
-  (void) m_destination.write(io::const_buffer::from_container(level_string));
+  (void) m_destination.write(platform::const_buffer::from_container(level_string));
   (void) m_destination.write_object('\t');
 
   // write message
-  (void) m_destination.write(io::const_buffer::from_container(message));
+  (void) m_destination.write(platform::const_buffer::from_container(message));
   (void) m_destination.write_object('\n');
 
   // We never want logging to buffer, in case a crash occurs.

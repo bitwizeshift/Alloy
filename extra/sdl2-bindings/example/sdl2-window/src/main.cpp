@@ -4,8 +4,8 @@
 
 #include <alloy/core/utilities/signal.hpp>
 #include <alloy/core/intrinsics.hpp>
-#include <alloy/io/message_pump.hpp>
-#include <alloy/io/window.hpp>
+#include <alloy/platform/message_pump.hpp>
+#include <alloy/platform/window.hpp>
 #include <alloy/extra/sdl2-bindings/sdl2_gl_window.hpp>
 #include <alloy/extra/sdl2-bindings/sdl2_pump_source.hpp>
 
@@ -31,28 +31,28 @@ namespace {
   /// A simple listener that handles window events
   //////////////////////////////////////////////////////////////////////////////
   class window_listener
-    : public alloy::io::message_pump::listener
+    : public alloy::platform::message_pump::listener
   {
   public:
-    auto handle_message(const alloy::io::event& e) noexcept -> void override;
+    auto handle_message(const alloy::platform::event& e) noexcept -> void override;
   };
 
-  auto window_listener::handle_message(const alloy::io::event& e)
+  auto window_listener::handle_message(const alloy::platform::event& e)
     noexcept -> void
   {
-    if (e.is<alloy::io::window_show_event>()) {
+    if (e.is<alloy::platform::window_show_event>()) {
       std::cout << "window_show_event{}" << std::endl;
-    } else if (e.is<alloy::io::window_hide_event>()) {
+    } else if (e.is<alloy::platform::window_hide_event>()) {
       std::cout << "window_hide_event{}" << std::endl;
-    } else if (auto* event = e.try_as<alloy::io::window_move_event>()) {
+    } else if (auto* event = e.try_as<alloy::platform::window_move_event>()) {
       std::cout << "window_move_event{" << event->x << ", " << event->y << "}" << std::endl;
-    } else if (auto* event = e.try_as<alloy::io::window_resize_event>()) {
+    } else if (auto* event = e.try_as<alloy::platform::window_resize_event>()) {
       std::cout << "window_resize_event{" << event->width << ", " << event->height << "}" << std::endl;
-    } else if (e.is<alloy::io::window_minimize_event>()) {
+    } else if (e.is<alloy::platform::window_minimize_event>()) {
       std::cout << "window_minimize_event{}" << std::endl;
-    } else if (e.is<alloy::io::window_maximize_event>()) {
+    } else if (e.is<alloy::platform::window_maximize_event>()) {
       std::cout << "window_maximize_event{}" << std::endl;
-    } else if (e.is<alloy::io::window_close_event>()) {
+    } else if (e.is<alloy::platform::window_close_event>()) {
       std::cout << "window_close_event{}" << std::endl;
       ::g_keep_running = false;
     }
@@ -73,12 +73,12 @@ auto main(int argc, char** argv) -> int
   auto generator     = std::mt19937{random_device()};
   auto distribution  = std::uniform_real_distribution<float>{0.0f, 1.0f};
 
-  auto message_pump = alloy::io::message_pump{};
+  auto message_pump = alloy::platform::message_pump{};
   auto listener = ::window_listener{};
   auto& sdl2_pump_source = alloy::extra::sdl2_pump_source::instance();
   auto window = alloy::extra::sdl2_gl_window::from_window_data(
     "Hello World",
-    alloy::io::window::dimensions{640, 480},
+    alloy::platform::window::dimensions{640, 480},
     alloy::extra::sdl_gl_version{3,2}
   );
 

@@ -3,37 +3,37 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include <alloy/core/utilities/signal.hpp>
-#include <alloy/io/message_pump.hpp>
-#include <alloy/io/filesystem/filesystem_monitor.hpp>
+#include <alloy/platform/message_pump.hpp>
+#include <alloy/platform/filesystem/filesystem_monitor.hpp>
 #include <alloy/extra/win32-bindings/win32_filesystem_monitor.hpp>
 
 #include <iostream>
 
 namespace {
-  auto print_message(const alloy::io::event& e) -> void
+  auto print_message(const alloy::platform::event& e) -> void
   {
     switch (e.id()) {
-      case alloy::io::event::id_of<alloy::io::file_creation_event>(): {
-        auto event = e.try_as<alloy::io::file_creation_event>();
+      case alloy::platform::event::id_of<alloy::platform::file_creation_event>(): {
+        auto event = e.try_as<alloy::platform::file_creation_event>();
         std::cout << "file_creation_event{" << event->name << "}" << std::endl;
         break;
       }
 
-      case alloy::io::event::id_of<alloy::io::file_removal_event>(): {
-        auto event = e.try_as<alloy::io::file_removal_event>();
+      case alloy::platform::event::id_of<alloy::platform::file_removal_event>(): {
+        auto event = e.try_as<alloy::platform::file_removal_event>();
         std::cout << "file_removal_event{" << event->name << "}" << std::endl;
         break;
       }
 
-      case alloy::io::event::id_of<alloy::io::file_update_event>(): {
-        auto event = e.try_as<alloy::io::file_update_event>();
+      case alloy::platform::event::id_of<alloy::platform::file_update_event>(): {
+        auto event = e.try_as<alloy::platform::file_update_event>();
         std::cout << "file_update_event{" << event->name << "}" << std::endl;
         break;
       }
     }
   }
 
-  class listener : public alloy::io::message_pump::listener
+  class listener : public alloy::platform::message_pump::listener
   {
     int* m_pcount;
 
@@ -44,13 +44,13 @@ namespace {
 
   private:
 
-    auto handle_message(const alloy::io::event& e) noexcept -> void
+    auto handle_message(const alloy::platform::event& e) noexcept -> void
     {
       ::print_message(e);
       (*m_pcount)++;
     }
 
-    auto handle_immediate_message(const alloy::io::event& e) noexcept -> void
+    auto handle_immediate_message(const alloy::platform::event& e) noexcept -> void
     {
       ::print_message(e);
       (*m_pcount)++;
@@ -72,7 +72,7 @@ auto main(int argc, char** argv) -> int
   auto count = int{0};
   auto listener = ::listener{&count};
   auto fs_monitor = alloy::extra::win32_filesystem_monitor{};
-  auto message_pump = alloy::io::message_pump{};
+  auto message_pump = alloy::platform::message_pump{};
 
   const auto source_conn = alloy::core::scoped_connection{
     message_pump.on_poll().connect(&fs_monitor)

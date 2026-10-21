@@ -18,7 +18,7 @@
 #include "alloy/extra/logging/log_level.hpp"
 #include "alloy/extra/logging/log_filter.hpp"
 
-#include "alloy/io/buffers/mutable_buffer.hpp"
+#include "alloy/platform/buffers/mutable_buffer.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/delegate.hpp"
 #include "alloy/core/intrinsics.hpp"
@@ -46,7 +46,7 @@ namespace alloy::extra {
   /// Example:
   /// \code
   /// auto format_buffer = std::array<char,256>{};
-  /// auto buffer = alloy::io::mutable_buffer::from_container(format_buffer);
+  /// auto buffer = alloy::platform::mutable_buffer::from_container(format_buffer);
   ///
   /// auto log = alloy::extra::console_log_stream{};
   /// auto logger = alloy::extra::logger{buffer};
@@ -199,7 +199,7 @@ namespace alloy::extra {
     ///        formatting messages
     ///
     /// \param buffer the buffer to use for formatting messages
-    explicit logger(io::mutable_buffer buffer) noexcept;
+    explicit logger(platform::mutable_buffer buffer) noexcept;
 
     /// \brief Move constructor
     ///
@@ -318,7 +318,7 @@ namespace alloy::extra {
   private:
 
     log_stream* m_head;          ///< The head of the intrinsic logger list
-    io::mutable_buffer m_buffer; ///< The buffer to use for formatted strings
+    platform::mutable_buffer m_buffer; ///< The buffer to use for formatted strings
   };
 } // namespace alloy::extra
 

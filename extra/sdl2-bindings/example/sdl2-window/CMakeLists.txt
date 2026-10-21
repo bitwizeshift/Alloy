@@ -19,7 +19,7 @@ add_executable(${PROJECT_NAME}SDL2WindowExample
 target_link_libraries(${PROJECT_NAME}SDL2WindowExample
   PRIVATE Alloy::CommonFlags
   PRIVATE Alloy::Core
-  PRIVATE Alloy::IO
+  PRIVATE Alloy::Platform
   PRIVATE Alloy::Extra::SDL2Bindings
   PRIVATE OpenGL::GL
 )

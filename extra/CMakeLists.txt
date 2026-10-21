@@ -10,11 +10,11 @@ cmake_dependent_option(ALLOY_COMPILE_EXTRAS_LOGGING
   "ALLOY_COMPILE_EXTRAS" OFF
 )
 cmake_dependent_option(ALLOY_COMPILE_EXTRAS_SDL2
-  "Compiles the SDL implementation of the 'io' library" ON
+  "Compiles the SDL implementation of the 'platform' library" ON
   "ALLOY_COMPILE_EXTRAS" OFF
 )
-cmake_dependent_option(ALLOY_COMPILE_EXTRAS_IO_WIN32
-  "Compiles the Win32 implementation of the 'io' library" ON
+cmake_dependent_option(ALLOY_COMPILE_EXTRAS_PLATFORM_WIN32
+  "Compiles the Win32 implementation of the 'platform' library" ON
   "ALLOY_COMPILE_EXTRAS;WIN32" OFF
 )
 cmake_dependent_option(ALLOY_COMPILE_EXTRAS_ALLOCATORS
@@ -38,6 +38,6 @@ if (ALLOY_COMPILE_EXTRAS_SDL2)
   add_subdirectory("sdl2-bindings")
 endif ()
 
-if (ALLOY_COMPILE_EXTRAS_IO_WIN32)
+if (ALLOY_COMPILE_EXTRAS_PLATFORM_WIN32)
   add_subdirectory("win32-bindings")
 endif ()

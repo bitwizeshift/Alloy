@@ -16,7 +16,7 @@
 #endif
 
 #include "alloy/extra/logging/logger.hpp"
-#include "alloy/io/filesystem/file.hpp"
+#include "alloy/platform/filesystem/file.hpp"
 
 #include "alloy/core/utilities/not_null.hpp"
 
@@ -38,7 +38,7 @@ namespace alloy::extra {
     /// \brief Constructs this file_log_stream from the file to log to
     ///
     /// \param destination the destination to write all log calls to
-    explicit file_log_stream(io::file destination) noexcept;
+    explicit file_log_stream(platform::file destination) noexcept;
     file_log_stream(file_log_stream&&) = delete;
     file_log_stream(const file_log_stream&) = delete;
 
@@ -68,7 +68,7 @@ namespace alloy::extra {
     //--------------------------------------------------------------------------
   private:
 
-    io::file m_destination;
+    platform::file m_destination;
   };
 
 } // namespace alloy::extra

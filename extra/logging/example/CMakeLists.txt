@@ -16,7 +16,7 @@ add_executable(${PROJECT_NAME}LoggingExample
 target_link_libraries(${PROJECT_NAME}LoggingExample
   PRIVATE Alloy::CommonFlags
   PRIVATE Alloy::Core
-  PRIVATE Alloy::IO
+  PRIVATE Alloy::Platform
   PRIVATE Alloy::Extra::Logging
 )
 

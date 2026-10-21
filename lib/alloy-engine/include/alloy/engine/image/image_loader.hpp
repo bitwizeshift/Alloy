@@ -17,7 +17,7 @@
 
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/core/model/image.hpp"
-#include "alloy/io/filesystem/file.hpp"
+#include "alloy/platform/filesystem/file.hpp"
 
 #include <system_error> // std::error_code
 
@@ -39,7 +39,7 @@ namespace alloy::engine {
     ///
     /// \param file the file to load from
     /// \return the image on success
-    virtual auto load(io::file& file)
+    virtual auto load(platform::file& file)
       -> core::result<core::image,std::error_code> = 0;
   };
 

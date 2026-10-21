@@ -24,7 +24,7 @@ add_alloy_library(${PROJECT_NAME}ExtraLogging
   DEPENDENCIES
     PUBLIC
       ${PROJECT_NAME}::Core
-      ${PROJECT_NAME}::IO
+      ${PROJECT_NAME}::Platform
 )
 
 # Examples

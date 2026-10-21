@@ -41,7 +41,7 @@ add_alloy_library(${PROJECT_NAME}RenderGL
   DEPENDENCIES
     PUBLIC
       ${PROJECT_NAME}::Core
-      ${PROJECT_NAME}::IO
+      ${PROJECT_NAME}::Platform
       ${PROJECT_NAME}::Render
       OpenGL::GL
       GLEW::GLEW

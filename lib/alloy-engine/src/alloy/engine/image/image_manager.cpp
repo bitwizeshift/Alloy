@@ -48,7 +48,7 @@ alloy::engine::image_manager::image_manager()
 
 auto alloy::engine::image_manager::load(
   const std::string& file_type,
-  io::file& file
+  platform::file& file
 ) -> core::result<core::image,std::error_code>
 {
   auto it = m_loaders.find(file_type);

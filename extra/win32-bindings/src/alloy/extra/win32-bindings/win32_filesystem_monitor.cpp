@@ -140,7 +140,7 @@ auto alloy::extra::win32_filesystem_monitor::do_watch(
 
 //------------------------------------------------------------------------------
 
-auto alloy::extra::win32_filesystem_monitor::poll(io::message_pump& p)
+auto alloy::extra::win32_filesystem_monitor::poll(platform::message_pump& p)
   noexcept -> void
 {
   static constexpr auto buffer_size = 256;
@@ -197,21 +197,21 @@ auto alloy::extra::win32_filesystem_monitor::poll(io::message_pump& p)
 
       switch (notify_info->Action) {
         case FILE_ACTION_ADDED: {
-          auto event = io::file_creation_event {
+          auto event = platform::file_creation_event {
             std::move(filename)
           };
           p.post_event(event);
           break;
         }
         case FILE_ACTION_REMOVED: {
-          auto event = io::file_removal_event {
+          auto event = platform::file_removal_event {
             std::move(filename)
           };
           p.post_event(event);
           break;
         }
         case FILE_ACTION_MODIFIED: {
-          auto event = io::file_update_event {
+          auto event = platform::file_update_event {
             std::move(filename)
           };
           p.post_event(event);
@@ -219,14 +219,14 @@ auto alloy::extra::win32_filesystem_monitor::poll(io::message_pump& p)
         }
         // Renaming a file is considered a deletion and addition
         case FILE_ACTION_RENAMED_OLD_NAME: {
-          auto event = io::file_removal_event {
+          auto event = platform::file_removal_event {
             std::move(filename)
           };
           p.post_event(event);
           break;
         }
         case FILE_ACTION_RENAMED_NEW_NAME: {
-          auto event = io::file_creation_event {
+          auto event = platform::file_creation_event {
             std::move(filename)
           };
           p.post_event(event);

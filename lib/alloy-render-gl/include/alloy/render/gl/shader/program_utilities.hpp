@@ -17,7 +17,7 @@
 
 #include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/utilities/result.hpp"
-#include "alloy/io/filesystem/file.hpp"
+#include "alloy/platform/filesystem/file.hpp"
 #include "alloy/render/gl/shader/program.hpp"
 #include "alloy/render/gl/error.hpp"
 
@@ -66,7 +66,7 @@ namespace alloy::render::gl {
     /// \param vertex the file containing the vertex shader
     /// \param fragment the file containing the fragment shader
     /// \return the created shader, on success
-    static auto make_program_from_files(io::file& vertex, io::file& fragment)
+    static auto make_program_from_files(platform::file& vertex, platform::file& fragment)
       -> core::result<program, gl_error_message>;
 
     /// \brief Makes a program from the specified files
@@ -76,9 +76,9 @@ namespace alloy::render::gl {
     /// \param fragment the file containing the fragment shader
     /// \return the created shader, on success
     static auto make_program_from_files(
-      io::file& vertex,
-      io::file& geometry,
-      io::file& fragment
+      platform::file& vertex,
+      platform::file& geometry,
+      platform::file& fragment
     ) -> core::result<program, gl_error_message>;
 
     //--------------------------------------------------------------------------

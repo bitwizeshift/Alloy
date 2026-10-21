@@ -71,8 +71,8 @@ The library and application components are detailed below:
 
 * [`Alloy::Core`](lib/alloy-core/README.md) \
   The core library that the rest of **Alloy** is built off of
-* [`Alloy::IO`](lib/alloy-io/README.md) \
-  The library for managing all IO tasks (filesystem, network, etc)
+* [`Alloy::Platform`](lib/alloy-platform/README.md) \
+  The library for abstracting the underlying platform (windows, surfaces, etc)
 * [`Alloy::Render`](lib/alloy-render/README.md) \
   The library for managing rendering tasks, and abstracting the
   underlying rendering system (DX, OpenGL, etc)

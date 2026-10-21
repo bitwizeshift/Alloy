@@ -169,6 +169,6 @@ namespace alloy::extra {
 
     ::SDL_GLContext m_gl_context;
   };
-} // namespace alloy::io
+} // namespace alloy::platform
 
 #endif /* ALLOY_EXTRA_SDL2_BINDINGS_SDL2_GL_WINDOW_HPP */

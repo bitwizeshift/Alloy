@@ -6,8 +6,8 @@
 #include <alloy/extra/logging/console_log_stream.hpp>
 #include <alloy/extra/logging/logger.hpp>
 
-#include <alloy/io/filesystem/disk_filesystem.hpp>
-#include <alloy/io/buffers/mutable_buffer.hpp>
+#include <alloy/platform/filesystem/disk_filesystem.hpp>
+#include <alloy/platform/buffers/mutable_buffer.hpp>
 
 #include <thread>
 #include <chrono>
@@ -23,12 +23,12 @@ namespace {
 // NOLINTNEXTLINE(bugprone-exception-escape)
 auto main() -> int
 {
-  auto disk_filesystem = alloy::io::disk_filesystem{};
-  auto log_file = disk_filesystem.open("log.txt", alloy::io::open_mode::write);
+  auto disk_filesystem = alloy::platform::disk_filesystem{};
+  auto log_file = disk_filesystem.open("log.txt", alloy::platform::open_mode::write);
 
   // Construct the logger
   auto logger = alloy::extra::logger{
-    alloy::io::mutable_buffer::from_container(::format_buffer)
+    alloy::platform::mutable_buffer::from_container(::format_buffer)
   };
 
   // Attach a console logger and a file logger

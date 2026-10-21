@@ -66,7 +66,7 @@ namespace alloy::engine {
     ///
     /// \param file the file to read
     /// \return the image on success
-    auto load(io::file& file)
+    auto load(platform::file& file)
       -> core::result<core::image,std::error_code> override;
 
     //--------------------------------------------------------------------------

@@ -41,7 +41,7 @@ alloy::extra::log_stream::~log_stream()
 // Constructors / Destructor / Assignment
 //------------------------------------------------------------------------------
 
-alloy::extra::logger::logger(alloy::io::mutable_buffer buffer) noexcept
+alloy::extra::logger::logger(alloy::platform::mutable_buffer buffer) noexcept
   : m_head{nullptr},
     m_buffer{buffer}
 {

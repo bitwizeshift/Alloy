@@ -16,7 +16,7 @@ add_executable(${PROJECT_NAME}Win32FilesystemWatcherExample
 target_link_libraries(${PROJECT_NAME}Win32FilesystemWatcherExample
   PRIVATE Alloy::CommonFlags
   PRIVATE Alloy::Core
-  PRIVATE Alloy::IO
+  PRIVATE Alloy::Platform
   PRIVATE Alloy::Extra::Win32Bindings
 )
 

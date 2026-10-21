@@ -24,7 +24,7 @@
 #include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/string/string.hpp"
 
-#include "alloy/io/filesystem/file.hpp"
+#include "alloy/platform/filesystem/file.hpp"
 
 #include <GL/glew.h>
 
@@ -88,7 +88,7 @@ namespace alloy::render::gl {
     /// \return the shader ID on success
     static auto do_compile_from_file(
       shader_type type,
-      io::file& file,
+      platform::file& file,
       core::allocator alloc
     ) -> core::result<::GLuint, gl_error_message>;
   };
@@ -156,7 +156,7 @@ namespace alloy::render::gl {
     ///              buffer used to read the file
     /// \return the shader ID on success
     static auto compile_from_file(
-      io::file& file,
+      platform::file& file,
       core::allocator alloc = core::allocator{}
     ) -> core::result<basic_shader, gl_error_message>;
 
@@ -265,7 +265,7 @@ auto alloy::render::gl::basic_shader<Type>::compile_from_source(
 template <alloy::render::gl::shader_type Type>
 inline
 auto alloy::render::gl::basic_shader<Type>::compile_from_file(
-  io::file& file,
+  platform::file& file,
   core::allocator alloc
 ) -> core::result<basic_shader, gl_error_message>
 {

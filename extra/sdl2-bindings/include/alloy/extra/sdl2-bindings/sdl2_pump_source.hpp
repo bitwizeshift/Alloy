@@ -16,12 +16,12 @@
 #endif
 
 #include "alloy/extra/sdl2-bindings/api.hpp"
-#include "alloy/io/events/window_events.hpp"
-#include "alloy/io/message_pump.hpp"
+#include "alloy/platform/events/window_events.hpp"
+#include "alloy/platform/message_pump.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 #include <SDL3/SDL.h>
-#include <alloy/io/keyboard.hpp>
+#include <alloy/platform/keyboard.hpp>
 #include <map>
 
 namespace alloy::extra {
@@ -44,7 +44,7 @@ namespace alloy::extra {
   /// - window_maximize_event
   //////////////////////////////////////////////////////////////////////////////
   class sdl2_pump_source final
-    : public alloy::io::message_pump::source
+    : public alloy::platform::message_pump::source
   {
     //--------------------------------------------------------------------------
     // Static Functions
@@ -109,13 +109,13 @@ namespace alloy::extra {
     ///       pump, the event will not propagate.
     ///
     /// \param p the message_pump to push new messages to
-    auto poll(io::message_pump& p) noexcept -> void override;
+    auto poll(platform::message_pump& p) noexcept -> void override;
 
     /// \brief Handles a window event
     ///
     /// \param event the SDL_Event to handle
     /// \param p the message pump to pump events back into
-    auto handle_window_event(const ::SDL_Event& event, io::message_pump& p)
+    auto handle_window_event(const ::SDL_Event& event, platform::message_pump& p)
       noexcept -> void;
 
     /// \brief Handles a keyboard event
@@ -125,15 +125,15 @@ namespace alloy::extra {
     /// \param p the message pump to respond to
     auto handle_keyboard_event(
       const ::SDL_Event& event,
-      io::keyboard::key_state state,
-      io::message_pump& p
+      platform::keyboard::key_state state,
+      platform::message_pump& p
     ) noexcept -> void;
 
     /// \brief Handles a mouse event
     ///
     /// \param event the SDL_Event to handle
     /// \param p the message pump to respond to
-    auto handle_mouse_event(const ::SDL_Event& event, io::message_pump& p)
+    auto handle_mouse_event(const ::SDL_Event& event, platform::message_pump& p)
       noexcept -> void;
 
     //--------------------------------------------------------------------------
@@ -146,6 +146,6 @@ namespace alloy::extra {
     std::map<unsigned,sdl2_window*> m_windows;
   };
 
-} // namespace alloy::io
+} // namespace alloy::platform
 
 #endif /* ALLOY_EXTRA_SDL2_BINDINGS_SDL2_PUMP_SOURCE_HPP */

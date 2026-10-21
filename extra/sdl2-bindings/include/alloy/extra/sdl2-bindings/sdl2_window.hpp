@@ -16,7 +16,7 @@
 #endif
 
 #include "alloy/extra/sdl2-bindings/api.hpp"
-#include "alloy/io/window.hpp"
+#include "alloy/platform/window.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 #include <SDL3/SDL.h>
@@ -31,7 +31,7 @@ namespace alloy::extra {
   ///
   //////////////////////////////////////////////////////////////////////////////
   class sdl2_window
-    : public alloy::io::window
+    : public alloy::platform::window
   {
     //--------------------------------------------------------------------------
     // Public Member Types
@@ -121,6 +121,6 @@ namespace alloy::extra {
 
     ::SDL_Window* m_window;
   };
-} // namespace alloy::io
+} // namespace alloy::platform
 
 #endif /* ALLOY_EXTRA_SDL2_BINDINGS_SDL2_WINDOW_HPP */

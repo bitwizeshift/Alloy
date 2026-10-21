@@ -41,10 +41,10 @@ if (NOT ALLOY_PRECISION IN_LIST ALLOY_PRECISION_VALUES)
                       "Precision must be one of: " ${ALLOY_PRECISION_VALUES})
 endif ()
 
-# IO settings
+# Platform settings
 
-set(ALLOY_EVENT_SIZE 64 CACHE STRING "Event size for alloy::io::event objects")
-set(ALLOY_EVENT_ALIGN 32 CACHE STRING "Event alignment for alloy::io::event objects")
+set(ALLOY_EVENT_SIZE 64 CACHE STRING "Event size for alloy::platform::event objects")
+set(ALLOY_EVENT_ALIGN 32 CACHE STRING "Event alignment for alloy::platform::event objects")
 
 if (NOT ALLOY_EVENT_SIZE MATCHES "[0-9]+")
   message(FATAL_ERROR "Invalid ALLOY_EVENT_SIZE '${ALLOY_EVENT_SIZE}'."
@@ -150,7 +150,7 @@ include(AlloyTargets)
 # Library Targets
 
 add_subdirectory("lib/alloy-core")
-add_subdirectory("lib/alloy-io")
+add_subdirectory("lib/alloy-platform")
 add_subdirectory("lib/alloy-render")
 add_subdirectory("lib/alloy-render-gl")
 add_subdirectory("lib/alloy-audio")
@@ -162,7 +162,7 @@ add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME}
   INTERFACE
     Alloy::Core
-    Alloy::IO
+    Alloy::Platform
 #   Alloy::Render
 #   Alloy::Audio
 #   Alloy::Engine

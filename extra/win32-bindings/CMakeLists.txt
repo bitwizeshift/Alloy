@@ -20,7 +20,7 @@ add_alloy_library(${PROJECT_NAME}ExtraWin32Bindings
   HEADERS     ${header_files}
   SOURCES     ${source_files}
   DEPENDENCIES
-    PUBLIC ${PROJECT_NAME}::IO
+    PUBLIC ${PROJECT_NAME}::Platform
 )
 
 # Examples
