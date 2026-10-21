@@ -472,7 +472,7 @@ struct alloy::io::file_serializer<std::int8_t>
   }
 
   static auto deserialize(file& f)
-    noexcept -> core::result<std::int16_t,std::error_code>
+    noexcept -> core::result<std::int8_t,std::error_code>
   {
     auto r = file_serializer<std::uint8_t>::deserialize(f);
 

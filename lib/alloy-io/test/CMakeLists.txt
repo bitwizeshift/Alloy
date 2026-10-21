@@ -5,6 +5,7 @@
 set(source_files
   src/alloy/io/event.test.cpp
   src/alloy/io/sequence_detector.test.cpp
+  src/alloy/io/filesystem/file.test.cpp
 )
 
 add_alloy_test(${PROJECT_NAME}IOTest
