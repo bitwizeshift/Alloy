@@ -142,11 +142,13 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
   return mesh{vao, vbo, ebo, topology, index_count};
 }
 
-alloy::render::gl::mesh::mesh(::GLuint vao,
-                              ::GLuint vbo,
-                              ::GLuint ebo,
-                              ::GLenum topology,
-                              std::size_t indices)
+alloy::render::gl::mesh::mesh(
+  ::GLuint vao,
+  ::GLuint vbo,
+  ::GLuint ebo,
+  ::GLenum topology,
+  std::size_t indices
+)
   : m_vao{vao},
     m_vbo{vbo},
     m_ebo{ebo},

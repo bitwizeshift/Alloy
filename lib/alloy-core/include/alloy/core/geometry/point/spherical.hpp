@@ -109,8 +109,10 @@ namespace alloy::core {
   // Comparisons
   //----------------------------------------------------------------------------
 
-  constexpr auto operator==(const spherical& lhs, const spherical& rhs) noexcept -> bool;
-  constexpr auto operator!=(const spherical& lhs, const spherical& rhs) noexcept -> bool;
+  constexpr auto operator==(const spherical& lhs, const spherical& rhs)
+    noexcept -> bool;
+  constexpr auto operator!=(const spherical& lhs, const spherical& rhs)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -119,9 +121,11 @@ namespace alloy::core {
   /// \param lhs the left spherical
   /// \param rhs the right spherical
   /// \return `true` if the two spherical contain almost equal values
-  constexpr auto almost_equal(const spherical& lhs,
-                              const spherical& rhs,
-                              real tolerance) noexcept -> bool;
+  constexpr auto almost_equal(
+    const spherical& lhs,
+    const spherical& rhs,
+    real tolerance
+  ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
   // Utilities
@@ -162,8 +166,7 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::spherical::spherical(real rho, radian phi, radian theta)
-  noexcept
+alloy::core::spherical::spherical(real rho, radian phi, radian theta) noexcept
   : m_rho{rho},
     m_phi{phi},
     m_theta{theta}
@@ -176,43 +179,37 @@ alloy::core::spherical::spherical(real rho, radian phi, radian theta)
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::rho()
-  noexcept -> real&
+auto alloy::core::spherical::rho() noexcept -> real&
 {
   return m_rho;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::rho()
-  const noexcept -> real
+auto alloy::core::spherical::rho() const noexcept -> real
 {
   return m_rho;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::phi()
-  noexcept -> radian&
+auto alloy::core::spherical::phi() noexcept -> radian&
 {
   return m_phi;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::phi()
-  const noexcept -> radian
+auto alloy::core::spherical::phi() const noexcept -> radian
 {
   return m_phi;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::theta()
-  noexcept -> radian&
+auto alloy::core::spherical::theta() noexcept -> radian&
 {
   return m_theta;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::theta()
-  const noexcept -> radian
+auto alloy::core::spherical::theta() const noexcept -> radian
 {
   return m_theta;
 }
@@ -229,7 +226,8 @@ ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr
-auto alloy::core::operator==(const spherical& lhs, const spherical& rhs) noexcept -> bool
+auto alloy::core::operator==(const spherical& lhs, const spherical& rhs)
+  noexcept -> bool
 {
   return (
     lhs.rho() == rhs.rho() &&
@@ -239,7 +237,8 @@ auto alloy::core::operator==(const spherical& lhs, const spherical& rhs) noexcep
 }
 
 inline constexpr
-auto alloy::core::operator!=(const spherical& lhs, const spherical& rhs) noexcept -> bool
+auto alloy::core::operator!=(const spherical& lhs, const spherical& rhs)
+  noexcept -> bool
 {
   return !(lhs == rhs);
 }
@@ -266,8 +265,7 @@ auto alloy::core::almost_equal(const spherical& lhs,
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::core::to_spherical(const point3& p)
-  noexcept -> spherical
+auto alloy::core::to_spherical(const point3& p) noexcept -> spherical
 {
   const auto phi_distance = vector2{p.x(), p.y()}.magnitude();
   const auto distance = to_vector(p).magnitude();
@@ -278,8 +276,7 @@ auto alloy::core::to_spherical(const point3& p)
 }
 
 inline
-auto alloy::core::to_point(const spherical& p)
-  noexcept -> point3
+auto alloy::core::to_point(const spherical& p) noexcept -> point3
 {
   const auto sin_phi = trigonometry::sin(p.phi());
   const auto cos_phi = trigonometry::cos(p.phi());
@@ -302,9 +299,10 @@ ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr
-auto alloy::core::piecewise_compare<alloy::core::spherical>
-  ::operator()(const spherical& lhs, const spherical& rhs)
-  const noexcept -> bool
+auto alloy::core::piecewise_compare<alloy::core::spherical>::operator()(
+  const spherical& lhs,
+  const spherical& rhs
+) const noexcept -> bool
 {
   return (lhs.rho() == rhs.rho()) ?
            (lhs.phi() == rhs.phi()) ?

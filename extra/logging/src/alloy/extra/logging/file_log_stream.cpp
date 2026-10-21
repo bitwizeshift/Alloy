@@ -12,8 +12,7 @@
 
 namespace {
 
-  std::string_view to_string(alloy::extra::log_level level)
-    noexcept
+  auto to_string(alloy::extra::log_level level) noexcept -> std::string_view
   {
     using log_level = alloy::extra::log_level;
 
@@ -40,8 +39,7 @@ namespace {
 } // namespace <anonymous>
 
 
-alloy::extra::file_log_stream::file_log_stream(io::file destination)
-  noexcept
+alloy::extra::file_log_stream::file_log_stream(io::file destination) noexcept
   : m_destination{std::move(destination)}
 {
 

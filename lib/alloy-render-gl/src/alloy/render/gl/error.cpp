@@ -18,11 +18,13 @@ namespace alloy::render::gl::error {
   {
   public:
 
-    auto name() const noexcept -> const char* override {
+    auto name() const noexcept -> const char* override
+    {
       return "gl";
     }
 
-    auto message(int error) const -> std::string override {
+    auto message(int error) const -> std::string override
+    {
       const auto* s = ::glGetString(static_cast<::GLenum>(error));
 
       return std::string{reinterpret_cast<const char*>(s)};
@@ -37,11 +39,13 @@ namespace alloy::render::gl::error {
   {
   public:
 
-    auto name() const noexcept -> const char* override {
+    auto name() const noexcept -> const char* override
+    {
       return "gl extended";
     }
 
-    auto message(int error) const -> std::string override {
+    auto message(int error) const -> std::string override
+    {
       switch (error) {
         case 0: {
           return "none";
@@ -60,8 +64,7 @@ namespace alloy::render::gl::error {
 
 } // namespace alloy::render::gl::error
 
-auto alloy::render::gl::error::gl_basic_category()
-  -> const std::error_category&
+auto alloy::render::gl::error::gl_basic_category() -> const std::error_category&
 {
   static const auto s_category = gl_basic_error_category{};
 
@@ -114,8 +117,9 @@ auto alloy::render::gl::gl_error_message::make(core::string message)
 // Constructors / Assignment
 //-----------------------------------------------------------------------------
 
-alloy::render::gl::gl_error_message::gl_error_message(std::shared_ptr<core::string> message)
-  noexcept
+alloy::render::gl::gl_error_message::gl_error_message(
+  std::shared_ptr<core::string> message
+) noexcept
   : m_message{std::move(message)}
 {
 

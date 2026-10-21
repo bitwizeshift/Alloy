@@ -131,8 +131,8 @@ namespace alloy::core {
 
     //-------------------------------------------------------------------------
 
-    signal& operator=(signal&&) = delete;
-    signal& operator=(const signal&) = delete;
+    auto operator=(signal&&) -> signal& = delete;
+    auto operator=(const signal&) -> signal& = delete;
 
     //-------------------------------------------------------------------------
     // Emission
@@ -147,7 +147,7 @@ namespace alloy::core {
     /// \param args the arguments to forward to the handlers
     template <auto Handler, typename...UArgs>
       requires (std::invocable<decltype(Handler), Listener&, UArgs...>)
-    void emit(UArgs&&...args) const;
+    auto emit(UArgs&&...args) const -> void;
 
     /// \brief Emits a signal to all handlers of the event sink, collecting the
     ///        results
@@ -168,8 +168,7 @@ namespace alloy::core {
     /// \param args the arguments to forward to the handlers
     template <auto Handler, typename CollectorFn, typename...UArgs>
       requires (std::invocable<decltype(Handler), Listener&, UArgs...>)
-    void emit(CollectorFn&& collector,
-              UArgs&&...args) const;
+    auto emit(CollectorFn&& collector, UArgs&&...args) const -> void;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -269,8 +268,8 @@ namespace alloy::core {
 
     //-------------------------------------------------------------------------
 
-    signal& operator=(signal&&) = delete;
-    signal& operator=(const signal&) = delete;
+    auto operator=(signal&&) -> signal& = delete;
+    auto operator=(const signal&) -> signal& = delete;
 
     //-------------------------------------------------------------------------
     // Emission
@@ -282,7 +281,7 @@ namespace alloy::core {
     /// \param args the arguments to forward to the handlers
     template <typename...UArgs>
       requires (std::invocable<R(*)(Args...), UArgs...>)
-    void emit(UArgs&&...args) const;
+    auto emit(UArgs&&...args) const -> void;
 
     /// \brief Emits a signal to all handlers of the event sink, collecting the
     ///        results
@@ -300,7 +299,7 @@ namespace alloy::core {
     /// \param args the arguments to forward to the handlers
     template <typename CollectorFn, typename...UArgs, typename R2=R>
       requires (std::invocable<R(*)(Args...), UArgs...>)
-    void emit(CollectorFn&& collector, UArgs&&...args) const;
+    auto emit(CollectorFn&& collector, UArgs&&...args) const -> void;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -361,8 +360,8 @@ namespace alloy::core {
 
     //-------------------------------------------------------------------------
 
-    sink& operator=(sink&&) = delete;
-    sink& operator=(const sink&) = delete;
+    auto operator=(sink&&) -> sink& = delete;
+    auto operator=(const sink&) -> sink& = delete;
 
     //-------------------------------------------------------------------------
     // Event Handlers
@@ -374,8 +373,8 @@ namespace alloy::core {
     /// \pre \p listener must not be null
     /// \param listener the listener to bind
     /// \return a connection object
-    connection connect(Listener* listener) noexcept;
-    connection connect(std::nullptr_t) = delete;
+    auto connect(Listener* listener) noexcept -> connection;
+    auto connect(std::nullptr_t) -> connection = delete;
 
     //-------------------------------------------------------------------------
     // Modifiers
@@ -385,7 +384,7 @@ namespace alloy::core {
     /// \brief Reserves space for \p size handlers
     ///
     /// \param size the number of handlers to reserve space for
-    void reserve(size_type size);
+    auto reserve(size_type size) -> void;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -395,24 +394,24 @@ namespace alloy::core {
     /// \brief Gets the capacity of this event sink
     ///
     /// \return the number of entries this sink can store
-    size_type capacity() const noexcept;
+    auto capacity() const noexcept -> size_type;
 
     /// \brief Gets the current number of entries this sink stores
     ///
     /// \return the number of entries this sink stores
-    size_type size() const noexcept;
+    auto size() const noexcept -> size_type;
 
     /// \brief Queries whether this sink has any handlers stored
     ///
     /// \return `true` if this event has no handlers
-    bool empty() const noexcept;
+    auto empty() const noexcept -> bool;
 
     //-------------------------------------------------------------------------
     // Private Static Functions
     //-------------------------------------------------------------------------
   private:
 
-    static void disconnect(Listener* listener, void* signal) noexcept;
+    static auto disconnect(Listener* listener, void* signal) noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -472,8 +471,8 @@ namespace alloy::core {
 
     //-------------------------------------------------------------------------
 
-    sink& operator=(sink&&) = delete;
-    sink& operator=(const sink&) = delete;
+    auto operator=(sink&&) -> sink& = delete;
+    auto operator=(const sink&) -> sink& = delete;
 
     //-------------------------------------------------------------------------
     // Event Handlers
@@ -486,7 +485,7 @@ namespace alloy::core {
     /// \return a connection object
     template <auto Fn>
       requires (alloy::core::detail::invocable_returns<R, decltype(Fn),Args...>)
-    connection connect() noexcept;
+    auto connect() noexcept -> connection;
 
     /// \brief Adds a member function pointer listener to this event
     ///
@@ -497,7 +496,7 @@ namespace alloy::core {
     /// \return a connection object
     template <auto MemberFn, typename C>
       requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),C*,Args...>)
-    connection connect(C* c) noexcept;
+    auto connect(C* c) noexcept -> connection;
 
     /// \brief Adds a const member function pointer listener to this event
     ///
@@ -508,7 +507,7 @@ namespace alloy::core {
     /// \return a connection object
     template <auto MemberFn, typename C>
       requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),const C*,Args...>)
-    connection connect(const C* c) noexcept;
+    auto connect(const C* c) noexcept -> connection;
 
     /// \{
     /// \brief Adds a callable listener to this event
@@ -517,16 +516,16 @@ namespace alloy::core {
     /// \return a connection object
     template <typename Callable>
       requires (alloy::core::detail::invocable_returns<R, Callable&,Args...>)
-    connection connect(Callable* callable) noexcept;
+    auto connect(Callable* callable) noexcept -> connection;
     template <typename Callable>
       requires (alloy::core::detail::invocable_returns<R, const Callable&,Args...>)
-    connection connect(const Callable* callable) noexcept;
+    auto connect(const Callable* callable) noexcept -> connection;
     /// \}
 
     // Disallow binding nulls
     template <auto MemberFn>
-    connection connect(std::nullptr_t) = delete;
-    connection connect(std::nullptr_t) = delete;
+    auto connect(std::nullptr_t) -> connection = delete;
+    auto connect(std::nullptr_t) -> connection = delete;
 
     //-------------------------------------------------------------------------
     // Modifiers
@@ -536,7 +535,7 @@ namespace alloy::core {
     /// \brief Reserves space for \p size handlers
     ///
     /// \param size the number of handlers to reserve space for
-    void reserve(size_type size);
+    auto reserve(size_type size) -> void;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -546,17 +545,17 @@ namespace alloy::core {
     /// \brief Gets the capacity of this event sink
     ///
     /// \return the number of entries this sink can store
-    size_type capacity() const noexcept;
+    auto capacity() const noexcept -> size_type;
 
     /// \brief Gets the current number of entries this sink stores
     ///
     /// \return the number of entries this sink stores
-    size_type size() const noexcept;
+    auto size() const noexcept -> size_type;
 
     /// \brief Queries whether this sink has any handlers stored
     ///
     /// \return `true` if this event has no handlers
-    bool empty() const noexcept;
+    auto empty() const noexcept -> bool;
 
     //-------------------------------------------------------------------------
     // Private Static Functions
@@ -564,13 +563,13 @@ namespace alloy::core {
   private:
 
     template <auto Fn>
-    static void disconnect(void* signal) noexcept;
+    static auto disconnect(void* signal) noexcept -> void;
 
     template <auto MemberFn, typename C>
-    static void disconnect(C* c, void* signal) noexcept;
+    static auto disconnect(C* c, void* signal) noexcept -> void;
 
     template <typename Callable>
-    static void disconnect(Callable* callable, void* signal) noexcept;
+    static auto disconnect(Callable* callable, void* signal) noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -620,8 +619,8 @@ namespace alloy::core {
     ///
     /// \param other the other connection to move
     /// \return reference to this
-    connection& operator=(connection&& other) noexcept;
-    connection& operator=(const connection&) = delete;
+    auto operator=(connection&& other) noexcept -> connection&;
+    auto operator=(const connection&) -> connection& = delete;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -632,7 +631,7 @@ namespace alloy::core {
     /// \brief Queries whether the associated slot is still connected
     ///
     /// \return `true` if connected
-    bool connected() const noexcept;
+    auto connected() const noexcept -> bool;
     explicit operator bool() const noexcept;
     /// \}
 
@@ -642,7 +641,7 @@ namespace alloy::core {
   public:
 
     /// \brief Disconnects the sink from the signal
-    void disconnect() noexcept;
+    auto disconnect() noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Private Member Types
@@ -662,8 +661,8 @@ namespace alloy::core {
     /// \param disconnect the callback to do the disconnecting
     /// \param signal the signal to connect
     template <typename Listener>
-    connection(disconnect_callback disconnect,
-               signal<Listener>* signal) noexcept;
+    connection(disconnect_callback disconnect, signal<Listener>* signal)
+      noexcept;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -709,8 +708,8 @@ namespace alloy::core {
 
     //-------------------------------------------------------------------------
 
-    scoped_connection& operator=(scoped_connection&&) = delete;
-    scoped_connection& operator=(const scoped_connection&) = delete;
+    auto operator=(scoped_connection&&) -> scoped_connection& = delete;
+    auto operator=(const scoped_connection&) -> scoped_connection& = delete;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -721,7 +720,7 @@ namespace alloy::core {
     /// \brief Queries whether the associated slot is still connected
     ///
     /// \return `true` if connected
-    bool connected() const noexcept;
+    auto connected() const noexcept -> bool;
     explicit operator bool() const noexcept;
     /// \}
 
@@ -731,7 +730,7 @@ namespace alloy::core {
   public:
 
     /// \brief Disconnects the sink from the signal
-    void disconnect() noexcept;
+    auto disconnect() noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -753,16 +752,16 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 template <typename Listener>
-inline alloy::core::signal<Listener>::signal()
-  noexcept
+inline
+alloy::core::signal<Listener>::signal() noexcept
   : m_listeners{}
 {
 
 }
 
 template <typename Listener>
-inline alloy::core::signal<Listener>::signal(size_type size, allocator alloc)
-  noexcept
+inline
+alloy::core::signal<Listener>::signal(size_type size, allocator alloc) noexcept
   : m_listeners{size, alloc}
 {
 
@@ -778,8 +777,8 @@ inline alloy::core::signal<Listener>::signal(size_type size, allocator alloc)
 template <typename Listener>
 template <auto Handler, typename...UArgs>
   requires (std::invocable<decltype(Handler), Listener&, UArgs...>)
-inline void alloy::core::signal<Listener>::emit(UArgs&&...args)
-  const
+inline
+auto alloy::core::signal<Listener>::emit(UArgs&&...args) const -> void
 {
   for (const auto& listener : m_listeners) {
     std::invoke(Handler, listener, std::forward<UArgs>(args)...);
@@ -790,9 +789,11 @@ inline void alloy::core::signal<Listener>::emit(UArgs&&...args)
 template <typename Listener>
 template <auto Handler, typename CollectorFn, typename...UArgs>
   requires (std::invocable<decltype(Handler), Listener&, UArgs...>)
-inline void alloy::core::signal<Listener>::emit(CollectorFn&& collector,
-                                                UArgs&&...args)
-  const
+inline
+auto alloy::core::signal<Listener>::emit(
+  CollectorFn&& collector,
+  UArgs&&...args
+) const -> void
 {
   using result_type = std::invoke_result_t<decltype(Handler),Listener&,UArgs...>;
 
@@ -834,15 +835,16 @@ inline void alloy::core::signal<Listener>::emit(CollectorFn&& collector,
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-inline alloy::core::signal<R(Args...)>::signal()
-  noexcept
+inline
+alloy::core::signal<R(Args...)>::signal() noexcept
   : m_listeners{}
 {
 
 }
 
 template <typename R, typename...Args>
-inline alloy::core::signal<R(Args...)>::signal(size_type size, allocator alloc)
+inline
+alloy::core::signal<R(Args...)>::signal(size_type size, allocator alloc)
   noexcept
   : m_listeners{size, alloc}
 {
@@ -859,8 +861,8 @@ inline alloy::core::signal<R(Args...)>::signal(size_type size, allocator alloc)
 template <typename R, typename...Args>
 template <typename...UArgs>
   requires (std::invocable<R(*)(Args...), UArgs...>)
-inline void alloy::core::signal<R(Args...)>::emit(UArgs&&...args)
-  const
+inline
+auto alloy::core::signal<R(Args...)>::emit(UArgs&&...args) const -> void
 {
   for (const auto& listener : m_listeners) {
     listener(std::forward<UArgs>(args)...);
@@ -871,9 +873,11 @@ inline void alloy::core::signal<R(Args...)>::emit(UArgs&&...args)
 template <typename R, typename...Args>
 template <typename CollectorFn, typename...UArgs, typename>
   requires (std::invocable<R(*)(Args...), UArgs...>)
-inline void alloy::core::signal<R(Args...)>::emit(CollectorFn&& collector,
-                                                  UArgs&&...args)
-  const
+inline
+auto alloy::core::signal<R(Args...)>::emit(
+  CollectorFn&& collector,
+  UArgs&&...args
+) const -> void
 {
   for (const auto& listener : m_listeners) {
     if constexpr (std::is_void_v<R>) {
@@ -913,8 +917,8 @@ inline void alloy::core::signal<R(Args...)>::emit(CollectorFn&& collector,
 //-----------------------------------------------------------------------------
 
 template <typename Listener>
-inline alloy::core::sink<Listener>::sink(signal_type* signal)
-  noexcept
+inline
+alloy::core::sink<Listener>::sink(signal_type* signal) noexcept
   : m_signal{signal}
 {
   ALLOY_ASSERT(signal != nullptr);
@@ -977,9 +981,9 @@ inline void alloy::core::sink<Listener>::reserve(size_type size)
 //-----------------------------------------------------------------------------
 
 template <typename Listener>
-inline typename alloy::core::sink<Listener>::size_type
-  alloy::core::sink<Listener>::capacity()
-  const noexcept
+inline
+auto alloy::core::sink<Listener>::capacity()
+  const noexcept -> typename sink<Listener>::size_type
 {
   ALLOY_ASSERT(m_signal != nullptr);
   return m_signal->m_listeners.capacity();
@@ -987,9 +991,9 @@ inline typename alloy::core::sink<Listener>::size_type
 
 
 template <typename Listener>
-inline typename alloy::core::sink<Listener>::size_type
-  alloy::core::sink<Listener>::size()
-  const noexcept
+inline
+auto alloy::core::sink<Listener>::size()
+  const noexcept -> typename sink<Listener>::size_type
 {
   ALLOY_ASSERT(m_signal != nullptr);
   return m_signal->m_listeners.size();
@@ -997,8 +1001,8 @@ inline typename alloy::core::sink<Listener>::size_type
 
 
 template <typename Listener>
-inline bool alloy::core::sink<Listener>::empty()
-  const noexcept
+inline
+auto alloy::core::sink<Listener>::empty() const noexcept -> bool
 {
   ALLOY_ASSERT(m_signal != nullptr);
   return m_signal->m_listeners.empty();
@@ -1009,9 +1013,9 @@ inline bool alloy::core::sink<Listener>::empty()
 //-----------------------------------------------------------------------------
 
 template <typename Listener>
-inline void alloy::core::sink<Listener>::disconnect(Listener* listener,
-                                                    void* signal)
-  noexcept
+inline
+auto alloy::core::sink<Listener>::disconnect(Listener* listener, void* signal)
+  noexcept -> void
 {
   ALLOY_ASSERT(listener != nullptr);
   ALLOY_ASSERT(signal != nullptr);
@@ -1034,8 +1038,8 @@ inline void alloy::core::sink<Listener>::disconnect(Listener* listener,
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-inline alloy::core::sink<R(Args...)>::sink(signal_type* signal)
-  noexcept
+inline
+alloy::core::sink<R(Args...)>::sink(signal_type* signal) noexcept
   : m_signal{signal}
 {
   ALLOY_ASSERT(signal != nullptr);
@@ -1048,9 +1052,8 @@ inline alloy::core::sink<R(Args...)>::sink(signal_type* signal)
 template <typename R, typename...Args>
 template <auto Fn>
   requires (alloy::core::detail::invocable_returns<R, decltype(Fn),Args...>)
-inline alloy::core::connection
-  alloy::core::sink<R(Args...)>::connect()
-  noexcept
+inline
+auto alloy::core::sink<R(Args...)>::connect() noexcept -> connection
 {
   ALLOY_ASSERT(m_signal != nullptr);
 
@@ -1072,9 +1075,8 @@ inline alloy::core::connection
 template <typename R, typename...Args>
 template <auto MemberFn, typename C>
   requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),C*,Args...>)
-inline alloy::core::connection
-  alloy::core::sink<R(Args...)>::connect(C* c)
-  noexcept
+inline
+auto alloy::core::sink<R(Args...)>::connect(C* c) noexcept -> connection
 {
   ALLOY_ASSERT(c != nullptr);
   ALLOY_ASSERT(m_signal != nullptr);
@@ -1097,9 +1099,8 @@ inline alloy::core::connection
 template <typename R, typename...Args>
 template <auto MemberFn, typename C>
   requires (alloy::core::detail::invocable_returns<R, decltype(MemberFn),const C*,Args...>)
-inline alloy::core::connection
-  alloy::core::sink<R(Args...)>::connect(const C* c)
-  noexcept
+inline
+auto alloy::core::sink<R(Args...)>::connect(const C* c) noexcept -> connection
 {
   ALLOY_ASSERT(c != nullptr);
   ALLOY_ASSERT(m_signal != nullptr);
@@ -1122,9 +1123,9 @@ inline alloy::core::connection
 template <typename R, typename...Args>
 template <typename Callable>
   requires (alloy::core::detail::invocable_returns<R, Callable&,Args...>)
-inline alloy::core::connection
-  alloy::core::sink<R(Args...)>::connect(Callable* callable)
-  noexcept
+inline
+auto alloy::core::sink<R(Args...)>::connect(Callable* callable)
+  noexcept -> connection
 {
   ALLOY_ASSERT(callable != nullptr);
   ALLOY_ASSERT(m_signal != nullptr);
@@ -1147,9 +1148,9 @@ inline alloy::core::connection
 template <typename R, typename...Args>
 template <typename Callable>
   requires (alloy::core::detail::invocable_returns<R, const Callable&,Args...>)
-inline alloy::core::connection
-  alloy::core::sink<R(Args...)>::connect(const Callable* callable)
-  noexcept
+inline
+auto alloy::core::sink<R(Args...)>::connect(const Callable* callable)
+  noexcept -> connection
 {
   using disconnect_type = connection::disconnect_callback;
 
@@ -1172,7 +1173,8 @@ inline alloy::core::connection
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-inline void alloy::core::sink<R(Args...)>::reserve(size_type size)
+inline
+auto alloy::core::sink<R(Args...)>::reserve(size_type size) -> void
 {
   ALLOY_ASSERT(m_signal != nullptr);
   auto& listeners = m_signal->m_listeners;
@@ -1185,9 +1187,9 @@ inline void alloy::core::sink<R(Args...)>::reserve(size_type size)
 //-----------------------------------------------------------------------------
 
 template <typename R, typename...Args>
-inline typename alloy::core::sink<R(Args...)>::size_type
-  alloy::core::sink<R(Args...)>::capacity()
-  const noexcept
+inline
+auto alloy::core::sink<R(Args...)>::capacity()
+  const noexcept -> typename sink<R(Args...)>::size_type
 {
   ALLOY_ASSERT(m_signal != nullptr);
   return m_signal->m_listeners.capacity();
@@ -1195,9 +1197,9 @@ inline typename alloy::core::sink<R(Args...)>::size_type
 
 
 template <typename R, typename...Args>
-inline typename alloy::core::sink<R(Args...)>::size_type
-  alloy::core::sink<R(Args...)>::size()
-  const noexcept
+inline
+auto alloy::core::sink<R(Args...)>::size()
+  const noexcept -> typename sink<R(Args...)>::size_type
 {
   ALLOY_ASSERT(m_signal != nullptr);
   return m_signal->m_listeners.size();
@@ -1205,8 +1207,8 @@ inline typename alloy::core::sink<R(Args...)>::size_type
 
 
 template <typename R, typename...Args>
-inline bool alloy::core::sink<R(Args...)>::empty()
-  const noexcept
+inline
+auto alloy::core::sink<R(Args...)>::empty() const noexcept -> bool
 {
   ALLOY_ASSERT(m_signal != nullptr);
   return m_signal->m_listeners.empty();
@@ -1218,8 +1220,8 @@ inline bool alloy::core::sink<R(Args...)>::empty()
 
 template <typename R, typename...Args>
 template <auto Fn>
-inline void alloy::core::sink<R(Args...)>::disconnect(void* signal)
-  noexcept
+inline
+auto alloy::core::sink<R(Args...)>::disconnect(void* signal) noexcept -> void
 {
   ALLOY_ASSERT(signal != nullptr);
   auto& listeners = static_cast<signal_type*>(signal)->m_listeners;
@@ -1235,8 +1237,9 @@ inline void alloy::core::sink<R(Args...)>::disconnect(void* signal)
 
 template <typename R, typename...Args>
 template <auto MemberFn, typename C>
-inline void alloy::core::sink<R(Args...)>::disconnect(C* c, void* signal)
-  noexcept
+inline
+auto alloy::core::sink<R(Args...)>::disconnect(C* c, void* signal)
+  noexcept -> void
 {
   ALLOY_ASSERT(c != nullptr);
   ALLOY_ASSERT(signal != nullptr);
@@ -1253,8 +1256,9 @@ inline void alloy::core::sink<R(Args...)>::disconnect(C* c, void* signal)
 
 template <typename R, typename...Args>
 template <typename Callable>
-inline void alloy::core::sink<R(Args...)>::disconnect(Callable* callable, void* signal)
-  noexcept
+inline
+auto alloy::core::sink<R(Args...)>::disconnect(Callable* callable, void* signal)
+  noexcept -> void
 {
   ALLOY_ASSERT(callable != nullptr);
   ALLOY_ASSERT(signal != nullptr);
@@ -1276,8 +1280,8 @@ inline void alloy::core::sink<R(Args...)>::disconnect(Callable* callable, void* 
 // Constructor
 //-----------------------------------------------------------------------------
 
-inline alloy::core::connection::connection()
-  noexcept
+inline
+alloy::core::connection::connection() noexcept
   : m_disconnect{},
     m_signal{nullptr}
 {
@@ -1285,8 +1289,8 @@ inline alloy::core::connection::connection()
 }
 
 
-inline alloy::core::connection::connection(connection&& other)
-  noexcept
+inline
+alloy::core::connection::connection(connection&& other) noexcept
   : m_disconnect{other.m_disconnect},
     m_signal{other.m_signal}
 {
@@ -1294,9 +1298,9 @@ inline alloy::core::connection::connection(connection&& other)
 }
 
 
-inline alloy::core::connection&
-  alloy::core::connection::operator=(connection&& other)
-  noexcept
+inline
+auto alloy::core::connection::operator=(connection&& other)
+  noexcept -> connection&
 {
   m_disconnect = other.m_disconnect;
   m_signal = other.m_signal;
@@ -1310,15 +1314,15 @@ inline alloy::core::connection&
 // Observers
 //-----------------------------------------------------------------------------
 
-inline bool alloy::core::connection::connected()
-  const noexcept
+inline
+auto alloy::core::connection::connected() const noexcept -> bool
 {
   return static_cast<bool>(m_disconnect);
 }
 
 
-inline alloy::core::connection::operator bool()
-  const noexcept
+inline
+alloy::core::connection::operator bool() const noexcept
 {
   return connected();
 }
@@ -1327,8 +1331,8 @@ inline alloy::core::connection::operator bool()
 // Modifiers
 //-----------------------------------------------------------------------------
 
-inline void alloy::core::connection::disconnect()
-  noexcept
+inline
+auto alloy::core::connection::disconnect() noexcept -> void
 {
   if (m_disconnect) {
     m_disconnect(m_signal);
@@ -1341,9 +1345,11 @@ inline void alloy::core::connection::disconnect()
 //-----------------------------------------------------------------------------
 
 template <typename Listener>
-inline alloy::core::connection::connection(disconnect_callback disconnect,
-                                           signal<Listener>* signal)
-  noexcept
+inline
+alloy::core::connection::connection(
+  disconnect_callback disconnect,
+  signal<Listener>* signal
+) noexcept
   : m_disconnect{disconnect},
     m_signal{signal}
 {
@@ -1358,8 +1364,8 @@ inline alloy::core::connection::connection(disconnect_callback disconnect,
 // Constructor
 //-----------------------------------------------------------------------------
 
-inline alloy::core::scoped_connection::scoped_connection(connection conn)
-  noexcept
+inline
+alloy::core::scoped_connection::scoped_connection(connection conn) noexcept
   : m_connection{std::move(conn)}
 {
 
@@ -1367,7 +1373,8 @@ inline alloy::core::scoped_connection::scoped_connection(connection conn)
 
 //-----------------------------------------------------------------------------
 
-inline alloy::core::scoped_connection::~scoped_connection()
+inline
+alloy::core::scoped_connection::~scoped_connection()
 {
   m_connection.disconnect();
 }
@@ -1376,15 +1383,15 @@ inline alloy::core::scoped_connection::~scoped_connection()
 // Observers
 //-----------------------------------------------------------------------------
 
-inline bool alloy::core::scoped_connection::connected()
-  const noexcept
+inline
+auto alloy::core::scoped_connection::connected() const noexcept -> bool
 {
   return m_connection.connected();
 }
 
 
-inline alloy::core::scoped_connection::operator bool()
-  const noexcept
+inline
+alloy::core::scoped_connection::operator bool() const noexcept
 {
   return connected();
 }
@@ -1393,8 +1400,8 @@ inline alloy::core::scoped_connection::operator bool()
 // Modifiers
 //-----------------------------------------------------------------------------
 
-inline void alloy::core::scoped_connection::disconnect()
-  noexcept
+inline
+auto alloy::core::scoped_connection::disconnect() noexcept -> void
 {
   m_connection.disconnect();
 }

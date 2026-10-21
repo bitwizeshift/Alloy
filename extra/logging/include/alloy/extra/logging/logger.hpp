@@ -74,8 +74,8 @@ namespace alloy::extra {
 
     //--------------------------------------------------------------------------
 
-    log_stream& operator=(log_stream&&) = delete;
-    log_stream& operator=(const log_stream&) = delete;
+    auto operator=(log_stream&&) -> log_stream& = delete;
+    auto operator=(const log_stream&) -> log_stream& = delete;
 
     //--------------------------------------------------------------------------
     // Destructors
@@ -94,9 +94,11 @@ namespace alloy::extra {
     /// \param time the time that the logging occurred at
     /// \param level the log level of this message
     /// \param message the message itself
-    auto log_message(std::chrono::system_clock::time_point time,
-                     log_level level,
-                     std::string_view message) -> void;
+    auto log_message(
+      std::chrono::system_clock::time_point time,
+      log_level level,
+      std::string_view message
+    ) -> void;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -123,9 +125,11 @@ namespace alloy::extra {
     /// \param time the time that the logging occurred at
     /// \param level the log level of this message
     /// \param message the message itself
-    virtual auto on_log_message(std::chrono::system_clock::time_point time,
-                                log_level level,
-                                std::string_view message) -> void = 0;
+    virtual auto on_log_message(
+      std::chrono::system_clock::time_point time,
+      log_level level,
+      std::string_view message
+    ) -> void = 0;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -253,9 +257,8 @@ namespace alloy::extra {
     /// \param format the format string for the log
     /// \param args the arguments for formatting
     template <typename...Args>
-    auto log(log_level level,
-             std::format_string<Args...> format,
-             Args&&...args) -> void;
+    auto log(log_level level, std::format_string<Args...> format, Args&&...args)
+      -> void;
 
     //--------------------------------------------------------------------------
 
@@ -267,8 +270,7 @@ namespace alloy::extra {
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    auto debug(std::format_string<Args...> format,
-               Args&&...args) -> void;
+    auto debug(std::format_string<Args...> format, Args&&...args) -> void;
 
     /// \brief Logs a formatted info message
     ///
@@ -278,8 +280,7 @@ namespace alloy::extra {
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    auto info(std::format_string<Args...> format,
-              Args&&...args) -> void;
+    auto info(std::format_string<Args...> format, Args&&...args) -> void;
 
     /// \brief Logs a formatted warning message
     ///
@@ -289,8 +290,7 @@ namespace alloy::extra {
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    auto warn(std::format_string<Args...> format,
-              Args&&...args) -> void;
+    auto warn(std::format_string<Args...> format, Args&&...args) -> void;
 
     /// \brief Logs a formatted error message
     ///
@@ -300,8 +300,7 @@ namespace alloy::extra {
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    auto error(std::format_string<Args...> format,
-               Args&&...args) -> void;
+    auto error(std::format_string<Args...> format, Args&&...args) -> void;
 
     /// \brief Logs a formatted fatal message
     ///
@@ -311,8 +310,7 @@ namespace alloy::extra {
     /// \param format the format of the string
     /// \param args the arguments for formatting
     template <typename...Args>
-    auto fatal(std::format_string<Args...> format,
-               Args&&...args) -> void;
+    auto fatal(std::format_string<Args...> format, Args&&...args) -> void;
 
     //--------------------------------------------------------------------------
     // Private Members

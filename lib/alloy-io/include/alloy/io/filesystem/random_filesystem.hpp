@@ -40,8 +40,8 @@ namespace alloy::io {
 
     //-------------------------------------------------------------------------
 
-    random_filesystem& operator=(random_filesystem&&) = delete;
-    random_filesystem& operator=(const random_filesystem&) = delete;
+    auto operator=(random_filesystem&&) -> random_filesystem& = delete;
+    auto operator=(const random_filesystem&) -> random_filesystem& = delete;
 
     //-------------------------------------------------------------------------
     // Filesystem
@@ -51,7 +51,7 @@ namespace alloy::io {
     /// \brief Opens a null file
     ///
     /// \return the file
-    file open() noexcept;
+    auto open() noexcept -> file;
   };
 
 } // namespace alloy::io

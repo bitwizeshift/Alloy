@@ -95,8 +95,8 @@ namespace alloy::core {
 // struct : degree_unit
 //==============================================================================
 
-inline constexpr auto
-  alloy::core::degree_unit::revolution() noexcept -> alloy::core::real
+inline constexpr
+auto alloy::core::degree_unit::revolution() noexcept -> alloy::core::real
 {
   return static_cast<real>(360);
 }
@@ -110,9 +110,9 @@ inline constexpr auto
 //------------------------------------------------------------------------------
 
 template<typename AngleUnit>
-inline constexpr auto
-  alloy::core::casts::to_degree(basic_angle<AngleUnit> angle) noexcept
-  -> alloy::core::degree
+inline constexpr
+auto alloy::core::casts::to_degree(basic_angle<AngleUnit> angle)
+  noexcept -> alloy::core::degree
 {
   return to_angle<degree>(angle);
 }
@@ -121,9 +121,9 @@ inline constexpr auto
 // Literals
 //==============================================================================
 
-inline constexpr auto
-  alloy::core::literals::operator""_deg(long double x) noexcept
-  -> alloy::core::degree
+inline constexpr
+auto alloy::core::literals::operator""_deg(long double x)
+  noexcept -> alloy::core::degree
 {
   return degree{ static_cast<real>(x) };
 }

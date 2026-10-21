@@ -96,8 +96,7 @@ namespace alloy::core {
 //==============================================================================
 
 inline constexpr
-auto alloy::core::gradian_unit::revolution()
-  noexcept -> real
+auto alloy::core::gradian_unit::revolution() noexcept -> real
 {
   return static_cast<real>(400);
 }
@@ -123,8 +122,7 @@ auto alloy::core::casts::to_gradian(basic_angle<AngleUnit> angle)
 //==============================================================================
 
 inline constexpr
-auto alloy::core::literals::operator""_grad(long double x)
-  noexcept -> gradian
+auto alloy::core::literals::operator""_grad(long double x) noexcept -> gradian
 {
   return gradian{ static_cast<real>(x) };
 }

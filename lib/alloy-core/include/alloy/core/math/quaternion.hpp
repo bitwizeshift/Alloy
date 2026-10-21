@@ -455,8 +455,10 @@ namespace alloy::core {
   // Comparisons
   //----------------------------------------------------------------------------
 
-  auto operator==(const quaternion& lhs, const quaternion& rhs) noexcept -> bool;
-  auto operator!=(const quaternion& lhs, const quaternion& rhs) noexcept -> bool;
+  auto operator==(const quaternion& lhs, const quaternion& rhs)
+    noexcept -> bool;
+  auto operator!=(const quaternion& lhs, const quaternion& rhs)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -466,9 +468,11 @@ namespace alloy::core {
   /// \param lhs the left quaternion
   /// \param rhs the right quaternion
   /// \return `true` if \p lhs almost equals \p rhs
-  auto almost_equal(const quaternion& lhs,
-                    const quaternion& rhs,
-                    real tolerance) noexcept -> bool;
+  auto almost_equal(
+    const quaternion& lhs,
+    const quaternion& rhs,
+    real tolerance
+  ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
   // Quantifiers
@@ -519,8 +523,7 @@ auto alloy::core::quaternion::from_angles(const euler_angles& angles)
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-alloy::core::quaternion::quaternion()
-  noexcept
+alloy::core::quaternion::quaternion() noexcept
   : quaternion{
     real{1},
     real{0},
@@ -532,19 +535,19 @@ alloy::core::quaternion::quaternion()
 }
 
 ALLOY_FORCE_INLINE constexpr
-alloy::core::quaternion::quaternion(value_type w)
-  noexcept
+alloy::core::quaternion::quaternion(value_type w) noexcept
   : quaternion{w,0,0,0}
 {
 
 }
 
 ALLOY_FORCE_INLINE constexpr
-alloy::core::quaternion::quaternion(value_type w,
-                                    value_type x,
-                                    value_type y,
-                                    value_type z)
-  noexcept
+alloy::core::quaternion::quaternion(
+  value_type w,
+  value_type x,
+  value_type y,
+  value_type z
+) noexcept
   : m_data{w,x,y,z}
 {
 
@@ -555,78 +558,67 @@ alloy::core::quaternion::quaternion(value_type w,
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::quaternion::size()
-  const noexcept -> size_type
+auto alloy::core::quaternion::size() const noexcept -> size_type
 {
   return 4;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::quaternion::w()
-  noexcept -> reference
+auto alloy::core::quaternion::w() noexcept -> reference
 {
   return m_data[0];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::quaternion::w()
-  const noexcept -> const_reference
+auto alloy::core::quaternion::w() const noexcept -> const_reference
 {
   return m_data[0];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::quaternion::x()
-  noexcept -> reference
+auto alloy::core::quaternion::x() noexcept -> reference
 {
   return m_data[1];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::quaternion::x()
-  const noexcept -> const_reference
+auto alloy::core::quaternion::x() const noexcept -> const_reference
 {
   return m_data[1];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::quaternion::y()
-  noexcept -> reference
+auto alloy::core::quaternion::y() noexcept -> reference
 {
   return m_data[2];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::quaternion::y()
-  const noexcept -> const_reference
+auto alloy::core::quaternion::y() const noexcept -> const_reference
 {
   return m_data[2];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::quaternion::z()
-  noexcept -> reference
+auto alloy::core::quaternion::z() noexcept -> reference
 {
   return m_data[3];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::quaternion::z()
-  const noexcept -> const_reference
+auto alloy::core::quaternion::z() const noexcept -> const_reference
 {
   return m_data[3];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::quaternion::data()
-  noexcept -> pointer
+auto alloy::core::quaternion::data() noexcept -> pointer
 {
   return &m_data[0];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::quaternion::data()
-  const noexcept -> const_pointer
+auto alloy::core::quaternion::data() const noexcept -> const_pointer
 {
   return &m_data[0];
 }
@@ -636,8 +628,7 @@ auto alloy::core::quaternion::data()
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::quaternion::operator[](index_type i)
-  noexcept -> reference
+auto alloy::core::quaternion::operator[](index_type i) noexcept -> reference
 {
   return m_data[i];
 }
@@ -650,8 +641,7 @@ auto alloy::core::quaternion::operator[](index_type i)
 }
 
 inline
-auto alloy::core::quaternion::rotation_matrix()
-  const noexcept -> matrix3
+auto alloy::core::quaternion::rotation_matrix() const noexcept -> matrix3
 {
   auto mat = matrix3{};
   extract_rotation_matrix(&mat);
@@ -680,15 +670,13 @@ auto alloy::core::quaternion::axes()
 //----------------------------------------------------------------------------
 
 inline
-auto alloy::core::quaternion::normalized()
-  const noexcept -> quaternion
+auto alloy::core::quaternion::normalized() const noexcept -> quaternion
 {
   return quaternion{*this}.normalize();
 }
 
 inline
-auto alloy::core::quaternion::inverse()
-  const noexcept -> quaternion
+auto alloy::core::quaternion::inverse() const noexcept -> quaternion
 {
   return quaternion{*this}.invert();
 }
@@ -698,15 +686,13 @@ auto alloy::core::quaternion::inverse()
 //----------------------------------------------------------------------------
 
 inline
-auto alloy::core::quaternion::operator+()
-  const noexcept -> quaternion
+auto alloy::core::quaternion::operator+() const noexcept -> quaternion
 {
   return (*this);
 }
 
 inline
-auto alloy::core::quaternion::operator-()
-  const noexcept -> quaternion
+auto alloy::core::quaternion::operator-() const noexcept -> quaternion
 {
   return quaternion{ -w(), -x(), -y(), -z() };
 }
@@ -727,8 +713,7 @@ auto alloy::core::dot(const quaternion& lhs, const quaternion& rhs)
 }
 
 inline
-auto alloy::core::magnitude(const quaternion& x)
-  noexcept -> real
+auto alloy::core::magnitude(const quaternion& x) noexcept -> real
 {
   return x.magnitude();
 }

@@ -100,8 +100,11 @@ namespace alloy::core {
     /// \param p the pointer to memory to deallocate
     /// \param bytes the number of bytes previously requested
     /// \param align the alignment previously requested
-    auto deallocate(void* p, std::size_t bytes, std::size_t align = default_align)
-      noexcept -> void;
+    auto deallocate(
+      void* p,
+      std::size_t bytes,
+      std::size_t align = default_align
+    ) noexcept -> void;
 
     /// \brief Resizes an allocation previously allocated with \p allocate
     ///
@@ -111,8 +114,7 @@ namespace alloy::core {
     /// \param p the pointer to memory previously allocated with allocate
     /// \param bytes the new size for the memory allocation, in bytes
     /// \return `true` if \p p was able to be resized
-    auto resize_allocation(void* p, std::size_t bytes)
-      noexcept -> bool;
+    auto resize_allocation(void* p, std::size_t bytes) noexcept -> bool;
 
     //-------------------------------------------------------------------------
     // Helpers
@@ -180,11 +182,8 @@ namespace alloy::core {
     virtual auto do_allocate(std::size_t bytes, std::size_t align)
       noexcept -> void* = 0;
 
-    virtual auto do_deallocate(
-      void* p,
-      std::size_t bytes,
-      std::size_t align
-    ) noexcept -> void = 0;
+    virtual auto do_deallocate(void* p, std::size_t bytes, std::size_t align)
+      noexcept -> void = 0;
 
     virtual auto do_resize_allocation(void* p, std::size_t bytes)
       noexcept -> bool;
@@ -200,16 +199,13 @@ namespace alloy::core {
     ) const noexcept -> std::size_t;
 
     [[nodiscard]]
-    virtual auto get_min_allocation_size()
-      const noexcept -> std::size_t;
+    virtual auto get_min_allocation_size() const noexcept -> std::size_t;
 
     [[nodiscard]]
-    virtual auto get_max_allocation_size()
-      const noexcept -> std::size_t;
+    virtual auto get_max_allocation_size() const noexcept -> std::size_t;
 
     [[nodiscard]]
-    virtual auto get_name()
-      const noexcept -> std::string_view;
+    virtual auto get_name() const noexcept -> std::string_view;
   };
 
 } // namespace alloy::core
@@ -223,8 +219,10 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 inline
-auto alloy::core::memory_resource::allocate(std::size_t bytes, std::size_t align)
-  noexcept -> void*
+auto alloy::core::memory_resource::allocate(
+  std::size_t bytes,
+  std::size_t align
+) noexcept -> void*
 {
   ALLOY_ASSERT(bytes != 0, "Allocation size must be non-zero");
   ALLOY_ASSERT(
@@ -291,8 +289,8 @@ auto alloy::core::memory_resource::max_allocation_size()
   return get_max_allocation_size();
 }
 
-inline auto
-  alloy::core::memory_resource::name() const noexcept -> std::string_view
+inline
+auto alloy::core::memory_resource::name() const noexcept -> std::string_view
 {
   return get_name();
 }
@@ -303,8 +301,10 @@ inline auto
 //-----------------------------------------------------------------------------
 
 inline
-auto alloy::core::memory_resource::do_resize_allocation(void* p, std::size_t bytes)
-  noexcept -> bool
+auto alloy::core::memory_resource::do_resize_allocation(
+  void* p,
+  std::size_t bytes
+) noexcept -> bool
 {
   compiler::unused(p, bytes);
 
@@ -342,8 +342,7 @@ auto alloy::core::memory_resource::get_max_allocation_size()
 }
 
 inline
-auto alloy::core::memory_resource::get_name()
-  const noexcept -> std::string_view
+auto alloy::core::memory_resource::get_name() const noexcept -> std::string_view
 {
   return "unnamed memory resource";
 }

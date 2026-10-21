@@ -88,7 +88,8 @@ namespace alloy::core {
       /// \param key the value
       /// \return `static_cast<const Map*>(p)->count(value)`
       template <typename Map>
-      static constexpr auto map_count(const void* p, const K& key) -> std::size_t;
+      static constexpr auto map_count(const void* p, const K& key)
+        -> std::size_t;
 
       /// \brief An implementation of the `count` function in terms of no
       ///        object. This returns 0
@@ -98,7 +99,8 @@ namespace alloy::core {
       /// \param p ignored
       /// \param key ignored
       /// \return 0
-      static constexpr auto null_count(const void* p, const K& key) -> std::size_t;
+      static constexpr auto null_count(const void* p, const K& key)
+        -> std::size_t;
 
       //------------------------------------------------------------------------
 
@@ -126,7 +128,8 @@ namespace alloy::core {
       /// \param key the key to the map entry
       /// \return the map value, if found; an error otherwise
       template <typename Map>
-      static constexpr auto map_at(const void* p, const K& key) -> result<const V&,map_view_lookup_error>;
+      static constexpr auto map_at(const void* p, const K& key)
+        -> result<const V&,map_view_lookup_error>;
 
       /// \brief An implementation of the `at(...)` function in terms of no
       ///        object.
@@ -136,7 +139,8 @@ namespace alloy::core {
       /// \param p ignored
       /// \param key ignored
       /// \return an error
-      static constexpr auto null_at(const void* p, const K& key) -> result<const V&,map_view_lookup_error>;
+      static constexpr auto null_at(const void* p, const K& key)
+        -> result<const V&,map_view_lookup_error>;
 
       //------------------------------------------------------------------------
 
@@ -145,7 +149,8 @@ namespace alloy::core {
       /// \param p the pointer to a `Map` instance
       /// \param cb the callback to invoke
       template <typename Map>
-      static constexpr auto map_for_each(const void* p, for_each_callback cb) -> void;
+      static constexpr auto map_for_each(const void* p, for_each_callback cb)
+        -> void;
 
       /// \brief An implementation of iteration in terms of no object
       ///
@@ -153,7 +158,8 @@ namespace alloy::core {
       ///
       /// \param p ignored
       /// \param cb ignored
-      static constexpr auto null_for_each(const void* p, for_each_callback cb) -> void;
+      static constexpr auto null_for_each(const void* p, for_each_callback cb)
+        -> void;
     };
 
   } // namespace detail
@@ -255,7 +261,8 @@ namespace alloy::core {
     ///
     /// \param key the key to retrieve
     /// \return the value at the given key, if it exists, otherwise an error
-    constexpr auto at(const key_type& key) const noexcept -> result<const V&,map_view_lookup_error>;
+    constexpr auto at(const key_type& key)
+      const noexcept -> result<const V&,map_view_lookup_error>;
 
     //--------------------------------------------------------------------------
     // Iteration
@@ -307,7 +314,8 @@ namespace alloy::core {
   };
 
   template <typename Map>
-  map_view(const Map&) -> map_view<typename Map::key_type, typename Map::mapped_type>;
+  map_view(const Map&)
+    -> map_view<typename Map::key_type, typename Map::mapped_type>;
 
 } // namespace alloy::core
 
@@ -362,8 +370,10 @@ auto alloy::core::detail::map_view_vtable<K,V>::null_size(const void* p)
 template <typename K, typename V>
 template <typename Map>
 inline constexpr
-auto alloy::core::detail::map_view_vtable<K,V>::map_at(const void* p, const K& key)
-  -> result<const V&,map_view_lookup_error>
+auto alloy::core::detail::map_view_vtable<K,V>::map_at(
+  const void* p,
+  const K& key
+) -> result<const V&,map_view_lookup_error>
 {
   const auto it = static_cast<const Map*>(p)->find(key);
   if (it != static_cast<const Map*>(p)->end()) {
@@ -374,8 +384,10 @@ auto alloy::core::detail::map_view_vtable<K,V>::map_at(const void* p, const K& k
 
 template <typename K, typename V>
 inline constexpr
-auto alloy::core::detail::map_view_vtable<K,V>::null_at(const void* p, const K& key)
-  -> result<const V&,map_view_lookup_error>
+auto alloy::core::detail::map_view_vtable<K,V>::null_at(
+  const void* p,
+  const K& key
+) -> result<const V&,map_view_lookup_error>
 {
   compiler::unused(p, key);
   return fail(map_view_lookup_error::key_not_found);
@@ -417,8 +429,7 @@ auto alloy::core::detail::map_view_vtable<K,V>::null_for_each(
 
 template <typename K, typename V>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::map_view<K,V>::map_view()
-  noexcept
+alloy::core::map_view<K,V>::map_view() noexcept
   : m_instance{nullptr},
     m_vtable{assume_not_null(&null_value)}
 {
@@ -429,8 +440,7 @@ alloy::core::map_view<K,V>::map_view()
 template <typename K, typename V>
 template <typename Map>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::map_view<K,V>::map_view(const Map& map)
-  noexcept
+alloy::core::map_view<K,V>::map_view(const Map& map) noexcept
   : m_instance{std::addressof(map)},
     m_vtable{assume_not_null(&value<Map>)}
 {
@@ -443,16 +453,14 @@ alloy::core::map_view<K,V>::map_view(const Map& map)
 
 template <typename K, typename V>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::map_view<K,V>::size()
-  const noexcept -> size_type
+auto alloy::core::map_view<K,V>::size() const noexcept -> size_type
 {
   return (*m_vtable->size_function)(m_instance);
 }
 
 template <typename K, typename V>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::map_view<K,V>::empty()
-  const noexcept -> bool
+auto alloy::core::map_view<K,V>::empty() const noexcept -> bool
 {
   return size() == 0u;
 }
@@ -471,8 +479,7 @@ auto alloy::core::map_view<K,V>::count(const K& key)
 
 template <typename K, typename V>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::map_view<K,V>::contains(const K& key)
-  const noexcept -> bool
+auto alloy::core::map_view<K,V>::contains(const K& key) const noexcept -> bool
 {
   return count(key) > 0u;
 }
@@ -493,8 +500,7 @@ template <typename K, typename V>
 template <typename Callback>
   requires std::invocable<Callback, const K&, const V&>
 inline constexpr
-auto alloy::core::map_view<K,V>::for_each(Callback&& cb)
-  const -> void
+auto alloy::core::map_view<K,V>::for_each(Callback&& cb) const -> void
 {
   using callback_type = typename vtable_type::for_each_callback;
 

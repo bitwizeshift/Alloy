@@ -40,17 +40,19 @@ namespace alloy::extra {
 
     //--------------------------------------------------------------------------
 
-    console_log_stream& operator=(console_log_stream&&) = delete;
-    console_log_stream& operator=(const console_log_stream&) = delete;
+    auto operator=(console_log_stream&&) -> console_log_stream& = delete;
+    auto operator=(const console_log_stream&) -> console_log_stream& = delete;
 
     //--------------------------------------------------------------------------
     // Virtual Hooks: Logging
     //--------------------------------------------------------------------------
   private:
 
-    auto on_log_message(std::chrono::system_clock::time_point time,
-                        log_level level,
-                        std::string_view message) -> void override;
+    auto on_log_message(
+      std::chrono::system_clock::time_point time,
+      log_level level,
+      std::string_view message
+    ) -> void override;
   };
 
 } // namespace alloy::extra

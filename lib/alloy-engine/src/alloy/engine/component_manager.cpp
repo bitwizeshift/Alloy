@@ -4,7 +4,7 @@
 
 #include "alloy/engine/component_manager.hpp"
 
-void alloy::engine::component_manager::detach_all_components(entity e)
+auto alloy::engine::component_manager::detach_all_components(entity e) -> void
 {
   for (const auto& storage : m_component_storages) {
     if (storage->has_component(e)) {

@@ -44,8 +44,9 @@ namespace alloy::io {
 
     //-------------------------------------------------------------------------
 
-    file_stream_finalizer& operator=(const file_stream_finalizer&) = default;
-    file_stream_finalizer& operator=(file_stream_finalizer&&) = default;
+    auto operator=(const file_stream_finalizer&)
+      -> file_stream_finalizer& = default;
+    auto operator=(file_stream_finalizer&&) -> file_stream_finalizer& = default;
 
     //-------------------------------------------------------------------------
     // Destructor
@@ -66,7 +67,7 @@ namespace alloy::io {
     /// produce the stream on creation.
     ///
     /// \param stream the stream to finalize
-    virtual void finalize(file_stream* stream) = 0;
+    virtual auto finalize(file_stream* stream) -> void = 0;
   };
 
 } // namespace alloy::io

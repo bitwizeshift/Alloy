@@ -81,8 +81,8 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
   ///
   /// \param format the pixel format of the image
   /// \return the size of a given pixel color
-  inline std::size_t pixel_format_size(alloy::core::image::pixel_format format)
-    noexcept
+  inline auto pixel_format_size(alloy::core::image::pixel_format format)
+    noexcept -> std::size_t
   {
     using pixel_format = alloy::core::image::pixel_format;
 
@@ -105,8 +105,8 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
   ///
   /// \param format the fomat
   /// \return `true` if the format is correct
-  inline bool is_valid_format(alloy::core::image::pixel_format format)
-    noexcept
+  inline auto is_valid_format(alloy::core::image::pixel_format format)
+    noexcept -> bool
   {
     using pixel_format = alloy::core::image::pixel_format;
 
@@ -124,7 +124,7 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
 
   using rgba_index_function = rgba(*)(std::size_t pixel);
 
-  inline rgba bgr_index(std::size_t pixel)
+  inline auto bgr_index(std::size_t pixel) -> rgba
   {
     ALLOY_ASSERT(pixel < 3u);
 
@@ -138,7 +138,7 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
   }
 
 
-  inline rgba rgba_index(std::size_t pixel)
+  inline auto rgba_index(std::size_t pixel) -> rgba
   {
     ALLOY_ASSERT(pixel < 4u);
 
@@ -153,7 +153,7 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
   }
 
 
-  inline rgba bgra_index(std::size_t pixel)
+  inline auto bgra_index(std::size_t pixel) -> rgba
   {
     ALLOY_ASSERT(pixel < 4u);
 
@@ -167,7 +167,7 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
     ALLOY_UNREACHABLE();
   }
 
-  inline rgba rgb_index(std::size_t pixel)
+  inline auto rgb_index(std::size_t pixel) -> rgba
   {
     ALLOY_ASSERT(pixel < 3u);
 
@@ -185,8 +185,8 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
   ///
   /// \param format the pixel format
   /// \return A function pointer to a conversion function
-  inline rgba_index_function
-    get_pixel_index_function(alloy::core::image::pixel_format format)
+  inline auto get_pixel_index_function(alloy::core::image::pixel_format format)
+    -> rgba_index_function
   {
     using pixel_format = alloy::core::image::pixel_format;
 
@@ -210,7 +210,7 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
   }
 
   template <typename T>
-  std::byte to_byte(T v)
+  auto to_byte(T v) -> std::byte
   {
     return static_cast<std::byte>(static_cast<std::uint8_t>(v));
   }
@@ -224,10 +224,11 @@ ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP()
 // Static Factories
 //-----------------------------------------------------------------------------
 
-alloy::core::result<alloy::core::image,std::error_code>
-  alloy::core::image::make_image_from_buffer(vector<std::byte> buffer,
-                                             dimensions d,
-                                             pixel_format format)
+auto alloy::core::image::make_image_from_buffer(
+  vector<std::byte> buffer,
+  dimensions d,
+  pixel_format format
+) -> result<image,std::error_code>
 {
   if (ALLOY_UNLIKELY(!::is_valid_format(format))) {
     return fail(error_code::invalid_pixel_format);
@@ -249,20 +250,22 @@ alloy::core::result<alloy::core::image,std::error_code>
 }
 
 
-alloy::core::result<alloy::core::image,std::error_code>
-  alloy::core::image::make_blank_image(dimensions d,
-                                       pixel_format format,
-                                       color background)
+auto alloy::core::image::make_blank_image(
+  dimensions d,
+  pixel_format format,
+  color background
+) -> result<image,std::error_code>
 {
   return make_blank_image(d, format, background, allocator{});
 }
 
 
-alloy::core::result<alloy::core::image,std::error_code>
-  alloy::core::image::make_blank_image(dimensions d,
-                                       pixel_format format,
-                                       color background,
-                                       allocator alloc)
+auto alloy::core::image::make_blank_image(
+  dimensions d,
+  pixel_format format,
+  color background,
+  allocator alloc
+) -> result<image,std::error_code>
 {
   const auto pixel_size = pixel_format_size(format);
   auto adapter = stl_allocator_adapter<std::byte>{alloc};
@@ -301,8 +304,7 @@ alloy::core::result<alloy::core::image,std::error_code>
 // Constructors
 //-----------------------------------------------------------------------------
 
-alloy::core::image::image()
-  noexcept
+alloy::core::image::image() noexcept
   : m_bytes{},
     m_width{0u},
     m_height{0u},
@@ -315,8 +317,8 @@ alloy::core::image::image()
 // Modifiers
 //-----------------------------------------------------------------------------
 
-void alloy::core::image::set_pixel(std::size_t x, std::size_t y, color c)
-  noexcept
+auto alloy::core::image::set_pixel(std::size_t x, std::size_t y, color c)
+  noexcept -> void
 {
   ALLOY_ASSERT(x < m_width);
   ALLOY_ASSERT(y < m_height);
@@ -349,9 +351,8 @@ void alloy::core::image::set_pixel(std::size_t x, std::size_t y, color c)
 // Accessors
 //-----------------------------------------------------------------------------
 
-alloy::core::color
-  alloy::core::image::get_pixel(std::size_t x, std::size_t y)
-  const noexcept
+auto alloy::core::image::get_pixel(std::size_t x, std::size_t y)
+  const noexcept -> color
 {
   ALLOY_ASSERT(x < m_width);
   ALLOY_ASSERT(y < m_height);
@@ -388,8 +389,7 @@ alloy::core::color
 // Observers
 //-----------------------------------------------------------------------------
 
-alloy::core::image alloy::core::image::copy()
-  const
+auto alloy::core::image::copy() const -> image
 {
   return image{
     m_bytes.copy(),
@@ -399,8 +399,7 @@ alloy::core::image alloy::core::image::copy()
 }
 
 
-alloy::core::image alloy::core::image::copy_with(allocator alloc)
-  const
+auto alloy::core::image::copy_with(allocator alloc) const -> image
 {
   const auto adapter = stl_allocator_adapter<std::byte>{alloc};
 
@@ -419,10 +418,11 @@ alloy::core::image alloy::core::image::copy_with(allocator alloc)
 // Private : Constructor
 //-----------------------------------------------------------------------------
 
-alloy::core::image::image(vector<std::byte> bytes,
-                          dimensions d,
-                          pixel_format format)
-  noexcept
+alloy::core::image::image(
+  vector<std::byte> bytes,
+  dimensions d,
+  pixel_format format
+) noexcept
   : m_bytes{std::move(bytes)},
     m_width{d.width},
     m_height{d.height},
@@ -439,8 +439,8 @@ alloy::core::image::image(vector<std::byte> bytes,
 // Utilities
 //-----------------------------------------------------------------------------
 
-std::error_code alloy::core::make_error_code(image::error_code ec)
-  noexcept
+auto alloy::core::make_error_code(image::error_code ec)
+  noexcept -> std::error_code
 {
   static auto s_error_category = ::error_category{};
 

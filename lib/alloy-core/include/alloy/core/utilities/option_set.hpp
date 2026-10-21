@@ -220,8 +220,7 @@ template <typename Enum>
 template <typename...Enums>
   requires alloy::core::detail::all_same_as<Enum, Enums...>
 inline constexpr
-alloy::core::option_set<Enum>::option_set(Enums...enums)
-  noexcept
+alloy::core::option_set<Enum>::option_set(Enums...enums) noexcept
   : m_bitset{((1u << static_cast<std::size_t>(enums)) | ...)}
 {
 }
@@ -232,40 +231,35 @@ alloy::core::option_set<Enum>::option_set(Enums...enums)
 
 template <typename Enum>
 inline
-auto alloy::core::option_set<Enum>::test(Enum e)
-  const -> bool
+auto alloy::core::option_set<Enum>::test(Enum e) const -> bool
 {
   return m_bitset.test(static_cast<std::size_t>(e));
 }
 
 template <typename Enum>
 inline
-auto alloy::core::option_set<Enum>::all()
-  const noexcept -> bool
+auto alloy::core::option_set<Enum>::all() const noexcept -> bool
 {
   return m_bitset.all();
 }
 
 template <typename Enum>
 inline
-auto alloy::core::option_set<Enum>::any()
-  const noexcept -> bool
+auto alloy::core::option_set<Enum>::any() const noexcept -> bool
 {
   return m_bitset.any();
 }
 
 template <typename Enum>
 inline
-auto alloy::core::option_set<Enum>::none()
-  const noexcept -> bool
+auto alloy::core::option_set<Enum>::none() const noexcept -> bool
 {
   return m_bitset.none();
 }
 
 template <typename Enum>
 inline
-auto alloy::core::option_set<Enum>::count()
-  const noexcept -> std::size_t
+auto alloy::core::option_set<Enum>::count() const noexcept -> std::size_t
 {
   return m_bitset.count();
 }
@@ -276,8 +270,7 @@ auto alloy::core::option_set<Enum>::count()
 
 template <typename Enum>
 inline constexpr
-auto alloy::core::option_set<Enum>::size()
-  const noexcept -> std::size_t
+auto alloy::core::option_set<Enum>::size() const noexcept -> std::size_t
 {
   return bits;
 }
@@ -315,8 +308,7 @@ auto alloy::core::option_set<Enum>::operator|=(const option_set& other)
 
 template <typename Enum>
 inline
-auto alloy::core::option_set<Enum>::operator~()
-  const noexcept -> option_set
+auto alloy::core::option_set<Enum>::operator~() const noexcept -> option_set
 {
   ~m_bitset;
   return (*this);
@@ -326,8 +318,7 @@ auto alloy::core::option_set<Enum>::operator~()
 
 template <typename Enum>
 inline
-auto alloy::core::option_set<Enum>::set()
-  noexcept -> option_set&
+auto alloy::core::option_set<Enum>::set() noexcept -> option_set&
 {
   m_bitset.set();
   return (*this);
@@ -335,8 +326,7 @@ auto alloy::core::option_set<Enum>::set()
 
 template <typename Enum>
 inline
-auto alloy::core::option_set<Enum>::set(Enum e, bool value)
-  -> option_set&
+auto alloy::core::option_set<Enum>::set(Enum e, bool value) -> option_set&
 {
   m_bitset.set(static_cast<std::size_t>(e), value);
   return (*this);
@@ -346,8 +336,7 @@ auto alloy::core::option_set<Enum>::set(Enum e, bool value)
 
 template <typename Enum>
 inline
-auto alloy::core::option_set<Enum>::reset()
-  noexcept -> option_set&
+auto alloy::core::option_set<Enum>::reset() noexcept -> option_set&
 {
   m_bitset.reset();
   return (*this);
@@ -355,8 +344,7 @@ auto alloy::core::option_set<Enum>::reset()
 
 template <typename Enum>
 inline
-auto alloy::core::option_set<Enum>::reset(Enum e)
-  -> option_set&
+auto alloy::core::option_set<Enum>::reset(Enum e) -> option_set&
 {
   m_bitset.reset(static_cast<std::size_t>(e));
   return (*this);
@@ -366,8 +354,7 @@ auto alloy::core::option_set<Enum>::reset(Enum e)
 
 template <typename Enum>
 inline
-auto alloy::core::option_set<Enum>::flip()
-  noexcept -> option_set&
+auto alloy::core::option_set<Enum>::flip() noexcept -> option_set&
 {
   m_bitset.flip();
   return (*this);
@@ -375,8 +362,7 @@ auto alloy::core::option_set<Enum>::flip()
 
 template <typename Enum>
 inline
-auto alloy::core::option_set<Enum>::flip(Enum e)
-  -> option_set&
+auto alloy::core::option_set<Enum>::flip(Enum e) -> option_set&
 {
   m_bitset.flip(static_cast<std::size_t>(e));
   return (*this);
@@ -388,8 +374,7 @@ auto alloy::core::option_set<Enum>::flip(Enum e)
 
 template <typename Enum>
 inline
-auto alloy::core::option_set<Enum>::to_ulong()
-  const noexcept -> unsigned long
+auto alloy::core::option_set<Enum>::to_ulong() const noexcept -> unsigned long
 {
   return m_bitset.to_ulong();
 }
@@ -432,8 +417,10 @@ auto alloy::core::option_set<Enum>::operator!=(const option_set& rhs)
 
 template <typename Enum>
 inline
-auto alloy::core::operator&(const option_set<Enum>& lhs, const option_set<Enum>& rhs)
-  noexcept -> option_set<Enum>
+auto alloy::core::operator&(
+  const option_set<Enum>& lhs,
+  const option_set<Enum>& rhs
+) noexcept -> option_set<Enum>
 {
   auto copy = lhs;
   copy &= rhs;
@@ -442,8 +429,10 @@ auto alloy::core::operator&(const option_set<Enum>& lhs, const option_set<Enum>&
 
 template <typename Enum>
 inline
-auto alloy::core::operator|(const option_set<Enum>& lhs, const option_set<Enum>& rhs)
-  noexcept -> option_set<Enum>
+auto alloy::core::operator|(
+  const option_set<Enum>& lhs,
+  const option_set<Enum>& rhs
+) noexcept -> option_set<Enum>
 {
   auto copy = lhs;
   copy |= rhs;
@@ -452,8 +441,10 @@ auto alloy::core::operator|(const option_set<Enum>& lhs, const option_set<Enum>&
 
 template <typename Enum>
 inline
-auto alloy::core::operator^(const option_set<Enum>& lhs, const option_set<Enum>& rhs)
-  noexcept -> option_set<Enum>
+auto alloy::core::operator^(
+  const option_set<Enum>& lhs,
+  const option_set<Enum>& rhs
+) noexcept -> option_set<Enum>
 {
   auto copy = lhs;
   copy ^= rhs;

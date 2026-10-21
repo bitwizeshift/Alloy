@@ -48,7 +48,7 @@ namespace alloy::core {
     /// \tparam T the type
     /// \return the index for the type
     template <typename T>
-    static type_index get();
+    static auto get() -> type_index;
 
     //-------------------------------------------------------------------------
     // Constructors / Assignment
@@ -75,14 +75,14 @@ namespace alloy::core {
     ///
     /// \param other the other type_index to move
     /// \return reference to `(*this)`
-    type_index& operator=(type_index&&) noexcept = default;
+    auto operator=(type_index&&) noexcept -> type_index& = default;
 
     /// \brief Assigns the content of this type_index by copying the contents
     ///        of \p other
     ///
     /// \param other the other type_index to copy
     /// \return reference to `(*this)`
-    type_index& operator=(const type_index&) noexcept = default;
+    auto operator=(const type_index&) noexcept -> type_index& = default;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -92,7 +92,7 @@ namespace alloy::core {
     /// \brief Gets the underlying value of this type_info
     ///
     /// \return the value
-    constexpr index_type value() const noexcept;
+    constexpr auto value() const noexcept -> index_type;
 
     //-------------------------------------------------------------------------
     // Private Constructors
@@ -123,12 +123,12 @@ namespace alloy::core {
   // Comparison Operators
   //---------------------------------------------------------------------------
 
-  constexpr bool operator==(type_index lhs, type_index rhs) noexcept;
-  constexpr bool operator!=(type_index lhs, type_index rhs) noexcept;
-  constexpr bool operator<(type_index lhs, type_index rhs) noexcept;
-  constexpr bool operator>(type_index lhs, type_index rhs) noexcept;
-  constexpr bool operator<=(type_index lhs, type_index rhs) noexcept;
-  constexpr bool operator>=(type_index lhs, type_index rhs) noexcept;
+  constexpr auto operator==(type_index lhs, type_index rhs) noexcept -> bool;
+  constexpr auto operator!=(type_index lhs, type_index rhs) noexcept -> bool;
+  constexpr auto operator<(type_index lhs, type_index rhs) noexcept -> bool;
+  constexpr auto operator>(type_index lhs, type_index rhs) noexcept -> bool;
+  constexpr auto operator<=(type_index lhs, type_index rhs) noexcept -> bool;
+  constexpr auto operator>=(type_index lhs, type_index rhs) noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -141,7 +141,8 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 template <typename T>
-inline alloy::core::type_index alloy::core::type_index::get()
+inline
+auto alloy::core::type_index::get() -> type_index
 {
   static_assert(!std::is_reference_v<T>);
   static_assert(!std::is_pointer_v<T>);
@@ -158,9 +159,8 @@ inline alloy::core::type_index alloy::core::type_index::get()
 // Observers
 //-----------------------------------------------------------------------------
 
-inline constexpr alloy::core::type_index::index_type
-  alloy::core::type_index::value()
-  const noexcept
+inline constexpr
+auto alloy::core::type_index::value() const noexcept -> index_type
 {
   return m_index;
 }
@@ -169,8 +169,8 @@ inline constexpr alloy::core::type_index::index_type
 // Private Constructors
 //-----------------------------------------------------------------------------
 
-inline constexpr alloy::core::type_index::type_index(index_type i)
-  noexcept
+inline constexpr
+alloy::core::type_index::type_index(index_type i) noexcept
   : m_index{i}
 {
 
@@ -184,38 +184,38 @@ inline constexpr alloy::core::type_index::type_index(index_type i)
 // Comparison Operators
 //-----------------------------------------------------------------------------
 
-inline constexpr bool alloy::core::operator==(type_index lhs, type_index rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator==(type_index lhs, type_index rhs) noexcept -> bool
 {
   return lhs.value() == rhs.value();
 }
 
-inline constexpr bool alloy::core::operator!=(type_index lhs, type_index rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator!=(type_index lhs, type_index rhs) noexcept -> bool
 {
   return lhs.value() != rhs.value();
 }
 
-inline constexpr bool alloy::core::operator<(type_index lhs, type_index rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator<(type_index lhs, type_index rhs) noexcept -> bool
 {
   return lhs.value() < rhs.value();
 }
 
-inline constexpr bool alloy::core::operator>(type_index lhs, type_index rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator>(type_index lhs, type_index rhs) noexcept -> bool
 {
   return lhs.value() > rhs.value();
 }
 
-inline constexpr bool alloy::core::operator<=(type_index lhs, type_index rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator<=(type_index lhs, type_index rhs) noexcept -> bool
 {
   return lhs.value() <= rhs.value();
 }
 
-inline constexpr bool alloy::core::operator>=(type_index lhs, type_index rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator>=(type_index lhs, type_index rhs) noexcept -> bool
 {
   return lhs.value() >= rhs.value();
 }

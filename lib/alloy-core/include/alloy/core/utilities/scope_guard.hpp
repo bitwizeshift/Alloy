@@ -41,15 +41,15 @@ namespace alloy::core {
       }
       on_exit_policy(on_exit_policy&&) = default;
       on_exit_policy(const on_exit_policy&) = default;
-      on_exit_policy& operator=(on_exit_policy&&) = default;
-      on_exit_policy& operator=(const on_exit_policy&) = default;
+      auto operator=(on_exit_policy&&) -> on_exit_policy& = default;
+      auto operator=(const on_exit_policy&) -> on_exit_policy& = default;
 
-      void release() noexcept
+      auto release() noexcept -> void
       {
         m_should_execute = false;
       }
 
-      bool should_execute() const noexcept
+      auto should_execute() const noexcept -> bool
       {
         return m_should_execute;
       }
@@ -73,15 +73,15 @@ namespace alloy::core {
       }
       on_fail_policy(on_fail_policy&&) = default;
       on_fail_policy(const on_fail_policy&) = default;
-      on_fail_policy& operator=(on_fail_policy&&) = default;
-      on_fail_policy& operator=(const on_fail_policy&) = default;
+      auto operator=(on_fail_policy&&) -> on_fail_policy& = default;
+      auto operator=(const on_fail_policy&) -> on_fail_policy& = default;
 
-      void release() noexcept
+      auto release() noexcept -> void
       {
         m_exception_count = std::numeric_limits<int>::max();
       }
 
-      bool should_execute() const noexcept
+      auto should_execute() const noexcept -> bool
       {
         return m_exception_count < std::uncaught_exceptions();
       }
@@ -106,15 +106,15 @@ namespace alloy::core {
 
       on_success_policy(on_success_policy&&) = default;
       on_success_policy(const on_success_policy&) = default;
-      on_success_policy& operator=(on_success_policy&&) = default;
-      on_success_policy& operator=(const on_success_policy&) = default;
+      auto operator=(on_success_policy&&) -> on_success_policy& = default;
+      auto operator=(const on_success_policy&) -> on_success_policy& = default;
 
-      void release() noexcept
+      auto release() noexcept -> void
       {
         m_exception_count = -1;
       }
 
-      bool should_execute() const noexcept
+      auto should_execute() const noexcept -> bool
       {
         return m_exception_count == std::uncaught_exceptions();
       }
@@ -150,8 +150,7 @@ namespace alloy::core {
 
       }
 
-      ~basic_scope_guard()
-        noexcept(noexcept(std::declval<Fn&>()()))
+      ~basic_scope_guard() noexcept(noexcept(std::declval<Fn&>()()))
       {
         if (should_execute()) {
           m_function();
@@ -159,8 +158,8 @@ namespace alloy::core {
       }
 
       basic_scope_guard(const basic_scope_guard&) = delete;
-      basic_scope_guard& operator=(const basic_scope_guard&) = delete;
-      basic_scope_guard& operator=(basic_scope_guard&&) = delete;
+      auto operator=(const basic_scope_guard&) -> basic_scope_guard& = delete;
+      auto operator=(basic_scope_guard&&) -> basic_scope_guard& = delete;
 
       //----------------------------------------------------------------------
       // Modifiers

@@ -69,7 +69,7 @@ namespace alloy::core {
     ///        observer_ptrs
     ///
     /// \return `true` if this observable is referenced
-    bool is_referenced() const noexcept;
+    auto is_referenced() const noexcept -> bool;
 
     //-------------------------------------------------------------------------
     // Constructors / Assignment
@@ -105,8 +105,8 @@ namespace alloy::core {
     // re-assignment would be complicated. Do observer_ptr's to 'other' get
     // rebound? Merged with current observer_ptr's? Ignored?
     // This is left to derived implementations to figure out.
-    observable& operator=(observable&& other) = delete;
-    observable& operator=(const observable& other) = delete;
+    auto operator=(observable&& other) -> observable& = delete;
+    auto operator=(const observable& other) -> observable& = delete;
 
     //-------------------------------------------------------------------------
     // Protected : Destructor
@@ -126,12 +126,12 @@ namespace alloy::core {
     ///
     /// \post All observer_ptr instances that were pointing to this are now
     ///       pointing to `nullptr`
-    void clear_references() noexcept;
+    auto clear_references() noexcept -> void;
 
     /// \brief Rebinds all references to the new observable
     ///
     /// \param other the observable to rebind all references to
-    void rebind_references(observable& other) noexcept;
+    auto rebind_references(observable& other) noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Friend Hooks : Modifiers
@@ -142,20 +142,22 @@ namespace alloy::core {
     ///        it
     ///
     /// \param p the base observer_ptr that is referencing this
-    void add(not_null<detail::observer_ptr_base*> p) const noexcept;
+    auto add(not_null<detail::observer_ptr_base*> p) const noexcept -> void;
 
     /// \brief Removes \p p from this observable's record of all pointers
     ///        observing it
     ///
     /// \param p the base observer_ptr that is no longer referencing this
-    void remove(not_null<detail::observer_ptr_base*> p) const noexcept;
+    auto remove(not_null<detail::observer_ptr_base*> p) const noexcept -> void;
 
     /// \brief Rebinds the pointer from \p old_p to \p new_p
     ///
     /// \param old_p the old pointer
     /// \param new_p the new pointer
-    void rebind(not_null<detail::observer_ptr_base*> old_p,
-                not_null<detail::observer_ptr_base*> new_p) const noexcept;
+    auto rebind(
+      not_null<detail::observer_ptr_base*> old_p,
+      not_null<detail::observer_ptr_base*> new_p
+    ) const noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -191,8 +193,8 @@ namespace alloy::core {
 
       //-----------------------------------------------------------------------
 
-      observer_ptr_base& operator=(observer_ptr_base&&) = delete;
-      observer_ptr_base& operator=(const observer_ptr_base&) = delete;
+      auto operator=(observer_ptr_base&&) -> observer_ptr_base& = delete;
+      auto operator=(const observer_ptr_base&) -> observer_ptr_base& = delete;
 
       //-----------------------------------------------------------------------
       // Protected Modifiers
@@ -200,13 +202,13 @@ namespace alloy::core {
     protected:
 
       /// Make this point to pObject and enlist.
-      void do_reset(const observable* p) noexcept;
+      auto do_reset(const observable* p) noexcept -> void;
 
       /// Make this point to NULL and delist.
-      void do_reset() noexcept;
+      auto do_reset() noexcept -> void;
 
       /// Rebinds to \p other
-      void do_rebind(observer_ptr_base& other) noexcept;
+      auto do_rebind(observer_ptr_base& other) noexcept -> void;
 
       //-----------------------------------------------------------------------
       // Protected Members
@@ -325,13 +327,13 @@ namespace alloy::core {
     ///
     /// \param other the other observer_ptr to move
     /// \return a reference to `(*this)`
-    observer_ptr& operator=(observer_ptr&& other) noexcept;
+    auto operator=(observer_ptr&& other) noexcept -> observer_ptr&;
 
     /// \brief Assigns the contents of \p other to this observer_ptr
     ///
     /// \param other the other observer_ptr to copy
     /// \return a reference to `(*this)`
-    observer_ptr& operator=(const observer_ptr& other) noexcept;
+    auto operator=(const observer_ptr& other) noexcept -> observer_ptr&;
 
     /// \brief Assigns the contents of \p p to this observer_ptr
     ///
@@ -339,7 +341,7 @@ namespace alloy::core {
     /// \return a reference to `(*this)`
     template <typename U>
       requires std::convertible_to<U*, T*>
-    observer_ptr& operator=(U* p) noexcept;
+    auto operator=(U* p) noexcept -> observer_ptr&;
 
     //-------------------------------------------------------------------------
     // Modifiers
@@ -349,18 +351,18 @@ namespace alloy::core {
     /// \brief Swaps the contents of \p other and this
     ///
     /// \param other the other observer_ptr to swap
-    void swap(observer_ptr& other) noexcept;
+    auto swap(observer_ptr& other) noexcept -> void;
 
     /// \{
     /// \brief Resets the underlying pointer of this observer_ptr to null
-    void reset() noexcept;
-    void reset(std::nullptr_t) noexcept;
+    auto reset() noexcept -> void;
+    auto reset(std::nullptr_t) noexcept -> void;
     /// \}
 
     /// \brief Resets the underlying pointer of this observer_ptr to \p p
     ///
     /// \param p the new pointer to observe
-    void reset(pointer p) noexcept;
+    auto reset(pointer p) noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -370,10 +372,10 @@ namespace alloy::core {
     /// \brief Gets the underlying pointer from this observer_ptr
     ///
     /// \return the underlying pointer
-    pointer get() const noexcept;
+    auto get() const noexcept -> pointer;
 
-    reference operator*() const noexcept;
-    pointer operator->() const noexcept;
+    auto operator*() const noexcept -> reference;
+    auto operator->() const noexcept -> pointer;
 
     /// \brief Convertible to `true` when this pointer is null, `false`
     ///        otherwise
@@ -396,22 +398,22 @@ namespace alloy::core {
   //---------------------------------------------------------------------------
 
   template <typename T, typename U>
-  bool operator==(const observer_ptr<T>& lhs,
-                  const observer_ptr<U>& rhs) noexcept;
+  auto operator==(const observer_ptr<T>& lhs, const observer_ptr<U>& rhs)
+    noexcept -> bool;
   template <typename T>
-  bool operator==(const observer_ptr<T>& lhs, std::nullptr_t) noexcept;
+  auto operator==(const observer_ptr<T>& lhs, std::nullptr_t) noexcept -> bool;
   template <typename T>
-  bool operator==(std::nullptr_t, const observer_ptr<T>& rhs) noexcept;
+  auto operator==(std::nullptr_t, const observer_ptr<T>& rhs) noexcept -> bool;
 
   //---------------------------------------------------------------------------
 
   template <typename T, typename U>
-  bool operator!=(const observer_ptr<T>& lhs,
-                  const observer_ptr<U>& rhs) noexcept;
+  auto operator!=(const observer_ptr<T>& lhs, const observer_ptr<U>& rhs)
+    noexcept -> bool;
   template <typename T>
-  bool operator!=(const observer_ptr<T>& lhs, std::nullptr_t) noexcept;
+  auto operator!=(const observer_ptr<T>& lhs, std::nullptr_t) noexcept -> bool;
   template <typename T>
-  bool operator!=(std::nullptr_t, const observer_ptr<T>& rhs) noexcept;
+  auto operator!=(std::nullptr_t, const observer_ptr<T>& rhs) noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -423,8 +425,8 @@ namespace alloy::core {
 // Observers
 //-----------------------------------------------------------------------------
 
-inline bool alloy::core::observable::is_referenced()
-  const noexcept
+inline
+auto alloy::core::observable::is_referenced() const noexcept -> bool
 {
   return m_head != nullptr;
 }
@@ -433,16 +435,16 @@ inline bool alloy::core::observable::is_referenced()
 // Constructors
 //-----------------------------------------------------------------------------
 
-inline alloy::core::observable::observable()
-  noexcept
+inline
+alloy::core::observable::observable() noexcept
   : m_head{nullptr}
 {
 
 }
 
 
-inline alloy::core::observable::observable(observable&& other)
-  noexcept
+inline
+alloy::core::observable::observable(observable&& other) noexcept
   : m_head{other.m_head}
 {
   other.m_head = nullptr;
@@ -451,8 +453,8 @@ inline alloy::core::observable::observable(observable&& other)
 }
 
 
-inline alloy::core::observable::observable(const observable& other)
-  noexcept
+inline
+alloy::core::observable::observable(const observable& other) noexcept
   : m_head{nullptr}
 {
   (void) other;
@@ -463,7 +465,8 @@ inline alloy::core::observable::observable(const observable& other)
 // Protected : Destructor
 //-----------------------------------------------------------------------------
 
-inline alloy::core::observable::~observable()
+inline
+alloy::core::observable::~observable()
 {
   clear_references();
 }
@@ -472,8 +475,8 @@ inline alloy::core::observable::~observable()
 // Protected : Modifier
 //-----------------------------------------------------------------------------
 
-inline void alloy::core::observable::clear_references()
-  noexcept
+inline
+auto alloy::core::observable::clear_references() noexcept -> void
 {
   auto* p = m_head;
 
@@ -487,8 +490,9 @@ inline void alloy::core::observable::clear_references()
 }
 
 
-inline void alloy::core::observable::rebind_references(observable& other)
-  noexcept
+inline
+auto alloy::core::observable::rebind_references(observable& other)
+  noexcept -> void
 {
   auto* p = m_head;
 
@@ -503,18 +507,18 @@ inline void alloy::core::observable::rebind_references(observable& other)
 // Friend Hooks : Modifiers
 //-----------------------------------------------------------------------------
 
-inline void
-  alloy::core::observable::add(not_null<detail::observer_ptr_base*> p)
-  const noexcept
+inline
+auto alloy::core::observable::add(not_null<detail::observer_ptr_base*> p)
+  const noexcept -> void
 {
   p->m_next = m_head;
   m_head = p.get();
 }
 
 
-inline void
-  alloy::core::observable::remove(not_null<detail::observer_ptr_base*> p)
-  const noexcept
+inline
+auto alloy::core::observable::remove(not_null<detail::observer_ptr_base*> p)
+  const noexcept -> void
 {
   // If 'p' is the head, change the head pointer
   if (p.get() == m_head) {
@@ -537,10 +541,11 @@ inline void
 }
 
 
-inline void
-  alloy::core::observable::rebind(not_null<detail::observer_ptr_base*> old_p,
-                                  not_null<detail::observer_ptr_base*> new_p)
-  const noexcept
+inline
+auto alloy::core::observable::rebind(
+  not_null<detail::observer_ptr_base*> old_p,
+  not_null<detail::observer_ptr_base*> new_p
+) const noexcept -> void
 {
   // If 'old_p' is the head, rebind to new_p
   if (old_p.get() == m_head) {
@@ -574,8 +579,8 @@ inline void
 // Constructors / Destructor
 //-----------------------------------------------------------------------------
 
-inline alloy::core::detail::observer_ptr_base::observer_ptr_base()
-  noexcept
+inline
+alloy::core::detail::observer_ptr_base::observer_ptr_base() noexcept
   : m_object{nullptr},
     m_next{nullptr}
 {
@@ -583,8 +588,8 @@ inline alloy::core::detail::observer_ptr_base::observer_ptr_base()
 }
 
 
-inline alloy::core::detail::observer_ptr_base
-  ::observer_ptr_base(const observable* p)
+inline
+alloy::core::detail::observer_ptr_base::observer_ptr_base(const observable* p)
   noexcept
   : m_object{p},
     m_next{nullptr}
@@ -595,9 +600,10 @@ inline alloy::core::detail::observer_ptr_base
 }
 
 
-inline alloy::core::detail::observer_ptr_base
-  ::observer_ptr_base(observer_ptr_base&& other)
-  noexcept
+inline
+alloy::core::detail::observer_ptr_base::observer_ptr_base(
+  observer_ptr_base&& other
+) noexcept
   : m_object{other.m_object},
     m_next{nullptr}
 {
@@ -608,9 +614,10 @@ inline alloy::core::detail::observer_ptr_base
 }
 
 
-inline alloy::core::detail::observer_ptr_base
-  ::observer_ptr_base(const observer_ptr_base& other)
-  noexcept
+inline
+alloy::core::detail::observer_ptr_base::observer_ptr_base(
+  const observer_ptr_base& other
+) noexcept
   : m_object{other.m_object},
     m_next{nullptr}
 {
@@ -622,7 +629,8 @@ inline alloy::core::detail::observer_ptr_base
 
 //-----------------------------------------------------------------------------
 
-inline alloy::core::detail::observer_ptr_base::~observer_ptr_base()
+inline
+alloy::core::detail::observer_ptr_base::~observer_ptr_base()
 {
   if (m_object != nullptr) {
     m_object->remove(this);
@@ -634,9 +642,9 @@ inline alloy::core::detail::observer_ptr_base::~observer_ptr_base()
 // Protected : Modifiers
 //-----------------------------------------------------------------------------
 
-inline void
-  alloy::core::detail::observer_ptr_base::do_reset(const observable* p)
-  noexcept
+inline
+auto alloy::core::detail::observer_ptr_base::do_reset(const observable* p)
+  noexcept -> void
 {
   if (p == m_object) {
     return;
@@ -654,8 +662,8 @@ inline void
 }
 
 
-inline void alloy::core::detail::observer_ptr_base::do_reset()
-  noexcept
+inline
+auto alloy::core::detail::observer_ptr_base::do_reset() noexcept -> void
 {
   if (m_object != nullptr) {
     m_object->remove(this);
@@ -663,9 +671,9 @@ inline void alloy::core::detail::observer_ptr_base::do_reset()
   }
 }
 
-inline void
-  alloy::core::detail::observer_ptr_base::do_rebind(observer_ptr_base& other)
-  noexcept
+inline
+auto alloy::core::detail::observer_ptr_base::do_rebind(observer_ptr_base& other)
+  noexcept -> void
 {
   if (other.m_object != nullptr) {
     other.m_object->rebind(&other, this);
@@ -684,8 +692,8 @@ inline void
 //-----------------------------------------------------------------------------
 
 template <typename T>
-inline alloy::core::observer_ptr<T>::observer_ptr()
-  noexcept
+inline
+alloy::core::observer_ptr<T>::observer_ptr() noexcept
   : observer_ptr{nullptr}
 {
 
@@ -693,8 +701,8 @@ inline alloy::core::observer_ptr<T>::observer_ptr()
 
 
 template <typename T>
-inline alloy::core::observer_ptr<T>::observer_ptr(std::nullptr_t)
-  noexcept
+inline
+alloy::core::observer_ptr<T>::observer_ptr(std::nullptr_t) noexcept
   : observer_ptr_base{}
 {
 
@@ -704,8 +712,8 @@ inline alloy::core::observer_ptr<T>::observer_ptr(std::nullptr_t)
 template <typename T>
 template <typename U>
   requires std::convertible_to<U*, T*>
-inline alloy::core::observer_ptr<T>::observer_ptr(U* p)
-  noexcept
+inline
+alloy::core::observer_ptr<T>::observer_ptr(U* p) noexcept
   : observer_ptr_base{p}
 {
 
@@ -713,8 +721,8 @@ inline alloy::core::observer_ptr<T>::observer_ptr(U* p)
 
 
 template <typename T>
-inline alloy::core::observer_ptr<T>::observer_ptr(observer_ptr&& other)
-  noexcept
+inline
+alloy::core::observer_ptr<T>::observer_ptr(observer_ptr&& other) noexcept
   : observer_ptr_base{std::move(other)}
 {
 
@@ -722,8 +730,8 @@ inline alloy::core::observer_ptr<T>::observer_ptr(observer_ptr&& other)
 
 
 template <typename T>
-inline alloy::core::observer_ptr<T>::observer_ptr(const observer_ptr& other)
-  noexcept
+inline
+alloy::core::observer_ptr<T>::observer_ptr(const observer_ptr& other) noexcept
   : observer_ptr_base{other}
 {
 
@@ -733,8 +741,8 @@ inline alloy::core::observer_ptr<T>::observer_ptr(const observer_ptr& other)
 template <typename T>
 template <typename U>
   requires std::convertible_to<U*, T*>
-inline alloy::core::observer_ptr<T>::observer_ptr(observer_ptr<U>&& other)
-  noexcept
+inline
+alloy::core::observer_ptr<T>::observer_ptr(observer_ptr<U>&& other) noexcept
   : observer_ptr_base{std::move(other)}
 {
 
@@ -744,7 +752,8 @@ inline alloy::core::observer_ptr<T>::observer_ptr(observer_ptr<U>&& other)
 template <typename T>
 template <typename U>
   requires std::convertible_to<U*, T*>
-inline alloy::core::observer_ptr<T>::observer_ptr(const observer_ptr<U>& other)
+inline
+alloy::core::observer_ptr<T>::observer_ptr(const observer_ptr<U>& other)
   noexcept
   : observer_ptr_base{other}
 {
@@ -754,9 +763,9 @@ inline alloy::core::observer_ptr<T>::observer_ptr(const observer_ptr<U>& other)
 //-----------------------------------------------------------------------------
 
 template <typename T>
-inline alloy::core::observer_ptr<T>&
-  alloy::core::observer_ptr<T>::operator=(observer_ptr&& other)
-  noexcept
+inline
+auto alloy::core::observer_ptr<T>::operator=(observer_ptr&& other)
+  noexcept -> observer_ptr<T>&
 {
   do_rebind(other);
   return (*this);
@@ -764,9 +773,9 @@ inline alloy::core::observer_ptr<T>&
 
 
 template <typename T>
-inline alloy::core::observer_ptr<T>&
-  alloy::core::observer_ptr<T>::operator=(const observer_ptr& other)
-  noexcept
+inline
+auto alloy::core::observer_ptr<T>::operator=(const observer_ptr& other)
+  noexcept -> observer_ptr<T>&
 {
   do_reset(other.m_object);
   return (*this);
@@ -776,9 +785,8 @@ inline alloy::core::observer_ptr<T>&
 template <typename T>
 template <typename U>
   requires std::convertible_to<U*, T*>
-inline alloy::core::observer_ptr<T>&
-  alloy::core::observer_ptr<T>::operator=(U* p)
-  noexcept
+inline
+auto alloy::core::observer_ptr<T>::operator=(U* p) noexcept -> observer_ptr<T>&
 {
   reset(p);
   return (*this);
@@ -790,8 +798,8 @@ inline alloy::core::observer_ptr<T>&
 //-----------------------------------------------------------------------------
 
 template <typename T>
-inline void alloy::core::observer_ptr<T>::swap(observer_ptr& other)
-  noexcept
+inline
+auto alloy::core::observer_ptr<T>::swap(observer_ptr& other) noexcept -> void
 {
   // TODO: optimize
   using std::swap;
@@ -801,24 +809,24 @@ inline void alloy::core::observer_ptr<T>::swap(observer_ptr& other)
 
 
 template <typename T>
-inline void alloy::core::observer_ptr<T>::reset()
-  noexcept
+inline
+auto alloy::core::observer_ptr<T>::reset() noexcept -> void
 {
   do_reset();
 }
 
 
 template <typename T>
-inline void alloy::core::observer_ptr<T>::reset(std::nullptr_t)
-  noexcept
+inline
+auto alloy::core::observer_ptr<T>::reset(std::nullptr_t) noexcept -> void
 {
   do_reset();
 }
 
 
 template <typename T>
-inline void alloy::core::observer_ptr<T>::reset(pointer p)
-  noexcept
+inline
+auto alloy::core::observer_ptr<T>::reset(pointer p) noexcept -> void
 {
   do_reset(p);
 }
@@ -828,35 +836,35 @@ inline void alloy::core::observer_ptr<T>::reset(pointer p)
 //-----------------------------------------------------------------------------
 
 template <typename T>
-inline typename alloy::core::observer_ptr<T>::pointer
-  alloy::core::observer_ptr<T>::get()
-  const noexcept
+inline
+auto alloy::core::observer_ptr<T>::get()
+  const noexcept -> typename observer_ptr<T>::pointer
 {
   return static_cast<T*>(const_cast<observable*>(m_object));
 }
 
 
 template <typename T>
-inline typename alloy::core::observer_ptr<T>::reference
-  alloy::core::observer_ptr<T>::operator*()
-  const noexcept
+inline
+auto alloy::core::observer_ptr<T>::operator*()
+  const noexcept -> typename observer_ptr<T>::reference
 {
   return *get();
 }
 
 
 template <typename T>
-inline typename alloy::core::observer_ptr<T>::pointer
-  alloy::core::observer_ptr<T>::operator->()
-  const noexcept
+inline
+auto alloy::core::observer_ptr<T>::operator->()
+  const noexcept -> typename observer_ptr<T>::pointer
 {
   return get();
 }
 
 
 template <typename T>
-inline alloy::core::observer_ptr<T>::operator bool()
-  const noexcept
+inline
+alloy::core::observer_ptr<T>::operator bool() const noexcept
 {
   return m_object != nullptr;
 }
@@ -870,27 +878,29 @@ inline alloy::core::observer_ptr<T>::operator bool()
 //-----------------------------------------------------------------------------
 
 template <typename T, typename U>
-inline bool alloy::core::operator==(const observer_ptr<T>& lhs,
-                                    const observer_ptr<U>& rhs)
-  noexcept
+inline
+auto alloy::core::operator==(
+  const observer_ptr<T>& lhs,
+  const observer_ptr<U>& rhs
+) noexcept -> bool
 {
   return lhs.get() == rhs.get();
 }
 
 
 template <typename T>
-inline bool alloy::core::operator==(const observer_ptr<T>& lhs,
-                                    std::nullptr_t)
-  noexcept
+inline
+auto alloy::core::operator==(const observer_ptr<T>& lhs, std::nullptr_t)
+  noexcept -> bool
 {
   return lhs.get() == nullptr;
 }
 
 
 template <typename T>
-inline bool alloy::core::operator==(std::nullptr_t,
-                                    const observer_ptr<T>& rhs)
-  noexcept
+inline
+auto alloy::core::operator==(std::nullptr_t, const observer_ptr<T>& rhs)
+  noexcept -> bool
 {
   return nullptr == rhs.get();
 }
@@ -898,27 +908,29 @@ inline bool alloy::core::operator==(std::nullptr_t,
 //-----------------------------------------------------------------------------
 
 template <typename T, typename U>
-inline bool alloy::core::operator!=(const observer_ptr<T>& lhs,
-                                    const observer_ptr<U>& rhs)
-  noexcept
+inline
+auto alloy::core::operator!=(
+  const observer_ptr<T>& lhs,
+  const observer_ptr<U>& rhs
+) noexcept -> bool
 {
   return lhs.get() != rhs.get();
 }
 
 
 template <typename T>
-inline bool alloy::core::operator!=(const observer_ptr<T>& lhs,
-                                    std::nullptr_t)
-  noexcept
+inline
+auto alloy::core::operator!=(const observer_ptr<T>& lhs, std::nullptr_t)
+  noexcept -> bool
 {
   return lhs.get() != nullptr;
 }
 
 
 template <typename T>
-inline bool alloy::core::operator!=(std::nullptr_t,
-                                    const observer_ptr<T>& rhs)
-  noexcept
+inline
+auto alloy::core::operator!=(std::nullptr_t, const observer_ptr<T>& rhs)
+  noexcept -> bool
 {
   return nullptr != rhs.get();
 }

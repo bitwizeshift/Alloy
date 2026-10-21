@@ -12,8 +12,7 @@
 // Quantifiers
 //-----------------------------------------------------------------------------
 
-auto alloy::core::vector4::magnitude()
-  const noexcept -> real
+auto alloy::core::vector4::magnitude() const noexcept -> real
 {
   return sqrt( dot(*this) );
 }
@@ -21,8 +20,7 @@ auto alloy::core::vector4::magnitude()
 // Modifiers
 //-----------------------------------------------------------------------------
 
-auto alloy::core::vector4::normalize()
-  noexcept -> vector4&
+auto alloy::core::vector4::normalize() noexcept -> vector4&
 {
   const auto square_mag = square_magnitude();
 

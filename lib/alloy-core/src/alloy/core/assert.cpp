@@ -14,7 +14,7 @@ namespace alloy::core {
 namespace {
 
   [[noreturn]]
-  void default_assert_handler(const char* message) noexcept
+  auto default_assert_handler(const char* message) noexcept -> void
   {
     std::fprintf(stderr, "%s", message);
     std::fflush(stderr);
@@ -26,9 +26,8 @@ namespace {
 } // namespace <anonymous>
 } // namespace alloy::core
 
-alloy::core::assert_handler_fn*
-  alloy::core::set_assert_handler(assert_handler_fn* handler)
-  noexcept
+auto alloy::core::set_assert_handler(assert_handler_fn* handler)
+  noexcept -> assert_handler_fn*
 {
   if (handler == nullptr) {
     handler = &default_assert_handler;
@@ -38,12 +37,13 @@ alloy::core::assert_handler_fn*
 }
 
 [[noreturn]] ALLOY_COLD
-void alloy::core::detail::assert_internal(const char* condition,
-                                          const char* message,
-                                          const char* file_name,
-                                          std::size_t line,
-                                          const char* function_name)
-  noexcept
+auto alloy::core::detail::assert_internal(
+  const char* condition,
+  const char* message,
+  const char* file_name,
+  std::size_t line,
+  const char* function_name
+) noexcept -> void
 {
   auto buffer = std::array<char,512>{};
 

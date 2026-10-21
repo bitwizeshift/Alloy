@@ -89,8 +89,7 @@ auto alloy::render::mesh::from_config(mesh_config config)
   return from_config_unchecked(std::move(config));
 }
 
-auto alloy::render::mesh::from_config_unchecked(mesh_config config)
-  -> mesh
+auto alloy::render::mesh::from_config_unchecked(mesh_config config) -> mesh
 {
   return mesh{std::move(config)};
 }
@@ -99,14 +98,12 @@ auto alloy::render::mesh::from_config_unchecked(mesh_config config)
 // Constructors / Assignment / Copy
 //------------------------------------------------------------------------------
 
-auto alloy::render::mesh::copy()
-  const -> mesh
+auto alloy::render::mesh::copy() const -> mesh
 {
   return mesh{*this};
 }
 
-auto alloy::render::mesh::copy_with(core::allocator alloc)
-  const -> mesh
+auto alloy::render::mesh::copy_with(core::allocator alloc) const -> mesh
 {
   return mesh{*this, alloc};
 }

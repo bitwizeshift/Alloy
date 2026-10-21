@@ -46,8 +46,8 @@ namespace alloy::core {
   {
     template <typename...Args>
       requires std::constructible_from<T, Args...>
-    constexpr auto operator()(Args&&...args) const
-      noexcept(std::is_nothrow_constructible_v<T,Args...>) -> T;
+    constexpr auto operator()(Args&&...args)
+      const noexcept(std::is_nothrow_constructible_v<T,Args...>) -> T;
   };
 
   template <typename T>

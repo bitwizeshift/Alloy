@@ -14,8 +14,7 @@
 // Constructors
 //------------------------------------------------------------------------------
 
-alloy::io::message_pump::message_pump()
-  noexcept
+alloy::io::message_pump::message_pump() noexcept
 {
 
 }
@@ -24,18 +23,18 @@ alloy::io::message_pump::message_pump()
 // Modifiers
 //------------------------------------------------------------------------------
 
-void alloy::io::message_pump::poll()
+auto alloy::io::message_pump::poll() -> void
 {
   m_sources.emit<&source::poll>(*this);
 }
 
-void alloy::io::message_pump::pump()
+auto alloy::io::message_pump::pump() -> void
 {
   poll();
   dispatch();
 }
 
-void alloy::io::message_pump::dispatch()
+auto alloy::io::message_pump::dispatch() -> void
 {
   for (const auto& e : m_immediate_events) {
     m_listeners.emit<&listener::handle_immediate_message>(e);
@@ -52,16 +51,12 @@ void alloy::io::message_pump::dispatch()
 
 //------------------------------------------------------------------------------
 
-alloy::core::sink<alloy::io::message_pump::listener>
-  alloy::io::message_pump::on_event()
-  noexcept
+auto alloy::io::message_pump::on_event() noexcept -> core::sink<listener>
 {
   return core::sink{&m_listeners};
 }
 
-alloy::core::sink<alloy::io::message_pump::source>
-  alloy::io::message_pump::on_poll()
-  noexcept
+auto alloy::io::message_pump::on_poll() noexcept -> core::sink<source>
 {
   return core::sink{&m_sources};
 }
@@ -70,7 +65,7 @@ alloy::core::sink<alloy::io::message_pump::source>
 // Event Posting
 //------------------------------------------------------------------------------
 
-void alloy::io::message_pump::do_post_event(event&& e)
+auto alloy::io::message_pump::do_post_event(event&& e) -> void
 {
   // always dispatch high-priority events as immediate events
   if (e.priority() == event_priority::high) {
@@ -80,7 +75,7 @@ void alloy::io::message_pump::do_post_event(event&& e)
   }
 }
 
-void alloy::io::message_pump::do_post_immediate_event(event&& e)
+auto alloy::io::message_pump::do_post_immediate_event(event&& e) -> void
 {
   m_immediate_events.emplace_back(std::move(e));
 }
@@ -93,8 +88,8 @@ void alloy::io::message_pump::do_post_immediate_event(event&& e)
 // Hooks
 //------------------------------------------------------------------------------
 
-void alloy::io::message_pump::listener::handle_immediate_message(const event& e)
-  noexcept
+auto alloy::io::message_pump::listener::handle_immediate_message(const event& e)
+  noexcept -> void
 {
   handle_message(e);
 }

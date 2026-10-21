@@ -66,7 +66,8 @@ namespace alloy::engine {
     ///
     /// \param file the file to read
     /// \return the image on success
-    auto load(io::file& file) -> core::result<core::image,std::error_code> override;
+    auto load(io::file& file)
+      -> core::result<core::image,std::error_code> override;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -80,7 +81,8 @@ namespace alloy::engine {
   ///
   /// \param error the error to convert
   /// \return an error_code
-  auto make_error_code(tga_image_loader::error error) noexcept -> std::error_code;
+  auto make_error_code(tga_image_loader::error error)
+    noexcept -> std::error_code;
 
 } // namespace alloy::engine
 

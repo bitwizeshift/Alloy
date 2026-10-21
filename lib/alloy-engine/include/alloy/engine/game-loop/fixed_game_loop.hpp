@@ -107,8 +107,7 @@ namespace alloy::engine {
 
 template <typename Derived, typename Clock>
 inline
-alloy::engine::fixed_game_loop<Derived,Clock>::fixed_game_loop()
-  noexcept
+alloy::engine::fixed_game_loop<Derived,Clock>::fixed_game_loop() noexcept
   : m_is_running{false}
 {
 }
@@ -119,8 +118,7 @@ alloy::engine::fixed_game_loop<Derived,Clock>::fixed_game_loop()
 
 template <typename Derived, typename Clock>
 inline
-auto alloy::engine::fixed_game_loop<Derived,Clock>::run()
-  -> void
+auto alloy::engine::fixed_game_loop<Derived,Clock>::run() -> void
 {
   static constexpr auto zero_time = duration{0};
   auto& self = static_cast<Derived&>(*this);
@@ -163,8 +161,7 @@ auto alloy::engine::fixed_game_loop<Derived,Clock>::run()
 
 template <typename Derived, typename Clock>
 inline
-auto alloy::engine::fixed_game_loop<Derived,Clock>::stop()
-  noexcept -> void
+auto alloy::engine::fixed_game_loop<Derived,Clock>::stop() noexcept -> void
 {
   m_is_running.store(false);
 }

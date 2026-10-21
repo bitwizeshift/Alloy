@@ -98,7 +98,8 @@ namespace alloy::core {
     /// \pre `value >= 0` and `value <= 1`
     /// \param value the value to saturate
     /// \return the saturated value
-    static constexpr auto make_unchecked(element_type value) noexcept -> saturated;
+    static constexpr auto make_unchecked(element_type value)
+      noexcept -> saturated;
 
     //-------------------------------------------------------------------------
     // Constructors / Assignment
@@ -262,24 +263,20 @@ namespace alloy::core {
     noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const Float&>() < std::declval<const T&>())>
-  constexpr auto operator<(saturated<Float> lhs, const T& rhs)
-    noexcept -> bool;
+  constexpr auto operator<(saturated<Float> lhs, const T& rhs) noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const T&>() < std::declval<const Float&>())>
-  constexpr auto operator<(const T& lhs, saturated<Float> rhs)
-    noexcept -> bool;
+  constexpr auto operator<(const T& lhs, saturated<Float> rhs) noexcept -> bool;
 
   template <typename Float, typename UFloat>
   constexpr auto operator>(saturated<Float> lhs, saturated<UFloat> rhs)
     noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const Float&>() > std::declval<const T&>())>
-  constexpr auto operator>(saturated<Float> lhs, const T& rhs)
-    noexcept -> bool;
+  constexpr auto operator>(saturated<Float> lhs, const T& rhs) noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const T&>() > std::declval<const Float&>())>
-  constexpr auto operator>(const T& lhs, saturated<Float> rhs)
-    noexcept -> bool;
+  constexpr auto operator>(const T& lhs, saturated<Float> rhs) noexcept -> bool;
 
   template <typename Float, typename UFloat>
   constexpr auto operator<=(saturated<Float> lhs, saturated<UFloat> rhs)
@@ -317,9 +314,11 @@ namespace alloy::core {
   /// \param tolerance the tolerance to use for comparison
   /// \return `true` if \p lhs is almost equal to \p rhs
   template <typename Float>
-  constexpr auto almost_equal(saturated<Float> lhs,
-                              saturated<Float> rhs,
-                              real tolerance) noexcept -> bool;
+  constexpr auto almost_equal(
+    saturated<Float> lhs,
+    saturated<Float> rhs,
+    real tolerance
+  ) noexcept -> bool;
 
   //---------------------------------------------------------------------------
   // Arithmetic Operators
@@ -427,8 +426,7 @@ namespace std {
 
 template <typename Float>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::saturated<Float>::saturated(element_type value)
-  noexcept
+alloy::core::saturated<Float>::saturated(element_type value) noexcept
   : m_value{value}
 {
 
@@ -498,8 +496,7 @@ alloy::core::saturated<Float>::saturated(const saturated<UFloat>& other)
 
 template <typename Float>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::saturated<Float>::value()
-  const noexcept -> element_type
+auto alloy::core::saturated<Float>::value() const noexcept -> element_type
 {
   return m_value;
 }
@@ -510,16 +507,14 @@ auto alloy::core::saturated<Float>::value()
 
 template <typename Float>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::saturated<Float>::operator-()
-  const noexcept -> saturated
+auto alloy::core::saturated<Float>::operator-() const noexcept -> saturated
 {
   return saturated{element_type{0}};
 }
 
 template <typename Float>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::saturated<Float>::operator+()
-  const noexcept -> saturated
+auto alloy::core::saturated<Float>::operator+() const noexcept -> saturated
 {
   return (*this);
 }
@@ -666,16 +661,14 @@ auto alloy::core::operator<(saturated<Float> lhs, saturated<UFloat> rhs)
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator<(saturated<Float> lhs, const T& rhs)
-  noexcept -> bool
+auto alloy::core::operator<(saturated<Float> lhs, const T& rhs) noexcept -> bool
 {
   return lhs.value() < rhs;
 }
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator<(const T& lhs, saturated<Float> rhs)
-  noexcept -> bool
+auto alloy::core::operator<(const T& lhs, saturated<Float> rhs) noexcept -> bool
 {
   return lhs < rhs.value();
 }
@@ -691,16 +684,14 @@ auto alloy::core::operator>(saturated<Float> lhs, saturated<UFloat> rhs)
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator>(saturated<Float> lhs, const T& rhs)
-  noexcept -> bool
+auto alloy::core::operator>(saturated<Float> lhs, const T& rhs) noexcept -> bool
 {
   return lhs.value() > rhs;
 }
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator>(const T& lhs, saturated<Float> rhs)
-  noexcept -> bool
+auto alloy::core::operator>(const T& lhs, saturated<Float> rhs) noexcept -> bool
 {
   return lhs > rhs.value();
 }
@@ -724,8 +715,7 @@ auto alloy::core::operator<=(saturated<Float> lhs, const T& rhs)
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator<=(const T& lhs,
-                             saturated<Float> rhs)
+auto alloy::core::operator<=(const T& lhs, saturated<Float> rhs)
   noexcept -> bool
 {
   return lhs <= rhs.value();
@@ -760,10 +750,11 @@ auto alloy::core::operator>=(const T& lhs, saturated<Float> rhs)
 
 template <typename Float>
 inline constexpr
-auto alloy::core::almost_equal(saturated<Float> lhs,
-                               saturated<Float> rhs,
-                               real tolerance)
-  noexcept -> bool
+auto alloy::core::almost_equal(
+  saturated<Float> lhs,
+  saturated<Float> rhs,
+  real tolerance
+) noexcept -> bool
 {
   const auto tmp = (lhs.value() - rhs.value());
 
@@ -892,8 +883,7 @@ auto alloy::core::operator/(saturated<Float> lhs, UFloat rhs)
 
 template <typename Float>
 ALLOY_FORCE_INLINE
-auto alloy::core::is_nan(saturated<Float> f)
-  noexcept -> bool
+auto alloy::core::is_nan(saturated<Float> f) noexcept -> bool
 {
   return is_nan(f.value());
 }
@@ -902,16 +892,14 @@ auto alloy::core::is_nan(saturated<Float> f)
 
 template <typename Float>
 ALLOY_FORCE_INLINE
-auto alloy::core::is_finite(saturated<Float> f)
-  noexcept -> bool
+auto alloy::core::is_finite(saturated<Float> f) noexcept -> bool
 {
   return is_finite(f.value());
 }
 
 template <typename Float>
 ALLOY_FORCE_INLINE
-auto alloy::core::is_infinite(saturated<Float> f)
-  noexcept -> bool
+auto alloy::core::is_infinite(saturated<Float> f) noexcept -> bool
 {
   return is_infinite(f.value());
 }
@@ -920,16 +908,14 @@ auto alloy::core::is_infinite(saturated<Float> f)
 
 template <typename Float>
 ALLOY_FORCE_INLINE
-auto alloy::core::is_normal(saturated<Float> f)
-  noexcept -> bool
+auto alloy::core::is_normal(saturated<Float> f) noexcept -> bool
 {
   return is_normal(f.value());
 }
 
 template <typename Float>
 ALLOY_FORCE_INLINE
-auto alloy::core::is_subnormal(saturated<Float> f)
-  noexcept -> bool
+auto alloy::core::is_subnormal(saturated<Float> f) noexcept -> bool
 {
   return is_subnormal(f.value());
 }

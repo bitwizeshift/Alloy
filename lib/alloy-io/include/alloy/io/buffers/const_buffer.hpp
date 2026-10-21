@@ -47,14 +47,15 @@ namespace alloy::io {
     /// \param container the container to create a buffer from
     /// \return a const buffer of the sequence container
     template <typename Container>
-    static const_buffer from_container(const Container& container) noexcept;
+    static auto from_container(const Container& container)
+      noexcept -> const_buffer;
 
     /// \brief Creates a const buffer from a raw array
     ///
     /// \param array the underlying array
     /// \return a const buffer of the array
     template <typename T, std::size_t N>
-    static const_buffer from_array(const T(&array)[N]) noexcept;
+    static auto from_array(const T(&array)[N]) noexcept -> const_buffer;
 
     /// \brief Creates a const buffer from a pointer and size
     ///
@@ -62,14 +63,15 @@ namespace alloy::io {
     /// \param size the size of the array
     /// \return a const buffer of the contiguous sequence
     template <typename T>
-    static const_buffer from_data(const T* data, size_type size) noexcept;
+    static auto from_data(const T* data, size_type size)
+      noexcept -> const_buffer;
 
     /// \brief Creates a const buffer by reading its object representation
     ///
     /// \param object the object to view
     /// \return a const buffer of the object
     template <typename T>
-    static const_buffer from_object(const T& object) noexcept;
+    static auto from_object(const T& object) noexcept -> const_buffer;
 
     //-------------------------------------------------------------------------
     // Constructors / Assignment
@@ -97,7 +99,7 @@ namespace alloy::io {
     ///
     /// \param other the other buffer to copy
     /// \return reference to `(*this)`
-    const_buffer& operator=(const const_buffer&) = default;
+    auto operator=(const const_buffer&) -> const_buffer& = default;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -107,17 +109,17 @@ namespace alloy::io {
     /// \brief Gets a pointer to the const data buffer
     ///
     /// \return a pointer to the underlying data
-    pointer data() const noexcept;
+    auto data() const noexcept -> pointer;
 
     /// \brief Gets the size of this buffer
     ///
     /// \return the size of this buffer
-    size_type size() const noexcept;
+    auto size() const noexcept -> size_type;
 
     /// \brief Gets whether this buffer is empty
     ///
     /// \return `true` if empty
-    bool empty() const noexcept;
+    auto empty() const noexcept -> bool;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -136,10 +138,10 @@ namespace alloy::io {
   // Equality
   //---------------------------------------------------------------------------
 
-  bool operator==(const const_buffer& lhs,
-                  const const_buffer& rhs) noexcept;
-  bool operator!=(const const_buffer& lhs,
-                  const const_buffer& rhs) noexcept;
+  auto operator==(const const_buffer& lhs, const const_buffer& rhs)
+    noexcept -> bool;
+  auto operator!=(const const_buffer& lhs, const const_buffer& rhs)
+    noexcept -> bool;
 
 } // namespace alloy::io
 
@@ -152,27 +154,27 @@ namespace alloy::io {
 //-----------------------------------------------------------------------------
 
 template <typename Container>
-inline alloy::io::const_buffer
-  alloy::io::const_buffer::from_container(const Container& container)
-  noexcept
+inline
+auto alloy::io::const_buffer::from_container(const Container& container)
+  noexcept -> const_buffer
 {
   return from_data(container.data(), container.size());
 }
 
 
 template <typename T, std::size_t N>
-inline alloy::io::const_buffer
-  alloy::io::const_buffer::from_array(const T(&array)[N])
-  noexcept
+inline
+auto alloy::io::const_buffer::from_array(const T(&array)[N])
+  noexcept -> const_buffer
 {
   return from_data(static_cast<const T*>(array), N);
 }
 
 
 template <typename T>
-inline alloy::io::const_buffer
-  alloy::io::const_buffer::from_data(const T* p, size_type size)
-  noexcept
+inline
+auto alloy::io::const_buffer::from_data(const T* p, size_type size)
+  noexcept -> const_buffer
 {
   return const_buffer{
     reinterpret_cast<const std::byte*>(p),
@@ -182,9 +184,9 @@ inline alloy::io::const_buffer
 
 
 template <typename T>
-inline alloy::io::const_buffer
-  alloy::io::const_buffer::from_object(const T& object)
-  noexcept
+inline
+auto alloy::io::const_buffer::from_object(const T& object)
+  noexcept -> const_buffer
 {
   return from_data(
     std::addressof(object),
@@ -197,8 +199,8 @@ inline alloy::io::const_buffer
 // Constructors
 //-----------------------------------------------------------------------------
 
-inline alloy::io::const_buffer::const_buffer()
-  noexcept
+inline
+alloy::io::const_buffer::const_buffer() noexcept
   : m_bytes{nullptr},
     m_size{0u}
 {
@@ -206,8 +208,8 @@ inline alloy::io::const_buffer::const_buffer()
 }
 
 
-inline alloy::io::const_buffer::const_buffer(pointer p, size_type size)
-  noexcept
+inline
+alloy::io::const_buffer::const_buffer(pointer p, size_type size) noexcept
   : m_bytes{p},
     m_size{size}
 {
@@ -219,22 +221,22 @@ inline alloy::io::const_buffer::const_buffer(pointer p, size_type size)
 // Observers
 //-----------------------------------------------------------------------------
 
-inline alloy::io::const_buffer::pointer alloy::io::const_buffer::data()
-  const noexcept
+inline
+auto alloy::io::const_buffer::data() const noexcept -> pointer
 {
   return m_bytes;
 }
 
 
-inline alloy::io::const_buffer::size_type alloy::io::const_buffer::size()
-  const noexcept
+inline
+auto alloy::io::const_buffer::size() const noexcept -> size_type
 {
   return m_size;
 }
 
 
-inline bool alloy::io::const_buffer::empty()
-  const noexcept
+inline
+auto alloy::io::const_buffer::empty() const noexcept -> bool
 {
   return m_bytes == nullptr || m_size == 0u;
 }
@@ -248,17 +250,17 @@ inline bool alloy::io::const_buffer::empty()
 // Equality
 //-----------------------------------------------------------------------------
 
-inline bool alloy::io::operator==(const const_buffer& lhs,
-                                  const const_buffer& rhs)
-  noexcept
+inline
+auto alloy::io::operator==(const const_buffer& lhs, const const_buffer& rhs)
+  noexcept -> bool
 {
   return lhs.data() == rhs.data() && lhs.size() == rhs.size();
 }
 
 
-inline bool alloy::io::operator!=(const const_buffer& lhs,
-                                  const const_buffer& rhs)
-  noexcept
+inline
+auto alloy::io::operator!=(const const_buffer& lhs, const const_buffer& rhs)
+  noexcept -> bool
 {
   return !(lhs == rhs);
 }

@@ -10,16 +10,14 @@
 namespace alloy::core::test {
 namespace {
 struct base_100_unit {
-  static inline constexpr auto revolution()
-    noexcept -> real
+  static inline constexpr auto revolution() noexcept -> real
   {
     return 100;
   }
 };
 
 struct base_200_unit {
-  static inline constexpr auto revolution()
-    noexcept -> real
+  static inline constexpr auto revolution() noexcept -> real
   {
     return 200;
   }

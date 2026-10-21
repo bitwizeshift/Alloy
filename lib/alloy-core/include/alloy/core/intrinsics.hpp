@@ -650,8 +650,7 @@ namespace alloy::core {
 
 template <typename Fn, typename...Args>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::compiler::debug_only(Fn&& fn, Args&&...args)
-  -> void
+auto alloy::core::compiler::debug_only(Fn&& fn, Args&&...args) -> void
 {
 #if !defined(NDEBUG)
   std::invoke(std::forward<Fn>(fn), std::forward<Args>(args)...);
@@ -661,8 +660,7 @@ auto alloy::core::compiler::debug_only(Fn&& fn, Args&&...args)
 }
 template <typename Fn, typename...Args>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::compiler::release_only(Fn&& fn, Args&&...args)
-  -> void
+auto alloy::core::compiler::release_only(Fn&& fn, Args&&...args) -> void
 {
 #if defined(NDEBUG)
   std::invoke(std::forward<Fn>(fn), std::forward<Args>(args)...);
@@ -677,8 +675,7 @@ auto alloy::core::compiler::release_only(Fn&& fn, Args&&...args)
 
 template <std::size_t N, typename T>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::compiler::assume_aligned(T* p)
-  noexcept -> T*
+auto alloy::core::compiler::assume_aligned(T* p) noexcept -> T*
 {
 #if defined(__clang__) || (defined(__GNUC__) && !defined(__ICC))
   return static_cast<T*>(__builtin_assume_aligned(p, N));
@@ -720,8 +717,7 @@ auto alloy::core::compiler::assume_aligned(T* p)
 
 template <typename T>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::compiler::assume_not_null(T* p)
-  noexcept -> T*
+auto alloy::core::compiler::assume_not_null(T* p) noexcept -> T*
 {
 #if defined(_MSC_VER)
   if (p != nullptr) {
@@ -759,8 +755,7 @@ auto alloy::core::compiler::assume_hot(Fn&& fn, Args&&...args)
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::compiler::unreachable()
-  noexcept -> void
+auto alloy::core::compiler::unreachable() noexcept -> void
 {
   ALLOY_UNREACHABLE();
 }
@@ -770,8 +765,7 @@ auto alloy::core::compiler::unreachable()
 //-----------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE
-auto alloy::core::compiler::breakpoint()
-  noexcept -> void
+auto alloy::core::compiler::breakpoint() noexcept -> void
 {
   ALLOY_BREAKPOINT();
 

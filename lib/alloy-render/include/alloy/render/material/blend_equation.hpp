@@ -56,8 +56,7 @@ namespace alloy::render {
 } // namespace alloy::render
 
 inline
-auto alloy::render::to_string(blend_equation e)
-  noexcept -> core::zstring_view
+auto alloy::render::to_string(blend_equation e) noexcept -> core::zstring_view
 {
   switch (e) {
     case blend_equation::add: {

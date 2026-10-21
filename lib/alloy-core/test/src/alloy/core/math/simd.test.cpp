@@ -722,8 +722,10 @@ TEST_CASE("simd_max(simd<f32>)", "[algorithm][math]") {
 
 namespace {
   template <std::size_t Lane>
-  auto unrolled_dot4(std::span<const simd<f32>,4> lhs, std::span<const simd<f32>,4> rhs)
-    noexcept -> f32
+  auto unrolled_dot4(
+    std::span<const simd<f32>,4> lhs,
+    std::span<const simd<f32>,4> rhs
+  ) noexcept -> f32
   {
     auto result = f32{0};
     for (auto i = 0u; i < 4u; ++i) {

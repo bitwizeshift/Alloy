@@ -46,7 +46,8 @@ namespace alloy::core {
     /// \param destination the buffer to write \p val to
     /// \param val the value to write
     template <typename T>
-    static auto store_object(std::span<std::byte> destination, const T& val) noexcept -> void;
+    static auto store_object(std::span<std::byte> destination, const T& val)
+      noexcept -> void;
 
     /// \{
     /// \brief Stores an integral value into the buffer \p destination
@@ -54,14 +55,28 @@ namespace alloy::core {
     /// \pre `destination.size() >= sizeof(val)`
     /// \param destination the buffer to write \p val to
     /// \param val the value to write
-    static auto store_uint8(std::span<std::byte> destination, std::uint8_t val) noexcept -> void;
-    static auto store_uint16(std::span<std::byte> destination, std::uint16_t val) noexcept -> void;
-    static auto store_uint32(std::span<std::byte> destination, std::uint32_t val) noexcept -> void;
-    static auto store_uint64(std::span<std::byte> destination, std::uint64_t val) noexcept -> void;
-    static auto store_int8(std::span<std::byte> destination, std::int8_t val) noexcept -> void;
-    static auto store_int16(std::span<std::byte> destination, std::int16_t val) noexcept -> void;
-    static auto store_int32(std::span<std::byte> destination, std::int32_t val) noexcept -> void;
-    static auto store_int64(std::span<std::byte> destination, std::int64_t val) noexcept -> void;
+    static auto store_uint8(std::span<std::byte> destination, std::uint8_t val)
+      noexcept -> void;
+    static auto store_uint16(
+      std::span<std::byte> destination,
+      std::uint16_t val
+    ) noexcept -> void;
+    static auto store_uint32(
+      std::span<std::byte> destination,
+      std::uint32_t val
+    ) noexcept -> void;
+    static auto store_uint64(
+      std::span<std::byte> destination,
+      std::uint64_t val
+    ) noexcept -> void;
+    static auto store_int8(std::span<std::byte> destination, std::int8_t val)
+      noexcept -> void;
+    static auto store_int16(std::span<std::byte> destination, std::int16_t val)
+      noexcept -> void;
+    static auto store_int32(std::span<std::byte> destination, std::int32_t val)
+      noexcept -> void;
+    static auto store_int64(std::span<std::byte> destination, std::int64_t val)
+      noexcept -> void;
     /// \}
 
     /// \{
@@ -70,9 +85,12 @@ namespace alloy::core {
     /// \pre `destination.size() >= sizeof(val)`
     /// \param destination the buffer to write \p val to
     /// \param val the floating point value to write
-    static auto store_float(std::span<std::byte> destination, float val) noexcept -> void;
-    static auto store_double(std::span<std::byte> destination, double val) noexcept -> void;
-    static auto store_real(std::span<std::byte> destination, real val) noexcept -> void;
+    static auto store_float(std::span<std::byte> destination, float val)
+      noexcept -> void;
+    static auto store_double(std::span<std::byte> destination, double val)
+      noexcept -> void;
+    static auto store_real(std::span<std::byte> destination, real val)
+      noexcept -> void;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -96,14 +114,22 @@ namespace alloy::core {
     /// \pre `source.size() >= sizeof(T)`
     /// \param source the buffer to read from
     /// \return the read integral value
-    static auto load_uint8(std::span<const std::byte> source) noexcept -> std::uint8_t;
-    static auto load_uint16(std::span<const std::byte> source) noexcept -> std::uint16_t;
-    static auto load_uint32(std::span<const std::byte> source) noexcept -> std::uint32_t;
-    static auto load_uint64(std::span<const std::byte> source) noexcept -> std::uint64_t;
-    static auto load_int8(std::span<const std::byte> source) noexcept -> std::int8_t;
-    static auto load_int16(std::span<const std::byte> source) noexcept -> std::int16_t;
-    static auto load_int32(std::span<const std::byte> source) noexcept -> std::int32_t;
-    static auto load_int64(std::span<const std::byte> source) noexcept -> std::int64_t;
+    static auto load_uint8(std::span<const std::byte> source)
+      noexcept -> std::uint8_t;
+    static auto load_uint16(std::span<const std::byte> source)
+      noexcept -> std::uint16_t;
+    static auto load_uint32(std::span<const std::byte> source)
+      noexcept -> std::uint32_t;
+    static auto load_uint64(std::span<const std::byte> source)
+      noexcept -> std::uint64_t;
+    static auto load_int8(std::span<const std::byte> source)
+      noexcept -> std::int8_t;
+    static auto load_int16(std::span<const std::byte> source)
+      noexcept -> std::int16_t;
+    static auto load_int32(std::span<const std::byte> source)
+      noexcept -> std::int32_t;
+    static auto load_int64(std::span<const std::byte> source)
+      noexcept -> std::int64_t;
     /// \}
 
     /// \{
@@ -114,7 +140,8 @@ namespace alloy::core {
     /// \param source the buffer to read from
     /// \return the read floating point value
     static auto load_float(std::span<const std::byte> source) noexcept -> float;
-    static auto load_double(std::span<const std::byte> source) noexcept -> double;
+    static auto load_double(std::span<const std::byte> source)
+      noexcept -> double;
     static auto load_real(std::span<const std::byte> source) noexcept -> real;
     /// \}
   };
@@ -126,9 +153,11 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 template<typename T>
-inline auto
-  alloy::core::unaligned::store_object(std::span<std::byte> destination, const T& val)
-  noexcept -> void
+inline
+auto alloy::core::unaligned::store_object(
+  std::span<std::byte> destination,
+  const T& val
+) noexcept -> void
 {
   static_assert(std::is_trivially_copyable_v<T>);
 
@@ -137,79 +166,101 @@ inline auto
   std::memcpy(destination.data(), std::addressof(val), sizeof(T));
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::store_uint8(std::span<std::byte> destination, std::uint8_t val)
-  noexcept -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::store_uint8(
+  std::span<std::byte> destination,
+  std::uint8_t val
+) noexcept -> void
 {
   store_object(destination, val);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::store_uint16(std::span<std::byte> destination, std::uint16_t val)
-  noexcept -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::store_uint16(
+  std::span<std::byte> destination,
+  std::uint16_t val
+) noexcept -> void
 {
   store_object(destination, val);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::store_uint32(std::span<std::byte> destination, std::uint32_t val)
-  noexcept -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::store_uint32(
+  std::span<std::byte> destination,
+  std::uint32_t val
+) noexcept -> void
 {
   store_object(destination, val);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::store_uint64(std::span<std::byte> destination, std::uint64_t val)
-  noexcept -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::store_uint64(
+  std::span<std::byte> destination,
+  std::uint64_t val
+) noexcept -> void
 {
   store_object(destination, val);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::store_int8(std::span<std::byte> destination, std::int8_t val)
-  noexcept -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::store_int8(
+  std::span<std::byte> destination,
+  std::int8_t val
+) noexcept -> void
 {
   store_object(destination, val);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::store_int16(std::span<std::byte> destination, std::int16_t val)
-  noexcept -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::store_int16(
+  std::span<std::byte> destination,
+  std::int16_t val
+) noexcept -> void
 {
   store_object(destination, val);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::store_int32(std::span<std::byte> destination, std::int32_t val)
-  noexcept -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::store_int32(
+  std::span<std::byte> destination,
+  std::int32_t val
+) noexcept -> void
 {
   store_object(destination, val);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::store_int64(std::span<std::byte> destination, std::int64_t val)
-  noexcept -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::store_int64(
+  std::span<std::byte> destination,
+  std::int64_t val
+) noexcept -> void
 {
   store_object(destination, val);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::store_float(std::span<std::byte> destination, float val)
-  noexcept -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::store_float(
+  std::span<std::byte> destination,
+  float val
+) noexcept -> void
 {
   store_object(destination, val);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::store_double(std::span<std::byte> destination, double val)
-  noexcept -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::store_double(
+  std::span<std::byte> destination,
+  double val
+) noexcept -> void
 {
   store_object(destination, val);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::store_real(std::span<std::byte> destination, real val)
-  noexcept -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::store_real(
+  std::span<std::byte> destination,
+  real val
+) noexcept -> void
 {
   store_object(destination, val);
 }
@@ -219,8 +270,8 @@ ALLOY_FORCE_INLINE auto
 //-----------------------------------------------------------------------------
 
 template<typename T>
-inline auto
-  alloy::core::unaligned::load_object(std::span<const std::byte> source)
+inline
+auto alloy::core::unaligned::load_object(std::span<const std::byte> source)
   noexcept -> T
 {
   static_assert(std::is_trivially_copyable_v<T>);
@@ -239,78 +290,78 @@ inline auto
   return result;
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::load_uint8(std::span<const std::byte> source)
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::load_uint8(std::span<const std::byte> source)
   noexcept -> std::uint8_t
 {
   return load_object<std::uint8_t>(source);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::load_uint16(std::span<const std::byte> source)
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::load_uint16(std::span<const std::byte> source)
   noexcept -> std::uint16_t
 {
   return load_object<std::uint16_t>(source);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::load_uint32(std::span<const std::byte> source)
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::load_uint32(std::span<const std::byte> source)
   noexcept -> std::uint32_t
 {
   return load_object<std::uint32_t>(source);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::load_uint64(std::span<const std::byte> source)
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::load_uint64(std::span<const std::byte> source)
   noexcept -> std::uint64_t
 {
   return load_object<std::uint64_t>(source);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::load_int8(std::span<const std::byte> source)
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::load_int8(std::span<const std::byte> source)
   noexcept -> std::int8_t
 {
   return load_object<std::int8_t>(source);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::load_int16(std::span<const std::byte> source)
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::load_int16(std::span<const std::byte> source)
   noexcept -> std::int16_t
 {
   return load_object<std::int16_t>(source);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::load_int32(std::span<const std::byte> source)
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::load_int32(std::span<const std::byte> source)
   noexcept -> std::int32_t
 {
   return load_object<std::int32_t>(source);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::load_int64(std::span<const std::byte> source)
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::load_int64(std::span<const std::byte> source)
   noexcept -> std::int64_t
 {
   return load_object<std::int64_t>(source);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::load_float(std::span<const std::byte> source)
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::load_float(std::span<const std::byte> source)
   noexcept -> float
 {
   return load_object<float>(source);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::load_double(std::span<const std::byte> source)
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::load_double(std::span<const std::byte> source)
   noexcept -> double
 {
   return load_object<double>(source);
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::unaligned::load_real(std::span<const std::byte> source)
+ALLOY_FORCE_INLINE
+auto alloy::core::unaligned::load_real(std::span<const std::byte> source)
   noexcept -> real
 {
   return load_object<real>(source);

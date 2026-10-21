@@ -10,34 +10,31 @@
 // World Translations
 //-----------------------------------------------------------------------------
 
-auto alloy::core::camera::translate_world(real delta_x,
-                                          real delta_y,
-                                          real delta_z)
-  noexcept -> void
+auto alloy::core::camera::translate_world(
+  real delta_x,
+  real delta_y,
+  real delta_z
+) noexcept -> void
 {
   translate_world(vector3{delta_x, delta_y, delta_z});
 }
 
-auto alloy::core::camera::translate_world(const vector3& delta)
-  noexcept -> void
+auto alloy::core::camera::translate_world(const vector3& delta) noexcept -> void
 {
   m_translation += delta;
 }
 
-auto alloy::core::camera::translate_world_x(real delta)
-  noexcept -> void
+auto alloy::core::camera::translate_world_x(real delta) noexcept -> void
 {
   m_translation.x() += delta;
 }
 
-auto alloy::core::camera::translate_world_y(real delta)
-  noexcept -> void
+auto alloy::core::camera::translate_world_y(real delta) noexcept -> void
 {
   m_translation.y() += delta;
 }
 
-auto alloy::core::camera::translate_world_z(real delta)
-  noexcept -> void
+auto alloy::core::camera::translate_world_z(real delta) noexcept -> void
 {
   m_translation.z() += delta;
 }
@@ -46,26 +43,22 @@ auto alloy::core::camera::translate_world_z(real delta)
 // Local Translations
 //-----------------------------------------------------------------------------
 
-auto alloy::core::camera::translate_local_x(real delta)
-  noexcept -> void
+auto alloy::core::camera::translate_local_x(real delta) noexcept -> void
 {
   m_translation += m_right * delta;
 }
 
-auto alloy::core::camera::translate_local_y(real delta)
-  noexcept -> void
+auto alloy::core::camera::translate_local_y(real delta) noexcept -> void
 {
   m_translation += m_up * delta;
 }
 
-auto alloy::core::camera::translate_local_z(real delta)
-  noexcept -> void
+auto alloy::core::camera::translate_local_z(real delta) noexcept -> void
 {
   m_translation += m_forward * delta;
 }
 
-auto alloy::core::camera::translate_local(const vector3& delta)
-  noexcept -> void
+auto alloy::core::camera::translate_local(const vector3& delta) noexcept -> void
 {
   translate_local_x(delta.x());
   translate_local_y(delta.y());
@@ -74,40 +67,34 @@ auto alloy::core::camera::translate_local(const vector3& delta)
 
 //-----------------------------------------------------------------------------
 
-auto alloy::core::camera::rotate(const quaternion& orientation)
-  noexcept -> void
+auto alloy::core::camera::rotate(const quaternion& orientation) noexcept -> void
 {
   m_orientation *= orientation;
   m_orientation.extract_axes(&m_right, &m_up, &m_forward);
 }
 
-auto alloy::core::camera::rotate(const euler_angles& angles)
-  noexcept -> void
+auto alloy::core::camera::rotate(const euler_angles& angles) noexcept -> void
 {
   rotate(quaternion::from_angles(angles));
 }
 
-auto alloy::core::camera::rotate_around_axis(radian angle,
-                                             const vector3& axis)
+auto alloy::core::camera::rotate_around_axis(radian angle, const vector3& axis)
   noexcept -> void
 {
   rotate(quaternion::from_angle_axis(angle, axis));
 }
 
-auto alloy::core::camera::rotate_roll(radian angle)
-  noexcept -> void
+auto alloy::core::camera::rotate_roll(radian angle) noexcept -> void
 {
   rotate(quaternion::from_angles(radian{0}, radian{0}, angle));
 }
 
-auto alloy::core::camera::rotate_pitch(radian angle)
-  noexcept -> void
+auto alloy::core::camera::rotate_pitch(radian angle) noexcept -> void
 {
   rotate(quaternion::from_angles(radian{0}, angle, radian{0}));
 }
 
-auto alloy::core::camera::rotate_yaw(radian angle)
-  noexcept -> void
+auto alloy::core::camera::rotate_yaw(radian angle) noexcept -> void
 {
   rotate(quaternion::from_angles(angle, radian{0}, radian{0}));
 }
@@ -116,56 +103,48 @@ auto alloy::core::camera::rotate_yaw(radian angle)
 // Absolute Transformations
 //-----------------------------------------------------------------------------
 
-auto alloy::core::camera::set_origin(real x, real y, real z)
-  noexcept -> void
+auto alloy::core::camera::set_origin(real x, real y, real z) noexcept -> void
 {
   m_translation.x() = x;
   m_translation.y() = y;
   m_translation.z() = z;
 }
 
-auto alloy::core::camera::set_origin(const vector3& offset)
-  noexcept -> void
+auto alloy::core::camera::set_origin(const vector3& offset) noexcept -> void
 {
   m_translation = offset;
 }
 
-auto alloy::core::camera::set_x_translation(real x)
-  noexcept -> void
+auto alloy::core::camera::set_x_translation(real x) noexcept -> void
 {
   m_translation.x() = x;
 }
 
-auto alloy::core::camera::set_y_translation(real y)
-  noexcept -> void
+auto alloy::core::camera::set_y_translation(real y) noexcept -> void
 {
   m_translation.y() = y;
 }
 
-auto alloy::core::camera::set_z_translation(real z)
-  noexcept -> void
+auto alloy::core::camera::set_z_translation(real z) noexcept -> void
 {
   m_translation.z() = z;
 }
 
 //-----------------------------------------------------------------------------
 
-auto alloy::core::camera::set_roll(radian angle)
-  noexcept -> void
+auto alloy::core::camera::set_roll(radian angle) noexcept -> void
 {
   m_orientation *= quaternion::from_angles(radian{0}, radian{0}, angle);
   m_orientation.extract_axes(&m_right, &m_up, &m_forward);
 }
 
-auto alloy::core::camera::set_pitch(radian angle)
-  noexcept -> void
+auto alloy::core::camera::set_pitch(radian angle) noexcept -> void
 {
   m_orientation *= quaternion::from_angles(radian{0}, angle, radian{0});
   m_orientation.extract_axes(&m_right, &m_up, &m_forward);
 }
 
-auto alloy::core::camera::set_yaw(radian angle)
-  noexcept -> void
+auto alloy::core::camera::set_yaw(radian angle) noexcept -> void
 {
   m_orientation *= quaternion::from_angles(angle, radian{0}, radian{0});
   m_orientation.extract_axes(&m_right, &m_up, &m_forward);
@@ -207,20 +186,17 @@ auto alloy::core::camera::look_at(real x, real y, real z, const vector3& up)
 // Observers
 //-----------------------------------------------------------------------------
 
-auto alloy::core::camera::translation()
-  const noexcept -> vector3
+auto alloy::core::camera::translation() const noexcept -> vector3
 {
   return m_translation;
 }
 
-auto alloy::core::camera::orientation()
-  const noexcept -> quaternion
+auto alloy::core::camera::orientation() const noexcept -> quaternion
 {
   return m_orientation;
 }
 
-auto alloy::core::camera::angles()
-  const noexcept -> euler_angles
+auto alloy::core::camera::angles() const noexcept -> euler_angles
 {
   return euler_angles{
     m_orientation.yaw(),
@@ -253,8 +229,7 @@ auto alloy::core::camera::extract_matrix(not_null<matrix4*> out)
   result[2][3] = z_pos;
 }
 
-auto alloy::core::camera::to_matrix4()
-  const noexcept -> matrix4
+auto alloy::core::camera::to_matrix4() const noexcept -> matrix4
 {
   auto result = matrix4{};
   extract_matrix(&result);

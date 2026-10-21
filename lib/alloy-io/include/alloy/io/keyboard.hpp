@@ -263,21 +263,21 @@ namespace alloy::io {
   // Bitwise Operators
   //---------------------------------------------------------------------------
 
-  constexpr keyboard::modifiers
-    operator|(keyboard::modifiers lhs, keyboard::modifiers rhs) noexcept;
-  constexpr keyboard::modifiers
-    operator^(keyboard::modifiers lhs, keyboard::modifiers rhs) noexcept;
-  constexpr keyboard::modifiers
-    operator&(keyboard::modifiers lhs, keyboard::modifiers rhs) noexcept;
+  constexpr auto operator|(keyboard::modifiers lhs, keyboard::modifiers rhs)
+    noexcept -> keyboard::modifiers;
+  constexpr auto operator^(keyboard::modifiers lhs, keyboard::modifiers rhs)
+    noexcept -> keyboard::modifiers;
+  constexpr auto operator&(keyboard::modifiers lhs, keyboard::modifiers rhs)
+    noexcept -> keyboard::modifiers;
 
   //---------------------------------------------------------------------------
 
-  constexpr keyboard::modifiers&
-    operator|=(keyboard::modifiers& lhs, keyboard::modifiers rhs) noexcept;
-  constexpr keyboard::modifiers&
-    operator^=(keyboard::modifiers& lhs, keyboard::modifiers rhs) noexcept;
-  constexpr keyboard::modifiers&
-    operator&=(keyboard::modifiers& lhs, keyboard::modifiers rhs) noexcept;
+  constexpr auto operator|=(keyboard::modifiers& lhs, keyboard::modifiers rhs)
+    noexcept -> keyboard::modifiers&;
+  constexpr auto operator^=(keyboard::modifiers& lhs, keyboard::modifiers rhs)
+    noexcept -> keyboard::modifiers&;
+  constexpr auto operator&=(keyboard::modifiers& lhs, keyboard::modifiers rhs)
+    noexcept -> keyboard::modifiers&;
 
   //===========================================================================
   // enum class : keyboard::key_state
@@ -318,9 +318,9 @@ namespace alloy::io {
 // Bitwise Operators
 //-----------------------------------------------------------------------------
 
-inline constexpr alloy::io::keyboard::modifiers
-  alloy::io::operator|(keyboard::modifiers lhs, keyboard::modifiers rhs)
-  noexcept
+inline constexpr
+auto alloy::io::operator|(keyboard::modifiers lhs, keyboard::modifiers rhs)
+  noexcept -> keyboard::modifiers
 {
   using value_type = std::underlying_type_t<keyboard::modifiers>;
 
@@ -329,9 +329,9 @@ inline constexpr alloy::io::keyboard::modifiers
   );
 }
 
-inline constexpr alloy::io::keyboard::modifiers
-  alloy::io::operator^(keyboard::modifiers lhs, keyboard::modifiers rhs)
-  noexcept
+inline constexpr
+auto alloy::io::operator^(keyboard::modifiers lhs, keyboard::modifiers rhs)
+  noexcept -> keyboard::modifiers
 {
   using value_type = std::underlying_type_t<keyboard::modifiers>;
 
@@ -341,9 +341,9 @@ inline constexpr alloy::io::keyboard::modifiers
 
 }
 
-inline constexpr alloy::io::keyboard::modifiers
-  alloy::io::operator&(keyboard::modifiers lhs, keyboard::modifiers rhs)
-  noexcept
+inline constexpr
+auto alloy::io::operator&(keyboard::modifiers lhs, keyboard::modifiers rhs)
+  noexcept -> keyboard::modifiers
 {
   using value_type = std::underlying_type_t<keyboard::modifiers>;
 
@@ -354,23 +354,23 @@ inline constexpr alloy::io::keyboard::modifiers
 
 //---------------------------------------------------------------------------
 
-inline constexpr alloy::io::keyboard::modifiers&
-  alloy::io::operator|=(keyboard::modifiers& lhs, keyboard::modifiers rhs)
-  noexcept
+inline constexpr
+auto alloy::io::operator|=(keyboard::modifiers& lhs, keyboard::modifiers rhs)
+  noexcept -> keyboard::modifiers&
 {
   return lhs = (lhs | rhs);
 }
 
-inline constexpr alloy::io::keyboard::modifiers&
-  alloy::io::operator^=(keyboard::modifiers& lhs, keyboard::modifiers rhs)
-  noexcept
+inline constexpr
+auto alloy::io::operator^=(keyboard::modifiers& lhs, keyboard::modifiers rhs)
+  noexcept -> keyboard::modifiers&
 {
   return lhs = (lhs ^ rhs);
 }
 
-inline constexpr alloy::io::keyboard::modifiers&
-  alloy::io::operator&=(keyboard::modifiers& lhs, keyboard::modifiers rhs)
-  noexcept
+inline constexpr
+auto alloy::io::operator&=(keyboard::modifiers& lhs, keyboard::modifiers rhs)
+  noexcept -> keyboard::modifiers&
 {
   return lhs = (lhs & rhs);
 }

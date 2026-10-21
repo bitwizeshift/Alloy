@@ -175,7 +175,8 @@ namespace alloy::core {
     public:
 
       char32_pointer(const char32_pointer& other) = default;
-      constexpr char32_pointer(char32 v) : m_char{v}{}
+      constexpr char32_pointer(char32 v)
+        : m_char{v}{}
       auto operator=(const char32_pointer& other) -> char32_pointer& = default;
       auto operator->() const noexcept -> const char32* { return &m_char; }
 
@@ -227,8 +228,10 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   public:
 
-    constexpr auto operator==(const basic_iterator& other) const noexcept -> bool;
-    constexpr auto operator!=(const basic_iterator& other) const noexcept -> bool;
+    constexpr auto operator==(const basic_iterator& other)
+      const noexcept -> bool;
+    constexpr auto operator!=(const basic_iterator& other)
+      const noexcept -> bool;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -476,10 +479,8 @@ namespace alloy::core {
 
 template <typename Encoding, typename Iterator>
 inline constexpr
-alloy::core::encoding_utilities::basic_iterator<Encoding,Iterator>::basic_iterator(
-  Iterator it,
-  Iterator end
-) noexcept
+alloy::core::encoding_utilities::basic_iterator<Encoding,Iterator>::basic_iterator(Iterator it, Iterator end)
+  noexcept
   : m_iterator{it},
     m_end{end}
 {
@@ -533,18 +534,16 @@ auto alloy::core::encoding_utilities::basic_iterator<Encoding,Iterator>::operato
 
 template <typename Encoding, typename Iterator>
 inline constexpr
-auto alloy::core::encoding_utilities::basic_iterator<Encoding,Iterator>::operator==(
-  const basic_iterator& other
-) const noexcept -> bool
+auto alloy::core::encoding_utilities::basic_iterator<Encoding,Iterator>::operator==(const basic_iterator& other)
+  const noexcept -> bool
 {
   return m_iterator == other.m_iterator;
 }
 
 template <typename Encoding, typename Iterator>
 inline constexpr
-auto alloy::core::encoding_utilities::basic_iterator<Encoding,Iterator>::operator!=(
-  const basic_iterator& other
-) const noexcept -> bool
+auto alloy::core::encoding_utilities::basic_iterator<Encoding,Iterator>::operator!=(const basic_iterator& other)
+  const noexcept -> bool
 {
   return m_iterator != other.m_iterator;
 }
@@ -606,10 +605,8 @@ auto alloy::core::encoding_utilities::chars_range<Encoding,Iterator>::nth(
 
 template <typename Encoding, typename Iterator>
 inline constexpr
-auto alloy::core::encoding_utilities::chars_range<Encoding,Iterator>::nth_unchecked(
-  uquantity<char32> n,
-  char32 replacement
-) const noexcept -> char32
+auto alloy::core::encoding_utilities::chars_range<Encoding,Iterator>::nth_unchecked(uquantity<char32> n, char32 replacement)
+  const noexcept -> char32
 {
   const auto it = traits_type::next(m_begin, m_end, n);
 

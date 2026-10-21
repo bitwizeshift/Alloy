@@ -142,16 +142,21 @@ namespace alloy::core {
   // Arithmetic Operators
   //----------------------------------------------------------------------------
 
-  constexpr auto operator-(const point2& lhs, const point2& rhs) noexcept -> vector2;
-  constexpr auto operator+(const point2& lhs, const vector2& rhs) noexcept -> point2;
-  constexpr auto operator-(const point2& lhs, const vector2& rhs) noexcept -> point2;
+  constexpr auto operator-(const point2& lhs, const point2& rhs)
+    noexcept -> vector2;
+  constexpr auto operator+(const point2& lhs, const vector2& rhs)
+    noexcept -> point2;
+  constexpr auto operator-(const point2& lhs, const vector2& rhs)
+    noexcept -> point2;
 
   //----------------------------------------------------------------------------
   // Comparisons
   //----------------------------------------------------------------------------
 
-  constexpr auto operator==(const point2& lhs, const point2& rhs) noexcept -> bool;
-  constexpr auto operator!=(const point2& lhs, const point2& rhs) noexcept -> bool;
+  constexpr auto operator==(const point2& lhs, const point2& rhs)
+    noexcept -> bool;
+  constexpr auto operator!=(const point2& lhs, const point2& rhs)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -160,9 +165,11 @@ namespace alloy::core {
   /// \param lhs the left point
   /// \param rhs the right point
   /// \return `true` if the two point contain almost equal values
-  constexpr auto almost_equal(const point2& lhs,
-                              const point2& rhs,
-                              real tolerance) noexcept -> bool;
+  constexpr auto almost_equal(
+    const point2& lhs,
+    const point2& rhs,
+    real tolerance
+  ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
   // Utilities
@@ -196,16 +203,14 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::point2::point2()
-  noexcept
+alloy::core::point2::point2() noexcept
   : m_data{0,0}
 {
 
 }
 
 inline constexpr
-alloy::core::point2::point2(real x, real y)
-  noexcept
+alloy::core::point2::point2(real x, real y) noexcept
   : m_data{x,y}
 {
 
@@ -216,8 +221,7 @@ alloy::core::point2::point2(real x, real y)
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::core::point2::operator+=(const vector2& rhs)
-  noexcept -> point2&
+auto alloy::core::point2::operator+=(const vector2& rhs) noexcept -> point2&
 {
   for (auto i = 0; i < 3; ++i) {
     m_data[i] = m_data[i] + rhs[i];
@@ -226,8 +230,7 @@ auto alloy::core::point2::operator+=(const vector2& rhs)
 }
 
 inline
-auto alloy::core::point2::operator-=(const vector2& rhs)
-  noexcept -> point2&
+auto alloy::core::point2::operator-=(const vector2& rhs) noexcept -> point2&
 {
   for (auto i = 0; i < 3; ++i) {
     m_data[i] = m_data[i] - rhs[i];
@@ -240,50 +243,43 @@ auto alloy::core::point2::operator-=(const vector2& rhs)
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::point2::x()
-  noexcept -> reference
+auto alloy::core::point2::x() noexcept -> reference
 {
   return m_data[0];
 }
 
 inline constexpr
-auto alloy::core::point2::x()
-  const noexcept -> const_reference
+auto alloy::core::point2::x() const noexcept -> const_reference
 {
   return m_data[0];
 }
 
 inline constexpr
-auto alloy::core::point2::y()
-  noexcept -> reference
+auto alloy::core::point2::y() noexcept -> reference
 {
   return m_data[1];
 }
 
 inline constexpr
-auto alloy::core::point2::y()
-  const noexcept -> const_reference
+auto alloy::core::point2::y() const noexcept -> const_reference
 {
   return m_data[1];
 }
 
 inline constexpr
-auto alloy::core::point2::data()
-  noexcept -> pointer
+auto alloy::core::point2::data() noexcept -> pointer
 {
   return &m_data[0];
 }
 
 inline constexpr
-auto alloy::core::point2::data()
-  const noexcept -> const_pointer
+auto alloy::core::point2::data() const noexcept -> const_pointer
 {
   return &m_data[0];
 }
 
 inline constexpr
-auto alloy::core::point2::operator[](index_type n)
-  noexcept -> reference
+auto alloy::core::point2::operator[](index_type n) noexcept -> reference
 {
   ALLOY_ASSERT(n >= 0 && n < 3);
   return m_data[n];
@@ -346,7 +342,7 @@ ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr
-auto alloy::core::operator==(const point2& lhs, const point2& rhs )
+auto alloy::core::operator==(const point2& lhs, const point2& rhs)
   noexcept -> bool
 {
   for (auto i = 0; i < 2; ++i) {
@@ -387,8 +383,7 @@ auto alloy::core::almost_equal(const point2& lhs,
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::to_vector(const point2& p)
-  noexcept -> vector2
+auto alloy::core::to_vector(const point2& p) noexcept -> vector2
 {
   return {p.x(), p.y()};
 }
@@ -401,9 +396,10 @@ ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr
-auto alloy::core::piecewise_compare<alloy::core::point2>
-  ::operator()(const point2& lhs, const point2& rhs)
-  const noexcept -> bool
+auto alloy::core::piecewise_compare<alloy::core::point2>::operator()(
+  const point2& lhs,
+  const point2& rhs
+) const noexcept -> bool
 {
   return (lhs.x() == rhs.x()) ?
            (lhs.y() < rhs.y()) :

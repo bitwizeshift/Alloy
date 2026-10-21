@@ -18,8 +18,7 @@
 // Constructor
 //------------------------------------------------------------------------------
 
-alloy::extra::memory_arena_cache::memory_arena_cache()
-  noexcept
+alloy::extra::memory_arena_cache::memory_arena_cache() noexcept
   : m_head{}
 {
 
@@ -29,15 +28,13 @@ alloy::extra::memory_arena_cache::memory_arena_cache()
 // Observers
 //------------------------------------------------------------------------------
 
-bool alloy::extra::memory_arena_cache::empty()
-  const noexcept
+auto alloy::extra::memory_arena_cache::empty() const noexcept -> bool
 {
   return m_head.data() == nullptr;
 }
 
 
-std::size_t alloy::extra::memory_arena_cache::size()
-  const noexcept
+auto alloy::extra::memory_arena_cache::size() const noexcept -> std::size_t
 {
   auto result = std::size_t{0u};
 
@@ -51,8 +48,8 @@ std::size_t alloy::extra::memory_arena_cache::size()
 }
 
 
-std::size_t alloy::extra::memory_arena_cache::size_bytes()
-  const noexcept
+auto alloy::extra::memory_arena_cache::size_bytes()
+  const noexcept -> std::size_t
 {
   auto result = std::size_t{0u};
 
@@ -64,8 +61,8 @@ std::size_t alloy::extra::memory_arena_cache::size_bytes()
 }
 
 
-bool alloy::extra::memory_arena_cache::contains(const void* p)
-  const noexcept
+auto alloy::extra::memory_arena_cache::contains(const void* p)
+  const noexcept -> bool
 {
   auto found = false;
 
@@ -80,8 +77,8 @@ bool alloy::extra::memory_arena_cache::contains(const void* p)
 // Element Access
 //------------------------------------------------------------------------------
 
-const alloy::extra::memory_arena& alloy::extra::memory_arena_cache::peek()
-  const noexcept
+auto alloy::extra::memory_arena_cache::peek()
+  const noexcept -> const memory_arena&
 {
   ALLOY_ASSERT(m_head.data() != nullptr);
 
@@ -89,8 +86,7 @@ const alloy::extra::memory_arena& alloy::extra::memory_arena_cache::peek()
 }
 
 
-alloy::extra::memory_arena alloy::extra::memory_arena_cache::request()
-  noexcept
+auto alloy::extra::memory_arena_cache::request() noexcept -> memory_arena
 {
   auto arena = m_head;
   if (m_head.data() != nullptr) {
@@ -103,8 +99,8 @@ alloy::extra::memory_arena alloy::extra::memory_arena_cache::request()
 }
 
 
-void alloy::extra::memory_arena_cache::steal(memory_arena_cache& other)
-  noexcept
+auto alloy::extra::memory_arena_cache::steal(memory_arena_cache& other)
+  noexcept -> void
 {
   const auto arena = other.request();
 
@@ -114,8 +110,8 @@ void alloy::extra::memory_arena_cache::steal(memory_arena_cache& other)
 }
 
 template <typename Fn>
-void alloy::extra::memory_arena_cache::for_each_arena(Fn&& fn)
-  const noexcept
+auto alloy::extra::memory_arena_cache::for_each_arena(Fn&& fn)
+  const noexcept -> void
 {
   auto* arena = &m_head;
   while (arena->data() != nullptr) {
@@ -130,8 +126,8 @@ void alloy::extra::memory_arena_cache::for_each_arena(Fn&& fn)
 }
 
 
-void alloy::extra::memory_arena_cache::store(memory_arena arena)
-  noexcept
+auto alloy::extra::memory_arena_cache::store(memory_arena arena)
+  noexcept -> void
 {
   ALLOY_ASSERT(arena.data() != nullptr);
   ALLOY_ASSERT(arena.size() >= sizeof(memory_arena));

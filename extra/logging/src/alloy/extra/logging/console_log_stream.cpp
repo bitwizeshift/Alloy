@@ -16,8 +16,7 @@ namespace {
   ///        Windows, this is empty.
   ///
   /// \return the code
-  constexpr auto get_reset()
-    noexcept -> const char*
+  constexpr auto get_reset() noexcept -> const char*
   {
 #if defined(__linux__)
     return "\u001b[0m";
@@ -32,8 +31,7 @@ namespace {
   /// an empty string
   ///
   /// \return the code
-  auto to_color_code(log_level level)
-    noexcept -> const char*
+  auto to_color_code(log_level level) noexcept -> const char*
   {
 #if defined(__linux__)
     switch (level) {
@@ -60,8 +58,7 @@ namespace {
 #endif
   }
 
-  auto to_string(log_level level)
-    noexcept -> std::string_view
+  auto to_string(log_level level) noexcept -> std::string_view
   {
     switch (level) {
       case log_level::debug: {

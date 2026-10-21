@@ -118,8 +118,10 @@ namespace alloy::core {
   // Equality
   //----------------------------------------------------------------------------
 
-  constexpr auto operator==(const sphere& lhs, const sphere& rhs) noexcept -> bool;
-  constexpr auto operator!=(const sphere& lhs, const sphere& rhs) noexcept -> bool;
+  constexpr auto operator==(const sphere& lhs, const sphere& rhs)
+    noexcept -> bool;
+  constexpr auto operator!=(const sphere& lhs, const sphere& rhs)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -128,8 +130,11 @@ namespace alloy::core {
   /// \param lhs the left sphere
   /// \param rhs the right sphere
   /// \return `true` if the two spheres contain almost equal values
-  constexpr auto almost_equal(const sphere& lhs, const sphere& rhs, real tolerance)
-    noexcept -> bool;
+  constexpr auto almost_equal(
+    const sphere& lhs,
+    const sphere& rhs,
+    real tolerance
+  ) noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -142,8 +147,7 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::sphere::sphere()
-  noexcept
+alloy::core::sphere::sphere() noexcept
   : m_center{0,0,0},
     m_radius{0}
 {
@@ -151,8 +155,7 @@ alloy::core::sphere::sphere()
 }
 
 inline constexpr
-alloy::core::sphere::sphere(const point3& center, real radius)
-  noexcept
+alloy::core::sphere::sphere(const point3& center, real radius) noexcept
   : m_center{center},
     m_radius{radius}
 {
@@ -164,15 +167,13 @@ alloy::core::sphere::sphere(const point3& center, real radius)
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::sphere::center()
-  const noexcept -> const point3&
+auto alloy::core::sphere::center() const noexcept -> const point3&
 {
   return m_center;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::sphere::radius()
-  const noexcept -> const real&
+auto alloy::core::sphere::radius() const noexcept -> const real&
 {
   return m_radius;
 }

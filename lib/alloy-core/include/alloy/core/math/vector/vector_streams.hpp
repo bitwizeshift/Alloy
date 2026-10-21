@@ -50,27 +50,30 @@ namespace alloy::core {
 
 template <typename CharT, typename Traits>
 inline
-auto alloy::core::operator<<(std::basic_ostream<CharT,Traits>& o,
-                             const vector2& vec)
-  -> std::basic_ostream<CharT,Traits>&
+auto alloy::core::operator<<(
+  std::basic_ostream<CharT,Traits>& o,
+  const vector2& vec
+) -> std::basic_ostream<CharT,Traits>&
 {
   return o << "vector2{" << vec.x() << ", " << vec.y() << "}";
 }
 
 template <typename CharT, typename Traits>
 inline
-auto alloy::core::operator<<(std::basic_ostream<CharT,Traits>& o,
-                             const vector3& vec)
-  -> std::basic_ostream<CharT,Traits>&
+auto alloy::core::operator<<(
+  std::basic_ostream<CharT,Traits>& o,
+  const vector3& vec
+) -> std::basic_ostream<CharT,Traits>&
 {
   return o << "vector3{" << vec.x() << ", " << vec.y() << ", " << vec.z() << "}";
 }
 
 template <typename CharT, typename Traits>
 inline
-auto alloy::core::operator<<(std::basic_ostream<CharT,Traits>& o,
-                             const vector4& vec)
-  -> std::basic_ostream<CharT,Traits>&
+auto alloy::core::operator<<(
+  std::basic_ostream<CharT,Traits>& o,
+  const vector4& vec
+) -> std::basic_ostream<CharT,Traits>&
 {
   return o << "vector4{" << vec.x() << ", " << vec.y() << ", "
                          << vec.z() << ", " << vec.w() << "}";

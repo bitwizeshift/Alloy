@@ -14,14 +14,12 @@
 // Quantifiers
 //-----------------------------------------------------------------------------
 
-auto alloy::core::vector3::magnitude()
-  const noexcept -> real
+auto alloy::core::vector3::magnitude() const noexcept -> real
 {
   return sqrt((x()*x()) + (y()*y()) + (z()*z()));
 }
 
-auto alloy::core::vector3::perpendicular()
-  const noexcept -> vector3
+auto alloy::core::vector3::perpendicular() const noexcept -> vector3
 {
   static constexpr auto unit_x = vector3{
     real{1}, real{0}, real{0},
@@ -71,8 +69,7 @@ auto alloy::core::vector3::angle_to(const vector3& other)
 // Modifiers
 //-----------------------------------------------------------------------------
 
-auto alloy::core::vector3::normalize()
-  noexcept -> vector3&
+auto alloy::core::vector3::normalize() noexcept -> vector3&
 {
   const auto square_mag = square_magnitude();
 
@@ -99,10 +96,11 @@ auto alloy::core::vector3::normalize()
 // Utilities
 //-----------------------------------------------------------------------------
 
-auto alloy::core::are_linearly_independent(const vector3& v1,
-                                           const vector3& v2,
-                                           const vector3& v3)
-  noexcept -> bool
+auto alloy::core::are_linearly_independent(
+  const vector3& v1,
+  const vector3& v2,
+  const vector3& v3
+) noexcept -> bool
 {
   // linear-independence tested by checking if the determinant of a produced
   // 3x3 matrix is non-zero

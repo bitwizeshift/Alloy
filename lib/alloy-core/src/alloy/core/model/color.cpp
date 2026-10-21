@@ -13,8 +13,7 @@
 
 //------------------------------------------------------------------------------
 
-auto alloy::core::color::from_hsb(hsb c)
-  noexcept -> color
+auto alloy::core::color::from_hsb(hsb c) noexcept -> color
 {
   const auto hue        = mod(c.hue, real{1});
   const auto saturation = saturate(c.saturation);
@@ -85,16 +84,14 @@ auto alloy::core::color::from_hsb(hsb c)
 // Modifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::color::invert()
-  noexcept -> void
+auto alloy::core::color::invert() noexcept -> void
 {
   for (auto i = 0; i < 3; ++i) {
     m_data[i] = real{1} - m_data[i];
   }
 }
 
-auto alloy::core::color::contrast()
-  noexcept -> void
+auto alloy::core::color::contrast() noexcept -> void
 {
   static constexpr auto half = real{1} / real{2};
 
@@ -103,16 +100,14 @@ auto alloy::core::color::contrast()
   }
 }
 
-auto alloy::core::color::darken(real percent)
-  noexcept -> void
+auto alloy::core::color::darken(real percent) noexcept -> void
 {
   for (auto i = 0; i < 3; ++i) {
     m_data[i] = m_data[i] * (real{1} - percent);
   }
 }
 
-auto alloy::core::color::brighten(real percent)
-  noexcept -> void
+auto alloy::core::color::brighten(real percent) noexcept -> void
 {
   for (auto i = 0; i < 3; ++i) {
     m_data[i] = m_data[i] + (real{1} - m_data[i]) * percent;
@@ -123,8 +118,7 @@ auto alloy::core::color::brighten(real percent)
 // Observers
 //------------------------------------------------------------------------------
 
-auto alloy::core::color::to_hsb()
-  const noexcept -> hsb
+auto alloy::core::color::to_hsb() const noexcept -> hsb
 {
   const auto min_value = std::min(r(), std::min(g(), b()));
   const auto max_value = std::max(r(), std::max(g(), b()));

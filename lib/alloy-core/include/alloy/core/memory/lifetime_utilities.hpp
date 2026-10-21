@@ -57,12 +57,16 @@ namespace alloy::core {
 
     template <typename T>
     [[nodiscard]]
-    static auto make_array_at(not_null<void*> where, std::size_t length, const T& copy)
-      noexcept(std::is_nothrow_copy_constructible_v<T>) -> not_null<T*>;
+    static auto make_array_at(
+      not_null<void*> where,
+      std::size_t length,
+      const T& copy
+    ) noexcept(std::is_nothrow_copy_constructible_v<T>) -> not_null<T*>;
 
     template <typename T, typename Tuple>
     [[nodiscard]]
-    static auto make_from_tuple_at(not_null<void*> where, Tuple&& args) -> not_null<T*>;
+    static auto make_from_tuple_at(not_null<void*> where, Tuple&& args)
+      -> not_null<T*>;
 
     //-------------------------------------------------------------------------
     // Destruction
@@ -79,7 +83,11 @@ namespace alloy::core {
 
     template <typename It>
     static auto destroy_range(It begin, It end)
-      noexcept(std::is_nothrow_destructible_v<typename std::iterator_traits<It>::value_type>) -> void;
+      noexcept(
+        std::is_nothrow_destructible_v<
+          typename std::iterator_traits<It>::value_type
+        >
+      ) -> void;
 
     //-------------------------------------------------------------------------
     // Private Construction
@@ -87,8 +95,12 @@ namespace alloy::core {
   private:
 
     template <typename T, typename...Args>
-    static auto make_array_impl(not_null<void*> where, std::size_t lenght, const Args&...args)
-      noexcept(std::is_nothrow_constructible_v<T,const Args&...>) -> not_null<T*>;
+    static auto make_array_impl(
+      not_null<void*> where,
+      std::size_t lenght,
+      const Args&...args
+    ) noexcept(std::is_nothrow_constructible_v<T,const Args&...>)
+      -> not_null<T*>;
 
     template <typename T, typename Tuple, std::size_t...Idxs>
     static auto make_from_tuple_impl(
@@ -107,8 +119,10 @@ namespace alloy::core {
 
 template <typename T, typename...Args>
 ALLOY_FORCE_INLINE
-auto alloy::core::lifetime_utilities::make_at(not_null<void*> where, Args&&...args)
-  noexcept(std::is_nothrow_constructible_v<T,Args...>) -> not_null<T*>
+auto alloy::core::lifetime_utilities::make_at(
+  not_null<void*> where,
+  Args&&...args
+) noexcept(std::is_nothrow_constructible_v<T,Args...>) -> not_null<T*>
 {
   return assume_not_null(new(where.get()) T(std::forward<Args>(args)...));
 }
@@ -172,8 +186,12 @@ auto alloy::core::lifetime_utilities::destroy_array(
 
 template <typename It>
 inline
-auto alloy::core::lifetime_utilities::destroy_range(It begin, It end)
-  noexcept(std::is_nothrow_destructible_v<typename std::iterator_traits<It>::value_type>) -> void
+auto alloy::core::lifetime_utilities::destroy_range(
+  It begin,
+  It end
+) noexcept(
+  std::is_nothrow_destructible_v<typename std::iterator_traits<It>::value_type>
+) -> void
 {
   const auto rbegin = std::make_reverse_iterator(end);
   const auto rend   = std::make_reverse_iterator(begin);

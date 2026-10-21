@@ -576,8 +576,7 @@ auto alloy::core::simd<T>::load_unaligned(std::span<const T, 4> p)
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd<T>::spread_scalar(T scalar)
-  noexcept -> simd<T>
+auto alloy::core::simd<T>::spread_scalar(T scalar) noexcept -> simd<T>
 {
 #if defined(ALLOY_SIMD_NEON)
   if constexpr (std::is_same_v<T, f32>) {
@@ -601,8 +600,7 @@ auto alloy::core::simd<T>::spread_scalar(T scalar)
 template <typename T>
 template <std::size_t Lane>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd<T>::spread_from_lane(simd<T> v)
-  noexcept -> simd<T>
+auto alloy::core::simd<T>::spread_from_lane(simd<T> v) noexcept -> simd<T>
 {
   static_assert(Lane <= 3u);
 
@@ -632,8 +630,7 @@ auto alloy::core::simd<T>::spread_from_lane(simd<T> v)
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd<T>::set(T v0, T v1, T v2, T v3)
-  noexcept -> simd<T>
+auto alloy::core::simd<T>::set(T v0, T v1, T v2, T v3) noexcept -> simd<T>
 {
 #if defined(ALLOY_SIMD_NEON)
   const auto data = aligned_array<T, 4u, 16u>{{
@@ -663,8 +660,7 @@ auto alloy::core::simd<T>::set(T v0, T v1, T v2, T v3)
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd<T>::store(std::span<T,4> out)
-  const noexcept -> void
+auto alloy::core::simd<T>::store(std::span<T,4> out) const noexcept -> void
 {
 #if defined(ALLOY_SIMD_NEON)
   if constexpr (std::is_same_v<T, f32>) {
@@ -720,8 +716,7 @@ auto alloy::core::simd<T>::store_unaligned(std::span<T,4> out)
 template <typename T>
 template <std::size_t Lane>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd<T>::lane()
-  const noexcept -> T
+auto alloy::core::simd<T>::lane() const noexcept -> T
 {
   static_assert(Lane <= 3u);
 
@@ -750,8 +745,7 @@ auto alloy::core::simd<T>::lane()
 
 template <typename To, typename From>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_cast(simd<To> v)
-  noexcept -> simd<From>
+auto alloy::core::simd_cast(simd<To> v) noexcept -> simd<From>
 {
   if constexpr (std::is_same_v<To,From>) {
     return v;
@@ -797,8 +791,7 @@ auto alloy::core::simd_cast(simd<To> v)
 //-----------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_negate(simd<f32> v)
-  noexcept -> simd<f32>
+auto alloy::core::simd_negate(simd<f32> v) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
   return simd<f32>{vnegq_f32(v.value)};
@@ -815,8 +808,7 @@ auto alloy::core::simd_negate(simd<f32> v)
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_abs(simd<f32> v)
-  noexcept -> simd<f32>
+auto alloy::core::simd_abs(simd<f32> v) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
   return simd<f32>{vabsq_f32(v.value)};
@@ -839,8 +831,7 @@ auto alloy::core::simd_abs(simd<f32> v)
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_add(simd<T> lhs, simd<T> rhs)
-  noexcept -> simd<T>
+auto alloy::core::simd_add(simd<T> lhs, simd<T> rhs) noexcept -> simd<T>
 {
 #if defined(ALLOY_SIMD_NEON)
   if constexpr (std::is_same_v<T, f32>) {
@@ -868,8 +859,7 @@ auto alloy::core::simd_add(simd<T> lhs, simd<T> rhs)
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_subtract(simd<T> lhs, simd<T> rhs)
-  noexcept -> simd<T>
+auto alloy::core::simd_subtract(simd<T> lhs, simd<T> rhs) noexcept -> simd<T>
 {
 #if defined(ALLOY_SIMD_NEON)
   if constexpr (std::is_same_v<T, f32>) {
@@ -897,8 +887,7 @@ auto alloy::core::simd_subtract(simd<T> lhs, simd<T> rhs)
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_multiply(simd<T> lhs, simd<T> rhs)
-  noexcept -> simd<T>
+auto alloy::core::simd_multiply(simd<T> lhs, simd<T> rhs) noexcept -> simd<T>
 {
 #if defined(ALLOY_SIMD_NEON)
   if constexpr (std::is_same_v<T, f32>) {
@@ -972,8 +961,11 @@ auto alloy::core::simd_abs_difference(simd<f32> lhs, simd<f32> rhs)
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_fuse_add_multiply(simd<f32> add, simd<f32> lhs, simd<f32> rhs)
-  noexcept -> simd<f32>
+auto alloy::core::simd_fuse_add_multiply(
+  simd<f32> add,
+  simd<f32> lhs,
+  simd<f32> rhs
+) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
   return simd<f32>{vmlaq_f32(add.value, lhs.value, rhs.value)};
@@ -992,8 +984,11 @@ auto alloy::core::simd_fuse_add_multiply(simd<f32> add, simd<f32> lhs, simd<f32>
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_fuse_add_multiply_scalar(simd<f32> add, simd<f32> lhs, f32 rhs)
-  noexcept -> simd<f32>
+auto alloy::core::simd_fuse_add_multiply_scalar(
+  simd<f32> add,
+  simd<f32> lhs,
+  f32 rhs
+) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
   return simd<f32>{vmlaq_n_f32(add.value, lhs.value, rhs)};
@@ -1008,8 +1003,7 @@ auto alloy::core::simd_fuse_add_multiply_scalar(simd<f32> add, simd<f32> lhs, f3
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_equal(simd<T> lhs, simd<T> rhs)
-  noexcept -> simd<u32>
+auto alloy::core::simd_equal(simd<T> lhs, simd<T> rhs) noexcept -> simd<u32>
 {
 #if defined(ALLOY_SIMD_NEON)
   if constexpr (std::is_same_v<T,f32>) {
@@ -1037,8 +1031,7 @@ auto alloy::core::simd_equal(simd<T> lhs, simd<T> rhs)
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_not_equal(simd<T> lhs, simd<T> rhs)
-  noexcept -> simd<u32>
+auto alloy::core::simd_not_equal(simd<T> lhs, simd<T> rhs) noexcept -> simd<u32>
 {
 #if defined(ALLOY_SIMD_NEON)
   // NEON for some reason does not have a `not_equal`, so this is done as a
@@ -1064,8 +1057,7 @@ auto alloy::core::simd_not_equal(simd<T> lhs, simd<T> rhs)
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_less(simd<T> lhs, simd<T> rhs)
-  noexcept -> simd<u32>
+auto alloy::core::simd_less(simd<T> lhs, simd<T> rhs) noexcept -> simd<u32>
 {
 #if defined(ALLOY_SIMD_NEON)
   if constexpr (std::is_same_v<T,f32>) {
@@ -1093,8 +1085,7 @@ auto alloy::core::simd_less(simd<T> lhs, simd<T> rhs)
 
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_greater(simd<T> lhs, simd<T> rhs)
-  noexcept -> simd<u32>
+auto alloy::core::simd_greater(simd<T> lhs, simd<T> rhs) noexcept -> simd<u32>
 {
 #if defined(ALLOY_SIMD_NEON)
   if constexpr (std::is_same_v<T,f32>) {
@@ -1188,8 +1179,11 @@ auto alloy::core::simd_almost_equal(simd<f32> lhs, simd<f32> rhs, f32 tolerance)
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_almost_equal(simd<f32> lhs, simd<f32> rhs, simd<f32> tolerance)
-  noexcept -> simd<u32>
+auto alloy::core::simd_almost_equal(
+  simd<f32> lhs,
+  simd<f32> rhs,
+  simd<f32> tolerance
+) noexcept -> simd<u32>
 {
   return simd_less_equal(simd_abs_difference(lhs, rhs), tolerance);
 }
@@ -1199,8 +1193,7 @@ auto alloy::core::simd_almost_equal(simd<f32> lhs, simd<f32> rhs, simd<f32> tole
 //-----------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_fast_reciprocol(simd<f32> v)
-  noexcept -> simd<f32>
+auto alloy::core::simd_fast_reciprocol(simd<f32> v) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
   return simd<f32>{vrecpeq_f32(v.value)};
@@ -1217,8 +1210,7 @@ auto alloy::core::simd_fast_reciprocol(simd<f32> v)
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_reciprocol(simd<f32> v)
-  noexcept -> simd<f32>
+auto alloy::core::simd_reciprocol(simd<f32> v) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
   // Use a Newton-Raphson iteration to refine the estimated value
@@ -1231,8 +1223,7 @@ auto alloy::core::simd_reciprocol(simd<f32> v)
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_fast_sqrt(simd<f32> v)
-  noexcept -> simd<f32>
+auto alloy::core::simd_fast_sqrt(simd<f32> v) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
   return simd<f32>{vsqrtq_f32(v.value)};
@@ -1249,8 +1240,7 @@ auto alloy::core::simd_fast_sqrt(simd<f32> v)
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_sqrt(simd<f32> v)
-  noexcept -> simd<f32>
+auto alloy::core::simd_sqrt(simd<f32> v) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
   // Approximate a more accurate SQRT
@@ -1264,8 +1254,7 @@ auto alloy::core::simd_sqrt(simd<f32> v)
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_fast_reciprocol_sqrt(simd<f32> v)
-  noexcept -> simd<f32>
+auto alloy::core::simd_fast_reciprocol_sqrt(simd<f32> v) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_SSE)
   return simd<f32>{_mm_rsqrt_ps(v.value)};
@@ -1275,8 +1264,7 @@ auto alloy::core::simd_fast_reciprocol_sqrt(simd<f32> v)
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_reciprocol_sqrt(simd<f32> v)
-  noexcept -> simd<f32>
+auto alloy::core::simd_reciprocol_sqrt(simd<f32> v) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_SSE)
   return simd<f32>{_mm_rsqrt_ps(v.value)};
@@ -1286,8 +1274,7 @@ auto alloy::core::simd_reciprocol_sqrt(simd<f32> v)
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_min(simd<f32> lhs, simd<f32> rhs)
-  noexcept -> simd<f32>
+auto alloy::core::simd_min(simd<f32> lhs, simd<f32> rhs) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
   return simd<f32>{vminq_f32(lhs.value, rhs.value)};
@@ -1304,8 +1291,7 @@ auto alloy::core::simd_min(simd<f32> lhs, simd<f32> rhs)
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_max(simd<f32> lhs, simd<f32> rhs)
-  noexcept -> simd<f32>
+auto alloy::core::simd_max(simd<f32> lhs, simd<f32> rhs) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
   return simd<f32>{vmaxq_f32(lhs.value, rhs.value)};
@@ -1322,8 +1308,10 @@ auto alloy::core::simd_max(simd<f32> lhs, simd<f32> rhs)
 }
 
 inline
-auto alloy::core::simd_dot4(std::span<const simd<f32>,4> lhs, std::span<const simd<f32>,4> rhs)
-  noexcept -> simd<f32>
+auto alloy::core::simd_dot4(
+  std::span<const simd<f32>,4> lhs,
+  std::span<const simd<f32>,4> rhs
+) noexcept -> simd<f32>
 {
   // Fused multiply-add instructions result in a data-dependency/stall between
   // the result of the FMA instruction, since the result is fed into the next
@@ -1342,8 +1330,10 @@ auto alloy::core::simd_dot4(std::span<const simd<f32>,4> lhs, std::span<const si
 }
 
 inline
-auto alloy::core::simd_dot4(std::span<const f32,16> lhs, std::span<const f32,16> rhs)
-  noexcept -> simd<f32>
+auto alloy::core::simd_dot4(
+  std::span<const f32,16> lhs,
+  std::span<const f32,16> rhs
+) noexcept -> simd<f32>
 {
   const auto lhs_array = std::array<simd<f32>,4>{{
     simd<f32>::load(lhs.subspan<0,4u>()),
@@ -1366,8 +1356,10 @@ auto alloy::core::simd_dot4(std::span<const f32,16> lhs, std::span<const f32,16>
 template <std::size_t N>
   requires ((N % 4) == 0)
 inline
-auto alloy::core::simd_dot(std::span<const simd<f32>, N> lhs, std::span<const simd<f32>, N> rhs)
-  noexcept -> std::array<simd<f32>, (N / 4)>
+auto alloy::core::simd_dot(
+  std::span<const simd<f32>, N> lhs,
+  std::span<const simd<f32>, N> rhs
+) noexcept -> std::array<simd<f32>, (N / 4)>
 {
   // Fused multiply-add instructions result in a data-dependency/stall between
   // the result of the FMA instruction, since the result is fed into the next
@@ -1393,8 +1385,10 @@ auto alloy::core::simd_dot(std::span<const simd<f32>, N> lhs, std::span<const si
 template <std::size_t N>
   requires ((N % 4) == 0)
 inline
-auto alloy::core::simd_dot(std::span<const f32, N> lhs, std::span<const f32, N> rhs)
-  noexcept -> std::array<simd<f32>, (N / 16)>
+auto alloy::core::simd_dot(
+  std::span<const f32, N> lhs,
+  std::span<const f32, N> rhs
+) noexcept -> std::array<simd<f32>, (N / 16)>
 {
   std::array<simd<f32>, (N/16)> dot_result;
 

@@ -67,8 +67,8 @@ namespace alloy::core {
   /// \param bytes the number of bytes to process
   template <std::size_t Bits, typename Byte>
     requires (sizeof(Byte) == 1)
-  constexpr typename fnv1a_traits<Bits>::hash_type
-    fnv1a_hash(const Byte* p, std::size_t bytes) noexcept;
+  constexpr auto fnv1a_hash(const Byte* p, std::size_t bytes)
+    noexcept -> typename fnv1a_traits<Bits>::hash_type;
 
   /// \brief Hashes a null-terminated sequence of bytes using the
   ///        Fowler-Noll-Vo hash
@@ -80,8 +80,8 @@ namespace alloy::core {
   /// \param p a pointer to null-terminated data
   template <std::size_t Bits, typename Byte>
     requires (sizeof(Byte) == 1)
-  constexpr typename fnv1a_traits<Bits>::hash_type
-    fnv1a_hash(const Byte* p) noexcept;
+  constexpr auto fnv1a_hash(const Byte* p)
+    noexcept -> typename fnv1a_traits<Bits>::hash_type;
 
 } // namespace alloy::core
 
@@ -95,9 +95,9 @@ namespace alloy::core {
 
 template <std::size_t Bits, typename Byte>
   requires (sizeof(Byte) == 1)
-inline constexpr typename alloy::core::fnv1a_traits<Bits>::hash_type
-  alloy::core::fnv1a_hash(const Byte* p, std::size_t bytes)
-  noexcept
+inline constexpr
+auto alloy::core::fnv1a_hash(const Byte* p, std::size_t bytes)
+  noexcept -> typename fnv1a_traits<Bits>::hash_type
 {
   using traits_type = alloy::core::fnv1a_traits<Bits>;
 
@@ -111,9 +111,9 @@ inline constexpr typename alloy::core::fnv1a_traits<Bits>::hash_type
 
 template <std::size_t Bits, typename Byte>
   requires (sizeof(Byte) == 1)
-inline constexpr typename alloy::core::fnv1a_traits<Bits>::hash_type
-  alloy::core::fnv1a_hash(const Byte* p)
-  noexcept
+inline constexpr
+auto alloy::core::fnv1a_hash(const Byte* p)
+  noexcept -> typename fnv1a_traits<Bits>::hash_type
 {
   using traits_type = alloy::core::fnv1a_traits<Bits>;
 

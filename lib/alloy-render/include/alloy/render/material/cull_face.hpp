@@ -58,8 +58,7 @@ namespace alloy::render {
 } // namespace alloy::render
 
 inline
-auto alloy::render::to_string(cull_face c)
-  noexcept -> core::zstring_view
+auto alloy::render::to_string(cull_face c) noexcept -> core::zstring_view
 {
   switch (c) {
     case cull_face::none: {

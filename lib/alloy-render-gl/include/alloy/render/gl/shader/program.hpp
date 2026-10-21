@@ -32,8 +32,7 @@
 namespace alloy::render::gl::detail {
 
   template <typename ForwardIt>
-  constexpr auto is_unique(ForwardIt first, ForwardIt last)
-    -> bool
+  constexpr auto is_unique(ForwardIt first, ForwardIt last) -> bool
   {
     for (auto it = first; it != last; ++it) {
       for (auto jt = std::next(it); jt != last; ++jt) {
@@ -87,8 +86,8 @@ namespace alloy::render::gl {
   public:
 
     template <shader_type... types>
-    static auto link(basic_shader<types>...shaders) noexcept
-      -> core::result<program,gl_error_message>;
+    static auto link(basic_shader<types>...shaders)
+      noexcept -> core::result<program,gl_error_message>;
 
     //--------------------------------------------------------------------------
     // Constructors / Destructor / Assignment
@@ -143,15 +142,15 @@ namespace alloy::render::gl {
     ///
     /// \param name the name of the uniform
     /// \return the location
-    auto get_uniform_location(core::zstring_view name) const noexcept
-      -> core::result<uniform_location, std::error_code>;
+    auto get_uniform_location(core::zstring_view name)
+      const noexcept -> core::result<uniform_location, std::error_code>;
 
     /// \brief Gets a vertex attribute location by the name of the attribute
     ///
     /// \param name the name of the uniform
     /// \return the attribute name
-    auto get_attribute_location(core::zstring_view name) const noexcept
-      -> core::result<attribute_location, std::error_code>;
+    auto get_attribute_location(core::zstring_view name)
+      const noexcept -> core::result<attribute_location, std::error_code>;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -179,8 +178,8 @@ namespace alloy::render::gl {
     //--------------------------------------------------------------------------
   private:
 
-    static auto do_link(std::initializer_list<::GLuint> shader_ids) noexcept
-      -> core::result<program,gl_error_message>;
+    static auto do_link(std::initializer_list<::GLuint> shader_ids)
+      noexcept -> core::result<program,gl_error_message>;
   };
 
   //===========================================================================
@@ -231,8 +230,7 @@ auto alloy::render::gl::program::link(basic_shader<Types>...shaders)
 //------------------------------------------------------------------------------
 
 inline
-alloy::render::gl::program::program()
-  noexcept
+alloy::render::gl::program::program() noexcept
   : m_id{invalid_id}
 {
 
@@ -246,8 +244,7 @@ alloy::render::gl::program::program(id_type id)
 }
 
 inline
-alloy::render::gl::program::program(program&& other)
-  noexcept
+alloy::render::gl::program::program(program&& other) noexcept
   : m_id{other.release()}
 {
 
@@ -264,9 +261,7 @@ alloy::render::gl::program::~program()
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::render::gl::program::operator=(program other)
-  noexcept
-  -> program&
+auto alloy::render::gl::program::operator=(program other) noexcept -> program&
 {
   std::swap(m_id, other.m_id);
   return (*this);
@@ -277,15 +272,13 @@ auto alloy::render::gl::program::operator=(program other)
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::render::gl::program::id()
-  const noexcept -> id_type
+auto alloy::render::gl::program::id() const noexcept -> id_type
 {
   return m_id;
 }
 
 inline
-auto alloy::render::gl::program::is_linked()
-  const noexcept -> bool
+auto alloy::render::gl::program::is_linked() const noexcept -> bool
 {
   return m_id != invalid_id;
 }
@@ -320,14 +313,14 @@ auto alloy::render::gl::program::get_attribute_location(core::zstring_view name)
 // Modifiers
 //------------------------------------------------------------------------------
 
-inline auto alloy::render::gl::program::release()
-  noexcept -> id_type
+inline
+auto alloy::render::gl::program::release() noexcept -> id_type
 {
   return std::exchange(m_id, invalid_id);
 }
 
-inline auto alloy::render::gl::program::reset()
-  noexcept -> void
+inline
+auto alloy::render::gl::program::reset() noexcept -> void
 {
   if (is_linked()) {
     ::glDeleteProgram(m_id);
@@ -362,8 +355,7 @@ auto alloy::render::gl::operator!=(const program& lhs, const program& rhs)
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::render::gl::use_program(const program& p)
-  noexcept -> void
+auto alloy::render::gl::use_program(const program& p) noexcept -> void
 {
   ALLOY_ASSERT(p.is_linked());
 

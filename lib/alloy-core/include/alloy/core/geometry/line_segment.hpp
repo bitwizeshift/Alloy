@@ -56,7 +56,8 @@ namespace alloy::core {
     ///
     /// \param origin the start point
     /// \param distance the distance the line segment extends for
-    constexpr line_segment(const point3& origin, const vector3& distance) noexcept;
+    constexpr line_segment(const point3& origin, const vector3& distance)
+      noexcept;
 
     /// \brief Constructs a line_segment by copying an existing instance
     ///
@@ -152,10 +153,10 @@ namespace alloy::core {
   // Equality
   //----------------------------------------------------------------------------
 
-  constexpr auto operator==(const line_segment& lhs,
-                            const line_segment& rhs) noexcept -> bool;
-  constexpr auto operator!=(const line_segment& lhs,
-                            const line_segment& rhs) noexcept -> bool;
+  constexpr auto operator==(const line_segment& lhs, const line_segment& rhs)
+    noexcept -> bool;
+  constexpr auto operator!=(const line_segment& lhs, const line_segment& rhs)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -165,9 +166,11 @@ namespace alloy::core {
   /// \param lhs the left line_segment
   /// \param rhs the right line_segment
   /// \return `true` if the two line_segments contain almost equal values
-  constexpr auto almost_equal(const line_segment& lhs,
-                              const line_segment& rhs,
-                              real tolerance) noexcept -> bool;
+  constexpr auto almost_equal(
+    const line_segment& lhs,
+    const line_segment& rhs,
+    real tolerance
+  ) noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -180,8 +183,7 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::line_segment::line_segment()
-  noexcept
+alloy::core::line_segment::line_segment() noexcept
   : m_start{real{0}, real{0}, real{0}},
     m_end{real{0}, real{0}, real{0}}
 {
@@ -198,8 +200,10 @@ alloy::core::line_segment::line_segment(const point3& p0, const point3& p1)
 }
 
 inline constexpr
-alloy::core::line_segment::line_segment(const point3& origin, const vector3& distance)
-  noexcept
+alloy::core::line_segment::line_segment(
+  const point3& origin,
+  const vector3& distance
+) noexcept
   : m_start{origin},
     m_end{origin + distance}
 {
@@ -210,15 +214,14 @@ alloy::core::line_segment::line_segment(const point3& origin, const vector3& dis
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr auto alloy::core::line_segment::start_point()
-  const noexcept -> const point3&
+inline constexpr
+auto alloy::core::line_segment::start_point() const noexcept -> const point3&
 {
   return m_start;
 }
 
 inline constexpr
-auto alloy::core::line_segment::end_point()
-  const noexcept -> const point3&
+auto alloy::core::line_segment::end_point() const noexcept -> const point3&
 {
   return m_end;
 }
@@ -226,15 +229,13 @@ auto alloy::core::line_segment::end_point()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::line_segment::direction()
-  const noexcept -> vector3
+auto alloy::core::line_segment::direction() const noexcept -> vector3
 {
   return (m_end - m_start);
 }
 
 inline constexpr
-auto alloy::core::line_segment::square_magnitude()
-  const noexcept -> real
+auto alloy::core::line_segment::square_magnitude() const noexcept -> real
 {
   const auto dir = direction();
   return dir.dot(dir);
@@ -262,10 +263,11 @@ auto alloy::core::operator!=(const line_segment& lhs, const line_segment& rhs)
 //----------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::almost_equal(const line_segment& lhs,
-                               const line_segment& rhs,
-                               real tolerance)
-  noexcept -> bool
+auto alloy::core::almost_equal(
+  const line_segment& lhs,
+  const line_segment& rhs,
+  real tolerance
+) noexcept -> bool
 {
   return almost_equal(lhs.start_point(), rhs.start_point(), tolerance) &&
          almost_equal(lhs.end_point(), rhs.end_point(), tolerance);

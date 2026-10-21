@@ -68,9 +68,10 @@ namespace alloy::render::gl {
     /// \param type the shader type
     /// \param program the shader source
     /// \return the shader ID on success
-    static auto do_compile_from_source(shader_type type,
-                                       core::zstring_view program)
-      -> core::result<::GLuint, gl_error_message>;
+    static auto do_compile_from_source(
+      shader_type type,
+      core::zstring_view program
+    ) -> core::result<::GLuint, gl_error_message>;
 
     /// \brief Compiles a shader of the specified \p type from the given \p file
     ///
@@ -85,10 +86,11 @@ namespace alloy::render::gl {
     /// \param alloc the allocator that can be used to store the temporary
     ///              buffer used to read the file
     /// \return the shader ID on success
-    static auto do_compile_from_file(shader_type type,
-                                     io::file& file,
-                                     core::allocator alloc)
-      -> core::result<::GLuint, gl_error_message>;
+    static auto do_compile_from_file(
+      shader_type type,
+      io::file& file,
+      core::allocator alloc
+    ) -> core::result<::GLuint, gl_error_message>;
   };
 
   //////////////////////////////////////////////////////////////////////////////
@@ -153,9 +155,10 @@ namespace alloy::render::gl {
     /// \param alloc the allocator that can be used to store the temporary
     ///              buffer used to read the file
     /// \return the shader ID on success
-    static auto compile_from_file(io::file& file,
-                                  core::allocator alloc = core::allocator{})
-      -> core::result<basic_shader, gl_error_message>;
+    static auto compile_from_file(
+      io::file& file,
+      core::allocator alloc = core::allocator{}
+    ) -> core::result<basic_shader, gl_error_message>;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment / Destructor
@@ -250,8 +253,9 @@ namespace alloy::render::gl {
 
 template <alloy::render::gl::shader_type Type>
 inline
-auto alloy::render::gl::basic_shader<Type>::compile_from_source(core::zstring_view program)
-  -> core::result<basic_shader, gl_error_message>
+auto alloy::render::gl::basic_shader<Type>::compile_from_source(
+  core::zstring_view program
+) -> core::result<basic_shader, gl_error_message>
 {
   const auto result = shader_base::do_compile_from_source(Type, program);
 
@@ -260,9 +264,10 @@ auto alloy::render::gl::basic_shader<Type>::compile_from_source(core::zstring_vi
 
 template <alloy::render::gl::shader_type Type>
 inline
-auto alloy::render::gl::basic_shader<Type>::compile_from_file(io::file& file,
-                                                              core::allocator alloc)
-  -> core::result<basic_shader, gl_error_message>
+auto alloy::render::gl::basic_shader<Type>::compile_from_file(
+  io::file& file,
+  core::allocator alloc
+) -> core::result<basic_shader, gl_error_message>
 {
   const auto result = shader_base::do_compile_from_file(Type, file, alloc);
 
@@ -275,8 +280,7 @@ auto alloy::render::gl::basic_shader<Type>::compile_from_file(io::file& file,
 
 template <alloy::render::gl::shader_type Type>
 inline
-alloy::render::gl::basic_shader<Type>::basic_shader()
-  noexcept
+alloy::render::gl::basic_shader<Type>::basic_shader() noexcept
   : m_id{invalid_id}
 {
 
@@ -325,16 +329,14 @@ auto alloy::render::gl::basic_shader<Type>::operator=(basic_shader other)
 
 template <alloy::render::gl::shader_type Type>
 inline
-auto alloy::render::gl::basic_shader<Type>::id()
-  const noexcept -> id_type
+auto alloy::render::gl::basic_shader<Type>::id() const noexcept -> id_type
 {
   return m_id;
 }
 
 template <alloy::render::gl::shader_type Type>
 inline
-auto alloy::render::gl::basic_shader<Type>::is_compiled()
-  const noexcept -> bool
+auto alloy::render::gl::basic_shader<Type>::is_compiled() const noexcept -> bool
 {
   return m_id != invalid_id;
 }
@@ -345,16 +347,14 @@ auto alloy::render::gl::basic_shader<Type>::is_compiled()
 
 template <alloy::render::gl::shader_type Type>
 inline
-auto alloy::render::gl::basic_shader<Type>::release()
-  noexcept -> id_type
+auto alloy::render::gl::basic_shader<Type>::release() noexcept -> id_type
 {
   return std::exchange(m_id, invalid_id);
 }
 
 template <alloy::render::gl::shader_type Type>
 inline
-auto alloy::render::gl::basic_shader<Type>::reset()
-  noexcept -> void
+auto alloy::render::gl::basic_shader<Type>::reset() noexcept -> void
 {
   if (is_compiled()) {
     ::glDeleteShader(m_id);

@@ -40,8 +40,10 @@ namespace alloy::io {
 
     /// \brief Default constructible
     file_stream_handle() noexcept;
-    file_stream_handle(core::not_null<file_stream*> stream,
-                       core::not_null<file_stream_finalizer*> finalizer) noexcept;
+    file_stream_handle(
+      core::not_null<file_stream*> stream,
+      core::not_null<file_stream_finalizer*> finalizer
+    ) noexcept;
     file_stream_handle(file_stream_handle&& other) noexcept;
     file_stream_handle(const file_stream_handle&) = delete;
 
@@ -51,8 +53,8 @@ namespace alloy::io {
 
     //-------------------------------------------------------------------------
 
-    file_stream_handle& operator=(file_stream_handle&& other) noexcept;
-    file_stream_handle& operator=(const file_stream_handle&) = delete;
+    auto operator=(file_stream_handle&& other) noexcept -> file_stream_handle&;
+    auto operator=(const file_stream_handle&) -> file_stream_handle& = delete;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -66,17 +68,17 @@ namespace alloy::io {
     //-------------------------------------------------------------------------
   public:
 
-    void reset() noexcept;
+    auto reset() noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Element Access
     //-------------------------------------------------------------------------
   public:
 
-    file_stream* get() const noexcept;
+    auto get() const noexcept -> file_stream*;
 
-    file_stream* operator->() const noexcept;
-    file_stream& operator*() const noexcept;
+    auto operator->() const noexcept -> file_stream*;
+    auto operator*() const noexcept -> file_stream&;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -97,25 +99,27 @@ namespace alloy::io {
 // Constructors / Assignment
 //-----------------------------------------------------------------------------
 
-inline alloy::io::file_stream_handle::file_stream_handle()
-  noexcept
+inline
+alloy::io::file_stream_handle::file_stream_handle() noexcept
   : m_stream{nullptr},
     m_finalizer{nullptr}
 {
 
 }
 
-inline alloy::io::file_stream_handle
-  ::file_stream_handle(core::not_null<file_stream*> stream,
-                       core::not_null<file_stream_finalizer*> finalizer)
-  noexcept
+inline
+alloy::io::file_stream_handle::file_stream_handle(
+  core::not_null<file_stream*> stream,
+  core::not_null<file_stream_finalizer*> finalizer
+) noexcept
   : m_stream{stream.get()},
     m_finalizer{finalizer.get()}
 {
 
 }
 
-inline alloy::io::file_stream_handle::file_stream_handle(file_stream_handle&& other)
+inline
+alloy::io::file_stream_handle::file_stream_handle(file_stream_handle&& other)
   noexcept
   : m_stream{other.m_stream},
     m_finalizer{other.m_finalizer}
@@ -125,16 +129,17 @@ inline alloy::io::file_stream_handle::file_stream_handle(file_stream_handle&& ot
 
 //-----------------------------------------------------------------------------
 
-inline alloy::io::file_stream_handle::~file_stream_handle()
+inline
+alloy::io::file_stream_handle::~file_stream_handle()
 {
   reset();
 }
 
 //-----------------------------------------------------------------------------
 
-inline alloy::io::file_stream_handle&
-  alloy::io::file_stream_handle::operator=(file_stream_handle&& other)
-  noexcept
+inline
+auto alloy::io::file_stream_handle::operator=(file_stream_handle&& other)
+  noexcept -> file_stream_handle&
 {
   reset();
 
@@ -149,8 +154,8 @@ inline alloy::io::file_stream_handle&
 // Observers
 //-----------------------------------------------------------------------------
 
-inline alloy::io::file_stream_handle::operator bool()
-  const noexcept
+inline
+alloy::io::file_stream_handle::operator bool() const noexcept
 {
   return m_stream != nullptr;
 }
@@ -159,8 +164,8 @@ inline alloy::io::file_stream_handle::operator bool()
 // Modifiers
 //-----------------------------------------------------------------------------
 
-inline void alloy::io::file_stream_handle::reset()
-  noexcept
+inline
+auto alloy::io::file_stream_handle::reset() noexcept -> void
 {
   if (m_stream != nullptr) {
     m_finalizer->finalize(m_stream);
@@ -172,20 +177,20 @@ inline void alloy::io::file_stream_handle::reset()
 // Element Access
 //-----------------------------------------------------------------------------
 
-inline alloy::io::file_stream* alloy::io::file_stream_handle::get()
-  const noexcept
+inline
+auto alloy::io::file_stream_handle::get() const noexcept -> file_stream*
 {
   return m_stream;
 }
 
-inline alloy::io::file_stream* alloy::io::file_stream_handle::operator->()
-  const noexcept
+inline
+auto alloy::io::file_stream_handle::operator->() const noexcept -> file_stream*
 {
   return m_stream;
 }
 
-inline alloy::io::file_stream& alloy::io::file_stream_handle::operator*()
-  const noexcept
+inline
+auto alloy::io::file_stream_handle::operator*() const noexcept -> file_stream&
 {
   return (*m_stream);
 }

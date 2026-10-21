@@ -67,7 +67,8 @@ namespace alloy::core {
     ///
     /// \param other the other transform to copy
     /// \return reference to (*this)
-    auto operator=(const lazy_transform& other) noexcept -> lazy_transform& = default;
+    auto operator=(const lazy_transform& other)
+      noexcept -> lazy_transform& = default;
 
     //-------------------------------------------------------------------------
     // Element Access
@@ -133,8 +134,9 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 template<typename Transform>
-alloy::core::lazy_transform<Transform>::lazy_transform(const Transform& transform)
-  noexcept
+alloy::core::lazy_transform<Transform>::lazy_transform(
+  const Transform& transform
+) noexcept
   : m_transform{transform}
 {
 
@@ -146,8 +148,7 @@ alloy::core::lazy_transform<Transform>::lazy_transform(const Transform& transfor
 
 template<typename Transform>
 inline
-auto alloy::core::lazy_transform<Transform>::operator->()
-  noexcept -> Transform*
+auto alloy::core::lazy_transform<Transform>::operator->() noexcept -> Transform*
 {
   m_is_dirty = true;
   return &m_transform;
@@ -167,8 +168,9 @@ auto alloy::core::lazy_transform<Transform>::operator->()
 
 template <typename Transform>
 inline
-auto alloy::core::lazy_transform<Transform>::update_matrix(not_null<matrix4*> out)
-  noexcept -> void
+auto alloy::core::lazy_transform<Transform>::update_matrix(
+  not_null<matrix4*> out
+) noexcept -> void
 {
   if (!m_is_dirty) {
     return;

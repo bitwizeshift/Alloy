@@ -138,13 +138,15 @@ namespace alloy::render::gl {
     ///
     /// \param other the other message to move
     /// \return reference to (*this)
-    auto operator=(gl_error_message&& other) noexcept -> gl_error_message& = default;
+    auto operator=(gl_error_message&& other)
+      noexcept -> gl_error_message& = default;
 
     /// \brief Copy-assigns the contents of \p other
     ///
     /// \param other the other message to copy
     /// \return reference to (*this)
-    auto operator=(const gl_error_message& other) noexcept -> gl_error_message& = default;
+    auto operator=(const gl_error_message& other)
+      noexcept -> gl_error_message& = default;
 
     //-------------------------------------------------------------------------
     // Observers

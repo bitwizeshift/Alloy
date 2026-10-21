@@ -65,8 +65,7 @@ namespace alloy::render {
 } // namespace alloy::render
 
 inline
-auto alloy::render::mesh_builder::build()
-  const -> mesh
+auto alloy::render::mesh_builder::build() const -> mesh
 {
   return build_with(core::allocator{});
 }

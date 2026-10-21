@@ -25,12 +25,13 @@ namespace {
     auto ok() const -> bool override { return m_ok; }
     auto tell() -> std::size_t override { return 0u; /* This is unused */ }
     auto seek(std::size_t) -> void override { /* this is unused */ }
-    uint8_t read8() override {
+    auto read8() -> uint8_t override
+    {
       auto result = m_file->read_object<std::uint8_t>();
       m_ok = result.has_value();
       return result.value_or(255u);
     }
-    void write8(uint8_t) override
+    auto write8(uint8_t) -> void override
     {
       // not used
     }

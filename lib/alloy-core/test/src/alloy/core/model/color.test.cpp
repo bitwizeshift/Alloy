@@ -15,7 +15,8 @@ namespace Catch {
     // Prints 'color' as 4 8-bit component colors.
     // This could also be 16-bit or even floating point -- but neither of these
     // are particularly easy to read.
-    static auto convert(const alloy::core::color& value) -> std::string {
+    static auto convert(const alloy::core::color& value) -> std::string
+    {
       return (
         "rgba(" +
           std::to_string(value.r8()) + "," +

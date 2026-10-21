@@ -94,7 +94,8 @@ namespace alloy::core {
     /// \param fn the function to use for mapping
     /// \return the mapped optional
     template <typename Fn>
-    constexpr auto map(Fn&& fn) const & -> optional<std::invoke_result_t<Fn,const T&>>;
+    constexpr auto map(Fn&& fn)
+      const & -> optional<std::invoke_result_t<Fn,const T&>>;
     template <typename Fn>
     constexpr auto map(Fn&& fn) && -> optional<std::invoke_result_t<Fn,T&&>>;
     /// \}
@@ -106,7 +107,8 @@ namespace alloy::core {
     /// \param fn the function to use for mapping
     /// \return the result of `fn(**this)` or `null`
     template <typename Fn>
-    constexpr auto flat_map(Fn&& fn) const & -> std::invoke_result_t<Fn,const T&>;
+    constexpr auto flat_map(Fn&& fn)
+      const & -> std::invoke_result_t<Fn,const T&>;
     template <typename Fn>
     constexpr auto flat_map(Fn&& fn) && -> std::invoke_result_t<Fn,T&&>;
     /// \}
@@ -120,7 +122,8 @@ namespace alloy::core {
     template <typename U>
     constexpr auto and_then(U&& u) const -> optional<std::decay_t<U>>;
     template <typename U>
-    constexpr auto and_then(std::reference_wrapper<U> ref) const -> optional<U&>;
+    constexpr auto and_then(std::reference_wrapper<U> ref)
+      const -> optional<U&>;
     /// \}
   };
 
@@ -256,7 +259,8 @@ namespace alloy::core {
     template <typename U>
     constexpr auto and_then(U&& u) const -> optional<std::decay_t<U>>;
     template <typename U>
-    constexpr auto and_then(std::reference_wrapper<U> ref) const -> optional<U&>;
+    constexpr auto and_then(std::reference_wrapper<U> ref)
+      const -> optional<U&>;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -276,65 +280,65 @@ namespace alloy::core {
   //----------------------------------------------------------------------------
 
   template <typename T, typename U>
-  constexpr auto operator==(const optional<T>& lhs,
-                            const optional<U>& rhs) noexcept -> bool;
+  constexpr auto operator==(const optional<T>& lhs, const optional<U>& rhs)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator!=(const optional<T>& lhs,
-                            const optional<U>& rhs) noexcept -> bool;
+  constexpr auto operator!=(const optional<T>& lhs, const optional<U>& rhs)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator<(const optional<T>& lhs,
-                           const optional<U>& rhs) noexcept -> bool;
+  constexpr auto operator<(const optional<T>& lhs, const optional<U>& rhs)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator>(const optional<T>& lhs,
-                           const optional<U>& rhs) noexcept -> bool;
+  constexpr auto operator>(const optional<T>& lhs, const optional<U>& rhs)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator<=(const optional<T>& lhs,
-                            const optional<U>& rhs) noexcept -> bool;
+  constexpr auto operator<=(const optional<T>& lhs, const optional<U>& rhs)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator>=(const optional<T>& lhs,
-                            const optional<U>& rhs) noexcept -> bool;
+  constexpr auto operator>=(const optional<T>& lhs, const optional<U>& rhs)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
   template <typename T, typename U>
-  constexpr auto operator==(const optional<T>& opt,
-                            const U& value) noexcept -> bool;
+  constexpr auto operator==(const optional<T>& opt, const U& value)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator!=(const optional<T>& opt,
-                            const U& value) noexcept -> bool;
+  constexpr auto operator!=(const optional<T>& opt, const U& value)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator<(const optional<T>& opt,
-                           const U& value) noexcept -> bool;
+  constexpr auto operator<(const optional<T>& opt, const U& value)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator>(const optional<T>& opt,
-                           const U& value) noexcept -> bool;
+  constexpr auto operator>(const optional<T>& opt, const U& value)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator<=(const optional<T>& opt,
-                            const U& value) noexcept -> bool;
+  constexpr auto operator<=(const optional<T>& opt, const U& value)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator>=(const optional<T>& opt,
-                            const U& value) noexcept -> bool;
+  constexpr auto operator>=(const optional<T>& opt, const U& value)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
   template <typename T, typename U>
-  constexpr auto operator==(const T& value,
-                            const optional<U>& opt) noexcept -> bool;
+  constexpr auto operator==(const T& value, const optional<U>& opt)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator!=(const T& lhs,
-                            const optional<U>& opt) noexcept -> bool;
+  constexpr auto operator!=(const T& lhs, const optional<U>& opt)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator<(const T& lhs,
-                           const optional<U>& opt) noexcept -> bool;
+  constexpr auto operator<(const T& lhs, const optional<U>& opt)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator>(const T& lhs,
-                           const optional<U>& opt) noexcept -> bool;
+  constexpr auto operator>(const T& lhs, const optional<U>& opt)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator<=(const T& lhs,
-                            const optional<U>& opt) noexcept -> bool;
+  constexpr auto operator<=(const T& lhs, const optional<U>& opt)
+    noexcept -> bool;
   template <typename T, typename U>
-  constexpr auto operator>=(const T& lhs,
-                            const optional<U>& opt) noexcept -> bool;
+  constexpr auto operator>=(const T& lhs, const optional<U>& opt)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
   // Utilities
@@ -484,8 +488,7 @@ auto alloy::core::optional<T>::and_then(std::reference_wrapper<U> ref)
 
 template <typename T>
 inline constexpr
-alloy::core::optional<T&>::optional()
-  noexcept
+alloy::core::optional<T&>::optional() noexcept
   : m_data{nullptr}
 {
 
@@ -495,8 +498,7 @@ template <typename T>
 template <typename U>
   requires std::convertible_to<U&, T&>
 inline constexpr
-alloy::core::optional<T&>::optional(U& ref)
-  noexcept
+alloy::core::optional<T&>::optional(U& ref) noexcept
   : m_data{std::addressof(ref)}
 {
 
@@ -504,8 +506,7 @@ alloy::core::optional<T&>::optional(U& ref)
 
 template <typename T>
 inline constexpr
-alloy::core::optional<T&>::optional(null_type)
-  noexcept
+alloy::core::optional<T&>::optional(null_type) noexcept
   : optional{}
 {
 
@@ -515,8 +516,7 @@ template <typename T>
 template <typename U>
   requires std::convertible_to<U&, T&>
 inline
-auto alloy::core::optional<T&>::operator=(U& ref)
-   noexcept -> optional&
+auto alloy::core::optional<T&>::operator=(U& ref) noexcept -> optional&
 {
   m_data = std::addressof(ref);
   return (*this);
@@ -524,8 +524,7 @@ auto alloy::core::optional<T&>::operator=(U& ref)
 
 template <typename T>
 inline
-auto alloy::core::optional<T&>::operator=(null_type)
-   noexcept -> optional&
+auto alloy::core::optional<T&>::operator=(null_type) noexcept -> optional&
 {
   reset();
   return (*this);
@@ -537,8 +536,7 @@ auto alloy::core::optional<T&>::operator=(null_type)
 
 template <typename T>
 inline constexpr
-auto alloy::core::optional<T&>::operator->()
-  const noexcept -> T*
+auto alloy::core::optional<T&>::operator->() const noexcept -> T*
 {
   ALLOY_ASSERT(m_data != nullptr);
   return m_data;
@@ -546,8 +544,7 @@ auto alloy::core::optional<T&>::operator->()
 
 template <typename T>
 inline constexpr
-auto alloy::core::optional<T&>::operator*()
-  const noexcept -> T&
+auto alloy::core::optional<T&>::operator*() const noexcept -> T&
 {
   ALLOY_ASSERT(m_data != nullptr);
   return *m_data;
@@ -557,16 +554,14 @@ auto alloy::core::optional<T&>::operator*()
 
 template <typename T>
 inline constexpr
-auto alloy::core::optional<T&>::has_value()
-  const noexcept -> bool
+auto alloy::core::optional<T&>::has_value() const noexcept -> bool
 {
   return m_data != nullptr;
 }
 
 template <typename T>
 inline constexpr
-alloy::core::optional<T&>::operator bool()
-  const noexcept
+alloy::core::optional<T&>::operator bool() const noexcept
 {
   return has_value();
 }
@@ -575,8 +570,7 @@ alloy::core::optional<T&>::operator bool()
 
 template <typename T>
 inline constexpr
-auto alloy::core::optional<T&>::value()
-  const -> T&
+auto alloy::core::optional<T&>::value() const -> T&
 {
   if (m_data == nullptr) {
     throw std::bad_optional_access{};
@@ -590,8 +584,7 @@ auto alloy::core::optional<T&>::value()
 
 template <typename T>
 inline constexpr
-auto alloy::core::optional<T&>::reset()
-  noexcept -> void
+auto alloy::core::optional<T&>::reset() noexcept -> void
 {
   m_data = nullptr;
 }
@@ -603,8 +596,7 @@ auto alloy::core::optional<T&>::reset()
 template <typename T>
 template <typename U>
 inline constexpr
-auto alloy::core::optional<T&>::value_or(U& ref)
-  const noexcept -> T&
+auto alloy::core::optional<T&>::value_or(U& ref) const noexcept -> T&
 {
   if (has_value()) {
     return *m_data;
@@ -798,7 +790,7 @@ auto alloy::core::operator!=(const T& value, const optional<U>& opt)
 
 template <typename T, typename U>
 inline constexpr
-auto alloy::core::operator<(const T& value,const optional<U>& opt)
+auto alloy::core::operator<(const T& value, const optional<U>& opt)
   noexcept -> bool
 {
   return opt.has_value() ? (value < (*opt)) : false;
@@ -806,7 +798,7 @@ auto alloy::core::operator<(const T& value,const optional<U>& opt)
 
 template <typename T, typename U>
 inline constexpr
-auto alloy::core::operator>(const T& value,const optional<U>& opt)
+auto alloy::core::operator>(const T& value, const optional<U>& opt)
   noexcept -> bool
 {
   return opt.has_value() ? (value > (*opt)) : true;

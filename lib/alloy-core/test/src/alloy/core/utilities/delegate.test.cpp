@@ -14,7 +14,7 @@ namespace {
 // Static Factories
 //------------------------------------------------------------------------------
 
-bool set_bool(bool& x) { return x = true; }
+auto set_bool(bool& x) -> bool { return x = true; }
 
 TEST_CASE("delegate::make<Fn>()")
 {
@@ -57,12 +57,12 @@ struct setter
 {
   bool x;
 
-  bool set_bool()
+  auto set_bool() -> bool
   {
     return x = true;
   }
 
-  bool set_other_bool(bool& b) const
+  auto set_other_bool(bool& b) const -> bool
   {
     return b = true;
   }
@@ -147,13 +147,13 @@ TEST_CASE("delegate::make<MemberFn>(const C*)")
 struct bool_setting_functor
 {
   bool x;
-  bool operator()(){ return x = true; }
+  auto operator()() -> bool { return x = true; }
 };
 
 struct any_setter_functor
 {
   template <typename T>
-  T operator()(T& x, const T& y) { return x = y; }
+  auto operator()(T& x, const T& y) -> T { return x = y; }
 };
 
 TEST_CASE("delegate::make(const Callable*)")

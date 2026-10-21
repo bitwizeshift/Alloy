@@ -12,9 +12,10 @@
 // Public Static Factories
 //-----------------------------------------------------------------------------
 
-auto alloy::core::vector2::from_magnitude_direction(real magnitude,
-                                                    radian direction)
-  noexcept -> vector2
+auto alloy::core::vector2::from_magnitude_direction(
+  real magnitude,
+  radian direction
+) noexcept -> vector2
 {
   return vector2 {
     magnitude * trigonometry::cos(direction),
@@ -26,8 +27,7 @@ auto alloy::core::vector2::from_magnitude_direction(real magnitude,
 // Quantifiers
 //-----------------------------------------------------------------------------
 
-auto alloy::core::vector2::magnitude()
-  const noexcept -> real
+auto alloy::core::vector2::magnitude() const noexcept -> real
 {
   return sqrt((x()*x()) + (y()*y()));
 }
@@ -63,8 +63,7 @@ auto alloy::core::vector2::angle_to(const vector2 &other)
 // Modifiers
 //-----------------------------------------------------------------------------
 
-auto alloy::core::vector2::normalize()
-  noexcept -> vector2&
+auto alloy::core::vector2::normalize() noexcept -> vector2&
 {
   const auto square_mag = square_magnitude();
 

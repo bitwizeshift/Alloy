@@ -38,7 +38,8 @@ struct default_construct_test
 {
   static constexpr auto default_value = 42;
 
-  default_construct_test() : value{default_value}{}
+  default_construct_test()
+    : value{default_value}{}
 
   int value;
 };
@@ -69,7 +70,8 @@ struct move_only : public T
 
   move_only() = default;
 
-  move_only(T&& other) : T(std::move(other)){}
+  move_only(T&& other)
+    : T(std::move(other)){}
   move_only(move_only&&) = default;
   move_only(const move_only&) = delete;
 

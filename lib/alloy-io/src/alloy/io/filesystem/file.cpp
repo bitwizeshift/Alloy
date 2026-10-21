@@ -73,17 +73,17 @@ alloy::io::file::file()
 }
 
 
-alloy::io::file::file(core::not_null<file_stream*> stream,
-                      core::not_null<file_stream_finalizer*> finalizer)
-  noexcept
+alloy::io::file::file(
+  core::not_null<file_stream*> stream,
+  core::not_null<file_stream_finalizer*> finalizer
+) noexcept
   : m_handle{stream, finalizer}
 {
 
 }
 
 
-alloy::io::file::file(file_stream_handle handle)
-  noexcept
+alloy::io::file::file(file_stream_handle handle) noexcept
   : m_handle{std::move(handle)}
 {
 
@@ -98,8 +98,7 @@ alloy::io::file::~file()
 
 //-----------------------------------------------------------------------------
 
-alloy::io::file& alloy::io::file::operator=(file&& other)
-  noexcept
+auto alloy::io::file::operator=(file&& other) noexcept -> file&
 {
   core::compiler::unused(close());
 
@@ -112,15 +111,14 @@ alloy::io::file& alloy::io::file::operator=(file&& other)
 // Observers
 //-----------------------------------------------------------------------------
 
-bool alloy::io::file::is_open()
-  const noexcept
+auto alloy::io::file::is_open() const noexcept -> bool
 {
   return m_handle.get() != nullptr;
 }
 
 
-alloy::core::result<alloy::io::file::size_type,std::error_code> alloy::io::file::bytes()
-  const noexcept
+auto alloy::io::file::bytes()
+  const noexcept -> core::result<size_type,std::error_code>
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::fail(error_code::closed);
@@ -133,8 +131,7 @@ alloy::core::result<alloy::io::file::size_type,std::error_code> alloy::io::file:
 // Modifiers
 //-----------------------------------------------------------------------------
 
-alloy::io::file_stream_handle alloy::io::file::release()
-  noexcept
+auto alloy::io::file::release() noexcept -> file_stream_handle
 {
   return std::move(m_handle);
 }
@@ -143,8 +140,7 @@ alloy::io::file_stream_handle alloy::io::file::release()
 // File API
 //-----------------------------------------------------------------------------
 
-alloy::core::result<void,std::error_code> alloy::io::file::close()
-  noexcept
+auto alloy::io::file::close() noexcept -> core::result<void,std::error_code>
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::fail(error_code::closed);
@@ -157,8 +153,7 @@ alloy::core::result<void,std::error_code> alloy::io::file::close()
 }
 
 
-alloy::core::result<void,std::error_code> alloy::io::file::reset()
-  noexcept
+auto alloy::io::file::reset() noexcept -> core::result<void,std::error_code>
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::fail(error_code::closed);
@@ -168,8 +163,7 @@ alloy::core::result<void,std::error_code> alloy::io::file::reset()
 }
 
 
-alloy::core::result<void,std::error_code> alloy::io::file::flush()
-  noexcept
+auto alloy::io::file::flush() noexcept -> core::result<void,std::error_code>
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::fail(error_code::closed);
@@ -179,8 +173,8 @@ alloy::core::result<void,std::error_code> alloy::io::file::flush()
 }
 
 
-alloy::core::result<void,std::error_code> alloy::io::file::skip(offset_type offset)
-  noexcept
+auto alloy::io::file::skip(offset_type offset)
+  noexcept -> core::result<void,std::error_code>
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::fail(error_code::closed);
@@ -190,9 +184,8 @@ alloy::core::result<void,std::error_code> alloy::io::file::skip(offset_type offs
 }
 
 
-alloy::core::result<alloy::io::mutable_buffer,std::error_code>
-  alloy::io::file::read(mutable_buffer buffer)
-  noexcept
+auto alloy::io::file::read(mutable_buffer buffer)
+  noexcept -> core::result<mutable_buffer,std::error_code>
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::fail(error_code::closed);
@@ -202,9 +195,8 @@ alloy::core::result<alloy::io::mutable_buffer,std::error_code>
 }
 
 
-alloy::core::result<alloy::io::const_buffer,std::error_code>
-  alloy::io::file::write(const_buffer buffer)
-  noexcept
+auto alloy::io::file::write(const_buffer buffer)
+  noexcept -> core::result<const_buffer,std::error_code>
 {
   if (ALLOY_UNLIKELY(m_handle.get() == nullptr)) {
     return core::fail(error_code::closed);
@@ -221,8 +213,7 @@ alloy::core::result<alloy::io::const_buffer,std::error_code>
 // Utilities
 //-----------------------------------------------------------------------------
 
-std::error_code alloy::io::make_error_code(file::error_code ec)
-  noexcept
+auto alloy::io::make_error_code(file::error_code ec) noexcept -> std::error_code
 {
   static auto s_category = ::error_category{};
 

@@ -97,8 +97,7 @@ namespace alloy::core {
 //==============================================================================
 
 inline constexpr
-auto alloy::core::radian_unit::revolution()
-  noexcept -> real
+auto alloy::core::radian_unit::revolution() noexcept -> real
 {
   return static_cast<real>(math_constants::two_pi);
 }
@@ -124,8 +123,7 @@ auto alloy::core::casts::to_radian(basic_angle<AngleUnit> angle)
 //==============================================================================
 
 inline constexpr
-auto alloy::core::literals::operator""_rad(long double x)
-  noexcept -> radian
+auto alloy::core::literals::operator""_rad(long double x) noexcept -> radian
 {
   return radian{ static_cast<real>(x) };
 }

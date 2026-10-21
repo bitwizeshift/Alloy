@@ -36,7 +36,7 @@ namespace alloy::core {
   /// \param f the value to check
   /// \return `true` if \p f is a `nan`
   template<std::size_t MantissaBits, std::size_t ExponentBits>
-  bool is_nan( const basic_fixed<MantissaBits,ExponentBits>& f ) noexcept;
+  auto is_nan(const basic_fixed<MantissaBits,ExponentBits>& f) noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -45,14 +45,16 @@ namespace alloy::core {
   /// \param f the value to check
   /// \return `true` if \p f is `finite`
   template<std::size_t MantissaBits, std::size_t ExponentBits>
-  bool is_finite( const basic_fixed<MantissaBits,ExponentBits>& f ) noexcept;
+  auto is_finite(const basic_fixed<MantissaBits,ExponentBits>& f)
+    noexcept -> bool;
 
   /// \brief Determines whether a given basic_fixed value \p f is infinite
   ///
   /// \param f the value to check
   /// \return `true` if \p f is `infinite`
   template<std::size_t MantissaBits, std::size_t ExponentBits>
-  bool is_infinite( const basic_fixed<MantissaBits,ExponentBits>& f ) noexcept;
+  auto is_infinite(const basic_fixed<MantissaBits,ExponentBits>& f)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -61,14 +63,16 @@ namespace alloy::core {
   /// \param f the value to check
   /// \return `true` if \p f is `normal`
   template<std::size_t MantissaBits, std::size_t ExponentBits>
-  bool is_normal( const basic_fixed<MantissaBits,ExponentBits>& f ) noexcept;
+  auto is_normal(const basic_fixed<MantissaBits,ExponentBits>& f)
+    noexcept -> bool;
 
   /// \brief Determines whether a given basic_fixed value \p f is subnormal
   ///
   /// \param f the value to check
   /// \return `true` if \p f is `subnormal`
   template<std::size_t MantissaBits, std::size_t ExponentBits>
-  bool is_subnormal( const basic_fixed<MantissaBits,ExponentBits>& f ) noexcept;
+  auto is_subnormal(const basic_fixed<MantissaBits,ExponentBits>& f)
+    noexcept -> bool;
 
   //============================================================================
   // aliases
@@ -98,9 +102,9 @@ namespace alloy::core {
 //==============================================================================
 
 template<std::size_t MantissaBits, std::size_t ExponentBits>
-inline bool
-  alloy::core::is_nan( const basic_fixed<MantissaBits,ExponentBits>& f )
-  noexcept
+inline
+auto alloy::core::is_nan(const basic_fixed<MantissaBits,ExponentBits>& f)
+  noexcept -> bool
 {
   (void) f;
   assert( false && "not implemented" );
@@ -108,9 +112,9 @@ inline bool
 }
 
 template<std::size_t MantissaBits, std::size_t ExponentBits>
-inline bool
-  alloy::core::is_finite( const basic_fixed<MantissaBits,ExponentBits>& f )
-  noexcept
+inline
+auto alloy::core::is_finite(const basic_fixed<MantissaBits,ExponentBits>& f)
+  noexcept -> bool
 {
   (void) f;
   assert( false && "not implemented" );
@@ -118,9 +122,9 @@ inline bool
 }
 
 template<std::size_t MantissaBits, std::size_t ExponentBits>
-inline bool
-  alloy::core::is_infinite( const basic_fixed<MantissaBits,ExponentBits>& f )
-  noexcept
+inline
+auto alloy::core::is_infinite(const basic_fixed<MantissaBits,ExponentBits>& f)
+  noexcept -> bool
 {
   (void) f;
   assert( false && "not implemented" );
@@ -128,9 +132,9 @@ inline bool
 }
 
 template<std::size_t MantissaBits, std::size_t ExponentBits>
-inline bool
-  alloy::core::is_normal( const basic_fixed<MantissaBits,ExponentBits>& f )
-  noexcept
+inline
+auto alloy::core::is_normal(const basic_fixed<MantissaBits,ExponentBits>& f)
+  noexcept -> bool
 {
   (void) f;
   assert( false && "not implemented" );
@@ -138,9 +142,9 @@ inline bool
 }
 
 template<std::size_t MantissaBits, std::size_t ExponentBits>
-inline bool
-  alloy::core::is_subnormal( const basic_fixed<MantissaBits,ExponentBits>& f )
-  noexcept
+inline
+auto alloy::core::is_subnormal(const basic_fixed<MantissaBits,ExponentBits>& f)
+  noexcept -> bool
 {
   (void) f;
   assert( false && "not implemented" );

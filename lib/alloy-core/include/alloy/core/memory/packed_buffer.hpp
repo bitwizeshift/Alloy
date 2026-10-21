@@ -177,8 +177,10 @@ namespace alloy::core {
   // Equality
   //---------------------------------------------------------------------------
 
-  auto operator==(const packed_buffer& lhs, const packed_buffer& rhs) noexcept -> bool;
-  auto operator!=(const packed_buffer& lhs, const packed_buffer& rhs) noexcept -> bool;
+  auto operator==(const packed_buffer& lhs, const packed_buffer& rhs)
+    noexcept -> bool;
+  auto operator!=(const packed_buffer& lhs, const packed_buffer& rhs)
+    noexcept -> bool;
 
   //===========================================================================
   // class : packed_buffer_writer
@@ -223,7 +225,8 @@ namespace alloy::core {
 
     // Not copyable or moveable
     auto operator=(packed_buffer_writer&&) -> packed_buffer_writer& = delete;
-    auto operator=(const packed_buffer_writer&) -> packed_buffer_writer& = delete;
+    auto operator=(const packed_buffer_writer&)
+      -> packed_buffer_writer& = delete;
 
     //-------------------------------------------------------------------------
     // Writing
@@ -273,7 +276,8 @@ namespace alloy::core {
     /// \param first the start of the range
     /// \param last the end of the range
     template <typename InputIt, typename Packer>
-    auto pack_objects(InputIt first, InputIt last, Packer&& packer) noexcept -> void;
+    auto pack_objects(InputIt first, InputIt last, Packer&& packer)
+      noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -325,7 +329,8 @@ namespace alloy::core {
     /// \brief Constructs a reader from a referenced packed_buffer
     ///
     /// \param buffer the buffer to read from
-    explicit packed_buffer_reader(not_null<const packed_buffer*> buffer) noexcept;
+    explicit packed_buffer_reader(not_null<const packed_buffer*> buffer)
+      noexcept;
 
     // Not copyable or moveable
     packed_buffer_reader(packed_buffer_reader&&) = delete;
@@ -335,7 +340,8 @@ namespace alloy::core {
 
     // Not copyable or moveable
     auto operator=(packed_buffer_reader&&) -> packed_buffer_reader& = delete;
-    auto operator=(const packed_buffer_reader&) -> packed_buffer_reader& = delete;
+    auto operator=(const packed_buffer_reader&)
+      -> packed_buffer_reader& = delete;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -362,7 +368,8 @@ namespace alloy::core {
     ///
     /// \param destination the buffer to write to
     /// \return the span of read bytes
-    auto read_bytes(std::span<std::byte> destination) noexcept -> std::span<std::byte>;
+    auto read_bytes(std::span<std::byte> destination)
+      noexcept -> std::span<std::byte>;
 
     /// \brief Reads a trivially copyable object to the underlying
     ///        packed_buffer by ignoring any alignment requirements, as if by
@@ -406,7 +413,8 @@ namespace alloy::core {
   /// \param e the error
   /// \return the error_code
   ALLOY_CORE_API
-  auto make_error_code(packed_buffer_reader::error e) noexcept -> std::error_code;
+  auto make_error_code(packed_buffer_reader::error e)
+    noexcept -> std::error_code;
 
   //===========================================================================
   // class : trivial_object_packer<T>
@@ -434,7 +442,8 @@ namespace alloy::core {
     ///
     /// \param buffer the buffer reader
     /// \return a T value on success
-    auto unpack(packed_buffer_reader& buffer) const noexcept -> result<T,std::error_code>;
+    auto unpack(packed_buffer_reader& buffer)
+      const noexcept -> result<T,std::error_code>;
   };
 
 } // namespace alloy::core
@@ -452,8 +461,8 @@ namespace std {
 // Element Access
 //-----------------------------------------------------------------------------
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::packed_buffer::operator[](std::ptrdiff_t index)
+ALLOY_FORCE_INLINE
+auto alloy::core::packed_buffer::operator[](std::ptrdiff_t index)
   const noexcept -> value_type
 {
   ALLOY_ASSERT(index >= 0 && static_cast<std::size_t>(index) <= m_buffer.size());
@@ -461,9 +470,8 @@ ALLOY_FORCE_INLINE auto
   return m_buffer[static_cast<std::size_t>(index)];
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::packed_buffer::data()
-  const noexcept -> const_pointer
+ALLOY_FORCE_INLINE
+auto alloy::core::packed_buffer::data() const noexcept -> const_pointer
 {
   return m_buffer.data();
 }
@@ -472,16 +480,14 @@ ALLOY_FORCE_INLINE auto
 // Capacity
 //-----------------------------------------------------------------------------
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::packed_buffer::size()
-  const noexcept -> size_type
+ALLOY_FORCE_INLINE
+auto alloy::core::packed_buffer::size() const noexcept -> size_type
 {
   return bytes{m_buffer.size()};
 }
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::packed_buffer::capacity()
-  const noexcept -> size_type
+ALLOY_FORCE_INLINE
+auto alloy::core::packed_buffer::capacity() const noexcept -> size_type
 {
   return bytes{m_buffer.capacity()};
 }
@@ -494,8 +500,8 @@ ALLOY_FORCE_INLINE auto
 // Equality
 //-----------------------------------------------------------------------------
 
-inline auto
-  alloy::core::operator==(const packed_buffer& lhs, const packed_buffer& rhs)
+inline
+auto alloy::core::operator==(const packed_buffer& lhs, const packed_buffer& rhs)
   noexcept -> bool
 {
   if (lhs.size() != rhs.size()) {
@@ -505,8 +511,8 @@ inline auto
   return std::memcmp(lhs.data(), rhs.data(), size) == 0;
 }
 
-inline auto
-  alloy::core::operator!=(const packed_buffer& lhs, const packed_buffer& rhs)
+inline
+auto alloy::core::operator!=(const packed_buffer& lhs, const packed_buffer& rhs)
   noexcept -> bool
 {
   return !(lhs == rhs);
@@ -520,34 +526,38 @@ inline auto
 // Writing
 //-----------------------------------------------------------------------------
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::packed_buffer_writer::write_bytes(std::span<const std::byte> source)
-  -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::packed_buffer_writer::write_bytes(
+  std::span<const std::byte> source
+) -> void
 {
   m_buffer->push_bytes(source);
 }
 
 template <typename T>
-ALLOY_FORCE_INLINE auto
-  alloy::core::packed_buffer_writer::pack_object(const T& value)
+ALLOY_FORCE_INLINE
+auto alloy::core::packed_buffer_writer::pack_object(const T& value)
   noexcept -> void
 {
   pack_object(value, trivial_object_packer<T>{});
 }
 
 template <typename T, typename Packer>
-ALLOY_FORCE_INLINE auto
-  alloy::core::packed_buffer_writer::pack_object(const T& value,
-                                                 Packer&& packer)
-  noexcept -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::packed_buffer_writer::pack_object(
+  const T& value,
+  Packer&& packer
+) noexcept -> void
 {
   packer.pack(*this, value);
 }
 
 template<typename InputIt>
-inline auto
-  alloy::core::packed_buffer_writer::pack_objects(InputIt first, InputIt last)
-  noexcept -> void
+inline
+auto alloy::core::packed_buffer_writer::pack_objects(
+  InputIt first,
+  InputIt last
+) noexcept -> void
 {
   using underlying_type = typename std::iterator_traits<InputIt>::value_type;
 
@@ -555,11 +565,12 @@ inline auto
 }
 
 template <typename InputIt, typename Packer>
-inline auto
-  alloy::core::packed_buffer_writer::pack_objects(InputIt first,
-                                                  InputIt last,
-                                                  Packer&& packer)
-  noexcept -> void
+inline
+auto alloy::core::packed_buffer_writer::pack_objects(
+  InputIt first,
+  InputIt last,
+  Packer&& packer
+) noexcept -> void
 {
   for (auto it = first; it != last; ++it) {
     packer.pack(*this, *it);
@@ -574,9 +585,8 @@ inline auto
 // Observers
 //-----------------------------------------------------------------------------
 
-ALLOY_FORCE_INLINE auto
-  alloy::core::packed_buffer_reader::index()
-  const noexcept -> std::size_t
+ALLOY_FORCE_INLINE
+auto alloy::core::packed_buffer_reader::index() const noexcept -> std::size_t
 {
   return m_read_index;
 }
@@ -586,16 +596,16 @@ ALLOY_FORCE_INLINE auto
 //-----------------------------------------------------------------------------
 
 template <typename T>
-ALLOY_FORCE_INLINE auto
-  alloy::core::packed_buffer_reader::unpack_object()
+ALLOY_FORCE_INLINE
+auto alloy::core::packed_buffer_reader::unpack_object()
   noexcept -> result<T,std::error_code>
 {
   return unpack_object<T>(trivial_object_packer<T>{});
 }
 
 template <typename T, typename Packer>
-ALLOY_FORCE_INLINE auto
-  alloy::core::packed_buffer_reader::unpack_object(Packer&& packer)
+ALLOY_FORCE_INLINE
+auto alloy::core::packed_buffer_reader::unpack_object(Packer&& packer)
   noexcept -> result<T,std::error_code>
 {
   return packer.unpack(*this);
@@ -608,10 +618,11 @@ ALLOY_FORCE_INLINE auto
 // Only allocation failure can throw here, which is treated as fatal.
 // NOLINTBEGIN(bugprone-exception-escape)
 template <typename T>
-ALLOY_FORCE_INLINE auto
-  alloy::core::trivial_object_packer<T>::pack(packed_buffer_writer& buffer,
-                                              const T& v)
-  const noexcept -> void
+ALLOY_FORCE_INLINE
+auto alloy::core::trivial_object_packer<T>::pack(
+  packed_buffer_writer& buffer,
+  const T& v
+) const noexcept -> void
 {
   auto s = std::span<const T>{&v, std::size_t{1}};
 
@@ -620,8 +631,8 @@ ALLOY_FORCE_INLINE auto
 // NOLINTEND(bugprone-exception-escape)
 
 template <typename T>
-inline auto
-  alloy::core::trivial_object_packer<T>::unpack(packed_buffer_reader& buffer)
+inline
+auto alloy::core::trivial_object_packer<T>::unpack(packed_buffer_reader& buffer)
   const noexcept -> result<T,std::error_code>
 {
   auto out = T{};

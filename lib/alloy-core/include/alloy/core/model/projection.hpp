@@ -90,10 +90,11 @@ namespace alloy::core {
     /// \param v the vertical space
     /// \param d the depth space
     /// \return the clip_space
-    static constexpr auto make(const horizontal& h,
-                               const vertical& v,
-                               const depth& d)
-      noexcept -> clip_space;
+    static constexpr auto make(
+      const horizontal& h,
+      const vertical& v,
+      const depth& d
+    ) noexcept -> clip_space;
 
     /// \brief Makes the clip_space by checking that all inputs do not violate
     ///        preconditions
@@ -109,10 +110,14 @@ namespace alloy::core {
     /// \param near the nearest visible area ib the depth space
     /// \param far the furthest visible area in the depth space
     /// \return the clip_space
-    static constexpr auto make(real left, real right,
-                               real bottom, real top,
-                               real near, real far)
-      noexcept -> clip_space;
+    static constexpr auto make(
+      real left,
+      real right,
+      real bottom,
+      real top,
+      real near,
+      real far
+    ) noexcept -> clip_space;
 
     /// \brief Makes a clip_space with symmetric viewing area
     ///
@@ -129,10 +134,11 @@ namespace alloy::core {
     /// \param vertical the vertical space to make symmetric
     /// \param distance the distance
     /// \return the clip_space
-    static constexpr auto make_symmetric(real horizontal,
-                                         real vertical,
-                                         real distance)
-      noexcept -> clip_space;
+    static constexpr auto make_symmetric(
+      real horizontal,
+      real vertical,
+      real distance
+    ) noexcept -> clip_space;
 
     //-------------------------------------------------------------------------
 
@@ -147,10 +153,11 @@ namespace alloy::core {
     /// \param v the vertical space
     /// \param d the depth space
     /// \return the clip_space
-    static constexpr auto make_unchecked(const horizontal& h,
-                                         const vertical& v,
-                                         const depth& d)
-      noexcept -> clip_space;
+    static constexpr auto make_unchecked(
+      const horizontal& h,
+      const vertical& v,
+      const depth& d
+    ) noexcept -> clip_space;
 
     /// \brief Makes the clip_space by checking that all inputs do not violate
     ///        preconditions
@@ -166,10 +173,14 @@ namespace alloy::core {
     /// \param near the nearest visible area ib the depth space
     /// \param far the furthest visible area in the depth space
     /// \return the clip_space
-    static constexpr auto make_unchecked(real left, real right,
-                                         real bottom, real top,
-                                         real near, real far)
-      noexcept -> clip_space;
+    static constexpr auto make_unchecked(
+      real left,
+      real right,
+      real bottom,
+      real top,
+      real near,
+      real far
+    ) noexcept -> clip_space;
 
     //-------------------------------------------------------------------------
     // Constructors / Assignment
@@ -188,7 +199,8 @@ namespace alloy::core {
     ///
     /// \param other the other clip_space to copy
     /// \return reference to `(*this)`
-    constexpr auto operator=(const clip_space& other) noexcept -> clip_space& = default;
+    constexpr auto operator=(const clip_space& other)
+      noexcept -> clip_space& = default;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -225,9 +237,8 @@ namespace alloy::core {
     /// \param h the horizontal
     /// \param v the vertical
     /// \param d the depth
-    constexpr clip_space(const horizontal& h,
-                         const vertical& v,
-                         const depth& d) noexcept;
+    constexpr clip_space(const horizontal& h, const vertical& v, const depth& d)
+      noexcept;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -281,8 +292,11 @@ namespace alloy::core {
     /// \param depth the depth of the clipping space
     /// \return A perspective projection
     [[nodiscard]]
-    static auto perspective(degree fov, real aspect_ratio, clip_space::depth depth)
-      noexcept -> projection;
+    static auto perspective(
+      degree fov,
+      real aspect_ratio,
+      clip_space::depth depth
+    ) noexcept -> projection;
 
     /// \brief Projects a perspective with the given information
     ///
@@ -295,8 +309,11 @@ namespace alloy::core {
     /// \param depth the depth of the clipping space
     /// \return A perspective projection
     [[nodiscard]]
-    static auto perspective(radian fov, real aspect_ratio, clip_space::depth depth)
-      noexcept -> projection;
+    static auto perspective(
+      radian fov,
+      real aspect_ratio,
+      clip_space::depth depth
+    ) noexcept -> projection;
 
     //--------------------------------------------------------------------------
     // Static Factories: Orthographic
@@ -313,10 +330,14 @@ namespace alloy::core {
     /// \param far the far part of the view
     /// \return An orthographic projection
     [[nodiscard]]
-    static auto orthographic(real left, real right,
-                             real bottom, real top,
-                             real near, real far)
-      noexcept -> projection;
+    static auto orthographic(
+      real left,
+      real right,
+      real bottom,
+      real top,
+      real near,
+      real far
+    ) noexcept -> projection;
 
     /// \brief Projects an orthographic view from the given clip \p space
     ///
@@ -421,10 +442,11 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::clip_space::make(const horizontal& h,
-                                   const vertical& v,
-                                   const depth& d)
-  noexcept -> clip_space
+auto alloy::core::clip_space::make(
+  const horizontal& h,
+  const vertical& v,
+  const depth& d
+) noexcept -> clip_space
 {
   ALLOY_ALWAYS_ASSERT(h.left < h.right);
   ALLOY_ALWAYS_ASSERT(v.bottom < v.top);
@@ -434,13 +456,14 @@ auto alloy::core::clip_space::make(const horizontal& h,
 }
 
 inline constexpr
-auto alloy::core::clip_space::make(real left,
-                                   real right,
-                                   real bottom,
-                                   real top,
-                                   real near,
-                                   real far)
-  noexcept -> clip_space
+auto alloy::core::clip_space::make(
+  real left,
+  real right,
+  real bottom,
+  real top,
+  real near,
+  real far
+) noexcept -> clip_space
 {
   ALLOY_ALWAYS_ASSERT(left < right);
   ALLOY_ALWAYS_ASSERT(bottom < top);
@@ -450,10 +473,11 @@ auto alloy::core::clip_space::make(real left,
 }
 
 inline constexpr
-auto alloy::core::clip_space::make_symmetric(real horizontal,
-                                             real vertical,
-                                             real distance)
-  noexcept -> clip_space
+auto alloy::core::clip_space::make_symmetric(
+  real horizontal,
+  real vertical,
+  real distance
+) noexcept -> clip_space
 {
   ALLOY_ALWAYS_ASSERT(horizontal > 0);
   ALLOY_ALWAYS_ASSERT(vertical > 0);
@@ -469,22 +493,24 @@ auto alloy::core::clip_space::make_symmetric(real horizontal,
 //-----------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::clip_space::make_unchecked(const horizontal& h,
-                                             const vertical& v,
-                                             const depth& d)
-  noexcept -> clip_space
+auto alloy::core::clip_space::make_unchecked(
+  const horizontal& h,
+  const vertical& v,
+  const depth& d
+) noexcept -> clip_space
 {
   return clip_space{h,v,d};
 }
 
 inline constexpr
-auto alloy::core::clip_space::make_unchecked(real left,
-                                             real right,
-                                             real bottom,
-                                             real top,
-                                             real near,
-                                             real far)
-  noexcept -> alloy::core::clip_space
+auto alloy::core::clip_space::make_unchecked(
+  real left,
+  real right,
+  real bottom,
+  real top,
+  real near,
+  real far
+) noexcept -> alloy::core::clip_space
 {
   return make_unchecked(
     horizontal{left, right},
@@ -505,15 +531,13 @@ auto alloy::core::clip_space::get_horizontal()
 }
 
 inline constexpr
-auto alloy::core::clip_space::get_vertical()
-  const noexcept -> const vertical&
+auto alloy::core::clip_space::get_vertical() const noexcept -> const vertical&
 {
   return m_vertical;
 }
 
 inline constexpr
-auto alloy::core::clip_space::get_depth()
-  const noexcept -> const depth&
+auto alloy::core::clip_space::get_depth() const noexcept -> const depth&
 {
   return m_depth;
 }
@@ -523,10 +547,11 @@ auto alloy::core::clip_space::get_depth()
 //-----------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::clip_space::clip_space(const horizontal& h,
-                                    const vertical& v,
-                                    const depth& d)
-  noexcept
+alloy::core::clip_space::clip_space(
+  const horizontal& h,
+  const vertical& v,
+  const depth& d
+) noexcept
   : m_horizontal{h},
     m_vertical{v},
     m_depth{d}
@@ -543,16 +568,14 @@ alloy::core::clip_space::clip_space(const horizontal& h,
 //------------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::projection::projection(const orthographic_data& data)
-  noexcept
+alloy::core::projection::projection(const orthographic_data& data) noexcept
   : m_storage{data}
 {
 
 }
 
 inline constexpr
-alloy::core::projection::projection(const perspective_data& data)
-  noexcept
+alloy::core::projection::projection(const perspective_data& data) noexcept
   : m_storage{data}
 {
 

@@ -14,8 +14,7 @@
 // Constructors
 //------------------------------------------------------------------------------
 
-alloy::extra::log_stream::log_stream()
-  noexcept
+alloy::extra::log_stream::log_stream() noexcept
   : m_next{nullptr},
     m_detach{},
     m_level_filter{log_filter::all()}
@@ -42,16 +41,14 @@ alloy::extra::log_stream::~log_stream()
 // Constructors / Destructor / Assignment
 //------------------------------------------------------------------------------
 
-alloy::extra::logger::logger(alloy::io::mutable_buffer buffer)
-  noexcept
+alloy::extra::logger::logger(alloy::io::mutable_buffer buffer) noexcept
   : m_head{nullptr},
     m_buffer{buffer}
 {
 
 }
 
-alloy::extra::logger::logger(logger&& other)
-  noexcept
+alloy::extra::logger::logger(logger&& other) noexcept
   : m_head{other.m_head},
     m_buffer{other.m_buffer}
 {
@@ -67,8 +64,7 @@ alloy::extra::logger::~logger()
 
 //------------------------------------------------------------------------------
 
-auto alloy::extra::logger::operator=(logger&& other)
-  noexcept -> logger&
+auto alloy::extra::logger::operator=(logger&& other) noexcept -> logger&
 {
   detach_all();
   m_head = other.m_head;
@@ -132,8 +128,7 @@ auto alloy::extra::logger::detach(core::not_null<log_stream*> log)
   prev->m_next = current->m_next;
 }
 
-auto alloy::extra::logger::detach_all()
-  noexcept -> void
+auto alloy::extra::logger::detach_all() noexcept -> void
 {
   // detach all log streams from this logger to ensure there are no lifetime
   // issues

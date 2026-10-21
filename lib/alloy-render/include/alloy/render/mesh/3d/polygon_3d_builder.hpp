@@ -191,7 +191,8 @@ namespace alloy::render {
     /// \param v1 the second index
     /// \param v2 the third index
     /// \param v3 the fourth index
-    auto add_face(index_type v0, index_type v1, index_type v2, index_type v3) -> void;
+    auto add_face(index_type v0, index_type v1, index_type v2, index_type v3)
+      -> void;
 
     //--------------------------------------------------------------------------
     // Building

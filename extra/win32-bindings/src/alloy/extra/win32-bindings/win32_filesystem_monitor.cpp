@@ -24,7 +24,7 @@ namespace {
     ::DWORD     notification_filter;
   };
 
-  std::string encode_utf8(const std::wstring& wstr)
+  auto encode_utf8(const std::wstring& wstr) -> std::string
   {
     if (wstr.empty()) {
       return std::string{};
@@ -86,8 +86,7 @@ alloy::extra::win32_filesystem_monitor::win32_filesystem_monitor()
 
 //------------------------------------------------------------------------------
 
-alloy::extra::win32_filesystem_monitor::~win32_filesystem_monitor()
-  noexcept
+alloy::extra::win32_filesystem_monitor::~win32_filesystem_monitor() noexcept
 {
   // Close the open notification handles
   for (auto const& handle : m_impl->watch_handles) {
@@ -104,9 +103,10 @@ alloy::extra::win32_filesystem_monitor::~win32_filesystem_monitor()
 // Private Hooks
 //------------------------------------------------------------------------------
 
-void alloy::extra::win32_filesystem_monitor::do_watch( std::string_view path,
-                                                       bool recursive )
-  noexcept
+auto alloy::extra::win32_filesystem_monitor::do_watch(
+  std::string_view path,
+  bool recursive
+) noexcept -> void
 {
   const auto filter = FILE_NOTIFY_CHANGE_FILE_NAME  |
                       FILE_NOTIFY_CHANGE_DIR_NAME   |
@@ -140,8 +140,8 @@ void alloy::extra::win32_filesystem_monitor::do_watch( std::string_view path,
 
 //------------------------------------------------------------------------------
 
-void alloy::extra::win32_filesystem_monitor::poll( io::message_pump& p )
-  noexcept
+auto alloy::extra::win32_filesystem_monitor::poll(io::message_pump& p)
+  noexcept -> void
 {
   static constexpr auto buffer_size = 256;
 

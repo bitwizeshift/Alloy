@@ -114,8 +114,10 @@ namespace std {
 
 template <typename Loader, typename...Args>
 inline
-auto alloy::engine::image_manager::emplace_loader(std::string file_type, Args&&...args)
-  -> Loader&
+auto alloy::engine::image_manager::emplace_loader(
+  std::string file_type,
+  Args&&...args
+) -> Loader&
 {
   auto result = m_loaders.try_emplace(
     std::move(file_type),

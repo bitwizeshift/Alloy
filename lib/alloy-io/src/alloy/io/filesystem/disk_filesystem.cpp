@@ -49,7 +49,8 @@ namespace {
     /// \brief Returns the size of the mutable buffer
     ///
     /// \return the size of the buffer
-    alloy::core::result<size_type,std::error_code> bytes() const noexcept override;
+    auto bytes()
+      const noexcept -> alloy::core::result<size_type,std::error_code> override;
 
     //-------------------------------------------------------------------------
     // File API
@@ -59,38 +60,41 @@ namespace {
     /// \brief Closes this file
     ///
     /// This is a no-op for memory files
-    void close() noexcept override;
+    auto close() noexcept -> void override;
 
     /// \brief Resets the file cursor back to the start position
     ///
     /// \return void on success
-    alloy::core::result<void,std::error_code> reset() noexcept override;
+    auto reset() noexcept -> alloy::core::result<void,std::error_code> override;
 
     /// \brief Flushes the disk
     ///
     /// \return void on success
-    alloy::core::result<void,std::error_code> flush() noexcept override;
+    auto flush() noexcept -> alloy::core::result<void,std::error_code> override;
 
     /// \brief Skips the next \p offset bytes from this file
     ///
     /// \param offset the offset to skip
     /// \return void
-    alloy::core::result<void,std::error_code>
-      skip(offset_type offset) noexcept override;
+    auto skip(offset_type offset)
+      noexcept -> alloy::core::result<void,std::error_code> override;
 
     /// \brief Reads from the buffer
     ///
     /// \param buffer the buffer to read from
     /// \return a buffer to what was read
-    alloy::core::result<alloy::io::mutable_buffer,std::error_code>
-      read(alloy::io::mutable_buffer buffer) noexcept override;
+    auto read(alloy::io::mutable_buffer buffer)
+      noexcept
+      -> alloy::core::result<alloy::io::mutable_buffer,std::error_code>
+      override;
 
     /// \brief Writes memory from the \p buffer into the stored memory
     ///
     /// \param buffer the buffer to write
     /// \return the buffer to what was written
-    alloy::core::result<alloy::io::const_buffer,std::error_code>
-      write(alloy::io::const_buffer buffer) noexcept override;
+    auto write(alloy::io::const_buffer buffer)
+      noexcept
+      -> alloy::core::result<alloy::io::const_buffer,std::error_code> override;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -108,8 +112,7 @@ namespace {
   // Constructors
   //---------------------------------------------------------------------------
 
-  disk_file_stream::disk_file_stream(std::FILE* file)
-    noexcept
+  disk_file_stream::disk_file_stream(std::FILE* file) noexcept
     : m_file{file}
   {
 
@@ -119,9 +122,9 @@ namespace {
   // Observers
   //---------------------------------------------------------------------------
 
-  alloy::core::result<alloy::io::file_stream::size_type,std::error_code>
-    disk_file_stream::bytes()
+  auto disk_file_stream::bytes()
     const noexcept
+    -> alloy::core::result<alloy::io::file_stream::size_type,std::error_code>
   {
     auto current = std::ftell(m_file);
 
@@ -145,15 +148,14 @@ namespace {
   // File API
   //---------------------------------------------------------------------------
 
-  void disk_file_stream::close()
-    noexcept
+  auto disk_file_stream::close() noexcept -> void
   {
     std::fclose(m_file);
   }
 
 
-  alloy::core::result<void,std::error_code> disk_file_stream::reset()
-    noexcept
+  auto disk_file_stream::reset()
+    noexcept -> alloy::core::result<void,std::error_code>
   {
     const auto r = std::fseek(m_file, 0, SEEK_SET);
 
@@ -164,8 +166,8 @@ namespace {
   }
 
 
-  alloy::core::result<void,std::error_code> disk_file_stream::flush()
-    noexcept
+  auto disk_file_stream::flush()
+    noexcept -> alloy::core::result<void,std::error_code>
   {
     const auto r = std::fflush(m_file);
 
@@ -176,9 +178,8 @@ namespace {
   }
 
 
-  alloy::core::result<void,std::error_code>
-    disk_file_stream::skip(offset_type offset)
-    noexcept
+  auto disk_file_stream::skip(offset_type offset)
+    noexcept -> alloy::core::result<void,std::error_code>
   {
     const auto r = std::fseek(m_file, static_cast<long>(offset), SEEK_CUR);
 
@@ -189,9 +190,8 @@ namespace {
   }
 
 
-  alloy::core::result<alloy::io::mutable_buffer,std::error_code>
-    disk_file_stream::read(alloy::io::mutable_buffer buffer)
-    noexcept
+  auto disk_file_stream::read(alloy::io::mutable_buffer buffer)
+    noexcept -> alloy::core::result<alloy::io::mutable_buffer,std::error_code>
   {
     const auto size = std::fread(buffer.data(), 1u, buffer.size(), m_file);
 
@@ -213,9 +213,8 @@ namespace {
   }
 
 
-  alloy::core::result<alloy::io::const_buffer,std::error_code>
-    disk_file_stream::write(alloy::io::const_buffer buffer)
-    noexcept
+  auto disk_file_stream::write(alloy::io::const_buffer buffer)
+    noexcept -> alloy::core::result<alloy::io::const_buffer,std::error_code>
   {
     const auto size = std::fwrite(buffer.data(), 1u, buffer.size(), m_file);
 
@@ -239,16 +238,14 @@ namespace {
 // Constructors
 //-----------------------------------------------------------------------------
 
-alloy::io::disk_filesystem::disk_filesystem()
-  noexcept
+alloy::io::disk_filesystem::disk_filesystem() noexcept
   : disk_filesystem{core::allocator{}}
 {
 
 }
 
 
-alloy::io::disk_filesystem::disk_filesystem(core::allocator alloc)
-  noexcept
+alloy::io::disk_filesystem::disk_filesystem(core::allocator alloc) noexcept
   : m_allocator{alloc}
 {
 
@@ -268,9 +265,8 @@ ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wswitch)
 ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE(4063)
 
-alloy::io::file alloy::io::disk_filesystem::open(std::string_view path,
-                                                 open_mode mode)
-  noexcept
+auto alloy::io::disk_filesystem::open(std::string_view path, open_mode mode)
+  noexcept -> file
 {
   // Compute the C mode string to use
   const auto* str_mode = "";

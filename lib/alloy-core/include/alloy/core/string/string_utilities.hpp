@@ -59,10 +59,14 @@ namespace alloy::core {
     ///
     /// \param in the input value
     /// \return the integer on success
-    static auto to_int8(string_view in) noexcept -> result<std::int8_t,parse_error>;
-    static auto to_int16(string_view in) noexcept -> result<std::int16_t,parse_error>;
-    static auto to_int32(string_view in) noexcept -> result<std::int32_t,parse_error>;
-    static auto to_int64(string_view in) noexcept -> result<std::int64_t,parse_error>;
+    static auto to_int8(string_view in)
+      noexcept -> result<std::int8_t,parse_error>;
+    static auto to_int16(string_view in)
+      noexcept -> result<std::int16_t,parse_error>;
+    static auto to_int32(string_view in)
+      noexcept -> result<std::int32_t,parse_error>;
+    static auto to_int64(string_view in)
+      noexcept -> result<std::int64_t,parse_error>;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -80,10 +84,14 @@ namespace alloy::core {
     ///
     /// \param in the input value
     /// \return the integer on success
-    static auto to_uint8(string_view in) noexcept -> result<std::uint8_t,parse_error>;
-    static auto to_uint16(string_view in) noexcept -> result<std::uint16_t,parse_error>;
-    static auto to_uint32(string_view in) noexcept -> result<std::uint32_t,parse_error>;
-    static auto to_uint64(string_view in) noexcept -> result<std::uint64_t,parse_error>;
+    static auto to_uint8(string_view in)
+      noexcept -> result<std::uint8_t,parse_error>;
+    static auto to_uint16(string_view in)
+      noexcept -> result<std::uint16_t,parse_error>;
+    static auto to_uint32(string_view in)
+      noexcept -> result<std::uint32_t,parse_error>;
+    static auto to_uint64(string_view in)
+      noexcept -> result<std::uint64_t,parse_error>;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -97,7 +105,8 @@ namespace alloy::core {
     /// \param in the input value
     /// \return the integer on success
     static auto to_float(string_view in) noexcept -> result<float,parse_error>;
-    static auto to_double(string_view in) noexcept -> result<double,parse_error>;
+    static auto to_double(string_view in)
+      noexcept -> result<double,parse_error>;
     static auto to_real(string_view in) noexcept -> result<real,parse_error>;
     /// \}
   };
@@ -107,7 +116,8 @@ namespace alloy::core {
   /// \param error the error code
   /// \return a string message
   ALLOY_CORE_API
-  auto get_message(string_utilities::parse_error error) noexcept -> zstring_view;
+  auto get_message(string_utilities::parse_error error)
+    noexcept -> zstring_view;
 
 } // namespace alloy::core
 

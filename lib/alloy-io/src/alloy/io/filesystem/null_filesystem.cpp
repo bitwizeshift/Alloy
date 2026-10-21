@@ -41,7 +41,7 @@ namespace {
     /// This is a no-op for null files
     ///
     /// \param stream the stream to finalize
-    void finalize(alloy::io::file_stream* stream) noexcept override;
+    auto finalize(alloy::io::file_stream* stream) noexcept -> void override;
   };
 
   //===========================================================================
@@ -71,7 +71,8 @@ namespace {
     /// \brief Returns 0
     ///
     /// \return 0
-    alloy::core::result<size_type,std::error_code> bytes() const noexcept override;
+    auto bytes()
+      const noexcept -> alloy::core::result<size_type,std::error_code> override;
 
     //-------------------------------------------------------------------------
     // File API
@@ -81,12 +82,12 @@ namespace {
     /// \brief Closes this file
     ///
     /// This is a no-op for null files
-    void close() noexcept override;
+    auto close() noexcept -> void override;
 
     /// \brief Resets the file cursor back to the start position
     ///
     /// \return void on success
-    alloy::core::result<void,std::error_code> reset() noexcept override;
+    auto reset() noexcept -> alloy::core::result<void,std::error_code> override;
 
     /// \brief Skips the next \p offset bytes from this file
     ///
@@ -94,30 +95,33 @@ namespace {
     ///
     /// \param offset ignored
     /// \return void
-    alloy::core::result<void,std::error_code>
-      skip(offset_type offset) noexcept override;
+    auto skip(offset_type offset)
+      noexcept -> alloy::core::result<void,std::error_code> override;
 
     /// \brief Reads 0s into the buffer
     ///
     /// \param buffer the buffer to read 0 into
     /// \return the buffer
-    alloy::core::result<alloy::io::mutable_buffer,std::error_code>
-      read(alloy::io::mutable_buffer buffer) noexcept override;
+    auto read(alloy::io::mutable_buffer buffer)
+      noexcept
+      -> alloy::core::result<alloy::io::mutable_buffer,std::error_code>
+      override;
 
     /// \brief 'Writes' everything
     ///
     /// \param buffer the buffer to 'write'
     /// \return the buffer
-    alloy::core::result<alloy::io::const_buffer,std::error_code>
-      write(alloy::io::const_buffer buffer) noexcept override;
+    auto write(alloy::io::const_buffer buffer)
+      noexcept
+      -> alloy::core::result<alloy::io::const_buffer,std::error_code> override;
   };
 
   //===========================================================================
   // inline definitions : class : null_file_stream_finalizer
   //===========================================================================
 
-  void null_file_stream_finalizer::finalize(alloy::io::file_stream* stream)
-    noexcept
+  auto null_file_stream_finalizer::finalize(alloy::io::file_stream* stream)
+    noexcept -> void
   {
     alloy::core::compiler::unused(stream);
   }
@@ -130,9 +134,9 @@ namespace {
   // Observers
   //---------------------------------------------------------------------------
 
-  alloy::core::result<alloy::io::file_stream::size_type,std::error_code>
-    null_file_stream::bytes()
+  auto null_file_stream::bytes()
     const noexcept
+    -> alloy::core::result<alloy::io::file_stream::size_type,std::error_code>
   {
     return 0u;
   }
@@ -141,30 +145,27 @@ namespace {
   // File API
   //---------------------------------------------------------------------------
 
-  void null_file_stream::close()
-    noexcept
+  auto null_file_stream::close() noexcept -> void
   {
     // Nothing to do
   }
 
-  alloy::core::result<void,std::error_code> null_file_stream::reset()
-    noexcept
+  auto null_file_stream::reset()
+    noexcept -> alloy::core::result<void,std::error_code>
   {
     return {};
   }
 
-  alloy::core::result<void,std::error_code>
-    null_file_stream::skip(offset_type offset)
-    noexcept
+  auto null_file_stream::skip(offset_type offset)
+    noexcept -> alloy::core::result<void,std::error_code>
   {
     alloy::core::compiler::unused(offset);
 
     return {};
   }
 
-  alloy::core::result<alloy::io::mutable_buffer,std::error_code>
-    null_file_stream::read(alloy::io::mutable_buffer buffer)
-    noexcept
+  auto null_file_stream::read(alloy::io::mutable_buffer buffer)
+    noexcept -> alloy::core::result<alloy::io::mutable_buffer,std::error_code>
   {
     auto* const end = buffer.data() + buffer.size();
     auto* const begin = buffer.data();
@@ -176,9 +177,8 @@ namespace {
     return buffer;
   }
 
-  alloy::core::result<alloy::io::const_buffer,std::error_code>
-    null_file_stream::write(alloy::io::const_buffer buffer)
-    noexcept
+  auto null_file_stream::write(alloy::io::const_buffer buffer)
+    noexcept -> alloy::core::result<alloy::io::const_buffer,std::error_code>
   {
     return buffer;
   }
@@ -193,8 +193,7 @@ namespace {
 // Filesystem
 //-----------------------------------------------------------------------------
 
-alloy::io::file alloy::io::null_filesystem::open()
-  noexcept
+auto alloy::io::null_filesystem::open() noexcept -> file
 {
   static auto s_finalizer = ::null_file_stream_finalizer{};
   static auto s_file_stream = ::null_file_stream{};

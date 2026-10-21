@@ -26,8 +26,7 @@ alloy::engine::entity_manager::entity_manager()
 
 // Only allocation failure can throw here, which is treated as fatal.
 // NOLINTNEXTLINE(bugprone-exception-escape)
-alloy::engine::entity alloy::engine::entity_manager::create()
-  noexcept
+auto alloy::engine::entity_manager::create() noexcept -> entity
 {
   ALLOY_ASSERT(
     m_current_id < max_entities,
@@ -58,8 +57,7 @@ alloy::engine::entity alloy::engine::entity_manager::create()
 
 // Only allocation failure can throw here, which is treated as fatal.
 // NOLINTNEXTLINE(bugprone-exception-escape)
-void alloy::engine::entity_manager::destroy(entity e)
-  noexcept
+auto alloy::engine::entity_manager::destroy(entity e) noexcept -> void
 {
   ALLOY_ASSERT(
     e.index < max_entities,
@@ -72,8 +70,8 @@ void alloy::engine::entity_manager::destroy(entity e)
   --m_total_entities;
 }
 
-void alloy::engine::entity_manager::set_signature(entity e, signature sig)
-  noexcept
+auto alloy::engine::entity_manager::set_signature(entity e, signature sig)
+  noexcept -> void
 {
   ALLOY_ASSERT(
     e.index < max_entities,
@@ -94,9 +92,8 @@ void alloy::engine::entity_manager::set_signature(entity e, signature sig)
   }
 }
 
-alloy::engine::signature
-alloy::engine::entity_manager::get_signature(entity e)
-  const noexcept
+auto alloy::engine::entity_manager::get_signature(entity e)
+  const noexcept -> signature
 {
   ALLOY_ASSERT(
     e.index < max_entities,
@@ -118,12 +115,16 @@ alloy::engine::entity_manager::get_signature(entity e)
   return signature;
 }
 
-void alloy::engine::entity_manager::register_listener(core::not_null<listener*> l)
+auto alloy::engine::entity_manager::register_listener(
+  core::not_null<listener*> l
+) -> void
 {
   m_listeners.push_back(l.get());
 }
 
-void alloy::engine::entity_manager::unregister_listener(core::not_null<listener*> l)
+auto alloy::engine::entity_manager::unregister_listener(
+  core::not_null<listener*> l
+) -> void
 {
   auto it = std::find(m_listeners.begin(),m_listeners.end(),l.get());
 
@@ -132,21 +133,22 @@ void alloy::engine::entity_manager::unregister_listener(core::not_null<listener*
   m_listeners.erase(it);
 }
 
-void alloy::engine::entity_manager::listener::on_entity_created(entity e)
-  noexcept
+auto alloy::engine::entity_manager::listener::on_entity_created(entity e)
+  noexcept -> void
 {
   (void) e;
 }
 
-void alloy::engine::entity_manager::listener::on_entity_destroyed(entity e)
-  noexcept
+auto alloy::engine::entity_manager::listener::on_entity_destroyed(entity e)
+  noexcept -> void
 {
   (void) e;
 }
 
-void alloy::engine::entity_manager::listener
-  ::on_signature_change(entity e, signature sig)
-  noexcept
+auto alloy::engine::entity_manager::listener::on_signature_change(
+  entity e,
+  signature sig
+) noexcept -> void
 {
   (void) e;
   (void) sig;

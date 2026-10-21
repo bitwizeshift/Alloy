@@ -34,8 +34,7 @@ namespace alloy::render::gl {
 } // namespace alloy::render::gl
 
 inline constexpr
-auto alloy::render::gl::to_opengl_type(fill_mode f)
-  noexcept -> ::GLenum
+auto alloy::render::gl::to_opengl_type(fill_mode f) noexcept -> ::GLenum
 {
   switch (f) {
     case fill_mode::solid: {

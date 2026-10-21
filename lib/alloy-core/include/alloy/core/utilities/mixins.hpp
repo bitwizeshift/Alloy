@@ -108,40 +108,29 @@ namespace alloy::core {
     auto operator new[](std::size_t, std::align_val_t) -> void* = delete;
 
     template <typename...Args>
-    auto operator new(std::size_t,
-                      Args&&...) -> void* = delete;
+    auto operator new(std::size_t, Args&&...) -> void* = delete;
     template <typename...Args>
-    auto operator new[](std::size_t,
-                        Args&&...) -> void* = delete;
+    auto operator new[](std::size_t, Args&&...) -> void* = delete;
     template <typename...Args>
-    auto operator new(std::size_t,
-                      std::align_val_t,
-                      Args&&...) -> void* = delete;
+    auto operator new(std::size_t, std::align_val_t, Args&&...)
+      -> void* = delete;
     template <typename...Args>
-    auto operator new[](std::size_t,
-                        std::align_val_t,
-                        Args&&...) -> void* = delete;
+    auto operator new[](std::size_t, std::align_val_t, Args&&...)
+      -> void* = delete;
 
     auto operator delete(void*) -> void = delete;
     auto operator delete[](void*) -> void = delete;
-    auto operator delete(void*,
-                         std::align_val_t) -> void = delete;
-    auto operator delete[](void*,
-                           std::align_val_t) -> void = delete;
-    auto operator delete(void*,
-                         std::size_t) -> void = delete;
-    auto operator delete[](void*,
-                           std::size_t) -> void = delete;
-    auto operator delete(void*,
-                         std::size_t,
-                         std::align_val_t) -> void = delete;
-    auto operator delete[](void*,
-                           std::size_t,
-                           std::align_val_t) -> void = delete;
+    auto operator delete(void*, std::align_val_t) -> void = delete;
+    auto operator delete[](void*, std::align_val_t) -> void = delete;
+    auto operator delete(void*, std::size_t) -> void = delete;
+    auto operator delete[](void*, std::size_t) -> void = delete;
+    auto operator delete(void*, std::size_t, std::align_val_t) -> void = delete;
+    auto operator delete[](void*, std::size_t, std::align_val_t)
+      -> void = delete;
     template <typename...Args>
-    auto operator delete(void*,Args&&...) -> void = delete;
+    auto operator delete(void*, Args&&...) -> void = delete;
     template <typename...Args>
-    auto operator delete[](void*,Args&&...) -> void = delete;
+    auto operator delete[](void*, Args&&...) -> void = delete;
 
   };
 

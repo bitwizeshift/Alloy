@@ -76,7 +76,13 @@ namespace alloy::render::gl {
     //--------------------------------------------------------------------------
   private:
 
-    mesh(::GLuint vao, ::GLuint vbo, ::GLuint ebo, ::GLenum topology, std::size_t indices);
+    mesh(
+      ::GLuint vao,
+      ::GLuint vbo,
+      ::GLuint ebo,
+      ::GLenum topology,
+      std::size_t indices
+    );
 
   };
 

@@ -14,7 +14,8 @@ namespace {
     unsigned value;
     bool* on_hash;
 
-    auto hash() const noexcept -> hash_type {
+    auto hash() const noexcept -> hash_type
+    {
       *on_hash = true;
 
       return hash_value(value);
@@ -27,7 +28,8 @@ namespace {
 
   inline constexpr auto test_sentinel = hash_type{0xdeadbeef};
 
-  auto hash_value(const adl_hashable&) noexcept -> hash_type {
+  auto hash_value(const adl_hashable&) noexcept -> hash_type
+  {
     return test_sentinel;
   }
 
@@ -62,7 +64,8 @@ namespace {
 namespace std {
   template <>
   struct hash<alloy::core::test::std_hashable> {
-    auto operator()(const alloy::core::test::std_hashable& v) const noexcept {
+    auto operator()(const alloy::core::test::std_hashable& v) const noexcept
+    {
       return v.hash();
     }
   };

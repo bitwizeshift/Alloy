@@ -39,8 +39,7 @@ struct move_only : public T
 
   move_only() = default;
 
-  move_only(T&& other)
-    noexcept(std::is_nothrow_move_constructible<T>::value)
+  move_only(T&& other) noexcept(std::is_nothrow_move_constructible<T>::value)
     : T(std::move(other))
   {
   }
@@ -58,16 +57,22 @@ struct move_only : public T
 template <typename T>
 struct nonthrowing : public T
 {
-  nonthrowing() noexcept : T(){}
+  nonthrowing() noexcept
+    : T(){}
 
-  nonthrowing(const T& other) noexcept : T(other){}
-  nonthrowing(T&& other) noexcept : T(std::move(other)){}
-  nonthrowing(const nonthrowing& other) noexcept : T(other){}
-  nonthrowing(nonthrowing&& other) noexcept : T(std::move(other)){}
+  nonthrowing(const T& other) noexcept
+    : T(other){}
+  nonthrowing(T&& other) noexcept
+    : T(std::move(other)){}
+  nonthrowing(const nonthrowing& other) noexcept
+    : T(other){}
+  nonthrowing(nonthrowing&& other) noexcept
+    : T(std::move(other)){}
 
   template <typename...Args,
             typename = typename std::enable_if<std::is_constructible<T,Args...>::value>::type>
-  nonthrowing(Args&&...args) : T(std::forward<Args>(args)...){}
+  nonthrowing(Args&&...args)
+    : T(std::forward<Args>(args)...){}
 
   auto operator=(nonthrowing&& other) noexcept -> nonthrowing&
   {
@@ -95,12 +100,17 @@ struct throwing : public T
 {
   using T::T;
 
-  throwing() noexcept(false) : T(){}
+  throwing() noexcept(false)
+    : T(){}
 
-  throwing(const T& other) noexcept(false) : T(other){}
-  throwing(T&& other) noexcept(false) : T(std::move(other)){}
-  throwing(throwing&& other) noexcept(false) : T(std::move(other)) {}
-  throwing(const throwing& other) noexcept(false) : T(other){}
+  throwing(const T& other) noexcept(false)
+    : T(other){}
+  throwing(T&& other) noexcept(false)
+    : T(std::move(other)){}
+  throwing(throwing&& other) noexcept(false)
+    : T(std::move(other)) {}
+  throwing(const throwing& other) noexcept(false)
+    : T(other){}
 
   using T::operator=;
   auto operator=(throwing&& other) noexcept(false) -> throwing&
@@ -137,15 +147,18 @@ struct explicit_type : public T
 
 struct report_destructor
 {
-  report_destructor() : output{nullptr}{}
-  report_destructor(bool* b) : output{b}{}
+  report_destructor()
+    : output{nullptr}{}
+  report_destructor(bool* b)
+    : output{b}{}
   report_destructor(const report_destructor&) = default;
   report_destructor(report_destructor&&) = default;
 
   auto operator=(const report_destructor&) -> report_destructor& = default;
   auto operator=(report_destructor&&) -> report_destructor& = default;
 
-  ~report_destructor() {
+  ~report_destructor()
+  {
     *output = true;
   }
   bool* output;
@@ -159,14 +172,15 @@ struct base
 
 struct derived : public base
 {
-  derived(int v) : value{v}{}
+  derived(int v)
+    : value{v}{}
 
   auto get_value() const noexcept -> int override { return value; }
   int value;
 };
 
 template <typename T>
-auto suppress_unused(const T&) -> void{}
+auto suppress_unused(const T&) -> void {}
 
 } // namespace <anonymous>
 

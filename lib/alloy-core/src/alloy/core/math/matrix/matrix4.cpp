@@ -9,8 +9,7 @@
 // Quantifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::matrix4::determinant()
-  const noexcept -> real
+auto alloy::core::matrix4::determinant() const noexcept -> real
 {
   return  get(0,0) *
         ( get(1,1) * get(2,2) * get(3,3) -
@@ -42,20 +41,17 @@ auto alloy::core::matrix4::determinant()
           get(3,0) * get(1,2) * get(2,1));
 }
 
-auto alloy::core::matrix4::trace()
-  const noexcept -> real
+auto alloy::core::matrix4::trace() const noexcept -> real
 {
   return (get(0,0) + get(1,1) + get(2,2) + get(3,3));
 }
 
-auto alloy::core::matrix4::inverse()
-  const noexcept -> matrix4
+auto alloy::core::matrix4::inverse() const noexcept -> matrix4
 {
   return matrix4{*this}.invert();
 }
 
-auto alloy::core::matrix4::transposed()
-  const noexcept -> matrix4
+auto alloy::core::matrix4::transposed() const noexcept -> matrix4
 {
   return matrix4{
     get(0,0), get(1,0), get(2,0), get(3,0),
@@ -65,8 +61,7 @@ auto alloy::core::matrix4::transposed()
   };
 }
 
-auto alloy::core::matrix4::combine(const vector4& vec)
-  const noexcept -> vector4
+auto alloy::core::matrix4::combine(const vector4& vec) const noexcept -> vector4
 {
   auto result = vector4{};
 
@@ -86,8 +81,7 @@ auto alloy::core::matrix4::combine(const vector4& vec)
 // Modifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::matrix4::invert()
-  noexcept -> matrix4&
+auto alloy::core::matrix4::invert() noexcept -> matrix4&
 {
   real inv[4][4] = {}; // The resultant matrix
 
@@ -231,8 +225,7 @@ auto alloy::core::matrix4::invert()
   return (*this);
 }
 
-auto alloy::core::matrix4::transpose()
-  noexcept -> matrix4&
+auto alloy::core::matrix4::transpose() noexcept -> matrix4&
 {
   using std::swap;
 

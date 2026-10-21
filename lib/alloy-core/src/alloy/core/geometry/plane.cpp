@@ -50,8 +50,7 @@ auto alloy::core::plane::from_point_and_normal(
 // Modifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::plane::normalize()
-  noexcept -> plane&
+auto alloy::core::plane::normalize() noexcept -> plane&
 {
   const auto normal_magnitude = sqrt( m_data[0] * m_data[0] +
                                       m_data[1] * m_data[1] +
@@ -67,8 +66,7 @@ auto alloy::core::plane::normalize()
   return (*this);
 }
 
-auto alloy::core::plane::invert()
-  noexcept -> plane&
+auto alloy::core::plane::invert() noexcept -> plane&
 {
   for (auto& i : m_data) {
     i = -i;
@@ -80,8 +78,7 @@ auto alloy::core::plane::invert()
 // Quantifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::plane::distance_to(const point3& p)
-  const noexcept -> real
+auto alloy::core::plane::distance_to(const point3& p) const noexcept -> real
 {
   auto result = real{0};
   for (auto i = 0; i < 3; ++i) {
@@ -110,8 +107,7 @@ auto alloy::core::plane::projection(const vector3& vec)
   return vec * matrix;
 }
 
-auto alloy::core::plane::contains(const point3& p)
-  const noexcept -> bool
+auto alloy::core::plane::contains(const point3& p) const noexcept -> bool
 {
   return contains(p, default_tolerance);
 }

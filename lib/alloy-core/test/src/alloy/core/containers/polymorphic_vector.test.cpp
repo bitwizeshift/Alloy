@@ -19,14 +19,16 @@ namespace {
   interface::~interface() = default;
 
   struct object final : interface{
-    explicit object(int a) : a{a}{}
+    explicit object(int a)
+      : a{a}{}
     auto get() const noexcept -> int override { return a; }
     auto clone_with(allocator alloc) const -> interface* override { return alloc.make<object>(*this); }
     int a;
   };
 
   struct destructible final : interface{
-    explicit destructible(bool* p) : m_destructor_called{p}{}
+    explicit destructible(bool* p)
+      : m_destructor_called{p}{}
     ~destructible() { (*m_destructor_called) = true; }
     auto get() const noexcept -> int override { return 42; }
     auto clone_with(allocator alloc) const -> interface* override { return alloc.make<destructible>(*this); }

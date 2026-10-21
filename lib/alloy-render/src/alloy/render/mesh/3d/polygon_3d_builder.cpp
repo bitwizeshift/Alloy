@@ -23,9 +23,10 @@ inline constexpr auto entries_per_bitangent = 3u;
 // Constructors
 //------------------------------------------------------------------------------
 
-alloy::render::polygon_3d_builder::polygon_3d_builder(primitive_topology topology,
-                                                core::allocator alloc)
-  noexcept
+alloy::render::polygon_3d_builder::polygon_3d_builder(
+  primitive_topology topology,
+  core::allocator alloc
+) noexcept
   : m_positions{core::stl_allocator_adapter<core::point3>{alloc}},
     m_colors{core::stl_allocator_adapter<core::color>{alloc}},
     m_uvs{core::stl_allocator_adapter<core::point2>{alloc}},
@@ -54,32 +55,27 @@ auto alloy::render::polygon_3d_builder::reserve(std::size_t n) -> void
   reserve_bitangents(n);
 }
 
-auto alloy::render::polygon_3d_builder::reserve_positions(std::size_t n)
-  -> void
+auto alloy::render::polygon_3d_builder::reserve_positions(std::size_t n) -> void
 {
   m_positions.reserve(n);
 }
 
-auto alloy::render::polygon_3d_builder::reserve_colors(std::size_t n)
-  -> void
+auto alloy::render::polygon_3d_builder::reserve_colors(std::size_t n) -> void
 {
   m_colors.reserve(n);
 }
 
-auto alloy::render::polygon_3d_builder::reserve_uvs(std::size_t n)
-  -> void
+auto alloy::render::polygon_3d_builder::reserve_uvs(std::size_t n) -> void
 {
   m_uvs.reserve(n);
 }
 
-auto alloy::render::polygon_3d_builder::reserve_normals(std::size_t n)
-  -> void
+auto alloy::render::polygon_3d_builder::reserve_normals(std::size_t n) -> void
 {
   m_normals.reserve(n);
 }
 
-auto alloy::render::polygon_3d_builder::reserve_tangents(std::size_t n)
-  -> void
+auto alloy::render::polygon_3d_builder::reserve_tangents(std::size_t n) -> void
 {
   m_tangents.reserve(n);
 }
@@ -90,8 +86,7 @@ auto alloy::render::polygon_3d_builder::reserve_bitangents(std::size_t n)
   m_bitangents.reserve(n);
 }
 
-auto alloy::render::polygon_3d_builder::reserve_indices(std::size_t n)
-  -> void
+auto alloy::render::polygon_3d_builder::reserve_indices(std::size_t n) -> void
 {
   m_indices.reserve(n);
 }
@@ -100,14 +95,16 @@ auto alloy::render::polygon_3d_builder::reserve_indices(std::size_t n)
 // Setters
 //------------------------------------------------------------------------------
 
-auto alloy::render::polygon_3d_builder::set_positions(core::vector<core::point3> positions)
-  -> void
+auto alloy::render::polygon_3d_builder::set_positions(
+  core::vector<core::point3> positions
+) -> void
 {
   m_positions = std::move(positions);
 }
 
-auto alloy::render::polygon_3d_builder::set_colors(core::vector<core::color> colors)
-  -> void
+auto alloy::render::polygon_3d_builder::set_colors(
+  core::vector<core::color> colors
+) -> void
 {
   m_colors = std::move(colors);
 }
@@ -118,26 +115,30 @@ auto alloy::render::polygon_3d_builder::set_uvs(core::vector<core::point2> uvs)
   m_uvs = std::move(uvs);
 }
 
-auto alloy::render::polygon_3d_builder::set_normals(core::vector<core::vector3> normals)
-  -> void
+auto alloy::render::polygon_3d_builder::set_normals(
+  core::vector<core::vector3> normals
+) -> void
 {
   m_normals = std::move(normals);
 }
 
-auto alloy::render::polygon_3d_builder::set_tangents(core::vector<core::vector3> tangents)
-  -> void
+auto alloy::render::polygon_3d_builder::set_tangents(
+  core::vector<core::vector3> tangents
+) -> void
 {
   m_tangents = std::move(tangents);
 }
 
-auto alloy::render::polygon_3d_builder::set_bitangents(core::vector<core::vector3> bitangents)
-  -> void
+auto alloy::render::polygon_3d_builder::set_bitangents(
+  core::vector<core::vector3> bitangents
+) -> void
 {
   m_bitangents = std::move(bitangents);
 }
 
-auto alloy::render::polygon_3d_builder::set_indices(core::vector<uint16_t> indices)
-  -> void
+auto alloy::render::polygon_3d_builder::set_indices(
+  core::vector<uint16_t> indices
+) -> void
 {
   m_indices = std::move(indices);
 }
@@ -158,57 +159,58 @@ auto alloy::render::polygon_3d_builder::add_position(const core::point3& p)
   }
 }
 
-auto alloy::render::polygon_3d_builder::add_color(const core::color& c)
-  -> void
+auto alloy::render::polygon_3d_builder::add_color(const core::color& c) -> void
 {
   m_colors.push_back(c);
 }
 
-auto alloy::render::polygon_3d_builder::add_uv(const core::point2& p)
-  -> void
+auto alloy::render::polygon_3d_builder::add_uv(const core::point2& p) -> void
 {
   m_uvs.push_back(p);
 }
 
-auto alloy::render::polygon_3d_builder::add_normal(const core::vector3& v) -> void
+auto alloy::render::polygon_3d_builder::add_normal(const core::vector3& v)
+  -> void
 {
   m_normals.push_back(v);
 }
 
-auto alloy::render::polygon_3d_builder::add_tangent(const core::vector3& v) -> void
+auto alloy::render::polygon_3d_builder::add_tangent(const core::vector3& v)
+  -> void
 {
   m_tangents.push_back(v);
 }
 
-auto alloy::render::polygon_3d_builder::add_bitangent(const core::vector3& v) -> void
+auto alloy::render::polygon_3d_builder::add_bitangent(const core::vector3& v)
+  -> void
 {
   m_bitangents.push_back(v);
 }
 
 //------------------------------------------------------------------------------
 
-auto
-alloy::render::polygon_3d_builder::add_index(index_type v0)
-  -> void
+auto alloy::render::polygon_3d_builder::add_index(index_type v0) -> void
 {
   m_indices.push_back(v0);
 }
 
-auto alloy::render::polygon_3d_builder::add_face(index_type v0,
-                                              index_type v1,
-                                              index_type v2)
-  -> void
+auto alloy::render::polygon_3d_builder::add_face(
+  index_type v0,
+  index_type v1,
+  index_type v2
+) -> void
 {
   m_indices.push_back(v0);
   m_indices.push_back(v1);
   m_indices.push_back(v2);
 }
 
-auto alloy::render::polygon_3d_builder::add_face(index_type v0,
-                                              index_type v1,
-                                              index_type v2,
-                                              index_type v3)
-  -> void
+auto alloy::render::polygon_3d_builder::add_face(
+  index_type v0,
+  index_type v1,
+  index_type v2,
+  index_type v3
+) -> void
 {
   add_face(v0, v1, v2);
   add_face(v2, v3, v0);
@@ -219,7 +221,7 @@ auto alloy::render::polygon_3d_builder::add_face(index_type v0,
 //------------------------------------------------------------------------------
 
 auto alloy::render::polygon_3d_builder::build_with(core::allocator alloc)
-    const -> mesh
+  const -> mesh
 {
   auto config = mesh_config{};
   config.topology             = m_topology;
@@ -236,8 +238,9 @@ auto alloy::render::polygon_3d_builder::build_with(core::allocator alloc)
   return mesh::from_config_unchecked(std::move(config));
 }
 
-auto alloy::render::polygon_3d_builder::construct_data(core::packed_buffer& buffer)
-  const -> void
+auto alloy::render::polygon_3d_builder::construct_data(
+  core::packed_buffer& buffer
+) const -> void
 {
   // Compute size. This also accounts for padding on the normals, since 16-bit
   // integers will leave unaligned vertex buffers.

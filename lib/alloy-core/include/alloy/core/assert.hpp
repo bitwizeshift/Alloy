@@ -152,16 +152,19 @@ namespace alloy::core {
   /// \param handler the handler to install
   /// \return the previously installed handler
   ALLOY_CORE_API
-  assert_handler_fn* set_assert_handler(assert_handler_fn* handler) noexcept;
+  auto set_assert_handler(assert_handler_fn* handler)
+    noexcept -> assert_handler_fn*;
 
   namespace detail {
 
     [[noreturn]] ALLOY_COLD ALLOY_CORE_API
-    void assert_internal(const char* condition,
-                         const char* message,
-                         const char* file_name,
-                         std::size_t line,
-                         const char* function_name) noexcept;
+    auto assert_internal(
+      const char* condition,
+      const char* message,
+      const char* file_name,
+      std::size_t line,
+      const char* function_name
+    ) noexcept -> void;
   } // namespace detail
 } // namespace alloy::core
 

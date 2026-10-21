@@ -128,7 +128,8 @@ namespace alloy::core {
     ///
     /// \param value the value
     /// \return the clamped object
-    static constexpr auto make_unchecked(element_type value) noexcept -> clamped;
+    static constexpr auto make_unchecked(element_type value)
+      noexcept -> clamped;
 
     //-------------------------------------------------------------------------
     // Constructors / Assignment
@@ -258,72 +259,60 @@ namespace alloy::core {
     noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const Float&>() == std::declval<const T&>())>
-  constexpr auto operator==(clamped<Float> lhs, const T& rhs)
-    noexcept -> bool;
+  constexpr auto operator==(clamped<Float> lhs, const T& rhs) noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const T&>() == std::declval<const Float&>())>
-  constexpr auto operator==(const T& lhs, clamped<Float> rhs)
-    noexcept -> bool;
+  constexpr auto operator==(const T& lhs, clamped<Float> rhs) noexcept -> bool;
 
   template <typename Float, typename UFloat>
   constexpr auto operator!=(clamped<Float> lhs, clamped<UFloat> rhs)
     noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const Float&>() != std::declval<const T&>())>
-  constexpr auto operator!=(clamped<Float> lhs, const T& rhs)
-    noexcept -> bool;
+  constexpr auto operator!=(clamped<Float> lhs, const T& rhs) noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const T&>() != std::declval<const Float&>())>
-  constexpr auto operator!=(const T& lhs, clamped<Float> rhs)
-    noexcept -> bool;
+  constexpr auto operator!=(const T& lhs, clamped<Float> rhs) noexcept -> bool;
 
   template <typename Float, typename UFloat>
   constexpr auto operator<(clamped<Float> lhs, clamped<UFloat> rhs)
     noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const Float&>() < std::declval<const T&>())>
-  constexpr auto operator<(clamped<Float> lhs, const T& rhs)
-    noexcept -> bool;
+  constexpr auto operator<(clamped<Float> lhs, const T& rhs) noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const T&>() < std::declval<const Float&>())>
-  constexpr auto operator<(const T& lhs, clamped<Float> rhs)
-    noexcept -> bool;
+  constexpr auto operator<(const T& lhs, clamped<Float> rhs) noexcept -> bool;
 
   template <typename Float, typename UFloat>
   constexpr auto operator>(clamped<Float> lhs, clamped<UFloat> rhs)
     noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const Float&>() > std::declval<const T&>())>
-  constexpr auto operator>(clamped<Float> lhs, const T& rhs)
-    noexcept -> bool;
+  constexpr auto operator>(clamped<Float> lhs, const T& rhs) noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const T&>() > std::declval<const Float&>())>
-  constexpr auto operator>(const T& lhs, clamped<Float> rhs)
-    noexcept -> bool;
+  constexpr auto operator>(const T& lhs, clamped<Float> rhs) noexcept -> bool;
 
   template <typename Float, typename UFloat>
   constexpr auto operator<=(clamped<Float> lhs, clamped<UFloat> rhs)
     noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const Float&>() <= std::declval<const T&>())>
-  constexpr auto operator<=(clamped<Float> lhs, const T& rhs)
-    noexcept -> bool;
+  constexpr auto operator<=(clamped<Float> lhs, const T& rhs) noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const T&>() <= std::declval<const Float&>())>
-  constexpr auto operator<=(const T& lhs, clamped<Float> rhs)
-    noexcept -> bool;
+  constexpr auto operator<=(const T& lhs, clamped<Float> rhs) noexcept -> bool;
 
   template <typename Float, typename UFloat>
   constexpr auto operator>=(clamped<Float> lhs, clamped<UFloat> rhs)
     noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const Float&>() >= std::declval<const T&>())>
-  constexpr auto operator>=(clamped<Float> lhs, const T& rhs)
-    noexcept -> bool;
+  constexpr auto operator>=(clamped<Float> lhs, const T& rhs) noexcept -> bool;
   template <typename Float, typename T,
             typename=decltype(std::declval<const T&>() == std::declval<const Float&>())>
-  constexpr auto operator>=(const T& lhs, clamped<Float> rhs)
-    noexcept -> bool;
+  constexpr auto operator>=(const T& lhs, clamped<Float> rhs) noexcept -> bool;
 
   //---------------------------------------------------------------------------
 
@@ -337,9 +326,11 @@ namespace alloy::core {
   /// \param tolerance the tolerance to use for comparison
   /// \return `true` if \p lhs is almost equal to \p rhs
   template <typename Float>
-  constexpr auto almost_equal(clamped<Float> lhs,
-                              clamped<Float> rhs,
-                              real tolerance) noexcept -> bool;
+  constexpr auto almost_equal(
+    clamped<Float> lhs,
+    clamped<Float> rhs,
+    real tolerance
+  ) noexcept -> bool;
 
   //---------------------------------------------------------------------------
   // Utilities
@@ -435,8 +426,7 @@ template <typename Float>
 template <typename UFloat>
   requires std::convertible_to<UFloat, Float>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::clamped<Float>::clamped(const saturated<UFloat>& other)
-  noexcept
+alloy::core::clamped<Float>::clamped(const saturated<UFloat>& other) noexcept
   : m_value{static_cast<Float>(other.value())}
 {
 
@@ -446,8 +436,7 @@ template <typename Float>
 template <typename UFloat>
   requires std::convertible_to<UFloat, Float>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::clamped<Float>::clamped(const clamped<UFloat>& other)
-  noexcept
+alloy::core::clamped<Float>::clamped(const clamped<UFloat>& other) noexcept
   : m_value{static_cast<Float>(other.value())}
 {
 
@@ -459,8 +448,7 @@ alloy::core::clamped<Float>::clamped(const clamped<UFloat>& other)
 
 template <typename Float>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::clamped<Float>::value()
-  const noexcept -> element_type
+auto alloy::core::clamped<Float>::value() const noexcept -> element_type
 {
   return m_value;
 }
@@ -471,8 +459,7 @@ auto alloy::core::clamped<Float>::value()
 
 template <typename Float>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::clamped<Float>::clamped(element_type value)
-  noexcept
+alloy::core::clamped<Float>::clamped(element_type value) noexcept
   : m_value{value}
 {
 
@@ -496,16 +483,14 @@ auto alloy::core::operator==(clamped<Float> lhs, clamped<UFloat> rhs)
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator==(clamped<Float> lhs, const T& rhs)
-  noexcept -> bool
+auto alloy::core::operator==(clamped<Float> lhs, const T& rhs) noexcept -> bool
 {
   return lhs.value() == rhs;
 }
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator==(const T& lhs, clamped<Float> rhs)
-  noexcept -> bool
+auto alloy::core::operator==(const T& lhs, clamped<Float> rhs) noexcept -> bool
 {
   return lhs == rhs.value();
 }
@@ -521,16 +506,14 @@ auto alloy::core::operator!=(clamped<Float> lhs, clamped<UFloat> rhs)
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator!=(clamped<Float> lhs, const T& rhs)
-  noexcept -> bool
+auto alloy::core::operator!=(clamped<Float> lhs, const T& rhs) noexcept -> bool
 {
   return lhs.value() != rhs;
 }
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator!=(const T& lhs, clamped<Float> rhs)
-  noexcept -> bool
+auto alloy::core::operator!=(const T& lhs, clamped<Float> rhs) noexcept -> bool
 {
   return lhs != rhs.value();
 }
@@ -546,16 +529,14 @@ auto alloy::core::operator<(clamped<Float> lhs, clamped<UFloat> rhs)
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator<(clamped<Float> lhs, const T& rhs)
-  noexcept -> bool
+auto alloy::core::operator<(clamped<Float> lhs, const T& rhs) noexcept -> bool
 {
   return lhs.value() < rhs;
 }
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator<(const T& lhs, clamped<Float> rhs)
-  noexcept -> bool
+auto alloy::core::operator<(const T& lhs, clamped<Float> rhs) noexcept -> bool
 {
   return lhs < rhs.value();
 }
@@ -571,16 +552,14 @@ auto alloy::core::operator>(clamped<Float> lhs, clamped<UFloat> rhs)
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator>(clamped<Float> lhs, const T& rhs)
-  noexcept -> bool
+auto alloy::core::operator>(clamped<Float> lhs, const T& rhs) noexcept -> bool
 {
   return lhs.value() > rhs;
 }
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator>(const T& lhs, clamped<Float> rhs)
-  noexcept -> bool
+auto alloy::core::operator>(const T& lhs, clamped<Float> rhs) noexcept -> bool
 {
   return lhs > rhs.value();
 }
@@ -596,17 +575,14 @@ auto alloy::core::operator<=(clamped<Float> lhs, clamped<UFloat> rhs)
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator<=(clamped<Float> lhs, const T& rhs)
-  noexcept -> bool
+auto alloy::core::operator<=(clamped<Float> lhs, const T& rhs) noexcept -> bool
 {
   return lhs.value() <= rhs;
 }
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator<=(const T& lhs,
-                             clamped<Float> rhs)
-  noexcept -> bool
+auto alloy::core::operator<=(const T& lhs, clamped<Float> rhs) noexcept -> bool
 {
   return lhs <= rhs.value();
 }
@@ -622,26 +598,25 @@ auto alloy::core::operator>=(clamped<Float> lhs, clamped<UFloat> rhs)
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator>=(clamped<Float> lhs, const T& rhs)
-  noexcept -> bool
+auto alloy::core::operator>=(clamped<Float> lhs, const T& rhs) noexcept -> bool
 {
   return lhs.value() >= rhs;
 }
 
 template <typename Float, typename T, typename>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator>=(const T& lhs, clamped<Float> rhs)
-  noexcept -> bool
+auto alloy::core::operator>=(const T& lhs, clamped<Float> rhs) noexcept -> bool
 {
   return lhs >= rhs.value();
 }
 
 template <typename Float>
 inline constexpr
-auto alloy::core::almost_equal(clamped<Float> lhs,
-                               clamped<Float> rhs,
-                               real tolerance)
-  noexcept -> bool
+auto alloy::core::almost_equal(
+  clamped<Float> lhs,
+  clamped<Float> rhs,
+  real tolerance
+) noexcept -> bool
 {
   const auto tmp = (lhs.value() - rhs.value());
 
@@ -654,8 +629,7 @@ auto alloy::core::almost_equal(clamped<Float> lhs,
 
 template <typename Float>
 ALLOY_FORCE_INLINE
-auto alloy::core::is_nan(clamped<Float> f)
-  noexcept -> bool
+auto alloy::core::is_nan(clamped<Float> f) noexcept -> bool
 {
   return is_nan(f.value());
 }
@@ -664,16 +638,14 @@ auto alloy::core::is_nan(clamped<Float> f)
 
 template <typename Float>
 ALLOY_FORCE_INLINE
-auto alloy::core::is_finite(clamped<Float> f)
-  noexcept -> bool
+auto alloy::core::is_finite(clamped<Float> f) noexcept -> bool
 {
   return is_finite(f.value());
 }
 
 template <typename Float>
 ALLOY_FORCE_INLINE
-auto alloy::core::is_infinite(clamped<Float> f)
-  noexcept -> bool
+auto alloy::core::is_infinite(clamped<Float> f) noexcept -> bool
 {
   return is_infinite(f.value());
 }
@@ -682,16 +654,14 @@ auto alloy::core::is_infinite(clamped<Float> f)
 
 template <typename Float>
 ALLOY_FORCE_INLINE
-auto alloy::core::is_normal(clamped<Float> f)
-  noexcept -> bool
+auto alloy::core::is_normal(clamped<Float> f) noexcept -> bool
 {
   return is_normal(f.value());
 }
 
 template <typename Float>
 ALLOY_FORCE_INLINE
-auto alloy::core::is_subnormal(clamped<Float> f)
-  noexcept -> bool
+auto alloy::core::is_subnormal(clamped<Float> f) noexcept -> bool
 {
   return is_subnormal(f.value());
 }

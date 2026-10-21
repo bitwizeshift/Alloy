@@ -58,7 +58,8 @@ namespace alloy::core {
     /// \brief Copies the contents of \p other
     ///
     /// \param other the other transform to copy
-    interpolated_transform(const interpolated_transform& other) noexcept = default;
+    interpolated_transform(const interpolated_transform& other)
+      noexcept = default;
 
     //-------------------------------------------------------------------------
 
@@ -66,7 +67,8 @@ namespace alloy::core {
     ///
     /// \param other the other transform to copy
     /// \return reference to (*this)
-    auto operator=(const interpolated_transform& other) noexcept -> interpolated_transform& = default;
+    auto operator=(const interpolated_transform& other)
+      noexcept -> interpolated_transform& = default;
 
     //-------------------------------------------------------------------------
     // Element Access
@@ -181,8 +183,9 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 template<typename Transform>
-alloy::core::interpolated_transform<Transform>::interpolated_transform(const Transform& transform)
-  noexcept
+alloy::core::interpolated_transform<Transform>::interpolated_transform(
+  const Transform& transform
+) noexcept
   : m_transforms{transform, transform},
     m_is_dirty{false}
 {
@@ -254,7 +257,8 @@ template <typename Transform>
 inline
 alloy::core::interpolated_transform<Transform>::indirect_pointer::indirect_pointer(
   Transform* transforms
-) : m_transforms{transforms}
+)
+  : m_transforms{transforms}
 {
 
 }
@@ -272,7 +276,7 @@ alloy::core::interpolated_transform<Transform>::indirect_pointer::~indirect_poin
 
 template <typename Transform>
 auto alloy::core::interpolated_transform<Transform>::indirect_pointer::operator->()
-  && noexcept  -> Transform*
+  && noexcept -> Transform*
 {
   return &m_transforms[1];
 }

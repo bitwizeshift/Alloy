@@ -85,12 +85,12 @@ namespace alloy::core {
     /// \brief Gets the origin point of this line
     ///
     /// \return the origin point of the line
-    [[nodiscard]] constexpr auto origin() const noexcept -> const point3&;
+    [[nodiscard ]] constexpr auto origin() const noexcept -> const point3&;
 
     /// \brief Gets the direction that this line extends in
     ///
     /// \return the direction
-    [[nodiscard]] constexpr auto direction() const noexcept -> const vector3&;
+    [[nodiscard ]] constexpr auto direction() const noexcept -> const vector3&;
 
     //--------------------------------------------------------------------------
     // Quantifiers
@@ -165,8 +165,7 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::line::line()
-  noexcept
+alloy::core::line::line() noexcept
   : m_origin{real{0}, real{0}, real{0}},
     m_direction{real{1}, real{0}, real{0}}
 {
@@ -174,8 +173,7 @@ alloy::core::line::line()
 }
 
 inline constexpr
-alloy::core::line::line(const point3& origin, const vector3& direction)
-  noexcept
+alloy::core::line::line(const point3& origin, const vector3& direction) noexcept
   : m_origin{origin},
     m_direction{direction}
 {
@@ -187,15 +185,13 @@ alloy::core::line::line(const point3& origin, const vector3& direction)
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::line::origin()
-  const noexcept -> const point3&
+auto alloy::core::line::origin() const noexcept -> const point3&
 {
   return m_origin;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::line::direction()
-  const noexcept -> const vector3&
+auto alloy::core::line::direction() const noexcept -> const vector3&
 {
   return m_direction;
 }
@@ -205,8 +201,7 @@ auto alloy::core::line::direction()
 //==============================================================================
 
 inline
-auto alloy::core::operator!=(const line& lhs, const line& rhs)
-  noexcept -> bool
+auto alloy::core::operator!=(const line& lhs, const line& rhs) noexcept -> bool
 {
   return !(lhs==rhs);
 }

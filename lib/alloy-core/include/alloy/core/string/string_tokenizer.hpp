@@ -80,8 +80,10 @@ namespace alloy::core {
     ///
     /// \param str the string to tokenize
     /// \param delim the delimiter to use for tokenization
-    constexpr explicit basic_string_tokenizer(string_type str,
-                                              string_type delim);
+    constexpr explicit basic_string_tokenizer(
+      string_type str,
+      string_type delim
+    );
 
     // Deleted default, copy, and move constructors
     basic_string_tokenizer() = delete;
@@ -91,7 +93,8 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
 
     // Deleted copy and move assignment
-    auto operator=(const basic_string_tokenizer&) -> basic_string_tokenizer = delete;
+    auto operator=(const basic_string_tokenizer&)
+      -> basic_string_tokenizer = delete;
     auto operator=(basic_string_tokenizer&&) -> basic_string_tokenizer = delete;
 
     //-------------------------------------------------------------------------
@@ -137,7 +140,8 @@ namespace alloy::core {
     ///
     /// \param delim the delimiter to match
     /// \return the next token
-    auto next(string_type delim) noexcept -> result<string_type,tokenizer_error>;
+    auto next(string_type delim)
+      noexcept -> result<string_type,tokenizer_error>;
 
     /// \brief Resets the current position within this string tokenizer
     ///        to the beginning of the buffer
@@ -171,7 +175,8 @@ namespace alloy::core {
     /// \brief Retrieves the next token in the series
     ///
     /// \param delim the delimiters to check
-    auto next_token(string_type delim) noexcept -> result<string_type,tokenizer_error>;
+    auto next_token(string_type delim)
+      noexcept -> result<string_type,tokenizer_error>;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -211,9 +216,10 @@ namespace alloy::core {
 
 template <typename CharT, typename Traits>
 inline constexpr
-alloy::core::basic_string_tokenizer<CharT,Traits>
-  ::basic_string_tokenizer(string_type str,
-                           string_type delim)
+alloy::core::basic_string_tokenizer<CharT,Traits>::basic_string_tokenizer(
+  string_type str,
+  string_type delim
+)
   : m_buffer{str},
     m_delimiter{delim},
     m_current{0}
@@ -246,8 +252,8 @@ auto alloy::core::basic_string_tokenizer<CharT,Traits>::buffer()
 //-----------------------------------------------------------------------------
 
 template <typename CharT, typename Traits>
-inline constexpr auto
-  alloy::core::basic_string_tokenizer<CharT,Traits>::has_more()
+inline constexpr
+auto alloy::core::basic_string_tokenizer<CharT,Traits>::has_more()
   const noexcept -> bool
 {
   return m_current < m_buffer.size();
@@ -271,8 +277,7 @@ auto alloy::core::basic_string_tokenizer<CharT,Traits>::next(string_type delim)
 
 template <typename CharT, typename Traits>
 inline
-auto alloy::core::basic_string_tokenizer<CharT,Traits>::reset()
-  noexcept -> void
+auto alloy::core::basic_string_tokenizer<CharT,Traits>::reset() noexcept -> void
 {
   m_current = 0;
 }
@@ -282,8 +287,7 @@ auto alloy::core::basic_string_tokenizer<CharT,Traits>::reset()
 template <typename CharT, typename Traits>
 template <typename Fn>
 inline
-auto alloy::core::basic_string_tokenizer<CharT, Traits>
-  ::for_each_token(Fn&& fn)
+auto alloy::core::basic_string_tokenizer<CharT, Traits>::for_each_token(Fn&& fn)
   noexcept -> void
 {
   for_each_delimited_token(m_delimiter, std::forward<Fn>(fn));
@@ -292,8 +296,7 @@ auto alloy::core::basic_string_tokenizer<CharT, Traits>
 template <typename CharT, typename Traits>
 template <typename Fn>
 inline
-auto alloy::core::basic_string_tokenizer<CharT, Traits>
-  ::for_each_delimited_token(string_type delim, Fn&& fn)
+auto alloy::core::basic_string_tokenizer<CharT, Traits>::for_each_delimited_token(string_type delim, Fn&& fn)
   noexcept -> void
 {
   while (has_more()) {
@@ -314,9 +317,9 @@ auto alloy::core::basic_string_tokenizer<CharT, Traits>
 // NOLINTBEGIN(bugprone-exception-escape)
 template <typename CharT, typename Traits>
 inline
-auto alloy::core::basic_string_tokenizer<CharT,Traits>
-  ::next_token(string_type delim)
-  noexcept -> result<string_type,tokenizer_error>
+auto alloy::core::basic_string_tokenizer<CharT,Traits>::next_token(
+  string_type delim
+) noexcept -> result<string_type,tokenizer_error>
 {
   const auto buffer_size = m_buffer.size();
 

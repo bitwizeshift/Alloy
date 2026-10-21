@@ -37,8 +37,10 @@ namespace alloy::render {
   //////////////////////////////////////////////////////////////////////////////
   struct point_packer
   {
-    auto pack(core::packed_buffer_writer& writer, const core::point2& p) -> void;
-    auto pack(core::packed_buffer_writer& writer, const core::point3& p) -> void;
+    auto pack(core::packed_buffer_writer& writer, const core::point2& p)
+      -> void;
+    auto pack(core::packed_buffer_writer& writer, const core::point3& p)
+      -> void;
   };
 
   //============================================================================
@@ -50,7 +52,8 @@ namespace alloy::render {
   //////////////////////////////////////////////////////////////////////////////
   struct vector_packer final
   {
-    auto pack(core::packed_buffer_writer& writer, const core::vector3& v) -> void;
+    auto pack(core::packed_buffer_writer& writer, const core::vector3& v)
+      -> void;
 
     static auto compress(float x) noexcept -> std::int16_t;
   };
@@ -74,18 +77,20 @@ namespace alloy::render {
 //==============================================================================
 
 inline
-auto alloy::render::point_packer::pack(core::packed_buffer_writer& writer,
-                                       const core::point2& p)
-  -> void
+auto alloy::render::point_packer::pack(
+  core::packed_buffer_writer& writer,
+  const core::point2& p
+) -> void
 {
   writer.pack_object(p.x());
   writer.pack_object(p.y());
 }
 
 inline
-auto alloy::render::point_packer::pack(core::packed_buffer_writer& writer,
-                                       const core::point3& p)
-  -> void
+auto alloy::render::point_packer::pack(
+  core::packed_buffer_writer& writer,
+  const core::point3& p
+) -> void
 {
   writer.pack_object(p.x());
   writer.pack_object(p.y());
@@ -97,9 +102,10 @@ auto alloy::render::point_packer::pack(core::packed_buffer_writer& writer,
 //==============================================================================
 
 inline
-auto alloy::render::vector_packer::pack(core::packed_buffer_writer& writer,
-                                        const core::vector3& v)
-  -> void
+auto alloy::render::vector_packer::pack(
+  core::packed_buffer_writer& writer,
+  const core::vector3& v
+) -> void
 {
   writer.pack_object(compress(v.x()));
   writer.pack_object(compress(v.y()));
@@ -108,8 +114,7 @@ auto alloy::render::vector_packer::pack(core::packed_buffer_writer& writer,
 }
 
 inline
-auto alloy::render::vector_packer::compress(float x)
-  noexcept -> std::int16_t
+auto alloy::render::vector_packer::compress(float x) noexcept -> std::int16_t
 {
   static constexpr auto max = std::numeric_limits<std::int16_t>::max();
 
@@ -121,9 +126,10 @@ auto alloy::render::vector_packer::compress(float x)
 //==============================================================================
 
 inline
-auto alloy::render::color_packer::pack(core::packed_buffer_writer& writer,
-                                       const core::color& c)
-  -> void
+auto alloy::render::color_packer::pack(
+  core::packed_buffer_writer& writer,
+  const core::color& c
+) -> void
 {
   writer.pack_object(c.r8());
   writer.pack_object(c.g8());

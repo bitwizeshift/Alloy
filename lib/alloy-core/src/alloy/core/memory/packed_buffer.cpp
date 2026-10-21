@@ -15,15 +15,13 @@
 // Constructors / Assignment
 //-----------------------------------------------------------------------------
 
-alloy::core::packed_buffer::packed_buffer(allocator alloc)
-  noexcept
+alloy::core::packed_buffer::packed_buffer(allocator alloc) noexcept
   : m_buffer{stl_allocator_adapter<std::byte>{alloc}}
 {
 
 }
 
-alloy::core::packed_buffer::packed_buffer(vector<std::byte> buffer)
-  noexcept
+alloy::core::packed_buffer::packed_buffer(vector<std::byte> buffer) noexcept
   : m_buffer{std::move(buffer)}
 {
 
@@ -31,8 +29,7 @@ alloy::core::packed_buffer::packed_buffer(vector<std::byte> buffer)
 
 //-----------------------------------------------------------------------------
 
-auto alloy::core::packed_buffer::copy()
-  const -> packed_buffer
+auto alloy::core::packed_buffer::copy() const -> packed_buffer
 {
   return packed_buffer{m_buffer.copy()};
 }
@@ -47,8 +44,7 @@ auto alloy::core::packed_buffer::copy_with(allocator alloc)
 // Capacity
 //-----------------------------------------------------------------------------
 
-auto alloy::core::packed_buffer::reserve(bytes new_size)
-  -> void
+auto alloy::core::packed_buffer::reserve(bytes new_size) -> void
 {
   m_buffer.reserve(static_cast<std::size_t>(new_size.count()));
 }
@@ -57,8 +53,7 @@ auto alloy::core::packed_buffer::reserve(bytes new_size)
 // Modifiers
 //-----------------------------------------------------------------------------
 
-auto alloy::core::packed_buffer::push_byte(std::byte b)
-  -> void
+auto alloy::core::packed_buffer::push_byte(std::byte b) -> void
 {
   m_buffer.push_back(b);
 }
@@ -77,8 +72,9 @@ auto alloy::core::packed_buffer::push_bytes(std::span<const std::byte> bytes)
 // Constructors
 //-----------------------------------------------------------------------------
 
-alloy::core::packed_buffer_writer::packed_buffer_writer(not_null<packed_buffer*> buffer)
-  noexcept
+alloy::core::packed_buffer_writer::packed_buffer_writer(
+  not_null<packed_buffer*> buffer
+) noexcept
   : m_buffer{buffer}
 {
 
@@ -92,8 +88,9 @@ alloy::core::packed_buffer_writer::packed_buffer_writer(not_null<packed_buffer*>
 // Constructors
 //-----------------------------------------------------------------------------
 
-alloy::core::packed_buffer_reader::packed_buffer_reader(not_null<const packed_buffer*> buffer)
-  noexcept
+alloy::core::packed_buffer_reader::packed_buffer_reader(
+  not_null<const packed_buffer*> buffer
+) noexcept
   : m_buffer{buffer},
     m_read_index{0u}
 {
@@ -104,8 +101,7 @@ alloy::core::packed_buffer_reader::packed_buffer_reader(not_null<const packed_bu
 // Observers
 //-----------------------------------------------------------------------------
 
-auto alloy::core::packed_buffer_reader::seek(std::size_t index)
-  noexcept -> void
+auto alloy::core::packed_buffer_reader::seek(std::size_t index) noexcept -> void
 {
   const auto max_size = m_buffer->size().count();
 
@@ -116,8 +112,9 @@ auto alloy::core::packed_buffer_reader::seek(std::size_t index)
 // Reading
 //-----------------------------------------------------------------------------
 
-auto alloy::core::packed_buffer_reader::read_bytes(std::span<std::byte> destination)
-  noexcept -> std::span<std::byte>
+auto alloy::core::packed_buffer_reader::read_bytes(
+  std::span<std::byte> destination
+) noexcept -> std::span<std::byte>
 {
   if (m_read_index >= m_buffer->size().count()) {
     return std::span<std::byte>{destination.data(), std::size_t{0}};

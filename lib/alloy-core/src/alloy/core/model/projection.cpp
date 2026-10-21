@@ -11,8 +11,7 @@ namespace alloy::core {
   namespace {
 
     template <typename Unnamed>
-    auto to_identity(const Unnamed&, not_null<matrix4*> out)
-      noexcept -> void
+    auto to_identity(const Unnamed&, not_null<matrix4*> out) noexcept -> void
     {
       (*out) = matrix4_constants::identity;
     }
@@ -80,8 +79,7 @@ namespace alloy::core {
 // Static Factories: Identity
 //------------------------------------------------------------------------------
 
-auto alloy::core::projection::identity()
-  noexcept -> projection
+auto alloy::core::projection::identity() noexcept -> projection
 {
   return projection{};
 }
@@ -90,18 +88,20 @@ auto alloy::core::projection::identity()
 // Static Factories: Perspective
 //------------------------------------------------------------------------------
 
-auto alloy::core::projection::perspective(degree fov,
-                                          real aspect_ratio,
-                                          clip_space::depth depth)
-  noexcept -> projection
+auto alloy::core::projection::perspective(
+  degree fov,
+  real aspect_ratio,
+  clip_space::depth depth
+) noexcept -> projection
 {
   return perspective(to_radian(fov), aspect_ratio, depth);
 }
 
-auto alloy::core::projection::perspective(radian fov,
-                                          real aspect_ratio,
-                                          clip_space::depth depth)
-  noexcept -> projection
+auto alloy::core::projection::perspective(
+  radian fov,
+  real aspect_ratio,
+  clip_space::depth depth
+) noexcept -> projection
 {
   ALLOY_ASSERT(aspect_ratio > 0);
   ALLOY_ASSERT(depth.near < depth.far);
@@ -120,13 +120,14 @@ auto alloy::core::projection::perspective(radian fov,
 // Static Factories: Orthographic
 //------------------------------------------------------------------------------
 
-auto alloy::core::projection::orthographic(real left,
-                                           real right,
-                                           real bottom,
-                                           real top,
-                                           real near,
-                                           real far)
-  noexcept -> projection
+auto alloy::core::projection::orthographic(
+  real left,
+  real right,
+  real bottom,
+  real top,
+  real near,
+  real far
+) noexcept -> projection
 {
   return orthographic(clip_space::make(left, right, bottom, top, near, far));
 }
@@ -162,8 +163,7 @@ auto alloy::core::projection::extract_matrix(not_null<matrix4*> out)
   }, m_storage);
 }
 
-auto alloy::core::projection::to_matrix4()
-  const noexcept -> matrix4
+auto alloy::core::projection::to_matrix4() const noexcept -> matrix4
 {
   auto result = matrix4{};
   extract_matrix(&result);

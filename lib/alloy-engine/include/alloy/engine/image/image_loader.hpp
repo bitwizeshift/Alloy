@@ -39,7 +39,8 @@ namespace alloy::engine {
     ///
     /// \param file the file to load from
     /// \return the image on success
-    virtual auto load(io::file& file) -> core::result<core::image,std::error_code> = 0;
+    virtual auto load(io::file& file)
+      -> core::result<core::image,std::error_code> = 0;
   };
 
 } // namespace alloy::engine

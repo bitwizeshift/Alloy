@@ -79,8 +79,10 @@ namespace alloy::io {
     ///
     /// \param stream the stream to own
     /// \param finalizer the finalizer to finalize the stream
-    file(core::not_null<file_stream*> stream,
-         core::not_null<file_stream_finalizer*> finalizer) noexcept;
+    file(
+      core::not_null<file_stream*> stream,
+      core::not_null<file_stream_finalizer*> finalizer
+    ) noexcept;
 
     /// \brief Constructs a file that owns the specified file_stream_handle
     ///
@@ -106,8 +108,8 @@ namespace alloy::io {
     ///
     /// \param other the other file to move
     /// \return reference to `(*this)`
-    file& operator=(file&& other) noexcept;
-    file& operator=(const file&) = delete;
+    auto operator=(file&& other) noexcept -> file&;
+    auto operator=(const file&) -> file& = delete;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -116,13 +118,12 @@ namespace alloy::io {
     /// \brief Checks whether this file is open
     ///
     /// \return `true` if the file is open
-    bool is_open() const noexcept;
+    auto is_open() const noexcept -> bool;
 
     /// \brief Gets the size of this file in bytes
     ///
     /// \return the size of this file in bytes, on success
-    core::result<size_type,std::error_code>
-      bytes() const noexcept;
+    auto bytes() const noexcept -> core::result<size_type,std::error_code>;
 
     //-------------------------------------------------------------------------
     // Modifiers
@@ -135,7 +136,7 @@ namespace alloy::io {
     ///       to be handled by the underlying manager
     ///
     /// \return the handle
-    file_stream_handle release() noexcept;
+    auto release() noexcept -> file_stream_handle;
 
     //-------------------------------------------------------------------------
     // File API
@@ -147,37 +148,40 @@ namespace alloy::io {
     /// The only reason this should ever fail is if the file is already closed
     ///
     /// \return void on success
-    core::result<void,std::error_code> close() noexcept;
+    auto close() noexcept -> core::result<void,std::error_code>;
 
     /// \brief Resets the file cursor back to the start position
     ///
     /// \return void on success
-    core::result<void,std::error_code> reset() noexcept;
+    auto reset() noexcept -> core::result<void,std::error_code>;
 
     /// \brief Flushes the contents to the file, if buffered
     ///
     /// \return void on success
-    core::result<void,std::error_code> flush() noexcept;
+    auto flush() noexcept -> core::result<void,std::error_code>;
 
     /// \brief Skips up to the next N bytes of the file
     ///
     /// \param offset the number of bytes to skip
     /// \return void on success
-    core::result<void,std::error_code> skip(offset_type offset) noexcept;
+    auto skip(offset_type offset)
+      noexcept -> core::result<void,std::error_code>;
 
     /// \brief Reads data into the specified \p buffer, returning a buffer the
     ///        buffer that was read
     ///
     /// \param buffer the buffer to read into
     /// \return the buffer to the data that was read
-    core::result<mutable_buffer,std::error_code> read(mutable_buffer buffer) noexcept;
+    auto read(mutable_buffer buffer)
+      noexcept -> core::result<mutable_buffer,std::error_code>;
 
     /// \brief Writes data from the specified \p buffer, returning a buffer of
     ///        the bytes that were written
     ///
     /// \param buffer the buffer to write from
     /// \return the buffer to the data that was written
-    core::result<const_buffer,std::error_code> write(const_buffer buffer) noexcept;
+    auto write(const_buffer buffer)
+      noexcept -> core::result<const_buffer,std::error_code>;
 
     //-------------------------------------------------------------------------
 
@@ -197,7 +201,7 @@ namespace alloy::io {
     /// \tparam T the type to read
     /// \return T on success
     template <typename T>
-    core::result<T,std::error_code> read_object() noexcept;
+    auto read_object() noexcept -> core::result<T,std::error_code>;
 
     /// \brief Writes an object to this file
     ///
@@ -215,7 +219,8 @@ namespace alloy::io {
     /// \param v the value to write
     /// \return void on success
     template <typename T>
-    core::result<void,std::error_code> write_object(const T& v) noexcept;
+    auto write_object(const T& v)
+      noexcept -> core::result<void,std::error_code>;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -238,7 +243,7 @@ namespace alloy::io {
   /// \param ec the file error code
   /// \return the std::error_code of the file error
   ALLOY_IO_API
-  std::error_code make_error_code(file::error_code ec) noexcept;
+  auto make_error_code(file::error_code ec) noexcept -> std::error_code;
 
   //===========================================================================
   // struct : file_serializer
@@ -263,13 +268,15 @@ namespace alloy::io {
     /// \param f the file to write to
     /// \param in the value to write
     /// \return `void` on success
-    static core::result<void,std::error_code> serialize(file& f, const T& in) noexcept;
+    static auto serialize(file& f, const T& in)
+      noexcept -> core::result<void,std::error_code>;
 
     /// \brief Reads from the file \p f to \p out
     ///
     /// \param f the file to read from
     /// \return `void` on success
-    static core::result<T,std::error_code> deserialize(file& f) noexcept;
+    static auto deserialize(file& f)
+      noexcept -> core::result<T,std::error_code>;
   };
 
 } // namespace alloy::io
@@ -288,8 +295,8 @@ namespace std {
 //-----------------------------------------------------------------------------
 
 template <typename T>
-inline alloy::core::result<T,std::error_code> alloy::io::file::read_object()
-  noexcept
+inline
+auto alloy::io::file::read_object() noexcept -> core::result<T,std::error_code>
 {
   static_assert(
     noexcept(file_serializer<T>::deserialize(*this)),
@@ -303,8 +310,9 @@ inline alloy::core::result<T,std::error_code> alloy::io::file::read_object()
 }
 
 template <typename T>
-inline alloy::core::result<void,std::error_code> alloy::io::file::write_object(const T& v)
-  noexcept
+inline
+auto alloy::io::file::write_object(const T& v)
+  noexcept -> core::result<void,std::error_code>
 {
   static_assert(
     noexcept(file_serializer<T>::serialize(*this, v)),
@@ -322,9 +330,9 @@ inline alloy::core::result<void,std::error_code> alloy::io::file::write_object(c
 //=============================================================================
 
 template <typename T>
-inline alloy::core::result<void,std::error_code>
-  alloy::io::file_serializer<T>::serialize(file& f, const T& in)
-  noexcept
+inline
+auto alloy::io::file_serializer<T>::serialize(file& f, const T& in)
+  noexcept -> core::result<void,std::error_code>
 {
   static_assert(
     std::is_trivially_copyable_v<T>,
@@ -351,9 +359,9 @@ inline alloy::core::result<void,std::error_code>
 
 
 template <typename T>
-inline alloy::core::result<T,std::error_code>
-  alloy::io::file_serializer<T>::deserialize(file& f)
-  noexcept
+inline
+auto alloy::io::file_serializer<T>::deserialize(file& f)
+  noexcept -> core::result<T,std::error_code>
 {
   static_assert(
     std::is_trivially_copyable_v<T> &&
@@ -394,8 +402,8 @@ inline alloy::core::result<T,std::error_code>
 template <>
 struct alloy::io::file_serializer<bool>
 {
-  static core::result<void,std::error_code> serialize(file& f, bool in)
-    noexcept
+  static auto serialize(file& f, bool in)
+    noexcept -> core::result<void,std::error_code>
   {
     auto result = f.write(const_buffer::from_object(in));
     if (!result) {
@@ -404,8 +412,8 @@ struct alloy::io::file_serializer<bool>
     return {};
   }
 
-  static core::result<bool,std::error_code> deserialize(file& f)
-    noexcept
+  static auto deserialize(file& f)
+    noexcept -> core::result<bool,std::error_code>
   {
     auto object = bool{};
     auto result = f.read(mutable_buffer::from_object(object));
@@ -424,8 +432,8 @@ struct alloy::io::file_serializer<bool>
 template <>
 struct alloy::io::file_serializer<std::uint8_t>
 {
-  static core::result<void,std::error_code> serialize(file& f, std::uint8_t in)
-    noexcept
+  static auto serialize(file& f, std::uint8_t in)
+    noexcept -> core::result<void,std::error_code>
   {
     auto result = f.write(const_buffer::from_object(in));
     if (!result) {
@@ -434,8 +442,8 @@ struct alloy::io::file_serializer<std::uint8_t>
     return {};
   }
 
-  static core::result<std::uint8_t,std::error_code> deserialize(file& f)
-    noexcept
+  static auto deserialize(file& f)
+    noexcept -> core::result<std::uint8_t,std::error_code>
   {
     auto object = std::uint8_t{};
     auto result = f.read(mutable_buffer::from_object(object));
@@ -454,8 +462,8 @@ struct alloy::io::file_serializer<std::uint8_t>
 template <>
 struct alloy::io::file_serializer<std::int8_t>
 {
-  static core::result<void,std::error_code> serialize(file& f, std::int8_t in)
-    noexcept
+  static auto serialize(file& f, std::int8_t in)
+    noexcept -> core::result<void,std::error_code>
   {
     return file_serializer<std::uint8_t>::serialize(
       f,
@@ -463,8 +471,8 @@ struct alloy::io::file_serializer<std::int8_t>
     );
   }
 
-  static core::result<std::int16_t,std::error_code> deserialize(file& f)
-    noexcept
+  static auto deserialize(file& f)
+    noexcept -> core::result<std::int16_t,std::error_code>
   {
     auto r = file_serializer<std::uint8_t>::deserialize(f);
 
@@ -482,8 +490,8 @@ struct alloy::io::file_serializer<std::int8_t>
 template <>
 struct alloy::io::file_serializer<std::uint16_t>
 {
-  static core::result<void,std::error_code> serialize(file& f, std::uint16_t in)
-    noexcept
+  static auto serialize(file& f, std::uint16_t in)
+    noexcept -> core::result<void,std::error_code>
   {
     // Create an array of the byte-sequence in a consistent order
     auto bytes = std::array<std::byte,sizeof(std::uint16_t)> {
@@ -497,8 +505,8 @@ struct alloy::io::file_serializer<std::uint16_t>
     return {};
   }
 
-  static core::result<std::uint16_t,std::error_code> deserialize(file& f)
-    noexcept
+  static auto deserialize(file& f)
+    noexcept -> core::result<std::uint16_t,std::error_code>
   {
     auto bytes = std::array<std::byte,sizeof(std::uint16_t)>{};
     auto result = f.read(mutable_buffer::from_object(bytes));
@@ -522,8 +530,8 @@ struct alloy::io::file_serializer<std::uint16_t>
 template <>
 struct alloy::io::file_serializer<std::int16_t>
 {
-  static core::result<void,std::error_code> serialize(file& f, std::int16_t in)
-    noexcept
+  static auto serialize(file& f, std::int16_t in)
+    noexcept -> core::result<void,std::error_code>
   {
     return file_serializer<std::uint16_t>::serialize(
       f,
@@ -531,8 +539,8 @@ struct alloy::io::file_serializer<std::int16_t>
     );
   }
 
-  static core::result<std::int16_t,std::error_code> deserialize(file& f)
-    noexcept
+  static auto deserialize(file& f)
+    noexcept -> core::result<std::int16_t,std::error_code>
   {
     auto r = file_serializer<std::uint16_t>::deserialize(f);
 
@@ -550,8 +558,8 @@ struct alloy::io::file_serializer<std::int16_t>
 template <>
 struct alloy::io::file_serializer<std::uint32_t>
 {
-  static core::result<void,std::error_code> serialize(file& f, std::uint32_t in)
-    noexcept
+  static auto serialize(file& f, std::uint32_t in)
+    noexcept -> core::result<void,std::error_code>
   {
     // Create an array of the byte-sequence in a consistent order
     auto bytes = std::array<std::byte,sizeof(std::uint32_t)> {
@@ -567,8 +575,8 @@ struct alloy::io::file_serializer<std::uint32_t>
     return {};
   }
 
-  static core::result<std::uint32_t,std::error_code> deserialize(file& f)
-    noexcept
+  static auto deserialize(file& f)
+    noexcept -> core::result<std::uint32_t,std::error_code>
   {
     auto bytes = std::array<std::byte,sizeof(std::uint32_t)>{};
     auto result = f.read(mutable_buffer::from_object(bytes));
@@ -594,8 +602,8 @@ struct alloy::io::file_serializer<std::uint32_t>
 template <>
 struct alloy::io::file_serializer<std::int32_t>
 {
-  static core::result<void,std::error_code> serialize(file& f, std::int16_t in)
-    noexcept
+  static auto serialize(file& f, std::int16_t in)
+    noexcept -> core::result<void,std::error_code>
   {
     return file_serializer<std::uint32_t>::serialize(
       f,
@@ -603,8 +611,8 @@ struct alloy::io::file_serializer<std::int32_t>
     );
   }
 
-  static core::result<std::int32_t,std::error_code> deserialize(file& f)
-    noexcept
+  static auto deserialize(file& f)
+    noexcept -> core::result<std::int32_t,std::error_code>
   {
     auto r = file_serializer<std::uint32_t>::deserialize(f);
 
@@ -622,8 +630,8 @@ struct alloy::io::file_serializer<std::int32_t>
 template <>
 struct alloy::io::file_serializer<std::uint64_t>
 {
-  static core::result<void,std::error_code> serialize(file& f, std::uint64_t in)
-    noexcept
+  static auto serialize(file& f, std::uint64_t in)
+    noexcept -> core::result<void,std::error_code>
   {
     // Create an array of the byte-sequence in a consistent order
     auto bytes = std::array<std::byte,sizeof(std::uint64_t)> {
@@ -643,8 +651,8 @@ struct alloy::io::file_serializer<std::uint64_t>
     return {};
   }
 
-  static core::result<std::uint64_t,std::error_code> deserialize(file& f)
-    noexcept
+  static auto deserialize(file& f)
+    noexcept -> core::result<std::uint64_t,std::error_code>
   {
     auto bytes = std::array<std::byte,sizeof(std::uint64_t)>{};
     auto result = f.read(mutable_buffer::from_object(bytes));
@@ -674,8 +682,8 @@ struct alloy::io::file_serializer<std::uint64_t>
 template <>
 struct alloy::io::file_serializer<std::int64_t>
 {
-  static core::result<void,std::error_code> serialize(file& f, std::int16_t in)
-    noexcept
+  static auto serialize(file& f, std::int16_t in)
+    noexcept -> core::result<void,std::error_code>
   {
     return file_serializer<std::uint64_t>::serialize(
       f,
@@ -683,8 +691,8 @@ struct alloy::io::file_serializer<std::int64_t>
     );
   }
 
-  static core::result<std::int64_t,std::error_code> deserialize(file& f)
-    noexcept
+  static auto deserialize(file& f)
+    noexcept -> core::result<std::int64_t,std::error_code>
   {
     auto r = file_serializer<std::uint64_t>::deserialize(f);
 

@@ -24,14 +24,12 @@ auto alloy::core::ray::from_points(const point3& origin, const point3& p)
 // Quantifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::ray::point_at_distance(real dt)
-  const noexcept -> point3
+auto alloy::core::ray::point_at_distance(real dt) const noexcept -> point3
 {
   return m_origin + (m_direction * dt);
 }
 
-auto alloy::core::ray::contains(const point3& p)
-  const noexcept -> bool
+auto alloy::core::ray::contains(const point3& p) const noexcept -> bool
 {
   return contains(p, default_tolerance);
 }

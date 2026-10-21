@@ -105,7 +105,8 @@ namespace alloy::core {
     compare_not_equal() = default;
     compare_not_equal(const compare_not_equal& other) = default;
 
-    auto operator=(const compare_not_equal& other) -> compare_not_equal& = default;
+    auto operator=(const compare_not_equal& other)
+      -> compare_not_equal& = default;
 
     //-------------------------------------------------------------------------
     // Operations
@@ -253,7 +254,8 @@ namespace alloy::core {
     compare_less_equal() = default;
     compare_less_equal(const compare_less_equal& other) = default;
 
-    auto operator=(const compare_less_equal& other) -> compare_less_equal& = default;
+    auto operator=(const compare_less_equal& other)
+      -> compare_less_equal& = default;
 
     //-------------------------------------------------------------------------
     // Operations
@@ -302,7 +304,8 @@ namespace alloy::core {
     compare_greater_equal() = default;
     compare_greater_equal(const compare_greater_equal& other) = default;
 
-    auto operator=(const compare_greater_equal& other) -> compare_greater_equal& = default;
+    auto operator=(const compare_greater_equal& other)
+      -> compare_greater_equal& = default;
 
     //-------------------------------------------------------------------------
     // Operations

@@ -44,13 +44,13 @@ namespace alloy::extra {
     ///
     /// \param x the value to check
     /// \return `true` if the value is a power-of-two
-    static constexpr bool is_power_of_two(std::size_t x) noexcept;
+    static constexpr auto is_power_of_two(std::size_t x) noexcept -> bool;
 
     /// \brief Gets the alignment of the pointer
     ///
     /// \param ptr the pointer
     /// \return the alignment of the pointer
-    static std::size_t align_of(const void* ptr) noexcept;
+    static auto align_of(const void* ptr) noexcept -> std::size_t;
 
     //-------------------------------------------------------------------------
     // Offset Calculation
@@ -63,8 +63,8 @@ namespace alloy::extra {
     /// \param align The alignment to calculate
     /// \return the amount of bytes required to align to the next aligned
     ///         address
-    static std::size_t align_forward_offset(const void* p,
-                                            std::size_t align) noexcept;
+    static auto align_forward_offset(const void* p, std::size_t align)
+      noexcept -> std::size_t;
 
     /// \brief Calculates the forward-offset required to align \p ptr to
     ///        \p align alignment
@@ -74,9 +74,11 @@ namespace alloy::extra {
     /// \param offset The amount of offset to leave prior to alignment
     /// \return the amount of bytes required to align to the next aligned
     ///         address
-    static std::size_t align_forward_offset(const void* p,
-                                            std::size_t align,
-                                            std::size_t offset) noexcept;
+    static auto align_forward_offset(
+      const void* p,
+      std::size_t align,
+      std::size_t offset
+    ) noexcept -> std::size_t;
 
     /// \brief Calculates the backward-offset required to align \p ptr to
     ///        \p align alignment
@@ -85,8 +87,8 @@ namespace alloy::extra {
     /// \param align The alignment to calculate
     /// \return the amount of bytes required to align to the next aligned
     ///         address
-    static std::size_t align_backward_offset(const void* ptr,
-                                             std::size_t align) noexcept;
+    static auto align_backward_offset(const void* ptr, std::size_t align)
+      noexcept -> std::size_t;
 
     /// \brief Calculates the backward-offset required to align \p ptr to
     ///        \p align alignment
@@ -96,9 +98,11 @@ namespace alloy::extra {
     /// \param offset The amount of offset to leave prior to alignment
     /// \return the amount of bytes required to align to the next aligned
     ///         address
-    static std::size_t align_backward_offset(const void* ptr,
-                                             std::size_t align,
-                                             std::size_t offset) noexcept;
+    static auto align_backward_offset(
+      const void* ptr,
+      std::size_t align,
+      std::size_t offset
+    ) noexcept -> std::size_t;
 
     //-------------------------------------------------------------------------
     // Align
@@ -112,11 +116,12 @@ namespace alloy::extra {
     /// \param align the alignment
     /// \param adjust [out] the amount the pointer is allocated by
     /// \return the aligned pointer
-    static void* align_forward(void* ptr,
-                               std::size_t align,
-                               core::not_null<std::size_t*> adjust) noexcept;
-    static void* align_forward(void* ptr,
-                               std::size_t align) noexcept;
+    static auto align_forward(
+      void* ptr,
+      std::size_t align,
+      core::not_null<std::size_t*> adjust
+    ) noexcept -> void*;
+    static auto align_forward(void* ptr, std::size_t align) noexcept -> void*;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -129,11 +134,12 @@ namespace alloy::extra {
     /// \param align the alignment
     /// \param adjust [out] the amount the pointer is allocated by
     /// \return the aligned pointer
-    static void* align_backward(void* p,
-                                std::size_t align,
-                                core::not_null<std::size_t*> adjust) noexcept;
-    static void* align_backward(void* p,
-                                std::size_t align) noexcept;
+    static auto align_backward(
+      void* p,
+      std::size_t align,
+      core::not_null<std::size_t*> adjust
+    ) noexcept -> void*;
+    static auto align_backward(void* p, std::size_t align) noexcept -> void*;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -149,13 +155,17 @@ namespace alloy::extra {
     /// \param offset the amount to offset the alignment
     /// \param adjust [out] the amount the pointer is allocated by
     /// \return the aligned, offset pointer
-    static void* offset_align_forward(void* p,
-                                      std::size_t align,
-                                      std::size_t offset,
-                                      core::not_null<std::size_t*> adjust) noexcept;
-    static void* offset_align_forward(void* p,
-                                      std::size_t align,
-                                      std::size_t offset) noexcept;
+    static auto offset_align_forward(
+      void* p,
+      std::size_t align,
+      std::size_t offset,
+      core::not_null<std::size_t*> adjust
+    ) noexcept -> void*;
+    static auto offset_align_forward(
+      void* p,
+      std::size_t align,
+      std::size_t offset
+    ) noexcept -> void*;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -169,13 +179,17 @@ namespace alloy::extra {
     /// \param offset the amount to offset the alignment
     /// \param adjust [out] the amount the pointer is allocated by
     /// \return the aligned, offset pointer.
-    static void* offset_align_backward(void* p,
-                                       std::size_t align,
-                                       std::size_t offset,
-                                       core::not_null<std::size_t*> adjust) noexcept;
-    static void* offset_align_backward(void* p,
-                                       std::size_t align,
-                                       std::size_t offset) noexcept;
+    static auto offset_align_backward(
+      void* p,
+      std::size_t align,
+      std::size_t offset,
+      core::not_null<std::size_t*> adjust
+    ) noexcept -> void*;
+    static auto offset_align_backward(
+      void* p,
+      std::size_t align,
+      std::size_t offset
+    ) noexcept -> void*;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -190,7 +204,8 @@ namespace alloy::extra {
     /// \param lhs the left pointer
     /// \param rhs the right pointer
     /// \return the distance
-    static std::size_t distance(const void* lhs, const void* rhs) noexcept;
+    static auto distance(const void* lhs, const void* rhs)
+      noexcept -> std::size_t;
 
     /// \brief Calculates the difference between two pointers
     ///
@@ -199,8 +214,8 @@ namespace alloy::extra {
     /// \param lhs the left pointer
     /// \param rhs the right pointer
     /// \return the result of `lhs` - `rhs`
-    static std::ptrdiff_t difference(const void* lhs,
-                                     const void* rhs) noexcept;
+    static auto difference(const void* lhs, const void* rhs)
+      noexcept -> std::ptrdiff_t;
 
     /// \{
     /// \brief Adjusts a pointer \p p by \p bytes
@@ -208,8 +223,9 @@ namespace alloy::extra {
     /// \param p the pointer to adjust
     /// \param bytes the bytes to adjust by
     /// \return the pointer adjusted by \p bytes
-    static void* advance(void* p, std::ptrdiff_t bytes) noexcept;
-    static const void* advance(const void* p, std::ptrdiff_t bytes) noexcept;
+    static auto advance(void* p, std::ptrdiff_t bytes) noexcept -> void*;
+    static auto advance(const void* p, std::ptrdiff_t bytes)
+      noexcept -> const void*;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -223,7 +239,7 @@ namespace alloy::extra {
     /// \param p the memory to store into
     /// \param val the value to store
     template<typename T>
-    static void store_unaligned(void* p, const T& val) noexcept;
+    static auto store_unaligned(void* p, const T& val) noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Loading
@@ -242,7 +258,7 @@ namespace alloy::extra {
     /// \param p pointer to the memory to load from
     /// \return the type \p T
     template<typename T>
-    static T load_unaligned(const void* p) noexcept;
+    static auto load_unaligned(const void* p) noexcept -> T;
 
     //-------------------------------------------------------------------------
 
@@ -251,14 +267,14 @@ namespace alloy::extra {
     ///
     /// \param p pointer to the memory to load from
     /// \return the loaded std::int8_t
-    static std::int8_t load_unaligned_int8(const void* p) noexcept;
+    static auto load_unaligned_int8(const void* p) noexcept -> std::int8_t;
 
     /// \brief Loads an unaligned std::uint8_t from the memory pointed at
     ///        by \p p
     ///
     /// \param p pointer to the memory to load from
     /// \return the loaded std::uint8_t
-    static std::uint8_t load_unaligned_uint8(const void* p) noexcept;
+    static auto load_unaligned_uint8(const void* p) noexcept -> std::uint8_t;
 
     //-------------------------------------------------------------------------
 
@@ -267,14 +283,14 @@ namespace alloy::extra {
     ///
     /// \param p pointer to the memory to load from
     /// \return the loaded std::int16_t
-    static std::int16_t load_unaligned_int16(const void* p) noexcept;
+    static auto load_unaligned_int16(const void* p) noexcept -> std::int16_t;
 
     /// \brief Loads an unaligned std::uint16_t from the memory pointed at
     ///        by \p p
     ///
     /// \param p pointer to the memory to load from
     /// \return the loaded std::uint16_t
-    static std::uint16_t load_unaligned_uint16(const void* p) noexcept;
+    static auto load_unaligned_uint16(const void* p) noexcept -> std::uint16_t;
 
     //-------------------------------------------------------------------------
 
@@ -283,14 +299,14 @@ namespace alloy::extra {
     ///
     /// \param p pointer to the memory to load from
     /// \return the loaded std::int32_t
-    static std::int32_t load_unaligned_int32(const void* p) noexcept;
+    static auto load_unaligned_int32(const void* p) noexcept -> std::int32_t;
 
     /// \brief Loads an unaligned std::uint32_t from the memory pointed at
     ///        by \p p
     ///
     /// \param p pointer to the memory to load from
     /// \return the loaded std::uint32_t
-    static std::uint32_t load_unaligned_uint32(const void* p) noexcept;
+    static auto load_unaligned_uint32(const void* p) noexcept -> std::uint32_t;
 
     //-------------------------------------------------------------------------
 
@@ -299,14 +315,14 @@ namespace alloy::extra {
     ///
     /// \param p pointer to the memory to load from
     /// \return the loaded std::int64_t
-    static std::int64_t load_unaligned_int64(const void* p) noexcept;
+    static auto load_unaligned_int64(const void* p) noexcept -> std::int64_t;
 
     /// \brief Loads an unaligned std::uint64_t from the memory pointed at
     ///        by \p p
     ///
     /// \param p pointer to the memory to load from
     /// \return the loaded std::uint64_t
-    static std::uint64_t load_unaligned_uint64(const void* p) noexcept;
+    static auto load_unaligned_uint64(const void* p) noexcept -> std::uint64_t;
 
     //-------------------------------------------------------------------------
 
@@ -315,14 +331,14 @@ namespace alloy::extra {
     ///
     /// \param p pointer to the memory to load from
     /// \return the loaded float
-    static float load_unaligned_float(const void* p) noexcept;
+    static auto load_unaligned_float(const void* p) noexcept -> float;
 
     /// \brief Loads an unaligned double from the memory pointed at
     ///        by \p p
     ///
     /// \param p pointer to the memory to load from
     /// \return the loaded double
-    static double load_unaligned_double(const void* p) noexcept;
+    static auto load_unaligned_double(const void* p) noexcept -> double;
   };
 
 } // namespace alloy::extra
@@ -331,16 +347,16 @@ namespace alloy::extra {
 // Alignment Checking
 //-----------------------------------------------------------------------------
 
-inline constexpr bool
-  alloy::extra::pointer_util::is_power_of_two(std::size_t x)
-  noexcept
+inline constexpr
+auto alloy::extra::pointer_util::is_power_of_two(std::size_t x) noexcept -> bool
 {
   return (x && !(x & (x-1)));
 }
 
 
-inline std::size_t alloy::extra::pointer_util::align_of(const void* ptr)
-  noexcept
+inline
+auto alloy::extra::pointer_util::align_of(const void* ptr)
+  noexcept -> std::size_t
 {
   const auto address = reinterpret_cast<std::uintptr_t>(ptr);
 
@@ -351,10 +367,11 @@ inline std::size_t alloy::extra::pointer_util::align_of(const void* ptr)
 // Offset Calculation
 //-----------------------------------------------------------------------------
 
-inline std::size_t
-  alloy::extra::pointer_util::align_forward_offset(const void* p,
-                                                  std::size_t align)
-  noexcept
+inline
+auto alloy::extra::pointer_util::align_forward_offset(
+  const void* p,
+  std::size_t align
+) noexcept -> std::size_t
 {
   ALLOY_ASSERT(p != nullptr, "p cannot be null");
   ALLOY_ASSERT(is_power_of_two(align), "Alignment must be a power of 2");
@@ -363,11 +380,12 @@ inline std::size_t
 }
 
 
-inline std::size_t
-  alloy::extra::pointer_util::align_forward_offset(const void* p,
-                                                   std::size_t align,
-                                                   std::size_t offset)
-  noexcept
+inline
+auto alloy::extra::pointer_util::align_forward_offset(
+  const void* p,
+  std::size_t align,
+  std::size_t offset
+) noexcept -> std::size_t
 {
   ALLOY_ASSERT(p != nullptr, "p cannot be null");
   ALLOY_ASSERT(is_power_of_two(align), "Alignment must be a power of 2");
@@ -382,10 +400,11 @@ inline std::size_t
 //-----------------------------------------------------------------------------
 
 
-inline std::size_t
-  alloy::extra::pointer_util::align_backward_offset(const void* p,
-                                                    std::size_t align)
-  noexcept
+inline
+auto alloy::extra::pointer_util::align_backward_offset(
+  const void* p,
+  std::size_t align
+) noexcept -> std::size_t
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
   ALLOY_ASSERT(is_power_of_two(align), "Alignment must be a power of 2");
@@ -394,11 +413,12 @@ inline std::size_t
 }
 
 
-inline std::size_t
-  alloy::extra::pointer_util::align_backward_offset(const void* p,
-                                                    std::size_t align,
-                                                    std::size_t offset)
-  noexcept
+inline
+auto alloy::extra::pointer_util::align_backward_offset(
+  const void* p,
+  std::size_t align,
+  std::size_t offset
+) noexcept -> std::size_t
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
   ALLOY_ASSERT(is_power_of_two(align), "Alignment must be a power of 2");
@@ -415,11 +435,12 @@ inline std::size_t
 //-----------------------------------------------------------------------------
 
 
-inline void*
-  alloy::extra::pointer_util::align_forward(void* p,
-                                            std::size_t align,
-                                            core::not_null<std::size_t*> adjust)
-  noexcept
+inline
+auto alloy::extra::pointer_util::align_forward(
+  void* p,
+  std::size_t align,
+  core::not_null<std::size_t*> adjust
+) noexcept -> void*
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
   ALLOY_ASSERT(is_power_of_two(align), "Alignment must be a power of 2");
@@ -434,9 +455,9 @@ inline void*
 }
 
 
-inline void* alloy::extra::pointer_util::align_forward(void* p,
-                                                       std::size_t align)
-  noexcept
+inline
+auto alloy::extra::pointer_util::align_forward(void* p, std::size_t align)
+  noexcept -> void*
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
   ALLOY_ASSERT(is_power_of_two(align), "Alignment must be a power of 2");
@@ -452,11 +473,12 @@ inline void* alloy::extra::pointer_util::align_forward(void* p,
 //-----------------------------------------------------------------------------
 
 
-inline void*
-  alloy::extra::pointer_util::align_backward(void* p,
-                                             std::size_t align,
-                                             core::not_null<std::size_t*> adjust)
-  noexcept
+inline
+auto alloy::extra::pointer_util::align_backward(
+  void* p,
+  std::size_t align,
+  core::not_null<std::size_t*> adjust
+) noexcept -> void*
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
   ALLOY_ASSERT(is_power_of_two(align), "Alignment must be a power of 2");
@@ -471,9 +493,9 @@ inline void*
 }
 
 
-inline void* alloy::extra::pointer_util::align_backward(void* p,
-                                                        std::size_t align)
-  noexcept
+inline
+auto alloy::extra::pointer_util::align_backward(void* p, std::size_t align)
+  noexcept -> void*
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
   ALLOY_ASSERT(is_power_of_two(align), "Alignment must be a power of 2");
@@ -491,12 +513,13 @@ inline void* alloy::extra::pointer_util::align_backward(void* p,
 //-----------------------------------------------------------------------------
 
 
-inline void*
-  alloy::extra::pointer_util::offset_align_forward(void* p,
-                                                   std::size_t align,
-                                                   std::size_t offset,
-                                                   core::not_null<std::size_t*> adjust )
-    noexcept
+inline
+auto alloy::extra::pointer_util::offset_align_forward(
+  void* p,
+  std::size_t align,
+  std::size_t offset,
+  core::not_null<std::size_t*> adjust
+) noexcept -> void*
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
   ALLOY_ASSERT(is_power_of_two(align), "Alignment must be a power of 2");
@@ -511,10 +534,12 @@ inline void*
 }
 
 
-inline void* alloy::extra::pointer_util::offset_align_forward(void* p,
-                                                              std::size_t align,
-                                                              std::size_t offset )
-  noexcept
+inline
+auto alloy::extra::pointer_util::offset_align_forward(
+  void* p,
+  std::size_t align,
+  std::size_t offset
+) noexcept -> void*
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
   ALLOY_ASSERT(is_power_of_two(align), "Alignment must be a power of 2");
@@ -533,12 +558,13 @@ inline void* alloy::extra::pointer_util::offset_align_forward(void* p,
 //-----------------------------------------------------------------------------
 
 
-inline void*
-  alloy::extra::pointer_util::offset_align_backward(void* p,
-                                                    std::size_t align,
-                                                    std::size_t offset,
-                                                    core::not_null<std::size_t*> adjust)
-  noexcept
+inline
+auto alloy::extra::pointer_util::offset_align_backward(
+  void* p,
+  std::size_t align,
+  std::size_t offset,
+  core::not_null<std::size_t*> adjust
+) noexcept -> void*
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
   ALLOY_ASSERT(is_power_of_two(align), "Alignment must be a power of 2");
@@ -553,11 +579,12 @@ inline void*
 }
 
 
-inline void*
-  alloy::extra::pointer_util::offset_align_backward(void* p,
-                                                    std::size_t align,
-                                                    std::size_t offset)
-  noexcept
+inline
+auto alloy::extra::pointer_util::offset_align_backward(
+  void* p,
+  std::size_t align,
+  std::size_t offset
+) noexcept -> void*
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
   ALLOY_ASSERT(is_power_of_two(align), "Alignment must be a power of 2");
@@ -576,9 +603,9 @@ inline void*
 //-----------------------------------------------------------------------------
 
 
-inline std::size_t
-  alloy::extra::pointer_util::distance(const void* lhs, const void* rhs)
-  noexcept
+inline
+auto alloy::extra::pointer_util::distance(const void* lhs, const void* rhs)
+  noexcept -> std::size_t
 {
   ALLOY_ASSERT(lhs != nullptr, "Pointers cannot be null");
   ALLOY_ASSERT(rhs != nullptr, "Pointers cannot be null");
@@ -590,9 +617,9 @@ inline std::size_t
 }
 
 
-inline std::ptrdiff_t
-  alloy::extra::pointer_util::difference(const void* lhs, const void* rhs)
-  noexcept
+inline
+auto alloy::extra::pointer_util::difference(const void* lhs, const void* rhs)
+  noexcept -> std::ptrdiff_t
 {
   ALLOY_ASSERT(lhs != nullptr, "Pointers cannot be null");
   ALLOY_ASSERT(rhs != nullptr, "Pointers cannot be null");
@@ -601,9 +628,9 @@ inline std::ptrdiff_t
 }
 
 
-inline void*
-  alloy::extra::pointer_util::advance(void* p, std::ptrdiff_t bytes)
-  noexcept
+inline
+auto alloy::extra::pointer_util::advance(void* p, std::ptrdiff_t bytes)
+  noexcept -> void*
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 
@@ -611,9 +638,9 @@ inline void*
 }
 
 
-inline const void*
-  alloy::extra::pointer_util::advance(const void* p, std::ptrdiff_t bytes)
-  noexcept
+inline
+auto alloy::extra::pointer_util::advance(const void* p, std::ptrdiff_t bytes)
+  noexcept -> const void*
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 
@@ -627,8 +654,9 @@ inline const void*
 
 
 template<typename T>
-inline void alloy::extra::pointer_util::store_unaligned(void* p, const T& val)
-  noexcept
+inline
+auto alloy::extra::pointer_util::store_unaligned(void* p, const T& val)
+  noexcept -> void
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
   static_assert(std::is_trivially_copyable<T>::value);
@@ -645,8 +673,8 @@ inline void alloy::extra::pointer_util::store_unaligned(void* p, const T& val)
 
 
 template<typename T>
-inline T alloy::extra::pointer_util::load_unaligned(const void* p)
-  noexcept
+inline
+auto alloy::extra::pointer_util::load_unaligned(const void* p) noexcept -> T
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
   static_assert(std::is_trivially_copyable<T>::value);
@@ -663,9 +691,9 @@ inline T alloy::extra::pointer_util::load_unaligned(const void* p)
 //-----------------------------------------------------------------------------
 
 
-inline std::int8_t
-  alloy::extra::pointer_util::load_unaligned_int8(const void* p)
-  noexcept
+inline
+auto alloy::extra::pointer_util::load_unaligned_int8(const void* p)
+  noexcept -> std::int8_t
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 
@@ -673,9 +701,9 @@ inline std::int8_t
 }
 
 
-inline std::uint8_t
-  alloy::extra::pointer_util::load_unaligned_uint8(const void* p)
-  noexcept
+inline
+auto alloy::extra::pointer_util::load_unaligned_uint8(const void* p)
+  noexcept -> std::uint8_t
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 
@@ -686,9 +714,9 @@ inline std::uint8_t
 //-----------------------------------------------------------------------------
 
 
-inline std::int16_t
-  alloy::extra::pointer_util::load_unaligned_int16(const void* p)
-  noexcept
+inline
+auto alloy::extra::pointer_util::load_unaligned_int16(const void* p)
+  noexcept -> std::int16_t
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 
@@ -696,9 +724,9 @@ inline std::int16_t
 }
 
 
-inline std::uint16_t
-  alloy::extra::pointer_util::load_unaligned_uint16(const void* p)
-  noexcept
+inline
+auto alloy::extra::pointer_util::load_unaligned_uint16(const void* p)
+  noexcept -> std::uint16_t
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 
@@ -709,9 +737,9 @@ inline std::uint16_t
 //-----------------------------------------------------------------------------
 
 
-inline std::int32_t
-  alloy::extra::pointer_util::load_unaligned_int32(const void* p)
-  noexcept
+inline
+auto alloy::extra::pointer_util::load_unaligned_int32(const void* p)
+  noexcept -> std::int32_t
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 
@@ -719,9 +747,9 @@ inline std::int32_t
 }
 
 
-inline std::uint32_t
-  alloy::extra::pointer_util::load_unaligned_uint32(const void* p)
-  noexcept
+inline
+auto alloy::extra::pointer_util::load_unaligned_uint32(const void* p)
+  noexcept -> std::uint32_t
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 
@@ -732,9 +760,9 @@ inline std::uint32_t
 //-----------------------------------------------------------------------------
 
 
-inline std::int64_t
-  alloy::extra::pointer_util::load_unaligned_int64(const void* p)
-  noexcept
+inline
+auto alloy::extra::pointer_util::load_unaligned_int64(const void* p)
+  noexcept -> std::int64_t
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 
@@ -742,9 +770,9 @@ inline std::int64_t
 }
 
 
-inline std::uint64_t
-  alloy::extra::pointer_util::load_unaligned_uint64(const void* p)
-  noexcept
+inline
+auto alloy::extra::pointer_util::load_unaligned_uint64(const void* p)
+  noexcept -> std::uint64_t
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 
@@ -755,9 +783,9 @@ inline std::uint64_t
 //-----------------------------------------------------------------------------
 
 
-inline float
-  alloy::extra::pointer_util::load_unaligned_float(const void* p)
-  noexcept
+inline
+auto alloy::extra::pointer_util::load_unaligned_float(const void* p)
+  noexcept -> float
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 
@@ -765,9 +793,9 @@ inline float
 }
 
 
-inline double
-  alloy::extra::pointer_util::load_unaligned_double(const void* p)
-  noexcept
+inline
+auto alloy::extra::pointer_util::load_unaligned_double(const void* p)
+  noexcept -> double
 {
   ALLOY_ASSERT(p != nullptr, "Pointer cannot be null");
 

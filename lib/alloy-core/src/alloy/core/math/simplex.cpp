@@ -44,8 +44,7 @@ namespace alloy::core {
     };
 
     constexpr
-    auto dot2(const int* a, real x, real y)
-      noexcept -> real
+    auto dot2(const int* a, real x, real y) noexcept -> real
     {
       return static_cast<real>(a[0]) * x +
              static_cast<real>(a[1]) * y;
@@ -61,8 +60,7 @@ namespace alloy::core {
     // }
 
     constexpr
-    auto floor_f_to_i(real x)
-      noexcept -> int
+    auto floor_f_to_i(real x) noexcept -> int
     {
       return x > 0 ? static_cast<int>(x) : static_cast<int>(x) - 1;
     }
@@ -73,8 +71,7 @@ namespace alloy::core {
 // Raw Noise
 //------------------------------------------------------------------------------
 
-auto alloy::core::simplex::raw_noise(real x, real y)
-  noexcept -> real
+auto alloy::core::simplex::raw_noise(real x, real y) noexcept -> real
 {
   static const auto s_sqrt3 = static_cast<real>(sqrt( 3.0 ));
   static const auto s_skew  = real{0.5} * (s_sqrt3 - real{1});
@@ -169,8 +166,7 @@ auto alloy::core::simplex::raw_noise(real x, real y)
   return static_cast<real>(result);
 }
 
-auto alloy::core::simplex::raw_noise(real x, real y, real z)
-  noexcept -> real
+auto alloy::core::simplex::raw_noise(real x, real y, real z) noexcept -> real
 {
   // TODO(matthew rodusek) 2017-04-22: Implement
   return static_cast<real>(x+y+z);
@@ -180,12 +176,13 @@ auto alloy::core::simplex::raw_noise(real x, real y, real z)
 // Octave Noises
 //------------------------------------------------------------------------------
 
-auto alloy::core::simplex::octave_noise(real octaves,
-                                        real persistence,
-                                        real scale,
-                                        real x,
-                                        real y)
-  noexcept -> real
+auto alloy::core::simplex::octave_noise(
+  real octaves,
+  real persistence,
+  real scale,
+  real x,
+  real y
+) noexcept -> real
 {
 
     auto frequency = scale;
@@ -205,13 +202,14 @@ auto alloy::core::simplex::octave_noise(real octaves,
     return static_cast<real>(total / max_amplitude);
 }
 
-auto alloy::core::simplex::octave_noise(real octaves,
-                                        real persistence,
-                                        real scale,
-                                        real x,
-                                        real y,
-                                        real z)
-  noexcept -> real
+auto alloy::core::simplex::octave_noise(
+  real octaves,
+  real persistence,
+  real scale,
+  real x,
+  real y,
+  real z
+) noexcept -> real
 {
 
     auto frequency = scale;

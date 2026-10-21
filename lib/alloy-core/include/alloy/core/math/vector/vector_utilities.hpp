@@ -137,8 +137,7 @@ namespace alloy::core::detail {
 
 template<typename T>
 inline constexpr
-auto alloy::core::vector_traits<T>::x(const T& vec)
-  noexcept -> real
+auto alloy::core::vector_traits<T>::x(const T& vec) noexcept -> real
 {
   if constexpr (detail::vector_has_x<T>::value) {
     return vec.x();
@@ -149,8 +148,7 @@ auto alloy::core::vector_traits<T>::x(const T& vec)
 
 template<typename T>
 inline constexpr
-auto alloy::core::vector_traits<T>::y(const T& vec)
-  noexcept -> real
+auto alloy::core::vector_traits<T>::y(const T& vec) noexcept -> real
 {
   if constexpr (detail::vector_has_y<T>::value) {
     return vec.y();
@@ -161,8 +159,7 @@ auto alloy::core::vector_traits<T>::y(const T& vec)
 
 template<typename T>
 inline constexpr
-auto alloy::core::vector_traits<T>::z(const T& vec)
-  noexcept -> real
+auto alloy::core::vector_traits<T>::z(const T& vec) noexcept -> real
 {
   if constexpr (detail::vector_has_z<T>::value) {
     return vec.z();
@@ -173,8 +170,7 @@ auto alloy::core::vector_traits<T>::z(const T& vec)
 
 template<typename T>
 inline constexpr
-auto alloy::core::vector_traits<T>::w(const T& vec)
-  noexcept -> real
+auto alloy::core::vector_traits<T>::w(const T& vec) noexcept -> real
 {
   if constexpr (detail::vector_has_w<T>::value) {
     return vec.w();

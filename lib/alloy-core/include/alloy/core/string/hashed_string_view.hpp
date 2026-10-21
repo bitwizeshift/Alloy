@@ -87,7 +87,8 @@ namespace alloy::core {
     /// \brief Copy-constructs a hashed string view
     ///
     /// \param other the other hashed string view to copy
-    basic_hashed_string_view(const basic_hashed_string_view& other) noexcept = default;
+    basic_hashed_string_view(const basic_hashed_string_view& other)
+      noexcept = default;
 
     //-------------------------------------------------------------------------
 
@@ -95,7 +96,8 @@ namespace alloy::core {
     ///
     /// \param other the other view to copy
     /// \return reference to `(*this)`
-    auto operator=(const basic_hashed_string_view& other) -> basic_hashed_string_view& = default;
+    auto operator=(const basic_hashed_string_view& other)
+      -> basic_hashed_string_view& = default;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -133,12 +135,16 @@ namespace alloy::core {
   //-----------------------------------------------------------------------------
 
   template <typename CharT, typename Traits>
-  constexpr auto operator==(const basic_hashed_string_view<CharT,Traits>& lhs,
-                            const basic_hashed_string_view<CharT,Traits>& rhs) noexcept -> bool;
+  constexpr auto operator==(
+    const basic_hashed_string_view<CharT,Traits>& lhs,
+    const basic_hashed_string_view<CharT,Traits>& rhs
+  ) noexcept -> bool;
 
   template <typename CharT, typename Traits>
-  constexpr auto operator!=(const basic_hashed_string_view<CharT,Traits>& lhs,
-                            const basic_hashed_string_view<CharT,Traits>& rhs) noexcept -> bool;
+  constexpr auto operator!=(
+    const basic_hashed_string_view<CharT,Traits>& lhs,
+    const basic_hashed_string_view<CharT,Traits>& rhs
+  ) noexcept -> bool;
 
   //-----------------------------------------------------------------------------
   // Utility
@@ -220,9 +226,10 @@ auto alloy::core::basic_hashed_string_view<CharT,Traits>::hash()
 
 template <typename CharT, typename Traits>
 inline constexpr
-auto alloy::core::operator==(const basic_hashed_string_view<CharT,Traits>& lhs,
-                             const basic_hashed_string_view<CharT,Traits>& rhs)
-  noexcept -> bool
+auto alloy::core::operator==(
+  const basic_hashed_string_view<CharT,Traits>& lhs,
+  const basic_hashed_string_view<CharT,Traits>& rhs
+) noexcept -> bool
 {
   using underlying_type = basic_string_view<CharT,Traits>;
 
@@ -232,9 +239,10 @@ auto alloy::core::operator==(const basic_hashed_string_view<CharT,Traits>& lhs,
 
 template <typename CharT, typename Traits>
 inline constexpr
-auto alloy::core::operator!=(const basic_hashed_string_view<CharT,Traits>& lhs,
-                             const basic_hashed_string_view<CharT,Traits>& rhs)
-  noexcept -> bool
+auto alloy::core::operator!=(
+  const basic_hashed_string_view<CharT,Traits>& lhs,
+  const basic_hashed_string_view<CharT,Traits>& rhs
+) noexcept -> bool
 {
   return !(lhs == rhs);
 }

@@ -67,17 +67,17 @@ namespace alloy::core {
     /// \brief Returns a zero-size data_quantity
     ///
     /// \return the data_quantity
-    static constexpr data_quantity zero() noexcept;
+    static constexpr auto zero() noexcept -> data_quantity;
 
     /// \brief Returns the minimum data_quantity this can support
     ///
     /// \return the data_quantity
-    static constexpr data_quantity min() noexcept;
+    static constexpr auto min() noexcept -> data_quantity;
 
     /// \brief Returns the maximum data_quantity this can support
     ///
     /// \return the data_quantity
-    static constexpr data_quantity max() noexcept;
+    static constexpr auto max() noexcept -> data_quantity;
 
     //-------------------------------------------------------------------------
     // Constructors / Assignment
@@ -116,26 +116,32 @@ namespace alloy::core {
     ///
     /// \param other the other data_quantity to copy
     /// \return reference to `(*this)`
-    data_quantity& operator=(const data_quantity& other) noexcept = default;
+    auto operator=(const data_quantity& other)
+      noexcept -> data_quantity& = default;
 
     //-------------------------------------------------------------------------
     // Arithmetic Operators
     //-------------------------------------------------------------------------
   public:
-    constexpr std::common_type_t<data_quantity> operator+() const noexcept;
-    constexpr std::common_type_t<data_quantity> operator-() const noexcept;
+    constexpr auto operator+()
+      const noexcept -> std::common_type_t<data_quantity>;
+    constexpr auto operator-()
+      const noexcept -> std::common_type_t<data_quantity>;
 
-    constexpr data_quantity& operator++() noexcept;
-    constexpr data_quantity operator++(int) noexcept;
-    constexpr data_quantity& operator--() noexcept;
-    constexpr data_quantity operator--(int) noexcept;
+    constexpr auto operator++() noexcept -> data_quantity&;
+    constexpr auto operator++(int) noexcept -> data_quantity;
+    constexpr auto operator--() noexcept -> data_quantity&;
+    constexpr auto operator--(int) noexcept -> data_quantity;
 
-    constexpr data_quantity& operator+=(const data_quantity& rhs) noexcept;
-    constexpr data_quantity& operator-=(const data_quantity& rhs) noexcept;
-    constexpr data_quantity& operator*=(const rep& r) noexcept;
-    constexpr data_quantity& operator/=(const rep& r) noexcept;
-    constexpr data_quantity& operator%=(const rep& r) noexcept;
-    constexpr data_quantity& operator%=(const data_quantity& rhs) noexcept;
+    constexpr auto operator+=(const data_quantity& rhs)
+      noexcept -> data_quantity&;
+    constexpr auto operator-=(const data_quantity& rhs)
+      noexcept -> data_quantity&;
+    constexpr auto operator*=(const rep& r) noexcept -> data_quantity&;
+    constexpr auto operator/=(const rep& r) noexcept -> data_quantity&;
+    constexpr auto operator%=(const rep& r) noexcept -> data_quantity&;
+    constexpr auto operator%=(const data_quantity& rhs)
+      noexcept -> data_quantity&;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -145,7 +151,7 @@ namespace alloy::core {
     /// \brief Gets the total count of the data_quantity
     ///
     /// \return the count
-    constexpr Rep count() const noexcept;
+    constexpr auto count() const noexcept -> Rep;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -252,72 +258,87 @@ namespace alloy::core {
   //---------------------------------------------------------------------------
 
   template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-  constexpr std::common_type_t<data_quantity<Rep1,Base1>, data_quantity<Rep2,Base2>>
-    operator+(const data_quantity<Rep1,Base1>& lhs,
-              const data_quantity<Rep2,Base2>& rhs) noexcept;
+  constexpr auto operator+(
+    const data_quantity<Rep1,Base1>& lhs,
+    const data_quantity<Rep2,Base2>& rhs
+  ) noexcept
+    -> std::common_type_t<data_quantity<Rep1,Base1>, data_quantity<Rep2,Base2>>;
 
   template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-  constexpr std::common_type_t<data_quantity<Rep1,Base1>, data_quantity<Rep2,Base2>>
-    operator-(const data_quantity<Rep1,Base1>& lhs,
-              const data_quantity<Rep2,Base2>& rhs) noexcept;
+  constexpr auto operator-(
+    const data_quantity<Rep1,Base1>& lhs,
+    const data_quantity<Rep2,Base2>& rhs
+  ) noexcept
+    -> std::common_type_t<data_quantity<Rep1,Base1>, data_quantity<Rep2,Base2>>;
 
   template <typename Rep1, typename Base, typename Rep2>
-  constexpr data_quantity<std::common_type_t<Rep1,Rep2>, Base>
-    operator*(const data_quantity<Rep1,Base>& d,
-              const Rep2& s) noexcept;
+  constexpr auto operator*(const data_quantity<Rep1,Base>& d, const Rep2& s)
+    noexcept -> data_quantity<std::common_type_t<Rep1,Rep2>, Base>;
 
   template <typename Rep1, typename Rep2, typename Base>
-  constexpr data_quantity<std::common_type_t<Rep1,Rep2>, Base>
-    operator*(const Rep1& s,
-              const data_quantity<Rep2,Base>& d) noexcept;
+  constexpr auto operator*(const Rep1& s, const data_quantity<Rep2,Base>& d)
+    noexcept -> data_quantity<std::common_type_t<Rep1,Rep2>, Base>;
 
   template <typename Rep1, typename Base, typename Rep2>
-  constexpr data_quantity<std::common_type_t<Rep1,Rep2>, Base>
-    operator/(const data_quantity<Rep1,Base>& d,
-              const Rep2& s) noexcept;
+  constexpr auto operator/(const data_quantity<Rep1,Base>& d, const Rep2& s)
+    noexcept -> data_quantity<std::common_type_t<Rep1,Rep2>, Base>;
 
   template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-  constexpr std::common_type_t<Rep1,Rep2>
-    operator/(const data_quantity<Rep1,Base1>& lhs,
-              const data_quantity<Rep2,Base2>& rhs) noexcept;
+  constexpr auto operator/(
+    const data_quantity<Rep1,Base1>& lhs,
+    const data_quantity<Rep2,Base2>& rhs
+  ) noexcept -> std::common_type_t<Rep1,Rep2>;
 
   template <typename Rep1, typename Base, typename Rep2>
-  constexpr data_quantity<std::common_type_t<Rep1,Rep2>, Base>
-    operator%(const data_quantity<Rep1, Base>& d,
-              const Rep2& s) noexcept;
+  constexpr auto operator%(const data_quantity<Rep1, Base>& d, const Rep2& s)
+    noexcept -> data_quantity<std::common_type_t<Rep1,Rep2>, Base>;
 
   template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-  constexpr std::common_type_t<data_quantity<Rep1,Base1>, data_quantity<Rep2,Base2>>
-    operator%(const data_quantity<Rep1,Base1>& lhs,
-              const data_quantity<Rep2,Base2>& rhs) noexcept;
+  constexpr auto operator%(
+    const data_quantity<Rep1,Base1>& lhs,
+    const data_quantity<Rep2,Base2>& rhs
+  ) noexcept
+    -> std::common_type_t<data_quantity<Rep1,Base1>, data_quantity<Rep2,Base2>>;
 
   //---------------------------------------------------------------------------
   // Comparison Operators
   //---------------------------------------------------------------------------
 
   template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-  constexpr bool operator==(const data_quantity<Rep1, Base1>& lhs,
-                            const data_quantity<Rep2, Base2>& rhs) noexcept;
+  constexpr auto operator==(
+    const data_quantity<Rep1, Base1>& lhs,
+    const data_quantity<Rep2, Base2>& rhs
+  ) noexcept -> bool;
 
   template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-  constexpr bool operator!=(const data_quantity<Rep1, Base1>& lhs,
-                            const data_quantity<Rep2, Base2>& rhs) noexcept;
+  constexpr auto operator!=(
+    const data_quantity<Rep1, Base1>& lhs,
+    const data_quantity<Rep2, Base2>& rhs
+  ) noexcept -> bool;
 
   template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-  constexpr bool operator<(const data_quantity<Rep1, Base1>& lhs,
-                          const data_quantity<Rep2, Base2>& rhs) noexcept;
+  constexpr auto operator<(
+    const data_quantity<Rep1, Base1>& lhs,
+    const data_quantity<Rep2, Base2>& rhs
+  ) noexcept -> bool;
 
   template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-  constexpr bool operator<=(const data_quantity<Rep1, Base1>& lhs,
-                            const data_quantity<Rep2, Base2>& rhs) noexcept;
+  constexpr auto operator<=(
+    const data_quantity<Rep1, Base1>& lhs,
+    const data_quantity<Rep2, Base2>& rhs
+  ) noexcept -> bool;
 
   template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-  constexpr bool operator>(const data_quantity<Rep1, Base1>& lhs,
-                          const data_quantity<Rep2, Base2>& rhs) noexcept;
+  constexpr auto operator>(
+    const data_quantity<Rep1, Base1>& lhs,
+    const data_quantity<Rep2, Base2>& rhs
+  ) noexcept -> bool;
 
   template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-  constexpr bool operator>=(const data_quantity<Rep1, Base1>& lhs,
-                            const data_quantity<Rep2, Base2>& rhs) noexcept;
+  constexpr auto operator>=(
+    const data_quantity<Rep1, Base1>& lhs,
+    const data_quantity<Rep2, Base2>& rhs
+  ) noexcept -> bool;
 
   //---------------------------------------------------------------------------
   // Utilities
@@ -333,7 +354,7 @@ namespace alloy::core {
   template <typename ToCapacity, typename FromCapacity>
     requires (alloy::core::is_data_quantity_v<ToCapacity> &&
               alloy::core::is_data_quantity_v<FromCapacity>)
-  constexpr ToCapacity data_quantity_cast(const FromCapacity& from);
+  constexpr auto data_quantity_cast(const FromCapacity& from) -> ToCapacity;
 
   //---------------------------------------------------------------------------
 
@@ -343,9 +364,11 @@ namespace alloy::core {
   /// \param rhs the right data_quantity
   /// \return the difference between the two capacities
   template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-  constexpr std::common_type_t<data_quantity<Rep1,Base1>, data_quantity<Rep2,Base2>>
-    difference(const data_quantity<Rep1,Base1>& lhs, const data_quantity<Rep2,Base2>& rhs)
-    noexcept;
+  constexpr auto difference(
+    const data_quantity<Rep1,Base1>& lhs,
+    const data_quantity<Rep2,Base2>& rhs
+  ) noexcept
+    -> std::common_type_t<data_quantity<Rep1,Base1>, data_quantity<Rep2,Base2>>;
 
   /// \brief Rounds the specified data_quantity down to ToCapacity
   ///
@@ -354,7 +377,8 @@ namespace alloy::core {
   /// \return the rounded data_quantity
   template <typename ToCapacity, typename Rep, typename Base>
     requires alloy::core::is_data_quantity_v<ToCapacity>
-  constexpr ToCapacity floor(const data_quantity<Rep, Base>& c) noexcept;
+  constexpr auto floor(const data_quantity<Rep, Base>& c)
+    noexcept -> ToCapacity;
 
 
   /// \brief Rounds the specified data_quantity up to ToCapacity
@@ -364,7 +388,7 @@ namespace alloy::core {
   /// \return the rounded data_quantity
   template <typename ToCapacity, typename Rep, typename Base>
     requires alloy::core::is_data_quantity_v<ToCapacity>
-  constexpr ToCapacity ceil(const data_quantity<Rep, Base>& c) noexcept;
+  constexpr auto ceil(const data_quantity<Rep, Base>& c) noexcept -> ToCapacity;
 
   /// \brief Rounds the specified data_quantity \p c to the nearest ToCapacity
   ///
@@ -376,14 +400,16 @@ namespace alloy::core {
   /// \return the rounded data_quantity
   template <typename ToCapacity, typename Rep, typename Base>
     requires alloy::core::is_data_quantity_v<ToCapacity>
-  constexpr ToCapacity round(const data_quantity<Rep, Base>& c) noexcept;
+  constexpr auto round(const data_quantity<Rep, Base>& c)
+    noexcept -> ToCapacity;
 
   /// \brief Gets the absolute value of the specified data_quantity
   ///
   /// \param c the data_quantity to get the absolute value of
   /// \return the absolute value of the data_quantity
   template <typename Rep, typename Base>
-  constexpr data_quantity<Rep, Base> abs(const data_quantity<Rep, Base>& c) noexcept;
+  constexpr auto abs(const data_quantity<Rep, Base>& c)
+    noexcept -> data_quantity<Rep, Base>;
 
   //---------------------------------------------------------------------------
 
@@ -391,13 +417,13 @@ namespace alloy::core {
   ///
   /// \tparam T the type to get the size of
   template <typename T>
-  constexpr bytes size_of() noexcept;
+  constexpr auto size_of() noexcept -> bytes;
 
   /// \brief Gets the size of the specified value, in bytes
   ///
   /// \param v the value to get the size of
   template <typename T>
-  constexpr bytes size_of(const T& v) noexcept;
+  constexpr auto size_of(const T& v) noexcept -> bytes;
 
   //===========================================================================
   // literals : class : data_quantity
@@ -410,20 +436,20 @@ namespace alloy::core {
 
     inline namespace byte_literals {
 
-      constexpr bytes operator""_b(unsigned long long x) noexcept;
-      constexpr kilobytes operator""_kb(unsigned long long x) noexcept;
-      constexpr megabytes operator""_mb(unsigned long long x) noexcept;
-      constexpr gigabytes operator""_gb(unsigned long long x) noexcept;
-      constexpr terabytes operator""_tb(unsigned long long x) noexcept;
-      constexpr petabytes operator""_pb(unsigned long long x) noexcept;
+      constexpr auto operator""_b(unsigned long long x) noexcept -> bytes;
+      constexpr auto operator""_kb(unsigned long long x) noexcept -> kilobytes;
+      constexpr auto operator""_mb(unsigned long long x) noexcept -> megabytes;
+      constexpr auto operator""_gb(unsigned long long x) noexcept -> gigabytes;
+      constexpr auto operator""_tb(unsigned long long x) noexcept -> terabytes;
+      constexpr auto operator""_pb(unsigned long long x) noexcept -> petabytes;
 
       //-----------------------------------------------------------------------
 
-      constexpr kibibytes operator""_kib(unsigned long long x) noexcept;
-      constexpr mebibytes operator""_mib(unsigned long long x) noexcept;
-      constexpr gibibytes operator""_gib(unsigned long long x) noexcept;
-      constexpr tebibytes operator""_tib(unsigned long long x) noexcept;
-      constexpr pebibytes operator""_pib(unsigned long long x) noexcept;
+      constexpr auto operator""_kib(unsigned long long x) noexcept -> kibibytes;
+      constexpr auto operator""_mib(unsigned long long x) noexcept -> mebibytes;
+      constexpr auto operator""_gib(unsigned long long x) noexcept -> gibibytes;
+      constexpr auto operator""_tib(unsigned long long x) noexcept -> tebibytes;
+      constexpr auto operator""_pib(unsigned long long x) noexcept -> pebibytes;
 
     } // namespace byte_literals
 
@@ -433,20 +459,25 @@ namespace alloy::core {
 
     inline namespace bit_literals {
 
-      constexpr bits operator""_bit(unsigned long long x) noexcept;
-      constexpr kilobits operator""_kbit(unsigned long long x) noexcept;
-      constexpr megabits operator""_mbit(unsigned long long x) noexcept;
-      constexpr gigabits operator""_gbit(unsigned long long x) noexcept;
-      constexpr terabits operator""_tbit(unsigned long long x) noexcept;
-      constexpr petabits operator""_pbit(unsigned long long x) noexcept;
+      constexpr auto operator""_bit(unsigned long long x) noexcept -> bits;
+      constexpr auto operator""_kbit(unsigned long long x) noexcept -> kilobits;
+      constexpr auto operator""_mbit(unsigned long long x) noexcept -> megabits;
+      constexpr auto operator""_gbit(unsigned long long x) noexcept -> gigabits;
+      constexpr auto operator""_tbit(unsigned long long x) noexcept -> terabits;
+      constexpr auto operator""_pbit(unsigned long long x) noexcept -> petabits;
 
       //-----------------------------------------------------------------------
 
-      constexpr kibibits operator""_kibit(unsigned long long x) noexcept;
-      constexpr mebibits operator""_mibit(unsigned long long x) noexcept;
-      constexpr gibibits operator""_gibit(unsigned long long x) noexcept;
-      constexpr tebibits operator""_tibit(unsigned long long x) noexcept;
-      constexpr pebibits operator""_pibit(unsigned long long x) noexcept;
+      constexpr auto operator""_kibit(unsigned long long x)
+        noexcept -> kibibits;
+      constexpr auto operator""_mibit(unsigned long long x)
+        noexcept -> mebibits;
+      constexpr auto operator""_gibit(unsigned long long x)
+        noexcept -> gibibits;
+      constexpr auto operator""_tibit(unsigned long long x)
+        noexcept -> tebibits;
+      constexpr auto operator""_pibit(unsigned long long x)
+        noexcept -> pebibits;
 
     } // inline namespace data_quantity_literals
   } // inline namespace literals
@@ -461,23 +492,23 @@ namespace alloy::core {
 
   template <typename Rep, typename Base>
     requires (Base::den == 1)
-  constexpr std::byte* operator+(std::byte* p, data_quantity<Rep,Base> offset)
-    noexcept;
+  constexpr auto operator+(std::byte* p, data_quantity<Rep,Base> offset)
+    noexcept -> std::byte*;
 
   template <typename Rep, typename Base>
     requires (Base::den == 1)
-  constexpr const std::byte* operator+(const std::byte* p, data_quantity<Rep,Base> offset)
-    noexcept;
+  constexpr auto operator+(const std::byte* p, data_quantity<Rep,Base> offset)
+    noexcept -> const std::byte*;
 
   template <typename Rep, typename Base>
     requires (Base::den == 1)
-  constexpr std::byte* operator-(std::byte* p, data_quantity<Rep,Base> offset)
-    noexcept;
+  constexpr auto operator-(std::byte* p, data_quantity<Rep,Base> offset)
+    noexcept -> std::byte*;
 
   template <typename Rep, typename Base>
     requires (Base::den == 1)
-  constexpr const std::byte* operator-(const std::byte* p, data_quantity<Rep,Base> offset)
-    noexcept;
+  constexpr auto operator-(const std::byte* p, data_quantity<Rep,Base> offset)
+    noexcept -> const std::byte*;
 
 } // namespace alloy::core
 
@@ -515,25 +546,25 @@ namespace std {
 //-----------------------------------------------------------------------------
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep,Base>
-  alloy::core::data_quantity<Rep,Base>::zero()
-  noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::zero()
+  noexcept -> data_quantity<Rep,Base>
 {
   return data_quantity{0};
 }
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep,Base>
-  alloy::core::data_quantity<Rep,Base>::min()
-  noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::min()
+  noexcept -> data_quantity<Rep,Base>
 {
   return data_quantity{std::numeric_limits<Rep>::min()};
 }
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep,Base>
-  alloy::core::data_quantity<Rep,Base>::max()
-  noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::max()
+  noexcept -> data_quantity<Rep,Base>
 {
   return data_quantity{std::numeric_limits<Rep>::max()};
 }
@@ -545,8 +576,8 @@ inline constexpr alloy::core::data_quantity<Rep,Base>
 template <typename Rep, typename Base>
 template <typename URep>
   requires std::convertible_to<URep, Rep>
-inline constexpr alloy::core::data_quantity<Rep,Base>::data_quantity(const URep& r)
-  noexcept
+inline constexpr
+alloy::core::data_quantity<Rep,Base>::data_quantity(const URep& r) noexcept
   : m_count{static_cast<Rep>(r)}
 {
 
@@ -556,9 +587,10 @@ template <typename Rep, typename Base>
 template <typename URep, typename UBase>
   requires (std::ratio_divide<UBase, Base>::den == 1 &&
            std::convertible_to<URep, Rep>)
-inline constexpr alloy::core::data_quantity<Rep,Base>
-  ::data_quantity(data_quantity<URep,UBase> other)
-  noexcept
+inline constexpr
+alloy::core::data_quantity<Rep,Base>::data_quantity(
+  data_quantity<URep,UBase> other
+) noexcept
   : m_count{static_cast<Rep>(other.count() * std::ratio_divide<UBase, Base>::num)}
 {
 
@@ -569,9 +601,9 @@ inline constexpr alloy::core::data_quantity<Rep,Base>
 //-----------------------------------------------------------------------------
 
 template <typename Rep, typename Base>
-inline constexpr std::common_type_t<alloy::core::data_quantity<Rep,Base>>
-  alloy::core::data_quantity<Rep,Base>::operator+()
-  const noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::operator+()
+  const noexcept -> std::common_type_t<data_quantity<Rep,Base>>
 {
   using type = std::common_type_t<data_quantity>;
 
@@ -579,9 +611,9 @@ inline constexpr std::common_type_t<alloy::core::data_quantity<Rep,Base>>
 }
 
 template <typename Rep, typename Base>
-inline constexpr std::common_type_t<alloy::core::data_quantity<Rep,Base>>
-  alloy::core::data_quantity<Rep,Base>::operator-()
-  const noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::operator-()
+  const noexcept -> std::common_type_t<data_quantity<Rep,Base>>
 {
   using type = std::common_type_t<data_quantity>;
 
@@ -589,9 +621,9 @@ inline constexpr std::common_type_t<alloy::core::data_quantity<Rep,Base>>
 }
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep,Base>&
-  alloy::core::data_quantity<Rep,Base>::operator++()
-  noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::operator++()
+  noexcept -> data_quantity<Rep,Base>&
 {
   ++m_count;
   return (*this);
@@ -599,9 +631,9 @@ inline constexpr alloy::core::data_quantity<Rep,Base>&
 
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep,Base>
-  alloy::core::data_quantity<Rep,Base>::operator++(int)
-  noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::operator++(int)
+  noexcept -> data_quantity<Rep,Base>
 {
   const auto copy = (*this);
   ++m_count;
@@ -610,9 +642,9 @@ inline constexpr alloy::core::data_quantity<Rep,Base>
 
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep,Base>&
-  alloy::core::data_quantity<Rep,Base>::operator--()
-  noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::operator--()
+  noexcept -> data_quantity<Rep,Base>&
 {
   --m_count;
   return (*this);
@@ -620,9 +652,9 @@ inline constexpr alloy::core::data_quantity<Rep,Base>&
 
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep,Base>
-  alloy::core::data_quantity<Rep,Base>::operator--(int)
-  noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::operator--(int)
+  noexcept -> data_quantity<Rep,Base>
 {
   const auto copy = (*this);
   --m_count;
@@ -631,9 +663,9 @@ inline constexpr alloy::core::data_quantity<Rep,Base>
 
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep,Base>&
-  alloy::core::data_quantity<Rep,Base>::operator+=(const data_quantity& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::operator+=(const data_quantity& rhs)
+  noexcept -> data_quantity<Rep,Base>&
 {
   m_count += rhs.count();
   return (*this);
@@ -641,9 +673,9 @@ inline constexpr alloy::core::data_quantity<Rep,Base>&
 
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep,Base>&
-  alloy::core::data_quantity<Rep,Base>::operator-=(const data_quantity& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::operator-=(const data_quantity& rhs)
+  noexcept -> data_quantity<Rep,Base>&
 {
   m_count -= rhs.count();
   return (*this);
@@ -651,9 +683,9 @@ inline constexpr alloy::core::data_quantity<Rep,Base>&
 
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep,Base>&
-  alloy::core::data_quantity<Rep,Base>::operator*=(const rep& r)
-  noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::operator*=(const rep& r)
+  noexcept -> data_quantity<Rep,Base>&
 {
   m_count *= r;
   return (*this);
@@ -661,9 +693,9 @@ inline constexpr alloy::core::data_quantity<Rep,Base>&
 
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep,Base>&
-  alloy::core::data_quantity<Rep,Base>::operator/=(const rep& r)
-  noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::operator/=(const rep& r)
+  noexcept -> data_quantity<Rep,Base>&
 {
   m_count /= r;
   return (*this);
@@ -671,9 +703,9 @@ inline constexpr alloy::core::data_quantity<Rep,Base>&
 
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep,Base>&
-  alloy::core::data_quantity<Rep,Base>::operator%=(const rep& r)
-  noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::operator%=(const rep& r)
+  noexcept -> data_quantity<Rep,Base>&
 {
   m_count %= r;
   return (*this);
@@ -681,9 +713,9 @@ inline constexpr alloy::core::data_quantity<Rep,Base>&
 
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep,Base>&
-  alloy::core::data_quantity<Rep,Base>::operator%=(const data_quantity& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::operator%=(const data_quantity& rhs)
+  noexcept -> data_quantity<Rep,Base>&
 {
   m_count %= rhs.count();
   return (*this);
@@ -694,8 +726,8 @@ inline constexpr alloy::core::data_quantity<Rep,Base>&
 //-----------------------------------------------------------------------------
 
 template <typename Rep, typename Base>
-inline constexpr Rep alloy::core::data_quantity<Rep,Base>::count()
-  const noexcept
+inline constexpr
+auto alloy::core::data_quantity<Rep,Base>::count() const noexcept -> Rep
 {
   return m_count;
 }
@@ -710,11 +742,12 @@ inline constexpr Rep alloy::core::data_quantity<Rep,Base>::count()
 //-----------------------------------------------------------------------------
 
 template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-inline constexpr std::common_type_t<alloy::core::data_quantity<Rep1,Base1>,
-                                    alloy::core::data_quantity<Rep2,Base2>>
-  alloy::core::operator+(const data_quantity<Rep1,Base1>& lhs,
-                 const data_quantity<Rep2,Base2>& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator+(
+  const data_quantity<Rep1,Base1>& lhs,
+  const data_quantity<Rep2,Base2>& rhs
+) noexcept
+  -> std::common_type_t<data_quantity<Rep1,Base1>, data_quantity<Rep2,Base2>>
 {
   using result_type = std::common_type_t<
     data_quantity<Rep1,Base1>,
@@ -727,11 +760,12 @@ inline constexpr std::common_type_t<alloy::core::data_quantity<Rep1,Base1>,
 }
 
 template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-inline constexpr std::common_type_t<alloy::core::data_quantity<Rep1,Base1>,
-                                    alloy::core::data_quantity<Rep2,Base2>>
-  alloy::core::operator-(const data_quantity<Rep1,Base1>& lhs,
-                 const data_quantity<Rep2,Base2>& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator-(
+  const data_quantity<Rep1,Base1>& lhs,
+  const data_quantity<Rep2,Base2>& rhs
+) noexcept
+  -> std::common_type_t<data_quantity<Rep1,Base1>, data_quantity<Rep2,Base2>>
 {
   using result_type = std::common_type_t<
     data_quantity<Rep1,Base1>,
@@ -745,10 +779,11 @@ inline constexpr std::common_type_t<alloy::core::data_quantity<Rep1,Base1>,
 
 
 template <typename Rep1, typename Base, typename Rep2>
-inline constexpr alloy::core::data_quantity<std::common_type_t<Rep1,Rep2>, Base>
-  alloy::core::operator*(const data_quantity<Rep1,Base>& lhs,
-                 const Rep2& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator*(
+  const data_quantity<Rep1,Base>& lhs,
+  const Rep2& rhs
+) noexcept -> data_quantity<std::common_type_t<Rep1,Rep2>, Base>
 {
   using result_type = data_quantity<std::common_type_t<Rep1,Rep2>, Base>;
 
@@ -759,10 +794,11 @@ inline constexpr alloy::core::data_quantity<std::common_type_t<Rep1,Rep2>, Base>
 
 
 template <typename Rep1, typename Rep2, typename Base>
-inline constexpr alloy::core::data_quantity<std::common_type_t<Rep1,Rep2>, Base>
-  alloy::core::operator*(const Rep1& lhs,
-                 const data_quantity<Rep2,Base>& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator*(
+  const Rep1& lhs,
+  const data_quantity<Rep2,Base>& rhs
+) noexcept -> data_quantity<std::common_type_t<Rep1,Rep2>, Base>
 {
   using result_type = data_quantity<std::common_type_t<Rep1,Rep2>, Base>;
 
@@ -773,10 +809,11 @@ inline constexpr alloy::core::data_quantity<std::common_type_t<Rep1,Rep2>, Base>
 
 
 template <typename Rep1, typename Base, typename Rep2>
-inline constexpr alloy::core::data_quantity<std::common_type_t<Rep1,Rep2>, Base>
-  alloy::core::operator/(const data_quantity<Rep1,Base>& lhs,
-                 const Rep2& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator/(
+  const data_quantity<Rep1,Base>& lhs,
+  const Rep2& rhs
+) noexcept -> data_quantity<std::common_type_t<Rep1,Rep2>, Base>
 {
   using result_type = data_quantity<std::common_type_t<Rep1,Rep2>, Base>;
 
@@ -787,10 +824,11 @@ inline constexpr alloy::core::data_quantity<std::common_type_t<Rep1,Rep2>, Base>
 
 
 template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-inline constexpr std::common_type_t<Rep1,Rep2>
-  alloy::core::operator/(const data_quantity<Rep1,Base1>& lhs,
-                 const data_quantity<Rep2,Base2>& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator/(
+  const data_quantity<Rep1,Base1>& lhs,
+  const data_quantity<Rep2,Base2>& rhs
+) noexcept -> std::common_type_t<Rep1,Rep2>
 {
   using result_type = std::common_type_t<Rep1,Rep2>;
   using common_type = std::common_type_t<
@@ -805,10 +843,11 @@ inline constexpr std::common_type_t<Rep1,Rep2>
 
 
 template <typename Rep1, typename Base, typename Rep2>
-inline constexpr alloy::core::data_quantity<std::common_type_t<Rep1,Rep2>, Base>
-  alloy::core::operator%(const data_quantity<Rep1, Base>& lhs,
-                 const Rep2& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator%(
+  const data_quantity<Rep1, Base>& lhs,
+  const Rep2& rhs
+) noexcept -> data_quantity<std::common_type_t<Rep1,Rep2>, Base>
 {
   using result_type = data_quantity<std::common_type_t<Rep1,Rep2>, Base>;
 
@@ -819,11 +858,12 @@ inline constexpr alloy::core::data_quantity<std::common_type_t<Rep1,Rep2>, Base>
 
 
 template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-inline constexpr std::common_type_t<alloy::core::data_quantity<Rep1,Base1>,
-                                    alloy::core::data_quantity<Rep2,Base2>>
-  alloy::core::operator%(const data_quantity<Rep1,Base1>& lhs,
-                 const data_quantity<Rep2,Base2>& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator%(
+  const data_quantity<Rep1,Base1>& lhs,
+  const data_quantity<Rep2,Base2>& rhs
+) noexcept
+  -> std::common_type_t<data_quantity<Rep1,Base1>, data_quantity<Rep2,Base2>>
 {
   using result_type = std::common_type_t<
     data_quantity<Rep1,Base1>,
@@ -841,9 +881,11 @@ inline constexpr std::common_type_t<alloy::core::data_quantity<Rep1,Base1>,
 //-----------------------------------------------------------------------------
 
 template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-inline constexpr bool alloy::core::operator==(const data_quantity<Rep1, Base1>& lhs,
-                                      const data_quantity<Rep2, Base2>& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator==(
+  const data_quantity<Rep1, Base1>& lhs,
+  const data_quantity<Rep2, Base2>& rhs
+) noexcept -> bool
 {
   using common_type = std::common_type_t<
     data_quantity<Rep1, Base1>,
@@ -855,9 +897,11 @@ inline constexpr bool alloy::core::operator==(const data_quantity<Rep1, Base1>& 
 
 
 template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-inline constexpr bool alloy::core::operator!=(const data_quantity<Rep1, Base1>& lhs,
-                                      const data_quantity<Rep2, Base2>& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator!=(
+  const data_quantity<Rep1, Base1>& lhs,
+  const data_quantity<Rep2, Base2>& rhs
+) noexcept -> bool
 {
   using common_type = std::common_type_t<
     data_quantity<Rep1, Base1>,
@@ -869,9 +913,11 @@ inline constexpr bool alloy::core::operator!=(const data_quantity<Rep1, Base1>& 
 
 
 template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-inline constexpr bool alloy::core::operator<(const data_quantity<Rep1, Base1>& lhs,
-                                     const data_quantity<Rep2, Base2>& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator<(
+  const data_quantity<Rep1, Base1>& lhs,
+  const data_quantity<Rep2, Base2>& rhs
+) noexcept -> bool
 {
   using common_type = std::common_type_t<
     data_quantity<Rep1, Base1>,
@@ -883,9 +929,11 @@ inline constexpr bool alloy::core::operator<(const data_quantity<Rep1, Base1>& l
 
 
 template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-inline constexpr bool alloy::core::operator<=(const data_quantity<Rep1, Base1>& lhs,
-                                      const data_quantity<Rep2, Base2>& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator<=(
+  const data_quantity<Rep1, Base1>& lhs,
+  const data_quantity<Rep2, Base2>& rhs
+) noexcept -> bool
 {
   using common_type = std::common_type_t<
     data_quantity<Rep1, Base1>,
@@ -897,9 +945,11 @@ inline constexpr bool alloy::core::operator<=(const data_quantity<Rep1, Base1>& 
 
 
 template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-inline constexpr bool alloy::core::operator>(const data_quantity<Rep1, Base1>& lhs,
-                                     const data_quantity<Rep2, Base2>& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator>(
+  const data_quantity<Rep1, Base1>& lhs,
+  const data_quantity<Rep2, Base2>& rhs
+) noexcept -> bool
 {
   using common_type = std::common_type_t<
     data_quantity<Rep1, Base1>,
@@ -911,9 +961,11 @@ inline constexpr bool alloy::core::operator>(const data_quantity<Rep1, Base1>& l
 
 
 template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-inline constexpr bool alloy::core::operator>=(const data_quantity<Rep1, Base1>& lhs,
-                                      const data_quantity<Rep2, Base2>& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::operator>=(
+  const data_quantity<Rep1, Base1>& lhs,
+  const data_quantity<Rep2, Base2>& rhs
+) noexcept -> bool
 {
   using common_type = std::common_type_t<
     data_quantity<Rep1, Base1>,
@@ -930,7 +982,8 @@ inline constexpr bool alloy::core::operator>=(const data_quantity<Rep1, Base1>& 
 template <typename ToCapacity, typename FromCapacity>
   requires (alloy::core::is_data_quantity_v<ToCapacity> &&
            alloy::core::is_data_quantity_v<FromCapacity>)
-inline constexpr ToCapacity alloy::core::data_quantity_cast(const FromCapacity& from)
+inline constexpr
+auto alloy::core::data_quantity_cast(const FromCapacity& from) -> ToCapacity
 {
   using from_base = typename FromCapacity::base;
   using to_base = typename ToCapacity::base;
@@ -946,11 +999,12 @@ inline constexpr ToCapacity alloy::core::data_quantity_cast(const FromCapacity& 
 //---------------------------------------------------------------------------
 
 template <typename Rep1, typename Base1, typename Rep2, typename Base2>
-inline constexpr std::common_type_t<alloy::core::data_quantity<Rep1,Base1>,
-                                    alloy::core::data_quantity<Rep2,Base2>>
-  alloy::core::difference(const data_quantity<Rep1,Base1>& lhs,
-                          const data_quantity<Rep2,Base2>& rhs)
-  noexcept
+inline constexpr
+auto alloy::core::difference(
+  const data_quantity<Rep1,Base1>& lhs,
+  const data_quantity<Rep2,Base2>& rhs
+) noexcept
+  -> std::common_type_t<data_quantity<Rep1,Base1>, data_quantity<Rep2,Base2>>
 {
   using result_type = std::common_type_t<
     data_quantity<Rep1,Base1>,
@@ -969,8 +1023,9 @@ inline constexpr std::common_type_t<alloy::core::data_quantity<Rep1,Base1>,
 
 template <typename ToCapacity, typename Rep, typename Base>
   requires alloy::core::is_data_quantity_v<ToCapacity>
-inline constexpr ToCapacity alloy::core::floor(const data_quantity<Rep, Base>& c)
-  noexcept
+inline constexpr
+auto alloy::core::floor(const data_quantity<Rep, Base>& c)
+  noexcept -> ToCapacity
 {
   const auto to = data_quantity_cast<ToCapacity>(c);
   if (to > c) {
@@ -982,8 +1037,8 @@ inline constexpr ToCapacity alloy::core::floor(const data_quantity<Rep, Base>& c
 
 template <typename ToCapacity, typename Rep, typename Base>
   requires alloy::core::is_data_quantity_v<ToCapacity>
-inline constexpr ToCapacity alloy::core::ceil(const data_quantity<Rep, Base>& c)
-  noexcept
+inline constexpr
+auto alloy::core::ceil(const data_quantity<Rep, Base>& c) noexcept -> ToCapacity
 {
   const auto to = data_quantity_cast<ToCapacity>(c);
   if (to < c) {
@@ -995,8 +1050,9 @@ inline constexpr ToCapacity alloy::core::ceil(const data_quantity<Rep, Base>& c)
 
 template <typename ToCapacity, typename Rep, typename Base>
   requires alloy::core::is_data_quantity_v<ToCapacity>
-inline constexpr ToCapacity alloy::core::round(const data_quantity<Rep, Base>& c)
-  noexcept
+inline constexpr
+auto alloy::core::round(const data_quantity<Rep, Base>& c)
+  noexcept -> ToCapacity
 {
   const auto lower = floor<ToCapacity>(c);
   const auto upper = lower + ToCapacity{1};
@@ -1023,9 +1079,9 @@ inline constexpr ToCapacity alloy::core::round(const data_quantity<Rep, Base>& c
 
 
 template <typename Rep, typename Base>
-inline constexpr alloy::core::data_quantity<Rep, Base>
-  alloy::core::abs(const data_quantity<Rep, Base>& c)
-  noexcept
+inline constexpr
+auto alloy::core::abs(const data_quantity<Rep, Base>& c)
+  noexcept -> data_quantity<Rep, Base>
 {
   return c >= data_quantity<Rep, Base>::zero() ? c : -c;
 }
@@ -1033,16 +1089,16 @@ inline constexpr alloy::core::data_quantity<Rep, Base>
 //-----------------------------------------------------------------------------
 
 template <typename T>
-inline constexpr alloy::core::bytes alloy::core::size_of()
-  noexcept
+inline constexpr
+auto alloy::core::size_of() noexcept -> bytes
 {
   return bytes{sizeof(T)};
 }
 
 
 template <typename T>
-inline constexpr alloy::core::bytes alloy::core::size_of(const T& v)
-  noexcept
+inline constexpr
+auto alloy::core::size_of(const T& v) noexcept -> bytes
 {
   return bytes{sizeof(v)};
 }
@@ -1055,90 +1111,90 @@ inline constexpr alloy::core::bytes alloy::core::size_of(const T& v)
 // Byte Literals
 //-----------------------------------------------------------------------------
 
-inline constexpr alloy::core::bytes
-  alloy::core::literals::byte_literals::operator""_b(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::byte_literals::operator""_b(unsigned long long x)
+  noexcept -> bytes
 {
   return bytes{static_cast<bytes::rep>(x)};
 }
 
 
-inline constexpr alloy::core::kilobytes
-  alloy::core::literals::byte_literals::operator""_kb(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::byte_literals::operator""_kb(unsigned long long x)
+  noexcept -> kilobytes
 {
   return kilobytes{static_cast<kilobytes::rep>(x)};
 }
 
 
-inline constexpr alloy::core::megabytes
-  alloy::core::literals::byte_literals::operator""_mb(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::byte_literals::operator""_mb(unsigned long long x)
+  noexcept -> megabytes
 {
   return megabytes{static_cast<megabytes::rep>(x)};
 }
 
 
-inline constexpr alloy::core::gigabytes
-  alloy::core::literals::byte_literals::operator""_gb(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::byte_literals::operator""_gb(unsigned long long x)
+  noexcept -> gigabytes
 {
   return gigabytes{static_cast<gigabytes::rep>(x)};
 }
 
 
-inline constexpr alloy::core::terabytes
-  alloy::core::literals::byte_literals::operator""_tb(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::byte_literals::operator""_tb(unsigned long long x)
+  noexcept -> terabytes
 {
   return terabytes{static_cast<terabytes::rep>(x)};
 }
 
 
-inline constexpr alloy::core::petabytes
-  alloy::core::literals::byte_literals::operator""_pb(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::byte_literals::operator""_pb(unsigned long long x)
+  noexcept -> petabytes
 {
   return petabytes{static_cast<petabytes::rep>(x)};
 }
 
 //-----------------------------------------------------------------------------
 
-inline constexpr alloy::core::kibibytes
-  alloy::core::literals::byte_literals::operator""_kib(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::byte_literals::operator""_kib(unsigned long long x)
+  noexcept -> kibibytes
 {
   return kibibytes{static_cast<kibibytes::rep>(x)};
 }
 
 
-inline constexpr alloy::core::mebibytes
-  alloy::core::literals::byte_literals::operator""_mib(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::byte_literals::operator""_mib(unsigned long long x)
+  noexcept -> mebibytes
 {
   return mebibytes{static_cast<mebibytes::rep>(x)};
 }
 
 
-inline constexpr alloy::core::gibibytes
-  alloy::core::literals::byte_literals::operator""_gib(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::byte_literals::operator""_gib(unsigned long long x)
+  noexcept -> gibibytes
 {
   return gibibytes{static_cast<gibibytes::rep>(x)};
 }
 
 
-inline constexpr alloy::core::tebibytes
-  alloy::core::literals::byte_literals::operator""_tib(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::byte_literals::operator""_tib(unsigned long long x)
+  noexcept -> tebibytes
 {
   return tebibytes{static_cast<tebibytes::rep>(x)};
 }
 
 
-inline constexpr alloy::core::pebibytes
-  alloy::core::literals::byte_literals::operator""_pib(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::byte_literals::operator""_pib(unsigned long long x)
+  noexcept -> pebibytes
 {
   return pebibytes{static_cast<pebibytes::rep>(x)};
 }
@@ -1147,99 +1203,99 @@ inline constexpr alloy::core::pebibytes
 // Bit Literals
 //-----------------------------------------------------------------------------
 
-inline constexpr alloy::core::bits
-  alloy::core::literals::bit_literals::operator""_bit(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::bit_literals::operator""_bit(unsigned long long x)
+  noexcept -> bits
 {
   return bits{static_cast<bits::rep>(x)};
 }
 
 
-inline constexpr alloy::core::kilobits
-  alloy::core::literals::bit_literals::operator""_kbit(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::bit_literals::operator""_kbit(unsigned long long x)
+  noexcept -> kilobits
 {
   return kilobits{static_cast<kilobits::rep>(x)};
 }
 
 
-inline constexpr alloy::core::megabits
-  alloy::core::literals::bit_literals::operator""_mbit(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::bit_literals::operator""_mbit(unsigned long long x)
+  noexcept -> megabits
 {
   return megabits{static_cast<megabits::rep>(x)};
 }
 
 
-inline constexpr alloy::core::gigabits
-  alloy::core::literals::bit_literals::operator""_gbit(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::bit_literals::operator""_gbit(unsigned long long x)
+  noexcept -> gigabits
 {
   return gigabits{static_cast<gigabits::rep>(x)};
 }
 
 
-inline constexpr alloy::core::terabits
-  alloy::core::literals::bit_literals::operator""_tbit(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::bit_literals::operator""_tbit(unsigned long long x)
+  noexcept -> terabits
 {
   return terabits{static_cast<terabits::rep>(x)};
 }
 
 
-inline constexpr alloy::core::petabits
-  alloy::core::literals::bit_literals::operator""_pbit(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::bit_literals::operator""_pbit(unsigned long long x)
+  noexcept -> petabits
 {
   return petabits{static_cast<petabits::rep>(x)};
 }
 
 //-----------------------------------------------------------------------------
 
-inline constexpr alloy::core::kibibits
-  alloy::core::literals::bit_literals::operator""_kibit(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::bit_literals::operator""_kibit(unsigned long long x)
+  noexcept -> kibibits
 {
   return kibibits{static_cast<kibibits::rep>(x)};
 }
 
 
-inline constexpr alloy::core::mebibits
-  alloy::core::literals::bit_literals::operator""_mibit(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::bit_literals::operator""_mibit(unsigned long long x)
+  noexcept -> mebibits
 {
   return mebibits{static_cast<mebibits::rep>(x)};
 }
 
 
-inline constexpr alloy::core::gibibits
-  alloy::core::literals::bit_literals::operator""_gibit(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::bit_literals::operator""_gibit(unsigned long long x)
+  noexcept -> gibibits
 {
   return gibibits{static_cast<gibibits::rep>(x)};
 }
 
 
-inline constexpr alloy::core::tebibits
-  alloy::core::literals::bit_literals::operator""_tibit(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::bit_literals::operator""_tibit(unsigned long long x)
+  noexcept -> tebibits
 {
   return tebibits{static_cast<tebibits::rep>(x)};
 }
 
 
-inline constexpr alloy::core::pebibits
-  alloy::core::literals::bit_literals::operator""_pibit(unsigned long long x)
-  noexcept
+inline constexpr
+auto alloy::core::literals::bit_literals::operator""_pibit(unsigned long long x)
+  noexcept -> pebibits
 {
   return pebibits{static_cast<pebibits::rep>(x)};
 }
 
 template <typename Rep, typename Base>
   requires (Base::den == 1)
-inline constexpr std::byte*
-  alloy::core::operator+(std::byte* p, data_quantity<Rep,Base> offset)
-  noexcept
+inline constexpr
+auto alloy::core::operator+(std::byte* p, data_quantity<Rep,Base> offset)
+  noexcept -> std::byte*
 {
   const auto b = bytes{offset};
   return p + b.count();
@@ -1247,9 +1303,9 @@ inline constexpr std::byte*
 
 template <typename Rep, typename Base>
   requires (Base::den == 1)
-inline constexpr const std::byte*
-  alloy::core::operator+(const std::byte* p, data_quantity<Rep,Base> offset)
-  noexcept
+inline constexpr
+auto alloy::core::operator+(const std::byte* p, data_quantity<Rep,Base> offset)
+  noexcept -> const std::byte*
 {
   const auto b = bytes{offset};
   return p + b.count();
@@ -1258,9 +1314,9 @@ inline constexpr const std::byte*
 
 template <typename Rep, typename Base>
   requires (Base::den == 1)
-inline constexpr std::byte*
-  alloy::core::operator-(std::byte* p, data_quantity<Rep,Base> offset)
-  noexcept
+inline constexpr
+auto alloy::core::operator-(std::byte* p, data_quantity<Rep,Base> offset)
+  noexcept -> std::byte*
 {
   const auto b = bytes{offset};
   return p - b.count();
@@ -1268,9 +1324,9 @@ inline constexpr std::byte*
 
 template <typename Rep, typename Base>
   requires (Base::den == 1)
-inline constexpr const std::byte*
-  alloy::core::operator-(const std::byte* p, data_quantity<Rep,Base> offset)
-  noexcept
+inline constexpr
+auto alloy::core::operator-(const std::byte* p, data_quantity<Rep,Base> offset)
+  noexcept -> const std::byte*
 {
   const auto b = bytes{offset};
   return p - b.count();

@@ -69,7 +69,8 @@ namespace alloy::core {
   /// \param values the values to hash
   /// \return the hash
   template <typename T0, typename...Ts>
-  constexpr auto hash_values(const T0& value0, const Ts&...values) noexcept -> hash_type;
+  constexpr auto hash_values(const T0& value0, const Ts&...values)
+    noexcept -> hash_type;
 
   //----------------------------------------------------------------------------
 
@@ -79,7 +80,8 @@ namespace alloy::core {
   /// \param value the value to hash
   /// \return the result of the joining
   template <typename T>
-  constexpr auto hash_combine(hash_type seed, const T& value) noexcept -> hash_type;
+  constexpr auto hash_combine(hash_type seed, const T& value)
+    noexcept -> hash_type;
 
   /// \brief Combines the hash \p seed with the hash of \p value0, \p value1,
   ///        and \p values
@@ -90,11 +92,12 @@ namespace alloy::core {
   /// \param values the remaining values to hash
   /// \return the result of the joining
   template <typename T0, typename T1, typename...Ts>
-  constexpr auto hash_combine(hash_type seed,
-                              const T0& value0,
-                              const T1& value1,
-                              const Ts&...values)
-    noexcept -> hash_type;
+  constexpr auto hash_combine(
+    hash_type seed,
+    const T0& value0,
+    const T1& value1,
+    const Ts&...values
+  ) noexcept -> hash_type;
 
   //----------------------------------------------------------------------------
 
@@ -114,7 +117,8 @@ namespace alloy::core {
   /// \param last the end of the range
   /// \return the result of the hash
   template <typename It, typename End>
-  constexpr auto hash_combine_range(hash_type seed, It first, End last) noexcept -> hash_type;
+  constexpr auto hash_combine_range(hash_type seed, It first, End last)
+    noexcept -> hash_type;
 
   //----------------------------------------------------------------------------
 
@@ -143,7 +147,8 @@ namespace alloy::core {
   /// \param value the value to hash
   /// \return the hashed value
   template <typename T>
-  auto hash_combine_object_representation(hash_type seed, const T& value) noexcept -> hash_type;
+  auto hash_combine_object_representation(hash_type seed, const T& value)
+    noexcept -> hash_type;
 
   //----------------------------------------------------------------------------
 
@@ -154,7 +159,8 @@ namespace alloy::core {
   /// \param aggregate the aggregate to hash
   /// \return the hash value
   template <typename Aggregate>
-  constexpr auto hash_aggregate(const Aggregate& aggregate) noexcept -> hash_type;
+  constexpr auto hash_aggregate(const Aggregate& aggregate)
+    noexcept -> hash_type;
 
   /// \brief Hashes an aggregate by calling `hash_value` on each member of that
   ///        aggregate.
@@ -164,8 +170,10 @@ namespace alloy::core {
   /// \param aggregate the aggregate to hash
   /// \return the hash value
   template <typename Aggregate>
-  constexpr auto hash_combine_aggregate(hash_type seed,
-                                        const Aggregate& aggregate) noexcept -> hash_type;
+  constexpr auto hash_combine_aggregate(
+    hash_type seed,
+    const Aggregate& aggregate
+  ) noexcept -> hash_type;
 
   //----------------------------------------------------------------------------
 
@@ -174,7 +182,8 @@ namespace alloy::core {
   /// \param value the value to hash
   /// \return the hashed value
   template <typename T>
-  constexpr auto hash_object(const T& value) noexcept -> decltype(hash_value(value));
+  constexpr auto hash_object(const T& value)
+    noexcept -> decltype(hash_value(value));
 
   //----------------------------------------------------------------------------
 
@@ -189,7 +198,8 @@ namespace alloy::core {
   struct hash
   {
     template <typename T>
-    constexpr auto operator()(const T& value) const noexcept -> decltype(hash_value(value));
+    constexpr auto operator()(const T& value)
+      const noexcept -> decltype(hash_value(value));
   };
 
 } // namespace alloy::core
@@ -204,8 +214,7 @@ namespace alloy::core {
 
 template <typename T>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::hash_value(const T& value)
-  noexcept -> hash_type
+auto alloy::core::hash_value(const T& value) noexcept -> hash_type
 {
   if constexpr (is_std_hashable_v<T>) {
     // If we have a std::hash implementation, use that
@@ -237,8 +246,7 @@ auto alloy::core::hash_value(const T& value)
 
 template <typename T, unsigned N>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::hash_value(const T(&array)[N])
-  noexcept -> hash_type
+auto alloy::core::hash_value(const T(&array)[N]) noexcept -> hash_type
 {
   return hash_range(static_cast<const T*>(array), static_cast<const T*>(array) + N);
 }
@@ -266,11 +274,12 @@ auto alloy::core::hash_combine(hash_type seed, const T& value)
 
 template <typename T0, typename T1, typename...Ts>
 inline constexpr
-auto alloy::core::hash_combine(hash_type seed,
-                               const T0& value0,
-                               const T1& value1,
-                               const Ts&...values)
-  noexcept -> hash_type
+auto alloy::core::hash_combine(
+  hash_type seed,
+  const T0& value0,
+  const T1& value1,
+  const Ts&...values
+) noexcept -> hash_type
 {
   return hash_combine(hash_combine(seed, value0), value1, values...);
 }
@@ -279,8 +288,7 @@ auto alloy::core::hash_combine(hash_type seed,
 
 template <typename It, typename End>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::hash_range(It first, End last)
-  noexcept -> hash_type
+auto alloy::core::hash_range(It first, End last) noexcept -> hash_type
 {
   return hash_combine_range(hash_type{0}, first, last);
 }
@@ -308,8 +316,10 @@ auto alloy::core::hash_object_representation(const T& value)
 
 template <typename T>
 inline
-auto alloy::core::hash_combine_object_representation(hash_type seed, const T& value)
-  noexcept -> hash_type
+auto alloy::core::hash_combine_object_representation(
+  hash_type seed,
+  const T& value
+) noexcept -> hash_type
 {
   static_assert(std::has_unique_object_representations_v<T>);
 
@@ -346,9 +356,10 @@ auto alloy::core::hash_aggregate(const Aggregate& aggregate)
 
 template <typename Aggregate>
 inline constexpr
-auto alloy::core::hash_combine_aggregate(hash_type seed,
-                                         const Aggregate& aggregate)
-  noexcept -> hash_type
+auto alloy::core::hash_combine_aggregate(
+  hash_type seed,
+  const Aggregate& aggregate
+) noexcept -> hash_type
 {
   static_assert(std::is_aggregate_v<Aggregate>);
 

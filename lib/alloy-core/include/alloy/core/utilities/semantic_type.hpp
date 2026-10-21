@@ -146,13 +146,13 @@ namespace alloy::core {
     ///
     /// \param other the other semantic object to move
     /// \return reference to `(*this)`
-    semantic_type& operator=(semantic_type&&) = default;
+    auto operator=(semantic_type&&) -> semantic_type& = default;
 
     /// \brief Assigns the contents of \p other to this through copy assignment
     ///
     /// \param other the other semantic object to copy
     /// \return reference to `(*this)`
-    semantic_type& operator=(const semantic_type&) = default;
+    auto operator=(const semantic_type&) -> semantic_type& = default;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -163,8 +163,8 @@ namespace alloy::core {
     /// \brief Unboxes the semantic object
     ///
     /// \return reference to the semantic object
-    constexpr reference unbox() noexcept;
-    constexpr const_reference unbox() const noexcept;
+    constexpr auto unbox() noexcept -> reference;
+    constexpr auto unbox() const noexcept -> const_reference;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -174,23 +174,23 @@ namespace alloy::core {
 
     template <typename U=T>
       requires requires { ++std::declval<U&>(); }
-    constexpr semantic_type& operator++()
-      noexcept(noexcept(++std::declval<U&>()));
+    constexpr auto operator++()
+      noexcept(noexcept(++std::declval<U&>())) -> semantic_type&;
 
     template <typename U=T>
       requires requires { std::declval<U&>()++; }
-    constexpr semantic_type operator++(int)
-      noexcept(noexcept(std::declval<U&>()++));
+    constexpr auto operator++(int)
+      noexcept(noexcept(std::declval<U&>()++)) -> semantic_type;
 
     template <typename U=T>
       requires requires { --std::declval<U&>(); }
-    constexpr semantic_type& operator--()
-      noexcept(noexcept(--std::declval<U&>()));
+    constexpr auto operator--()
+      noexcept(noexcept(--std::declval<U&>())) -> semantic_type&;
 
     template <typename U=T>
       requires requires { std::declval<U&>()--; }
-    constexpr semantic_type operator--(int)
-      noexcept(noexcept(std::declval<U&>()--));
+    constexpr auto operator--(int)
+      noexcept(noexcept(std::declval<U&>()--)) -> semantic_type;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -213,92 +213,114 @@ namespace alloy::core {
   // TODO(bitwizeshift): Add correct noexcept propagation for these operators
 
   template <typename T, typename U, typename Tag>
-  constexpr bool operator==(const semantic_type<T,Tag>& lhs,
-                            const semantic_type<U,Tag>& rhs)
-    noexcept(std::declval<const T&>() == std::declval<const T&>());
+  constexpr auto operator==(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) noexcept(std::declval<const T&>() == std::declval<const T&>()) -> bool;
 
   template <typename T, typename U, typename Tag>
-  constexpr bool operator!=(const semantic_type<T,Tag>& lhs,
-                            const semantic_type<U,Tag>& rhs)
-    noexcept(std::declval<const T&>() != std::declval<const T&>());
+  constexpr auto operator!=(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) noexcept(std::declval<const T&>() != std::declval<const T&>()) -> bool;
 
   template <typename T, typename U, typename Tag>
-  constexpr bool operator<(const semantic_type<T,Tag>& lhs,
-                           const semantic_type<U,Tag>& rhs)
-    noexcept(std::declval<const T&>() < std::declval<const T&>());
+  constexpr auto operator<(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) noexcept(std::declval<const T&>() < std::declval<const T&>()) -> bool;
 
   template <typename T, typename U, typename Tag>
-  constexpr bool operator>(const semantic_type<T,Tag>& lhs,
-                           const semantic_type<U,Tag>& rhs)
-    noexcept(std::declval<const T&>() > std::declval<const T&>());
+  constexpr auto operator>(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) noexcept(std::declval<const T&>() > std::declval<const T&>()) -> bool;
 
   template <typename T, typename U, typename Tag>
-  constexpr bool operator<=(const semantic_type<T,Tag>& lhs,
-                            const semantic_type<U,Tag>& rhs)
-    noexcept(std::declval<const T&>() <= std::declval<const T&>());
+  constexpr auto operator<=(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) noexcept(std::declval<const T&>() <= std::declval<const T&>()) -> bool;
 
   template <typename T, typename U, typename Tag>
-  constexpr bool operator>=(const semantic_type<T,Tag>& lhs,
-                            const semantic_type<U,Tag>& rhs)
-    noexcept(std::declval<const T&>() >= std::declval<const T&>());
+  constexpr auto operator>=(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) noexcept(std::declval<const T&>() >= std::declval<const T&>()) -> bool;
 
   //---------------------------------------------------------------------------
   // Compound Assignment
   //---------------------------------------------------------------------------
 
   template <typename T, typename U, typename Tag>
-  semantic_type<T,Tag>& operator+=(semantic_type<T,Tag>& lhs,
-                                   const semantic_type<U,Tag>& rhs);
+  auto operator+=(semantic_type<T,Tag>& lhs, const semantic_type<U,Tag>& rhs)
+    -> semantic_type<T,Tag>&;
   template <typename T, typename U, typename Tag>
-  semantic_type<T,Tag>& operator-=(semantic_type<T,Tag>& lhs,
-                                   const semantic_type<U,Tag>& rhs);
+  auto operator-=(semantic_type<T,Tag>& lhs, const semantic_type<U,Tag>& rhs)
+    -> semantic_type<T,Tag>&;
   template <typename T, typename U, typename Tag>
-  semantic_type<T,Tag>& operator*=(semantic_type<T,Tag>& lhs,
-                                   const semantic_type<U,Tag>& rhs);
+  auto operator*=(semantic_type<T,Tag>& lhs, const semantic_type<U,Tag>& rhs)
+    -> semantic_type<T,Tag>&;
   template <typename T, typename U, typename Tag>
-  semantic_type<T,Tag>& operator/=(semantic_type<T,Tag>& lhs,
-                                   const semantic_type<U,Tag>& rhs);
+  auto operator/=(semantic_type<T,Tag>& lhs, const semantic_type<U,Tag>& rhs)
+    -> semantic_type<T,Tag>&;
   template <typename T, typename U, typename Tag>
-  semantic_type<T,Tag>& operator%=(semantic_type<T,Tag>& lhs,
-                                   const semantic_type<U,Tag>& rhs);
+  auto operator%=(semantic_type<T,Tag>& lhs, const semantic_type<U,Tag>& rhs)
+    -> semantic_type<T,Tag>&;
   template <typename T, typename U, typename Tag>
-  semantic_type<T,Tag>& operator|=(semantic_type<T,Tag>& lhs,
-                                   const semantic_type<U,Tag>& rhs);
+  auto operator|=(semantic_type<T,Tag>& lhs, const semantic_type<U,Tag>& rhs)
+    -> semantic_type<T,Tag>&;
   template <typename T, typename U, typename Tag>
-  semantic_type<T,Tag>& operator&=(semantic_type<T,Tag>& lhs,
-                                   const semantic_type<U,Tag>& rhs);
+  auto operator&=(semantic_type<T,Tag>& lhs, const semantic_type<U,Tag>& rhs)
+    -> semantic_type<T,Tag>&;
   template <typename T, typename U, typename Tag>
-  semantic_type<T,Tag>& operator^=(semantic_type<T,Tag>& lhs,
-                                   const semantic_type<U,Tag>& rhs);
+  auto operator^=(semantic_type<T,Tag>& lhs, const semantic_type<U,Tag>& rhs)
+    -> semantic_type<T,Tag>&;
 
   //---------------------------------------------------------------------------
   // Arithmetic Operators
   //---------------------------------------------------------------------------
 
   template <typename T, typename U, typename Tag>
-  constexpr semantic_type<T,Tag> operator+(const semantic_type<T,Tag>& lhs,
-                                           const semantic_type<U,Tag>& rhs);
+  constexpr auto operator+(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) -> semantic_type<T,Tag>;
   template <typename T, typename U, typename Tag>
-  constexpr semantic_type<T,Tag> operator-(const semantic_type<T,Tag>& lhs,
-                                           const semantic_type<U,Tag>& rhs);
+  constexpr auto operator-(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) -> semantic_type<T,Tag>;
   template <typename T, typename U, typename Tag>
-  constexpr semantic_type<T,Tag> operator*(const semantic_type<T,Tag>& lhs,
-                                           const semantic_type<U,Tag>& rhs);
+  constexpr auto operator*(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) -> semantic_type<T,Tag>;
   template <typename T, typename U, typename Tag>
-  constexpr semantic_type<T,Tag> operator/(const semantic_type<T,Tag>& lhs,
-                                           const semantic_type<U,Tag>& rhs);
+  constexpr auto operator/(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) -> semantic_type<T,Tag>;
   template <typename T, typename U, typename Tag>
-  constexpr semantic_type<T,Tag> operator%(const semantic_type<T,Tag>& lhs,
-                                           const semantic_type<U,Tag>& rhs);
+  constexpr auto operator%(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) -> semantic_type<T,Tag>;
   template <typename T, typename U, typename Tag>
-  constexpr semantic_type<T,Tag> operator|(const semantic_type<T,Tag>& lhs,
-                                           const semantic_type<U,Tag>& rhs);
+  constexpr auto operator|(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) -> semantic_type<T,Tag>;
   template <typename T, typename U, typename Tag>
-  constexpr semantic_type<T,Tag> operator&(const semantic_type<T,Tag>& lhs,
-                                           const semantic_type<U,Tag>& rhs);
+  constexpr auto operator&(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) -> semantic_type<T,Tag>;
   template <typename T, typename U, typename Tag>
-  constexpr semantic_type<T,Tag> operator^(const semantic_type<T,Tag>& lhs,
-                                           const semantic_type<U,Tag>& rhs);
+  constexpr auto operator^(
+    const semantic_type<T,Tag>& lhs,
+    const semantic_type<U,Tag>& rhs
+  ) -> semantic_type<T,Tag>;
 
   //---------------------------------------------------------------------------
   // Utilities
@@ -317,7 +339,8 @@ namespace alloy::core {
     template <typename SemanticType, typename T, typename Tag>
       requires (alloy::core::is_semantic_type_v<SemanticType> &&
                 requires { SemanticType{static_cast<typename SemanticType::value_type>(std::declval<const T&>())}; })
-    constexpr SemanticType semantic_cast(const semantic_type<T,Tag>& other);
+    constexpr auto semantic_cast(const semantic_type<T,Tag>& other)
+      -> SemanticType;
 
   } // inline namespace casts
 } // namespace alloy::core
@@ -333,7 +356,8 @@ namespace alloy::core {
 template <typename T, typename Tag>
 template <typename U>
   requires std::constructible_from<T, U>
-inline constexpr alloy::core::semantic_type<T,Tag>::semantic_type(U&& u)
+inline constexpr
+alloy::core::semantic_type<T,Tag>::semantic_type(U&& u)
   noexcept(std::is_nothrow_constructible_v<T,U>)
   : m_value{std::forward<U>(u)}
 {
@@ -345,17 +369,17 @@ inline constexpr alloy::core::semantic_type<T,Tag>::semantic_type(U&& u)
 //-----------------------------------------------------------------------------
 
 template <typename T, typename Tag>
-inline constexpr typename alloy::core::semantic_type<T,Tag>::reference
-  alloy::core::semantic_type<T,Tag>::unbox()
-  noexcept
+inline constexpr
+auto alloy::core::semantic_type<T,Tag>::unbox()
+  noexcept -> typename semantic_type<T,Tag>::reference
 {
   return m_value;
 }
 
 template <typename T, typename Tag>
-inline constexpr typename alloy::core::semantic_type<T,Tag>::const_reference
-  alloy::core::semantic_type<T,Tag>::unbox()
-  const noexcept
+inline constexpr
+auto alloy::core::semantic_type<T,Tag>::unbox()
+  const noexcept -> typename semantic_type<T,Tag>::const_reference
 {
   return m_value;
 }
@@ -368,9 +392,9 @@ inline constexpr typename alloy::core::semantic_type<T,Tag>::const_reference
 template <typename T, typename Tag>
 template <typename U>
   requires requires { ++std::declval<U&>(); }
-inline constexpr alloy::core::semantic_type<T,Tag>&
-  alloy::core::semantic_type<T,Tag>::operator++()
-  noexcept(noexcept(++std::declval<U&>()))
+inline constexpr
+auto alloy::core::semantic_type<T,Tag>::operator++()
+  noexcept(noexcept(++std::declval<U&>())) -> semantic_type<T,Tag>&
 {
   ++m_value;
   return (*this);
@@ -379,9 +403,9 @@ inline constexpr alloy::core::semantic_type<T,Tag>&
 template <typename T, typename Tag>
 template <typename U>
   requires requires { std::declval<U&>()++; }
-inline constexpr alloy::core::semantic_type<T,Tag>
-  alloy::core::semantic_type<T,Tag>::operator++(int)
-  noexcept(noexcept(std::declval<U&>()++))
+inline constexpr
+auto alloy::core::semantic_type<T,Tag>::operator++(int)
+  noexcept(noexcept(std::declval<U&>()++)) -> semantic_type<T,Tag>
 {
   return semantic_type{m_value++};
 }
@@ -389,9 +413,9 @@ inline constexpr alloy::core::semantic_type<T,Tag>
 template <typename T, typename Tag>
 template <typename U>
   requires requires { --std::declval<U&>(); }
-inline constexpr alloy::core::semantic_type<T,Tag>&
-  alloy::core::semantic_type<T,Tag>::operator--()
-  noexcept(noexcept(--std::declval<U&>()))
+inline constexpr
+auto alloy::core::semantic_type<T,Tag>::operator--()
+  noexcept(noexcept(--std::declval<U&>())) -> semantic_type<T,Tag>&
 {
   --m_value;
   return (*this);
@@ -400,9 +424,9 @@ inline constexpr alloy::core::semantic_type<T,Tag>&
 template <typename T, typename Tag>
 template <typename U>
   requires requires { std::declval<U&>()--; }
-inline constexpr alloy::core::semantic_type<T,Tag>
-  alloy::core::semantic_type<T,Tag>::operator--(int)
-  noexcept(noexcept(std::declval<U&>()--))
+inline constexpr
+auto alloy::core::semantic_type<T,Tag>::operator--(int)
+  noexcept(noexcept(std::declval<U&>()--)) -> semantic_type<T,Tag>
 {
   return semantic_type{m_value--};
 }
@@ -416,55 +440,61 @@ inline constexpr alloy::core::semantic_type<T,Tag>
 //-----------------------------------------------------------------------------
 
 template <typename T, typename U, typename Tag>
-inline constexpr bool
-alloy::core::operator==(const semantic_type<T,Tag>& lhs,
-                        const semantic_type<U,Tag>& rhs)
-  noexcept(std::declval<const T&>() == std::declval<const T&>())
+inline constexpr
+auto alloy::core::operator==(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) noexcept(std::declval<const T&>() == std::declval<const T&>()) -> bool
 {
   return lhs.unbox() == rhs.unbox();
 }
 
 template <typename T, typename U, typename Tag>
-inline constexpr bool
-  alloy::core::operator!=(const semantic_type<T,Tag>& lhs,
-                          const semantic_type<U,Tag>& rhs)
-  noexcept(std::declval<const T&>() != std::declval<const T&>())
+inline constexpr
+auto alloy::core::operator!=(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) noexcept(std::declval<const T&>() != std::declval<const T&>()) -> bool
 {
   return lhs.unbox() != rhs.unbox();
 }
 
 template <typename T, typename U, typename Tag>
-inline constexpr bool
-  alloy::core::operator<(const semantic_type<T,Tag>& lhs,
-                         const semantic_type<U,Tag>& rhs)
-  noexcept(std::declval<const T&>() < std::declval<const T&>())
+inline constexpr
+auto alloy::core::operator<(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) noexcept(std::declval<const T&>() < std::declval<const T&>()) -> bool
 {
   return lhs.unbox() < rhs.unbox();
 }
 
 template <typename T, typename U, typename Tag>
-inline constexpr bool
-  alloy::core::operator>(const semantic_type<T,Tag>& lhs,
-                         const semantic_type<U,Tag>& rhs)
-  noexcept(std::declval<const T&>() > std::declval<const T&>())
+inline constexpr
+auto alloy::core::operator>(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) noexcept(std::declval<const T&>() > std::declval<const T&>()) -> bool
 {
   return lhs.unbox() > rhs.unbox();
 }
 
 template <typename T, typename U, typename Tag>
-inline constexpr bool
-  alloy::core::operator<=(const semantic_type<T,Tag>& lhs,
-                          const semantic_type<U,Tag>& rhs)
-  noexcept(std::declval<const T&>() <= std::declval<const T&>())
+inline constexpr
+auto alloy::core::operator<=(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) noexcept(std::declval<const T&>() <= std::declval<const T&>()) -> bool
 {
   return lhs.unbox() <= rhs.unbox();
 }
 
 template <typename T, typename U, typename Tag>
-inline constexpr bool
-  alloy::core::operator>=(const semantic_type<T,Tag>& lhs,
-                          const semantic_type<U,Tag>& rhs)
-  noexcept(std::declval<const T&>() >= std::declval<const T&>())
+inline constexpr
+auto alloy::core::operator>=(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) noexcept(std::declval<const T&>() >= std::declval<const T&>()) -> bool
 {
   return lhs.unbox() >= rhs.unbox();
 }
@@ -474,72 +504,88 @@ inline constexpr bool
 //-----------------------------------------------------------------------------
 
 template <typename T, typename U, typename Tag>
-inline alloy::core::semantic_type<T,Tag>&
-  alloy::core::operator+=(semantic_type<T,Tag>& lhs,
-                          const semantic_type<U,Tag>& rhs)
+inline
+auto alloy::core::operator+=(
+  semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>&
 {
   lhs.unbox() += rhs.unbox();
   return lhs;
 }
 
 template <typename T, typename U, typename Tag>
-inline alloy::core::semantic_type<T,Tag>&
-  alloy::core::operator-=(semantic_type<T,Tag>& lhs,
-                          const semantic_type<U,Tag>& rhs)
+inline
+auto alloy::core::operator-=(
+  semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>&
 {
   lhs.unbox() -= rhs.unbox();
   return lhs;
 }
 
 template <typename T, typename U, typename Tag>
-inline alloy::core::semantic_type<T,Tag>&
-  alloy::core::operator*=(semantic_type<T,Tag>& lhs,
-                          const semantic_type<U,Tag>& rhs)
+inline
+auto alloy::core::operator*=(
+  semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>&
 {
   lhs.unbox() *= rhs.unbox();
   return lhs;
 }
 
 template <typename T, typename U, typename Tag>
-inline alloy::core::semantic_type<T,Tag>&
-  alloy::core::operator/=(semantic_type<T,Tag>& lhs,
-                          const semantic_type<U,Tag>& rhs)
+inline
+auto alloy::core::operator/=(
+  semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>&
 {
   lhs.unbox() /= rhs.unbox();
   return lhs;
 }
 
 template <typename T, typename U, typename Tag>
-inline alloy::core::semantic_type<T,Tag>&
-  alloy::core::operator%=(semantic_type<T,Tag>& lhs,
-                          const semantic_type<U,Tag>& rhs)
+inline
+auto alloy::core::operator%=(
+  semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>&
 {
   lhs.unbox() %= rhs.unbox();
   return lhs;
 }
 
 template <typename T, typename U, typename Tag>
-inline alloy::core::semantic_type<T,Tag>&
-  alloy::core::operator|=(semantic_type<T,Tag>& lhs,
-                          const semantic_type<U,Tag>& rhs)
+inline
+auto alloy::core::operator|=(
+  semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>&
 {
   lhs.unbox() |= rhs.unbox();
   return lhs;
 }
 
 template <typename T, typename U, typename Tag>
-inline alloy::core::semantic_type<T,Tag>&
-  alloy::core::operator&=(semantic_type<T,Tag>& lhs,
-                          const semantic_type<U,Tag>& rhs)
+inline
+auto alloy::core::operator&=(
+  semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>&
 {
   lhs.unbox() &= rhs.unbox();
   return lhs;
 }
 
 template <typename T, typename U, typename Tag>
-inline alloy::core::semantic_type<T,Tag>&
-  alloy::core::operator^=(semantic_type<T,Tag>& lhs,
-                          const semantic_type<U,Tag>& rhs)
+inline
+auto alloy::core::operator^=(
+  semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>&
 {
   lhs.unbox() ^= rhs.unbox();
   return lhs;
@@ -550,65 +596,81 @@ inline alloy::core::semantic_type<T,Tag>&
 //---------------------------------------------------------------------------
 
 template <typename T, typename U, typename Tag>
-inline constexpr alloy::core::semantic_type<T,Tag>
-  alloy::core::operator+(const semantic_type<T,Tag>& lhs,
-                         const semantic_type<U,Tag>& rhs)
+inline constexpr
+auto alloy::core::operator+(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>
 {
   return semantic_type<T,Tag>{lhs.unbox() + rhs.unbox()};
 }
 
 template <typename T, typename U, typename Tag>
-inline constexpr alloy::core::semantic_type<T,Tag>
-  alloy::core::operator-(const semantic_type<T,Tag>& lhs,
-                         const semantic_type<U,Tag>& rhs)
+inline constexpr
+auto alloy::core::operator-(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>
 {
   return semantic_type<T,Tag>{lhs.unbox() - rhs.unbox()};
 }
 
 template <typename T, typename U, typename Tag>
-inline constexpr alloy::core::semantic_type<T,Tag>
-  alloy::core::operator*(const semantic_type<T,Tag>& lhs,
-                         const semantic_type<U,Tag>& rhs)
+inline constexpr
+auto alloy::core::operator*(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>
 {
   return semantic_type<T,Tag>{lhs.unbox() * rhs.unbox()};
 }
 
 template <typename T, typename U, typename Tag>
-inline constexpr alloy::core::semantic_type<T,Tag>
-  alloy::core::operator/(const semantic_type<T,Tag>& lhs,
-                         const semantic_type<U,Tag>& rhs)
+inline constexpr
+auto alloy::core::operator/(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>
 {
   return semantic_type<T,Tag>{lhs.unbox() / rhs.unbox()};
 }
 
 template <typename T, typename U, typename Tag>
-inline constexpr alloy::core::semantic_type<T,Tag>
-  alloy::core::operator%(const semantic_type<T,Tag>& lhs,
-                         const semantic_type<U,Tag>& rhs)
+inline constexpr
+auto alloy::core::operator%(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>
 {
   return semantic_type<T,Tag>{lhs.unbox() % rhs.unbox()};
 }
 
 template <typename T, typename U, typename Tag>
-inline constexpr alloy::core::semantic_type<T,Tag>
-  alloy::core::operator|(const semantic_type<T,Tag>& lhs,
-                         const semantic_type<U,Tag>& rhs)
+inline constexpr
+auto alloy::core::operator|(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>
 {
   return semantic_type<T,Tag>{lhs.unbox() | rhs.unbox()};
 }
 
 template <typename T, typename U, typename Tag>
-inline constexpr alloy::core::semantic_type<T,Tag>
-  alloy::core::operator&(const semantic_type<T,Tag>& lhs,
-                         const semantic_type<U,Tag>& rhs)
+inline constexpr
+auto alloy::core::operator&(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>
 {
   return semantic_type<T,Tag>{lhs.unbox() & rhs.unbox()};
 }
 
 template <typename T, typename U, typename Tag>
-inline constexpr alloy::core::semantic_type<T,Tag>
-  alloy::core::operator^(const semantic_type<T,Tag>& lhs,
-                         const semantic_type<U,Tag>& rhs)
+inline constexpr
+auto alloy::core::operator^(
+  const semantic_type<T,Tag>& lhs,
+  const semantic_type<U,Tag>& rhs
+) -> semantic_type<T,Tag>
 {
   return semantic_type<T,Tag>{lhs.unbox() ^ rhs.unbox()};
 }
@@ -620,8 +682,9 @@ inline constexpr alloy::core::semantic_type<T,Tag>
 template <typename SemanticType, typename T, typename Tag>
   requires (alloy::core::is_semantic_type_v<SemanticType> &&
             requires { SemanticType{static_cast<typename SemanticType::value_type>(std::declval<const T&>())}; })
-inline constexpr SemanticType
-  alloy::core::casts::semantic_cast(const semantic_type<T,Tag>& other)
+inline constexpr
+auto alloy::core::casts::semantic_cast(const semantic_type<T,Tag>& other)
+  -> SemanticType
 {
   using value_type = typename SemanticType::value_type;
   if constexpr(std::is_same_v<T,value_type>) {

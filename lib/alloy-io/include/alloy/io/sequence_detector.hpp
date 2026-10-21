@@ -86,8 +86,8 @@ namespace alloy::io {
 
     //-------------------------------------------------------------------------
 
-    sequence_detector& operator=(sequence_detector&&) = delete;
-    sequence_detector& operator=(const sequence_detector&) = delete;
+    auto operator=(sequence_detector&&) -> sequence_detector& = delete;
+    auto operator=(const sequence_detector&) -> sequence_detector& = delete;
 
     //-------------------------------------------------------------------------
     // Modifiers
@@ -100,13 +100,13 @@ namespace alloy::io {
     ///
     /// \param value the value to test
     /// \return true if \p value was the next value in the sequence
-    constexpr bool test(const value_type& value) noexcept;
+    constexpr auto test(const value_type& value) noexcept -> bool;
 
     /// \brief Resets this sequence
     ///
     /// \note reset must be called after a sequence is completed in order to
     ///       detect a new sequence
-    constexpr void reset() noexcept;
+    constexpr auto reset() noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -119,7 +119,7 @@ namespace alloy::io {
     /// matched.
     ///
     /// \return true if this sequence is started
-    constexpr bool started() const noexcept;
+    constexpr auto started() const noexcept -> bool;
 
     /// \brief Checks whether this sequence has been completed successfully
     ///
@@ -127,7 +127,7 @@ namespace alloy::io {
     /// been matched successfully.
     ///
     /// \return true if this sequence is completed
-    constexpr bool completed() const noexcept;
+    constexpr auto completed() const noexcept -> bool;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -156,8 +156,9 @@ namespace alloy::io {
 
 template <typename T, typename Container>
 inline constexpr
-alloy::io::sequence_detector<T,Container>::sequence_detector(const container& sequence)
-  noexcept(std::is_nothrow_copy_constructible<Container>::value)
+alloy::io::sequence_detector<T,Container>::sequence_detector(
+  const container& sequence
+) noexcept(std::is_nothrow_copy_constructible<Container>::value)
   : m_index{0u},
     m_sequence{sequence}
 {
@@ -166,8 +167,9 @@ alloy::io::sequence_detector<T,Container>::sequence_detector(const container& se
 
 template <typename T, typename Container>
 inline constexpr
-alloy::io::sequence_detector<T,Container>::sequence_detector(container&& sequence)
-  noexcept(std::is_nothrow_move_constructible<Container>::value)
+alloy::io::sequence_detector<T,Container>::sequence_detector(
+  container&& sequence
+) noexcept(std::is_nothrow_move_constructible<Container>::value)
   : m_index{0u},
     m_sequence{std::move(sequence)}
 {
@@ -180,8 +182,8 @@ alloy::io::sequence_detector<T,Container>::sequence_detector(container&& sequenc
 
 template <typename T, typename Container>
 inline constexpr
-bool alloy::io::sequence_detector<T,Container>::test(const value_type& value)
-  noexcept
+auto alloy::io::sequence_detector<T,Container>::test(const value_type& value)
+  noexcept -> bool
 {
   ALLOY_ASSERT(!m_sequence.empty(), "Sequence cannnot be empty");
 
@@ -202,8 +204,7 @@ bool alloy::io::sequence_detector<T,Container>::test(const value_type& value)
 
 template <typename T, typename Container>
 inline constexpr
-void alloy::io::sequence_detector<T,Container>::reset()
-  noexcept
+auto alloy::io::sequence_detector<T,Container>::reset() noexcept -> void
 {
   m_index = 0u;
 }
@@ -214,16 +215,15 @@ void alloy::io::sequence_detector<T,Container>::reset()
 
 template <typename T, typename Container>
 inline constexpr
-bool alloy::io::sequence_detector<T,Container>::started()
-  const noexcept
+auto alloy::io::sequence_detector<T,Container>::started() const noexcept -> bool
 {
   return m_index != 0u;
 }
 
 template <typename T, typename Container>
 inline constexpr
-bool alloy::io::sequence_detector<T,Container>::completed()
-  const noexcept
+auto alloy::io::sequence_detector<T,Container>::completed()
+  const noexcept -> bool
 {
   return m_index == m_sequence.size();
 }

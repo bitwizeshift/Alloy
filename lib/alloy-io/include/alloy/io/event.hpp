@@ -129,7 +129,7 @@ namespace alloy::io {
     /// \param args the arguments to forward to Event's constructor
     /// \return an event that contains the type-erased Event
     template<typename Event, typename...Args>
-    static auto make_event( Args&&...args )
+    static auto make_event(Args&&...args)
       noexcept(std::is_nothrow_constructible<Event,Args...>::value) -> event;
 
     //--------------------------------------------------------------------------
@@ -435,8 +435,7 @@ namespace alloy::io {
 
 template<typename Event>
 inline constexpr
-auto alloy::io::event::id_of()
-  noexcept -> id_type
+auto alloy::io::event::id_of() noexcept -> id_type
 {
   static_assert(is_valid_event<Event>::value);
 
@@ -446,8 +445,7 @@ auto alloy::io::event::id_of()
 
 template<typename Event>
 inline constexpr
-auto alloy::io::event::priority_of()
-  noexcept -> event_priority
+auto alloy::io::event::priority_of() noexcept -> event_priority
 {
   static_assert(is_valid_event<Event>::value);
 
@@ -457,7 +455,7 @@ auto alloy::io::event::priority_of()
 
 template<typename Event, typename...Args>
 inline
-auto alloy::io::event::make_event( Args&&...args )
+auto alloy::io::event::make_event(Args&&...args)
   noexcept(std::is_nothrow_constructible<Event,Args...>::value) -> event
 {
   static_assert(is_valid_event<Event>::value);
@@ -474,8 +472,7 @@ auto alloy::io::event::make_event( Args&&...args )
 //------------------------------------------------------------------------------
 
 inline
-alloy::io::event::event()
-  noexcept
+alloy::io::event::event() noexcept
   : m_handler{&event::null_handler}
 {
 
@@ -497,8 +494,7 @@ alloy::io::event::event(Event&& e)
 
 
 inline
-alloy::io::event::event(event&& other)
-  noexcept
+alloy::io::event::event(event&& other) noexcept
   : event{}
 {
   auto* const handler = core::compiler::assume_not_null(other.m_handler);
@@ -514,8 +510,7 @@ alloy::io::event::event(event&& other)
 
 
 inline
-alloy::io::event::event(const event& other)
-  noexcept
+alloy::io::event::event(const event& other) noexcept
   : event{}
 {
   auto* const handler = core::compiler::assume_not_null(other.m_handler);
@@ -532,8 +527,7 @@ alloy::io::event::event(const event& other)
 //------------------------------------------------------------------------------
 
 inline
-alloy::io::event::~event()
-  noexcept
+alloy::io::event::~event() noexcept
 {
   reset();
 }
@@ -541,8 +535,7 @@ alloy::io::event::~event()
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::io::event::operator=(event&& other)
-  noexcept -> event&
+auto alloy::io::event::operator=(event&& other) noexcept -> event&
 {
   reset();
 
@@ -560,8 +553,7 @@ auto alloy::io::event::operator=(event&& other)
 
 
 inline
-auto alloy::io::event::operator=(const event& other)
-  noexcept -> event&
+auto alloy::io::event::operator=(const event& other) noexcept -> event&
 {
   reset();
 
@@ -583,8 +575,7 @@ auto alloy::io::event::operator=(const event& other)
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::io::event::id()
-  const noexcept -> id_type
+auto alloy::io::event::id() const noexcept -> id_type
 {
   auto* const handler = core::compiler::assume_not_null(m_handler);
 
@@ -598,8 +589,7 @@ auto alloy::io::event::id()
 }
 
 inline
-auto alloy::io::event::priority()
-  const noexcept -> event_priority
+auto alloy::io::event::priority() const noexcept -> event_priority
 {
   auto* const handler = core::compiler::assume_not_null(m_handler);
 
@@ -614,8 +604,7 @@ auto alloy::io::event::priority()
 
 template<typename Event>
 inline
-auto alloy::io::event::is()
-  const noexcept -> bool
+auto alloy::io::event::is() const noexcept -> bool
 {
   static_assert(is_valid_event<Event>::value);
 
@@ -624,8 +613,7 @@ auto alloy::io::event::is()
 
 template<typename Event>
 inline
-auto alloy::io::event::as()
-  const noexcept -> const Event&
+auto alloy::io::event::as() const noexcept -> const Event&
 {
   static_assert(is_valid_event<Event>::value);
 
@@ -636,8 +624,7 @@ auto alloy::io::event::as()
 
 template<typename Event>
 inline
-auto alloy::io::event::try_as()
-  const noexcept -> const Event*
+auto alloy::io::event::try_as() const noexcept -> const Event*
 {
   static_assert(is_valid_event<Event>::value);
 
@@ -653,8 +640,7 @@ auto alloy::io::event::try_as()
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::io::event::reset()
-  noexcept -> void
+auto alloy::io::event::reset() noexcept -> void
 {
   auto* const handler = core::compiler::assume_not_null(m_handler);
 
@@ -671,8 +657,7 @@ auto alloy::io::event::reset()
 //------------------------------------------------------------------------------
 
 template<typename T>
-auto alloy::io::event::handler(operation op, void* payload)
-  -> void
+auto alloy::io::event::handler(operation op, void* payload) -> void
 {
   switch (op) {
     case operation::destroy: {
@@ -705,8 +690,7 @@ auto alloy::io::event::handler(operation op, void* payload)
 }
 
 inline
-auto alloy::io::event::null_handler(operation op, void* payload)
-  -> void
+auto alloy::io::event::null_handler(operation op, void* payload) -> void
 {
   switch (op) {
     case operation::destroy:
@@ -730,8 +714,7 @@ auto alloy::io::event::null_handler(operation op, void* payload)
 
 template <typename T, typename Storage>
 ALLOY_FORCE_INLINE
-auto alloy::io::event::storage_as(Storage& storage)
-  noexcept -> T&
+auto alloy::io::event::storage_as(Storage& storage) noexcept -> T&
 {
   return *std::launder(reinterpret_cast<T*>(&storage)); // NOLINT
 }

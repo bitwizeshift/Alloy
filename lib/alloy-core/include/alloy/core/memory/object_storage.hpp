@@ -89,7 +89,9 @@ namespace alloy::core {
     template <typename T, typename U, typename...Args>
       requires std::constructible_from<T, std::initializer_list<U>, Args...>
     auto emplace(std::initializer_list<U> ilist, Args&&...args)
-      noexcept(std::is_nothrow_constructible_v<T,std::initializer_list<U>,Args...>) -> T&;
+      noexcept(
+        std::is_nothrow_constructible_v<T,std::initializer_list<U>,Args...>
+      ) -> T&;
 
     /// \brief Destroys the object at this storage
     template <typename T>
@@ -190,7 +192,9 @@ namespace alloy::core {
     template <typename U, typename...Args>
       requires std::constructible_from<T, std::initializer_list<U>, Args...>
     auto emplace(std::initializer_list<U> ilist, Args&&...args)
-      noexcept(std::is_nothrow_constructible_v<T,std::initializer_list<U>,Args...>) -> T&;
+      noexcept(
+        std::is_nothrow_constructible_v<T,std::initializer_list<U>,Args...>
+      ) -> T&;
 
     /// \brief Destroys the object at this storage
     auto destroy() noexcept -> void;
@@ -264,7 +268,8 @@ inline
 auto alloy::core::any_object_storage<Size,Align>::emplace(
   std::initializer_list<U> ilist,
   Args&&...args
-) noexcept(std::is_nothrow_constructible_v<T,std::initializer_list<U>,Args...>) -> T&
+) noexcept(std::is_nothrow_constructible_v<T,std::initializer_list<U>,Args...>)
+  -> T&
 {
   return emplace<T>(ilist, std::forward<Args>(args)...);
 }
@@ -272,8 +277,7 @@ auto alloy::core::any_object_storage<Size,Align>::emplace(
 template <std::size_t Size, std::size_t Align>
 template <typename T>
 inline
-auto alloy::core::any_object_storage<Size,Align>::destroy()
-  noexcept -> void
+auto alloy::core::any_object_storage<Size,Align>::destroy() noexcept -> void
 {
   auto& instance = get<T>();
   instance.~T();
@@ -286,8 +290,7 @@ auto alloy::core::any_object_storage<Size,Align>::destroy()
 template <std::size_t Size, std::size_t Align>
 template <typename T>
 inline
-auto alloy::core::any_object_storage<Size,Align>::get()
-  noexcept -> T&
+auto alloy::core::any_object_storage<Size,Align>::get() noexcept -> T&
 {
   return *std::launder(reinterpret_cast<T*>(m_storage));
 }
@@ -303,8 +306,7 @@ auto alloy::core::any_object_storage<Size,Align>::get()
 
 template <std::size_t Size, std::size_t Align>
 inline constexpr
-auto alloy::core::any_object_storage<Size,Align>::data()
-  noexcept -> std::byte*
+auto alloy::core::any_object_storage<Size,Align>::data() noexcept -> std::byte*
 {
   return m_storage;
 }
@@ -342,15 +344,15 @@ inline
 auto alloy::core::object_storage<T>::emplace(
   std::initializer_list<U> ilist,
   Args&&...args
-) noexcept(std::is_nothrow_constructible_v<T,std::initializer_list<U>,Args...>) -> T&
+) noexcept(std::is_nothrow_constructible_v<T,std::initializer_list<U>,Args...>)
+  -> T&
 {
   return m_storage.template emplace<T>(ilist, std::forward<Args>(args)...);
 }
 
 template <typename T>
 inline
-auto alloy::core::object_storage<T>::destroy()
-  noexcept -> void
+auto alloy::core::object_storage<T>::destroy() noexcept -> void
 {
   get()->~T();
 }
@@ -361,32 +363,28 @@ auto alloy::core::object_storage<T>::destroy()
 
 template <typename T>
 inline
-auto alloy::core::object_storage<T>::get()
-  noexcept -> T&
+auto alloy::core::object_storage<T>::get() noexcept -> T&
 {
   return m_storage.template get<T>();
 }
 
 template <typename T>
 inline
-auto alloy::core::object_storage<T>::get()
-  const noexcept -> const T&
+auto alloy::core::object_storage<T>::get() const noexcept -> const T&
 {
   return m_storage.template get<T>();
 }
 
 template <typename T>
 inline constexpr
-auto alloy::core::object_storage<T>::data()
-  noexcept -> std::byte*
+auto alloy::core::object_storage<T>::data() noexcept -> std::byte*
 {
   return m_storage.data();
 }
 
 template <typename T>
 inline constexpr
-auto alloy::core::object_storage<T>::data()
-  const noexcept -> const std::byte*
+auto alloy::core::object_storage<T>::data() const noexcept -> const std::byte*
 {
   return m_storage.data();
 }

@@ -58,8 +58,8 @@ namespace alloy::engine {
     signature(signature&&) = default;
     signature(const signature&) = default;
 
-    signature& operator=(signature&&) = default;
-    signature& operator=(const signature&) = default;
+    auto operator=(signature&&) -> signature& = default;
+    auto operator=(const signature&) -> signature& = default;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -69,15 +69,15 @@ namespace alloy::engine {
     /// \brief Adds a component to this signature
     ///
     /// \param c the component to add
-    void add(component c) noexcept;
+    auto add(component c) noexcept -> void;
 
     /// \brief Removes a component from this signature
     ///
     /// \param c the component to remove
-    void remove(component c) noexcept;
+    auto remove(component c) noexcept -> void;
 
     /// \brief Removes all components from this signature
-    void reset() noexcept;
+    auto reset() noexcept -> void;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -88,7 +88,7 @@ namespace alloy::engine {
     ///
     /// \param c the component to check
     /// \return `true` if this signature contains the component \p c
-    bool contains(component c) const noexcept;
+    auto contains(component c) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Members
@@ -97,8 +97,10 @@ namespace alloy::engine {
 
     underlying_type m_value;
 
-    friend bool operator==(const signature& lhs, const signature& rhs) noexcept;
-    friend bool operator<(const signature& lhs, const signature& rhs) noexcept;
+    friend auto operator==(const signature& lhs, const signature& rhs)
+      noexcept -> bool;
+    friend auto operator<(const signature& lhs, const signature& rhs)
+      noexcept -> bool;
   };
 
   //============================================================================
@@ -109,12 +111,12 @@ namespace alloy::engine {
   // Comparison Operators
   //----------------------------------------------------------------------------
 
-  bool operator==(const signature& lhs, const signature& rhs) noexcept;
-  bool operator!=(const signature& lhs, const signature& rhs) noexcept;
-  bool operator<(const signature& lhs, const signature& rhs) noexcept;
-  bool operator>(const signature& lhs, const signature& rhs) noexcept;
-  bool operator<=(const signature& lhs, const signature& rhs) noexcept;
-  bool operator>=(const signature& lhs, const signature& rhs) noexcept;
+  auto operator==(const signature& lhs, const signature& rhs) noexcept -> bool;
+  auto operator!=(const signature& lhs, const signature& rhs) noexcept -> bool;
+  auto operator<(const signature& lhs, const signature& rhs) noexcept -> bool;
+  auto operator>(const signature& lhs, const signature& rhs) noexcept -> bool;
+  auto operator<=(const signature& lhs, const signature& rhs) noexcept -> bool;
+  auto operator>=(const signature& lhs, const signature& rhs) noexcept -> bool;
 
 } // namespace alloy::engine
 
@@ -126,15 +128,15 @@ namespace alloy::engine {
 // Constructors
 //------------------------------------------------------------------------------
 
-inline alloy::engine::signature::signature()
-  noexcept
+inline
+alloy::engine::signature::signature() noexcept
   : m_value{0}
 {
 
 }
 
-inline alloy::engine::signature::signature(underlying_type value)
-  noexcept
+inline
+alloy::engine::signature::signature(underlying_type value) noexcept
   : m_value{value}
 {
 
@@ -144,22 +146,22 @@ inline alloy::engine::signature::signature(underlying_type value)
 // Modifiers
 //------------------------------------------------------------------------------
 
-inline void alloy::engine::signature::add(component c)
-  noexcept
+inline
+auto alloy::engine::signature::add(component c) noexcept -> void
 {
   ALLOY_ASSERT(c.index < max_components);
   m_value |= (1 << c.index);
 }
 
-inline void alloy::engine::signature::remove(component c)
-  noexcept
+inline
+auto alloy::engine::signature::remove(component c) noexcept -> void
 {
   ALLOY_ASSERT(c.index < max_components);
   m_value &= ~(1 << c.index);
 }
 
-inline void alloy::engine::signature::reset()
-  noexcept
+inline
+auto alloy::engine::signature::reset() noexcept -> void
 {
   m_value = 0u;
 }
@@ -168,8 +170,8 @@ inline void alloy::engine::signature::reset()
 // Observers
 //------------------------------------------------------------------------------
 
-inline bool alloy::engine::signature::contains(component c)
-  const noexcept
+inline
+auto alloy::engine::signature::contains(component c) const noexcept -> bool
 {
   return static_cast<bool>(m_value & (1 << c.index));
 }
@@ -182,44 +184,44 @@ inline bool alloy::engine::signature::contains(component c)
 // Comparison Operators
 //------------------------------------------------------------------------------
 
-inline bool alloy::engine::operator==(const signature& lhs,
-                                      const signature& rhs)
-  noexcept
+inline
+auto alloy::engine::operator==(const signature& lhs, const signature& rhs)
+  noexcept -> bool
 {
   return lhs.m_value == rhs.m_value;
 }
 
-inline bool alloy::engine::operator!=(const signature& lhs,
-                                      const signature& rhs)
-  noexcept
+inline
+auto alloy::engine::operator!=(const signature& lhs, const signature& rhs)
+  noexcept -> bool
 {
   return !(lhs == rhs);
 }
 
-inline bool alloy::engine::operator<(const signature& lhs,
-                                     const signature& rhs)
-  noexcept
+inline
+auto alloy::engine::operator<(const signature& lhs, const signature& rhs)
+  noexcept -> bool
 {
   return lhs.m_value < rhs.m_value;
 }
 
-inline bool alloy::engine::operator>(const signature& lhs,
-                                     const signature& rhs)
-  noexcept
+inline
+auto alloy::engine::operator>(const signature& lhs, const signature& rhs)
+  noexcept -> bool
 {
   return rhs < lhs;
 }
 
-inline bool alloy::engine::operator<=(const signature& lhs,
-                                      const signature& rhs)
-  noexcept
+inline
+auto alloy::engine::operator<=(const signature& lhs, const signature& rhs)
+  noexcept -> bool
 {
   return !(rhs < lhs);
 }
 
-inline bool alloy::engine::operator>=(const signature& lhs,
-                                      const signature& rhs)
-  noexcept
+inline
+auto alloy::engine::operator>=(const signature& lhs, const signature& rhs)
+  noexcept -> bool
 {
   return !(lhs < rhs);
 }

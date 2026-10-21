@@ -166,7 +166,8 @@ namespace alloy::core {
 
     //-------------------------------------------------------------------------
 
-    auto operator=(const bad_result_access& other) -> bad_result_access& = default;
+    auto operator=(const bad_result_access& other)
+      -> bad_result_access& = default;
     auto operator=(bad_result_access&& other) -> bad_result_access& = default;
 
     /// \{
@@ -282,8 +283,13 @@ namespace alloy::core {
     /// \param args the arguments to forward to E's constructor
     template <typename U, typename...Args,
               typename = typename std::enable_if<std::is_constructible<E,std::initializer_list<U>,Args...>::value>::type>
-    constexpr failure(std::in_place_t, std::initializer_list<U> ilist, Args&&...args)
-      noexcept(std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value);
+    constexpr failure(
+      std::in_place_t,
+      std::initializer_list<U> ilist,
+      Args&&...args
+    ) noexcept(
+      std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value
+    );
 
     /// \{
     /// \brief Constructs a failure from the given error
@@ -338,7 +344,10 @@ namespace alloy::core {
               typename = typename std::enable_if<detail::failure_is_value_assignable<E,E2>::value>::type>
     constexpr
     auto operator=(E2&& error)
-      noexcept(std::is_nothrow_assignable<E,E2>::value || std::is_lvalue_reference<E>::value) -> failure&;
+      noexcept(
+        std::is_nothrow_assignable<E,E2>::value ||
+        std::is_lvalue_reference<E>::value
+      ) -> failure&;
 
     /// \brief Assigns the contents of \p other to this by copy-assignment
     ///
@@ -382,15 +391,13 @@ namespace alloy::core {
     ///
     /// \return the underlying error
     constexpr
-    auto error() & noexcept
-      -> std::add_lvalue_reference_t<E>;
+    auto error() & noexcept -> std::add_lvalue_reference_t<E>;
     constexpr
-    auto error() && noexcept
-      -> std::add_rvalue_reference_t<E>;
-    constexpr auto error() const & noexcept
-      -> std::add_lvalue_reference_t<std::add_const_t<E>>;
-    constexpr auto error() const && noexcept
-      -> std::add_rvalue_reference_t<std::add_const_t<E>>;
+    auto error() && noexcept -> std::add_rvalue_reference_t<E>;
+    constexpr auto error()
+      const & noexcept -> std::add_lvalue_reference_t<std::add_const_t<E>>;
+    constexpr auto error()
+      const && noexcept -> std::add_rvalue_reference_t<std::add_const_t<E>>;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -423,23 +430,23 @@ namespace alloy::core {
   //---------------------------------------------------------------------------
 
   template <typename E1, typename E2>
-  constexpr auto operator==(const failure<E1>& lhs,
-                            const failure<E2>& rhs) noexcept -> bool;
+  constexpr auto operator==(const failure<E1>& lhs, const failure<E2>& rhs)
+    noexcept -> bool;
   template <typename E1, typename E2>
-  constexpr auto operator!=(const failure<E1>& lhs,
-                            const failure<E2>& rhs) noexcept -> bool;
+  constexpr auto operator!=(const failure<E1>& lhs, const failure<E2>& rhs)
+    noexcept -> bool;
   template <typename E1, typename E2>
-  constexpr auto operator<(const failure<E1>& lhs,
-                           const failure<E2>& rhs) noexcept -> bool;
+  constexpr auto operator<(const failure<E1>& lhs, const failure<E2>& rhs)
+    noexcept -> bool;
   template <typename E1, typename E2>
-  constexpr auto operator>(const failure<E1>& lhs,
-                           const failure<E2>& rhs) noexcept -> bool;
+  constexpr auto operator>(const failure<E1>& lhs, const failure<E2>& rhs)
+    noexcept -> bool;
   template <typename E1, typename E2>
-  constexpr auto operator<=(const failure<E1>& lhs,
-                            const failure<E2>& rhs) noexcept -> bool;
+  constexpr auto operator<=(const failure<E1>& lhs, const failure<E2>& rhs)
+    noexcept -> bool;
   template <typename E1, typename E2>
-  constexpr auto operator>=(const failure<E1>& lhs,
-                            const failure<E2>& rhs) noexcept -> bool;
+  constexpr auto operator>=(const failure<E1>& lhs, const failure<E2>& rhs)
+    noexcept -> bool;
 
   //---------------------------------------------------------------------------
   // Utilities
@@ -461,8 +468,7 @@ namespace alloy::core {
   /// \return a constructed failure reference
   template <typename E>
   [[nodiscard]]
-  constexpr auto fail(std::reference_wrapper<E> e)
-    noexcept -> failure<E&>;
+  constexpr auto fail(std::reference_wrapper<E> e) noexcept -> failure<E&>;
 
   /// \brief Constructs a failure type from a series of arguments
   ///
@@ -473,8 +479,7 @@ namespace alloy::core {
             typename = typename std::enable_if<std::is_constructible<E,Args...>::value>::type>
   [[nodiscard]]
   constexpr auto fail(Args&&...args)
-    noexcept(std::is_nothrow_constructible<E, Args...>::value)
-    -> failure<E>;
+    noexcept(std::is_nothrow_constructible<E, Args...>::value) -> failure<E>;
 
   /// \brief Constructs a failure type from an initializer list and series of
   ///        arguments
@@ -486,8 +491,9 @@ namespace alloy::core {
             typename = typename std::enable_if<std::is_constructible<E,std::initializer_list<U>,Args...>::value>::type>
   [[nodiscard]]
   constexpr auto fail(std::initializer_list<U> ilist, Args&&...args)
-    noexcept(std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value)
-    -> failure<E>;
+    noexcept(
+      std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value
+    ) -> failure<E>;
 
   /// \brief Swaps the contents of two failure values
   ///
@@ -639,8 +645,10 @@ namespace alloy::core {
 
       /// \brief Destroys the underlying stored object
       ~result_union()
-        noexcept(std::is_nothrow_destructible<T>::value &&
-                 std::is_nothrow_destructible<E>::value);
+        noexcept(
+          std::is_nothrow_destructible<T>::value &&
+          std::is_nothrow_destructible<E>::value
+        );
 
       //-----------------------------------------------------------------------
 
@@ -714,8 +722,10 @@ namespace alloy::core {
       result_construct_base(const result_construct_base&) = default;
       result_construct_base(result_construct_base&&) = default;
 
-      auto operator=(const result_construct_base&) -> result_construct_base& = default;
-      auto operator=(result_construct_base&&) -> result_construct_base& = default;
+      auto operator=(const result_construct_base&)
+        -> result_construct_base& = default;
+      auto operator=(result_construct_base&&)
+        -> result_construct_base& = default;
 
       //-----------------------------------------------------------------------
       // Construction / Assignment
@@ -786,18 +796,22 @@ namespace alloy::core {
       //-----------------------------------------------------------------------
 
       template <typename ReferenceWrapper>
-      auto construct_value_from_result_impl(std::true_type, ReferenceWrapper&& reference)
-        noexcept -> void;
+      auto construct_value_from_result_impl(
+        std::true_type,
+        ReferenceWrapper&& reference
+      ) noexcept -> void;
 
       template <typename Value>
       auto construct_value_from_result_impl(std::false_type, Value&& value)
         noexcept(std::is_nothrow_constructible<T,Value>::value) -> void;
 
       template <typename Result>
-      auto assign_value_from_result_impl(std::true_type, Result&& other) -> void;
+      auto assign_value_from_result_impl(std::true_type, Result&& other)
+        -> void;
 
       template <typename Result>
-      auto assign_value_from_result_impl(std::false_type, Result&& other) -> void;
+      auto assign_value_from_result_impl(std::false_type, Result&& other)
+        -> void;
 
       //-----------------------------------------------------------------------
       // Public Members
@@ -818,13 +832,20 @@ namespace alloy::core {
       using base_type = result_construct_base<T,E>;
       using base_type::base_type;
 
-      result_trivial_copy_ctor_base_impl(const result_trivial_copy_ctor_base_impl& other)
-        noexcept(std::is_nothrow_copy_constructible<T>::value &&
-                 std::is_nothrow_copy_constructible<E>::value);
-      result_trivial_copy_ctor_base_impl(result_trivial_copy_ctor_base_impl&& other) = default;
+      result_trivial_copy_ctor_base_impl(
+        const result_trivial_copy_ctor_base_impl& other
+      ) noexcept(
+        std::is_nothrow_copy_constructible<T>::value &&
+        std::is_nothrow_copy_constructible<E>::value
+      );
+      result_trivial_copy_ctor_base_impl(
+        result_trivial_copy_ctor_base_impl&& other
+      ) = default;
 
-      auto operator=(const result_trivial_copy_ctor_base_impl& other) -> result_trivial_copy_ctor_base_impl& = default;
-      auto operator=(result_trivial_copy_ctor_base_impl&& other) -> result_trivial_copy_ctor_base_impl& = default;
+      auto operator=(const result_trivial_copy_ctor_base_impl& other)
+        -> result_trivial_copy_ctor_base_impl& = default;
+      auto operator=(result_trivial_copy_ctor_base_impl&& other)
+        -> result_trivial_copy_ctor_base_impl& = default;
     };
 
     template <bool Condition, typename Base>
@@ -851,13 +872,20 @@ namespace alloy::core {
       using base_type = result_trivial_copy_ctor_base<T,E>;
       using base_type::base_type;
 
-      result_trivial_move_ctor_base_impl(const result_trivial_move_ctor_base_impl& other) = default;
-      result_trivial_move_ctor_base_impl(result_trivial_move_ctor_base_impl&& other)
-        noexcept(std::is_nothrow_move_constructible<T>::value &&
-                 std::is_nothrow_move_constructible<E>::value);
+      result_trivial_move_ctor_base_impl(
+        const result_trivial_move_ctor_base_impl& other
+      ) = default;
+      result_trivial_move_ctor_base_impl(
+        result_trivial_move_ctor_base_impl&& other
+      ) noexcept(
+        std::is_nothrow_move_constructible<T>::value &&
+        std::is_nothrow_move_constructible<E>::value
+      );
 
-      auto operator=(const result_trivial_move_ctor_base_impl& other) -> result_trivial_move_ctor_base_impl& = default;
-      auto operator=(result_trivial_move_ctor_base_impl&& other) -> result_trivial_move_ctor_base_impl& = default;
+      auto operator=(const result_trivial_move_ctor_base_impl& other)
+        -> result_trivial_move_ctor_base_impl& = default;
+      auto operator=(result_trivial_move_ctor_base_impl&& other)
+        -> result_trivial_move_ctor_base_impl& = default;
     };
 
     template <typename T, typename E>
@@ -878,15 +906,20 @@ namespace alloy::core {
       using base_type = result_trivial_move_ctor_base<T,E>;
       using base_type::base_type;
 
-      result_trivial_copy_assign_base_impl(const result_trivial_copy_assign_base_impl& other) = default;
-      result_trivial_copy_assign_base_impl(result_trivial_copy_assign_base_impl&& other) = default;
+      result_trivial_copy_assign_base_impl(
+        const result_trivial_copy_assign_base_impl& other
+      ) = default;
+      result_trivial_copy_assign_base_impl(
+        result_trivial_copy_assign_base_impl&& other
+      ) = default;
 
       auto operator=(const result_trivial_copy_assign_base_impl& other)
-        noexcept(std::is_nothrow_copy_constructible<T>::value &&
-                 std::is_nothrow_copy_constructible<E>::value &&
-                 std::is_nothrow_copy_assignable<T>::value &&
-                 std::is_nothrow_copy_assignable<E>::value)
-        -> result_trivial_copy_assign_base_impl&;
+        noexcept(
+          std::is_nothrow_copy_constructible<T>::value &&
+          std::is_nothrow_copy_constructible<E>::value &&
+          std::is_nothrow_copy_assignable<T>::value &&
+          std::is_nothrow_copy_assignable<E>::value
+        ) -> result_trivial_copy_assign_base_impl&;
       auto operator=(result_trivial_copy_assign_base_impl&& other)
         -> result_trivial_copy_assign_base_impl& = default;
     };
@@ -913,17 +946,22 @@ namespace alloy::core {
       using base_type = result_trivial_copy_assign_base<T,E>;
       using base_type::base_type;
 
-      result_trivial_move_assign_base_impl(const result_trivial_move_assign_base_impl& other) = default;
-      result_trivial_move_assign_base_impl(result_trivial_move_assign_base_impl&& other) = default;
+      result_trivial_move_assign_base_impl(
+        const result_trivial_move_assign_base_impl& other
+      ) = default;
+      result_trivial_move_assign_base_impl(
+        result_trivial_move_assign_base_impl&& other
+      ) = default;
 
       auto operator=(const result_trivial_move_assign_base_impl& other)
         -> result_trivial_move_assign_base_impl& = default;
       auto operator=(result_trivial_move_assign_base_impl&& other)
-        noexcept(std::is_nothrow_move_constructible<T>::value &&
-                 std::is_nothrow_move_constructible<E>::value &&
-                 std::is_nothrow_move_assignable<T>::value &&
-                 std::is_nothrow_move_assignable<E>::value)
-        -> result_trivial_move_assign_base_impl&;
+        noexcept(
+          std::is_nothrow_move_constructible<T>::value &&
+          std::is_nothrow_move_constructible<E>::value &&
+          std::is_nothrow_move_assignable<T>::value &&
+          std::is_nothrow_move_assignable<E>::value
+        ) -> result_trivial_move_assign_base_impl&;
     };
 
     template <typename T, typename E>
@@ -952,8 +990,7 @@ namespace alloy::core {
 
       auto operator=(const disable_copy_ctor& other)
         -> disable_copy_ctor& = default;
-      auto operator=(disable_copy_ctor&& other)
-        -> disable_copy_ctor& = default;
+      auto operator=(disable_copy_ctor&& other) -> disable_copy_ctor& = default;
     };
 
     template <typename T, typename E>
@@ -978,8 +1015,7 @@ namespace alloy::core {
 
       auto operator=(const disable_move_ctor& other)
         -> disable_move_ctor& = default;
-      auto operator=(disable_move_ctor&& other)
-        -> disable_move_ctor& = default;
+      auto operator=(disable_move_ctor&& other) -> disable_move_ctor& = default;
     };
 
     template <typename T, typename E>
@@ -1391,8 +1427,7 @@ namespace alloy::core {
     /// ```
     template <typename U=T,
               typename = typename std::enable_if<std::is_constructible<U>::value>::type>
-    constexpr result()
-      noexcept(std::is_nothrow_constructible<U>::value);
+    constexpr result() noexcept(std::is_nothrow_constructible<U>::value);
 
     /// \brief Copy constructs this result
     ///
@@ -1497,13 +1532,17 @@ namespace alloy::core {
     template <typename T2, typename E2,
               typename std::enable_if<detail::result_is_implicit_copy_convertible<T,E,T2,E2>::value,int>::type = 0>
     result(const result<T2,E2>& other)
-      noexcept(std::is_nothrow_constructible<T,const T2&>::value &&
-               std::is_nothrow_constructible<E,const E2&>::value);
+      noexcept(
+        std::is_nothrow_constructible<T,const T2&>::value &&
+        std::is_nothrow_constructible<E,const E2&>::value
+      );
     template <typename T2, typename E2,
               typename std::enable_if<detail::result_is_explicit_copy_convertible<T,E,T2,E2>::value,int>::type = 0>
     explicit result(const result<T2,E2>& other)
-      noexcept(std::is_nothrow_constructible<T,const T2&>::value &&
-               std::is_nothrow_constructible<E,const E2&>::value);
+      noexcept(
+        std::is_nothrow_constructible<T,const T2&>::value &&
+        std::is_nothrow_constructible<E,const E2&>::value
+      );
     /// \}
 
     /// \{
@@ -1547,13 +1586,17 @@ namespace alloy::core {
     template <typename T2, typename E2,
               typename std::enable_if<detail::result_is_implicit_move_convertible<T,E,T2,E2>::value,int>::type = 0>
     result(result<T2,E2>&& other)
-      noexcept(std::is_nothrow_constructible<T,T2&&>::value &&
-               std::is_nothrow_constructible<E,E2&&>::value);
+      noexcept(
+        std::is_nothrow_constructible<T,T2&&>::value &&
+        std::is_nothrow_constructible<E,E2&&>::value
+      );
     template <typename T2, typename E2,
               typename std::enable_if<detail::result_is_explicit_move_convertible<T,E,T2,E2>::value,int>::type = 0>
     explicit result(result<T2,E2>&& other)
-      noexcept(std::is_nothrow_constructible<T,T2&&>::value &&
-               std::is_nothrow_constructible<E,E2&&>::value);
+      noexcept(
+        std::is_nothrow_constructible<T,T2&&>::value &&
+        std::is_nothrow_constructible<E,E2&&>::value
+      );
     /// \}
 
     //-------------------------------------------------------------------------
@@ -1601,10 +1644,13 @@ namespace alloy::core {
     /// \param args  the arguments to pass to T's constructor
     template <typename U, typename...Args,
               typename = typename std::enable_if<std::is_constructible<T, std::initializer_list<U>&, Args...>::value>::type>
-    constexpr explicit result(std::in_place_t,
-                              std::initializer_list<U> ilist,
-                              Args&&...args)
-      noexcept(std::is_nothrow_constructible<T, std::initializer_list<U>, Args...>::value);
+    constexpr explicit result(
+      std::in_place_t,
+      std::initializer_list<U> ilist,
+      Args&&...args
+    ) noexcept(
+      std::is_nothrow_constructible<T, std::initializer_list<U>, Args...>::value
+    );
 
     //-------------------------------------------------------------------------
 
@@ -1651,10 +1697,13 @@ namespace alloy::core {
     /// \param args  the arguments to pass to Es constructor
     template <typename U, typename...Args,
               typename = typename std::enable_if<std::is_constructible<E, std::initializer_list<U>&, Args...>::value>::type>
-    constexpr explicit result(in_place_error_t,
-                              std::initializer_list<U> ilist,
-                              Args&&...args)
-      noexcept(std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value);
+    constexpr explicit result(
+      in_place_error_t,
+      std::initializer_list<U> ilist,
+      Args&&...args
+    ) noexcept(
+      std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value
+    );
 
     //-------------------------------------------------------------------------
 
@@ -1800,8 +1849,10 @@ namespace alloy::core {
     template <typename T2, typename E2,
               typename = typename std::enable_if<detail::result_is_copy_convert_assignable<T,E,T2,E2>::value>::type>
     auto operator=(const result<T2,E2>& other)
-      noexcept(std::is_nothrow_assignable<T,const T2&>::value &&
-               std::is_nothrow_assignable<E,const E2&>::value) -> result&;
+      noexcept(
+        std::is_nothrow_assignable<T,const T2&>::value &&
+        std::is_nothrow_assignable<E,const E2&>::value
+      ) -> result&;
 
     /// \brief Move-converts the state of \p other
     ///
@@ -1832,8 +1883,10 @@ namespace alloy::core {
     template <typename T2, typename E2,
               typename = typename std::enable_if<detail::result_is_move_convert_assignable<T,E,T2,E2>::value>::type>
     auto operator=(result<T2,E2>&& other)
-      noexcept(std::is_nothrow_assignable<T,T2&&>::value &&
-               std::is_nothrow_assignable<E,E2&&>::value) -> result&;
+      noexcept(
+        std::is_nothrow_assignable<T,T2&&>::value &&
+        std::is_nothrow_assignable<E,E2&&>::value
+      ) -> result&;
 
     /// \brief Perfect-forwarded assignment
     ///
@@ -1910,8 +1963,7 @@ namespace alloy::core {
     ///
     /// \return a pointer to the contained value
     [[nodiscard]]
-    constexpr auto operator->()
-      noexcept -> std::remove_reference_t<T>*;
+    constexpr auto operator->() noexcept -> std::remove_reference_t<T>*;
     [[nodiscard]]
     constexpr auto operator->()
       const noexcept -> std::remove_reference_t<std::add_const_t<T>>*;
@@ -1944,11 +1996,9 @@ namespace alloy::core {
     ///
     /// \return a reference to the contained value
     [[nodiscard]]
-    constexpr auto operator*()
-      & noexcept -> std::add_lvalue_reference_t<T>;
+    constexpr auto operator*() & noexcept -> std::add_lvalue_reference_t<T>;
     [[nodiscard]]
-    constexpr auto operator*()
-      && noexcept -> std::add_rvalue_reference_t<T>;
+    constexpr auto operator*() && noexcept -> std::add_rvalue_reference_t<T>;
     [[nodiscard]]
     constexpr auto operator*()
       const& noexcept -> std::add_lvalue_reference_t<std::add_const_t<T>>;
@@ -2063,11 +2113,9 @@ namespace alloy::core {
     ///
     /// \return the value of `*this`
     [[nodiscard]]
-    constexpr auto value()
-      & -> std::add_lvalue_reference_t<T>;
+    constexpr auto value() & -> std::add_lvalue_reference_t<T>;
     [[nodiscard]]
-    constexpr auto value()
-      && -> std::add_rvalue_reference_t<T>;
+    constexpr auto value() && -> std::add_rvalue_reference_t<T>;
     [[nodiscard]]
     constexpr auto value()
       const & -> std::add_lvalue_reference_t<std::add_const_t<T>>;
@@ -2114,13 +2162,17 @@ namespace alloy::core {
     ///
     /// \return the error or a default-constructed error value
     [[nodiscard]]
-    constexpr auto error() const &
-      noexcept(std::is_nothrow_constructible<E>::value &&
-               std::is_nothrow_copy_constructible<E>::value) -> E;
+    constexpr auto error()
+      const & noexcept(
+        std::is_nothrow_constructible<E>::value &&
+        std::is_nothrow_copy_constructible<E>::value
+      ) -> E;
     [[nodiscard]]
-    constexpr auto error() &&
-      noexcept(std::is_nothrow_constructible<E>::value &&
-               std::is_nothrow_move_constructible<E>::value) -> E;
+    constexpr auto error()
+      && noexcept(
+        std::is_nothrow_constructible<E>::value &&
+        std::is_nothrow_move_constructible<E>::value
+      ) -> E;
     /// }
 
     /// \{
@@ -2190,8 +2242,7 @@ namespace alloy::core {
       const & -> std::remove_reference_t<T>;
     template <typename U>
     [[nodiscard]]
-    constexpr auto value_or(U&& default_value)
-      && -> std::remove_reference_t<T>;
+    constexpr auto value_or(U&& default_value) && -> std::remove_reference_t<T>;
     /// \}
 
     /// \{
@@ -2273,7 +2324,8 @@ namespace alloy::core {
     /// \return The result of the function being called
     template <typename Fn>
     [[nodiscard]]
-    constexpr auto flat_map(Fn&& fn) const & -> std::invoke_result_t<Fn, const T&>;
+    constexpr auto flat_map(Fn&& fn)
+      const & -> std::invoke_result_t<Fn, const T&>;
     template <typename Fn>
     [[nodiscard]]
     constexpr auto flat_map(Fn&& fn) && -> std::invoke_result_t<Fn, T&&>;
@@ -2307,7 +2359,8 @@ namespace alloy::core {
     /// \return The result result of the function invoked
     template <typename Fn>
     [[nodiscard]]
-    constexpr auto map(Fn&& fn) const & -> result<std::invoke_result_t<Fn,const T&>,E>;
+    constexpr auto map(Fn&& fn)
+      const & -> result<std::invoke_result_t<Fn,const T&>,E>;
     template <typename Fn>
     [[nodiscard]]
     constexpr auto map(Fn&& fn) && -> result<std::invoke_result_t<Fn,T&&>,E>;
@@ -2385,8 +2438,7 @@ namespace alloy::core {
       const & -> std::invoke_result_t<Fn, const E&>;
     template <typename Fn>
     [[nodiscard]]
-    constexpr auto flat_map_error(Fn&& fn)
-      && -> std::invoke_result_t<Fn, E&&>;
+    constexpr auto flat_map_error(Fn&& fn) && -> std::invoke_result_t<Fn, E&&>;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -2408,11 +2460,13 @@ namespace alloy::core {
     template <typename Fn>
     constexpr auto map_impl(std::true_type, Fn&& fn) const & -> result<void,E>;
     template <typename Fn>
-    constexpr auto map_impl(std::false_type, Fn&& fn) const & -> result<std::invoke_result_t<Fn,const T&>,E>;
+    constexpr auto map_impl(std::false_type, Fn&& fn)
+      const & -> result<std::invoke_result_t<Fn,const T&>,E>;
     template <typename Fn>
     constexpr auto map_impl(std::true_type, Fn&& fn) && -> result<void,E>;
     template <typename Fn>
-    constexpr auto map_impl(std::false_type, Fn&& fn) && -> result<std::invoke_result_t<Fn,T&&>,E>;
+    constexpr auto map_impl(std::false_type, Fn&& fn)
+      && -> result<std::invoke_result_t<Fn,T&&>,E>;
     /// \}
   };
 
@@ -2644,10 +2698,13 @@ namespace alloy::core {
     /// \param args  the arguments to pass to Es constructor
     template <typename U, typename...Args,
               typename = typename std::enable_if<std::is_constructible<E, std::initializer_list<U>&, Args...>::value>::type>
-    constexpr explicit result(in_place_error_t,
-                              std::initializer_list<U> ilist,
-                              Args&&...args)
-      noexcept(std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value);
+    constexpr explicit result(
+      in_place_error_t,
+      std::initializer_list<U> ilist,
+      Args&&...args
+    ) noexcept(
+      std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value
+    );
 
     //-------------------------------------------------------------------------
 
@@ -2861,13 +2918,17 @@ namespace alloy::core {
     /// \{
     /// \copydoc result<T,E>::error
     [[nodiscard]]
-    constexpr auto error() const &
-      noexcept(std::is_nothrow_constructible<E>::value &&
-               std::is_nothrow_copy_constructible<E>::value) -> E;
+    constexpr auto error()
+      const & noexcept(
+        std::is_nothrow_constructible<E>::value &&
+        std::is_nothrow_copy_constructible<E>::value
+      ) -> E;
     [[nodiscard]]
-    constexpr auto error() &&
-      noexcept(std::is_nothrow_constructible<E>::value &&
-               std::is_nothrow_copy_constructible<E>::value) -> E;
+    constexpr auto error()
+      && noexcept(
+        std::is_nothrow_constructible<E>::value &&
+        std::is_nothrow_copy_constructible<E>::value
+      ) -> E;
     /// \}
 
     /// \{
@@ -2978,7 +3039,8 @@ namespace alloy::core {
     /// \{
     /// \copydoc result<T,E>::map_error
     template <typename Fn>
-    constexpr auto map_error(Fn&& fn) const & -> result<void, std::invoke_result_t<Fn,const E&>>;
+    constexpr auto map_error(Fn&& fn)
+      const & -> result<void, std::invoke_result_t<Fn,const E&>>;
     template <typename Fn>
     constexpr
     auto map_error(Fn&& fn) && -> result<void, std::invoke_result_t<Fn,E&&>>;
@@ -2989,7 +3051,8 @@ namespace alloy::core {
     /// \copydoc result<T,E>::flat_map_error
     template <typename Fn>
     [[nodiscard]]
-    constexpr auto flat_map_error(Fn&& fn) const & -> std::invoke_result_t<Fn, const E&>;
+    constexpr auto flat_map_error(Fn&& fn)
+      const & -> std::invoke_result_t<Fn, const E&>;
     template <typename Fn>
     [[nodiscard]]
     constexpr auto flat_map_error(Fn&& fn) && -> std::invoke_result_t<Fn, E&&>;
@@ -3014,11 +3077,13 @@ namespace alloy::core {
     template <typename Fn>
     constexpr auto map_impl(std::true_type, Fn&& fn) const & -> result<void,E>;
     template <typename Fn>
-    constexpr auto map_impl(std::false_type, Fn&& fn) const & -> result<std::invoke_result_t<Fn>,E>;
+    constexpr auto map_impl(std::false_type, Fn&& fn)
+      const & -> result<std::invoke_result_t<Fn>,E>;
     template <typename Fn>
     constexpr auto map_impl(std::true_type, Fn&& fn) && -> result<void,E>;
     template <typename Fn>
-    constexpr auto map_impl(std::false_type, Fn&& fn) && -> result<std::invoke_result_t<Fn>,E>;
+    constexpr auto map_impl(std::false_type, Fn&& fn)
+      && -> result<std::invoke_result_t<Fn>,E>;
     /// \}
   };
 
@@ -3052,23 +3117,35 @@ namespace alloy::core {
   //---------------------------------------------------------------------------
 
   template <typename E1, typename E2>
-  constexpr auto operator==(const result<void,E1>& lhs, const result<void,E2>& rhs)
-    noexcept -> bool;
+  constexpr auto operator==(
+    const result<void,E1>& lhs,
+    const result<void,E2>& rhs
+  ) noexcept -> bool;
   template <typename E1, typename E2>
-  constexpr auto operator!=(const result<void,E1>& lhs, const result<void,E2>& rhs)
-    noexcept -> bool;
+  constexpr auto operator!=(
+    const result<void,E1>& lhs,
+    const result<void,E2>& rhs
+  ) noexcept -> bool;
   template <typename E1, typename E2>
-  constexpr auto operator>=(const result<void,E1>& lhs, const result<void,E2>& rhs)
-    noexcept -> bool;
+  constexpr auto operator>=(
+    const result<void,E1>& lhs,
+    const result<void,E2>& rhs
+  ) noexcept -> bool;
   template <typename E1, typename E2>
-  constexpr auto operator<=(const result<void,E1>& lhs, const result<void,E2>& rhs)
-    noexcept -> bool;
+  constexpr auto operator<=(
+    const result<void,E1>& lhs,
+    const result<void,E2>& rhs
+  ) noexcept -> bool;
   template <typename E1, typename E2>
-  constexpr auto operator>(const result<void,E1>& lhs, const result<void,E2>& rhs)
-    noexcept -> bool;
+  constexpr auto operator>(
+    const result<void,E1>& lhs,
+    const result<void,E2>& rhs
+  ) noexcept -> bool;
   template <typename E1, typename E2>
-  constexpr auto operator<(const result<void,E1>& lhs, const result<void,E2>& rhs)
-    noexcept -> bool;
+  constexpr auto operator<(
+    const result<void,E1>& lhs,
+    const result<void,E2>& rhs
+  ) noexcept -> bool;
 
   //---------------------------------------------------------------------------
 
@@ -3171,17 +3248,19 @@ namespace alloy::core {
   /// \param rhs the right result
   template <typename T, typename E>
   auto swap(result<T,E>& lhs, result<T,E>& rhs)
-    noexcept(std::is_nothrow_move_constructible<result<T,E>>::value &&
-             std::is_nothrow_move_assignable<result<T,E>>::value &&
-             std::is_nothrow_swappable<T>::value &&
-             std::is_nothrow_swappable<E>::value)
-    -> void;
+    noexcept(
+      std::is_nothrow_move_constructible<result<T,E>>::value &&
+      std::is_nothrow_move_assignable<result<T,E>>::value &&
+      std::is_nothrow_swappable<T>::value &&
+      std::is_nothrow_swappable<E>::value
+    ) -> void;
   template <typename E>
   auto swap(result<void,E>& lhs, result<void,E>& rhs)
-    noexcept(std::is_nothrow_move_constructible<result<void,E>>::value &&
-             std::is_nothrow_move_assignable<result<void,E>>::value &&
-             std::is_nothrow_swappable<E>::value)
-     -> void;
+    noexcept(
+      std::is_nothrow_move_constructible<result<void,E>>::value &&
+      std::is_nothrow_move_assignable<result<void,E>>::value &&
+      std::is_nothrow_swappable<E>::value
+    ) -> void;
   /// \}
 
 } // namespace alloy::core
@@ -3240,7 +3319,8 @@ ALLOY_FORCE_INLINE
 alloy::core::bad_result_access<E>::bad_result_access(
   const char* what_arg,
   E2&& error
-) : logic_error{what_arg},
+)
+  : logic_error{what_arg},
     m_error(std::forward<E2>(error))
 {
 
@@ -3252,7 +3332,8 @@ ALLOY_FORCE_INLINE
 alloy::core::bad_result_access<E>::bad_result_access(
   const std::string& what_arg,
   E2&& error
-) : logic_error{what_arg},
+)
+  : logic_error{what_arg},
     m_error(std::forward<E2>(error))
 {
 
@@ -3264,32 +3345,28 @@ alloy::core::bad_result_access<E>::bad_result_access(
 
 template <typename E>
 ALLOY_FORCE_INLINE
-auto alloy::core::bad_result_access<E>::error()
-  & noexcept -> E&
+auto alloy::core::bad_result_access<E>::error() & noexcept -> E&
 {
   return m_error;
 }
 
 template <typename E>
 ALLOY_FORCE_INLINE
-auto alloy::core::bad_result_access<E>::error()
-  && noexcept -> E&&
+auto alloy::core::bad_result_access<E>::error() && noexcept -> E&&
 {
   return static_cast<E&&>(m_error);
 }
 
 template <typename E>
 ALLOY_FORCE_INLINE
-auto alloy::core::bad_result_access<E>::error()
-  const & noexcept -> const E&
+auto alloy::core::bad_result_access<E>::error() const & noexcept -> const E&
 {
   return m_error;
 }
 
 template <typename E>
 ALLOY_FORCE_INLINE
-auto alloy::core::bad_result_access<E>::error()
-  const && noexcept -> const E&&
+auto alloy::core::bad_result_access<E>::error() const && noexcept -> const E&&
 {
   return static_cast<const E&&>(m_error);
 }
@@ -3321,7 +3398,9 @@ alloy::core::failure<E>::failure(
   std::in_place_t,
   std::initializer_list<U> ilist,
   Args&&...args
-) noexcept(std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value)
+) noexcept(
+  std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value
+)
   : m_failure(ilist, std::forward<Args>(args)...)
 {
 
@@ -3389,8 +3468,7 @@ template <typename E>
 template <typename E2, typename>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::failure<E>::operator=(const failure<E2>& other)
-  noexcept(std::is_nothrow_assignable<E,const E2&>::value)
-  -> failure&
+  noexcept(std::is_nothrow_assignable<E,const E2&>::value) -> failure&
 {
   m_failure = other.error();
 
@@ -3401,8 +3479,7 @@ template <typename E>
 template <typename E2, typename>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::failure<E>::operator=(failure<E2>&& other)
-  noexcept(std::is_nothrow_assignable<E,E2&&>::value)
-  -> failure&
+  noexcept(std::is_nothrow_assignable<E,E2&&>::value) -> failure&
 {
   m_failure = static_cast<failure<E2>&&>(other).error();
 
@@ -3434,8 +3511,7 @@ auto alloy::core::failure<E>::error()
 template <typename E>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::failure<E>::error()
-  const & noexcept
-  -> std::add_lvalue_reference_t<std::add_const_t<E>>
+  const & noexcept -> std::add_lvalue_reference_t<std::add_const_t<E>>
 {
   return m_failure;
 }
@@ -3443,8 +3519,7 @@ auto alloy::core::failure<E>::error()
 template <typename E>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::failure<E>::error()
-  const && noexcept
-  -> std::add_rvalue_reference_t<std::add_const_t<E>>
+  const && noexcept -> std::add_rvalue_reference_t<std::add_const_t<E>>
 {
   using reference = std::add_rvalue_reference_t<std::add_const_t<E>>;
 
@@ -3526,8 +3601,7 @@ auto alloy::core::fail(E&& e)
 
 template <typename E>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::fail(std::reference_wrapper<E> e)
-  noexcept -> failure<E&>
+auto alloy::core::fail(std::reference_wrapper<E> e) noexcept -> failure<E&>
 {
   using result_type = failure<E&>;
 
@@ -3537,8 +3611,7 @@ auto alloy::core::fail(std::reference_wrapper<E> e)
 template <typename E, typename...Args, typename>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::fail(Args&&...args)
-  noexcept(std::is_nothrow_constructible<E, Args...>::value)
-  -> failure<E>
+  noexcept(std::is_nothrow_constructible<E, Args...>::value) -> failure<E>
 {
   return failure<E>(std::in_place, std::forward<Args>(args)...);
 }
@@ -3546,8 +3619,9 @@ auto alloy::core::fail(Args&&...args)
 template <typename E, typename U, typename...Args, typename>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::fail(std::initializer_list<U> ilist, Args&&...args)
-  noexcept(std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value)
-  -> failure<E>
+  noexcept(
+    std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value
+  ) -> failure<E>
 {
   return failure<E>(std::in_place, ilist, std::forward<Args>(args)...);
 }
@@ -3572,9 +3646,7 @@ auto alloy::core::swap(failure<E>& lhs, failure<E>& rhs)
 
 template <typename T, typename E, bool IsTrivial>
 ALLOY_FORCE_INLINE
-alloy::core::detail::result_union<T, E, IsTrivial>
-  ::result_union(unit)
-  noexcept
+alloy::core::detail::result_union<T, E, IsTrivial>::result_union(unit) noexcept
   : m_empty{}
 {
   // m_has_value intentionally not set
@@ -3583,9 +3655,10 @@ alloy::core::detail::result_union<T, E, IsTrivial>
 template <typename T, typename E, bool IsTrivial>
 template <typename...Args>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::detail::result_union<T,E,IsTrivial>
-  ::result_union(std::in_place_t, Args&&...args)
-  noexcept(std::is_nothrow_constructible<T, Args...>::value)
+alloy::core::detail::result_union<T,E,IsTrivial>::result_union(
+  std::in_place_t,
+  Args&&...args
+) noexcept(std::is_nothrow_constructible<T, Args...>::value)
   : m_value(std::forward<Args>(args)...),
     m_has_value{true}
 {
@@ -3594,9 +3667,10 @@ alloy::core::detail::result_union<T,E,IsTrivial>
 template <typename T, typename E, bool IsTrivial>
 template <typename...Args>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::detail::result_union<T,E,IsTrivial>
-  ::result_union(in_place_error_t, Args&&...args)
-  noexcept(std::is_nothrow_constructible<E, Args...>::value)
+alloy::core::detail::result_union<T,E,IsTrivial>::result_union(
+  in_place_error_t,
+  Args&&...args
+) noexcept(std::is_nothrow_constructible<E, Args...>::value)
   : m_error(std::forward<Args>(args)...),
     m_has_value{false}
 {
@@ -3624,9 +3698,7 @@ auto alloy::core::detail::result_union<T, E, IsTrivial>::destroy()
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE
-alloy::core::detail::result_union<T, E, false>
-  ::result_union(unit)
-  noexcept
+alloy::core::detail::result_union<T, E, false>::result_union(unit) noexcept
   : m_empty{}
 {
   // m_has_value intentionally not set
@@ -3635,9 +3707,10 @@ alloy::core::detail::result_union<T, E, false>
 template <typename T, typename E>
 template <typename...Args>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::detail::result_union<T,E,false>
-  ::result_union(std::in_place_t, Args&&...args)
-  noexcept(std::is_nothrow_constructible<T, Args...>::value)
+alloy::core::detail::result_union<T,E,false>::result_union(
+  std::in_place_t,
+  Args&&...args
+) noexcept(std::is_nothrow_constructible<T, Args...>::value)
   : m_value(std::forward<Args>(args)...),
     m_has_value{true}
 {
@@ -3646,9 +3719,10 @@ alloy::core::detail::result_union<T,E,false>
 template <typename T, typename E>
 template <typename...Args>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::detail::result_union<T,E,false>
-  ::result_union(in_place_error_t, Args&&...args)
-  noexcept(std::is_nothrow_constructible<E, Args...>::value)
+alloy::core::detail::result_union<T,E,false>::result_union(
+  in_place_error_t,
+  Args&&...args
+) noexcept(std::is_nothrow_constructible<E, Args...>::value)
   : m_error(std::forward<Args>(args)...),
     m_has_value{false}
 {
@@ -3671,8 +3745,7 @@ alloy::core::detail::result_union<T,E,false>
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE
-auto alloy::core::detail::result_union<T, E, false>::destroy()
-  -> void
+auto alloy::core::detail::result_union<T, E, false>::destroy() -> void
 {
   if (m_has_value) {
     m_value.~underlying_value_type();
@@ -3726,9 +3799,9 @@ alloy::core::detail::result_construct_base<T,E>::result_construct_base(
 template <typename T, typename E>
 template <typename...Args>
 ALLOY_FORCE_INLINE
-auto alloy::core::detail::result_construct_base<T,E>::construct_value(Args&&...args)
-  noexcept(std::is_nothrow_constructible<T,Args...>::value)
-  -> void
+auto alloy::core::detail::result_construct_base<T,E>::construct_value(
+  Args&&...args
+) noexcept(std::is_nothrow_constructible<T,Args...>::value) -> void
 {
   using value_type = typename storage_type::underlying_value_type;
 
@@ -3740,9 +3813,9 @@ auto alloy::core::detail::result_construct_base<T,E>::construct_value(Args&&...a
 template <typename T, typename E>
 template <typename...Args>
 ALLOY_FORCE_INLINE
-auto alloy::core::detail::result_construct_base<T,E>::construct_error(Args&&...args)
-  noexcept(std::is_nothrow_constructible<E,Args...>::value)
-  -> void
+auto alloy::core::detail::result_construct_base<T,E>::construct_error(
+  Args&&...args
+) noexcept(std::is_nothrow_constructible<E,Args...>::value) -> void
 {
   using error_type = typename storage_type::underlying_error_type;
 
@@ -3754,9 +3827,8 @@ auto alloy::core::detail::result_construct_base<T,E>::construct_error(Args&&...a
 template <typename T, typename E>
 template <typename Result>
 ALLOY_FORCE_INLINE
-auto alloy::core::detail::result_construct_base<T,E>::construct_error_from_result(
-  Result&& other
-) -> void
+auto alloy::core::detail::result_construct_base<T,E>::construct_error_from_result(Result&& other)
+  -> void
 {
   if (other.storage.m_has_value) {
     construct_value();
@@ -3786,9 +3858,9 @@ auto alloy::core::detail::result_construct_base<T,E>::construct_from_result(
 template <typename T, typename E>
 template <typename Value>
 ALLOY_FORCE_INLINE
-auto alloy::core::detail::result_construct_base<T,E>::assign_value(Value&& value)
-  noexcept(std::is_nothrow_assignable<T,Value>::value)
-  -> void
+auto alloy::core::detail::result_construct_base<T,E>::assign_value(
+  Value&& value
+) noexcept(std::is_nothrow_assignable<T,Value>::value) -> void
 {
   if (!storage.m_has_value) {
     storage.destroy();
@@ -3801,9 +3873,9 @@ auto alloy::core::detail::result_construct_base<T,E>::assign_value(Value&& value
 template <typename T, typename E>
 template <typename Error>
 ALLOY_FORCE_INLINE
-auto alloy::core::detail::result_construct_base<T,E>::assign_error(Error&& error)
-  noexcept(std::is_nothrow_assignable<E,Error>::value)
-  -> void
+auto alloy::core::detail::result_construct_base<T,E>::assign_error(
+  Error&& error
+) noexcept(std::is_nothrow_assignable<E,Error>::value) -> void
 {
   if (storage.m_has_value) {
     storage.destroy();
@@ -3816,8 +3888,9 @@ auto alloy::core::detail::result_construct_base<T,E>::assign_error(Error&& error
 template <typename T, typename E>
 template <typename Result>
 ALLOY_FORCE_INLINE
-auto alloy::core::detail::result_construct_base<T,E>::assign_from_result(Result&& other)
-  -> void
+auto alloy::core::detail::result_construct_base<T,E>::assign_from_result(
+  Result&& other
+) -> void
 {
   if (other.storage.m_has_value != storage.m_has_value) {
     storage.destroy();
@@ -3835,10 +3908,8 @@ auto alloy::core::detail::result_construct_base<T,E>::assign_from_result(Result&
 template <typename T, typename E>
 template <typename ReferenceWrapper>
 ALLOY_FORCE_INLINE
-auto alloy::core::detail::result_construct_base<T,E>::construct_value_from_result_impl(
-  std::true_type,
-  ReferenceWrapper&& reference
-) noexcept -> void
+auto alloy::core::detail::result_construct_base<T,E>::construct_value_from_result_impl(std::true_type, ReferenceWrapper&& reference)
+  noexcept -> void
 {
   using value_type = typename storage_type::underlying_value_type;
 
@@ -3850,10 +3921,10 @@ auto alloy::core::detail::result_construct_base<T,E>::construct_value_from_resul
 template <typename T, typename E>
 template <typename Value>
 ALLOY_FORCE_INLINE
-auto alloy::core::detail::result_construct_base<T,E>::construct_value_from_result_impl(
-  std::false_type,
-  Value&& value
-) noexcept(std::is_nothrow_constructible<T,Value>::value) -> void
+auto alloy::core::detail::result_construct_base<T,E>::construct_value_from_result_impl(std::false_type, Value&& value)
+  noexcept(
+    std::is_nothrow_constructible<T,Value>::value
+  ) -> void
 {
   using value_type = typename storage_type::underlying_value_type;
 
@@ -3865,10 +3936,8 @@ auto alloy::core::detail::result_construct_base<T,E>::construct_value_from_resul
 template <typename T, typename E>
 template <typename Result>
 ALLOY_FORCE_INLINE
-auto alloy::core::detail::result_construct_base<T,E>::assign_value_from_result_impl(
-  std::true_type,
-  Result&& other
-) -> void
+auto alloy::core::detail::result_construct_base<T,E>::assign_value_from_result_impl(std::true_type, Result&& other)
+  -> void
 {
   // T is a reference; unwrap it
   storage.m_value = other.storage.m_value.get();
@@ -3877,10 +3946,8 @@ auto alloy::core::detail::result_construct_base<T,E>::assign_value_from_result_i
 template <typename T, typename E>
 template <typename Result>
 ALLOY_FORCE_INLINE
-auto alloy::core::detail::result_construct_base<T,E>::assign_value_from_result_impl(
-  std::false_type,
-  Result&& other
-) -> void
+auto alloy::core::detail::result_construct_base<T,E>::assign_value_from_result_impl(std::false_type, Result&& other)
+  -> void
 {
   storage.m_value = std::forward<Result>(other).storage.m_value;
 }
@@ -3892,10 +3959,11 @@ auto alloy::core::detail::result_construct_base<T,E>::assign_value_from_result_i
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE
-alloy::core::detail::result_trivial_copy_ctor_base_impl<T,E>
-  ::result_trivial_copy_ctor_base_impl(const result_trivial_copy_ctor_base_impl& other)
-  noexcept(std::is_nothrow_copy_constructible<T>::value &&
-           std::is_nothrow_copy_constructible<E>::value)
+alloy::core::detail::result_trivial_copy_ctor_base_impl<T,E>::result_trivial_copy_ctor_base_impl(const result_trivial_copy_ctor_base_impl& other)
+  noexcept(
+    std::is_nothrow_copy_constructible<T>::value &&
+    std::is_nothrow_copy_constructible<E>::value
+  )
   : base_type(unit{})
 {
   using ctor_base = result_construct_base<T,E>;
@@ -3909,10 +3977,11 @@ alloy::core::detail::result_trivial_copy_ctor_base_impl<T,E>
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE
-alloy::core::detail::result_trivial_move_ctor_base_impl<T, E>
-  ::result_trivial_move_ctor_base_impl(result_trivial_move_ctor_base_impl&& other)
-  noexcept(std::is_nothrow_move_constructible<T>::value &&
-           std::is_nothrow_move_constructible<E>::value)
+alloy::core::detail::result_trivial_move_ctor_base_impl<T, E>::result_trivial_move_ctor_base_impl(result_trivial_move_ctor_base_impl&& other)
+  noexcept(
+    std::is_nothrow_move_constructible<T>::value &&
+    std::is_nothrow_move_constructible<E>::value
+  )
   : base_type(unit{})
 {
   using ctor_base = result_construct_base<T,E>;
@@ -3926,13 +3995,14 @@ alloy::core::detail::result_trivial_move_ctor_base_impl<T, E>
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE
-auto alloy::core::detail::result_trivial_copy_assign_base_impl<T, E>
-  ::operator=(const result_trivial_copy_assign_base_impl& other)
-  noexcept(std::is_nothrow_copy_constructible<T>::value &&
-           std::is_nothrow_copy_constructible<E>::value &&
-           std::is_nothrow_copy_assignable<T>::value &&
-           std::is_nothrow_copy_assignable<E>::value)
-  -> result_trivial_copy_assign_base_impl&
+auto alloy::core::detail::result_trivial_copy_assign_base_impl<T, E>::operator=(
+  const result_trivial_copy_assign_base_impl& other
+) noexcept(
+  std::is_nothrow_copy_constructible<T>::value &&
+  std::is_nothrow_copy_constructible<E>::value &&
+  std::is_nothrow_copy_assignable<T>::value &&
+  std::is_nothrow_copy_assignable<E>::value
+) -> result_trivial_copy_assign_base_impl&
 {
   using ctor_base = result_construct_base<T,E>;
 
@@ -3946,13 +4016,14 @@ auto alloy::core::detail::result_trivial_copy_assign_base_impl<T, E>
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE
-auto alloy::core::detail::result_trivial_move_assign_base_impl<T, E>
-  ::operator=(result_trivial_move_assign_base_impl&& other)
-  noexcept(std::is_nothrow_move_constructible<T>::value &&
-           std::is_nothrow_move_constructible<E>::value &&
-           std::is_nothrow_move_assignable<T>::value &&
-           std::is_nothrow_move_assignable<E>::value)
-  -> result_trivial_move_assign_base_impl&
+auto alloy::core::detail::result_trivial_move_assign_base_impl<T, E>::operator=(
+  result_trivial_move_assign_base_impl&& other
+) noexcept(
+  std::is_nothrow_move_constructible<T>::value &&
+  std::is_nothrow_move_constructible<E>::value &&
+  std::is_nothrow_move_assignable<T>::value &&
+  std::is_nothrow_move_assignable<E>::value
+) -> result_trivial_move_assign_base_impl&
 {
   using ctor_base = result_construct_base<T,E>;
 
@@ -3978,7 +4049,8 @@ auto alloy::core::detail::result_error_extractor::get(result<T,E>& exp)
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::detail::extract_error(const result<T,E>& exp) noexcept -> const E&
+auto alloy::core::detail::extract_error(const result<T,E>& exp)
+  noexcept -> const E&
 {
   return result_error_extractor::get(exp);
 }
@@ -4052,8 +4124,10 @@ template <typename T2, typename E2,
           typename std::enable_if<alloy::core::detail::result_is_implicit_copy_convertible<T,E,T2,E2>::value,int>::type>
 ALLOY_FORCE_INLINE
 alloy::core::result<T, E>::result(const result<T2,E2>& other)
-  noexcept(std::is_nothrow_constructible<T,const T2&>::value &&
-           std::is_nothrow_constructible<E,const E2&>::value)
+  noexcept(
+    std::is_nothrow_constructible<T,const T2&>::value &&
+    std::is_nothrow_constructible<E,const E2&>::value
+  )
   : m_storage(detail::unit{})
 {
   m_storage.construct_from_result(
@@ -4066,8 +4140,10 @@ template <typename T2, typename E2,
           typename std::enable_if<alloy::core::detail::result_is_explicit_copy_convertible<T,E,T2,E2>::value,int>::type>
 ALLOY_FORCE_INLINE
 alloy::core::result<T, E>::result(const result<T2,E2>& other)
-  noexcept(std::is_nothrow_constructible<T,const T2&>::value &&
-           std::is_nothrow_constructible<E,const E2&>::value)
+  noexcept(
+    std::is_nothrow_constructible<T,const T2&>::value &&
+    std::is_nothrow_constructible<E,const E2&>::value
+  )
   : m_storage(detail::unit{})
 {
   m_storage.construct_from_result(
@@ -4080,8 +4156,10 @@ template <typename T2, typename E2,
           typename std::enable_if<alloy::core::detail::result_is_implicit_move_convertible<T,E,T2,E2>::value,int>::type>
 ALLOY_FORCE_INLINE
 alloy::core::result<T, E>::result(result<T2,E2>&& other)
-  noexcept(std::is_nothrow_constructible<T,T2&&>::value &&
-           std::is_nothrow_constructible<E,E2&&>::value)
+  noexcept(
+    std::is_nothrow_constructible<T,T2&&>::value &&
+    std::is_nothrow_constructible<E,E2&&>::value
+  )
   : m_storage(detail::unit{})
 {
   m_storage.construct_from_result(
@@ -4094,8 +4172,10 @@ template <typename T2, typename E2,
           typename std::enable_if<alloy::core::detail::result_is_explicit_move_convertible<T,E,T2,E2>::value,int>::type>
 ALLOY_FORCE_INLINE
 alloy::core::result<T, E>::result(result<T2,E2>&& other)
-  noexcept(std::is_nothrow_constructible<T,T2&&>::value &&
-           std::is_nothrow_constructible<E,E2&&>::value)
+  noexcept(
+    std::is_nothrow_constructible<T,T2&&>::value &&
+    std::is_nothrow_constructible<E,E2&&>::value
+  )
   : m_storage(detail::unit{})
 {
   m_storage.construct_from_result(
@@ -4122,7 +4202,9 @@ alloy::core::result<T, E>::result(
   std::in_place_t,
   std::initializer_list<U> ilist,
   Args&&...args
-) noexcept(std::is_nothrow_constructible<T, std::initializer_list<U>, Args...>::value)
+) noexcept(
+  std::is_nothrow_constructible<T, std::initializer_list<U>, Args...>::value
+)
   : m_storage(std::in_place, ilist, std::forward<Args>(args)...)
 {
 
@@ -4147,7 +4229,9 @@ alloy::core::result<T, E>::result(
   in_place_error_t,
   std::initializer_list<U> ilist,
   Args&&...args
-) noexcept(std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value)
+) noexcept(
+  std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value
+)
   : m_storage(in_place_error, ilist, std::forward<Args>(args)...)
 {
 
@@ -4203,9 +4287,10 @@ template <typename T, typename E>
 template <typename T2, typename E2, typename>
 ALLOY_FORCE_INLINE
 auto alloy::core::result<T, E>::operator=(const result<T2,E2>& other)
-  noexcept(std::is_nothrow_assignable<T, const T2&>::value &&
-           std::is_nothrow_assignable<E, const E2&>::value)
-  -> result&
+  noexcept(
+    std::is_nothrow_assignable<T, const T2&>::value &&
+    std::is_nothrow_assignable<E, const E2&>::value
+  ) -> result&
 {
   m_storage.assign_from_result(
     static_cast<const result<T2,E2>&>(other).m_storage
@@ -4217,9 +4302,10 @@ template <typename T, typename E>
 template <typename T2, typename E2, typename>
 ALLOY_FORCE_INLINE
 auto alloy::core::result<T, E>::operator=(result<T2,E2>&& other)
-  noexcept(std::is_nothrow_assignable<T, T2&&>::value &&
-           std::is_nothrow_assignable<E, E2&&>::value)
-  -> result&
+  noexcept(
+    std::is_nothrow_assignable<T, T2&&>::value &&
+    std::is_nothrow_assignable<E, E2&&>::value
+  ) -> result&
 {
   m_storage.assign_from_result(
     static_cast<result<T2,E2>&&>(other).m_storage
@@ -4231,8 +4317,7 @@ template <typename T, typename E>
 template <typename U, typename>
 ALLOY_FORCE_INLINE
 auto alloy::core::result<T, E>::operator=(U&& value)
-  noexcept(std::is_nothrow_assignable<T, U>::value)
-  -> result&
+  noexcept(std::is_nothrow_assignable<T, U>::value) -> result&
 {
   m_storage.assign_value(std::forward<U>(value));
   return (*this);
@@ -4242,8 +4327,7 @@ template <typename T, typename E>
 template <typename E2, typename>
 ALLOY_FORCE_INLINE
 auto alloy::core::result<T, E>::operator=(const failure<E2>& other)
-  noexcept(std::is_nothrow_assignable<E, const E2&>::value)
-  -> result&
+  noexcept(std::is_nothrow_assignable<E, const E2&>::value) -> result&
 {
   m_storage.assign_error(other.error());
   return (*this);
@@ -4253,8 +4337,7 @@ template <typename T, typename E>
 template <typename E2, typename>
 ALLOY_FORCE_INLINE
 auto alloy::core::result<T, E>::operator=(failure<E2>&& other)
-  noexcept(std::is_nothrow_assignable<E, E2&&>::value)
-  -> result&
+  noexcept(std::is_nothrow_assignable<E, E2&&>::value) -> result&
 {
   m_storage.assign_error(static_cast<E2&&>(other.error()));
   return (*this);
@@ -4320,24 +4403,21 @@ auto alloy::core::result<T, E>::operator*()
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::result<T,E>::operator bool()
-  const noexcept
+alloy::core::result<T,E>::operator bool() const noexcept
 {
   return m_storage.storage.m_has_value;
 }
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::result<T,E>::has_value()
-  const noexcept -> bool
+auto alloy::core::result<T,E>::has_value() const noexcept -> bool
 {
   return m_storage.storage.m_has_value;
 }
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::result<T,E>::has_error()
-  const noexcept -> bool
+auto alloy::core::result<T,E>::has_error() const noexcept -> bool
 {
   return !m_storage.storage.m_has_value;
 }
@@ -4357,8 +4437,7 @@ auto alloy::core::result<T,E>::has_error()
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::result<T,E>::value()
-  & -> std::add_lvalue_reference_t<T>
+auto alloy::core::result<T,E>::value() & -> std::add_lvalue_reference_t<T>
 {
   return (has_value() ||
     (detail::throw_bad_result_access(m_storage.storage.m_error), false),
@@ -4368,8 +4447,7 @@ auto alloy::core::result<T,E>::value()
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::result<T,E>::value()
-  && -> std::add_rvalue_reference_t<T>
+auto alloy::core::result<T,E>::value() && -> std::add_rvalue_reference_t<T>
 {
   using reference = std::add_rvalue_reference_t<T>;
 
@@ -4411,9 +4489,11 @@ auto alloy::core::result<T,E>::value()
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::result<T,E>::error() const &
-  noexcept(std::is_nothrow_constructible<E>::value &&
-           std::is_nothrow_copy_constructible<E>::value) -> E
+auto alloy::core::result<T,E>::error()
+  const & noexcept(
+    std::is_nothrow_constructible<E>::value &&
+    std::is_nothrow_copy_constructible<E>::value
+  ) -> E
 {
   static_assert(
     std::is_default_constructible<E>::value,
@@ -4429,9 +4509,11 @@ auto alloy::core::result<T,E>::error() const &
 
 template <typename T, typename E>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::result<T,E>::error() &&
-  noexcept(std::is_nothrow_constructible<E>::value &&
-           std::is_nothrow_move_constructible<E>::value) -> E
+auto alloy::core::result<T,E>::error()
+  && noexcept(
+    std::is_nothrow_constructible<E>::value &&
+    std::is_nothrow_move_constructible<E>::value
+  ) -> E
 {
   static_assert(
     std::is_default_constructible<E>::value,
@@ -4450,8 +4532,7 @@ auto alloy::core::result<T,E>::error() &&
 template <typename T, typename E>
 template <typename String, typename>
 inline constexpr
-auto alloy::core::result<T,E>::expect(String&& message)
-  const & -> void
+auto alloy::core::result<T,E>::expect(String&& message) const & -> void
 {
   if (has_error()) {
     detail::throw_bad_result_access_message(
@@ -4464,8 +4545,7 @@ auto alloy::core::result<T,E>::expect(String&& message)
 template <typename T, typename E>
 template <typename String, typename>
 inline constexpr
-auto alloy::core::result<T,E>::expect(String&& message)
-  && -> void
+auto alloy::core::result<T,E>::expect(String&& message) && -> void
 {
   if (has_error()) {
     detail::throw_bad_result_access_message(
@@ -4504,8 +4584,7 @@ auto alloy::core::result<T, E>::value_or(U&& default_value)
 template <typename T, typename E>
 template <typename U>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::result<T, E>::error_or(U&& default_error)
-  const& -> error_type
+auto alloy::core::result<T, E>::error_or(U&& default_error) const& -> error_type
 {
   return m_storage.storage.m_has_value
     ? std::forward<U>(default_error)
@@ -4515,8 +4594,7 @@ auto alloy::core::result<T, E>::error_or(U&& default_error)
 template <typename T, typename E>
 template <typename U>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::result<T, E>::error_or(U&& default_error)
-  && -> error_type
+auto alloy::core::result<T, E>::error_or(U&& default_error) && -> error_type
 {
   return m_storage.storage.m_has_value
     ? std::forward<U>(default_error)
@@ -4739,8 +4817,7 @@ auto alloy::core::result<T, E>::map_impl(std::false_type, Fn&& fn)
 
 template <typename E>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::result<void, E>::result()
-  noexcept
+alloy::core::result<void, E>::result() noexcept
   : m_storage(std::in_place)
 {
 
@@ -4775,8 +4852,7 @@ alloy::core::result<void, E>::result(result<U,E2>&& other)
 
 template <typename E>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::result<void, E>::result(std::in_place_t)
-  noexcept
+alloy::core::result<void, E>::result(std::in_place_t) noexcept
   : m_storage(std::in_place)
 {
 
@@ -4795,10 +4871,13 @@ alloy::core::result<void, E>::result(in_place_error_t, Args&&...args)
 template <typename E>
 template <typename U, typename...Args, typename>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::result<void, E>::result(in_place_error_t,
-                                        std::initializer_list<U> ilist,
-                                        Args&&...args)
-  noexcept(std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value)
+alloy::core::result<void, E>::result(
+  in_place_error_t,
+  std::initializer_list<U> ilist,
+  Args&&...args
+) noexcept(
+  std::is_nothrow_constructible<E, std::initializer_list<U>, Args...>::value
+)
   : m_storage(in_place_error, ilist, std::forward<Args>(args)...)
 {
 
@@ -4832,8 +4911,7 @@ template <typename E>
 template <typename E2, typename>
 ALLOY_FORCE_INLINE
 auto alloy::core::result<void, E>::operator=(const result<void,E2>& other)
-  noexcept(std::is_nothrow_assignable<E, const E2&>::value)
-  -> result&
+  noexcept(std::is_nothrow_assignable<E, const E2&>::value) -> result&
 {
   m_storage.assign_from_result(other.m_storage);
   return (*this);
@@ -4843,8 +4921,7 @@ template <typename E>
 template <typename E2, typename>
 ALLOY_FORCE_INLINE
 auto alloy::core::result<void, E>::operator=(result<void,E2>&& other)
-  noexcept(std::is_nothrow_assignable<E, E2&&>::value)
-  -> result&
+  noexcept(std::is_nothrow_assignable<E, E2&&>::value) -> result&
 {
   m_storage.assign_from_result(static_cast<result<void,E2>&&>(other).m_storage);
   return (*this);
@@ -4854,8 +4931,7 @@ template <typename E>
 template <typename E2, typename>
 ALLOY_FORCE_INLINE
 auto alloy::core::result<void, E>::operator=(const failure<E2>& other)
-  noexcept(std::is_nothrow_assignable<E, const E2&>::value)
-  -> result&
+  noexcept(std::is_nothrow_assignable<E, const E2&>::value) -> result&
 {
   m_storage.assign_error(other.error());
   return (*this);
@@ -4865,8 +4941,7 @@ template <typename E>
 template <typename E2, typename>
 ALLOY_FORCE_INLINE
 auto alloy::core::result<void, E>::operator=(failure<E2>&& other)
-  noexcept(std::is_nothrow_assignable<E, E2&&>::value)
-  -> result&
+  noexcept(std::is_nothrow_assignable<E, E2&&>::value) -> result&
 {
   m_storage.assign_error(static_cast<E2&&>(other.error()));
   return (*this);
@@ -4878,24 +4953,21 @@ auto alloy::core::result<void, E>::operator=(failure<E2>&& other)
 
 template <typename E>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::result<void, E>::operator bool()
-  const noexcept
+alloy::core::result<void, E>::operator bool() const noexcept
 {
   return has_value();
 }
 
 template <typename E>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::result<void, E>::has_value()
-  const noexcept -> bool
+auto alloy::core::result<void, E>::has_value() const noexcept -> bool
 {
   return m_storage.storage.m_has_value;
 }
 
 template <typename E>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::result<void, E>::has_error()
-  const noexcept -> bool
+auto alloy::core::result<void, E>::has_error() const noexcept -> bool
 {
   return !has_value();
 }
@@ -4904,8 +4976,7 @@ auto alloy::core::result<void, E>::has_error()
 
 template <typename E>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::result<void, E>::value()
-  const & -> void
+auto alloy::core::result<void, E>::value() const & -> void
 {
   static_cast<void>(
     has_value() ||
@@ -4915,8 +4986,7 @@ auto alloy::core::result<void, E>::value()
 
 template <typename E>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::result<void, E>::value()
-  && -> void
+auto alloy::core::result<void, E>::value() && -> void
 {
   static_cast<void>(
     has_value() ||
@@ -4927,9 +4997,10 @@ auto alloy::core::result<void, E>::value()
 template <typename E>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::result<void, E>::error()
-  const &
-  noexcept(std::is_nothrow_constructible<E>::value &&
-           std::is_nothrow_copy_constructible<E>::value) -> E
+  const & noexcept(
+    std::is_nothrow_constructible<E>::value &&
+    std::is_nothrow_copy_constructible<E>::value
+  ) -> E
 {
   return has_value() ? E{} : m_storage.storage.m_error;
 }
@@ -4937,8 +5008,10 @@ auto alloy::core::result<void, E>::error()
 template <typename E>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::result<void, E>::error()
-  && noexcept(std::is_nothrow_constructible<E>::value &&
-              std::is_nothrow_copy_constructible<E>::value) -> E
+  && noexcept(
+    std::is_nothrow_constructible<E>::value &&
+    std::is_nothrow_copy_constructible<E>::value
+  ) -> E
 {
   return has_value() ? E{} : static_cast<E&&>(m_storage.storage.m_error);
 }
@@ -4948,8 +5021,7 @@ auto alloy::core::result<void, E>::error()
 template <typename E>
 template <typename String, typename>
 inline constexpr
-auto alloy::core::result<void,E>::expect(String&& message)
-  const & -> void
+auto alloy::core::result<void,E>::expect(String&& message) const & -> void
 {
   if (has_error()) {
     detail::throw_bad_result_access_message(
@@ -4962,8 +5034,7 @@ auto alloy::core::result<void,E>::expect(String&& message)
 template <typename E>
 template <typename String, typename>
 inline constexpr
-auto alloy::core::result<void,E>::expect(String&& message)
-  && -> void
+auto alloy::core::result<void,E>::expect(String&& message) && -> void
 {
   if (has_error()) {
     detail::throw_bad_result_access_message(
@@ -4991,8 +5062,7 @@ auto alloy::core::result<void, E>::error_or(U&& default_error)
 template <typename E>
 template <typename U>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::result<void, E>::error_or(U&& default_error)
-  && -> error_type
+auto alloy::core::result<void, E>::error_or(U&& default_error) && -> error_type
 {
   return has_value()
     ? std::forward<U>(default_error)
@@ -5219,8 +5289,7 @@ auto alloy::core::result<void, E>::map_impl(std::false_type, Fn&& fn)
 
 template <typename T1, typename E1, typename T2, typename E2>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator==(const result<T1,E1>& lhs,
-                                const result<T2,E2>& rhs)
+auto alloy::core::operator==(const result<T1,E1>& lhs, const result<T2,E2>& rhs)
   noexcept -> bool
 {
   return (lhs.has_value() == rhs.has_value())
@@ -5234,8 +5303,7 @@ auto alloy::core::operator==(const result<T1,E1>& lhs,
 
 template <typename T1, typename E1, typename T2, typename E2>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator!=(const result<T1,E1>& lhs,
-                                const result<T2,E2>& rhs)
+auto alloy::core::operator!=(const result<T1,E1>& lhs, const result<T2,E2>& rhs)
   noexcept -> bool
 {
   return (lhs.has_value() == rhs.has_value())
@@ -5249,8 +5317,7 @@ auto alloy::core::operator!=(const result<T1,E1>& lhs,
 
 template <typename T1, typename E1, typename T2, typename E2>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator>=(const result<T1,E1>& lhs,
-                                const result<T2,E2>& rhs)
+auto alloy::core::operator>=(const result<T1,E1>& lhs, const result<T2,E2>& rhs)
   noexcept -> bool
 {
   return (lhs.has_value() == rhs.has_value())
@@ -5264,8 +5331,7 @@ auto alloy::core::operator>=(const result<T1,E1>& lhs,
 
 template <typename T1, typename E1, typename T2, typename E2>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator<=(const result<T1,E1>& lhs,
-                                const result<T2,E2>& rhs)
+auto alloy::core::operator<=(const result<T1,E1>& lhs, const result<T2,E2>& rhs)
   noexcept -> bool
 {
   return (lhs.has_value() == rhs.has_value())
@@ -5279,8 +5345,7 @@ auto alloy::core::operator<=(const result<T1,E1>& lhs,
 
 template <typename T1, typename E1, typename T2, typename E2>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator>(const result<T1,E1>& lhs,
-                                 const result<T2,E2>& rhs)
+auto alloy::core::operator>(const result<T1,E1>& lhs, const result<T2,E2>& rhs)
   noexcept -> bool
 {
   return (lhs.has_value() == rhs.has_value())
@@ -5294,8 +5359,7 @@ auto alloy::core::operator>(const result<T1,E1>& lhs,
 
 template <typename T1, typename E1, typename T2, typename E2>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator<(const result<T1,E1>& lhs,
-                                 const result<T2,E2>& rhs)
+auto alloy::core::operator<(const result<T1,E1>& lhs, const result<T2,E2>& rhs)
   noexcept -> bool
 {
   return (lhs.has_value() == rhs.has_value())
@@ -5311,9 +5375,10 @@ auto alloy::core::operator<(const result<T1,E1>& lhs,
 
 template <typename E1, typename E2>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator==(const result<void,E1>& lhs,
-                                const result<void,E2>& rhs)
-  noexcept -> bool
+auto alloy::core::operator==(
+  const result<void,E1>& lhs,
+  const result<void,E2>& rhs
+) noexcept -> bool
 {
   return lhs.has_value() == rhs.has_value()
     ? (
@@ -5326,9 +5391,10 @@ auto alloy::core::operator==(const result<void,E1>& lhs,
 
 template <typename E1, typename E2>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator!=(const result<void,E1>& lhs,
-                                const result<void,E2>& rhs)
-  noexcept -> bool
+auto alloy::core::operator!=(
+  const result<void,E1>& lhs,
+  const result<void,E2>& rhs
+) noexcept -> bool
 {
   return lhs.has_value() == rhs.has_value()
     ? (
@@ -5341,9 +5407,10 @@ auto alloy::core::operator!=(const result<void,E1>& lhs,
 
 template <typename E1, typename E2>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator>=(const result<void,E1>& lhs,
-                                const result<void,E2>& rhs)
-  noexcept -> bool
+auto alloy::core::operator>=(
+  const result<void,E1>& lhs,
+  const result<void,E2>& rhs
+) noexcept -> bool
 {
   return lhs.has_value() == rhs.has_value()
     ? (
@@ -5356,9 +5423,10 @@ auto alloy::core::operator>=(const result<void,E1>& lhs,
 
 template <typename E1, typename E2>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator<=(const result<void,E1>& lhs,
-                                const result<void,E2>& rhs)
-  noexcept -> bool
+auto alloy::core::operator<=(
+  const result<void,E1>& lhs,
+  const result<void,E2>& rhs
+) noexcept -> bool
 {
   return lhs.has_value() == rhs.has_value()
     ? (
@@ -5371,9 +5439,10 @@ auto alloy::core::operator<=(const result<void,E1>& lhs,
 
 template <typename E1, typename E2>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator>(const result<void,E1>& lhs,
-                               const result<void,E2>& rhs)
-  noexcept -> bool
+auto alloy::core::operator>(
+  const result<void,E1>& lhs,
+  const result<void,E2>& rhs
+) noexcept -> bool
 {
   return lhs.has_value() == rhs.has_value()
     ? (
@@ -5386,9 +5455,10 @@ auto alloy::core::operator>(const result<void,E1>& lhs,
 
 template <typename E1, typename E2>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::operator<(const result<void,E1>& lhs,
-                               const result<void,E2>& rhs)
-  noexcept -> bool
+auto alloy::core::operator<(
+  const result<void,E1>& lhs,
+  const result<void,E2>& rhs
+) noexcept -> bool
 {
   return lhs.has_value() == rhs.has_value()
     ? (
@@ -5602,11 +5672,12 @@ auto alloy::core::operator>(const failure<T>& error, const result<E,U>& exp)
 template <typename T, typename E>
 inline
 auto alloy::core::swap(result<T,E>& lhs, result<T,E>& rhs)
-  noexcept(std::is_nothrow_move_constructible<result<T,E>>::value &&
-           std::is_nothrow_move_assignable<result<T,E>>::value &&
-           std::is_nothrow_swappable<T>::value &&
-           std::is_nothrow_swappable<E>::value)
-  -> void
+  noexcept(
+    std::is_nothrow_move_constructible<result<T,E>>::value &&
+    std::is_nothrow_move_assignable<result<T,E>>::value &&
+    std::is_nothrow_swappable<T>::value &&
+    std::is_nothrow_swappable<E>::value
+  ) -> void
 {
   using std::swap;
 
@@ -5630,10 +5701,11 @@ auto alloy::core::swap(result<T,E>& lhs, result<T,E>& rhs)
 template <typename E>
 inline
 auto alloy::core::swap(result<void,E>& lhs, result<void,E>& rhs)
-  noexcept(std::is_nothrow_move_constructible<result<void,E>>::value &&
-           std::is_nothrow_move_assignable<result<void,E>>::value &&
-           std::is_nothrow_swappable<E>::value)
-  -> void
+  noexcept(
+    std::is_nothrow_move_constructible<result<void,E>>::value &&
+    std::is_nothrow_move_assignable<result<void,E>>::value &&
+    std::is_nothrow_swappable<E>::value
+  ) -> void
 {
   using std::swap;
 

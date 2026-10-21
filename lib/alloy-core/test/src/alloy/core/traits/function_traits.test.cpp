@@ -12,30 +12,30 @@ namespace alloy::core::test{
   // Note: These are **not** declared in an anonymous namespace
   //       since compilers warn on it not being used or implemented.
 
-  void throwing_0_args();
-  int throwing_2_args(float, double);
-  void nothrow_0_args() noexcept;
-  int nothrow_2_args(float, double) noexcept;
+  auto throwing_0_args() -> void;
+  auto throwing_2_args(float, double) -> int;
+  auto nothrow_0_args() noexcept -> void;
+  auto nothrow_2_args(float, double) noexcept -> int;
 
   struct example {
-    void throwing_0_args();
-    int throwing_2_args(float, double);
-    void nothrow_0_args() noexcept;
-    int nothrow_2_args(float, double) noexcept;
+    auto throwing_0_args() -> void;
+    auto throwing_2_args(float, double) -> int;
+    auto nothrow_0_args() noexcept -> void;
+    auto nothrow_2_args(float, double) noexcept -> int;
 
-    void const_throwing_0_args();
-    int const_throwing_2_args(float, double);
-    void const_nothrow_0_args() noexcept;
-    int const_nothrow_2_args(float, double) noexcept;
+    auto const_throwing_0_args() -> void;
+    auto const_throwing_2_args(float, double) -> int;
+    auto const_nothrow_0_args() noexcept -> void;
+    auto const_nothrow_2_args(float, double) noexcept -> int;
 
-    void lref_throwing_0_args() &;
-    void lref_nothrow_0_args() & noexcept;
-    void rref_throwing_0_args() &&;
-    void rref_nothrow_0_args() && noexcept;
-    void const_lref_throwing_0_args() const &;
-    void const_lref_nothrow_0_args() const & noexcept;
-    void const_rref_throwing_0_args() const &&;
-    void const_rref_nothrow_0_args() const && noexcept;
+    auto lref_throwing_0_args() & -> void;
+    auto lref_nothrow_0_args() & noexcept -> void;
+    auto rref_throwing_0_args() && -> void;
+    auto rref_nothrow_0_args() && noexcept -> void;
+    auto const_lref_throwing_0_args() const & -> void;
+    auto const_lref_nothrow_0_args() const & noexcept -> void;
+    auto const_rref_throwing_0_args() const && -> void;
+    auto const_rref_nothrow_0_args() const && noexcept -> void;
   };
 
   // ::throwing_0_args

@@ -9,14 +9,12 @@
 // Quantifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::line::point_at_distance(real dt)
-  const noexcept -> point3
+auto alloy::core::line::point_at_distance(real dt) const noexcept -> point3
 {
   return m_origin + (m_direction * dt);
 }
 
-auto alloy::core::line::contains(const point3& p)
-  const noexcept -> bool
+auto alloy::core::line::contains(const point3& p) const noexcept -> bool
 {
   return contains(p, default_tolerance);
 }
@@ -44,8 +42,7 @@ auto alloy::core::line::contains(const point3& p, real tolerance)
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
-auto alloy::core::operator==(const line& lhs, const line& rhs)
-  noexcept -> bool
+auto alloy::core::operator==(const line& lhs, const line& rhs) noexcept -> bool
 {
   const auto& lhs_direction = lhs.direction();
   const auto& rhs_direction = rhs.direction();

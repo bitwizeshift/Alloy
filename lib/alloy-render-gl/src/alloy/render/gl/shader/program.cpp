@@ -13,8 +13,9 @@
 
 // Only allocation failure can throw here, which is treated as fatal.
 // NOLINTNEXTLINE(bugprone-exception-escape)
-auto alloy::render::gl::program::do_link(std::initializer_list<::GLuint> shader_ids)
-  noexcept -> core::result<program,gl_error_message>
+auto alloy::render::gl::program::do_link(
+  std::initializer_list<::GLuint> shader_ids
+) noexcept -> core::result<program,gl_error_message>
 {
   const auto program_id = ::glCreateProgram();
 

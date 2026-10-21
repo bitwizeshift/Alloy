@@ -66,8 +66,8 @@ namespace alloy::io {
 
     //--------------------------------------------------------------------------
 
-    message_pump& operator=(message_pump&&) = delete;
-    message_pump& operator=(const message_pump&) = delete;
+    auto operator=(message_pump&&) -> message_pump& = delete;
+    auto operator=(const message_pump&) -> message_pump& = delete;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -82,7 +82,7 @@ namespace alloy::io {
     ///
     /// \param e the event to push
     template<typename Event>
-    void post_event(Event&& e);
+    auto post_event(Event&& e) -> void;
 
     /// \brief Pushes an immediate event into the end of the message pump
     ///
@@ -91,7 +91,7 @@ namespace alloy::io {
     ///-
     /// \param e the event to push
     template<typename Event>
-    void post_immediate_event(Event&& e);
+    auto post_immediate_event(Event&& e) -> void;
 
     //--------------------------------------------------------------------------
 
@@ -99,7 +99,7 @@ namespace alloy::io {
     ///        listeners
     ///
     /// This is equivalent to calling 'poll' followed by 'dispatch'
-    void pump();
+    auto pump() -> void;
 
     /// \brief Polls for events from all message_pump event sources
     ///
@@ -107,10 +107,10 @@ namespace alloy::io {
     /// is called
     ///
     /// \note Polling must **not** be done from a dispatched event handler
-    void poll();
+    auto poll() -> void;
 
     /// \brief Dispatches all accumulated events to listeners
-    void dispatch();
+    auto dispatch() -> void;
 
     //--------------------------------------------------------------------------
 
@@ -120,7 +120,7 @@ namespace alloy::io {
     /// notify any attached listeners that an event has occurred.
     ///
     /// \return a sink for registering to the on-event handler
-    core::sink<listener> on_event() noexcept;
+    auto on_event() noexcept -> core::sink<listener>;
 
     /// \brief Retrieves a sink for the on-poll handler
     ///
@@ -128,7 +128,7 @@ namespace alloy::io {
     /// retrieve any event notifications, and push it back to the message_pump
     ///
     /// \return a sink for registering to the on-poll handler
-    core::sink<source> on_poll() noexcept;
+    auto on_poll() noexcept -> core::sink<source>;
 
     //--------------------------------------------------------------------------
     // Event Posting
@@ -142,7 +142,7 @@ namespace alloy::io {
     ///       move-constructor.
     ///
     /// \param e an rvalue of the event
-    void do_post_event(event&& e);
+    auto do_post_event(event&& e) -> void;
 
     /// \brief Posts an immediate event to all listeners
     ///
@@ -151,7 +151,7 @@ namespace alloy::io {
     ///       move-constructor.
     ///
     /// \param e an rvalue of the event
-    void do_post_immediate_event(event&& e);
+    auto do_post_immediate_event(event&& e) -> void;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -201,16 +201,16 @@ namespace alloy::io {
 
     //--------------------------------------------------------------------------
 
-    listener& operator=(listener&& other) noexcept = default;
-    listener& operator=(const listener& other) noexcept = default;
+    auto operator=(listener&& other) noexcept -> listener& = default;
+    auto operator=(const listener& other) noexcept -> listener& = default;
 
     //--------------------------------------------------------------------------
     // Hooks
     //--------------------------------------------------------------------------
   private:
 
-    virtual void handle_message(const event& e) noexcept = 0;
-    virtual void handle_immediate_message(const event& e) noexcept;
+    virtual auto handle_message(const event& e) noexcept -> void = 0;
+    virtual auto handle_immediate_message(const event& e) noexcept -> void;
   };
 
   //============================================================================
@@ -242,8 +242,8 @@ namespace alloy::io {
 
     //--------------------------------------------------------------------------
 
-    source& operator=(source&& other) noexcept = default;
-    source& operator=(const source& other) noexcept = default;
+    auto operator=(source&& other) noexcept -> source& = default;
+    auto operator=(const source& other) noexcept -> source& = default;
 
     //--------------------------------------------------------------------------
     // Hooks
@@ -256,7 +256,7 @@ namespace alloy::io {
     /// message_pump \p p
     ///
     /// \param p the message_pump to push new messages to
-    virtual void poll(message_pump& p) noexcept = 0;
+    virtual auto poll(message_pump& p) noexcept -> void = 0;
   };
 
 } // namespace alloy::io
@@ -270,7 +270,8 @@ namespace alloy::io {
 //------------------------------------------------------------------------------
 
 template<typename Event>
-inline void alloy::io::message_pump::post_event(Event&& e)
+inline
+auto alloy::io::message_pump::post_event(Event&& e) -> void
 {
   auto erased_event = event::make_event<std::decay_t<Event>>(
     std::forward<Event>(e)
@@ -280,7 +281,8 @@ inline void alloy::io::message_pump::post_event(Event&& e)
 }
 
 template<typename Event>
-inline void alloy::io::message_pump::post_immediate_event(Event&& e)
+inline
+auto alloy::io::message_pump::post_immediate_event(Event&& e) -> void
 {
   auto erased_event = event::make_event<std::decay_t<Event>>(
     std::forward<Event>(e)

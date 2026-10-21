@@ -35,7 +35,8 @@ struct DotFixture {
   /// \brief A simple deleter that uses the core::allocator and deletes
   ///        aligned values using the default global allocator
   struct aligned_deleter {
-    auto operator()(f32* p) -> void  {
+    auto operator()(f32* p) -> void
+    {
       allocator{}.aligned_dispose_array<f32>(assume_not_null(p), m_size, simd_alignment);
     }
     std::size_t m_size;
@@ -46,7 +47,8 @@ struct DotFixture {
   /// \brief Generates a pair of inputs to perform the dot-product on
   ///
   /// \param size the number of elements to use for computing
-  auto generate_input_pair(std::size_t size) -> std::array<aligned_float_ptr,2> {
+  auto generate_input_pair(std::size_t size) -> std::array<aligned_float_ptr,2>
+  {
     auto result = std::array<aligned_float_ptr,2>{{
       aligned_float_ptr{
         allocator{}.aligned_make_array<f32>(size, simd_alignment),
@@ -68,7 +70,8 @@ struct DotFixture {
 
 namespace {
 // A baseline "dot" product implementation written in terms of spans
-auto dot(std::span<const f32,4> lhs, std::span<const f32,4> rhs) noexcept -> f32 {
+auto dot(std::span<const f32,4> lhs, std::span<const f32,4> rhs) noexcept -> f32
+{
   auto result = f32{0};
 
   for (auto i = 0; i < 4; ++i) {
@@ -77,7 +80,9 @@ auto dot(std::span<const f32,4> lhs, std::span<const f32,4> rhs) noexcept -> f32
   return result;
 }
 // A simplified operation for computing 4 dot products
-auto dot4(std::span<const f32,16> lhs, std::span<const f32,16> rhs) noexcept -> std::array<f32,4> {
+auto dot4(std::span<const f32,16> lhs, std::span<const f32,16> rhs)
+  noexcept -> std::array<f32,4>
+{
   return {
     dot(lhs.subspan<0,4>(), rhs.subspan<0,4>()),
     dot(lhs.subspan<4,4>(), rhs.subspan<4,4>()),

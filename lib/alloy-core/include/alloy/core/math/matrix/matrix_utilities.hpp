@@ -75,8 +75,7 @@ namespace alloy::core::detail {
   struct matrix_caster<matrix2,matrix2>
   {
     static constexpr
-    auto cast(const matrix2& from)
-      noexcept -> matrix2
+    auto cast(const matrix2& from) noexcept -> matrix2
     {
       return from;
     }
@@ -86,8 +85,7 @@ namespace alloy::core::detail {
   struct matrix_caster<matrix3,matrix2>
   {
     static constexpr
-    auto cast(const matrix2& from)
-      noexcept -> matrix3
+    auto cast(const matrix2& from) noexcept -> matrix3
     {
       return matrix3{
         from[0][0], from.get(0,10), real{0},
@@ -101,8 +99,7 @@ namespace alloy::core::detail {
   struct matrix_caster<matrix4,matrix2>
   {
     static constexpr
-    auto cast(const matrix2& from)
-      noexcept -> matrix4
+    auto cast(const matrix2& from) noexcept -> matrix4
     {
       return matrix4{
         from[0][0], from[0][1], real{0}, real{0},
@@ -119,8 +116,7 @@ namespace alloy::core::detail {
   struct matrix_caster<matrix2,matrix3>
   {
     static constexpr
-    auto cast(const matrix3& from)
-      noexcept -> matrix2
+    auto cast(const matrix3& from) noexcept -> matrix2
     {
       return matrix2{
         from[0][0], from[0][1],
@@ -133,8 +129,7 @@ namespace alloy::core::detail {
   struct matrix_caster<matrix3,matrix3>
   {
     static constexpr
-    auto cast(const matrix3& from)
-      noexcept -> matrix3
+    auto cast(const matrix3& from) noexcept -> matrix3
     {
       return from;
     }
@@ -144,8 +139,7 @@ namespace alloy::core::detail {
   struct matrix_caster<matrix4,matrix3>
   {
     static constexpr
-    auto cast(const matrix3& from)
-      noexcept -> matrix4
+    auto cast(const matrix3& from) noexcept -> matrix4
     {
       return matrix4{
         from[0][0], from[0][1], from[0][2], real{0},
@@ -162,8 +156,7 @@ namespace alloy::core::detail {
   struct matrix_caster<matrix2,matrix4>
   {
     static constexpr
-    auto cast(const matrix4& from)
-      noexcept -> matrix2
+    auto cast(const matrix4& from) noexcept -> matrix2
     {
       return matrix2{
         from[0][0], from[0][1],
@@ -176,8 +169,7 @@ namespace alloy::core::detail {
   struct matrix_caster<matrix3,matrix4>
   {
     static constexpr
-    auto cast(const matrix4& from)
-      noexcept -> matrix3
+    auto cast(const matrix4& from) noexcept -> matrix3
     {
       return matrix3{
         from[0][0], from[0][1], from[0][3],
@@ -191,8 +183,7 @@ namespace alloy::core::detail {
   struct matrix_caster<matrix4,matrix4>
   {
     static constexpr
-    auto cast(const matrix4& from)
-      noexcept -> matrix4
+    auto cast(const matrix4& from) noexcept -> matrix4
     {
       return from;
     }
@@ -206,8 +197,7 @@ namespace alloy::core::detail {
 
 template<typename To, typename From>
 inline constexpr
-auto alloy::core::casts::matrix_cast(const From& from)
-  noexcept -> To
+auto alloy::core::casts::matrix_cast(const From& from) noexcept -> To
 {
   return detail::matrix_caster<To,From>::cast(from);
 }

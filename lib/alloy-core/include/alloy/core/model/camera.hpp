@@ -72,7 +72,8 @@ namespace alloy::core {
     /// \param delta_x the change in the x position
     /// \param delta_y the change in the y position
     /// \param delta_z the change in the z position
-    auto translate_world(real delta_x, real delta_y, real delta_z) noexcept -> void;
+    auto translate_world(real delta_x, real delta_y, real delta_z)
+      noexcept -> void;
 
     /// \brief Translates this camera by the vector \p delta
     ///
@@ -244,8 +245,10 @@ namespace alloy::core {
     ///
     /// \param subject the subject to look at
     /// \param up the direction for up
-    auto look_at(const vector3& subject,
-                 const vector3& up = vector3_constants::unit_y) noexcept -> void;
+    auto look_at(
+      const vector3& subject,
+      const vector3& up = vector3_constants::unit_y
+    ) noexcept -> void;
 
     /// \brief Looks at the specified \p subject
     ///
@@ -253,8 +256,12 @@ namespace alloy::core {
     /// \param y the y position
     /// \param z the z position
     /// \param up the direction for up
-    auto look_at(real x, real y, real z,
-                 const vector3& up = vector3_constants::unit_y) noexcept -> void;
+    auto look_at(
+      real x,
+      real y,
+      real z,
+      const vector3& up = vector3_constants::unit_y
+    ) noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Observers

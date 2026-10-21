@@ -251,8 +251,7 @@ auto alloy::core::utf16_encoding::encode(
 }
 
 inline constexpr
-auto alloy::core::utf16_encoding::is_char_boundary(char16 unit)
-  noexcept -> bool
+auto alloy::core::utf16_encoding::is_char_boundary(char16 unit) noexcept -> bool
 {
   constexpr auto non_multi_unit_prefix = char16{0b1100'0000'0000'0000};
   constexpr auto multi_unit_mask       = char16{0b1101'1100'0000'0000};

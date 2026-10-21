@@ -23,8 +23,10 @@ auto alloy::core::axis_aligned_box::from_point_and_size(
   return from_points(p, p + size);
 }
 
-auto alloy::core::axis_aligned_box::from_points(const point3& p0, const point3& p1)
-  noexcept -> axis_aligned_box
+auto alloy::core::axis_aligned_box::from_points(
+  const point3& p0,
+  const point3& p1
+) noexcept -> axis_aligned_box
 {
   const auto min_point = point3{
     std::min(p0.x(), p1.x()),
@@ -43,8 +45,7 @@ auto alloy::core::axis_aligned_box::from_points(const point3& p0, const point3& 
 // Observers : Planes
 //------------------------------------------------------------------------------
 
-auto alloy::core::axis_aligned_box::top_plane()
-  const noexcept -> plane
+auto alloy::core::axis_aligned_box::top_plane() const noexcept -> plane
 {
   const auto normal = vector3_constants::unit_y;
   const auto distance = m_top_right.y();
@@ -52,8 +53,7 @@ auto alloy::core::axis_aligned_box::top_plane()
   return plane{normal, distance};
 }
 
-auto alloy::core::axis_aligned_box::bottom_plane()
-  const noexcept -> plane
+auto alloy::core::axis_aligned_box::bottom_plane() const noexcept -> plane
 {
   const auto normal = vector3_constants::neg_unit_y;
   const auto distance = m_bottom_left.y();
@@ -61,8 +61,7 @@ auto alloy::core::axis_aligned_box::bottom_plane()
   return plane{normal, distance};
 }
 
-auto alloy::core::axis_aligned_box::front_plane()
-  const noexcept -> plane
+auto alloy::core::axis_aligned_box::front_plane() const noexcept -> plane
 {
   const auto normal = vector3_constants::unit_z;
   const auto distance = m_top_right.z();
@@ -70,8 +69,7 @@ auto alloy::core::axis_aligned_box::front_plane()
   return plane{normal, distance};
 }
 
-auto alloy::core::axis_aligned_box::back_plane()
-  const noexcept -> plane
+auto alloy::core::axis_aligned_box::back_plane() const noexcept -> plane
 {
   const auto normal = vector3_constants::neg_unit_z;
   const auto distance = m_bottom_left.z();
@@ -79,8 +77,7 @@ auto alloy::core::axis_aligned_box::back_plane()
   return plane{normal, distance};
 }
 
-auto alloy::core::axis_aligned_box::left_plane()
-  const noexcept -> plane
+auto alloy::core::axis_aligned_box::left_plane() const noexcept -> plane
 {
   const auto normal = vector3_constants::neg_unit_x;
   const auto distance = m_bottom_left.x();
@@ -88,8 +85,7 @@ auto alloy::core::axis_aligned_box::left_plane()
   return plane{normal, distance};
 }
 
-auto alloy::core::axis_aligned_box::right_plane()
-  const noexcept -> plane
+auto alloy::core::axis_aligned_box::right_plane() const noexcept -> plane
 {
   const auto normal = vector3_constants::unit_x;
   const auto distance = m_top_right.x();
@@ -214,25 +210,30 @@ auto alloy::core::axis_aligned_box::encloses(const axis_aligned_box& other)
 // Equality
 //------------------------------------------------------------------------------
 
-auto alloy::core::operator==(const axis_aligned_box& lhs, const axis_aligned_box& rhs)
-  noexcept -> bool
+auto alloy::core::operator==(
+  const axis_aligned_box& lhs,
+  const axis_aligned_box& rhs
+) noexcept -> bool
 {
   return lhs.top_right_point() == rhs.top_right_point() &&
          lhs.bottom_left_point() == rhs.bottom_left_point();
 }
 
-auto alloy::core::operator!=(const axis_aligned_box& lhs, const axis_aligned_box& rhs)
-  noexcept -> bool
+auto alloy::core::operator!=(
+  const axis_aligned_box& lhs,
+  const axis_aligned_box& rhs
+) noexcept -> bool
 {
   return !(lhs==rhs);
 }
 
 //------------------------------------------------------------------------------
 
-auto alloy::core::almost_equal(const axis_aligned_box& lhs,
-                               const axis_aligned_box& rhs,
-                               real tolerance)
-  noexcept -> bool
+auto alloy::core::almost_equal(
+  const axis_aligned_box& lhs,
+  const axis_aligned_box& rhs,
+  real tolerance
+) noexcept -> bool
 {
   return almost_equal(lhs.top_right_point(),
                       rhs.top_right_point(),

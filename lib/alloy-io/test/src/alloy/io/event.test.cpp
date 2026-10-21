@@ -12,7 +12,8 @@ struct move_event{
 
   bool* to_write;
 
-  move_event(bool* p) : to_write{p}{}
+  move_event(bool* p)
+    : to_write{p}{}
 
   move_event(move_event&& other)
     : to_write{other.to_write}
@@ -27,7 +28,8 @@ struct copy_event{
 
   bool* to_write;
 
-  copy_event(bool* p) : to_write{p}{}
+  copy_event(bool* p)
+    : to_write{p}{}
 
   copy_event(const copy_event& other)
     : to_write{other.to_write}
@@ -41,7 +43,8 @@ struct copy_event{
 struct destructor_event{
   bool* to_write;
 
-  destructor_event(bool* p) : to_write{p}{}
+  destructor_event(bool* p)
+    : to_write{p}{}
   destructor_event(const destructor_event&) = default;
   destructor_event(destructor_event&&) = default;
 

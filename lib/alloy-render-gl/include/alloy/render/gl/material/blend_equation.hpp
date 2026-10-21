@@ -34,8 +34,7 @@ namespace alloy::render::gl {
 } // namespace alloy::render::gl
 
 inline constexpr
-auto alloy::render::gl::to_opengl_type(blend_equation b)
-  noexcept -> ::GLenum
+auto alloy::render::gl::to_opengl_type(blend_equation b) noexcept -> ::GLenum
 {
   switch (b) {
     case blend_equation::add: {

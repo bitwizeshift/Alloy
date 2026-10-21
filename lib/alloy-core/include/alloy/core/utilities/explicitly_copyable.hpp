@@ -79,8 +79,9 @@ namespace alloy::core {
     template <typename Alloc = typename T::allocator_type>
       requires std::constructible_from<T, const T&, const Alloc&>
     auto copy_with(const Alloc& alloc)
-     const noexcept(std::is_nothrow_constructible<T, const T&, const Alloc&>::value)
-     -> explicitly_copyable;
+      const noexcept(
+        std::is_nothrow_constructible<T, const T&, const Alloc&>::value
+      ) -> explicitly_copyable;
 
     //-------------------------------------------------------------------------
     // Private Constructors / Assignment
@@ -89,7 +90,8 @@ namespace alloy::core {
 
     explicitly_copyable(const explicitly_copyable&) = default;
 
-    explicitly_copyable& operator=(const explicitly_copyable&) = default;
+    auto operator=(const explicitly_copyable&)
+      -> explicitly_copyable& = default;
   };
 
 } // namespace alloy::core
@@ -108,8 +110,9 @@ template <typename Alloc>
   requires std::constructible_from<T, const T&, const Alloc&>
 ALLOY_FORCE_INLINE
 auto alloy::core::explicitly_copyable<T>::copy_with(const Alloc& alloc)
-  const noexcept(std::is_nothrow_constructible<T, const T&, const Alloc&>::value)
-  -> explicitly_copyable
+  const noexcept(
+    std::is_nothrow_constructible<T, const T&, const Alloc&>::value
+  ) -> explicitly_copyable
 {
   return explicitly_copyable<T>{static_cast<const T&>(*this), alloc};
 }

@@ -77,9 +77,8 @@ namespace alloy::render::gl {
     /// \param loc the uniform location
     /// \param x the first part of the vector
     /// \param y the second part of the vector
-    static auto bind_uniform(uniform_location loc,
-                             float x,
-                             float y) noexcept -> void;
+    static auto bind_uniform(uniform_location loc, float x, float y)
+      noexcept -> void;
 
     /// \brief Binds three floats to a 3-component vector at \p loc
     ///
@@ -87,10 +86,8 @@ namespace alloy::render::gl {
     /// \param x the first part of the vector
     /// \param y the second part of the vector
     /// \param z the third part of the vector
-    static auto bind_uniform(uniform_location loc,
-                             float x,
-                             float y,
-                             float z) noexcept -> void;
+    static auto bind_uniform(uniform_location loc, float x, float y, float z)
+      noexcept -> void;
 
     /// \brief Binds four floats to a 4-component vector at \p loc
     ///
@@ -99,50 +96,54 @@ namespace alloy::render::gl {
     /// \param y the second part of the vector
     /// \param z the third part of the vector
     /// \param w the fourth part of the vector
-    static auto bind_uniform(uniform_location loc,
-                             float x,
-                             float y,
-                             float z,
-                             float w) noexcept -> void;
+    static auto bind_uniform(
+      uniform_location loc,
+      float x,
+      float y,
+      float z,
+      float w
+    ) noexcept -> void;
 
     /// \brief Binds a color to a 4-component vector at \p loc
     ///
     /// \param loc the uniform location
     /// \param color the color to bind
-    static auto bind_uniform(uniform_location loc,
-                             const core::color& color) noexcept -> void;
+    static auto bind_uniform(uniform_location loc, const core::color& color)
+      noexcept -> void;
 
     /// \brief Binds a vector2 to a 2-component vector at \p loc
     ///
     /// \param loc the uniform location
     /// \param vec the vector to bind
-    static auto bind_uniform(uniform_location loc,
-                             const core::vector2& vec) noexcept -> void;
+    static auto bind_uniform(uniform_location loc, const core::vector2& vec)
+      noexcept -> void;
 
     /// \brief Binds a vector3 to a 3-component vector at \p loc
     ///
     /// \param loc the uniform location
     /// \param vec the vector to bind
-    static auto bind_uniform(uniform_location loc,
-                             const core::vector3& vec) noexcept -> void;
+    static auto bind_uniform(uniform_location loc, const core::vector3& vec)
+      noexcept -> void;
 
     /// \brief Binds a vector4 to a 4-component vector at \p loc
     ///
     /// \param loc the uniform location
     /// \param vec the vector to bind
-    static auto bind_uniform(uniform_location loc,
-                             const core::vector4& vec) noexcept -> void;
+    static auto bind_uniform(uniform_location loc, const core::vector4& vec)
+      noexcept -> void;
 
     /// \{
     /// \brief Binds a matrix2 to a matrix at \p loc
     ///
     /// \param loc the uniform location
     /// \param vec the matrix2 to bind
-    static auto bind_uniform(uniform_location loc,
-                             const core::matrix2& mat) noexcept -> void;
-    static auto bind_uniform(uniform_location loc,
-                             const core::matrix2& mat,
-                             transpose_type) noexcept -> void;
+    static auto bind_uniform(uniform_location loc, const core::matrix2& mat)
+      noexcept -> void;
+    static auto bind_uniform(
+      uniform_location loc,
+      const core::matrix2& mat,
+      transpose_type
+    ) noexcept -> void;
     /// \}
 
     /// \{
@@ -150,11 +151,13 @@ namespace alloy::render::gl {
     ///
     /// \param loc the uniform location
     /// \param vec the matrix3 to bind
-    static auto bind_uniform(uniform_location loc,
-                             const core::matrix3& mat) noexcept -> void;
-    static auto bind_uniform(uniform_location loc,
-                             const core::matrix3& mat,
-                             transpose_type) noexcept -> void;
+    static auto bind_uniform(uniform_location loc, const core::matrix3& mat)
+      noexcept -> void;
+    static auto bind_uniform(
+      uniform_location loc,
+      const core::matrix3& mat,
+      transpose_type
+    ) noexcept -> void;
     /// \}
 
     /// \{
@@ -162,11 +165,13 @@ namespace alloy::render::gl {
     ///
     /// \param loc the uniform location
     /// \param vec the matrix2 to bind
-    static auto bind_uniform(uniform_location loc,
-                             const core::matrix4& mat) noexcept -> void;
-    static auto bind_uniform(uniform_location loc,
-                             const core::matrix4& mat,
-                             transpose_type) noexcept -> void;
+    static auto bind_uniform(uniform_location loc, const core::matrix4& mat)
+      noexcept -> void;
+    static auto bind_uniform(
+      uniform_location loc,
+      const core::matrix4& mat,
+      transpose_type
+    ) noexcept -> void;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -178,29 +183,35 @@ namespace alloy::render::gl {
     ///
     /// \param loc the location of the uniform
     /// \param v the sequence of the uniform to bind
-    static auto bind_uniforms(uniform_location loc,
-                              std::span<core::color> v) noexcept -> void;
-    static auto bind_uniforms(uniform_location loc,
-                              std::span<core::vector2> v) noexcept -> void;
-    static auto bind_uniforms(uniform_location loc,
-                              std::span<core::vector3> v) noexcept -> void;
-    static auto bind_uniforms(uniform_location loc,
-                              std::span<core::vector4> v) noexcept -> void;
-    static auto bind_uniforms(uniform_location loc,
-                              std::span<core::matrix2> v) noexcept -> void;
-    static auto bind_uniforms(uniform_location loc,
-                              std::span<core::matrix2> v,
-                              transpose_type) noexcept -> void;
-    static auto bind_uniforms(uniform_location loc,
-                              std::span<core::matrix3> v) noexcept -> void;
-    static auto bind_uniforms(uniform_location loc,
-                              std::span<core::matrix3> v,
-                              transpose_type) noexcept -> void;
-    static auto bind_uniforms(uniform_location loc,
-                              std::span<core::matrix4> v) noexcept -> void;
-    static auto bind_uniforms(uniform_location loc,
-                              std::span<core::matrix4> v,
-                              transpose_type) noexcept -> void;
+    static auto bind_uniforms(uniform_location loc, std::span<core::color> v)
+      noexcept -> void;
+    static auto bind_uniforms(uniform_location loc, std::span<core::vector2> v)
+      noexcept -> void;
+    static auto bind_uniforms(uniform_location loc, std::span<core::vector3> v)
+      noexcept -> void;
+    static auto bind_uniforms(uniform_location loc, std::span<core::vector4> v)
+      noexcept -> void;
+    static auto bind_uniforms(uniform_location loc, std::span<core::matrix2> v)
+      noexcept -> void;
+    static auto bind_uniforms(
+      uniform_location loc,
+      std::span<core::matrix2> v,
+      transpose_type
+    ) noexcept -> void;
+    static auto bind_uniforms(uniform_location loc, std::span<core::matrix3> v)
+      noexcept -> void;
+    static auto bind_uniforms(
+      uniform_location loc,
+      std::span<core::matrix3> v,
+      transpose_type
+    ) noexcept -> void;
+    static auto bind_uniforms(uniform_location loc, std::span<core::matrix4> v)
+      noexcept -> void;
+    static auto bind_uniforms(
+      uniform_location loc,
+      std::span<core::matrix4> v,
+      transpose_type
+    ) noexcept -> void;
     /// \}
   };
 
@@ -211,135 +222,154 @@ namespace alloy::render::gl {
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc, bool x)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  bool x
+) noexcept -> void
 {
   ::glUniform1i(static_cast<::GLint>(loc), static_cast<int>(x));
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc, int x)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  int x
+) noexcept -> void
 {
   ::glUniform1i(static_cast<::GLint>(loc), x);
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc, float x)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  float x
+) noexcept -> void
 {
   ::glUniform1f(static_cast<::GLint>(loc), x);
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
-                                                     float x,
-                                                     float y)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  float x,
+  float y
+) noexcept -> void
 {
   ::glUniform2f(static_cast<::GLint>(loc), x, y);
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
-                                                     float x,
-                                                     float y,
-                                                     float z)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  float x,
+  float y,
+  float z
+) noexcept -> void
 {
   ::glUniform3f(static_cast<::GLint>(loc), x, y, z);
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
-                                                     float x,
-                                                     float y,
-                                                     float z,
-                                                     float w)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  float x,
+  float y,
+  float z,
+  float w
+) noexcept -> void
 {
   ::glUniform4f(static_cast<::GLint>(loc), x, y, z, w);
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
-                                                     const core::color& color)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  const core::color& color
+) noexcept -> void
 {
   ::glUniform4fv(static_cast<::GLint>(loc), 1, color.data());
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
-                                                     const core::vector2& vec)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  const core::vector2& vec
+) noexcept -> void
 {
   ::glUniform2fv(static_cast<::GLint>(loc), 1, vec.data());
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
-                                                     const core::vector3& vec)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  const core::vector3& vec
+) noexcept -> void
 {
   ::glUniform3fv(static_cast<::GLint>(loc), 1, vec.data());
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
-                                                     const core::vector4& vec)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  const core::vector4& vec
+) noexcept -> void
 {
   ::glUniform4fv(static_cast<::GLint>(loc), 1, vec.data());
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
-                                                     const core::matrix2& mat)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  const core::matrix2& mat
+) noexcept -> void
 {
   ::glUniformMatrix2fv(static_cast<::GLint>(loc), 1, false, mat.data());
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
-                                                     const core::matrix2& mat,
-                                                     transpose_type)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  const core::matrix2& mat,
+  transpose_type
+) noexcept -> void
 {
   ::glUniformMatrix2fv(static_cast<::GLint>(loc), 1, true, mat.data());
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
-                                                     const core::matrix3& mat)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  const core::matrix3& mat
+) noexcept -> void
 {
   ::glUniformMatrix3fv(static_cast<::GLint>(loc), 1, false, mat.data());
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
-                                                     const core::matrix3& mat,
-                                                     transpose_type)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  const core::matrix3& mat,
+  transpose_type
+) noexcept -> void
 {
   ::glUniformMatrix3fv(static_cast<::GLint>(loc), 1, true, mat.data());
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
-                                                     const core::matrix4& mat)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  const core::matrix4& mat
+) noexcept -> void
 {
   ::glUniformMatrix4fv(static_cast<::GLint>(loc), 1, true, mat.data());
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
-                                                     const core::matrix4& mat,
-                                                     transpose_type)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniform(
+  uniform_location loc,
+  const core::matrix4& mat,
+  transpose_type
+) noexcept -> void
 {
   ::glUniformMatrix4fv(static_cast<::GLint>(loc), 1, true, mat.data());
 }
@@ -349,9 +379,10 @@ auto alloy::render::gl::active_program::bind_uniform(uniform_location loc,
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
-                                                      std::span<core::color> v)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniforms(
+  uniform_location loc,
+  std::span<core::color> v
+) noexcept -> void
 {
   ::glUniform4fv(
     static_cast<::GLint>(loc),
@@ -361,9 +392,10 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
-                                                      std::span<core::vector2> v)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniforms(
+  uniform_location loc,
+  std::span<core::vector2> v
+) noexcept -> void
 {
   ::glUniform2fv(
     static_cast<::GLint>(loc),
@@ -373,9 +405,10 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
-                                                      std::span<core::vector3> v)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniforms(
+  uniform_location loc,
+  std::span<core::vector3> v
+) noexcept -> void
 {
   ::glUniform3fv(
     static_cast<::GLint>(loc),
@@ -385,9 +418,10 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
-                                                      std::span<core::vector4> v)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniforms(
+  uniform_location loc,
+  std::span<core::vector4> v
+) noexcept -> void
 {
   ::glUniform4fv(
     static_cast<::GLint>(loc),
@@ -397,9 +431,10 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
-                                                      std::span<core::matrix2> v)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniforms(
+  uniform_location loc,
+  std::span<core::matrix2> v
+) noexcept -> void
 {
   ::glUniformMatrix2fv(
     static_cast<::GLint>(loc),
@@ -410,10 +445,11 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
-                                                      std::span<core::matrix2> v,
-                                                      transpose_type)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniforms(
+  uniform_location loc,
+  std::span<core::matrix2> v,
+  transpose_type
+) noexcept -> void
 {
   ::glUniformMatrix2fv(
     static_cast<::GLint>(loc),
@@ -424,9 +460,10 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
-                                                      std::span<core::matrix3> v)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniforms(
+  uniform_location loc,
+  std::span<core::matrix3> v
+) noexcept -> void
 {
   ::glUniformMatrix3fv(
     static_cast<::GLint>(loc),
@@ -437,10 +474,11 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
-                                                      std::span<core::matrix3> v,
-                                                      transpose_type)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniforms(
+  uniform_location loc,
+  std::span<core::matrix3> v,
+  transpose_type
+) noexcept -> void
 {
   ::glUniformMatrix3fv(
     static_cast<::GLint>(loc),
@@ -451,9 +489,10 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
-                                                      std::span<core::matrix4> v)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniforms(
+  uniform_location loc,
+  std::span<core::matrix4> v
+) noexcept -> void
 {
   ::glUniformMatrix4fv(
     static_cast<::GLint>(loc),
@@ -464,10 +503,11 @@ auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::render::gl::active_program::bind_uniforms(uniform_location loc,
-                                                      std::span<core::matrix4> v,
-                                                      transpose_type)
-  noexcept -> void
+auto alloy::render::gl::active_program::bind_uniforms(
+  uniform_location loc,
+  std::span<core::matrix4> v,
+  transpose_type
+) noexcept -> void
 {
   ::glUniformMatrix4fv(
     static_cast<::GLint>(loc),

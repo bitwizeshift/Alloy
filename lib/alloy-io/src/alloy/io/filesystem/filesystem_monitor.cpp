@@ -12,9 +12,8 @@
 // Modifiers
 //------------------------------------------------------------------------------
 
-void alloy::io::filesystem_monitor::watch( std::string_view path,
-                                           bool recursive )
-  noexcept
+auto alloy::io::filesystem_monitor::watch(std::string_view path, bool recursive)
+  noexcept -> void
 {
   do_watch(path, recursive);
 }

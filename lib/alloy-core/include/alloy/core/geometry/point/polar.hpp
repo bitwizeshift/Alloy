@@ -97,8 +97,10 @@ namespace alloy::core {
   // Comparisons
   //----------------------------------------------------------------------------
 
-  constexpr auto operator==(const polar& lhs, const polar& rhs) noexcept -> bool;
-  constexpr auto operator!=(const polar& lhs, const polar& rhs) noexcept -> bool;
+  constexpr auto operator==(const polar& lhs, const polar& rhs)
+    noexcept -> bool;
+  constexpr auto operator!=(const polar& lhs, const polar& rhs)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -107,9 +109,11 @@ namespace alloy::core {
   /// \param lhs the left polar
   /// \param rhs the right polar
   /// \return `true` if the two polar contain almost equal values
-  constexpr auto almost_equal(const polar& lhs,
-                              const polar& rhs,
-                              real tolerance) noexcept -> bool;
+  constexpr auto almost_equal(
+    const polar& lhs,
+    const polar& rhs,
+    real tolerance
+  ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
   // Utilities
@@ -150,8 +154,7 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::polar::polar(real distance, radian theta)
-  noexcept
+alloy::core::polar::polar(real distance, radian theta) noexcept
   : m_distance{distance},
     m_theta{theta}
 {
@@ -163,29 +166,25 @@ alloy::core::polar::polar(real distance, radian theta)
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::polar::r()
-  noexcept -> real&
+auto alloy::core::polar::r() noexcept -> real&
 {
   return m_distance;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::polar::r()
-  const noexcept -> real
+auto alloy::core::polar::r() const noexcept -> real
 {
   return m_distance;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::polar::theta()
-  noexcept -> radian&
+auto alloy::core::polar::theta() noexcept -> radian&
 {
   return m_theta;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::polar::theta()
-  const noexcept -> radian
+auto alloy::core::polar::theta() const noexcept -> radian
 {
   return m_theta;
 }
@@ -235,8 +234,7 @@ auto alloy::core::almost_equal(const polar& lhs, const polar& rhs, real toleranc
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::core::to_polar(const point2& p)
-  noexcept -> polar
+auto alloy::core::to_polar(const point2& p) noexcept -> polar
 {
   const auto distance = to_vector(p).magnitude();
   const auto theta = trigonometry::arctan2(p.x(), p.y());
@@ -245,8 +243,7 @@ auto alloy::core::to_polar(const point2& p)
 }
 
 inline
-auto alloy::core::to_point(const polar& p)
-  noexcept -> point2
+auto alloy::core::to_point(const polar& p) noexcept -> point2
 {
   const auto x = p.r() * trigonometry::cos(p.theta());
   const auto y = p.r() * trigonometry::sin(p.theta());
@@ -263,9 +260,10 @@ ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr
-auto alloy::core::piecewise_compare<alloy::core::polar>
-  ::operator()(const polar& lhs, const polar& rhs)
-  const noexcept -> bool
+auto alloy::core::piecewise_compare<alloy::core::polar>::operator()(
+  const polar& lhs,
+  const polar& rhs
+) const noexcept -> bool
 {
   return (lhs.r() == rhs.r()) ?
            (lhs.theta() < rhs.theta()) :

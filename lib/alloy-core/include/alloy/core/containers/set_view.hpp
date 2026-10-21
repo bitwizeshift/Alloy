@@ -87,7 +87,8 @@ namespace alloy::core {
       /// \param p ignored
       /// \param value ignored
       /// \return 0
-      static constexpr auto null_count(const void* p, const T& value) -> std::size_t;
+      static constexpr auto null_count(const void* p, const T& value)
+        -> std::size_t;
 
       //------------------------------------------------------------------------
 
@@ -114,7 +115,8 @@ namespace alloy::core {
       /// \param p the pointer to a `Map` instance
       /// \param cb the callback to invoke
       template <typename Set>
-      static constexpr auto set_for_each(const void* p, for_each_callback cb) -> void;
+      static constexpr auto set_for_each(const void* p, for_each_callback cb)
+        -> void;
 
       /// \brief An implementation of iteration in terms of no object
       ///
@@ -122,7 +124,8 @@ namespace alloy::core {
       ///
       /// \param p ignored
       /// \param cb ignored
-      static constexpr auto null_for_each(const void* p, for_each_callback cb) -> void;
+      static constexpr auto null_for_each(const void* p, for_each_callback cb)
+        -> void;
     };
 
   } // namespace detail
@@ -370,8 +373,7 @@ auto alloy::core::detail::set_view_vtable<T>::null_for_each(
 
 template <typename T>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::set_view<T>::set_view()
-  noexcept
+alloy::core::set_view<T>::set_view() noexcept
   : m_instance{nullptr},
     m_vtable{assume_not_null(&null_value)}
 {
@@ -381,8 +383,7 @@ alloy::core::set_view<T>::set_view()
 template <typename T>
 template <typename Set>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::set_view<T>::set_view(const Set& set)
-  noexcept
+alloy::core::set_view<T>::set_view(const Set& set) noexcept
   : m_instance{std::addressof(set)},
     m_vtable{assume_not_null(&value<Set>)}
 {
@@ -395,16 +396,14 @@ alloy::core::set_view<T>::set_view(const Set& set)
 
 template <typename T>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::set_view<T>::size()
-  const noexcept -> size_type
+auto alloy::core::set_view<T>::size() const noexcept -> size_type
 {
   return (*m_vtable->size_function)(m_instance);
 }
 
 template <typename T>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::set_view<T>::empty()
-  const noexcept -> bool
+auto alloy::core::set_view<T>::empty() const noexcept -> bool
 {
   return size() == 0u;
 }
@@ -423,8 +422,7 @@ auto alloy::core::set_view<T>::count(const T& value)
 
 template <typename T>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::set_view<T>::contains(const T& value)
-  const noexcept -> bool
+auto alloy::core::set_view<T>::contains(const T& value) const noexcept -> bool
 {
   // This is pessimized for multisets, since multisets would be counting each
   // instance rather than a singular one. However, multisets are seldomly
@@ -440,8 +438,7 @@ template <typename T>
 template <typename Callback>
   requires std::invocable<Callback, const T&>
 inline constexpr
-auto alloy::core::set_view<T>::for_each(Callback&& cb)
-  const -> void
+auto alloy::core::set_view<T>::for_each(Callback&& cb) const -> void
 {
   using callback_type = typename vtable_type::for_each_callback;
 

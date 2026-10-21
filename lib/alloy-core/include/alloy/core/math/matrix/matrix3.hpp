@@ -83,9 +83,8 @@ namespace alloy::core {
     ///
     /// \param v0 the first row vector
     /// \param v1 the second row vector
-    constexpr matrix3(const vector3& v0,
-                      const vector3& v1,
-                      const vector3& v2) noexcept;
+    constexpr matrix3(const vector3& v0, const vector3& v1, const vector3& v2)
+      noexcept;
 
     /// \brief Constructs a matrix3 from an array of 4 entries
     ///
@@ -108,9 +107,17 @@ namespace alloy::core {
     /// \param m20 the entry at coordinate (2,0)
     /// \param m21 the entry at coordinate (2,1)
     /// \param m22 the entry at coordinate (2,2)
-    constexpr matrix3(real m00, real m01, real m02,
-                      real m10, real m11, real m12,
-                      real m20, real m21, real m22) noexcept;
+    constexpr matrix3(
+      real m00,
+      real m01,
+      real m02,
+      real m10,
+      real m11,
+      real m12,
+      real m20,
+      real m21,
+      real m22
+    ) noexcept;
 
     /// \brief Copy-constructs a matrix3 from another matrix3
     ///
@@ -163,7 +170,8 @@ namespace alloy::core {
     /// \param c the column to retrieve
     /// \return a proxy to the row
     constexpr auto get(index_type r, index_type c) noexcept -> reference;
-    constexpr auto get(index_type r, index_type c) const noexcept -> const_reference;
+    constexpr auto get(index_type r, index_type c)
+      const noexcept -> const_reference;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -283,14 +291,16 @@ namespace alloy::core {
   auto operator*(const matrix3& lhs, const matrix3& rhs) noexcept -> matrix3;
   auto operator*(const vector3& lhs, const matrix3& rhs) noexcept -> vector3;
   auto operator*(real lhs, const matrix3& rhs) noexcept -> matrix3;
-  auto operator*(const matrix3& lhs, real rhs ) noexcept -> matrix3;
+  auto operator*(const matrix3& lhs, real rhs) noexcept -> matrix3;
 
   //----------------------------------------------------------------------------
   // Comparisons
   //----------------------------------------------------------------------------
 
-  constexpr auto operator==(const matrix3& lhs, const matrix3& rhs) noexcept -> bool;
-  constexpr auto operator!=(const matrix3& lhs, const matrix3& rhs) noexcept -> bool;
+  constexpr auto operator==(const matrix3& lhs, const matrix3& rhs)
+    noexcept -> bool;
+  constexpr auto operator!=(const matrix3& lhs, const matrix3& rhs)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -299,9 +309,11 @@ namespace alloy::core {
   /// \param lhs the left matrix3
   /// \param rhs the right matrix3
   /// \return `true` if the two matrix3 contain almost equal values
-  constexpr auto almost_equal(const matrix3& lhs,
-                              const matrix3& rhs,
-                              real tolerance) noexcept -> bool;
+  constexpr auto almost_equal(
+    const matrix3& lhs,
+    const matrix3& rhs,
+    real tolerance
+  ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
   // Type Traits
@@ -330,8 +342,8 @@ namespace alloy::core {
 // Constructors
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::core::matrix3::matrix3()
-  noexcept
+inline constexpr
+alloy::core::matrix3::matrix3() noexcept
   : m_matrix {
     {real{0}, real{0}, real{0}},
     {real{0}, real{0}, real{0}},
@@ -341,10 +353,12 @@ inline constexpr alloy::core::matrix3::matrix3()
 
 }
 
-inline constexpr alloy::core::matrix3::matrix3(const vector3& v0,
-                                               const vector3& v1,
-                                               const vector3& v2)
-  noexcept
+inline constexpr
+alloy::core::matrix3::matrix3(
+  const vector3& v0,
+  const vector3& v1,
+  const vector3& v2
+) noexcept
   : m_matrix {
       {v0.x(), v0.y(), v0.z()},
       {v1.x(), v1.y(), v1.z()},
@@ -354,8 +368,8 @@ inline constexpr alloy::core::matrix3::matrix3(const vector3& v0,
 
 }
 
-inline constexpr alloy::core::matrix3::matrix3(const real(&array)[9])
-  noexcept
+inline constexpr
+alloy::core::matrix3::matrix3(const real(&array)[9]) noexcept
   : m_matrix {
       {array[0], array[1], array[2]},
       {array[3], array[4], array[5]},
@@ -365,8 +379,8 @@ inline constexpr alloy::core::matrix3::matrix3(const real(&array)[9])
 
 }
 
-inline constexpr alloy::core::matrix3::matrix3(const real(&array)[3][3])
-  noexcept
+inline constexpr
+alloy::core::matrix3::matrix3(const real(&array)[3][3]) noexcept
   : m_matrix {
       {array[0][0], array[0][1], array[0][2]},
       {array[1][0], array[1][1], array[1][2]},
@@ -376,10 +390,18 @@ inline constexpr alloy::core::matrix3::matrix3(const real(&array)[3][3])
 
 }
 
-inline constexpr alloy::core::matrix3::matrix3(real m00, real m01, real m02,
-                                               real m10, real m11, real m12,
-                                               real m20, real m21, real m22)
-  noexcept
+inline constexpr
+alloy::core::matrix3::matrix3(
+  real m00,
+  real m01,
+  real m02,
+  real m10,
+  real m11,
+  real m12,
+  real m20,
+  real m21,
+  real m22
+) noexcept
   : m_matrix {
       {m00, m01, m02},
       {m10, m11, m12},
@@ -393,9 +415,8 @@ inline constexpr alloy::core::matrix3::matrix3(real m00, real m01, real m02,
 // Element Access
 //------------------------------------------------------------------------------
 
-inline constexpr auto
-  alloy::core::matrix3::at(index_type r, index_type c)
-  -> reference
+inline constexpr
+auto alloy::core::matrix3::at(index_type r, index_type c) -> reference
 {
   if (c >= columns || c < 0 || r >= rows || r < 0) {
     throw std::out_of_range{"matrix3::at: index out of range"};
@@ -403,8 +424,8 @@ inline constexpr auto
   return get(r,c);
 }
 
-inline constexpr auto
-  alloy::core::matrix3::at(index_type r, index_type c)
+inline constexpr
+auto alloy::core::matrix3::at(index_type r, index_type c)
   const -> const_reference
 {
   if (c >= columns || c < 0 || r >= rows || r < 0) {
@@ -415,13 +436,14 @@ inline constexpr auto
 
 //------------------------------------------------------------------------------
 
-inline constexpr auto alloy::core::matrix3::operator[](index_type r)
-  noexcept -> pointer
+inline constexpr
+auto alloy::core::matrix3::operator[](index_type r) noexcept -> pointer
 {
   return m_matrix[r];
 }
 
-inline constexpr auto alloy::core::matrix3::operator[](index_type r)
+inline constexpr
+auto alloy::core::matrix3::operator[](index_type r)
   const noexcept -> const_pointer
 {
   return m_matrix[r];
@@ -429,15 +451,14 @@ inline constexpr auto alloy::core::matrix3::operator[](index_type r)
 
 //------------------------------------------------------------------------------
 
-inline constexpr auto
-  alloy::core::matrix3::get(index_type r, index_type c)
-  noexcept -> reference
+inline constexpr
+auto alloy::core::matrix3::get(index_type r, index_type c) noexcept -> reference
 {
   return m_matrix[r][c];
 }
 
-inline constexpr auto
-  alloy::core::matrix3::get(index_type r, index_type c)
+inline constexpr
+auto alloy::core::matrix3::get(index_type r, index_type c)
   const noexcept -> const_reference
 {
   return m_matrix[r][c];
@@ -445,16 +466,14 @@ inline constexpr auto
 
 //------------------------------------------------------------------------------
 
-inline constexpr auto
-  alloy::core::matrix3::row(index_type r)
-  const noexcept -> vector3
+inline constexpr
+auto alloy::core::matrix3::row(index_type r) const noexcept -> vector3
 {
   return vector3{ get(r,0), get(r,1), get(r,2) };
 }
 
-inline constexpr auto
-  alloy::core::matrix3::column(index_type c)
-  const noexcept -> vector3
+inline constexpr
+auto alloy::core::matrix3::column(index_type c) const noexcept -> vector3
 {
   return vector3{ get(0,c), get(1,c), get(2,c) };
 }
@@ -463,23 +482,20 @@ inline constexpr auto
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr auto
-  alloy::core::matrix3::size()
-  const noexcept -> size_type
+inline constexpr
+auto alloy::core::matrix3::size() const noexcept -> size_type
 {
   return rows * columns;
 }
 
-inline constexpr auto
-  alloy::core::matrix3::data()
-  noexcept -> pointer
+inline constexpr
+auto alloy::core::matrix3::data() noexcept -> pointer
 {
   return &get(0,0);
 }
 
-inline constexpr auto
-  alloy::core::matrix3::data()
-  const noexcept -> const_pointer
+inline constexpr
+auto alloy::core::matrix3::data() const noexcept -> const_pointer
 {
   return &get(0,0);
 }
@@ -488,9 +504,8 @@ inline constexpr auto
 // Modifiers
 //------------------------------------------------------------------------------
 
-inline auto
-  alloy::core::matrix3::invert()
-  noexcept -> matrix3&
+inline
+auto alloy::core::matrix3::invert() noexcept -> matrix3&
 {
   (*this) = inverse();
   return (*this);
@@ -500,9 +515,8 @@ inline auto
 // Compound Operators
 //------------------------------------------------------------------------------
 
-inline auto
-  alloy::core::matrix3::operator+=(const matrix3& rhs)
-  noexcept -> matrix3&
+inline
+auto alloy::core::matrix3::operator+=(const matrix3& rhs) noexcept -> matrix3&
 {
   for (auto r = 0; r < rows; ++r) {
     for (auto c = 0; c < columns; ++c) {
@@ -512,9 +526,8 @@ inline auto
   return (*this);
 }
 
-inline auto
-  alloy::core::matrix3::operator-=(const matrix3& rhs)
-  noexcept -> matrix3&
+inline
+auto alloy::core::matrix3::operator-=(const matrix3& rhs) noexcept -> matrix3&
 {
   for (auto r = 0; r < rows; ++r) {
     for (auto c = 0; c < columns; ++c) {
@@ -524,9 +537,8 @@ inline auto
   return (*this);
 }
 
-inline auto
-  alloy::core::matrix3::operator*=(const matrix3& rhs)
-  noexcept -> matrix3&
+inline
+auto alloy::core::matrix3::operator*=(const matrix3& rhs) noexcept -> matrix3&
 {
   auto result = matrix3{};
 
@@ -548,9 +560,8 @@ inline auto
   return (*this);
 }
 
-inline auto
-  alloy::core::matrix3::operator*=(real scalar)
-  noexcept -> matrix3&
+inline
+auto alloy::core::matrix3::operator*=(real scalar) noexcept -> matrix3&
 {
   for (auto r = 0; r < rows; ++r) {
     for (auto c = 0; c < columns; ++c) {
@@ -560,9 +571,8 @@ inline auto
   return (*this);
 }
 
-inline auto
-  alloy::core::matrix3::operator/=(real scalar)
-  noexcept -> matrix3&
+inline
+auto alloy::core::matrix3::operator/=(real scalar) noexcept -> matrix3&
 {
   const auto inv = real{1} / scalar;
 
@@ -582,44 +592,42 @@ inline auto
 // Arithmetic Operators
 //--------------------------------------------------------------------------------
 
-inline auto
-  alloy::core::operator+(const matrix3& lhs, const matrix3& rhs)
+inline
+auto alloy::core::operator+(const matrix3& lhs, const matrix3& rhs)
   noexcept -> matrix3
 {
   return matrix3{lhs} += rhs;
 }
 
-inline auto
-  alloy::core::operator-(const matrix3& lhs, const matrix3& rhs)
+inline
+auto alloy::core::operator-(const matrix3& lhs, const matrix3& rhs)
   noexcept -> matrix3
 {
   return matrix3{lhs} -= rhs;
 }
 
-inline auto
-  alloy::core::operator*(const matrix3& lhs, const matrix3& rhs)
+inline
+auto alloy::core::operator*(const matrix3& lhs, const matrix3& rhs)
   noexcept -> matrix3
 {
   return matrix3{lhs} *= rhs;
 }
 
-inline auto
-  alloy::core::operator*(const vector3& lhs, const matrix3& rhs)
+inline
+auto alloy::core::operator*(const vector3& lhs, const matrix3& rhs)
   noexcept -> vector3
 {
   return rhs.combine(lhs);
 }
 
-inline auto
-  alloy::core::operator*(real lhs, const matrix3& rhs)
-  noexcept -> matrix3
+inline
+auto alloy::core::operator*(real lhs, const matrix3& rhs) noexcept -> matrix3
 {
   return matrix3{rhs} *= lhs;
 }
 
-inline auto
-  alloy::core::operator*(const matrix3& lhs, real rhs)
-  noexcept -> matrix3
+inline
+auto alloy::core::operator*(const matrix3& lhs, real rhs) noexcept -> matrix3
 {
   return matrix3{lhs} *= rhs;
 }
@@ -631,8 +639,8 @@ inline auto
 ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
-inline constexpr auto
-  alloy::core::operator==(const matrix3& lhs, const matrix3& rhs)
+inline constexpr
+auto alloy::core::operator==(const matrix3& lhs, const matrix3& rhs)
   noexcept -> bool
 {
   for (auto r = 0; r < matrix3::rows; ++r) {
@@ -645,8 +653,8 @@ inline constexpr auto
   return true;
 }
 
-inline constexpr auto
-  alloy::core::operator!=(const matrix3& lhs, const matrix3& rhs)
+inline constexpr
+auto alloy::core::operator!=(const matrix3& lhs, const matrix3& rhs)
   noexcept -> bool
 {
   return !(lhs==rhs);

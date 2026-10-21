@@ -230,10 +230,8 @@ auto alloy::core::utf32_encoding::length(ForwardIt begin, ForwardIt end)
 
 template <typename ForwardIt>
 inline constexpr
-auto alloy::core::utf32_encoding::next(
-  ForwardIt begin,
-  ForwardIt end
-) noexcept -> ForwardIt
+auto alloy::core::utf32_encoding::next(ForwardIt begin, ForwardIt end)
+  noexcept -> ForwardIt
 {
   if (ALLOY_UNLIKELY(begin == end)) {
     return end;

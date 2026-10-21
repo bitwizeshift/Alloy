@@ -12,9 +12,10 @@
 // Static Factories
 //-----------------------------------------------------------------------------
 
-auto alloy::render::gl::shader_base::do_compile_from_source(shader_type type,
-                                                            core::zstring_view program)
-  -> core::result<::GLuint, gl_error_message>
+auto alloy::render::gl::shader_base::do_compile_from_source(
+  shader_type type,
+  core::zstring_view program
+) -> core::result<::GLuint, gl_error_message>
 {
   const auto shader_id = ::glCreateShader(static_cast<::GLenum>(type));
 
@@ -53,10 +54,11 @@ auto alloy::render::gl::shader_base::do_compile_from_source(shader_type type,
   );
 }
 
-auto alloy::render::gl::shader_base::do_compile_from_file(shader_type type,
-                                                          io::file& file,
-                                                          core::allocator alloc)
-  -> core::result<::GLuint, gl_error_message>
+auto alloy::render::gl::shader_base::do_compile_from_file(
+  shader_type type,
+  io::file& file,
+  core::allocator alloc
+) -> core::result<::GLuint, gl_error_message>
 {
   const auto size = file.bytes();
 

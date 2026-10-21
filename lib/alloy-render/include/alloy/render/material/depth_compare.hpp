@@ -88,8 +88,7 @@ namespace alloy::render {
 } // namespace alloy::render
 
 inline
-auto alloy::render::to_string(depth_compare d)
-  noexcept -> core::zstring_view
+auto alloy::render::to_string(depth_compare d) noexcept -> core::zstring_view
 {
   switch (d) {
     case depth_compare::never: {

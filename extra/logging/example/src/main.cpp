@@ -21,7 +21,7 @@ namespace {
 
 // An exception escaping an example should simply terminate it.
 // NOLINTNEXTLINE(bugprone-exception-escape)
-int main()
+auto main() -> int
 {
   auto disk_filesystem = alloy::io::disk_filesystem{};
   auto log_file = disk_filesystem.open("log.txt", alloy::io::open_mode::write);

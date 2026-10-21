@@ -41,8 +41,8 @@ namespace alloy::io {
 
     //-------------------------------------------------------------------------
 
-    null_filesystem& operator=(null_filesystem&&) = delete;
-    null_filesystem& operator=(const null_filesystem&) = delete;
+    auto operator=(null_filesystem&&) -> null_filesystem& = delete;
+    auto operator=(const null_filesystem&) -> null_filesystem& = delete;
 
     //-------------------------------------------------------------------------
     // Filesystem
@@ -52,7 +52,7 @@ namespace alloy::io {
     /// \brief Opens a null file
     ///
     /// \return the file
-    file open() noexcept;
+    auto open() noexcept -> file;
   };
 
 } // namespace alloy::io

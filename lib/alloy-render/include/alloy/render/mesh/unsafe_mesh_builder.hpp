@@ -113,7 +113,8 @@ namespace alloy::render {
 
     auto add_index(index_type i) -> void;
     auto add_face(index_type i0, index_type i1, index_type i2) -> void;
-    auto add_face(index_type i0, index_type i1, index_type i2, index_type i3) -> void;
+    auto add_face(index_type i0, index_type i1, index_type i2, index_type i3)
+      -> void;
 
     //--------------------------------------------------------------------------
     // Building

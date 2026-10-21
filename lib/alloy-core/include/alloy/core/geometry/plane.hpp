@@ -68,8 +68,7 @@ namespace alloy::core {
     /// \param normal the normal vector
     /// \return the plane
     ALLOY_CORE_API
-    static auto from_point_and_normal(const point3& p,
-                                      const vector3& normal)
+    static auto from_point_and_normal(const point3& p, const vector3& normal)
       noexcept -> plane;
 
     //--------------------------------------------------------------------------
@@ -128,15 +127,15 @@ namespace alloy::core {
     // Observers
     //--------------------------------------------------------------------------
   public:
-    [[nodiscard]] constexpr auto a() const noexcept -> real;
-    [[nodiscard]] constexpr auto b() const noexcept -> real;
-    [[nodiscard]] constexpr auto c() const noexcept -> real;
-    [[nodiscard]] constexpr auto d() const noexcept -> real;
+    [[nodiscard ]] constexpr auto a() const noexcept -> real;
+    [[nodiscard ]] constexpr auto b() const noexcept -> real;
+    [[nodiscard ]] constexpr auto c() const noexcept -> real;
+    [[nodiscard ]] constexpr auto d() const noexcept -> real;
 
     /// \brief Gets the normal of this plane
     ///
     /// \return the normal of this plane
-    [[nodiscard]] constexpr auto normal() const noexcept -> vector3;
+    [[nodiscard ]] constexpr auto normal() const noexcept -> vector3;
 
     //--------------------------------------------------------------------------
     // Quantifiers
@@ -219,8 +218,10 @@ namespace alloy::core {
   // Equality
   //----------------------------------------------------------------------------
 
-  constexpr auto operator==(const plane& lhs, const plane& rhs) noexcept -> bool;
-  constexpr auto operator!=(const plane& lhs, const plane& rhs) noexcept -> bool;
+  constexpr auto operator==(const plane& lhs, const plane& rhs)
+    noexcept -> bool;
+  constexpr auto operator!=(const plane& lhs, const plane& rhs)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -229,8 +230,11 @@ namespace alloy::core {
   /// \param lhs the left plane
   /// \param rhs the right plane
   /// \return `true` if the two planes contain almost equal values
-  constexpr auto almost_equal(const plane& lhs, const plane& rhs, real tolerance)
-    noexcept -> bool;
+  constexpr auto almost_equal(
+    const plane& lhs,
+    const plane& rhs,
+    real tolerance
+  ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
   // Utilities
@@ -242,7 +246,8 @@ namespace alloy::core {
   /// \param plane the plane
   /// \return `true` if \p p is over the \p plane
   ALLOY_CORE_API
-  auto is_point_over_plane(const point3& p, const plane& plane) noexcept -> bool;
+  auto is_point_over_plane(const point3& p, const plane& plane)
+    noexcept -> bool;
 
   /// \brief Checks if the given point \p p is under the \p plane
   ///
@@ -250,7 +255,8 @@ namespace alloy::core {
   /// \param plane the plane
   /// \return `true` if \p p is under the \p plane
   ALLOY_CORE_API
-  auto is_point_under_plane(const point3& p, const plane& plane) noexcept -> bool;
+  auto is_point_under_plane(const point3& p, const plane& plane)
+    noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -263,24 +269,21 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::plane::plane()
-  noexcept
+alloy::core::plane::plane() noexcept
   : plane{0,0,0,0}
 {
 
 }
 
 inline constexpr
-alloy::core::plane::plane(const vector3& normal, real distance)
-  noexcept
+alloy::core::plane::plane(const vector3& normal, real distance) noexcept
   : plane{normal.x(), normal.y(), normal.z(), -distance}
 {
 
 }
 
 inline constexpr
-alloy::core::plane::plane(real a, real b, real c, real d)
-  noexcept
+alloy::core::plane::plane(real a, real b, real c, real d) noexcept
   : m_data{a,b,c,d}
 {
 
@@ -291,29 +294,25 @@ alloy::core::plane::plane(real a, real b, real c, real d)
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::plane::a()
-  const noexcept -> real
+auto alloy::core::plane::a() const noexcept -> real
 {
   return m_data[0];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::plane::b()
-  const noexcept -> real
+auto alloy::core::plane::b() const noexcept -> real
 {
   return m_data[1];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::plane::c()
-  const noexcept -> real
+auto alloy::core::plane::c() const noexcept -> real
 {
   return m_data[2];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::plane::d()
-  const noexcept -> real
+auto alloy::core::plane::d() const noexcept -> real
 {
   return m_data[3];
 }
@@ -321,8 +320,7 @@ auto alloy::core::plane::d()
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::plane::normal()
-  const noexcept -> vector3
+auto alloy::core::plane::normal() const noexcept -> vector3
 {
   return {a(),b(),c()};
 }
@@ -332,15 +330,13 @@ auto alloy::core::plane::normal()
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::core::plane::rejection(const vector3& vec)
-  const noexcept -> vector3
+auto alloy::core::plane::rejection(const vector3& vec) const noexcept -> vector3
 {
   return normal() - projection(vec);
 }
 
 inline
-auto alloy::core::plane::normalized()
-  const noexcept -> plane
+auto alloy::core::plane::normalized() const noexcept -> plane
 {
   auto copy = (*this);
   copy.normalize();
@@ -348,8 +344,7 @@ auto alloy::core::plane::normalized()
 }
 
 inline
-auto alloy::core::plane::inverted()
-  const noexcept -> plane
+auto alloy::core::plane::inverted() const noexcept -> plane
 {
   auto copy = (*this);
   copy.invert();
@@ -361,15 +356,13 @@ auto alloy::core::plane::inverted()
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::core::plane::operator+()
-  const noexcept -> const plane&
+auto alloy::core::plane::operator+() const noexcept -> const plane&
 {
   return (*this);
 }
 
 inline
-auto alloy::core::plane::operator-()
-  const noexcept -> plane
+auto alloy::core::plane::operator-() const noexcept -> plane
 {
   return inverted();
 }

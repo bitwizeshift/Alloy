@@ -13,8 +13,7 @@
 // Observers
 //------------------------------------------------------------------------------
 
-auto alloy::core::line_segment::magnitude()
-  const noexcept -> real
+auto alloy::core::line_segment::magnitude() const noexcept -> real
 {
   return sqrt(square_magnitude());
 }
@@ -31,8 +30,7 @@ auto alloy::core::line_segment::point_at_percent(real percent)
   return m_start + (percent * direction());
 }
 
-auto alloy::core::line_segment::contains(const point3& p)
-  const noexcept -> bool
+auto alloy::core::line_segment::contains(const point3& p) const noexcept -> bool
 {
   return contains(p, default_tolerance);
 }

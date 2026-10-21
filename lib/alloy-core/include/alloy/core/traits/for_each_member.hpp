@@ -162,8 +162,7 @@ auto alloy::core::detail::for_each_impl(
 
 template <typename T, typename Fn>
 inline constexpr
-auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<1>)
-  -> void
+auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<1>) -> void
 {
   auto&& [m0] = std::forward<T>(agg);
 
@@ -172,8 +171,7 @@ auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<1>)
 
 template <typename T, typename Fn>
 inline constexpr
-auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<2>)
-  -> void
+auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<2>) -> void
 {
   auto&& [m0, m1] = std::forward<T>(agg);
 
@@ -183,8 +181,7 @@ auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<2>)
 
 template <typename T, typename Fn>
 inline constexpr
-auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<3>)
-  -> void
+auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<3>) -> void
 {
   auto&& [m0, m1, m2] = std::forward<T>(agg);
 
@@ -195,8 +192,7 @@ auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<3>)
 
 template <typename T, typename Fn>
 inline constexpr
-auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<4>)
-  -> void
+auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<4>) -> void
 {
   auto&& [m0, m1, m2, m3] = std::forward<T>(agg);
 
@@ -208,8 +204,7 @@ auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<4>)
 
 template <typename T, typename Fn>
 inline constexpr
-auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<5>)
-  -> void
+auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<5>) -> void
 {
   auto&& [m0, m1, m2, m3, m4] = std::forward<T>(agg);
 
@@ -222,8 +217,7 @@ auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<5>)
 
 template <typename T, typename Fn>
 inline constexpr
-auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<6>)
-  -> void
+auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<6>) -> void
 {
   auto&& [m0, m1, m2, m3, m4, m5] = std::forward<T>(agg);
 
@@ -237,8 +231,7 @@ auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<6>)
 
 template <typename T, typename Fn>
 inline constexpr
-auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<7>)
-  -> void
+auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<7>) -> void
 {
   auto&& [m0, m1, m2, m3, m4, m5, m6] = std::forward<T>(agg);
 
@@ -253,8 +246,7 @@ auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<7>)
 
 template <typename T, typename Fn>
 inline constexpr
-auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<8>)
-  -> void
+auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<8>) -> void
 {
   auto&& [m0, m1, m2, m3, m4, m5, m6, m7] = std::forward<T>(agg);
 
@@ -270,8 +262,7 @@ auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<8>)
 
 template <typename T, typename Fn>
 inline constexpr
-auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<9>)
-  -> void
+auto alloy::core::detail::for_each_impl(T&& agg, Fn&& fn, ctor_arity<9>) -> void
 {
   auto&& [m0, m1, m2, m3, m4, m5, m6, m7, m8] = std::forward<T>(agg);
 

@@ -16,8 +16,7 @@ namespace alloy::render::gl {
 namespace {
 
 inline
-auto gl_conditional_enable(bool enable, ::GLenum value)
-  noexcept -> void
+auto gl_conditional_enable(bool enable, ::GLenum value) noexcept -> void
 {
   auto* func = enable ? &::glEnable : &::glDisable;
   (*func)(value);
@@ -26,8 +25,7 @@ auto gl_conditional_enable(bool enable, ::GLenum value)
 } // namespace <anonymous>
 } // namespace alloy::render::gl
 
-alloy::render::gl::state_cache::state_cache()
-  noexcept
+alloy::render::gl::state_cache::state_cache() noexcept
   : m_blend_config{},
     m_depth_config{},
     m_cull_config{},
@@ -57,8 +55,7 @@ auto alloy::render::gl::state_cache::set_depth_function(depth_compare func)
   ::glDepthFunc(to_opengl_type(func));
 }
 
-auto alloy::render::gl::state_cache::enable_blend(bool enable)
-  noexcept -> void
+auto alloy::render::gl::state_cache::enable_blend(bool enable) noexcept -> void
 {
   if (m_blend_config.enabled == enable) {
     return;
@@ -68,9 +65,10 @@ auto alloy::render::gl::state_cache::enable_blend(bool enable)
   gl_conditional_enable(enable, GL_BLEND);
 }
 
-auto alloy::render::gl::state_cache::set_blend_function(blend_factor source,
-                                                        blend_factor destination)
-  noexcept -> void
+auto alloy::render::gl::state_cache::set_blend_function(
+  blend_factor source,
+  blend_factor destination
+) noexcept -> void
 {
   if ((m_blend_config.source == source) && (m_blend_config.destination == destination)) {
     return;

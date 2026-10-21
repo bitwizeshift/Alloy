@@ -10,9 +10,10 @@
 #include "alloy/core/math/math_constants.hpp"
 #include "alloy/core/math/angle/radian.hpp"
 
-alloy::render::sphere_builder::sphere_builder(std::size_t x_segments,
-                                                        std::size_t y_segments)
-  noexcept
+alloy::render::sphere_builder::sphere_builder(
+  std::size_t x_segments,
+  std::size_t y_segments
+) noexcept
   : m_x_segments{x_segments},
     m_y_segments{y_segments}
 {

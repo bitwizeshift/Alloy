@@ -206,7 +206,8 @@ namespace alloy::core {
     ///
     /// \param other the other quantity to copy
     /// \return reference to (*this)
-    constexpr auto operator=(const quantity& other) noexcept -> quantity& = default;
+    constexpr auto operator=(const quantity& other)
+      noexcept -> quantity& = default;
 
     /// \brief Copies and converts a quantity of U type to a quantity of T
     ///
@@ -218,7 +219,8 @@ namespace alloy::core {
     /// \return reference to (*this)
     template <typename U, typename URep>
       requires (alloy::core::detail::is_quantity_operable_v<T,U,URep,Rep>)
-    constexpr auto operator=(const quantity<U, URep>& other) noexcept -> quantity&;
+    constexpr auto operator=(const quantity<U, URep>& other)
+      noexcept -> quantity&;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -255,7 +257,8 @@ namespace alloy::core {
 
     template <typename U, typename URep>
       requires (alloy::core::detail::is_quantity_operable_v<T,U,URep,Rep>)
-    constexpr auto operator+=(const quantity<U,URep>& rhs) noexcept -> quantity&;
+    constexpr auto operator+=(const quantity<U,URep>& rhs)
+      noexcept -> quantity&;
 
     template <typename URep>
       requires (std::convertible_to<URep, Rep>)
@@ -263,7 +266,8 @@ namespace alloy::core {
 
     template <typename U, typename URep>
       requires (alloy::core::detail::is_quantity_operable_v<T,U,URep,Rep>)
-    constexpr auto operator-=(const quantity<U,URep>& rhs) noexcept -> quantity&;
+    constexpr auto operator-=(const quantity<U,URep>& rhs)
+      noexcept -> quantity&;
 
     template <typename URep>
       requires (std::convertible_to<URep, Rep>)
@@ -279,7 +283,8 @@ namespace alloy::core {
 
     template <typename U, typename URep>
       requires (std::derived_from<U, T>)
-    constexpr auto operator%=(const quantity<U,URep>& rhs) noexcept -> quantity&;
+    constexpr auto operator%=(const quantity<U,URep>& rhs)
+      noexcept -> quantity&;
 
     template <typename URep>
       requires (std::convertible_to<URep, Rep>)
@@ -305,23 +310,35 @@ namespace alloy::core {
   //---------------------------------------------------------------------------
 
   template <typename T, typename Rep, typename U, typename URep>
-  constexpr auto operator==(const quantity<T,Rep>& lhs,
-                            const quantity<U,URep>& rhs) noexcept -> bool;
+  constexpr auto operator==(
+    const quantity<T,Rep>& lhs,
+    const quantity<U,URep>& rhs
+  ) noexcept -> bool;
   template <typename T, typename Rep, typename U, typename URep>
-  constexpr auto operator!=(const quantity<T,Rep>& lhs,
-                            const quantity<U,URep>& rhs) noexcept -> bool;
+  constexpr auto operator!=(
+    const quantity<T,Rep>& lhs,
+    const quantity<U,URep>& rhs
+  ) noexcept -> bool;
   template <typename T, typename Rep, typename U, typename URep>
-  constexpr auto operator<(const quantity<T,Rep>& lhs,
-                            const quantity<U,URep>& rhs) noexcept -> bool;
+  constexpr auto operator<(
+    const quantity<T,Rep>& lhs,
+    const quantity<U,URep>& rhs
+  ) noexcept -> bool;
   template <typename T, typename Rep, typename U, typename URep>
-  constexpr auto operator>(const quantity<T,Rep>& lhs,
-                            const quantity<U,URep>& rhs) noexcept -> bool;
+  constexpr auto operator>(
+    const quantity<T,Rep>& lhs,
+    const quantity<U,URep>& rhs
+  ) noexcept -> bool;
   template <typename T, typename Rep, typename U, typename URep>
-  constexpr auto operator<=(const quantity<T,Rep>& lhs,
-                            const quantity<U,URep>& rhs) noexcept -> bool;
+  constexpr auto operator<=(
+    const quantity<T,Rep>& lhs,
+    const quantity<U,URep>& rhs
+  ) noexcept -> bool;
   template <typename T, typename Rep, typename U, typename URep>
-  constexpr auto operator>=(const quantity<T,Rep>& lhs,
-                            const quantity<U,URep>& rhs) noexcept -> bool;
+  constexpr auto operator>=(
+    const quantity<T,Rep>& lhs,
+    const quantity<U,URep>& rhs
+  ) noexcept -> bool;
 
   //---------------------------------------------------------------------------
 
@@ -368,15 +385,19 @@ namespace alloy::core {
 
   template <typename T, typename Rep, typename U, typename URep>
     requires (alloy::core::detail::is_quantity_operable_v<T,U,Rep,URep>)
-  constexpr auto operator+(const quantity<T,Rep>& lhs,
-                           const quantity<U,URep>& rhs)
-   noexcept -> quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>;
+  constexpr auto operator+(
+    const quantity<T,Rep>& lhs,
+    const quantity<U,URep>& rhs
+  ) noexcept
+    -> quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>;
 
   template <typename T, typename Rep, typename U, typename URep>
     requires (alloy::core::detail::is_quantity_operable_v<T,U,Rep,URep>)
-  constexpr auto operator-(const quantity<T,Rep>& lhs,
-                           const quantity<U,URep>& rhs)
-    noexcept -> quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>;
+  constexpr auto operator-(
+    const quantity<T,Rep>& lhs,
+    const quantity<U,URep>& rhs
+  ) noexcept
+    -> quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>;
 
   template <typename T, typename Rep, typename URep>
     requires (std::convertible_to<URep, Rep>)
@@ -400,9 +421,11 @@ namespace alloy::core {
 
   template <typename T, typename Rep, typename U, typename URep>
     requires (alloy::core::detail::is_quantity_operable_v<T,U,Rep,URep>)
-  constexpr auto operator%(const quantity<T,Rep>& lhs,
-                           const quantity<U,URep>& rhs)
-    noexcept -> quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>;
+  constexpr auto operator%(
+    const quantity<T,Rep>& lhs,
+    const quantity<U,URep>& rhs
+  ) noexcept
+    -> quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>;
 
 } // namespace alloy::core
 
@@ -416,24 +439,21 @@ namespace alloy::core {
 
 template <typename T, typename Rep>
 inline constexpr
-auto alloy::core::quantity<T, Rep>::min()
-  noexcept -> quantity<T,Rep>
+auto alloy::core::quantity<T, Rep>::min() noexcept -> quantity<T,Rep>
 {
   return quantity<T,Rep>{std::numeric_limits<T>::min()};
 }
 
 template <typename T, typename Rep>
 inline constexpr
-auto alloy::core::quantity<T, Rep>::max()
-  noexcept -> quantity<T,Rep>
+auto alloy::core::quantity<T, Rep>::max() noexcept -> quantity<T,Rep>
 {
   return quantity<T,Rep>{std::numeric_limits<T>::max()};
 }
 
 template <typename T, typename Rep>
 inline constexpr
-auto alloy::core::quantity<T, Rep>::zero()
-  noexcept -> quantity<T,Rep>
+auto alloy::core::quantity<T, Rep>::zero() noexcept -> quantity<T,Rep>
 {
   return quantity<T,Rep>{std::numeric_limits<T>::zero()};
 }
@@ -444,8 +464,7 @@ auto alloy::core::quantity<T, Rep>::zero()
 
 template <typename T, typename Rep>
 inline constexpr
-alloy::core::quantity<T, Rep>::quantity(const Rep &count)
-  noexcept
+alloy::core::quantity<T, Rep>::quantity(const Rep &count) noexcept
   : m_value{count}
 {
 
@@ -455,8 +474,7 @@ template <typename T, typename Rep>
 template <typename U, typename URep>
   requires (alloy::core::detail::is_quantity_operable_v<T,U,URep,Rep>)
 inline constexpr
-alloy::core::quantity<T, Rep>::quantity(const quantity<U,URep>& other)
-  noexcept
+alloy::core::quantity<T, Rep>::quantity(const quantity<U,URep>& other) noexcept
   : m_value{other.count()}
 {
 }
@@ -480,8 +498,7 @@ auto alloy::core::quantity<T, Rep>::operator=(const quantity<U, URep>& other)
 
 template <typename T, typename Rep>
 inline constexpr
-auto alloy::core::quantity<T, Rep>::count()
-  const noexcept -> size_type
+auto alloy::core::quantity<T, Rep>::count() const noexcept -> size_type
 {
   return m_value;
 }
@@ -512,8 +529,7 @@ auto alloy::core::quantity<T, Rep>::operator-()
 
 template <typename T, typename Rep>
 inline constexpr
-auto alloy::core::quantity<T, Rep>::operator++()
-  noexcept -> quantity<T, Rep>&
+auto alloy::core::quantity<T, Rep>::operator++() noexcept -> quantity<T, Rep>&
 {
   ++m_value;
   return (*this);
@@ -521,8 +537,7 @@ auto alloy::core::quantity<T, Rep>::operator++()
 
 template <typename T, typename Rep>
 inline constexpr
-auto alloy::core::quantity<T, Rep>::operator++(int)
-  noexcept -> quantity<T, Rep>
+auto alloy::core::quantity<T, Rep>::operator++(int) noexcept -> quantity<T, Rep>
 {
   const auto copy = (*this);
   ++m_value;
@@ -531,8 +546,7 @@ auto alloy::core::quantity<T, Rep>::operator++(int)
 
 template <typename T, typename Rep>
 inline constexpr
-auto alloy::core::quantity<T, Rep>::operator--()
-  noexcept -> quantity<T, Rep>&
+auto alloy::core::quantity<T, Rep>::operator--() noexcept -> quantity<T, Rep>&
 {
   --m_value;
   return (*this);
@@ -540,8 +554,7 @@ auto alloy::core::quantity<T, Rep>::operator--()
 
 template <typename T, typename Rep>
 inline constexpr
-auto alloy::core::quantity<T, Rep>::operator--(int)
-  noexcept -> quantity<T, Rep>
+auto alloy::core::quantity<T, Rep>::operator--(int) noexcept -> quantity<T, Rep>
 {
   const auto copy = (*this);
   --m_value;
@@ -650,54 +663,60 @@ auto alloy::core::quantity<T, Rep>::operator%=(const URep& rhs)
 
 template <typename T, typename Rep, typename U, typename URep>
 inline constexpr
-auto alloy::core::operator==(const quantity<T,Rep>& lhs,
-                             const quantity<U,URep>& rhs)
-  noexcept -> bool
+auto alloy::core::operator==(
+  const quantity<T,Rep>& lhs,
+  const quantity<U,URep>& rhs
+) noexcept -> bool
 {
   return lhs.count() == rhs.count();
 }
 
 template <typename T, typename Rep, typename U, typename URep>
 inline constexpr
-auto alloy::core::operator!=(const quantity<T,Rep>& lhs,
-                             const quantity<U,URep>& rhs)
-  noexcept -> bool
+auto alloy::core::operator!=(
+  const quantity<T,Rep>& lhs,
+  const quantity<U,URep>& rhs
+) noexcept -> bool
 {
   return lhs.count() != rhs.count();
 }
 
 template <typename T, typename Rep, typename U, typename URep>
 inline constexpr
-auto alloy::core::operator<(const quantity<T,Rep>& lhs,
-                            const quantity<U,URep>& rhs)
-  noexcept -> bool
+auto alloy::core::operator<(
+  const quantity<T,Rep>& lhs,
+  const quantity<U,URep>& rhs
+) noexcept -> bool
 {
   return lhs.count() < rhs.count();
 }
 
 template <typename T, typename Rep, typename U, typename URep>
 inline constexpr
-auto alloy::core::operator>(const quantity<T,Rep>& lhs,
-                            const quantity<U,URep>& rhs)
-  noexcept -> bool
+auto alloy::core::operator>(
+  const quantity<T,Rep>& lhs,
+  const quantity<U,URep>& rhs
+) noexcept -> bool
 {
   return lhs.count() > rhs.count();
 }
 
 template <typename T, typename Rep, typename U, typename URep>
 inline constexpr
-auto alloy::core::operator<=(const quantity<T,Rep>& lhs,
-                             const quantity<U,URep>& rhs)
-  noexcept -> bool
+auto alloy::core::operator<=(
+  const quantity<T,Rep>& lhs,
+  const quantity<U,URep>& rhs
+) noexcept -> bool
 {
   return lhs.count() <= rhs.count();
 }
 
 template <typename T, typename Rep, typename U, typename URep>
 inline constexpr
-auto alloy::core::operator>=(const quantity<T,Rep>& lhs,
-                             const quantity<U,URep>& rhs)
-  noexcept -> bool
+auto alloy::core::operator>=(
+  const quantity<T,Rep>& lhs,
+  const quantity<U,URep>& rhs
+) noexcept -> bool
 {
   return lhs.count() >= rhs.count();
 }
@@ -807,9 +826,11 @@ auto alloy::core::operator>=(const Rep& lhs, const quantity<T,Rep>& rhs)
 template <typename T, typename Rep, typename U, typename URep>
   requires (alloy::core::detail::is_quantity_operable_v<T,U,Rep,URep>)
 inline constexpr
-auto alloy::core::operator+(const quantity<T,Rep>& lhs,
-                            const quantity<U,URep>& rhs)
-  noexcept -> quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>
+auto alloy::core::operator+(
+  const quantity<T,Rep>& lhs,
+  const quantity<U,URep>& rhs
+) noexcept
+  -> quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>
 {
   using result_type = quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>;
 
@@ -819,9 +840,11 @@ auto alloy::core::operator+(const quantity<T,Rep>& lhs,
 template <typename T, typename Rep, typename U, typename URep>
   requires (alloy::core::detail::is_quantity_operable_v<T,U,Rep,URep>)
 inline constexpr
-auto alloy::core::operator-(const quantity<T,Rep>& lhs,
-                            const quantity<U,URep>& rhs)
-  noexcept -> quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>
+auto alloy::core::operator-(
+  const quantity<T,Rep>& lhs,
+  const quantity<U,URep>& rhs
+) noexcept
+  -> quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>
 {
   using result_type = quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>;
 
@@ -867,8 +890,11 @@ auto alloy::core::operator%(const quantity<T,Rep>& lhs, const URep& rhs)
 template <typename T, typename Rep, typename U, typename URep>
   requires (alloy::core::detail::is_quantity_operable_v<T,U,Rep,URep>)
 inline constexpr
-auto alloy::core::operator%(const quantity<T,Rep>& lhs, const quantity<U,URep>& rhs)
-  noexcept -> quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>
+auto alloy::core::operator%(
+  const quantity<T,Rep>& lhs,
+  const quantity<U,URep>& rhs
+) noexcept
+  -> quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>
 {
   using result_type = quantity<detail::quantity_base_t<T,U>,std::common_type_t<Rep,URep>>;
 

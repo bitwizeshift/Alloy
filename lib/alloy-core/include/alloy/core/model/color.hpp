@@ -65,7 +65,8 @@ namespace alloy::core::detail {
     ///
     /// \param v the value to assign
     /// \return reference to `(*this)`
-    constexpr auto operator=(const color_reference& other) noexcept -> color_reference&;
+    constexpr auto operator=(const color_reference& other)
+      noexcept -> color_reference&;
 
     /// \brief Converts the `T` value \p v into the floating point value to
     ///        assign it to the color
@@ -92,58 +93,88 @@ namespace alloy::core::detail {
   };
 
   template <typename T>
-  constexpr auto operator==(const color_reference<T>& lhs, const color_reference<T>& rhs) noexcept -> bool;
+  constexpr auto operator==(
+    const color_reference<T>& lhs,
+    const color_reference<T>& rhs
+  ) noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator!=(const color_reference<T>& lhs, const color_reference<T>& rhs) noexcept -> bool;
+  constexpr auto operator!=(
+    const color_reference<T>& lhs,
+    const color_reference<T>& rhs
+  ) noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator<(const color_reference<T>& lhs, const color_reference<T>& rhs) noexcept -> bool;
+  constexpr auto operator<(
+    const color_reference<T>& lhs,
+    const color_reference<T>& rhs
+  ) noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator>(const color_reference<T>& lhs, const color_reference<T>& rhs) noexcept -> bool;
+  constexpr auto operator>(
+    const color_reference<T>& lhs,
+    const color_reference<T>& rhs
+  ) noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator<=(const color_reference<T>& lhs, const color_reference<T>& rhs) noexcept -> bool;
+  constexpr auto operator<=(
+    const color_reference<T>& lhs,
+    const color_reference<T>& rhs
+  ) noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator>=(const color_reference<T>& lhs, const color_reference<T>& rhs) noexcept -> bool;
+  constexpr auto operator>=(
+    const color_reference<T>& lhs,
+    const color_reference<T>& rhs
+  ) noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator==(const color_reference<T>& lhs, T rhs) noexcept -> bool;
+  constexpr auto operator==(const color_reference<T>& lhs, T rhs)
+    noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator!=(const color_reference<T>& lhs, T rhs) noexcept -> bool;
+  constexpr auto operator!=(const color_reference<T>& lhs, T rhs)
+    noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator<(const color_reference<T>& lhs,  T rhs) noexcept -> bool;
+  constexpr auto operator<(const color_reference<T>& lhs, T rhs)
+    noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator>(const color_reference<T>& lhs,  T rhs) noexcept -> bool;
+  constexpr auto operator>(const color_reference<T>& lhs, T rhs)
+    noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator<=(const color_reference<T>& lhs, T rhs) noexcept -> bool;
+  constexpr auto operator<=(const color_reference<T>& lhs, T rhs)
+    noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator>=(const color_reference<T>& lhs, T rhs) noexcept -> bool;
+  constexpr auto operator>=(const color_reference<T>& lhs, T rhs)
+    noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator==(T lhs, const color_reference<T>& rhs) noexcept -> bool;
+  constexpr auto operator==(T lhs, const color_reference<T>& rhs)
+    noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator!=(T lhs, const color_reference<T>& rhs) noexcept -> bool;
+  constexpr auto operator!=(T lhs, const color_reference<T>& rhs)
+    noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator<(T lhs, const color_reference<T>& rhs) noexcept -> bool;
+  constexpr auto operator<(T lhs, const color_reference<T>& rhs)
+    noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator>(T lhs, const color_reference<T>& rhs) noexcept -> bool;
+  constexpr auto operator>(T lhs, const color_reference<T>& rhs)
+    noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator<=(T lhs, const color_reference<T>& rhs) noexcept -> bool;
+  constexpr auto operator<=(T lhs, const color_reference<T>& rhs)
+    noexcept -> bool;
 
   template <typename T>
-  constexpr auto operator>=(T lhs, const color_reference<T>& rhs) noexcept -> bool;
+  constexpr auto operator>=(T lhs, const color_reference<T>& rhs)
+    noexcept -> bool;
 
 } // namespace alloy::core::detail
 
@@ -203,8 +234,7 @@ namespace alloy::core {
     /// \param g the green component
     /// \param b the blue component
     /// \return the constructed color value
-    static constexpr auto from_rgb8(u8 r, u8 g, u8 b)
-      noexcept -> color;
+    static constexpr auto from_rgb8(u8 r, u8 g, u8 b) noexcept -> color;
 
     /// \brief Constructs a color from 8-bit integral rgba components
     ///
@@ -213,8 +243,7 @@ namespace alloy::core {
     /// \param b the blue component
     /// \param a the alpha component (default: 255)
     /// \return the constructed color value
-    static constexpr auto from_rgba8(u8 r, u8 g, u8 b, u8 a)
-      noexcept -> color;
+    static constexpr auto from_rgba8(u8 r, u8 g, u8 b, u8 a) noexcept -> color;
 
     //--------------------------------------------------------------------------
 
@@ -225,8 +254,7 @@ namespace alloy::core {
     /// \param b the blue component
     /// \param a the alpha component (default: 65535)
     /// \return the constructed color value
-    static constexpr auto from_rgb16(u16 r, u16 g, u16 b)
-      noexcept -> color;
+    static constexpr auto from_rgb16(u16 r, u16 g, u16 b) noexcept -> color;
 
     /// \brief Constructs a color from 16-bit integral rgba components
     ///
@@ -515,18 +543,25 @@ namespace alloy::core {
   // Equality
   //----------------------------------------------------------------------------
 
-  constexpr auto operator==(const color& lhs, const color& rhs) noexcept -> bool;
-  constexpr auto operator!=(const color& lhs, const color& rhs) noexcept -> bool;
+  constexpr auto operator==(const color& lhs, const color& rhs)
+    noexcept -> bool;
+  constexpr auto operator!=(const color& lhs, const color& rhs)
+    noexcept -> bool;
 
-  constexpr auto almost_equal(const color& lhs, const color& rhs,
-                              real tolerance) noexcept -> bool;
+  constexpr auto almost_equal(
+    const color& lhs,
+    const color& rhs,
+    real tolerance
+  ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
   // Arithmetic
   //----------------------------------------------------------------------------
 
-  constexpr auto operator+(const color& lhs, const color& rhs) noexcept -> color;
-  constexpr auto operator-(const color& lhs, const color& rhs) noexcept -> color;
+  constexpr auto operator+(const color& lhs, const color& rhs)
+    noexcept -> color;
+  constexpr auto operator-(const color& lhs, const color& rhs)
+    noexcept -> color;
   constexpr auto operator*(const color& lhs, real scalar) noexcept -> color;
   constexpr auto operator*(real scalar, const color& rhs) noexcept -> color;
   constexpr auto operator/(const color& lhs, real scalar) noexcept -> color;
@@ -539,9 +574,8 @@ namespace alloy::core {
 
   template<typename...Colors>
     requires (sizeof...(Colors) != 0)
-  constexpr auto blend(const color& c1,
-                       const color& c2,
-                       const Colors&...colors) -> color;
+  constexpr auto blend(const color& c1, const color& c2, const Colors&...colors)
+    -> color;
 
 } // namespace alloy::core
 
@@ -566,8 +600,9 @@ alloy::core::detail::color_reference<T>::color_reference(not_null<real*> color)
 
 template <typename T>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::detail::color_reference<T>::operator=(const color_reference<T>& other)
-  noexcept -> color_reference<T>&
+auto alloy::core::detail::color_reference<T>::operator=(
+  const color_reference<T>& other
+) noexcept -> color_reference<T>&
 {
   // Don't shallow-copy on assignment; copy the underlying color
   (*m_color) = (*other.m_color);
@@ -589,8 +624,7 @@ auto alloy::core::detail::color_reference<T>::operator=(T v)
 
 template <typename T>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::detail::color_reference<T>::operator T()
-  const noexcept
+alloy::core::detail::color_reference<T>::operator T() const noexcept
 {
   return static_cast<T>((*m_color) * std::numeric_limits<T>::max());
 }
@@ -601,54 +635,60 @@ alloy::core::detail::color_reference<T>::operator T()
 
 template <typename T>
 inline constexpr
-auto alloy::core::detail::operator==(const color_reference<T>& lhs,
-                                     const color_reference<T>& rhs)
-  noexcept -> bool
+auto alloy::core::detail::operator==(
+  const color_reference<T>& lhs,
+  const color_reference<T>& rhs
+) noexcept -> bool
 {
   return static_cast<T>(lhs) == static_cast<T>(rhs);
 }
 
 template <typename T>
 inline constexpr
-auto alloy::core::detail::operator!=(const color_reference<T>& lhs,
-                                     const color_reference<T>& rhs)
-  noexcept -> bool
+auto alloy::core::detail::operator!=(
+  const color_reference<T>& lhs,
+  const color_reference<T>& rhs
+) noexcept -> bool
 {
   return !(lhs == rhs);
 }
 
 template <typename T>
 inline constexpr
-auto alloy::core::detail::operator<(const color_reference<T>& lhs,
-                                    const color_reference<T>& rhs)
-  noexcept -> bool
+auto alloy::core::detail::operator<(
+  const color_reference<T>& lhs,
+  const color_reference<T>& rhs
+) noexcept -> bool
 {
   return static_cast<T>(lhs) < static_cast<T>(rhs);
 }
 
 template <typename T>
 inline constexpr
-auto alloy::core::detail::operator>(const color_reference<T>& lhs,
-                                    const color_reference<T>& rhs)
-  noexcept -> bool
+auto alloy::core::detail::operator>(
+  const color_reference<T>& lhs,
+  const color_reference<T>& rhs
+) noexcept -> bool
 {
   return (rhs < lhs);
 }
 
 template <typename T>
 inline constexpr
-auto alloy::core::detail::operator<=(const color_reference<T>& lhs,
-                                     const color_reference<T>& rhs)
-  noexcept -> bool
+auto alloy::core::detail::operator<=(
+  const color_reference<T>& lhs,
+  const color_reference<T>& rhs
+) noexcept -> bool
 {
   return !(rhs < lhs);
 }
 
 template <typename T>
 inline constexpr
-auto alloy::core::detail::operator>=(const color_reference<T>& lhs,
-                                     const color_reference<T>& rhs)
-  noexcept -> bool
+auto alloy::core::detail::operator>=(
+  const color_reference<T>& lhs,
+  const color_reference<T>& rhs
+) noexcept -> bool
 {
   return !(lhs < rhs);
 }
@@ -762,15 +802,13 @@ auto alloy::core::detail::operator>=(T lhs, const color_reference<T>& rhs)
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::color::from_rgb8(u8 r, u8 g, u8 b)
-  noexcept -> color
+auto alloy::core::color::from_rgb8(u8 r, u8 g, u8 b) noexcept -> color
 {
   return from_rgba8(r,g,b,255u);
 }
 
 inline constexpr
-auto alloy::core::color::from_rgba8(u8 r, u8 g, u8 b, u8 a)
-  noexcept -> color
+auto alloy::core::color::from_rgba8(u8 r, u8 g, u8 b, u8 a) noexcept -> color
 {
   constexpr auto inverse_radix = real{1} / real{255};
 
@@ -785,8 +823,7 @@ auto alloy::core::color::from_rgba8(u8 r, u8 g, u8 b, u8 a)
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::color::from_rgb16(u16 r, u16 g, u16 b)
-  noexcept -> color
+auto alloy::core::color::from_rgb16(u16 r, u16 g, u16 b) noexcept -> color
 {
   return from_rgba16(r,g,b,65535u);
 }
@@ -808,8 +845,7 @@ auto alloy::core::color::from_rgba16(u16 r, u16 g, u16 b, u16 a)
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::color::from_rgba8(rgba8 c)
-  noexcept -> color
+auto alloy::core::color::from_rgba8(rgba8 c) noexcept -> color
 {
   const auto [r,g,b,a] = int_utilities::split<u8>(c);
 
@@ -817,8 +853,7 @@ auto alloy::core::color::from_rgba8(rgba8 c)
 }
 
 inline constexpr
-auto alloy::core::color::from_argb8(argb8 c)
-  noexcept -> color
+auto alloy::core::color::from_argb8(argb8 c) noexcept -> color
 {
   const auto [a,r,g,b] = int_utilities::split<u8>(c);
 
@@ -826,8 +861,7 @@ auto alloy::core::color::from_argb8(argb8 c)
 }
 
 inline constexpr
-auto alloy::core::color::from_abgr8(abgr8 c)
-  noexcept -> color
+auto alloy::core::color::from_abgr8(abgr8 c) noexcept -> color
 {
   const auto [a,b,g,r] = int_utilities::split<u8>(c);
 
@@ -835,8 +869,7 @@ auto alloy::core::color::from_abgr8(abgr8 c)
 }
 
 inline constexpr
-auto alloy::core::color::from_rgba16(rgba16 c)
-  noexcept -> color
+auto alloy::core::color::from_rgba16(rgba16 c) noexcept -> color
 {
   const auto [r,g,b,a] = int_utilities::split<u16>(c);
 
@@ -844,8 +877,7 @@ auto alloy::core::color::from_rgba16(rgba16 c)
 }
 
 inline constexpr
-auto alloy::core::color::from_argb16(argb16 c)
-  noexcept -> color
+auto alloy::core::color::from_argb16(argb16 c) noexcept -> color
 {
   const auto [a,r,g,b] = int_utilities::split<u16>(c);
 
@@ -853,8 +885,7 @@ auto alloy::core::color::from_argb16(argb16 c)
 }
 
 inline constexpr
-auto alloy::core::color::from_abgr16(abgr16 c)
-  noexcept -> color
+auto alloy::core::color::from_abgr16(abgr16 c) noexcept -> color
 {
   const auto [a,b,g,r] = int_utilities::split<u16>(c);
 
@@ -866,24 +897,21 @@ auto alloy::core::color::from_abgr16(abgr16 c)
 //------------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::color::color()
-  noexcept
+alloy::core::color::color() noexcept
   : color{real{0}, real{0}, real{0}, real{0}}
 {
 
 }
 
 inline constexpr
-alloy::core::color::color(real r, real g, real b)
-  noexcept
+alloy::core::color::color(real r, real g, real b) noexcept
   : color{r, g, b, real{1}}
 {
 
 }
 
 inline constexpr
-alloy::core::color::color(real r, real g, real b, real a)
-  noexcept
+alloy::core::color::color(real r, real g, real b, real a) noexcept
   : m_data{r, g, b, a}
 {
 
@@ -894,60 +922,52 @@ alloy::core::color::color(real r, real g, real b, real a)
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::r()
-  noexcept -> real&
+auto alloy::core::color::r() noexcept -> real&
 {
   return m_data[0];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::r()
-  const noexcept -> real
+auto alloy::core::color::r() const noexcept -> real
 {
   return m_data[0];
 }
 
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::g()
-  noexcept -> real&
+auto alloy::core::color::g() noexcept -> real&
 {
   return m_data[1];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::g()
-  const noexcept -> real
+auto alloy::core::color::g() const noexcept -> real
 {
   return m_data[1];
 }
 
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::b()
-  noexcept -> real&
+auto alloy::core::color::b() noexcept -> real&
 {
   return m_data[2];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::b()
-  const noexcept -> real
+auto alloy::core::color::b() const noexcept -> real
 {
   return m_data[2];
 }
 
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::a()
-  noexcept -> real&
+auto alloy::core::color::a() noexcept -> real&
 {
   return m_data[3];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::a()
-  const noexcept -> real
+auto alloy::core::color::a() const noexcept -> real
 {
   return m_data[3];
 }
@@ -955,56 +975,48 @@ auto alloy::core::color::a()
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::r8()
-  noexcept -> detail::color_reference<u8>
+auto alloy::core::color::r8() noexcept -> detail::color_reference<u8>
 {
   return detail::color_reference<u8>{&r()};
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::r8()
-  const noexcept -> u8
+auto alloy::core::color::r8() const noexcept -> u8
 {
   return static_cast<u8>(r() * 255.0f);
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::g8()
-  noexcept -> detail::color_reference<u8>
+auto alloy::core::color::g8() noexcept -> detail::color_reference<u8>
 {
   return detail::color_reference<u8>{&g()};
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::g8()
-  const noexcept -> u8
+auto alloy::core::color::g8() const noexcept -> u8
 {
   return static_cast<u8>(g() * 255.0f);
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::b8()
-  noexcept -> detail::color_reference<u8>
+auto alloy::core::color::b8() noexcept -> detail::color_reference<u8>
 {
   return detail::color_reference<u8>{&b()};
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::b8()
-  const noexcept -> u8
+auto alloy::core::color::b8() const noexcept -> u8
 {
   return static_cast<u8>(b() * 255.0f);
 }
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::a8()
-  noexcept -> detail::color_reference<u8>
+auto alloy::core::color::a8() noexcept -> detail::color_reference<u8>
 {
   return detail::color_reference<u8>{&a()};
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::a8()
-  const noexcept -> u8
+auto alloy::core::color::a8() const noexcept -> u8
 {
   return static_cast<u8>(a() * 255.0f);
 }
@@ -1012,56 +1024,48 @@ auto alloy::core::color::a8()
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::r16()
-  noexcept -> detail::color_reference<u16>
+auto alloy::core::color::r16() noexcept -> detail::color_reference<u16>
 {
   return detail::color_reference<u16>{&r()};
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::r16()
-  const noexcept -> u16
+auto alloy::core::color::r16() const noexcept -> u16
 {
   return static_cast<u16>(r() * 65535.0f);
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::g16()
-  noexcept -> detail::color_reference<u16>
+auto alloy::core::color::g16() noexcept -> detail::color_reference<u16>
 {
   return detail::color_reference<u16>{&g()};
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::g16()
-  const noexcept -> u16
+auto alloy::core::color::g16() const noexcept -> u16
 {
   return static_cast<u16>(g() * 65535.0f);
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::b16()
-  noexcept -> detail::color_reference<u16>
+auto alloy::core::color::b16() noexcept -> detail::color_reference<u16>
 {
   return detail::color_reference<u16>{&b()};
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::b16()
-  const noexcept -> u16
+auto alloy::core::color::b16() const noexcept -> u16
 {
   return static_cast<u16>(b() * 65535.0f);
 }
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::a16()
-  noexcept -> detail::color_reference<u16>
+auto alloy::core::color::a16() noexcept -> detail::color_reference<u16>
 {
   return detail::color_reference<u16>{&a()};
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::a16()
-  const noexcept -> u16
+auto alloy::core::color::a16() const noexcept -> u16
 {
   return static_cast<u16>(a() * 65535.0f);
 }
@@ -1069,18 +1073,14 @@ auto alloy::core::color::a16()
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::operator[](std::ptrdiff_t n)
-  noexcept
-  -> real&
+auto alloy::core::color::operator[](std::ptrdiff_t n) noexcept -> real&
 {
   ALLOY_ASSERT(n >= 0 && n < 4);
   return m_data[n];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::operator[](std::ptrdiff_t n)
-  const noexcept
-  -> real
+auto alloy::core::color::operator[](std::ptrdiff_t n) const noexcept -> real
 {
   ALLOY_ASSERT(n >= 0 && n < 4);
   return m_data[n];
@@ -1088,17 +1088,13 @@ auto alloy::core::color::operator[](std::ptrdiff_t n)
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::data()
-  noexcept
-  -> real*
+auto alloy::core::color::data() noexcept -> real*
 {
   return &m_data[0];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::data()
-  const noexcept
-  -> const real*
+auto alloy::core::color::data() const noexcept -> const real*
 {
   return &m_data[0];
 }
@@ -1106,43 +1102,37 @@ auto alloy::core::color::data()
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::to_rgba8()
-  const noexcept -> rgba8
+auto alloy::core::color::to_rgba8() const noexcept -> rgba8
 {
   return int_utilities::make<rgba8>(r8(), g8(), b8(), a8());
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::to_argb8()
-  const noexcept-> argb8
+auto alloy::core::color::to_argb8() const noexcept-> argb8
 {
   return int_utilities::make<argb8>(a8(), r8(), g8(), b8());
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::to_abgr8()
-  const noexcept -> abgr8
+auto alloy::core::color::to_abgr8() const noexcept -> abgr8
 {
   return int_utilities::make<abgr8>(a8(), b8(), g8(), r8());
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::to_rgba16()
-  const noexcept -> rgba16
+auto alloy::core::color::to_rgba16() const noexcept -> rgba16
 {
   return int_utilities::make<rgba16>(r16(), g16(), b16(), a16());
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::to_argb16()
-  const noexcept -> argb16
+auto alloy::core::color::to_argb16() const noexcept -> argb16
 {
   return int_utilities::make<argb16>(a16(), r16(), g16(), b16());
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::to_abgr16()
-  const noexcept -> abgr16
+auto alloy::core::color::to_abgr16() const noexcept -> abgr16
 {
   return int_utilities::make<abgr16>(a16(), b16(), g16(), r16());
 }
@@ -1150,8 +1140,7 @@ auto alloy::core::color::to_abgr16()
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE
-auto alloy::core::color::inverted()
-  const noexcept -> color
+auto alloy::core::color::inverted() const noexcept -> color
 {
   auto copy = (*this);
   copy.invert();
@@ -1159,8 +1148,7 @@ auto alloy::core::color::inverted()
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::color::contrasted()
-  const noexcept -> color
+auto alloy::core::color::contrasted() const noexcept -> color
 {
   auto copy = (*this);
   copy.contrast();
@@ -1168,8 +1156,7 @@ auto alloy::core::color::contrasted()
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::color::darkened(real percent)
-  const noexcept -> color
+auto alloy::core::color::darkened(real percent) const noexcept -> color
 {
   auto copy = (*this);
   copy.darken(percent);
@@ -1177,8 +1164,7 @@ auto alloy::core::color::darkened(real percent)
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::color::brightened(real percent)
-  const noexcept -> color
+auto alloy::core::color::brightened(real percent) const noexcept -> color
 {
   auto copy = (*this);
   copy.brighten(percent);
@@ -1218,8 +1204,7 @@ auto alloy::core::operator-(const color& lhs, const color& rhs)
 }
 
 inline constexpr
-auto alloy::core::operator*(const color& lhs, real scalar)
-  noexcept -> color
+auto alloy::core::operator*(const color& lhs, real scalar) noexcept -> color
 {
   auto result = color{};
   for (auto i = 0; i < 4; ++i ) {
@@ -1230,15 +1215,13 @@ auto alloy::core::operator*(const color& lhs, real scalar)
 }
 
 inline constexpr
-auto alloy::core::operator*(real scalar, const color& rhs)
-  noexcept -> color
+auto alloy::core::operator*(real scalar, const color& rhs) noexcept -> color
 {
   return rhs * scalar;
 }
 
 inline constexpr
-auto alloy::core::operator/(const color& lhs, real scalar)
-  noexcept -> color
+auto alloy::core::operator/(const color& lhs, real scalar) noexcept -> color
 {
   const auto reciprocal = real{1} / scalar;
   return lhs * reciprocal;
@@ -1290,8 +1273,7 @@ auto alloy::core::almost_equal(const color& lhs, const color& rhs, real toleranc
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::blend(const color& c1, const color& c2)
-  -> color
+auto alloy::core::blend(const color& c1, const color& c2) -> color
 {
   const auto diff = real{1} - c2.a();
 
@@ -1311,8 +1293,11 @@ auto alloy::core::blend(const color& c1, const color& c2)
 template<typename...Colors>
   requires (sizeof...(Colors) != 0)
 inline constexpr
-auto alloy::core::blend(const color& c1, const color& c2, const Colors&...colors)
-  -> color
+auto alloy::core::blend(
+  const color& c1,
+  const color& c2,
+  const Colors&...colors
+) -> color
 {
   const auto r = blend(c1, c2);
   return blend(r, colors...);

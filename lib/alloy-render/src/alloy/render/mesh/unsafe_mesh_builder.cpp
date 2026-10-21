@@ -10,8 +10,7 @@ namespace alloy::render {
 namespace {
 
 inline
-auto round_up_power_two(std::size_t v)
-  noexcept -> std::size_t
+auto round_up_power_two(std::size_t v) noexcept -> std::size_t
 {
   // From bit-twiddling hacks. Rounds up to nearest power-of-two.
   // This is only done to 2 components, since we only need to round up to
@@ -31,9 +30,10 @@ auto round_up_power_two(std::size_t v)
 // Constructor
 //------------------------------------------------------------------------------
 
-alloy::render::unsafe_mesh_builder::unsafe_mesh_builder(primitive_topology topology,
-                                                        core::allocator alloc)
-  noexcept
+alloy::render::unsafe_mesh_builder::unsafe_mesh_builder(
+  primitive_topology topology,
+  core::allocator alloc
+) noexcept
   : m_buffer{alloc},
     m_writer{&m_buffer},
     m_indices{core::stl_allocator_adapter<index_type>{alloc}},
@@ -53,14 +53,16 @@ alloy::render::unsafe_mesh_builder::unsafe_mesh_builder(primitive_topology topol
 // Capacity
 //------------------------------------------------------------------------------
 
-auto alloy::render::unsafe_mesh_builder::set_components_per_position(std::uint8_t n)
-  noexcept -> void
+auto alloy::render::unsafe_mesh_builder::set_components_per_position(
+  std::uint8_t n
+) noexcept -> void
 {
   m_components_per_position = n;
 }
 
-auto alloy::render::unsafe_mesh_builder::set_components_per_color(std::uint8_t n)
-  noexcept -> void
+auto alloy::render::unsafe_mesh_builder::set_components_per_color(
+  std::uint8_t n
+) noexcept -> void
 {
   m_components_per_color = n;
 }
@@ -71,28 +73,30 @@ auto alloy::render::unsafe_mesh_builder::set_components_per_uv(std::uint8_t n)
   m_components_per_uv = n;
 }
 
-auto alloy::render::unsafe_mesh_builder::set_components_per_normal(std::uint8_t n)
-  noexcept -> void
+auto alloy::render::unsafe_mesh_builder::set_components_per_normal(
+  std::uint8_t n
+) noexcept -> void
 {
   m_components_per_normal = n;
 }
 
-auto alloy::render::unsafe_mesh_builder::set_components_per_tangent(std::uint8_t n)
-  noexcept -> void
+auto alloy::render::unsafe_mesh_builder::set_components_per_tangent(
+  std::uint8_t n
+) noexcept -> void
 {
   m_components_per_tangent = n;
 }
 
-auto alloy::render::unsafe_mesh_builder::set_components_per_bitangent(std::uint8_t n)
-  noexcept -> void
+auto alloy::render::unsafe_mesh_builder::set_components_per_bitangent(
+  std::uint8_t n
+) noexcept -> void
 {
   m_components_per_bitangent = n;
 }
 
 //------------------------------------------------------------------------------
 
-auto alloy::render::unsafe_mesh_builder::reserve_vertices(std::size_t n)
-  -> void
+auto alloy::render::unsafe_mesh_builder::reserve_vertices(std::size_t n) -> void
 {
   const auto buffer_size = (
     m_components_per_position * core::size_of<float>() +
@@ -106,14 +110,14 @@ auto alloy::render::unsafe_mesh_builder::reserve_vertices(std::size_t n)
   reserve_bytes(buffer_size);
 }
 
-auto alloy::render::unsafe_mesh_builder::reserve_bytes(core::bytes b)
-  -> void
+auto alloy::render::unsafe_mesh_builder::reserve_bytes(core::bytes b) -> void
 {
   m_buffer.reserve(b);
 }
 
-auto alloy::render::unsafe_mesh_builder::reserve_indices(core::quantity<index_type> indices)
-  -> void
+auto alloy::render::unsafe_mesh_builder::reserve_indices(
+  core::quantity<index_type> indices
+) -> void
 {
   m_indices.reserve(indices.count());
 }
@@ -122,8 +126,9 @@ auto alloy::render::unsafe_mesh_builder::reserve_indices(core::quantity<index_ty
 // Modifiers
 //------------------------------------------------------------------------------
 
-auto alloy::render::unsafe_mesh_builder::set_bounding_box(const core::axis_aligned_box& box)
-  -> void
+auto alloy::render::unsafe_mesh_builder::set_bounding_box(
+  const core::axis_aligned_box& box
+) -> void
 {
   m_bound = box;
 }
@@ -147,20 +152,17 @@ auto alloy::render::unsafe_mesh_builder::add_color(const alloy::core::color& c)
   m_writer.pack_object(c, color_packer{});
 }
 
-auto alloy::render::unsafe_mesh_builder::add_uv(float p)
-  -> void
+auto alloy::render::unsafe_mesh_builder::add_uv(float p) -> void
 {
   m_writer.pack_object(p);
 }
 
-auto alloy::render::unsafe_mesh_builder::add_uv(const core::point2& p)
-  -> void
+auto alloy::render::unsafe_mesh_builder::add_uv(const core::point2& p) -> void
 {
   m_writer.pack_object(p, point_packer{});
 }
 
-auto alloy::render::unsafe_mesh_builder::add_uv(const core::point3& p)
-  -> void
+auto alloy::render::unsafe_mesh_builder::add_uv(const core::point3& p) -> void
 {
   m_writer.pack_object(p, point_packer{});
 }
@@ -184,26 +186,28 @@ auto alloy::render::unsafe_mesh_builder::add_bitangent(const core::vector3& v)
 }
 
 
-auto alloy::render::unsafe_mesh_builder::add_index(index_type i)
-  -> void
+auto alloy::render::unsafe_mesh_builder::add_index(index_type i) -> void
 {
   m_indices.push_back(i);
 }
 
-auto alloy::render::unsafe_mesh_builder::add_face(index_type i0,
-                                                  index_type i1,
-                                                  index_type i2)
-  -> void
+auto alloy::render::unsafe_mesh_builder::add_face(
+  index_type i0,
+  index_type i1,
+  index_type i2
+) -> void
 {
   add_index(i0);
   add_index(i1);
   add_index(i2);
 }
 
-auto alloy::render::unsafe_mesh_builder::add_face(index_type i0,
-                                                  index_type i1,
-                                                  index_type i2,
-                                                  index_type i3) -> void
+auto alloy::render::unsafe_mesh_builder::add_face(
+  index_type i0,
+  index_type i1,
+  index_type i2,
+  index_type i3
+) -> void
 {
   add_face(i0, i1, i2);
   add_face(i2, i3, i0);
@@ -214,8 +218,7 @@ auto alloy::render::unsafe_mesh_builder::add_face(index_type i0,
 // Building
 //------------------------------------------------------------------------------
 
-auto alloy::render::unsafe_mesh_builder::release()
-  && -> mesh
+auto alloy::render::unsafe_mesh_builder::release() && -> mesh
 {
   auto config = mesh_config{};
   config.vertex_data = std::move(m_buffer);
@@ -233,7 +236,7 @@ auto alloy::render::unsafe_mesh_builder::release()
 }
 
 auto alloy::render::unsafe_mesh_builder::build_with(core::allocator alloc)
-    const -> mesh
+  const -> mesh
 {
   auto config = mesh_config{};
   config.vertex_data = m_buffer.copy_with(alloc);

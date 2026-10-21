@@ -113,7 +113,8 @@ namespace alloy::render::gl {
     auto set_depth_function(depth_compare func) noexcept -> void;
 
     auto enable_blend(bool enable) noexcept -> void;
-    auto set_blend_function(blend_factor source, blend_factor destination) noexcept -> void;
+    auto set_blend_function(blend_factor source, blend_factor destination)
+      noexcept -> void;
     auto set_blend_mode(blend_equation equation) noexcept -> void;
 
     auto enable_cull_face(bool enable) noexcept -> void;

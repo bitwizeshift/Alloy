@@ -55,7 +55,7 @@ namespace alloy::extra {
     ///
     /// \return a reference to the static pump source
     ALLOY_EXTRA_SDL2_API
-    static sdl2_pump_source& instance();
+    static auto instance() -> sdl2_pump_source&;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -69,7 +69,7 @@ namespace alloy::extra {
     ///
     /// \param window the window to attach
     ALLOY_EXTRA_SDL2_API
-    void attach_window(core::not_null<sdl2_window*> window);
+    auto attach_window(core::not_null<sdl2_window*> window) -> void;
 
     /// \brief Detaches an sdl2_window from this pump source
     ///
@@ -77,7 +77,7 @@ namespace alloy::extra {
     ///
     /// \param window the window to attach
     ALLOY_EXTRA_SDL2_API
-    void detach_window(core::not_null<sdl2_window*> window);
+    auto detach_window(core::not_null<sdl2_window*> window) -> void;
 
     //--------------------------------------------------------------------------
     // Private Constructors / Assignment
@@ -90,8 +90,8 @@ namespace alloy::extra {
 
     //--------------------------------------------------------------------------
 
-    sdl2_pump_source& operator=(sdl2_pump_source&& other) = delete;
-    sdl2_pump_source& operator=(const sdl2_pump_source& other) = delete;
+    auto operator=(sdl2_pump_source&& other) -> sdl2_pump_source& = delete;
+    auto operator=(const sdl2_pump_source& other) -> sdl2_pump_source& = delete;
 
     //--------------------------------------------------------------------------
     // Hooks
@@ -109,30 +109,32 @@ namespace alloy::extra {
     ///       pump, the event will not propagate.
     ///
     /// \param p the message_pump to push new messages to
-    void poll(io::message_pump& p) noexcept override;
+    auto poll(io::message_pump& p) noexcept -> void override;
 
     /// \brief Handles a window event
     ///
     /// \param event the SDL_Event to handle
     /// \param p the message pump to pump events back into
-    void handle_window_event(const ::SDL_Event& event,
-                             io::message_pump& p) noexcept;
+    auto handle_window_event(const ::SDL_Event& event, io::message_pump& p)
+      noexcept -> void;
 
     /// \brief Handles a keyboard event
     ///
     /// \param event the SDL_Event to handle
     /// \param state the keyboard state (up or down)
     /// \param p the message pump to respond to
-    void handle_keyboard_event(const ::SDL_Event& event,
-                               io::keyboard::key_state state,
-                               io::message_pump& p) noexcept;
+    auto handle_keyboard_event(
+      const ::SDL_Event& event,
+      io::keyboard::key_state state,
+      io::message_pump& p
+    ) noexcept -> void;
 
     /// \brief Handles a mouse event
     ///
     /// \param event the SDL_Event to handle
     /// \param p the message pump to respond to
-    void handle_mouse_event(const ::SDL_Event& event,
-                            io::message_pump& p) noexcept;
+    auto handle_mouse_event(const ::SDL_Event& event, io::message_pump& p)
+      noexcept -> void;
 
     //--------------------------------------------------------------------------
     // Private Members

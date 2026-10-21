@@ -61,8 +61,8 @@ namespace alloy::engine {
 
     //--------------------------------------------------------------------------
 
-    entity_manager& operator=(entity_manager&&) = default;
-    entity_manager& operator=(const entity_manager&) = default;
+    auto operator=(entity_manager&&) -> entity_manager& = default;
+    auto operator=(const entity_manager&) -> entity_manager& = default;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -72,22 +72,22 @@ namespace alloy::engine {
     /// \brief Creates a new entity
     ///
     /// \return the new entity
-    entity create() noexcept;
+    auto create() noexcept -> entity;
 
     /// \brief Destroys a given entity
-    void destroy(entity e) noexcept;
+    auto destroy(entity e) noexcept -> void;
 
     /// \brief Sets the signature of a given entity \p e
     ///
     /// \param e the entity to set the signature to
     /// \param sig the component signature
-    void set_signature(entity e, signature sig) noexcept;
+    auto set_signature(entity e, signature sig) noexcept -> void;
 
     /// \brief Gets the signature for a given entity \p e
     ///
     /// \param e the entity to get the signature for
     /// \return the component signature
-    signature get_signature(entity e) const noexcept;
+    auto get_signature(entity e) const noexcept -> signature;
 
     //--------------------------------------------------------------------------
 
@@ -96,14 +96,14 @@ namespace alloy::engine {
     /// \note \p l is not owned by this entity_manager
     /// \pre \p l is not-null
     /// \param l the listener to register
-    void register_listener(core::not_null<listener*> l);
+    auto register_listener(core::not_null<listener*> l) -> void;
 
     /// \brief Unregisters a listener to no longer listen for entity events
     ///
     /// \note \p l is not owned by this entity_manager
     /// \pre \p l is not-null
     /// \param l the listener to unregister
-    void unregister_listener(core::not_null<listener*> l);
+    auto unregister_listener(core::not_null<listener*> l) -> void;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -147,8 +147,8 @@ namespace alloy::engine {
 
     //--------------------------------------------------------------------------
 
-    listener& operator=(listener&&) = default;
-    listener& operator=(const listener&) = default;
+    auto operator=(listener&&) -> listener& = default;
+    auto operator=(const listener&) -> listener& = default;
 
     //--------------------------------------------------------------------------
     // Callbacks
@@ -158,19 +158,18 @@ namespace alloy::engine {
     /// \brief Callback handler for when an entity is created
     ///
     /// \param e the entity that was created
-    virtual void on_entity_created(entity e) noexcept;
+    virtual auto on_entity_created(entity e) noexcept -> void;
 
     /// \brief Callback handler for when an entity is destroyed
     ///
     /// \param e the entity that was destroyed
-    virtual void on_entity_destroyed(entity e) noexcept;
+    virtual auto on_entity_destroyed(entity e) noexcept -> void;
 
     /// \brief Callback handler for when an entity signature is changed
     ///
     /// \param e the entity that had its signature changed
     /// \param sig the new component signature for the entity
-    virtual void on_signature_change(entity e,
-                                     signature sig) noexcept;
+    virtual auto on_signature_change(entity e, signature sig) noexcept -> void;
   };
 
 } // namespace alloy::engine

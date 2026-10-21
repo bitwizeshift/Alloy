@@ -119,8 +119,7 @@ namespace alloy::render {
 } // namespace alloy::render
 
 inline
-auto alloy::render::to_string(blend_factor b)
-  noexcept -> core::zstring_view
+auto alloy::render::to_string(blend_factor b) noexcept -> core::zstring_view
 {
   switch (b) {
     case blend_factor::one: {

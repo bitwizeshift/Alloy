@@ -115,8 +115,7 @@ namespace alloy::extra {
 
 template <typename...LogLevels, typename>
 inline constexpr
-auto alloy::extra::log_filter::only(LogLevels...levels)
-  noexcept -> log_filter
+auto alloy::extra::log_filter::only(LogLevels...levels) noexcept -> log_filter
 {
   return log_filter{
     core::option_set<log_level>{levels...}
@@ -124,8 +123,7 @@ auto alloy::extra::log_filter::only(LogLevels...levels)
 }
 
 inline constexpr
-auto alloy::extra::log_filter::all()
-  noexcept -> log_filter
+auto alloy::extra::log_filter::all() noexcept -> log_filter
 {
   return only(
     log_level::debug,
@@ -137,8 +135,7 @@ auto alloy::extra::log_filter::all()
 }
 
 inline constexpr
-auto alloy::extra::log_filter::none()
-  noexcept -> log_filter
+auto alloy::extra::log_filter::none() noexcept -> log_filter
 {
   return only();
 }
@@ -151,16 +148,14 @@ auto alloy::extra::log_filter::none()
 // bitset, which every log_level is well within.
 // NOLINTBEGIN(bugprone-exception-escape)
 inline constexpr
-auto alloy::extra::log_filter::allow(log_level level)
-  noexcept -> log_filter&
+auto alloy::extra::log_filter::allow(log_level level) noexcept -> log_filter&
 {
   m_allowed.set(level);
   return (*this);
 }
 
 inline constexpr
-auto alloy::extra::log_filter::block(log_level level)
-  noexcept -> log_filter&
+auto alloy::extra::log_filter::block(log_level level) noexcept -> log_filter&
 {
   m_allowed.set(level, false);
   return (*this);

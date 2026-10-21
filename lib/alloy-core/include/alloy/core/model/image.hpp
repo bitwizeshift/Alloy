@@ -81,9 +81,11 @@ namespace alloy::core {
     ///
     /// \return an image on success, an error_code on failure
     ALLOY_CORE_API
-    static result<image,std::error_code> make_image_from_buffer(vector<std::byte> buffer,
-                                                  dimensions d,
-                                                  pixel_format format);
+    static auto make_image_from_buffer(
+      vector<std::byte> buffer,
+      dimensions d,
+      pixel_format format
+    ) -> result<image,std::error_code>;
 
     /// \brief Makes an image with a solid color
     ///
@@ -98,9 +100,11 @@ namespace alloy::core {
     ///
     /// \return an image on success, an error_code on failure
     ALLOY_CORE_API
-    static result<image,std::error_code> make_blank_image(dimensions d,
-                                            pixel_format format,
-                                            color background);
+    static auto make_blank_image(
+      dimensions d,
+      pixel_format format,
+      color background
+    ) -> result<image,std::error_code>;
 
     /// \brief Makes an image with a solid color
     ///
@@ -116,10 +120,12 @@ namespace alloy::core {
     ///
     /// \return an image on success, an error_code on failure
     ALLOY_CORE_API
-    static result<image,std::error_code> make_blank_image(dimensions d,
-                                            pixel_format format,
-                                            color background,
-                                            allocator alloc);
+    static auto make_blank_image(
+      dimensions d,
+      pixel_format format,
+      color background,
+      allocator alloc
+    ) -> result<image,std::error_code>;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -134,8 +140,8 @@ namespace alloy::core {
 
     //--------------------------------------------------------------------------
 
-    image& operator=(image&& other) noexcept = default;
-    image& operator=(const image&) = delete;
+    auto operator=(image&& other) noexcept -> image& = default;
+    auto operator=(const image&) -> image& = delete;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -151,7 +157,7 @@ namespace alloy::core {
     /// \param y the y position
     /// \param c the color
     ALLOY_CORE_API
-    void set_pixel(std::size_t x, std::size_t y, color c) noexcept;
+    auto set_pixel(std::size_t x, std::size_t y, color c) noexcept -> void;
 
     //--------------------------------------------------------------------------
     // Accessors
@@ -167,7 +173,7 @@ namespace alloy::core {
     /// \param y the y coordinate
     /// \return the color at image coordinate (x,y)
     ALLOY_CORE_API
-    color get_pixel(std::size_t x, std::size_t y) const noexcept;
+    auto get_pixel(std::size_t x, std::size_t y) const noexcept -> color;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -178,36 +184,36 @@ namespace alloy::core {
     ///
     /// \return the copy of the image
     ALLOY_CORE_API
-    image copy() const;
+    auto copy() const -> image;
 
     /// \brief Returns a copy of this image allocated using \p alloc
     ///
     /// \param alloc the allocator to use
     /// \return the new image
     ALLOY_CORE_API
-    image copy_with(allocator alloc) const;
+    auto copy_with(allocator alloc) const -> image;
 
     //--------------------------------------------------------------------------
 
     /// \brief Returns a pointer to the underlying image data
     ///
     /// \return a pointer to the underlying image data
-    const std::byte* data() const noexcept;
+    auto data() const noexcept -> const std::byte*;
 
     /// \brief Gets the width of this image
     ///
     /// \return the width of this image
-    std::size_t width() const noexcept;
+    auto width() const noexcept -> std::size_t;
 
     /// \brief Gets the height of this image
     ///
     /// \return the height of this image
-    std::size_t height() const noexcept;
+    auto height() const noexcept -> std::size_t;
 
     /// \brief Gets the pixel format of this image
     ///
     /// \return the pixel format of this image
-    pixel_format format() const noexcept;
+    auto format() const noexcept -> pixel_format;
 
     //--------------------------------------------------------------------------
     // Private : Constructors
@@ -215,9 +221,7 @@ namespace alloy::core {
   private:
 
     /// \brief Fully constructs the underlying image
-    image(vector<std::byte> bytes,
-          dimensions d,
-          pixel_format format) noexcept;
+    image(vector<std::byte> bytes, dimensions d, pixel_format format) noexcept;
 
     //--------------------------------------------------------------------------
     // Private
@@ -243,7 +247,7 @@ namespace alloy::core {
   /// \param ec the error code
   /// \return the error code
   ALLOY_CORE_API
-  std::error_code make_error_code(image::error_code ec) noexcept;
+  auto make_error_code(image::error_code ec) noexcept -> std::error_code;
 
 } // namespace alloy::core
 
@@ -261,29 +265,29 @@ namespace std {
 // Observers
 //-----------------------------------------------------------------------------
 
-inline const std::byte* alloy::core::image::data()
-  const noexcept
+inline
+auto alloy::core::image::data() const noexcept -> const std::byte*
 {
   return m_bytes.data();
 }
 
 
-inline std::size_t alloy::core::image::width()
-  const noexcept
+inline
+auto alloy::core::image::width() const noexcept -> std::size_t
 {
   return m_width;
 }
 
 
-inline std::size_t alloy::core::image::height()
-  const noexcept
+inline
+auto alloy::core::image::height() const noexcept -> std::size_t
 {
   return m_height;
 }
 
 
-inline alloy::core::image::pixel_format alloy::core::image::format()
-  const noexcept
+inline
+auto alloy::core::image::format() const noexcept -> pixel_format
 {
   return m_format;
 }

@@ -145,7 +145,8 @@ namespace alloy::core {
     /// \return the cloned vector
     template <typename Cloner = default_allocator_clone<Interface>>
     [[nodiscard]]
-    auto copy_with(allocator alloc, const Cloner& cloner = Cloner{}) const -> polymorphic_vector;
+    auto copy_with(allocator alloc, const Cloner& cloner = Cloner{})
+      const -> polymorphic_vector;
 
     /// \brief Produces a deep copy of this polymorphic_vector by cloning each
     ///        object with \p cloner
@@ -449,36 +450,51 @@ namespace alloy::core {
   //----------------------------------------------------------------------------
 
   template <typename T>
-  auto swap(polymorphic_vector<T>& lhs, polymorphic_vector<T>& rhs) noexcept -> void;
+  auto swap(polymorphic_vector<T>& lhs, polymorphic_vector<T>& rhs)
+    noexcept -> void;
 
   //----------------------------------------------------------------------------
   // Comparison
   //----------------------------------------------------------------------------
 
   template <typename T>
-  auto operator==(const polymorphic_vector<T>& lhs,
-                  const polymorphic_vector<T>& rhs) noexcept -> bool;
+  auto operator==(
+    const polymorphic_vector<T>& lhs,
+    const polymorphic_vector<T>& rhs
+  ) noexcept -> bool;
   template <typename T>
-  auto operator!=(const polymorphic_vector<T>& lhs,
-                  const polymorphic_vector<T>& rhs) noexcept -> bool;
+  auto operator!=(
+    const polymorphic_vector<T>& lhs,
+    const polymorphic_vector<T>& rhs
+  ) noexcept -> bool;
   template <typename T>
-  auto operator<(const polymorphic_vector<T>& lhs,
-                 const polymorphic_vector<T>& rhs) noexcept -> bool;
+  auto operator<(
+    const polymorphic_vector<T>& lhs,
+    const polymorphic_vector<T>& rhs
+  ) noexcept -> bool;
   template <typename T>
-  auto operator>(const polymorphic_vector<T>& lhs,
-                 const polymorphic_vector<T>& rhs) noexcept -> bool;
+  auto operator>(
+    const polymorphic_vector<T>& lhs,
+    const polymorphic_vector<T>& rhs
+  ) noexcept -> bool;
   template <typename T>
-  auto operator<=(const polymorphic_vector<T>& lhs,
-                  const polymorphic_vector<T>& rhs) noexcept -> bool;
+  auto operator<=(
+    const polymorphic_vector<T>& lhs,
+    const polymorphic_vector<T>& rhs
+  ) noexcept -> bool;
   template <typename T>
-  auto operator>=(const polymorphic_vector<T>& lhs,
-                  const polymorphic_vector<T>& rhs) noexcept -> bool;
+  auto operator>=(
+    const polymorphic_vector<T>& lhs,
+    const polymorphic_vector<T>& rhs
+  ) noexcept -> bool;
 
 } // namespace alloy::core
 
 template <typename T>
-auto alloy::core::default_allocator_clone<T>::operator()(allocator alloc, const T& p)
-  const noexcept -> T*
+auto alloy::core::default_allocator_clone<T>::operator()(
+  allocator alloc,
+  const T& p
+) const noexcept -> T*
 {
   return p.clone_with(alloc);
 }
@@ -494,8 +510,9 @@ auto alloy::core::default_allocator_clone<T>::operator()(allocator alloc, const 
 template <typename Interface>
 template <typename T>
 inline
-alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::iterator_impl(underlying_iterator self)
-  noexcept
+alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::iterator_impl(
+  underlying_iterator self
+) noexcept
   : m_iterator{self}
 {
 
@@ -518,8 +535,9 @@ auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator++()
 template <typename Interface>
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator++(int)
-  noexcept -> iterator_impl
+auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator++(
+  int
+) noexcept -> iterator_impl
 {
   auto copy = (*this);
   ++(*this);
@@ -539,8 +557,9 @@ auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator--()
 template <typename Interface>
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator--(int)
-  noexcept -> iterator_impl
+auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator--(
+  int
+) noexcept -> iterator_impl
 {
   auto copy = (*this);
   --(*this);
@@ -552,8 +571,9 @@ auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator--(in
 template <typename Interface>
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator+=(difference_type n)
-  noexcept -> iterator_impl&
+auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator+=(
+  difference_type n
+) noexcept -> iterator_impl&
 {
   m_iterator += n;
   return (*this);
@@ -562,8 +582,9 @@ auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator+=(di
 template <typename Interface>
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator-=(difference_type n)
-  noexcept -> iterator_impl&
+auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator-=(
+  difference_type n
+) noexcept -> iterator_impl&
 {
   m_iterator -= n;
   return (*this);
@@ -576,8 +597,9 @@ auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator-=(di
 template <typename Interface>
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator[](difference_type n)
-  const noexcept -> reference
+auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator[](
+  difference_type n
+) const noexcept -> reference
 {
   return m_iterator[n];
 }
@@ -607,8 +629,9 @@ auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator*()
 template <typename Interface>
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator==(const iterator_impl& other)
-  const noexcept -> bool
+auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator==(
+  const iterator_impl& other
+) const noexcept -> bool
 {
   return m_iterator == other.m_iterator;
 }
@@ -616,8 +639,9 @@ auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator==(co
 template <typename Interface>
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator!=(const iterator_impl& other)
-  const noexcept -> bool
+auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator!=(
+  const iterator_impl& other
+) const noexcept -> bool
 {
   return m_iterator != other.m_iterator;
 }
@@ -625,8 +649,9 @@ auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator!=(co
 template <typename Interface>
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator<(const iterator_impl& other)
-  const noexcept -> bool
+auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator<(
+  const iterator_impl& other
+) const noexcept -> bool
 {
   return m_iterator < other.m_iterator;
 }
@@ -634,8 +659,9 @@ auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator<(con
 template <typename Interface>
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator>(const iterator_impl& other)
-const noexcept -> bool
+auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator>(
+  const iterator_impl& other
+) const noexcept -> bool
 {
   return m_iterator > other.m_iterator;
 }
@@ -643,16 +669,18 @@ const noexcept -> bool
 template <typename Interface>
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator<=(const iterator_impl& other)
-  const noexcept -> bool
+auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator<=(
+  const iterator_impl& other
+) const noexcept -> bool
 {
   return m_iterator <= other.m_iterator;
 }
 template <typename Interface>
 template <typename T>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator>=(const iterator_impl& other)
-  const noexcept -> bool
+auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator>=(
+  const iterator_impl& other
+) const noexcept -> bool
 {
   return m_iterator >= other.m_iterator;
 }
@@ -667,8 +695,7 @@ auto alloy::core::polymorphic_vector<Interface>::iterator_impl<T>::operator>=(co
 
 template <typename Interface>
 inline
-alloy::core::polymorphic_vector<Interface>::polymorphic_vector()
-  noexcept
+alloy::core::polymorphic_vector<Interface>::polymorphic_vector() noexcept
   : m_entries{}
 {
 
@@ -688,8 +715,10 @@ template <typename Derived>
   requires std::derived_from<Derived, Interface>
 inline
 alloy::core::polymorphic_vector<Interface>::polymorphic_vector(
-  size_type n, const Derived& copy
-) : m_entries{}
+  size_type n,
+  const Derived& copy
+)
+  : m_entries{}
 {
   reserve(n);
 
@@ -701,8 +730,9 @@ alloy::core::polymorphic_vector<Interface>::polymorphic_vector(
 
 template <typename Interface>
 inline
-alloy::core::polymorphic_vector<Interface>::polymorphic_vector(polymorphic_vector&& other)
-noexcept
+alloy::core::polymorphic_vector<Interface>::polymorphic_vector(
+  polymorphic_vector&& other
+) noexcept
   : m_entries{std::move(other.m_entries)}
 {
   // Clear, to prevent polymorphic vector from attempting to iterate.
@@ -722,8 +752,9 @@ alloy::core::polymorphic_vector<Interface>::~polymorphic_vector<Interface>()
 
 template <typename Interface>
 inline
-auto alloy::core::polymorphic_vector<Interface>::operator=(polymorphic_vector&& other)
-  noexcept -> polymorphic_vector&
+auto alloy::core::polymorphic_vector<Interface>::operator=(
+  polymorphic_vector&& other
+) noexcept -> polymorphic_vector&
 {
   swap(other);
   other.clear();
@@ -742,7 +773,7 @@ auto alloy::core::polymorphic_vector<Interface>::get_allocator()
 template <typename Interface>
 template <typename Cloner>
 auto alloy::core::polymorphic_vector<Interface>::copy(const Cloner& cloner)
-const -> polymorphic_vector
+  const -> polymorphic_vector
 {
   return copy_with(get_allocator(), cloner);
 }
@@ -750,7 +781,8 @@ const -> polymorphic_vector
 template <typename Interface>
 template <typename Cloner>
 auto alloy::core::polymorphic_vector<Interface>::copy_with(
-  allocator alloc, const Cloner& cloner
+  allocator alloc,
+  const Cloner& cloner
 ) const -> polymorphic_vector
 {
   auto copy = polymorphic_vector{alloc};
@@ -775,8 +807,7 @@ auto alloy::core::polymorphic_vector<Interface>::copy_with(
 
 template <typename Interface>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::reserve(size_type n)
-  -> void
+auto alloy::core::polymorphic_vector<Interface>::reserve(size_type n) -> void
 {
   m_entries.reserve(n);
 }
@@ -792,7 +823,7 @@ auto alloy::core::polymorphic_vector<Interface>::size()
 template <typename Interface>
 ALLOY_FORCE_INLINE
 auto alloy::core::polymorphic_vector<Interface>::max_size()
-const noexcept -> size_type
+  const noexcept -> size_type
 {
   return m_entries.max_size();
 }
@@ -807,8 +838,7 @@ auto alloy::core::polymorphic_vector<Interface>::capacity()
 
 template <typename Interface>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::empty()
-  const noexcept -> bool
+auto alloy::core::polymorphic_vector<Interface>::empty() const noexcept -> bool
 {
   return m_entries.empty();
 }
@@ -819,8 +849,7 @@ auto alloy::core::polymorphic_vector<Interface>::empty()
 
 template <typename Interface>
 inline
-auto alloy::core::polymorphic_vector<Interface>::clear()
-  noexcept -> void
+auto alloy::core::polymorphic_vector<Interface>::clear() noexcept -> void
 {
   auto alloc = get_allocator();
   for (auto& entry : m_entries) {
@@ -851,8 +880,10 @@ template <typename Derived, typename... Args>
   requires (std::derived_from<Derived, Interface> &&
            std::constructible_from<Derived, Args...>)
 inline
-auto alloy::core::polymorphic_vector<Interface>::emplace(const_iterator pos, Args&&...args)
-  -> const_iterator
+auto alloy::core::polymorphic_vector<Interface>::emplace(
+  const_iterator pos,
+  Args&&...args
+) -> const_iterator
 {
   const auto p = allocator().make<Derived>(std::forward<Args>(args)...);
   const auto destroy = static_cast<destroy_function>([](allocator alloc, Interface* p){
@@ -865,8 +896,7 @@ auto alloy::core::polymorphic_vector<Interface>::emplace(const_iterator pos, Arg
 
 template <typename Interface>
 inline
-auto alloy::core::polymorphic_vector<Interface>::pop_back()
-  -> void
+auto alloy::core::polymorphic_vector<Interface>::pop_back() -> void
 {
   auto& last = m_entries.back();
   (*last.destroy)(get_allocator(), last.pointer);
@@ -888,8 +918,7 @@ auto alloy::core::polymorphic_vector<Interface>::swap(polymorphic_vector& other)
 
 template <typename Interface>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::at(size_type n)
-  -> reference
+auto alloy::core::polymorphic_vector<Interface>::at(size_type n) -> reference
 {
   return (*m_entries.at(n).pointer);
 }
@@ -924,8 +953,7 @@ auto alloy::core::polymorphic_vector<Interface>::operator[](size_type n)
 
 template <typename Interface>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::front()
-  noexcept -> reference
+auto alloy::core::polymorphic_vector<Interface>::front() noexcept -> reference
 {
   return (*m_entries.front().pointer);
 }
@@ -940,8 +968,7 @@ auto alloy::core::polymorphic_vector<Interface>::front()
 
 template <typename Interface>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::back()
-  noexcept -> reference
+auto alloy::core::polymorphic_vector<Interface>::back() noexcept -> reference
 {
   return (*m_entries.back().pointer);
 }
@@ -960,8 +987,7 @@ auto alloy::core::polymorphic_vector<Interface>::back()
 
 template <typename Interface>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::begin()
-  noexcept -> iterator
+auto alloy::core::polymorphic_vector<Interface>::begin() noexcept -> iterator
 {
   return iterator();
 }
@@ -986,8 +1012,7 @@ auto alloy::core::polymorphic_vector<Interface>::cbegin()
 
 template <typename Interface>
 ALLOY_FORCE_INLINE
-auto alloy::core::polymorphic_vector<Interface>::end()
-  noexcept -> iterator
+auto alloy::core::polymorphic_vector<Interface>::end() noexcept -> iterator
 {
   return iterator();
 }

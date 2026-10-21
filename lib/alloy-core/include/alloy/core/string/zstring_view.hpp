@@ -115,13 +115,15 @@ namespace alloy::core {
     ///        \p other
     ///
     /// \param other the other basic_zstring_view to copy
-    constexpr basic_zstring_view(const basic_zstring_view& other) noexcept = default;
+    constexpr basic_zstring_view(const basic_zstring_view& other)
+      noexcept = default;
 
     /// \brief Assigns the contents of \p other to this basic_zstring_view
     ///
     /// \param other the other basic_zstring_view to copy
     /// \return reference to `(*this)`
-    auto operator=(const basic_zstring_view& other) -> basic_zstring_view& = default;
+    auto operator=(const basic_zstring_view& other)
+      -> basic_zstring_view& = default;
 
     //-------------------------------------------------------------------------
     // Element Access
@@ -156,7 +158,7 @@ namespace alloy::core {
 
     using base_type::remove_prefix;
     auto remove_suffix(std::size_t) -> void = delete;
-    auto substr(std::size_t,std::size_t) -> void = delete;
+    auto substr(std::size_t, std::size_t) -> void = delete;
 
     //-------------------------------------------------------------------------
     // Iterators
@@ -220,8 +222,9 @@ auto alloy::core::basic_zstring_view<CharT,Traits>::from_view(
 
 template <typename CharT, typename Traits>
 inline constexpr
-alloy::core::basic_zstring_view<CharT,Traits>::basic_zstring_view(const CharT* str)
-  noexcept
+alloy::core::basic_zstring_view<CharT,Traits>::basic_zstring_view(
+  const CharT* str
+) noexcept
   : base_type{str}
 {
 
@@ -255,9 +258,10 @@ auto alloy::core::basic_zstring_view<CharT,Traits>::c_str()
 
 template <typename CharT, typename Traits>
 inline constexpr
-alloy::core::basic_zstring_view<CharT,Traits>
-  ::basic_zstring_view(const CharT* p, size_type size)
-  noexcept
+alloy::core::basic_zstring_view<CharT,Traits>::basic_zstring_view(
+  const CharT* p,
+  size_type size
+) noexcept
   : base_type{p, size}
 {
 

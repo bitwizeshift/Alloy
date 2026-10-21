@@ -34,7 +34,7 @@ namespace alloy::core {
   ///
   /// \param f the value to check
   /// \return `true` if \p f is a `nan`
-  bool is_nan( const half& f ) noexcept;
+  auto is_nan(const half& f) noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -42,13 +42,13 @@ namespace alloy::core {
   ///
   /// \param f the value to check
   /// \return `true` if \p f is `finite`
-  bool is_finite( const half& f ) noexcept;
+  auto is_finite(const half& f) noexcept -> bool;
 
   /// \brief Determines whether a given half value \p f is infinite
   ///
   /// \param f the value to check
   /// \return `true` if \p f is `infinite`
-  bool is_infinite( const half& f ) noexcept;
+  auto is_infinite(const half& f) noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -56,13 +56,13 @@ namespace alloy::core {
   ///
   /// \param f the value to check
   /// \return `true` if \p f is `normal`
-  bool is_normal( const half& f ) noexcept;
+  auto is_normal(const half& f) noexcept -> bool;
 
   /// \brief Determines whether a given half value \p f is subnormal
   ///
   /// \param f the value to check
   /// \return `true` if \p f is `subnormal`
-  bool is_subnormal( const half& f ) noexcept;
+  auto is_subnormal(const half& f) noexcept -> bool;
 
   //============================================================================
   // literals
@@ -85,40 +85,40 @@ namespace alloy::core {
 // definitions : non-member functions : alias : half
 //==============================================================================
 
-inline bool alloy::core::is_nan( const half& f )
-  noexcept
+inline
+auto alloy::core::is_nan(const half& f) noexcept -> bool
 {
   assert( false && "not implemented" );
   (void) f;
   return false;
 }
 
-inline bool alloy::core::is_finite( const half& f )
-  noexcept
+inline
+auto alloy::core::is_finite(const half& f) noexcept -> bool
 {
   assert( false && "not implemented" );
   (void) f;
   return false;
 }
 
-inline bool alloy::core::is_infinite( const half& f )
-  noexcept
+inline
+auto alloy::core::is_infinite(const half& f) noexcept -> bool
 {
   assert( false && "not implemented" );
   (void) f;
   return false;
 }
 
-inline bool alloy::core::is_normal( const half& f )
-  noexcept
+inline
+auto alloy::core::is_normal(const half& f) noexcept -> bool
 {
   assert( false && "not implemented" );
   (void) f;
   return false;
 }
 
-inline bool alloy::core::is_subnormal( const half& f )
-  noexcept
+inline
+auto alloy::core::is_subnormal(const half& f) noexcept -> bool
 {
   assert( false && "not implemented" );
   (void) f;

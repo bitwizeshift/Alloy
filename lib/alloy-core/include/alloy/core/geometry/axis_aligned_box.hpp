@@ -82,8 +82,8 @@ namespace alloy::core {
     ///
     /// \param lower_left The first point
     /// \param top_right The second point
-    axis_aligned_box(const point3& lower_left,
-                     const point3& top_right) noexcept;
+    axis_aligned_box(const point3& lower_left, const point3& top_right)
+      noexcept;
 
     /// \brief Constructs an axis-aligned bounding-box by copying the contents
     ///        from an existing one
@@ -109,12 +109,12 @@ namespace alloy::core {
     /// \brief Get the normal to the specified side
     ///
     /// \return the normal for the specified side
-    [[nodiscard]] auto top_normal() const noexcept -> vector3;
-    [[nodiscard]] auto bottom_normal() const noexcept -> vector3;
-    [[nodiscard]] auto front_normal() const noexcept -> vector3;
-    [[nodiscard]] auto back_normal() const noexcept -> vector3;
-    [[nodiscard]] auto left_normal() const noexcept -> vector3;
-    [[nodiscard]] auto right_normal() const noexcept -> vector3;
+    [[nodiscard ]] auto top_normal() const noexcept -> vector3;
+    [[nodiscard ]] auto bottom_normal() const noexcept -> vector3;
+    [[nodiscard ]] auto front_normal() const noexcept -> vector3;
+    [[nodiscard ]] auto back_normal() const noexcept -> vector3;
+    [[nodiscard ]] auto left_normal() const noexcept -> vector3;
+    [[nodiscard ]] auto right_normal() const noexcept -> vector3;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -126,12 +126,12 @@ namespace alloy::core {
     /// \brief Get the plane that defines the specified side
     ///
     /// \return the plane that define sthe specified side
-    [[nodiscard]] auto top_plane() const noexcept -> plane;
-    [[nodiscard]] auto bottom_plane() const noexcept -> plane;
-    [[nodiscard]] auto front_plane() const noexcept -> plane;
-    [[nodiscard]] auto back_plane() const noexcept -> plane;
-    [[nodiscard]] auto left_plane() const noexcept -> plane;
-    [[nodiscard]] auto right_plane() const noexcept -> plane;
+    [[nodiscard ]] auto top_plane() const noexcept -> plane;
+    [[nodiscard ]] auto bottom_plane() const noexcept -> plane;
+    [[nodiscard ]] auto front_plane() const noexcept -> plane;
+    [[nodiscard ]] auto back_plane() const noexcept -> plane;
+    [[nodiscard ]] auto left_plane() const noexcept -> plane;
+    [[nodiscard ]] auto right_plane() const noexcept -> plane;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -240,11 +240,11 @@ namespace alloy::core {
   //----------------------------------------------------------------------------
 
   ALLOY_CORE_API
-  auto operator==(const axis_aligned_box& lhs,
-                  const axis_aligned_box& rhs) noexcept -> bool;
+  auto operator==(const axis_aligned_box& lhs, const axis_aligned_box& rhs)
+    noexcept -> bool;
   ALLOY_CORE_API
-  auto operator!=(const axis_aligned_box& lhs,
-                  const axis_aligned_box& rhs) noexcept -> bool;
+  auto operator!=(const axis_aligned_box& lhs, const axis_aligned_box& rhs)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -255,9 +255,11 @@ namespace alloy::core {
   /// \param tolerance the tolerance for the comparison
   /// \return `true` if the two planes contain almost equal values
   ALLOY_CORE_API
-  auto almost_equal(const axis_aligned_box& lhs,
-                    const axis_aligned_box& rhs,
-                    real tolerance) noexcept -> bool;
+  auto almost_equal(
+    const axis_aligned_box& lhs,
+    const axis_aligned_box& rhs,
+    real tolerance
+  ) noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -287,43 +289,37 @@ alloy::core::axis_aligned_box::axis_aligned_box(
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE
-auto alloy::core::axis_aligned_box::top_normal()
-  const noexcept ->vector3
+auto alloy::core::axis_aligned_box::top_normal() const noexcept ->vector3
 {
   return top_plane().normal();
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::axis_aligned_box::bottom_normal()
-  const noexcept -> vector3
+auto alloy::core::axis_aligned_box::bottom_normal() const noexcept -> vector3
 {
   return bottom_plane().normal();
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::axis_aligned_box::front_normal()
-  const noexcept -> vector3
+auto alloy::core::axis_aligned_box::front_normal() const noexcept -> vector3
 {
   return front_plane().normal();
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::axis_aligned_box::back_normal()
-  const noexcept -> vector3
+auto alloy::core::axis_aligned_box::back_normal() const noexcept -> vector3
 {
   return back_plane().normal();
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::axis_aligned_box::left_normal()
-  const noexcept -> vector3
+auto alloy::core::axis_aligned_box::left_normal() const noexcept -> vector3
 {
   return left_plane().normal();
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::axis_aligned_box::right_normal()
-  const noexcept -> vector3
+auto alloy::core::axis_aligned_box::right_normal() const noexcept -> vector3
 {
   return right_plane().normal();
 }
@@ -333,15 +329,13 @@ auto alloy::core::axis_aligned_box::right_normal()
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE
-auto  alloy::core::axis_aligned_box::bottom_left_point()
-  const noexcept -> point3
+auto alloy::core::axis_aligned_box::bottom_left_point() const noexcept -> point3
 {
   return m_bottom_left;
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::axis_aligned_box::top_right_point()
-  const noexcept -> point3
+auto alloy::core::axis_aligned_box::top_right_point() const noexcept -> point3
 {
   return m_top_right;
 }

@@ -61,7 +61,7 @@ namespace alloy::core {
     struct AngleUnit
     {
       // Returns the value of one full revolution (e.g. 3.14 for radian)
-      static constexpr core::real one_revolution() noexcept; // NOLINT
+      static constexpr auto one_revolution() noexcept -> core::real; // NOLINT
     };
   } // namespace exemplar
 #endif
@@ -193,13 +193,15 @@ namespace alloy::core {
   //----------------------------------------------------------------------------
 
   template<typename AngleUnit>
-  constexpr auto operator+(const basic_angle<AngleUnit>& lhs,
-                           const basic_angle<AngleUnit>& rhs)
-    noexcept -> basic_angle<AngleUnit>;
+  constexpr auto operator+(
+    const basic_angle<AngleUnit>& lhs,
+    const basic_angle<AngleUnit>& rhs
+  ) noexcept -> basic_angle<AngleUnit>;
   template<typename AngleUnit>
-  constexpr auto operator-(const basic_angle<AngleUnit>& lhs,
-                           const basic_angle<AngleUnit>& rhs)
-    noexcept -> basic_angle<AngleUnit>;
+  constexpr auto operator-(
+    const basic_angle<AngleUnit>& lhs,
+    const basic_angle<AngleUnit>& rhs
+  ) noexcept -> basic_angle<AngleUnit>;
   template<typename AngleUnit>
   constexpr auto operator*(const basic_angle<AngleUnit>& lhs, real rhs)
     noexcept -> basic_angle<AngleUnit>;
@@ -215,23 +217,35 @@ namespace alloy::core {
   //----------------------------------------------------------------------------
 
   template<typename AngleUnit>
-  constexpr auto operator==(const basic_angle<AngleUnit>& lhs,
-                            const basic_angle<AngleUnit>& rhs) noexcept -> bool;
+  constexpr auto operator==(
+    const basic_angle<AngleUnit>& lhs,
+    const basic_angle<AngleUnit>& rhs
+  ) noexcept -> bool;
   template<typename AngleUnit>
-  constexpr auto operator!=(const basic_angle<AngleUnit>& lhs,
-                            const basic_angle<AngleUnit>& rhs) noexcept -> bool;
+  constexpr auto operator!=(
+    const basic_angle<AngleUnit>& lhs,
+    const basic_angle<AngleUnit>& rhs
+  ) noexcept -> bool;
   template<typename AngleUnit>
-  constexpr auto operator<(const basic_angle<AngleUnit>& lhs,
-                           const basic_angle<AngleUnit>& rhs) noexcept -> bool;
+  constexpr auto operator<(
+    const basic_angle<AngleUnit>& lhs,
+    const basic_angle<AngleUnit>& rhs
+  ) noexcept -> bool;
   template<typename AngleUnit>
-  constexpr auto operator>(const basic_angle<AngleUnit>& lhs,
-                           const basic_angle<AngleUnit>& rhs) noexcept -> bool;
+  constexpr auto operator>(
+    const basic_angle<AngleUnit>& lhs,
+    const basic_angle<AngleUnit>& rhs
+  ) noexcept -> bool;
   template<typename AngleUnit>
-  constexpr auto operator<=(const basic_angle<AngleUnit>& lhs,
-                            const basic_angle<AngleUnit>& rhs) noexcept -> bool;
+  constexpr auto operator<=(
+    const basic_angle<AngleUnit>& lhs,
+    const basic_angle<AngleUnit>& rhs
+  ) noexcept -> bool;
   template<typename AngleUnit>
-  constexpr auto operator>=(const basic_angle<AngleUnit>& lhs,
-                            const basic_angle<AngleUnit>& rhs) noexcept -> bool;
+  constexpr auto operator>=(
+    const basic_angle<AngleUnit>& lhs,
+    const basic_angle<AngleUnit>& rhs
+  ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -242,9 +256,11 @@ namespace alloy::core {
   /// \param rhs the right basic_angle
   /// \return `true` if the two basic_angle contain almost equal values
   template<typename AngleUnit>
-  constexpr auto almost_equal(const basic_angle<AngleUnit>& lhs,
-                              const basic_angle<AngleUnit>& rhs,
-                              real tolerance) noexcept -> bool;
+  constexpr auto almost_equal(
+    const basic_angle<AngleUnit>& lhs,
+    const basic_angle<AngleUnit>& rhs,
+    real tolerance
+  ) noexcept -> bool;
 
   //---------------------------------------------------------------------------
   // Utilities : Math Functions
@@ -356,8 +372,7 @@ namespace alloy::core {
 
 template<typename AngleUnit>
 inline constexpr
-alloy::core::basic_angle<AngleUnit>::basic_angle()
-  noexcept
+alloy::core::basic_angle<AngleUnit>::basic_angle() noexcept
   : m_angle{0}
 {
 
@@ -365,8 +380,7 @@ alloy::core::basic_angle<AngleUnit>::basic_angle()
 
 template<typename AngleUnit>
 inline constexpr
-alloy::core::basic_angle<AngleUnit>::basic_angle(real angle)
-  noexcept
+alloy::core::basic_angle<AngleUnit>::basic_angle(real angle) noexcept
   : m_angle{angle}
 {
 
@@ -377,8 +391,7 @@ alloy::core::basic_angle<AngleUnit>::basic_angle(real angle)
 //------------------------------------------------------------------------------
 
 template<typename AngleUnit>
-auto alloy::core::basic_angle<AngleUnit>::constrain()
-  noexcept -> basic_angle&
+auto alloy::core::basic_angle<AngleUnit>::constrain() noexcept -> basic_angle&
 {
   m_angle = std::fmod(m_angle, AngleUnit::revolution());
 
@@ -395,16 +408,14 @@ auto alloy::core::basic_angle<AngleUnit>::constrain()
 
 template<typename AngleUnit>
 inline constexpr
-auto alloy::core::basic_angle<AngleUnit>::value()
-  const noexcept -> real
+auto alloy::core::basic_angle<AngleUnit>::value() const noexcept -> real
 {
   return m_angle;
 }
 
 template<typename AngleUnit>
 inline constexpr
-auto alloy::core::basic_angle<AngleUnit>::revolutions()
-  const noexcept -> real
+auto alloy::core::basic_angle<AngleUnit>::revolutions() const noexcept -> real
 {
   return m_angle / AngleUnit::revolution();
 }
@@ -432,8 +443,7 @@ auto alloy::core::basic_angle<AngleUnit>::operator+()
 template<typename AngleUnit>
 inline constexpr
 auto alloy::core::basic_angle<AngleUnit>::operator-()
-  const noexcept
-  -> basic_angle<AngleUnit>
+  const noexcept -> basic_angle<AngleUnit>
 {
   return basic_angle{-m_angle};
 }
@@ -488,18 +498,20 @@ auto alloy::core::basic_angle<AngleUnit>::operator/=(real rhs)
 
 template<typename AngleUnit>
 inline constexpr
-auto alloy::core::operator+(const basic_angle<AngleUnit>& lhs,
-                            const basic_angle<AngleUnit>& rhs)
-  noexcept -> basic_angle<AngleUnit>
+auto alloy::core::operator+(
+  const basic_angle<AngleUnit>& lhs,
+  const basic_angle<AngleUnit>& rhs
+) noexcept -> basic_angle<AngleUnit>
 {
   return basic_angle<AngleUnit>{ lhs.value() + rhs.value() };
 }
 
 template<typename AngleUnit>
 inline constexpr
-auto alloy::core::operator-(const basic_angle<AngleUnit>& lhs,
-                            const basic_angle<AngleUnit>& rhs)
-  noexcept -> basic_angle<AngleUnit>
+auto alloy::core::operator-(
+  const basic_angle<AngleUnit>& lhs,
+  const basic_angle<AngleUnit>& rhs
+) noexcept -> basic_angle<AngleUnit>
 {
   return basic_angle<AngleUnit>{ lhs.value() - rhs.value() };
 }
@@ -546,9 +558,10 @@ auto alloy::core::operator==(const basic_angle<AngleUnit>& lhs,
 
 template<typename AngleUnit>
 inline constexpr
-auto alloy::core::operator!=(const basic_angle<AngleUnit>& lhs,
-                             const basic_angle<AngleUnit>& rhs)
-  noexcept -> bool
+auto alloy::core::operator!=(
+  const basic_angle<AngleUnit>& lhs,
+  const basic_angle<AngleUnit>& rhs
+) noexcept -> bool
 {
   return !(lhs==rhs);
 }
@@ -566,27 +579,30 @@ auto alloy::core::operator<(const basic_angle<AngleUnit>& lhs,
 
 template<typename AngleUnit>
 inline constexpr
-auto alloy::core::operator>(const basic_angle<AngleUnit>& lhs,
-                            const basic_angle<AngleUnit>& rhs)
-  noexcept -> bool
+auto alloy::core::operator>(
+  const basic_angle<AngleUnit>& lhs,
+  const basic_angle<AngleUnit>& rhs
+) noexcept -> bool
 {
   return lhs.value() > rhs.value();
 }
 
 template<typename AngleUnit>
 inline constexpr
-auto alloy::core::operator<=(const basic_angle<AngleUnit>& lhs,
-                             const basic_angle<AngleUnit>& rhs)
-  noexcept -> bool
+auto alloy::core::operator<=(
+  const basic_angle<AngleUnit>& lhs,
+  const basic_angle<AngleUnit>& rhs
+) noexcept -> bool
 {
   return lhs.value() <= rhs.value();
 }
 
 template<typename AngleUnit>
 inline constexpr
-auto alloy::core::operator>=(const basic_angle<AngleUnit>& lhs,
-                             const basic_angle<AngleUnit>& rhs)
-  noexcept -> bool
+auto alloy::core::operator>=(
+  const basic_angle<AngleUnit>& lhs,
+  const basic_angle<AngleUnit>& rhs
+) noexcept -> bool
 {
   return lhs.value() >= rhs.value();
 }
@@ -595,10 +611,11 @@ auto alloy::core::operator>=(const basic_angle<AngleUnit>& lhs,
 
 template<typename AngleUnit>
 inline constexpr
-auto alloy::core::almost_equal(const basic_angle<AngleUnit>& lhs,
-                               const basic_angle<AngleUnit>& rhs,
-                               real tolerance)
-  noexcept -> bool
+auto alloy::core::almost_equal(
+  const basic_angle<AngleUnit>& lhs,
+  const basic_angle<AngleUnit>& rhs,
+  real tolerance
+) noexcept -> bool
 {
   return almost_equal( lhs.value(), rhs.value(), tolerance );
 }

@@ -243,11 +243,8 @@ namespace alloy::core {
   /// \param rhs the value on the right of the equation
   /// \param tolerance the tolerance to use for comparison
   /// \return `true` if \p lhs is almost equal to \p rhs
-  constexpr auto almost_equal(
-    real lhs,
-    real rhs,
-    real tolerance
-  ) noexcept -> bool;
+  constexpr auto almost_equal(real lhs, real rhs, real tolerance)
+    noexcept -> bool;
 
 } // namespace alloy::core
 
@@ -277,39 +274,34 @@ auto alloy::core::dot(T (&lhs)[N], U (&rhs)[N])
 
 template<typename Arithmetic>
 inline
-auto alloy::core::round(Arithmetic a)
-  noexcept -> Arithmetic
+auto alloy::core::round(Arithmetic a) noexcept -> Arithmetic
 {
   return std::round(a);
 }
 
 template<typename Arithmetic>
 inline
-auto alloy::core::ceil(Arithmetic a)
-  noexcept -> Arithmetic
+auto alloy::core::ceil(Arithmetic a) noexcept -> Arithmetic
 {
   return std::ceil(a);
 }
 
 template<typename Arithmetic>
 inline
-auto alloy::core::floor(Arithmetic a)
-  noexcept -> Arithmetic
+auto alloy::core::floor(Arithmetic a) noexcept -> Arithmetic
 {
   return std::floor(a);
 }
 
 template<typename Arithmetic>
 inline
-auto alloy::core::trunc(Arithmetic a)
-  noexcept -> Arithmetic
+auto alloy::core::trunc(Arithmetic a) noexcept -> Arithmetic
 {
   return std::trunc(a);
 }
 
 inline
-auto alloy::core::mod(real num, real den)
-  noexcept -> alloy::core::real
+auto alloy::core::mod(real num, real den) noexcept -> alloy::core::real
 {
   return std::fmod(num,den);
 }
@@ -320,8 +312,7 @@ auto alloy::core::mod(real num, real den)
 
 template<typename Arithmetic>
 inline
-auto alloy::core::sqrt(Arithmetic a)
-  noexcept -> math_result_t<Arithmetic>
+auto alloy::core::sqrt(Arithmetic a) noexcept -> math_result_t<Arithmetic>
 {
   return std::sqrt(a);
 }
@@ -332,8 +323,7 @@ auto alloy::core::sqrt(Arithmetic a)
 
 template<typename Arithmetic>
 inline
-auto alloy::core::log(Arithmetic a)
-  noexcept -> math_result_t<Arithmetic>
+auto alloy::core::log(Arithmetic a) noexcept -> math_result_t<Arithmetic>
 {
   return std::log(a);
 }
@@ -342,8 +332,7 @@ auto alloy::core::log(Arithmetic a)
 
 template<typename Arithmetic>
 inline
-auto alloy::core::log2(Arithmetic a)
-  noexcept -> math_result_t<Arithmetic>
+auto alloy::core::log2(Arithmetic a) noexcept -> math_result_t<Arithmetic>
 {
   return std::log2(a);
 }
@@ -355,8 +344,7 @@ auto alloy::core::log2(Arithmetic a)
 template<typename Arithmetic>
   requires (!std::unsigned_integral<Arithmetic>)
 inline constexpr
-auto alloy::core::abs(Arithmetic x)
-  noexcept -> Arithmetic
+auto alloy::core::abs(Arithmetic x) noexcept -> Arithmetic
 {
   return ((x < 0) ? -x : x);
 }
@@ -364,8 +352,7 @@ auto alloy::core::abs(Arithmetic x)
 template<typename Arithmetic>
   requires std::unsigned_integral<Arithmetic>
 inline constexpr
-auto alloy::core::abs(Arithmetic x)
-  noexcept -> Arithmetic
+auto alloy::core::abs(Arithmetic x) noexcept -> Arithmetic
 {
   return x;
 }
@@ -375,15 +362,13 @@ auto alloy::core::abs(Arithmetic x)
 //-----------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::clamp(real val, real min, real max)
-  noexcept -> real
+auto alloy::core::clamp(real val, real min, real max) noexcept -> real
 {
   return ((val < min) ? min : ((val > max) ? max : val));
 }
 
 inline constexpr
-auto alloy::core::saturate(real val)
-  noexcept -> real
+auto alloy::core::saturate(real val) noexcept -> real
 {
     return clamp( val, real{0}, real{1} );
 }
@@ -394,8 +379,7 @@ auto alloy::core::saturate(real val)
 
 template <typename T, typename U>
 inline constexpr
-auto alloy::core::almost_equal(const T& lhs, const U& rhs)
-  noexcept -> bool
+auto alloy::core::almost_equal(const T& lhs, const U& rhs) noexcept -> bool
 {
   using alloy::core::almost_equal;
 

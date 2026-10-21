@@ -104,8 +104,8 @@ auto alloy::render::gl::program_utilities::make_program_from_files(
 }
 
 auto alloy::render::gl::program_utilities::make_program_from_paths(
-    core::zstring_view vertex_path,
-    core::zstring_view fragment_path
+  core::zstring_view vertex_path,
+  core::zstring_view fragment_path
 ) -> core::result<program, gl_error_message>
 {
   constexpr auto flags = io::open_mode::read;
@@ -119,9 +119,9 @@ auto alloy::render::gl::program_utilities::make_program_from_paths(
 }
 
 auto alloy::render::gl::program_utilities::make_program_from_paths(
-    core::zstring_view vertex_path,
-    core::zstring_view geometry_path,
-    core::zstring_view fragment_path
+  core::zstring_view vertex_path,
+  core::zstring_view geometry_path,
+  core::zstring_view fragment_path
 ) -> core::result<program, gl_error_message>
 {
   constexpr auto flags = io::open_mode::read;

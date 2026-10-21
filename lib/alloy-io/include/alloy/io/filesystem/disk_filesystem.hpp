@@ -46,15 +46,15 @@ namespace alloy::io {
   // Bitwise Operators
   //---------------------------------------------------------------------------
 
-  constexpr open_mode operator^(open_mode lhs, open_mode rhs) noexcept;
-  constexpr open_mode operator&(open_mode lhs, open_mode rhs) noexcept;
-  constexpr open_mode operator|(open_mode lhs, open_mode rhs) noexcept;
+  constexpr auto operator^(open_mode lhs, open_mode rhs) noexcept -> open_mode;
+  constexpr auto operator&(open_mode lhs, open_mode rhs) noexcept -> open_mode;
+  constexpr auto operator|(open_mode lhs, open_mode rhs) noexcept -> open_mode;
 
   //---------------------------------------------------------------------------
 
-  open_mode& operator^=(open_mode& lhs, open_mode rhs) noexcept;
-  open_mode& operator&=(open_mode& lhs, open_mode rhs) noexcept;
-  open_mode& operator|=(open_mode& lhs, open_mode rhs) noexcept;
+  auto operator^=(open_mode& lhs, open_mode rhs) noexcept -> open_mode&;
+  auto operator&=(open_mode& lhs, open_mode rhs) noexcept -> open_mode&;
+  auto operator|=(open_mode& lhs, open_mode rhs) noexcept -> open_mode&;
 
   //===========================================================================
   // class : disk_filesystem
@@ -97,8 +97,8 @@ namespace alloy::io {
 
     //-------------------------------------------------------------------------
 
-    disk_filesystem& operator=(disk_filesystem&&) = delete;
-    disk_filesystem& operator=(const disk_filesystem&) = delete;
+    auto operator=(disk_filesystem&&) -> disk_filesystem& = delete;
+    auto operator=(const disk_filesystem&) -> disk_filesystem& = delete;
 
     //-------------------------------------------------------------------------
     // Filesystem
@@ -108,7 +108,7 @@ namespace alloy::io {
     /// \brief Opens a file that reads and writes from \p buffer
     ///
     /// \return a file that reads and writes from \p buffer
-    file open(std::string_view path, open_mode mode) noexcept;
+    auto open(std::string_view path, open_mode mode) noexcept -> file;
 
     //-------------------------------------------------------------------------
     // Virtual Hooks : Finalization
@@ -118,7 +118,7 @@ namespace alloy::io {
     /// \brief Finalizes the file stream
     ///
     /// \param stream the stream to finalize
-    void finalize(file_stream* stream) noexcept override;
+    auto finalize(file_stream* stream) noexcept -> void override;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -138,9 +138,8 @@ namespace alloy::io {
 // Bitwise Operators
 //-----------------------------------------------------------------------------
 
-inline constexpr alloy::io::open_mode
-  alloy::io::operator^(open_mode lhs, open_mode rhs)
-  noexcept
+inline constexpr
+auto alloy::io::operator^(open_mode lhs, open_mode rhs) noexcept -> open_mode
 {
   using underlying_type = std::underlying_type_t<open_mode>;
 
@@ -149,9 +148,8 @@ inline constexpr alloy::io::open_mode
   );
 }
 
-inline constexpr alloy::io::open_mode
-  alloy::io::operator&(open_mode lhs, open_mode rhs)
-  noexcept
+inline constexpr
+auto alloy::io::operator&(open_mode lhs, open_mode rhs) noexcept -> open_mode
 {
   using underlying_type = std::underlying_type_t<open_mode>;
 
@@ -160,9 +158,8 @@ inline constexpr alloy::io::open_mode
   );
 }
 
-inline constexpr alloy::io::open_mode
-  alloy::io::operator|(open_mode lhs, open_mode rhs)
-  noexcept
+inline constexpr
+auto alloy::io::operator|(open_mode lhs, open_mode rhs) noexcept -> open_mode
 {
   using underlying_type = std::underlying_type_t<open_mode>;
 
@@ -173,23 +170,20 @@ inline constexpr alloy::io::open_mode
 
 //-----------------------------------------------------------------------------
 
-inline alloy::io::open_mode&
-  alloy::io::operator^=(open_mode& lhs, open_mode rhs)
-  noexcept
+inline
+auto alloy::io::operator^=(open_mode& lhs, open_mode rhs) noexcept -> open_mode&
 {
   return lhs = (lhs ^ rhs);
 }
 
-inline alloy::io::open_mode&
-  alloy::io::operator&=(open_mode& lhs, open_mode rhs)
-  noexcept
+inline
+auto alloy::io::operator&=(open_mode& lhs, open_mode rhs) noexcept -> open_mode&
 {
   return lhs = (lhs & rhs);
 }
 
-inline alloy::io::open_mode&
-  alloy::io::operator|=(open_mode& lhs, open_mode rhs)
-  noexcept
+inline
+auto alloy::io::operator|=(open_mode& lhs, open_mode rhs) noexcept -> open_mode&
 {
   return lhs = (lhs | rhs);
 }

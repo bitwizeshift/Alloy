@@ -34,11 +34,11 @@ namespace {
     : public alloy::io::message_pump::listener
   {
   public:
-    void handle_message(const alloy::io::event& e) noexcept override;
+    auto handle_message(const alloy::io::event& e) noexcept -> void override;
   };
 
-  void window_listener::handle_message(const alloy::io::event& e)
-    noexcept
+  auto window_listener::handle_message(const alloy::io::event& e)
+    noexcept -> void
   {
     if (e.is<alloy::io::window_show_event>()) {
       std::cout << "window_show_event{}" << std::endl;
@@ -61,7 +61,7 @@ namespace {
 
 // An exception escaping an example should simply terminate it.
 // NOLINTNEXTLINE(bugprone-exception-escape)
-int main(int argc, char** argv)
+auto main(int argc, char** argv) -> int
 {
   alloy::core::compiler::unused(argc);
   alloy::core::compiler::unused(argv);

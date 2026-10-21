@@ -132,8 +132,7 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE
-alloy::core::thread_group::thread_group(allocator alloc)
-  noexcept
+alloy::core::thread_group::thread_group(allocator alloc) noexcept
   : m_threads{stl_allocator_adapter<std::thread>{alloc}}
 {
 
@@ -146,15 +145,13 @@ alloy::core::thread_group::thread_group(allocator alloc)
 template <typename...Args>
   requires std::constructible_from<std::thread, Args...>
 ALLOY_FORCE_INLINE
-auto alloy::core::thread_group::emplace_thread(Args&&...args)
-  -> void
+auto alloy::core::thread_group::emplace_thread(Args&&...args) -> void
 {
   m_threads.emplace_back(std::forward<Args>(args)...);
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::thread_group::add_thread(std::thread thread)
-  -> void
+auto alloy::core::thread_group::add_thread(std::thread thread) -> void
 {
   ALLOY_ASSERT(thread.joinable());
 
@@ -162,8 +159,7 @@ auto alloy::core::thread_group::add_thread(std::thread thread)
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::thread_group::reserve(size_type n)
-  -> void
+auto alloy::core::thread_group::reserve(size_type n) -> void
 {
   m_threads.reserve(n.count());
 }
@@ -173,8 +169,7 @@ auto alloy::core::thread_group::reserve(size_type n)
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::core::thread_group::join_all()
-  noexcept -> void
+auto alloy::core::thread_group::join_all() noexcept -> void
 {
   for (auto& thread : m_threads) {
     thread.join();
@@ -183,8 +178,7 @@ auto alloy::core::thread_group::join_all()
 }
 
 inline
-auto alloy::core::thread_group::detach_all()
-  noexcept -> void
+auto alloy::core::thread_group::detach_all() noexcept -> void
 {
   for (auto& thread : m_threads) {
     thread.detach();
@@ -193,22 +187,19 @@ auto alloy::core::thread_group::detach_all()
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::thread_group::swap(thread_group& group)
-  noexcept -> void
+auto alloy::core::thread_group::swap(thread_group& group) noexcept -> void
 {
   m_threads.swap(group.m_threads);
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::thread_group::size()
-  const noexcept -> size_type
+auto alloy::core::thread_group::size() const noexcept -> size_type
 {
   return size_type{m_threads.size()};
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::thread_group::empty()
-  const noexcept -> bool
+auto alloy::core::thread_group::empty() const noexcept -> bool
 {
   return m_threads.empty();
 }

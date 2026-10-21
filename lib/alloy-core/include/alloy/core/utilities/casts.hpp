@@ -191,8 +191,7 @@ auto alloy::core::casts::narrow_cast(From from)
 template<typename To, typename From>
   requires (std::integral<To> && std::integral<From>)
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::casts::checked_narrow_cast(From from)
-  noexcept -> To
+auto alloy::core::casts::checked_narrow_cast(From from) noexcept -> To
 {
   auto to = static_cast<To>(from);
 
@@ -213,8 +212,7 @@ auto alloy::core::casts::checked_narrow_cast(From from)
 template <typename To, typename From>
   requires (std::is_pointer_v<To> && std::is_pointer_v<From>)
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::casts::pointer_cast(From ptr)
-  noexcept -> To
+auto alloy::core::casts::pointer_cast(From ptr) noexcept -> To
 {
   ALLOY_ASSERT(
     static_cast<To>(ptr) == dynamic_cast<To>(ptr),
@@ -229,8 +227,7 @@ template<typename To, typename From>
             std::is_trivially_copyable_v<From> &&
             std::is_trivially_copyable_v<To>)
 ALLOY_FORCE_INLINE
-auto alloy::core::casts::bit_cast(const From& from)
-  noexcept -> To
+auto alloy::core::casts::bit_cast(const From& from) noexcept -> To
 {
     To to;
     std::memcpy(&to, &from, sizeof(To));

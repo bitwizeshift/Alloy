@@ -42,10 +42,12 @@ namespace alloy::core {
     /// \param t2 the second point in the triangle
     /// \param t3 the third point in the triangle
     /// \return the barycentric coordinate
-    static auto from_cartesion(const point3& p,
-                               const point3& t1,
-                               const point3& t2,
-                               const point3& t3) noexcept -> barycentric;
+    static auto from_cartesion(
+      const point3& p,
+      const point3& t1,
+      const point3& t2,
+      const point3& t3
+    ) noexcept -> barycentric;
 
     /// \brief Computes the barycentric coordinate given a world point \p p and
     ///        a triangle made up from points \p t1, \p t2, and \p t3
@@ -55,10 +57,12 @@ namespace alloy::core {
     /// \param t2 the second point in the triangle
     /// \param t3 the third point in the triangle
     /// \return the barycentric coordinate
-    static auto from_cartesion(const point2& p,
-                               const point2& t1,
-                               const point2& t2,
-                               const point2& t3) noexcept -> barycentric;
+    static auto from_cartesion(
+      const point2& p,
+      const point2& t1,
+      const point2& t2,
+      const point2& t3
+    ) noexcept -> barycentric;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -141,19 +145,19 @@ namespace alloy::core {
 } // namespace alloy::core
 
 inline constexpr
-alloy::core::barycentric::barycentric(real u, real v, real w)
-  noexcept
+alloy::core::barycentric::barycentric(real u, real v, real w) noexcept
   : m_data{u, v, w}
 {
 
 }
 
 inline
-auto alloy::core::barycentric::from_cartesion(const point3& p,
-                                              const point3& t0,
-                                              const point3& t1,
-                                              const point3& t2)
-  noexcept -> barycentric
+auto alloy::core::barycentric::from_cartesion(
+  const point3& p,
+  const point3& t0,
+  const point3& t1,
+  const point3& t2
+) noexcept -> barycentric
 {
     const auto v0 = (t1 - t0);
     const auto v1 = (t2 - t0);
@@ -175,11 +179,12 @@ auto alloy::core::barycentric::from_cartesion(const point3& p,
 
 
 inline
-auto alloy::core::barycentric::from_cartesion(const point2& p,
-                                              const point2& t0,
-                                              const point2& t1,
-                                              const point2& t2)
-  noexcept -> barycentric
+auto alloy::core::barycentric::from_cartesion(
+  const point2& p,
+  const point2& t0,
+  const point2& t1,
+  const point2& t2
+) noexcept -> barycentric
 {
   const auto v0 = (t1 - t0);
   const auto v1 = (t2 - t0);
@@ -194,57 +199,49 @@ auto alloy::core::barycentric::from_cartesion(const point2& p,
 }
 
 inline constexpr
-auto alloy::core::barycentric::u()
-  noexcept -> real&
+auto alloy::core::barycentric::u() noexcept -> real&
 {
   return m_data[0];
 }
 
 inline constexpr
-auto alloy::core::barycentric::u()
-  const noexcept -> real
+auto alloy::core::barycentric::u() const noexcept -> real
 {
   return m_data[0];
 }
 
 inline constexpr
-auto alloy::core::barycentric::v()
-  noexcept -> real&
+auto alloy::core::barycentric::v() noexcept -> real&
 {
   return m_data[1];
 }
 
 inline constexpr
-auto alloy::core::barycentric::v()
-  const noexcept -> real
+auto alloy::core::barycentric::v() const noexcept -> real
 {
   return m_data[1];
 }
 
 inline constexpr
-auto alloy::core::barycentric::w()
-  noexcept -> real&
+auto alloy::core::barycentric::w() noexcept -> real&
 {
   return m_data[2];
 }
 
 inline constexpr
-auto alloy::core::barycentric::w()
-  const noexcept -> real
+auto alloy::core::barycentric::w() const noexcept -> real
 {
   return m_data[2];
 }
 
 inline constexpr
-auto alloy::core::barycentric::data()
-  const noexcept -> const real*
+auto alloy::core::barycentric::data() const noexcept -> const real*
 {
   return m_data;
 }
 
 inline constexpr
-auto alloy::core::barycentric::size()
-  const noexcept -> std::size_t
+auto alloy::core::barycentric::size() const noexcept -> std::size_t
 {
   return 3u;
 }

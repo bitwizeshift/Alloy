@@ -73,9 +73,11 @@ namespace alloy::extra {
     /// \param dimensions the dimensions of the window
     /// \param version the GL version
     ALLOY_EXTRA_SDL2_API
-    static sdl2_gl_window from_window_data( const char* title,
-                                            const dimensions& dimensions,
-                                            sdl_gl_version version );
+    static auto from_window_data(
+      const char* title,
+      const dimensions& dimensions,
+      sdl_gl_version version
+    ) -> sdl2_gl_window;
 
     /// \brief Constructs a window from the specified window data
     ///
@@ -84,10 +86,12 @@ namespace alloy::extra {
     /// \param dimensions the dimensions of the window
     /// \param version the GL version
     ALLOY_EXTRA_SDL2_API
-    static sdl2_gl_window from_window_data( const char* title,
-                                            const position& position,
-                                            const dimensions& dimensions,
-                                            sdl_gl_version version );
+    static auto from_window_data(
+      const char* title,
+      const position& position,
+      const dimensions& dimensions,
+      sdl_gl_version version
+    ) -> sdl2_gl_window;
 
     //--------------------------------------------------------------------------
     // Constructors / Destructor / Assignment
@@ -104,14 +108,16 @@ namespace alloy::extra {
     /// \param window the window handle
     /// \param context the opengl context
     ALLOY_EXTRA_SDL2_API
-    sdl2_gl_window( core::not_null<::SDL_Window*> window,
-                    ::SDL_GLContext context ) noexcept;
+    sdl2_gl_window(
+      core::not_null<::SDL_Window*> window,
+      ::SDL_GLContext context
+    ) noexcept;
 
     /// \brief Constructs an sdl2_gl_window by moving the contents from \p other
     ///
     /// \param other the other window to move
-    sdl2_gl_window( sdl2_gl_window&& other ) noexcept = default;
-    sdl2_gl_window( const sdl2_gl_window& other ) = delete;
+    sdl2_gl_window(sdl2_gl_window&& other) noexcept = default;
+    sdl2_gl_window(const sdl2_gl_window& other) = delete;
 
     //--------------------------------------------------------------------------
 
@@ -123,8 +129,9 @@ namespace alloy::extra {
     /// \brief Assigns an sdl2_gl_window by moving the contents from \p other
     ///
     /// \param other the other window to move
-    sdl2_gl_window& operator=( sdl2_gl_window&& other ) noexcept = default;
-    sdl2_gl_window& operator=( const sdl2_gl_window& other ) = delete;
+    auto operator=(sdl2_gl_window&& other)
+      noexcept -> sdl2_gl_window& = default;
+    auto operator=(const sdl2_gl_window& other) -> sdl2_gl_window& = delete;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -135,7 +142,7 @@ namespace alloy::extra {
     ///
     /// \return the underlying window handle
     ALLOY_EXTRA_SDL2_API
-    context_handle_type context_handle() const noexcept;
+    auto context_handle() const noexcept -> context_handle_type;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -146,14 +153,14 @@ namespace alloy::extra {
     ///
     /// \param interval the interval for doing framerate swaps
     ALLOY_EXTRA_SDL2_API
-    void set_swap_interval( swap_interval interval );
+    auto set_swap_interval(swap_interval interval) -> void;
 
     //--------------------------------------------------------------------------
     // Hooks : Modifiers
     //--------------------------------------------------------------------------
   protected:
 
-    void do_update() override;
+    auto do_update() -> void override;
 
     //--------------------------------------------------------------------------
     // Protected Members

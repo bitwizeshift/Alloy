@@ -44,7 +44,7 @@ namespace {
     /// This is a no-op
     ///
     /// \param stream the stream to finalize
-    void finalize(alloy::io::file_stream* stream) noexcept override;
+    auto finalize(alloy::io::file_stream* stream) noexcept -> void override;
   };
 
   //===========================================================================
@@ -86,7 +86,8 @@ namespace {
     /// \brief Returns 0
     ///
     /// \return 0
-    alloy::core::result<size_type,std::error_code> bytes() const noexcept override;
+    auto bytes()
+      const noexcept -> alloy::core::result<size_type,std::error_code> override;
 
     //-------------------------------------------------------------------------
     // File API
@@ -96,12 +97,12 @@ namespace {
     /// \brief Closes this file
     ///
     /// This is a no-op for random files
-    void close() noexcept override;
+    auto close() noexcept -> void override;
 
     /// \brief Resets the file cursor back to the start position
     ///
     /// \return void on success
-    alloy::core::result<void,std::error_code> reset() noexcept override;
+    auto reset() noexcept -> alloy::core::result<void,std::error_code> override;
 
     /// \brief Skips the next \p offset bytes
     ///
@@ -109,15 +110,17 @@ namespace {
     ///
     /// \param offset ignored
     /// \return void
-    alloy::core::result<void,std::error_code>
-      skip(offset_type offset) noexcept override;
+    auto skip(offset_type offset)
+      noexcept -> alloy::core::result<void,std::error_code> override;
 
     /// \brief Reads random values into \p buffer
     ///
     /// \param buffer the buffer to read into
     /// \return the buffer
-    alloy::core::result<alloy::io::mutable_buffer,std::error_code>
-      read(alloy::io::mutable_buffer buffer) noexcept override;
+    auto read(alloy::io::mutable_buffer buffer)
+      noexcept
+      -> alloy::core::result<alloy::io::mutable_buffer,std::error_code>
+      override;
 
     /// \brief 'Writes' \p buffer to the random file
     ///
@@ -125,8 +128,9 @@ namespace {
     ///
     /// \param buffer the buffer to write
     /// \return buffer
-    alloy::core::result<alloy::io::const_buffer,std::error_code>
-      write(alloy::io::const_buffer buffer) noexcept override;
+    auto write(alloy::io::const_buffer buffer)
+      noexcept
+      -> alloy::core::result<alloy::io::const_buffer,std::error_code> override;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -141,8 +145,8 @@ namespace {
   // definitions : class : random_file_stream_finalizer
   //===========================================================================
 
-  void random_file_stream_finalizer::finalize(alloy::io::file_stream* stream)
-    noexcept
+  auto random_file_stream_finalizer::finalize(alloy::io::file_stream* stream)
+    noexcept -> void
   {
     alloy::core::compiler::unused(stream);
   }
@@ -155,8 +159,7 @@ namespace {
   // Constructors
   //---------------------------------------------------------------------------
 
-  random_file_stream::random_file_stream(seed_type seed)
-    noexcept
+  random_file_stream::random_file_stream(seed_type seed) noexcept
     : m_engine{seed},
       m_distribution{0u,255u}
   {
@@ -167,9 +170,9 @@ namespace {
   // Observers
   //---------------------------------------------------------------------------
 
-  alloy::core::result<alloy::io::file_stream::size_type,std::error_code>
-    random_file_stream::bytes()
+  auto random_file_stream::bytes()
     const noexcept
+    -> alloy::core::result<alloy::io::file_stream::size_type,std::error_code>
   {
     return 0u;
   }
@@ -178,30 +181,27 @@ namespace {
   // File API
   //---------------------------------------------------------------------------
 
-  void random_file_stream::close()
-    noexcept
+  auto random_file_stream::close() noexcept -> void
   {
     // Nothing to do
   }
 
-  alloy::core::result<void,std::error_code> random_file_stream::reset()
-    noexcept
+  auto random_file_stream::reset()
+    noexcept -> alloy::core::result<void,std::error_code>
   {
     return {};
   }
 
-  alloy::core::result<void,std::error_code>
-    random_file_stream::skip(offset_type offset)
-    noexcept
+  auto random_file_stream::skip(offset_type offset)
+    noexcept -> alloy::core::result<void,std::error_code>
   {
     alloy::core::compiler::unused(offset);
 
     return {};
   }
 
-  alloy::core::result<alloy::io::mutable_buffer,std::error_code>
-    random_file_stream::read(alloy::io::mutable_buffer buffer)
-    noexcept
+  auto random_file_stream::read(alloy::io::mutable_buffer buffer)
+    noexcept -> alloy::core::result<alloy::io::mutable_buffer,std::error_code>
   {
     auto* const end = buffer.data() + buffer.size();
     auto* const begin = buffer.data();
@@ -215,9 +215,8 @@ namespace {
     return buffer;
   }
 
-  alloy::core::result<alloy::io::const_buffer,std::error_code>
-    random_file_stream::write(alloy::io::const_buffer buffer)
-    noexcept
+  auto random_file_stream::write(alloy::io::const_buffer buffer)
+    noexcept -> alloy::core::result<alloy::io::const_buffer,std::error_code>
   {
     return buffer;
   }
@@ -235,8 +234,7 @@ namespace {
 // std::random_device may throw if no entropy source is available, or on
 // allocation failure. Either is treated as fatal.
 // NOLINTNEXTLINE(bugprone-exception-escape)
-alloy::io::file alloy::io::random_filesystem::open()
-  noexcept
+auto alloy::io::random_filesystem::open() noexcept -> file
 {
   static auto s_mutex = std::mutex{};
   static auto s_random_device = std::random_device{};

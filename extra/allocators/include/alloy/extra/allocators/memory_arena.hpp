@@ -49,14 +49,14 @@ namespace alloy::extra {
     /// \param container the container to create a buffer from
     /// \return a memory block of the sequence container
     template <typename Container>
-    static memory_arena from_container(Container& container) noexcept;
+    static auto from_container(Container& container) noexcept -> memory_arena;
 
     /// \brief Creates a memory block from a raw array
     ///
     /// \param array the underlying array
     /// \return a memory block of the array
     template <typename T, std::size_t N>
-    static memory_arena from_array(T(&array)[N]) noexcept;
+    static auto from_array(T(&array)[N]) noexcept -> memory_arena;
 
     /// \brief Creates a memory block from a pointer and size
     ///
@@ -64,14 +64,14 @@ namespace alloy::extra {
     /// \param size the size of the array
     /// \return a memory block of the contiguous sequence
     template <typename T>
-    static memory_arena from_data(T* data, size_type size) noexcept;
+    static auto from_data(T* data, size_type size) noexcept -> memory_arena;
 
     /// \brief Creates a memory block by reading its object representation
     ///
     /// \param object the object to view
     /// \return a memory block from the object
     template <typename T>
-    static memory_arena from_object(T& object) noexcept;
+    static auto from_object(T& object) noexcept -> memory_arena;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -99,7 +99,8 @@ namespace alloy::extra {
     ///
     /// \param other the other memory_arena to copy
     /// \return reference to `(*this)`
-    memory_arena& operator=(const memory_arena& other) noexcept = default;
+    auto operator=(const memory_arena& other)
+      noexcept -> memory_arena& = default;
 
     //--------------------------------------------------------------------------
     // Element Access
@@ -109,21 +110,21 @@ namespace alloy::extra {
     /// \brief Retrieves the pointer to the data
     ///
     /// \return the pointer to the data
-    constexpr void* data() const noexcept;
+    constexpr auto data() const noexcept -> void*;
 
     /// \brief Retrieves the start address of this memory block
     ///
     /// This is the same as `data()`
     ///
     /// \return the pointer to the data block
-    void* start_address() const noexcept;
+    auto start_address() const noexcept -> void*;
 
     /// \brief Retrieves the end address of this memory block
     ///
     /// \note That the end address is 1 past the end of the memory block
     ///
     /// \return the pointer to the end of the data block
-    void* end_address() const noexcept;
+    auto end_address() const noexcept -> void*;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -133,13 +134,13 @@ namespace alloy::extra {
     /// \brief Retrieves the size of a data
     ///
     /// \return the size of the data
-    constexpr std::size_t size() const noexcept;
+    constexpr auto size() const noexcept -> std::size_t;
 
     /// \brief Evaluates whether \p ptr exists within this memory_arena
     ///
     /// \param ptr the pointer to evaluate
     /// \return `true` whether \p ptr
-    bool contains(const void* ptr) const noexcept;
+    auto contains(const void* ptr) const noexcept -> bool;
 
     /// \brief Contextually convertible to `bool`
     constexpr explicit operator bool() const noexcept;
@@ -161,10 +162,10 @@ namespace alloy::extra {
   // Equality
   //----------------------------------------------------------------------------
 
-  constexpr bool operator==(const memory_arena& lhs,
-                            const memory_arena& rhs) noexcept;
-  constexpr bool operator!=(const memory_arena& lhs,
-                            const memory_arena& rhs) noexcept;
+  constexpr auto operator==(const memory_arena& lhs, const memory_arena& rhs)
+    noexcept -> bool;
+  constexpr auto operator!=(const memory_arena& lhs, const memory_arena& rhs)
+    noexcept -> bool;
 
 } // namespace alloy::extra
 
@@ -177,17 +178,17 @@ namespace alloy::extra {
 //------------------------------------------------------------------------------
 
 template<typename Container>
-inline alloy::extra::memory_arena
-  alloy::extra::memory_arena::from_container(Container& container)
-  noexcept
+inline
+auto alloy::extra::memory_arena::from_container(Container& container)
+  noexcept -> memory_arena
 {
   return from_data(container.data(), container.size());
 }
 
 template<typename T, std::size_t N>
-inline alloy::extra::memory_arena
-  alloy::extra::memory_arena::from_array(T(&array)[N])
-  noexcept
+inline
+auto alloy::extra::memory_arena::from_array(T(&array)[N])
+  noexcept -> memory_arena
 {
   static_assert(!std::is_const_v<T>);
 
@@ -195,10 +196,9 @@ inline alloy::extra::memory_arena
 }
 
 template<typename T>
-inline alloy::extra::memory_arena
-  alloy::extra::memory_arena::from_data(T* data,
-                                        size_type size)
-  noexcept
+inline
+auto alloy::extra::memory_arena::from_data(T* data, size_type size)
+  noexcept -> memory_arena
 {
   static_assert(!std::is_const_v<T>);
 
@@ -213,9 +213,8 @@ inline alloy::extra::memory_arena
 }
 
 template<typename T>
-inline alloy::extra::memory_arena
-  alloy::extra::memory_arena::from_object(T& object)
-  noexcept
+inline
+auto alloy::extra::memory_arena::from_object(T& object) noexcept -> memory_arena
 {
   static_assert(!std::is_const_v<T>);
 
@@ -229,16 +228,15 @@ inline alloy::extra::memory_arena
 // Constructors
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::extra::memory_arena::memory_arena()
-  noexcept
+inline constexpr
+alloy::extra::memory_arena::memory_arena() noexcept
   : memory_arena{nullptr,0u}
 {
 
 }
 
-inline constexpr alloy::extra::memory_arena::memory_arena(pointer data,
-                                                          size_type size)
-  noexcept
+inline constexpr
+alloy::extra::memory_arena::memory_arena(pointer data, size_type size) noexcept
   : m_data{data},
     m_size{size}
 {
@@ -249,23 +247,22 @@ inline constexpr alloy::extra::memory_arena::memory_arena(pointer data,
 // Element Access
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::extra::memory_arena::pointer
-  alloy::extra::memory_arena::data()
-  const noexcept
+inline constexpr
+auto alloy::extra::memory_arena::data() const noexcept -> pointer
 {
   return m_data;
 }
 
 
-inline void *alloy::extra::memory_arena::start_address()
-  const noexcept
+inline
+auto alloy::extra::memory_arena::start_address() const noexcept -> void *
 {
   return m_data;
 }
 
 
-inline void *alloy::extra::memory_arena::end_address()
-  const noexcept
+inline
+auto alloy::extra::memory_arena::end_address() const noexcept -> void *
 {
   auto* const p = static_cast<std::byte*>(m_data);
 
@@ -276,22 +273,23 @@ inline void *alloy::extra::memory_arena::end_address()
 // Observers
 //------------------------------------------------------------------------------
 
-inline constexpr std::size_t alloy::extra::memory_arena::size()
-  const noexcept
+inline constexpr
+auto alloy::extra::memory_arena::size() const noexcept -> std::size_t
 {
   return m_size;
 }
 
 
-inline bool alloy::extra::memory_arena::contains(const void* ptr)
-  const noexcept
+inline
+auto alloy::extra::memory_arena::contains(const void* ptr)
+  const noexcept -> bool
 {
   return (ptr < end_address() && ptr >= start_address());
 }
 
 
-inline constexpr alloy::extra::memory_arena::operator bool()
-  const noexcept
+inline constexpr
+alloy::extra::memory_arena::operator bool() const noexcept
 {
   return m_data != nullptr;
 }
@@ -304,17 +302,17 @@ inline constexpr alloy::extra::memory_arena::operator bool()
 // Equality
 //------------------------------------------------------------------------------
 
-inline constexpr bool alloy::extra::operator==(const memory_arena& lhs,
-                                               const memory_arena& rhs)
-  noexcept
+inline constexpr
+auto alloy::extra::operator==(const memory_arena& lhs, const memory_arena& rhs)
+  noexcept -> bool
 {
   return lhs.data() == rhs.data() && lhs.size() == rhs.size();
 }
 
 
-inline constexpr bool alloy::extra::operator!=(const memory_arena& lhs,
-                                               const memory_arena& rhs)
-  noexcept
+inline constexpr
+auto alloy::extra::operator!=(const memory_arena& lhs, const memory_arena& rhs)
+  noexcept -> bool
 {
   return !(lhs==rhs);
 }

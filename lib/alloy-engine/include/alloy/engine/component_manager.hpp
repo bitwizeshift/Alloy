@@ -58,8 +58,8 @@ namespace alloy::engine {
 
     //--------------------------------------------------------------------------
 
-    component_manager& operator=(component_manager&&) = default;
-    component_manager& operator=(const component_manager&) = delete;
+    auto operator=(component_manager&&) -> component_manager& = default;
+    auto operator=(const component_manager&) -> component_manager& = delete;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -71,7 +71,7 @@ namespace alloy::engine {
     /// \tparam Component the component to register
     /// \return the index of the component
     template <typename Component>
-    component register_component();
+    auto register_component() -> component;
 
     /// \brief Attaches a component to a given entity
     ///
@@ -79,19 +79,19 @@ namespace alloy::engine {
     /// \param c the component to attach
     /// \return reference to the attached component
     template <typename Component>
-    Component& attach_component(entity e, Component c);
+    auto attach_component(entity e, Component c) -> Component&;
 
     /// \brief Detaches a component from an entity
     ///
     /// \tparam Component the component to detach
     /// \param e the entity to detach the component from
     template <typename Component>
-    void detach_component(entity e);
+    auto detach_component(entity e) -> void;
 
     /// \brief Detaches all components from an entity
     ///
     /// \param e the entity to detach all components from
-    void detach_all_components(entity e);
+    auto detach_all_components(entity e) -> void;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -105,7 +105,7 @@ namespace alloy::engine {
     /// \tparam Component the component to get the index for
     /// \return the component index
     template <typename Component>
-    component get_component_index() const;
+    auto get_component_index() const -> component;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -118,7 +118,7 @@ namespace alloy::engine {
     class storage;
 
     template <typename Component>
-    storage<Component>& get_storage();
+    auto get_storage() -> storage<Component>&;
 
     std::vector<core::type_index::index_type> m_component_ids;
     std::vector<std::unique_ptr<storage_base>> m_component_storages;
@@ -152,8 +152,8 @@ namespace alloy::engine {
 
     //--------------------------------------------------------------------------
 
-    storage_base& operator=(storage_base&&) = default;
-    storage_base& operator=(const storage_base&) = delete;
+    auto operator=(storage_base&&) -> storage_base& = default;
+    auto operator=(const storage_base&) -> storage_base& = delete;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -163,7 +163,7 @@ namespace alloy::engine {
     /// \brief Detaches a component from the given \p entity
     ///
     /// \param e the entity to detach
-    virtual void detach_component(entity e) = 0;
+    virtual auto detach_component(entity e) -> void = 0;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -175,7 +175,7 @@ namespace alloy::engine {
     ///
     /// \param e the entity to query
     /// \return `true` if t \p e has an attached component
-    virtual bool has_component(entity e) const noexcept = 0;
+    virtual auto has_component(entity e) const noexcept -> bool = 0;
   };
 
   //============================================================================
@@ -207,8 +207,8 @@ namespace alloy::engine {
 
     //--------------------------------------------------------------------------
 
-    storage& operator=(storage&&) = default;
-    storage& operator=(const storage&) = delete;
+    auto operator=(storage&&) -> storage& = default;
+    auto operator=(const storage&) -> storage& = delete;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -224,7 +224,7 @@ namespace alloy::engine {
     /// \param e the entity to attach the component to
     /// \param c the component to attach
     /// \return reference to the component
-    component_type& attach_component(entity e, component_type c);
+    auto attach_component(entity e, component_type c) -> component_type&;
 
     /// \brief Detaches a component from the given \p entity
     ///
@@ -232,7 +232,7 @@ namespace alloy::engine {
     ///       references.
     ///
     /// \param e the entity to detach
-    void detach_component(entity e) override;
+    auto detach_component(entity e) -> void override;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -243,14 +243,14 @@ namespace alloy::engine {
     ///
     /// \param e the entity to get the component for
     /// \return the component
-    component_type& get_component(entity e) const;
+    auto get_component(entity e) const -> component_type&;
 
     /// \brief Checks whether this component_manager has a component registered
     ///        for a given entity \p e
     ///
     /// \param e the entity to query
     /// \return `true` if t \p e has an attached component
-    bool has_component(entity e) const noexcept override;
+    auto has_component(entity e) const noexcept -> bool override;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -275,9 +275,11 @@ namespace alloy::engine {
 //==============================================================================
 
 template <typename Component>
-inline typename alloy::engine::component_manager::storage<Component>::component_type&
-  alloy::engine::component_manager::storage<Component>
-  ::attach_component(entity e, component_type c)
+inline
+auto alloy::engine::component_manager::storage<Component>::attach_component(
+  entity e,
+  component_type c
+) -> typename storage<Component>::component_type&
 {
   ALLOY_ASSERT(
     m_entity_to_index.find(e) == m_entity_to_index.end(),
@@ -292,8 +294,10 @@ inline typename alloy::engine::component_manager::storage<Component>::component_
 }
 
 template <typename Component>
-inline void alloy::engine::component_manager::storage<Component>
-  ::detach_component(entity e)
+inline
+auto alloy::engine::component_manager::storage<Component>::detach_component(
+  entity e
+) -> void
 {
   ALLOY_ASSERT(
     m_entity_to_index.find(e) != m_entity_to_index.end(),
@@ -322,10 +326,10 @@ inline void alloy::engine::component_manager::storage<Component>
 }
 
 template <typename Component>
-inline typename alloy::engine::component_manager::storage<Component>::component_type&
-  alloy::engine::component_manager::storage<Component>
-  ::get_component(entity e)
-  const
+inline
+auto alloy::engine::component_manager::storage<Component>::get_component(
+  entity e
+) const -> typename storage<Component>::component_type&
 {
   const auto it = m_entity_to_index.find(e);
   ALLOY_ASSERT(
@@ -338,9 +342,10 @@ inline typename alloy::engine::component_manager::storage<Component>::component_
 }
 
 template <typename Component>
-inline bool alloy::engine::component_manager::storage<Component>
-  ::has_component(entity e)
-  const noexcept
+inline
+auto alloy::engine::component_manager::storage<Component>::has_component(
+  entity e
+) const noexcept -> bool
 {
   return m_entity_to_index.find(e) != m_entity_to_index.end();
 }
@@ -354,8 +359,8 @@ inline bool alloy::engine::component_manager::storage<Component>
 //------------------------------------------------------------------------------
 
 template <typename Component>
-inline alloy::engine::component
-  alloy::engine::component_manager::register_component()
+inline
+auto alloy::engine::component_manager::register_component() -> component
 {
   // Must be a value type
   static_assert( !std::is_reference<Component>::value );
@@ -382,8 +387,9 @@ inline alloy::engine::component
 }
 
 template <typename Component>
-inline Component&
-  alloy::engine::component_manager::attach_component(entity e, Component c)
+inline
+auto alloy::engine::component_manager::attach_component(entity e, Component c)
+  -> Component&
 {
   // Must be a value type
   static_assert( !std::is_reference<Component>::value );
@@ -396,7 +402,8 @@ inline Component&
 }
 
 template <typename Component>
-inline void alloy::engine::component_manager::detach_component(entity e)
+inline
+auto alloy::engine::component_manager::detach_component(entity e) -> void
 {
   // Must be a value type
   static_assert( !std::is_reference<Component>::value );
@@ -413,9 +420,8 @@ inline void alloy::engine::component_manager::detach_component(entity e)
 //------------------------------------------------------------------------------
 
 template <typename Component>
-inline alloy::engine::component
-  alloy::engine::component_manager::get_component_index()
-  const
+inline
+auto alloy::engine::component_manager::get_component_index() const -> component
 {
   // Must be a value type
   static_assert( !std::is_reference<Component>::value );
@@ -443,8 +449,8 @@ inline alloy::engine::component
 }
 
 template <typename Component>
-inline alloy::engine::component_manager::storage<Component>&
-  alloy::engine::component_manager::get_storage()
+inline
+auto alloy::engine::component_manager::get_storage() -> storage<Component>&
 {
   const auto component = get_component_index<Component>();
 

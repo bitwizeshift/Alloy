@@ -10,7 +10,7 @@
 #include <iostream>
 
 namespace {
-  void print_message( const alloy::io::event& e )
+  auto print_message(const alloy::io::event& e) -> void
   {
     switch (e.id()) {
       case alloy::io::event::id_of<alloy::io::file_creation_event>(): {
@@ -39,17 +39,18 @@ namespace {
 
   public:
 
-    explicit listener(int* pcount) : m_pcount{pcount} {}
+    explicit listener(int* pcount)
+      : m_pcount{pcount} {}
 
   private:
 
-    void handle_message( const alloy::io::event& e ) noexcept
+    auto handle_message(const alloy::io::event& e) noexcept -> void
     {
       ::print_message(e);
       (*m_pcount)++;
     }
 
-    void handle_immediate_message( const alloy::io::event& e ) noexcept
+    auto handle_immediate_message(const alloy::io::event& e) noexcept -> void
     {
       ::print_message(e);
       (*m_pcount)++;
@@ -57,7 +58,7 @@ namespace {
   };
 } // anonymous namespace
 
-int main(int argc, char** argv)
+auto main(int argc, char** argv) -> int
 {
   if (argc != 2) {
     std::cerr << "Usage: " << argv[0] << " <directory to watch>" << std::endl;

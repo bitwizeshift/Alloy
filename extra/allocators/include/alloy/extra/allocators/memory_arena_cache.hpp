@@ -58,10 +58,12 @@ namespace alloy::extra {
     ///
     /// \param other the other arena to move
     /// \return reference to `(*this)`
-    memory_arena_cache& operator=(memory_arena_cache&& other) noexcept = default;
+    auto operator=(memory_arena_cache&& other)
+      noexcept -> memory_arena_cache& = default;
 
     // Deleted copy assignment
-    memory_arena_cache& operator=(const memory_arena_cache& other) = delete;
+    auto operator=(const memory_arena_cache& other)
+      -> memory_arena_cache& = delete;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -71,7 +73,7 @@ namespace alloy::extra {
     /// \brief Returns whether or not this memory_arena_cache is empty
     ///
     /// \return `true` if this memory_arena_cache is empty, `false` otherwise
-    bool empty() const noexcept;
+    auto empty() const noexcept -> bool;
 
     /// \brief Returns the number of memory_arenas in this cache
     ///
@@ -79,18 +81,18 @@ namespace alloy::extra {
     /// complexity
     ///
     /// \return the number of memory_arenas in this cache
-    std::size_t size() const noexcept;
+    auto size() const noexcept -> std::size_t;
 
     /// \brief Returns the size in bytes of all the memory_arenas in the
     ///        cache
     /// \return the size in bytes
-    std::size_t size_bytes() const noexcept;
+    auto size_bytes() const noexcept -> std::size_t;
 
     /// \brief Evaluates whether \p p exists within this memory_arena_cache
     ///
     /// \param p the pointer to evaluate
     /// \return true whether \p p
-    bool contains(const void* p) const noexcept;
+    auto contains(const void* p) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Element Access
@@ -105,7 +107,7 @@ namespace alloy::extra {
     ///       is empty
     ///
     /// \return the front cache entry
-    const memory_arena& peek() const noexcept;
+    auto peek() const noexcept -> const memory_arena&;
 
     /// \brief Requests an arena from the current arena cache.
     ///
@@ -113,12 +115,12 @@ namespace alloy::extra {
     /// now owned by the accessor
     ///
     /// \return a memory arena, if available, or a null arena if unable
-    memory_arena request() noexcept;
+    auto request() noexcept -> memory_arena;
 
     /// \brief Acquires an entry from another cache
     ///
     /// \param other the cache to acquire the entry from
-    void steal(memory_arena_cache& other) noexcept;
+    auto steal(memory_arena_cache& other) noexcept -> void;
 
     /// \brief Stores an arena inside this memory_arena_cache
     ///
@@ -128,7 +130,7 @@ namespace alloy::extra {
     /// \pre `arena` points to a valid memory_arena
     ///
     /// \param arena the arena to store
-    void store(memory_arena arena) noexcept;
+    auto store(memory_arena arena) noexcept -> void;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -138,10 +140,10 @@ namespace alloy::extra {
     memory_arena m_head; ///< The head of the cache
 
     template <typename Fn>
-    void for_each_arena(Fn&& fn) const noexcept;
+    auto for_each_arena(Fn&& fn) const noexcept -> void;
 
-    friend bool operator==(const memory_arena_cache&,
-                           const memory_arena_cache&) noexcept;
+    friend auto operator==(const memory_arena_cache&, const memory_arena_cache&)
+      noexcept -> bool;
   };
 
   //============================================================================
@@ -152,10 +154,10 @@ namespace alloy::extra {
   // Equality
   //----------------------------------------------------------------------------
 
-  bool operator==(const memory_arena_cache& lhs,
-                  const memory_arena_cache& rhs) noexcept;
-  bool operator!=(const memory_arena_cache& lhs,
-                  const memory_arena_cache& rhs) noexcept;
+  auto operator==(const memory_arena_cache& lhs, const memory_arena_cache& rhs)
+    noexcept -> bool;
+  auto operator!=(const memory_arena_cache& lhs, const memory_arena_cache& rhs)
+    noexcept -> bool;
 
 } // namespace alloy::extra
 
@@ -167,17 +169,21 @@ namespace alloy::extra {
 // Equality
 //------------------------------------------------------------------------------
 
-inline bool alloy::extra::operator==(const memory_arena_cache& lhs,
-                                     const memory_arena_cache& rhs)
-  noexcept
+inline
+auto alloy::extra::operator==(
+  const memory_arena_cache& lhs,
+  const memory_arena_cache& rhs
+) noexcept -> bool
 {
   return lhs.m_head == rhs.m_head;
 }
 
 
-inline bool alloy::extra::operator!=(const memory_arena_cache& lhs,
-                                     const memory_arena_cache& rhs)
-  noexcept
+inline
+auto alloy::extra::operator!=(
+  const memory_arena_cache& lhs,
+  const memory_arena_cache& rhs
+) noexcept -> bool
 {
   return !(lhs == rhs);
 }

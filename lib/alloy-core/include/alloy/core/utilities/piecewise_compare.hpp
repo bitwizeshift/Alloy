@@ -40,7 +40,8 @@ namespace alloy::core {
     /// \param lhs the left operand
     /// \param rhs the right operance
     /// \return `true` if \p lhs and \p rhs can compare piecewise
-    constexpr auto operator()( const T& lhs, const T& rhs ) const noexcept -> bool;
+    constexpr auto operator()(const T& lhs, const T& rhs)
+      const noexcept -> bool;
   };
 
 } // namespace alloy::core

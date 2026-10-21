@@ -48,7 +48,7 @@ namespace alloy::io {
     /// \param path the path to watch
     /// \param recursive boolean to determine whether this should be done
     ///                  recursively to all subdirectories/files
-    void watch(std::string_view path, bool recursive = true) noexcept;
+    auto watch(std::string_view path, bool recursive = true) noexcept -> void;
 
     //--------------------------------------------------------------------------
     // Hooks
@@ -59,12 +59,13 @@ namespace alloy::io {
     ///
     /// \param path the path to watch
     /// \param recursive whether to watch files recursively in a path
-    virtual void do_watch(std::string_view path, bool recursive) noexcept = 0;
+    virtual auto do_watch(std::string_view path, bool recursive)
+      noexcept -> void = 0;
 
     /// \brief Virtual hook for handling the message pump
     ///
     /// \param p the message_pump to handle the message
-    virtual void poll(message_pump& p) noexcept = 0;
+    virtual auto poll(message_pump& p) noexcept -> void = 0;
   };
 
 } // namespace alloy::io

@@ -30,11 +30,14 @@ namespace alloy::core {
   public:
 
     constexpr source_location() noexcept = default;
-    constexpr source_location(const char* filename,
-                              const char* function,
-                              std::uint_least32_t line_number) noexcept;
+    constexpr source_location(
+      const char* filename,
+      const char* function,
+      std::uint_least32_t line_number
+    ) noexcept;
     constexpr source_location(const source_location&) noexcept = default;
-    constexpr source_location& operator=(const source_location&) noexcept = default;
+    constexpr auto operator=(const source_location&)
+      noexcept -> source_location& = default;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -85,10 +88,11 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::source_location::source_location(const char* filename,
-                                              const char* function,
-                                              std::uint_least32_t line_number)
-  noexcept
+alloy::core::source_location::source_location(
+  const char* filename,
+  const char* function,
+  std::uint_least32_t line_number
+) noexcept
   : m_filename{filename},
     m_function{function},
     m_line_number{line_number}
@@ -101,22 +105,19 @@ alloy::core::source_location::source_location(const char* filename,
 //-----------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::source_location::file_name()
-  const noexcept -> const char*
+auto alloy::core::source_location::file_name() const noexcept -> const char*
 {
   return m_filename;
 }
 
 inline constexpr
-auto alloy::core::source_location::function_name()
-  const noexcept -> const char*
+auto alloy::core::source_location::function_name() const noexcept -> const char*
 {
   return m_function;
 }
 
 inline constexpr
-auto alloy::core::source_location::line()
-  const noexcept -> std::uint_least32_t
+auto alloy::core::source_location::line() const noexcept -> std::uint_least32_t
 {
   return m_line_number;
 }

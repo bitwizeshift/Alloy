@@ -43,8 +43,8 @@ namespace alloy::io {
 
     //-------------------------------------------------------------------------
 
-    file_adapter& operator=(const file_adapter&) = default;
-    file_adapter& operator=(file_adapter&&) = default;
+    auto operator=(const file_adapter&) -> file_adapter& = default;
+    auto operator=(file_adapter&&) -> file_adapter& = default;
 
     //-------------------------------------------------------------------------
     // Destructor
@@ -63,14 +63,14 @@ namespace alloy::io {
     ///
     /// \param f the file to adapt
     /// \return the adapted file
-    file adapt(file f) noexcept;
+    auto adapt(file f) noexcept -> file;
 
     //-------------------------------------------------------------------------
     // Virtual Hooks
     //-------------------------------------------------------------------------
   private:
 
-    virtual file do_adapt(file f) noexcept = 0;
+    virtual auto do_adapt(file f) noexcept -> file = 0;
   };
 
 } // namespace alloy::io
@@ -83,8 +83,8 @@ namespace alloy::io {
 // Adapter
 //-----------------------------------------------------------------------------
 
-inline alloy::io::file alloy::io::file_adapter::adapt(file f)
-  noexcept
+inline
+auto alloy::io::file_adapter::adapt(file f) noexcept -> file
 {
   if (f.is_open()) {
     return do_adapt(std::move(f));

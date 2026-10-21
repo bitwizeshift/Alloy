@@ -181,7 +181,8 @@ namespace alloy::core {
     /// \param v2 the second lowest `u16` of the `u64`
     /// \param v3 the lowest `u16` of the `u64`
     /// \return the concatenated `u64`
-    static constexpr auto make_u64(u16 v0, u16 v1, u16 v2, u16 v3) noexcept -> u64;
+    static constexpr auto make_u64(u16 v0, u16 v1, u16 v2, u16 v3)
+      noexcept -> u64;
 
     /// \brief Creates a `u64` by concatenating eight `u8`s together
     ///
@@ -201,7 +202,16 @@ namespace alloy::core {
     /// \param b6 the seventh `u0`
     /// \param b7 the final `u0`
     /// \return the concatenated `u64`
-    static constexpr auto make_u64(u8 b0, u8 b1, u8 b2, u8 b3, u8 b4, u8 b5, u8 b6, u8 b7) noexcept -> u64;
+    static constexpr auto make_u64(
+      u8 b0,
+      u8 b1,
+      u8 b2,
+      u8 b3,
+      u8 b4,
+      u8 b5,
+      u8 b6,
+      u8 b7
+    ) noexcept -> u64;
 
     //--------------------------------------------------------------------------
     // Splitting
@@ -365,8 +375,10 @@ namespace alloy::core {
   private:
 
     template <typename Int, typename...Ints, std::size_t...Idxs>
-    static constexpr auto make_impl(std::index_sequence<Idxs...>, const Ints&...ints)
-      noexcept -> Int;
+    static constexpr auto make_impl(
+      std::index_sequence<Idxs...>,
+      const Ints&...ints
+    ) noexcept -> Int;
 
     //--------------------------------------------------------------------------
     // Private: Splitting
@@ -374,8 +386,10 @@ namespace alloy::core {
   private:
 
     template <typename To, std::size_t...Idxs, typename From>
-    static constexpr auto split_impl(const From& from, std::index_sequence<Idxs...>)
-      noexcept -> std::array<To,sizeof(From) / sizeof(To)>;
+    static constexpr auto split_impl(
+      const From& from,
+      std::index_sequence<Idxs...>
+    ) noexcept -> std::array<To,sizeof(From) / sizeof(To)>;
 
     template <typename To, typename OutputIt, typename From, std::size_t...Idxs>
     static constexpr auto split_into_impl(
@@ -442,29 +456,25 @@ auto alloy::core::int_utilities::make_impl(
 template <typename Int, typename... Ints>
   requires alloy::core::detail::exact_size_sum<Int, Ints...>
 inline constexpr
-auto alloy::core::int_utilities::make(const Ints&...ints)
-  noexcept -> Int
+auto alloy::core::int_utilities::make(const Ints&...ints) noexcept -> Int
 {
   return make_impl<Int>(std::make_index_sequence<sizeof...(Ints)>{}, ints...);
 }
 
 inline constexpr
-auto alloy::core::int_utilities::make_u8(s8 v)
-  noexcept -> u8
+auto alloy::core::int_utilities::make_u8(s8 v) noexcept -> u8
 {
   return make<s8>(v);
 }
 
 inline constexpr
-auto alloy::core::int_utilities::make_u8(u8 b)
-  noexcept -> u8
+auto alloy::core::int_utilities::make_u8(u8 b) noexcept -> u8
 {
   return b;
 }
 
 inline constexpr
-auto alloy::core::int_utilities::make_u16(s16 v)
-  noexcept -> u16
+auto alloy::core::int_utilities::make_u16(s16 v) noexcept -> u16
 {
   return make<u16>(v);
 }
@@ -472,15 +482,13 @@ auto alloy::core::int_utilities::make_u16(s16 v)
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::int_utilities::make_u16(u16 v)
-  noexcept -> u16
+auto alloy::core::int_utilities::make_u16(u16 v) noexcept -> u16
 {
   return v;
 }
 
 inline constexpr
-auto alloy::core::int_utilities::make_u16(u8 b0, u8 b1)
-  noexcept -> u16
+auto alloy::core::int_utilities::make_u16(u8 b0, u8 b1) noexcept -> u16
 {
   return make<u16>(b0,b1);
 }
@@ -488,22 +496,19 @@ auto alloy::core::int_utilities::make_u16(u8 b0, u8 b1)
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::int_utilities::make_u32(s32 v)
-  noexcept -> u32
+auto alloy::core::int_utilities::make_u32(s32 v) noexcept -> u32
 {
   return make<u32>(v);
 }
 
 inline constexpr
-auto alloy::core::int_utilities::make_u32(u32 v)
-  noexcept -> u32
+auto alloy::core::int_utilities::make_u32(u32 v) noexcept -> u32
 {
   return v;
 }
 
 inline constexpr
-auto alloy::core::int_utilities::make_u32(u16 v0, u16 v1)
-  noexcept -> u32
+auto alloy::core::int_utilities::make_u32(u16 v0, u16 v1) noexcept -> u32
 {
   return make<u32>(v0,v1);
 }
@@ -518,22 +523,19 @@ auto alloy::core::int_utilities::make_u32(u8 b0, u8 b1, u8 b2, u8 b3)
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::int_utilities::make_u64(s64 v)
-  noexcept -> u64
+auto alloy::core::int_utilities::make_u64(s64 v) noexcept -> u64
 {
   return static_cast<u64>(v);
 }
 
 inline constexpr
-auto alloy::core::int_utilities::make_u64(u64 v)
-  noexcept -> u64
+auto alloy::core::int_utilities::make_u64(u64 v) noexcept -> u64
 {
   return v;
 }
 
 inline constexpr
-auto alloy::core::int_utilities::make_u64(u32 v0, u32 v1)
-  noexcept -> u64
+auto alloy::core::int_utilities::make_u64(u32 v0, u32 v1) noexcept -> u64
 {
   return make<u64>(v0,v1);
 }
@@ -547,8 +549,14 @@ auto alloy::core::int_utilities::make_u64(u16 v0, u16 v1, u16 v2, u16 v3)
 
 inline constexpr
 auto alloy::core::int_utilities::make_u64(
-  u8 b0, u8 b1, u8 b2, u8 b3,
-  u8 b4, u8 b5, u8 b6, u8 b7
+  u8 b0,
+  u8 b1,
+  u8 b2,
+  u8 b3,
+  u8 b4,
+  u8 b5,
+  u8 b6,
+  u8 b7
 ) noexcept -> u64
 {
   return make<u64>(b0,b1,b2,b3,b4,b5,b6,b7);
@@ -642,7 +650,8 @@ auto alloy::core::int_utilities::split(const From& from)
 
 template <typename To, typename OutputIt, typename From>
 constexpr
-auto alloy::core::int_utilities::split_into(OutputIt o, const From& from) -> void
+auto alloy::core::int_utilities::split_into(OutputIt o, const From& from)
+  -> void
 {
   constexpr auto size = sizeof(From) / sizeof(To);
 
@@ -655,8 +664,7 @@ auto alloy::core::int_utilities::split_into(OutputIt o, const From& from) -> voi
 
 template <std::size_t N, typename To, typename From>
 inline constexpr
-auto alloy::core::int_utilities::extract(const From& from)
-  noexcept -> To
+auto alloy::core::int_utilities::extract(const From& from) noexcept -> To
 {
   static_assert(
     sizeof(To) <= sizeof(From),
@@ -701,7 +709,8 @@ auto alloy::core::int_utilities::extract(const From& from)
 template <typename To, std::size_t...Idxs, typename From>
 inline constexpr
 auto alloy::core::int_utilities::split_impl(
-  const From& from, std::index_sequence<Idxs...>
+  const From& from,
+  std::index_sequence<Idxs...>
 ) noexcept -> std::array<To, sizeof(From) / sizeof(To)>
 {
   return {{extract<Idxs,To>(from)...}};

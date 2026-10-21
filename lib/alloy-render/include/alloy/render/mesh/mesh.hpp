@@ -139,7 +139,8 @@ namespace alloy::render {
     ///
     /// \param config the mesh configuration to use
     /// \return the constructed mesh, on success
-    static auto from_config(mesh_config config) -> core::result<mesh,construct_error>;
+    static auto from_config(mesh_config config)
+      -> core::result<mesh,construct_error>;
 
     /// \brief Constructs a mesh from the specified \p config without performing
     ///        any checks
@@ -334,51 +335,44 @@ namespace alloy::render {
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::render::mesh::has_positions()
-  const noexcept -> bool
+auto alloy::render::mesh::has_positions() const noexcept -> bool
 {
   return m_position_components != 0u;
 }
 
 
 inline
-auto alloy::render::mesh::has_color()
-  const noexcept -> bool
+auto alloy::render::mesh::has_color() const noexcept -> bool
 {
   return m_color_components != 0u;
 }
 
 inline
-auto alloy::render::mesh::has_uvs()
-  const noexcept -> bool
+auto alloy::render::mesh::has_uvs() const noexcept -> bool
 {
   return m_uv_components != 0u;
 }
 
 inline
-auto alloy::render::mesh::has_normals()
-  const noexcept -> bool
+auto alloy::render::mesh::has_normals() const noexcept -> bool
 {
   return m_normal_components != 0u;
 }
 
 inline
-auto alloy::render::mesh::has_tangents()
-  const noexcept -> bool
+auto alloy::render::mesh::has_tangents() const noexcept -> bool
 {
   return m_tangent_components != 0u;
 }
 
 inline
-auto alloy::render::mesh::has_bitangents()
-  const noexcept -> bool
+auto alloy::render::mesh::has_bitangents() const noexcept -> bool
 {
   return m_bitangent_components != 0u;
 }
 
 inline
-auto alloy::render::mesh::has_indices()
-  const noexcept -> bool
+auto alloy::render::mesh::has_indices() const noexcept -> bool
 {
   return !m_indices.empty();
 }
@@ -386,43 +380,37 @@ auto alloy::render::mesh::has_indices()
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::render::mesh::offset_to_positions()
-  const noexcept -> core::bytes
+auto alloy::render::mesh::offset_to_positions() const noexcept -> core::bytes
 {
   return core::bytes{0u};
 }
 
 inline
-auto alloy::render::mesh::offset_to_colors()
-  const noexcept -> core::bytes
+auto alloy::render::mesh::offset_to_colors() const noexcept -> core::bytes
 {
   return offset_to_positions() + bytes_per_colors();
 }
 
 inline
-auto alloy::render::mesh::offset_to_uvs()
-  const noexcept -> core::bytes
+auto alloy::render::mesh::offset_to_uvs() const noexcept -> core::bytes
 {
   return offset_to_positions() + bytes_per_position();
 }
 
 inline
-auto alloy::render::mesh::offset_to_normals()
-  const noexcept -> core::bytes
+auto alloy::render::mesh::offset_to_normals() const noexcept -> core::bytes
 {
   return offset_to_uvs() + bytes_per_uvs();
 }
 
 inline
-auto alloy::render::mesh::offset_to_tangents()
-  const noexcept -> core::bytes
+auto alloy::render::mesh::offset_to_tangents() const noexcept -> core::bytes
 {
   return offset_to_normals() + bytes_per_normals();
 }
 
 inline
-auto alloy::render::mesh::offset_to_bitangents()
-  const noexcept -> core::bytes
+auto alloy::render::mesh::offset_to_bitangents() const noexcept -> core::bytes
 {
   return offset_to_tangents() + bytes_per_tangents();
 }
@@ -430,8 +418,7 @@ auto alloy::render::mesh::offset_to_bitangents()
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::render::mesh::bytes_per_position()
-  const noexcept -> core::bytes
+auto alloy::render::mesh::bytes_per_position() const noexcept -> core::bytes
 {
   return core::bytes{
     m_position_components * sizeof(float)
@@ -439,8 +426,7 @@ auto alloy::render::mesh::bytes_per_position()
 }
 
 inline
-auto alloy::render::mesh::bytes_per_colors()
-  const noexcept -> core::bytes
+auto alloy::render::mesh::bytes_per_colors() const noexcept -> core::bytes
 {
   return core::bytes{
     (m_color_components & 0x0f)
@@ -448,8 +434,7 @@ auto alloy::render::mesh::bytes_per_colors()
 }
 
 inline
-auto alloy::render::mesh::bytes_per_uvs()
-  const noexcept -> core::bytes
+auto alloy::render::mesh::bytes_per_uvs() const noexcept -> core::bytes
 {
   return core::bytes{
     m_uv_components * sizeof(float)
@@ -457,8 +442,7 @@ auto alloy::render::mesh::bytes_per_uvs()
 }
 
 inline
-auto alloy::render::mesh::bytes_per_normals()
-  const noexcept -> core::bytes
+auto alloy::render::mesh::bytes_per_normals() const noexcept -> core::bytes
 {
   return core::bytes{
     (m_normal_components & 0x0f) * sizeof(std::uint16_t)
@@ -466,8 +450,7 @@ auto alloy::render::mesh::bytes_per_normals()
 }
 
 inline
-auto alloy::render::mesh::bytes_per_tangents()
-  const noexcept -> core::bytes
+auto alloy::render::mesh::bytes_per_tangents() const noexcept -> core::bytes
 {
   return core::bytes{
     (m_tangent_components & 0x0f) * sizeof(std::uint16_t)
@@ -475,8 +458,7 @@ auto alloy::render::mesh::bytes_per_tangents()
 }
 
 inline
-auto alloy::render::mesh::bytes_per_bitangents()
-  const noexcept -> core::bytes
+auto alloy::render::mesh::bytes_per_bitangents() const noexcept -> core::bytes
 {
   return core::bytes{
     (m_bitangent_components & 0x0f) * sizeof(std::uint16_t)
@@ -486,43 +468,37 @@ auto alloy::render::mesh::bytes_per_bitangents()
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::render::mesh::position_components()
-  const noexcept -> std::size_t
+auto alloy::render::mesh::position_components() const noexcept -> std::size_t
 {
   return m_position_components;
 }
 
 inline
-auto alloy::render::mesh::color_components()
-  const noexcept -> std::size_t
+auto alloy::render::mesh::color_components() const noexcept -> std::size_t
 {
   return (m_color_components >> 4u);
 }
 
 inline
-auto alloy::render::mesh::uv_components()
-  const noexcept -> std::size_t
+auto alloy::render::mesh::uv_components() const noexcept -> std::size_t
 {
   return m_uv_components;
 }
 
 inline
-auto alloy::render::mesh::normal_components()
-  const noexcept -> std::size_t
+auto alloy::render::mesh::normal_components() const noexcept -> std::size_t
 {
   return (m_normal_components >> 4u);
 }
 
 inline
-auto alloy::render::mesh::tangent_components()
-  const noexcept -> std::size_t
+auto alloy::render::mesh::tangent_components() const noexcept -> std::size_t
 {
   return (m_tangent_components >> 4u);
 }
 
 inline
-auto alloy::render::mesh::bitangent_components()
-  const noexcept -> std::size_t
+auto alloy::render::mesh::bitangent_components() const noexcept -> std::size_t
 {
   return (m_bitangent_components >> 4u);
 }
@@ -530,8 +506,7 @@ auto alloy::render::mesh::bitangent_components()
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::render::mesh::stride()
-  const noexcept -> core::bytes
+auto alloy::render::mesh::stride() const noexcept -> core::bytes
 {
   return (
     bytes_per_position() +
@@ -544,15 +519,13 @@ auto alloy::render::mesh::stride()
 }
 
 inline
-auto alloy::render::mesh::topology()
-  const noexcept -> primitive_topology
+auto alloy::render::mesh::topology() const noexcept -> primitive_topology
 {
   return m_topology;
 }
 
 inline
-auto alloy::render::mesh::data()
-  const noexcept -> std::span<const std::byte>
+auto alloy::render::mesh::data() const noexcept -> std::span<const std::byte>
 {
   return std::span<const std::byte>{
     m_compressed_data.data(),

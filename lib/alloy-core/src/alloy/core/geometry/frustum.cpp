@@ -10,8 +10,7 @@
 
 #include "alloy/core/geometry/frustum.hpp"
 
-auto alloy::core::frustum::contains(const point3& p)
-  const noexcept -> bool
+auto alloy::core::frustum::contains(const point3& p) const noexcept -> bool
 {
   for (const auto& plane : m_planes) {
     if (plane.distance_to(p) < 0) {
@@ -21,10 +20,14 @@ auto alloy::core::frustum::contains(const point3& p)
   return true;
 }
 
-auto alloy::core::frustum::make(const plane& left, const plane& right,
-                                const plane& top,  const plane& bottom,
-                                const plane& near, const plane& far)
-  -> frustum
+auto alloy::core::frustum::make(
+  const plane& left,
+  const plane& right,
+  const plane& top,
+  const plane& bottom,
+  const plane& near,
+  const plane& far
+) -> frustum
 {
   ALLOY_ALWAYS_ASSERT(left.normal().dot(right.normal()) < 0);
   ALLOY_ALWAYS_ASSERT(top.normal().dot(bottom.normal()) < 0);

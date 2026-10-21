@@ -70,7 +70,8 @@ namespace alloy::engine {
     semi_fixed_game_loop(const semi_fixed_game_loop&) = delete;
     semi_fixed_game_loop(semi_fixed_game_loop&&) = delete;
 
-    auto operator=(const semi_fixed_game_loop&) -> semi_fixed_game_loop& = delete;
+    auto operator=(const semi_fixed_game_loop&)
+      -> semi_fixed_game_loop& = delete;
     auto operator=(semi_fixed_game_loop&&) -> semi_fixed_game_loop& = delete;
 
     //--------------------------------------------------------------------------
@@ -118,8 +119,7 @@ alloy::engine::semi_fixed_game_loop<Derived,Clock>::semi_fixed_game_loop()
 
 template <typename Derived, typename Clock>
 inline
-auto alloy::engine::semi_fixed_game_loop<Derived,Clock>::run()
-  -> void
+auto alloy::engine::semi_fixed_game_loop<Derived,Clock>::run() -> void
 {
   m_is_running.store(true);
 
@@ -158,8 +158,7 @@ auto alloy::engine::semi_fixed_game_loop<Derived,Clock>::run()
 
 template <typename Derived, typename Clock>
 inline
-auto alloy::engine::semi_fixed_game_loop<Derived,Clock>::stop()
-  noexcept -> void
+auto alloy::engine::semi_fixed_game_loop<Derived,Clock>::stop() noexcept -> void
 {
   m_is_running.store(false);
 }

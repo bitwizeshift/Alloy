@@ -43,7 +43,7 @@ auto to_mouse_button(::Uint8 code) -> std::optional<alloy::io::mouse::button>
   return std::nullopt;
 }
 
-alloy::io::keyboard::scan_code to_scan_code(::SDL_Scancode code)
+auto to_scan_code(::SDL_Scancode code) -> alloy::io::keyboard::scan_code
 {
   switch (code) {
     //-------------------------------------------------------------------------
@@ -442,7 +442,7 @@ alloy::io::keyboard::scan_code to_scan_code(::SDL_Scancode code)
   return alloy::io::keyboard::scan_code::unknown;
 }
 
-alloy::io::keyboard::key_code to_key_code(::SDL_Keycode code)
+auto to_key_code(::SDL_Keycode code) -> alloy::io::keyboard::key_code
 {
   switch (static_cast<::SDL_Keycode>(code)) {
     //-------------------------------------------------------------------------
@@ -842,7 +842,7 @@ alloy::io::keyboard::key_code to_key_code(::SDL_Keycode code)
   return alloy::io::keyboard::key_code::unknown;
 }
 
-alloy::io::keyboard::modifiers to_modifiers(::SDL_Keymod modifiers)
+auto to_modifiers(::SDL_Keymod modifiers) -> alloy::io::keyboard::modifiers
 {
   const auto mod = modifiers;
 
@@ -895,8 +895,7 @@ alloy::io::keyboard::modifiers to_modifiers(::SDL_Keymod modifiers)
 // Static Functions
 //------------------------------------------------------------------------------
 
-alloy::extra::sdl2_pump_source&
-  alloy::extra::sdl2_pump_source::instance()
+auto alloy::extra::sdl2_pump_source::instance() -> sdl2_pump_source&
 {
   static auto s_instance = sdl2_pump_source{};
 
@@ -907,15 +906,17 @@ alloy::extra::sdl2_pump_source&
 // Modifiers
 //------------------------------------------------------------------------------
 
-void alloy::extra::sdl2_pump_source
-  ::attach_window( core::not_null<sdl2_window*> window )
+auto alloy::extra::sdl2_pump_source::attach_window(
+  core::not_null<sdl2_window*> window
+) -> void
 {
   const auto id = ::SDL_GetWindowID(window->window_handle());
   m_windows[static_cast<unsigned>(id)] = window.get();
 }
 
-void alloy::extra::sdl2_pump_source
-  ::detach_window( core::not_null<sdl2_window*> window )
+auto alloy::extra::sdl2_pump_source::detach_window(
+  core::not_null<sdl2_window*> window
+) -> void
 {
   const auto id = ::SDL_GetWindowID(window->window_handle());
   const auto it = m_windows.find(static_cast<unsigned>(id));
@@ -929,8 +930,7 @@ void alloy::extra::sdl2_pump_source
 // Hooks
 //------------------------------------------------------------------------------
 
-void alloy::extra::sdl2_pump_source::poll( io::message_pump& p )
-  noexcept
+auto alloy::extra::sdl2_pump_source::poll(io::message_pump& p) noexcept -> void
 {
   auto event = ::SDL_Event{};
 
@@ -964,9 +964,10 @@ void alloy::extra::sdl2_pump_source::poll( io::message_pump& p )
   }
 }
 
-void alloy::extra::sdl2_pump_source
-  ::handle_window_event(const ::SDL_Event& event, io::message_pump& p)
-  noexcept
+auto alloy::extra::sdl2_pump_source::handle_window_event(
+  const ::SDL_Event& event,
+  io::message_pump& p
+) noexcept -> void
 {
   const auto id = event.window.windowID;
   const auto it = m_windows.find(id);
@@ -1042,11 +1043,11 @@ void alloy::extra::sdl2_pump_source
   }
 }
 
-void alloy::extra::sdl2_pump_source
-  ::handle_keyboard_event(const ::SDL_Event& event,
-                          io::keyboard::key_state state,
-                          io::message_pump& p)
-  noexcept
+auto alloy::extra::sdl2_pump_source::handle_keyboard_event(
+  const ::SDL_Event& event,
+  io::keyboard::key_state state,
+  io::message_pump& p
+) noexcept -> void
 {
   const auto id = event.window.windowID;
   const auto it = m_windows.find(id);
@@ -1071,9 +1072,10 @@ void alloy::extra::sdl2_pump_source
   });
 }
 
-void alloy::extra::sdl2_pump_source::handle_mouse_event(const SDL_Event& event,
-                                                        alloy::io::message_pump& p)
-  noexcept
+auto alloy::extra::sdl2_pump_source::handle_mouse_event(
+  const SDL_Event& event,
+  alloy::io::message_pump& p
+) noexcept -> void
 {
   const auto id = event.window.windowID;
   const auto it = m_windows.find(id);

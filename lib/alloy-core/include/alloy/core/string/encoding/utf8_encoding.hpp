@@ -335,8 +335,7 @@ auto alloy::core::utf8_encoding::length(ForwardIt begin, ForwardIt end)
 }
 
 inline constexpr
-auto alloy::core::utf8_encoding::is_char_boundary(char8 unit)
-  noexcept -> bool
+auto alloy::core::utf8_encoding::is_char_boundary(char8 unit) noexcept -> bool
 {
   return ((unit & 0b10000000) == 0u || (unit & 0b11000000) == 0b11000000);
 }

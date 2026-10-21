@@ -53,8 +53,8 @@ namespace alloy::io {
 
     //-------------------------------------------------------------------------
 
-    memory_filesystem& operator=(memory_filesystem&&) = delete;
-    memory_filesystem& operator=(const memory_filesystem&) = delete;
+    auto operator=(memory_filesystem&&) -> memory_filesystem& = delete;
+    auto operator=(const memory_filesystem&) -> memory_filesystem& = delete;
 
     //-------------------------------------------------------------------------
     // Filesystem
@@ -64,7 +64,7 @@ namespace alloy::io {
     /// \brief Opens a file that reads and writes from \p buffer
     ///
     /// \return a file that reads and writes from \p buffer
-    file open(mutable_buffer buffer) noexcept;
+    auto open(mutable_buffer buffer) noexcept -> file;
 
     //-------------------------------------------------------------------------
     // Virtual Hooks : Finalization
@@ -74,7 +74,7 @@ namespace alloy::io {
     /// \brief Finalizes the file stream
     ///
     /// \param stream the stream to finalize
-    void finalize(file_stream* stream) noexcept override;
+    auto finalize(file_stream* stream) noexcept -> void override;
 
     //-------------------------------------------------------------------------
     // Private Members

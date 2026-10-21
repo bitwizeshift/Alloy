@@ -308,10 +308,10 @@ namespace alloy::core {
   // Arithmetic Operators
   //----------------------------------------------------------------------------
 
-  constexpr auto operator+(const vector4& lhs,
-                           const vector4& rhs) noexcept -> vector4;
-  constexpr auto operator-(const vector4& lhs,
-                           const vector4& rhs) noexcept -> vector4;
+  constexpr auto operator+(const vector4& lhs, const vector4& rhs)
+    noexcept -> vector4;
+  constexpr auto operator-(const vector4& lhs, const vector4& rhs)
+    noexcept -> vector4;
   constexpr auto operator*(const vector4& lhs, real scalar) noexcept -> vector4;
   constexpr auto operator*(real scalar, const vector4& lhs) noexcept -> vector4;
   constexpr auto operator/(const vector4& lhs, real scalar) noexcept -> vector4;
@@ -320,10 +320,10 @@ namespace alloy::core {
   // Comparisons
   //----------------------------------------------------------------------------
 
-  constexpr auto operator==(const vector4& lhs,
-                            const vector4& rhs) noexcept -> bool;
-  constexpr auto operator!=(const vector4& lhs,
-                            const vector4& rhs) noexcept -> bool;
+  constexpr auto operator==(const vector4& lhs, const vector4& rhs)
+    noexcept -> bool;
+  constexpr auto operator!=(const vector4& lhs, const vector4& rhs)
+    noexcept -> bool;
 
   //----------------------------------------------------------------------------
 
@@ -332,9 +332,11 @@ namespace alloy::core {
   /// \param lhs the left vector4
   /// \param rhs the right vector4
   /// \return `true` if the two vector4 contain almost equal values
-  constexpr auto almost_equal(const vector4& lhs,
-                              const vector4& rhs,
-                              real tolerance) noexcept -> bool;
+  constexpr auto almost_equal(
+    const vector4& lhs,
+    const vector4& rhs,
+    real tolerance
+  ) noexcept -> bool;
 
   //---------------------------------------------------------------------------
   // Utilities
@@ -368,8 +370,8 @@ namespace alloy::core {
   /// \param lhs the left vector4
   /// \param rhs the right vector4
   /// \return the result of the dot product
-  constexpr auto cross(const vector4& lhs,
-                       const vector4& rhs) noexcept -> vector4;
+  constexpr auto cross(const vector4& lhs, const vector4& rhs)
+    noexcept -> vector4;
 
   /// \brief Calculates the magnitude of the vector4 \p vec
   ///
@@ -384,8 +386,8 @@ namespace alloy::core {
   template<>
   struct piecewise_compare<vector4>
   {
-    constexpr auto
-      operator()(const vector4& lhs, const vector4& rhs) const noexcept -> bool;
+    constexpr auto operator()(const vector4& lhs, const vector4& rhs)
+      const noexcept -> bool;
   };
 
   //============================================================================
@@ -418,8 +420,7 @@ namespace std {
 //------------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::vector4::vector4()
-  noexcept
+alloy::core::vector4::vector4() noexcept
   : m_data{
       real{0},
       real{0},
@@ -431,8 +432,7 @@ alloy::core::vector4::vector4()
 }
 
 inline constexpr
-alloy::core::vector4::vector4(real x, real y, real z, real w)
-  noexcept
+alloy::core::vector4::vector4(real x, real y, real z, real w) noexcept
   : m_data{x,y,z,w}
 {
 
@@ -443,8 +443,7 @@ alloy::core::vector4::vector4(real x, real y, real z, real w)
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::size()
-  noexcept -> size_type
+auto alloy::core::vector4::size() noexcept -> size_type
 {
   return 4;
 }
@@ -452,16 +451,13 @@ auto alloy::core::vector4::size()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::x()
-  noexcept -> reference
+auto alloy::core::vector4::x() noexcept -> reference
 {
   return m_data[0];
 }
 
 inline constexpr
-auto alloy::core::vector4::x()
-  const noexcept
-  -> const_reference
+auto alloy::core::vector4::x() const noexcept -> const_reference
 {
   return m_data[0];
 }
@@ -469,16 +465,13 @@ auto alloy::core::vector4::x()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::y()
-  noexcept -> reference
+auto alloy::core::vector4::y() noexcept -> reference
 {
   return m_data[1];
 }
 
 inline constexpr
-auto alloy::core::vector4::y()
-  const noexcept
-  -> const_reference
+auto alloy::core::vector4::y() const noexcept -> const_reference
 {
   return m_data[1];
 }
@@ -486,16 +479,13 @@ auto alloy::core::vector4::y()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::z()
-  noexcept -> reference
+auto alloy::core::vector4::z() noexcept -> reference
 {
   return m_data[2];
 }
 
 inline constexpr
-auto alloy::core::vector4::z()
-  const noexcept
-  -> const_reference
+auto alloy::core::vector4::z() const noexcept -> const_reference
 {
   return m_data[2];
 }
@@ -503,16 +493,13 @@ auto alloy::core::vector4::z()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::w()
-  noexcept -> reference
+auto alloy::core::vector4::w() noexcept -> reference
 {
   return m_data[3];
 }
 
 inline constexpr
-auto alloy::core::vector4::w()
-  const noexcept
-  -> const_reference
+auto alloy::core::vector4::w() const noexcept -> const_reference
 {
   return m_data[3];
 }
@@ -520,16 +507,13 @@ auto alloy::core::vector4::w()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::data()
-  noexcept -> pointer
+auto alloy::core::vector4::data() noexcept -> pointer
 {
   return m_data;
 }
 
 inline constexpr
-auto alloy::core::vector4::data()
-  const noexcept
-  -> const_pointer
+auto alloy::core::vector4::data() const noexcept -> const_pointer
 {
   return m_data;
 }
@@ -539,8 +523,7 @@ auto alloy::core::vector4::data()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::at(index_type n)
-  -> reference
+auto alloy::core::vector4::at(index_type n) -> reference
 {
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
   if (n >= 4 || n < 0)
@@ -554,9 +537,7 @@ auto alloy::core::vector4::at(index_type n)
 }
 
 inline constexpr
-auto alloy::core::vector4::at(index_type n)
-  const
-  -> const_reference
+auto alloy::core::vector4::at(index_type n) const -> const_reference
 {
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
   if (n >= 4 || n < 0)
@@ -572,9 +553,7 @@ auto alloy::core::vector4::at(index_type n)
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::operator[](index_type n)
-  noexcept
-  -> reference
+auto alloy::core::vector4::operator[](index_type n) noexcept -> reference
 {
   ALLOY_ASSERT(n < 4 && n >= 0);
   return m_data[n];
@@ -582,8 +561,7 @@ auto alloy::core::vector4::operator[](index_type n)
 
 inline constexpr
 auto alloy::core::vector4::operator[](index_type n)
-  const noexcept
-  -> const_reference
+  const noexcept -> const_reference
 {
   ALLOY_ASSERT(n < 4 && n >= 0);
   return m_data[n];
@@ -594,8 +572,7 @@ auto alloy::core::vector4::operator[](index_type n)
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::dot(const vector4& other) const noexcept
-  -> real
+auto alloy::core::vector4::dot(const vector4& other) const noexcept -> real
 {
   // Use a loop to suggest vectorized math
   auto sum = real{0};
@@ -610,8 +587,7 @@ auto alloy::core::vector4::dot(const vector4& other) const noexcept
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::cross(const vector4& other) const noexcept
-  -> vector4
+auto alloy::core::vector4::cross(const vector4& other) const noexcept -> vector4
 {
   return vector4{
     (y() * other.z() - z()
@@ -625,16 +601,14 @@ auto alloy::core::vector4::cross(const vector4& other) const noexcept
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::square_magnitude()
-  const noexcept -> real
+auto alloy::core::vector4::square_magnitude() const noexcept -> real
 {
   return dot(*this);
 }
 
 inline constexpr
 auto alloy::core::vector4::midpoint(const vector4& other)
-  const noexcept
-  -> vector4
+  const noexcept -> vector4
 {
   return vector4{
     ((x() + other.x()) * real{0.5}),
@@ -646,8 +620,7 @@ auto alloy::core::vector4::midpoint(const vector4& other)
 
 inline constexpr
 auto alloy::core::vector4::projection(const vector4& vector)
-  const noexcept
-  -> vector4
+  const noexcept -> vector4
 {
   const auto multiplier = dot(vector) / dot(*this);
 
@@ -661,15 +634,13 @@ auto alloy::core::vector4::projection(const vector4& vector)
 
 inline constexpr
 auto alloy::core::vector4::rejection(const vector4& vector)
-  const noexcept
-  -> vector4
+  const noexcept -> vector4
 {
   return (*this) - projection(vector);
 }
 
 inline
-auto alloy::core::vector4::normalized()
-  const noexcept -> vector4
+auto alloy::core::vector4::normalized() const noexcept -> vector4
 {
   return vector4{*this}.normalize();
 }
@@ -677,15 +648,13 @@ auto alloy::core::vector4::normalized()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::inverse()
-  const noexcept -> vector4
+auto alloy::core::vector4::inverse() const noexcept -> vector4
 {
   return vector4{*this}.invert();
 }
 
 inline constexpr
-auto alloy::core::vector4::is_normalized()
-  const noexcept -> bool
+auto alloy::core::vector4::is_normalized() const noexcept -> bool
 {
   return almost_equal(square_magnitude(), real{1});
 }
@@ -695,8 +664,7 @@ auto alloy::core::vector4::is_normalized()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::invert()
-  noexcept -> vector4&
+auto alloy::core::vector4::invert() noexcept -> vector4&
 {
   for (auto i = 0; i < 4; ++i) {
     m_data[i] *= real{-1};
@@ -711,15 +679,13 @@ auto alloy::core::vector4::invert()
 
 inline constexpr
 auto alloy::core::vector4::operator+()
-  const noexcept
-  -> const alloy::core::vector4&
+  const noexcept -> const alloy::core::vector4&
 {
   return (*this);
 }
 
 inline constexpr
-auto alloy::core::vector4::operator-()
-  const noexcept -> vector4
+auto alloy::core::vector4::operator-() const noexcept -> vector4
 {
   return inverse();
 }
@@ -729,9 +695,7 @@ auto alloy::core::vector4::operator-()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector4::operator+=(const vector4& rhs)
-  noexcept
-  -> vector4&
+auto alloy::core::vector4::operator+=(const vector4& rhs) noexcept -> vector4&
 {
   for (auto i = 0; i < 4; ++i) {
     m_data[i] += rhs.m_data[i];
@@ -740,9 +704,7 @@ auto alloy::core::vector4::operator+=(const vector4& rhs)
 }
 
 inline constexpr
-auto alloy::core::vector4::operator-=(const vector4& rhs)
-  noexcept
-  -> vector4&
+auto alloy::core::vector4::operator-=(const vector4& rhs) noexcept -> vector4&
 {
   for (auto i = 0; i < 4; ++i) {
     m_data[i] -= rhs.m_data[i];
@@ -752,9 +714,7 @@ auto alloy::core::vector4::operator-=(const vector4& rhs)
 }
 
 inline constexpr
-auto alloy::core::vector4::operator*=(real scalar)
-  noexcept
-  -> vector4&
+auto alloy::core::vector4::operator*=(real scalar) noexcept -> vector4&
 {
   for (auto i = 0; i < 4; ++i) {
     m_data[i] *= scalar;
@@ -764,9 +724,7 @@ auto alloy::core::vector4::operator*=(real scalar)
 }
 
 inline constexpr
-auto alloy::core::vector4::operator/=(real scalar)
-  noexcept
-  -> vector4&
+auto alloy::core::vector4::operator/=(real scalar) noexcept -> vector4&
 {
   const auto inv = (real{1} / scalar);
 
@@ -787,40 +745,32 @@ auto alloy::core::vector4::operator/=(real scalar)
 
 inline constexpr
 auto alloy::core::operator+(const vector4& lhs, const vector4& rhs)
-  noexcept
-  -> vector4
+  noexcept -> vector4
 {
   return vector4(lhs)+=rhs;
 }
 
 inline constexpr
 auto alloy::core::operator-(const vector4& lhs, const vector4& rhs)
-  noexcept
-  -> vector4
+  noexcept -> vector4
 {
   return vector4(lhs)-=rhs;
 }
 
 inline constexpr
-auto alloy::core::operator*(const vector4& lhs, real scalar)
-  noexcept
-  -> vector4
+auto alloy::core::operator*(const vector4& lhs, real scalar) noexcept -> vector4
 {
   return vector4(lhs)*=scalar;
 }
 
 inline constexpr
-auto alloy::core::operator*(real scalar, const vector4& lhs)
-  noexcept
-  -> vector4
+auto alloy::core::operator*(real scalar, const vector4& lhs) noexcept -> vector4
 {
   return vector4(lhs)*=scalar;
 }
 
 inline constexpr
-auto alloy::core::operator/(const vector4& lhs, real scalar)
-  noexcept
-  -> vector4
+auto alloy::core::operator/(const vector4& lhs, real scalar) noexcept -> vector4
 {
   return vector4(lhs)/=scalar;
 }
@@ -834,8 +784,7 @@ ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr
 auto alloy::core::operator==(const vector4& lhs, const vector4& rhs)
-  noexcept
-  -> bool
+  noexcept -> bool
 {
   for (auto i=0; i<4; ++i) {
     if (lhs[i]!=rhs[i]) {
@@ -847,8 +796,7 @@ auto alloy::core::operator==(const vector4& lhs, const vector4& rhs)
 
 inline constexpr
 auto alloy::core::operator!=(const vector4& lhs, const vector4& rhs)
-  noexcept
-  -> bool
+  noexcept -> bool
 {
   return !(lhs==rhs);
 }
@@ -878,8 +826,7 @@ auto alloy::core::almost_equal(const vector4& lhs,
 
 template <std::size_t N>
 inline constexpr
-auto alloy::core::get(vector4& vec)
-  noexcept -> real&
+auto alloy::core::get(vector4& vec) noexcept -> real&
 {
   static_assert(N < vector4::size());
   return vec[N];
@@ -887,8 +834,7 @@ auto alloy::core::get(vector4& vec)
 
 template <std::size_t N>
 inline constexpr
-auto alloy::core::get(const vector4& vec)
-  noexcept -> const real&
+auto alloy::core::get(const vector4& vec) noexcept -> const real&
 {
   static_assert(N < vector4::size());
   return vec[N];
@@ -899,24 +845,20 @@ auto alloy::core::get(const vector4& vec)
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::dot(const vector4& lhs, const vector4& rhs)
-  noexcept
-  -> real
+auto alloy::core::dot(const vector4& lhs, const vector4& rhs) noexcept -> real
 {
   return lhs.dot(rhs);
 }
 
 inline constexpr
 auto alloy::core::cross(const vector4& lhs, const vector4& rhs)
-  noexcept
-  -> vector4
+  noexcept -> vector4
 {
   return lhs.cross(rhs);
 }
 
 inline
-auto alloy::core::magnitude(const vector4& vec)
-  noexcept -> real
+auto alloy::core::magnitude(const vector4& vec) noexcept -> real
 {
   return vec.magnitude();
 }
@@ -929,10 +871,10 @@ ALLOY_COMPILER_DIAGNOSTIC_PUSH()
 ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 inline constexpr
-auto alloy::core::piecewise_compare<alloy::core::vector4>
-  ::operator()(const vector4& lhs,
-               const vector4& rhs)
-  const noexcept -> bool
+auto alloy::core::piecewise_compare<alloy::core::vector4>::operator()(
+  const vector4& lhs,
+  const vector4& rhs
+) const noexcept -> bool
 {
   return (lhs.x() == rhs.x()) ?
            (lhs.y() == rhs.y()) ?

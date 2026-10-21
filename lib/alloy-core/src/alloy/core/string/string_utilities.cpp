@@ -10,8 +10,7 @@
 namespace alloy::core {
 namespace {
 
-  auto to_parse_error(std::errc ec)
-    noexcept -> string_utilities::parse_error
+  auto to_parse_error(std::errc ec) noexcept -> string_utilities::parse_error
   {
     using error_type = string_utilities::parse_error;
 

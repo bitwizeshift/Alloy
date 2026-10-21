@@ -40,9 +40,10 @@ namespace alloy::render::gl {
     /// \param vertex the vertex shader program
     /// \param fragment the fragment shader program
     /// \return the created shader, on success
-    static auto make_program_from_sources(core::zstring_view vertex,
-                                          core::zstring_view fragment)
-      -> core::result<program, gl_error_message>;
+    static auto make_program_from_sources(
+      core::zstring_view vertex,
+      core::zstring_view fragment
+    ) -> core::result<program, gl_error_message>;
 
     /// \brief Makes a shader program from the specified source strings
     ///
@@ -50,10 +51,11 @@ namespace alloy::render::gl {
     /// \param fragment the fragment shader program
     /// \param geometry the geometry shader program
     /// \return the created shader, on success
-    static auto make_program_from_sources(core::zstring_view vertex,
-                                          core::zstring_view geometry,
-                                          core::zstring_view fragment)
-      -> core::result<program, gl_error_message>;
+    static auto make_program_from_sources(
+      core::zstring_view vertex,
+      core::zstring_view geometry,
+      core::zstring_view fragment
+    ) -> core::result<program, gl_error_message>;
 
     //--------------------------------------------------------------------------
     // Programs from files
@@ -64,8 +66,7 @@ namespace alloy::render::gl {
     /// \param vertex the file containing the vertex shader
     /// \param fragment the file containing the fragment shader
     /// \return the created shader, on success
-    static auto make_program_from_files(io::file& vertex,
-                                        io::file& fragment)
+    static auto make_program_from_files(io::file& vertex, io::file& fragment)
       -> core::result<program, gl_error_message>;
 
     /// \brief Makes a program from the specified files
@@ -74,10 +75,11 @@ namespace alloy::render::gl {
     /// \param geometry the file containing the geometry shader
     /// \param fragment the file containing the fragment shader
     /// \return the created shader, on success
-    static auto make_program_from_files(io::file& vertex,
-                                        io::file& geometry,
-                                        io::file& fragment)
-      -> core::result<program, gl_error_message>;
+    static auto make_program_from_files(
+      io::file& vertex,
+      io::file& geometry,
+      io::file& fragment
+    ) -> core::result<program, gl_error_message>;
 
     //--------------------------------------------------------------------------
     // Programs from paths
@@ -92,9 +94,10 @@ namespace alloy::render::gl {
     /// \param vertex_path the path to the vertex shader
     /// \param fragment_path the path to the fragment shader
     /// \return the created shader, on success
-    static auto make_program_from_paths(core::zstring_view vertex_path,
-                                        core::zstring_view fragment_path)
-      -> core::result<program, gl_error_message>;
+    static auto make_program_from_paths(
+      core::zstring_view vertex_path,
+      core::zstring_view fragment_path
+    ) -> core::result<program, gl_error_message>;
 
     /// \brief A simple utility for loading files from disk at the specified
     ///        paths
@@ -106,10 +109,11 @@ namespace alloy::render::gl {
     /// \param geometry_path the path to the geometry shader
     /// \param fragment_path the path to the fragment shader
     /// \return the created shader, on success
-    static auto make_program_from_paths(core::zstring_view vertex_path,
-                                        core::zstring_view geometry_path,
-                                        core::zstring_view fragment_path)
-      -> core::result<program, gl_error_message>;
+    static auto make_program_from_paths(
+      core::zstring_view vertex_path,
+      core::zstring_view geometry_path,
+      core::zstring_view fragment_path
+    ) -> core::result<program, gl_error_message>;
 
   };
 

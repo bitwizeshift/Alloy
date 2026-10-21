@@ -149,8 +149,8 @@ namespace alloy::core {
     /// \param unit the code unit to check
     /// \return true if this is the start of a code-unit sequence
     template <typename E=Encoding>
-    static constexpr auto is_char_boundary(char_type unit) noexcept -> bool
-      requires (has_is_char_boundary<E> || !is_multi_unit);
+    static constexpr auto is_char_boundary(char_type unit)
+      noexcept -> bool requires (has_is_char_boundary<E> || !is_multi_unit);
 
     //-------------------------------------------------------------------------
     // Encoding
@@ -218,8 +218,7 @@ namespace alloy::core {
       OutputIt output,
       char_type replacement = encode_sentinel,
       Args&&...args
-    ) noexcept -> OutputIt
-      requires encodeable<Encoding, OutputIt, Args...>;
+    ) noexcept -> OutputIt requires encodeable<Encoding, OutputIt, Args...>;
 
     //-------------------------------------------------------------------------
     // Advancing
@@ -245,8 +244,11 @@ namespace alloy::core {
     /// \return the incremented iterator
     template <typename ForwardIt>
     [[nodiscard]]
-    static constexpr auto next(ForwardIt begin, ForwardIt end, uquantity<char32> n)
-      noexcept -> ForwardIt;
+    static constexpr auto next(
+      ForwardIt begin,
+      ForwardIt end,
+      uquantity<char32> n
+    ) noexcept -> ForwardIt;
 
     //-------------------------------------------------------------------------
 
@@ -274,8 +276,11 @@ namespace alloy::core {
     /// \return the incremented iterator
     template <typename ForwardIt>
     [[nodiscard]]
-    static constexpr auto rnext(ForwardIt begin, ForwardIt end, uquantity<char32> n)
-      noexcept -> ForwardIt;
+    static constexpr auto rnext(
+      ForwardIt begin,
+      ForwardIt end,
+      uquantity<char32> n
+    ) noexcept -> ForwardIt;
 
     //-------------------------------------------------------------------------
     // Operations
@@ -377,8 +382,7 @@ template <typename Encoding>
 template <typename E>
 inline constexpr
 auto alloy::core::encoding_traits<Encoding>::is_char_boundary(char_type unit)
-  noexcept -> bool
-  requires (has_is_char_boundary<E> || !is_multi_unit)
+  noexcept -> bool requires (has_is_char_boundary<E> || !is_multi_unit)
 {
   if constexpr (has_is_char_boundary<Encoding>) {
     return Encoding::is_char_boundary(unit);
@@ -468,8 +472,7 @@ auto alloy::core::encoding_traits<Encoding>::encode(
   OutputIt output,
   char_type replacement,
   Args&&...args
-) noexcept -> OutputIt
-  requires encodeable<Encoding, OutputIt, Args...>
+) noexcept -> OutputIt requires encodeable<Encoding, OutputIt, Args...>
 {
   return Encoding::encode(input, output, replacement, std::forward<Args>(args)...);
 }
@@ -478,8 +481,10 @@ auto alloy::core::encoding_traits<Encoding>::encode(
 template <typename Encoding>
 template <typename ForwardIt>
 inline constexpr
-auto alloy::core::encoding_traits<Encoding>::next(ForwardIt begin, ForwardIt end)
-  noexcept -> ForwardIt
+auto alloy::core::encoding_traits<Encoding>::next(
+  ForwardIt begin,
+  ForwardIt end
+) noexcept -> ForwardIt
 {
   if constexpr (is_detected_v<detect_next,Encoding,ForwardIt>) {
     return Encoding::next(begin, end);
@@ -519,8 +524,10 @@ auto alloy::core::encoding_traits<Encoding>::next(
 template <typename Encoding>
 template <typename ForwardIt>
 inline constexpr
-auto alloy::core::encoding_traits<Encoding>::rnext(ForwardIt begin, ForwardIt end)
-  noexcept -> ForwardIt
+auto alloy::core::encoding_traits<Encoding>::rnext(
+  ForwardIt begin,
+  ForwardIt end
+) noexcept -> ForwardIt
 {
   if constexpr (is_detected_v<detect_rnext,Encoding,ForwardIt>) {
     return Encoding::rnext(begin, end);

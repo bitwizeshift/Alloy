@@ -60,8 +60,7 @@ namespace alloy::io {
     ///
     /// \param b0 the first byte to xor on read (second on write)
     /// \param b1 the second byte to xor on read (first on write)
-    xor_file_adapter(std::byte b0,
-                     std::byte b1) noexcept;
+    xor_file_adapter(std::byte b0, std::byte b1) noexcept;
 
     /// \brief Constructs a file adapter that runs an XOR pass of \p b0
     ///        followed by \p b1 on each byte read (and reverses on write)
@@ -69,26 +68,25 @@ namespace alloy::io {
     /// \param b0 the first byte to xor on read (second on write)
     /// \param b1 the second byte to xor on read (first on write)
     /// \param alloc the allocator to use for constructing adapters
-    xor_file_adapter(std::byte b0,
-                     std::byte b1,
-                     core::allocator alloc) noexcept;
+    xor_file_adapter(std::byte b0, std::byte b1, core::allocator alloc)
+      noexcept;
 
     xor_file_adapter(const xor_file_adapter&) = delete;
     xor_file_adapter(xor_file_adapter&&) = delete;
 
     //-------------------------------------------------------------------------
 
-    xor_file_adapter& operator=(const xor_file_adapter&) = delete;
-    xor_file_adapter& operator=(xor_file_adapter&&) = delete;
+    auto operator=(const xor_file_adapter&) -> xor_file_adapter& = delete;
+    auto operator=(xor_file_adapter&&) -> xor_file_adapter& = delete;
 
     //-------------------------------------------------------------------------
     // Virtual Hooks
     //-------------------------------------------------------------------------
   private:
 
-    file do_adapt(file f) noexcept override;
+    auto do_adapt(file f) noexcept -> file override;
 
-    void finalize(file_stream* stream) noexcept override;
+    auto finalize(file_stream* stream) noexcept -> void override;
 
     //-------------------------------------------------------------------------
     // Private Members

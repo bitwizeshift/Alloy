@@ -52,12 +52,12 @@ namespace alloy::engine {
   // Comparison Operators
   //----------------------------------------------------------------------------
 
-  bool operator==(const entity& lhs, const entity& rhs) noexcept;
-  bool operator!=(const entity& lhs, const entity& rhs) noexcept;
-  bool operator<(const entity& lhs, const entity& rhs) noexcept;
-  bool operator>(const entity& lhs, const entity& rhs) noexcept;
-  bool operator<=(const entity& lhs, const entity& rhs) noexcept;
-  bool operator>=(const entity& lhs, const entity& rhs) noexcept;
+  auto operator==(const entity& lhs, const entity& rhs) noexcept -> bool;
+  auto operator!=(const entity& lhs, const entity& rhs) noexcept -> bool;
+  auto operator<(const entity& lhs, const entity& rhs) noexcept -> bool;
+  auto operator>(const entity& lhs, const entity& rhs) noexcept -> bool;
+  auto operator<=(const entity& lhs, const entity& rhs) noexcept -> bool;
+  auto operator>=(const entity& lhs, const entity& rhs) noexcept -> bool;
 
 } // namespace alloy::engine
 
@@ -70,44 +70,44 @@ namespace alloy::engine {
 // Comparison Operators
 //------------------------------------------------------------------------------
 
-inline bool alloy::engine::operator==(const entity& lhs,
-                                      const entity& rhs)
-  noexcept
+inline
+auto alloy::engine::operator==(const entity& lhs, const entity& rhs)
+  noexcept -> bool
 {
   return lhs.index == rhs.index;
 }
 
-inline bool alloy::engine::operator!=(const entity& lhs,
-                                      const entity& rhs)
-  noexcept
+inline
+auto alloy::engine::operator!=(const entity& lhs, const entity& rhs)
+  noexcept -> bool
 {
   return !(lhs == rhs);
 }
 
-inline bool alloy::engine::operator<(const entity& lhs,
-                                     const entity& rhs)
-  noexcept
+inline
+auto alloy::engine::operator<(const entity& lhs, const entity& rhs)
+  noexcept -> bool
 {
   return lhs.index < rhs.index;
 }
 
-inline bool alloy::engine::operator>(const entity& lhs,
-                                     const entity& rhs)
-  noexcept
+inline
+auto alloy::engine::operator>(const entity& lhs, const entity& rhs)
+  noexcept -> bool
 {
   return rhs < lhs;
 }
 
-inline bool alloy::engine::operator<=(const entity& lhs,
-                                      const entity& rhs)
-  noexcept
+inline
+auto alloy::engine::operator<=(const entity& lhs, const entity& rhs)
+  noexcept -> bool
 {
   return !(rhs < lhs);
 }
 
-inline bool alloy::engine::operator>=(const entity& lhs,
-                                      const entity& rhs)
-  noexcept
+inline
+auto alloy::engine::operator>=(const entity& lhs, const entity& rhs)
+  noexcept -> bool
 {
   return !(lhs < rhs);
 }
@@ -116,7 +116,8 @@ namespace std {
   template <>
   struct hash<alloy::engine::entity>
   {
-    std::size_t operator()(const alloy::engine::entity& e) const noexcept
+    auto operator()(const alloy::engine::entity& e)
+      const noexcept -> std::size_t
     {
       return static_cast<std::size_t>(e.index);
     }

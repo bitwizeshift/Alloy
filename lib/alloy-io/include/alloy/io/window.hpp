@@ -67,32 +67,32 @@ namespace alloy::io {
     /// \brief Gets the width of this window
     ///
     /// \return the width of this window
-    int width() const;
+    auto width() const -> int;
 
     /// \brief Gets the height of this window
     ///
     /// \return the height of this window
-    int height() const;
+    auto height() const -> int;
 
     /// \brief Checks whether this window is fullscreen
     ///
     /// \return `true` if the window is fullscreen
-    bool is_fullscreen() const;
+    auto is_fullscreen() const -> bool;
 
     /// \brief Checks whether this window is focused
     ///
     /// \return `true` if the window is focused
-    bool is_focused() const;
+    auto is_focused() const -> bool;
 
     /// \brief Checks whether this window is currently shown
     ///
     /// \return `true` if the window is shown
-    bool is_shown() const;
+    auto is_shown() const -> bool;
 
     /// \brief Checks whether this window is hidden
     ///
     /// \return `true` if the window is hidden
-    bool is_hidden() const;
+    auto is_hidden() const -> bool;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -100,7 +100,7 @@ namespace alloy::io {
   public:
 
     /// \brief Updates the underlying window
-    void update();
+    auto update() -> void;
 
     /// \brief Sets the dimensions of this window
     ///
@@ -111,7 +111,7 @@ namespace alloy::io {
     /// \pre \p height must be positive
     /// \param width the width of the window
     /// \param height the height of the window
-    void set_dimensions( int width, int height );
+    auto set_dimensions(int width, int height) -> void;
 
     /// \brief Sets the dimension of the window
     ///
@@ -119,18 +119,18 @@ namespace alloy::io {
     ///       to the underlying window systems minimums and maximums
     ///
     /// \param dimensions the dimension of the window
-    void set_dimensions( const dimensions& dimensions );
+    auto set_dimensions(const dimensions& dimensions) -> void;
 
     /// \brief Sets the position of this window
     ///
     /// \param x the x pixel coordinate
     /// \param y the y pixel coordinate
-    void set_position( int x, int y );
+    auto set_position(int x, int y) -> void;
 
     /// \brief Sets the position of this window
     ///
     /// \param position the position of the window
-    void set_position( const position& position );
+    auto set_position(const position& position) -> void;
 
     //--------------------------------------------------------------------------
     // Access
@@ -138,16 +138,16 @@ namespace alloy::io {
   public:
 
     /// \brief Sets the window fullscreen
-    void fullscreen();
+    auto fullscreen() -> void;
 
     /// \brief Focuses the window
-    void focus();
+    auto focus() -> void;
 
     /// \brief Shows the window if hidden
-    void show();
+    auto show() -> void;
 
     /// \brief Hides the window if shown
-    void hide();
+    auto hide() -> void;
 
     //--------------------------------------------------------------------------
     // Protected Constructors
@@ -159,42 +159,42 @@ namespace alloy::io {
     // Copy and move constructors are defaulted to allow implementations to be
     // copyable/moveable
 
-    window( window&& other ) noexcept = default;
-    window( const window& other ) noexcept = default;
+    window(window&& other) noexcept = default;
+    window(const window& other) noexcept = default;
 
-    window& operator=( window&& other ) noexcept = default;
-    window& operator=( const window& other ) noexcept = default;
+    auto operator=(window&& other) noexcept -> window& = default;
+    auto operator=(const window& other) noexcept -> window& = default;
 
     //--------------------------------------------------------------------------
     // Hooks : Observers
     //--------------------------------------------------------------------------
   protected:
 
-    virtual int do_width() const = 0;
-    virtual int do_height() const = 0;
-    virtual bool do_is_fullscreen() const = 0;
-    virtual bool do_is_focused() const = 0;
-    virtual bool do_is_shown() const = 0;
-    virtual bool do_is_hidden() const = 0;
+    virtual auto do_width() const -> int = 0;
+    virtual auto do_height() const -> int = 0;
+    virtual auto do_is_fullscreen() const -> bool = 0;
+    virtual auto do_is_focused() const -> bool = 0;
+    virtual auto do_is_shown() const -> bool = 0;
+    virtual auto do_is_hidden() const -> bool = 0;
 
     //--------------------------------------------------------------------------
     // Hooks : Modifiers
     //--------------------------------------------------------------------------
   protected:
 
-    virtual void do_set_dimensions( int width, int height ) = 0;
-    virtual void do_set_position( int x, int y ) = 0;
-    virtual void do_update() = 0;
+    virtual auto do_set_dimensions(int width, int height) -> void = 0;
+    virtual auto do_set_position(int x, int y) -> void = 0;
+    virtual auto do_update() -> void = 0;
 
     //--------------------------------------------------------------------------
     // Hooks : Access
     //--------------------------------------------------------------------------
   protected:
 
-    virtual void do_fullscreen() = 0;
-    virtual void do_focus() = 0;
-    virtual void do_show() = 0;
-    virtual void do_hide() = 0;
+    virtual auto do_fullscreen() -> void = 0;
+    virtual auto do_focus() -> void = 0;
+    virtual auto do_show() -> void = 0;
+    virtual auto do_hide() -> void = 0;
   };
 
 } // namespace alloy::io
@@ -203,12 +203,14 @@ namespace alloy::io {
 // inline definitions : class : window
 //==============================================================================
 
-inline void alloy::io::window::set_dimensions(const dimensions& dimensions)
+inline
+auto alloy::io::window::set_dimensions(const dimensions& dimensions) -> void
 {
   set_dimensions(dimensions.width, dimensions.height);
 }
 
-inline void alloy::io::window::set_position(const position& position)
+inline
+auto alloy::io::window::set_position(const position& position) -> void
 {
   set_position(position.x, position.y);
 }

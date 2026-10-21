@@ -34,8 +34,7 @@ namespace alloy::render::gl {
 } // namespace alloy::render::gl
 
 inline constexpr
-auto alloy::render::gl::to_opengl_type(depth_compare d)
-  noexcept -> ::GLenum
+auto alloy::render::gl::to_opengl_type(depth_compare d) noexcept -> ::GLenum
 {
   switch (d) {
     case depth_compare::never: {

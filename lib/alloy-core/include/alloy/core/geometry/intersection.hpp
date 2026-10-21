@@ -204,8 +204,8 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 template <typename...Types>
-inline constexpr alloy::core::intersection<Types...>::intersection()
-  noexcept
+inline constexpr
+alloy::core::intersection<Types...>::intersection() noexcept
   : m_intersection_types{}
 {
 
@@ -214,8 +214,8 @@ inline constexpr alloy::core::intersection<Types...>::intersection()
 template <typename...Types>
 template <typename Type>
   requires std::constructible_from<std::variant<Types...>, Type>
-inline constexpr alloy::core::intersection<Types...>::intersection(Type&& type)
-  noexcept
+inline constexpr
+alloy::core::intersection<Types...>::intersection(Type&& type) noexcept
   : m_intersection_types{std::forward<Type>(type)}
 {
 
@@ -236,8 +236,7 @@ auto alloy::core::intersection<Types...>::has_intersection()
 template<typename... Types>
 template<typename Type>
 inline constexpr
-auto alloy::core::intersection<Types...>::contains()
-  const noexcept -> bool
+auto alloy::core::intersection<Types...>::contains() const noexcept -> bool
 {
   return std::holds_alternative<Type>(m_intersection_types);
 }
@@ -245,8 +244,7 @@ auto alloy::core::intersection<Types...>::contains()
 template<typename... Types>
 template<typename Type>
 inline constexpr
-auto alloy::core::intersection<Types...>::try_as()
-  const noexcept -> const Type*
+auto alloy::core::intersection<Types...>::try_as() const noexcept -> const Type*
 {
   return std::get_if<Type>(&m_intersection_types);
 }
@@ -254,8 +252,7 @@ auto alloy::core::intersection<Types...>::try_as()
 template<typename... Types>
 template<typename Type>
 inline constexpr
-auto alloy::core::intersection<Types...>::as()
-  const -> const Type&
+auto alloy::core::intersection<Types...>::as() const -> const Type&
 {
   const auto* p = try_as<Type>();
 
@@ -283,7 +280,8 @@ namespace alloy::core::detail {
 
     template<typename T>
     inline constexpr
-    auto operator()(const std::monostate&, const std::monostate&) noexcept -> bool
+    auto operator()(const std::monostate&, const std::monostate&)
+      noexcept -> bool
     {
       return true; // two monostates are always equal
     }

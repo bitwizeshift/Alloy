@@ -145,8 +145,11 @@ auto alloy::core::compare_reducer<Compare>::operator()(Ts&&...values)
 template <typename Compare>
 template <typename T0, typename T1, typename...TRest>
 inline constexpr
-auto alloy::core::compare_reducer<Compare>::reduce(T0&& v0, T1&& v1, TRest&&...vn)
-  const noexcept -> std::common_reference_t<T0, T1, TRest...>
+auto alloy::core::compare_reducer<Compare>::reduce(
+  T0&& v0,
+  T1&& v1,
+  TRest&&...vn
+) const noexcept -> std::common_reference_t<T0, T1, TRest...>
 {
   if constexpr (sizeof...(TRest) == 0U) {
     return do_compare(v0,v1) ? std::forward<T0>(v0) : std::forward<T1>(v1);
@@ -161,8 +164,10 @@ auto alloy::core::compare_reducer<Compare>::reduce(T0&& v0, T1&& v1, TRest&&...v
 template <typename Compare>
 template <typename T, typename U>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::compare_reducer<Compare>::do_compare(const T& lhs, const U& rhs)
-  const noexcept -> bool
+auto alloy::core::compare_reducer<Compare>::do_compare(
+  const T& lhs,
+  const U& rhs
+) const noexcept -> bool
 {
   return std::get<0>(static_cast<const base_type&>(*this))(lhs, rhs);
 }

@@ -47,7 +47,8 @@ namespace alloy::core {
     /// \param origin the start of the ray
     /// \param p a point that this ray passes through
     /// \return a ray that starts at \p origin and travels through \p p
-    static auto from_points(const point3& origin, const point3& p) noexcept -> ray;
+    static auto from_points(const point3& origin, const point3& p)
+      noexcept -> ray;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -190,8 +191,7 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::ray::ray()
-  noexcept
+alloy::core::ray::ray() noexcept
   : m_origin{0,0,0},
     m_direction{1,0,0}
 {
@@ -199,8 +199,7 @@ alloy::core::ray::ray()
 }
 
 inline
-alloy::core::ray::ray(const point3& origin, const vector3& direction)
-  noexcept
+alloy::core::ray::ray(const point3& origin, const vector3& direction) noexcept
   : m_origin{origin},
     m_direction{direction}
 {
@@ -214,8 +213,7 @@ alloy::core::ray::ray(const point3& origin, const vector3& direction)
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::core::ray::invert()
-  noexcept -> ray&
+auto alloy::core::ray::invert() noexcept -> ray&
 {
   m_direction.invert();
   return (*this);
@@ -226,15 +224,13 @@ auto alloy::core::ray::invert()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::ray::origin()
-  const noexcept -> const point3&
+auto alloy::core::ray::origin() const noexcept -> const point3&
 {
   return m_origin;
 }
 
 inline constexpr
-auto alloy::core::ray::direction()
-  const noexcept -> const vector3&
+auto alloy::core::ray::direction() const noexcept -> const vector3&
 {
   return m_direction;
 }
@@ -244,8 +240,7 @@ auto alloy::core::ray::direction()
 //------------------------------------------------------------------------------
 
 inline
-auto alloy::core::ray::inverse()
-  const noexcept -> ray
+auto alloy::core::ray::inverse() const noexcept -> ray
 {
   auto copy = (*this);
   copy.invert();
@@ -261,15 +256,13 @@ auto alloy::core::ray::inverse()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::operator==(const ray& lhs, const ray& rhs)
-  noexcept -> bool
+auto alloy::core::operator==(const ray& lhs, const ray& rhs) noexcept -> bool
 {
   return lhs.origin() == rhs.origin() && lhs.direction() == rhs.direction();
 }
 
 inline constexpr
-auto alloy::core::operator!=(const ray& lhs, const ray& rhs)
-  noexcept -> bool
+auto alloy::core::operator!=(const ray& lhs, const ray& rhs) noexcept -> bool
 {
   return !(lhs==rhs);
 }

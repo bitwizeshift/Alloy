@@ -9,8 +9,7 @@
 // Quantifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::matrix3::determinant()
-  const noexcept -> real
+auto alloy::core::matrix3::determinant() const noexcept -> real
 {
   return (get(0,0)*get(1,1)*get(2,2)) -
          (get(0,0)*get(1,2)*get(2,1)) -
@@ -20,14 +19,12 @@ auto alloy::core::matrix3::determinant()
          (get(0,2)*get(1,1)*get(2,0));
 }
 
-auto alloy::core::matrix3::trace()
-  const noexcept -> real
+auto alloy::core::matrix3::trace() const noexcept -> real
 {
   return (get(0,0) + get(1,1) + get(2,2));
 }
 
-auto alloy::core::matrix3::inverse()
-  const noexcept -> matrix3
+auto alloy::core::matrix3::inverse() const noexcept -> matrix3
 {
   const auto det = determinant();
 
@@ -56,8 +53,7 @@ auto alloy::core::matrix3::inverse()
   };
 }
 
-auto alloy::core::matrix3::transposed()
-  const noexcept -> matrix3
+auto alloy::core::matrix3::transposed() const noexcept -> matrix3
 {
   return matrix3{
     get(0,0), get(1,0), get(2,0),
@@ -66,8 +62,7 @@ auto alloy::core::matrix3::transposed()
   };
 }
 
-auto alloy::core::matrix3::combine(const vector3& vec)
-  const noexcept -> vector3
+auto alloy::core::matrix3::combine(const vector3& vec) const noexcept -> vector3
 {
   auto result = vector3{};
 
@@ -86,8 +81,7 @@ auto alloy::core::matrix3::combine(const vector3& vec)
 // Modifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::matrix3::transpose()
-  noexcept -> matrix3&
+auto alloy::core::matrix3::transpose() noexcept -> matrix3&
 {
   using std::swap;
 

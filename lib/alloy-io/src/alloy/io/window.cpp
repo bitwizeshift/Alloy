@@ -20,32 +20,27 @@ alloy::io::window::~window() noexcept = default;
 // Observers
 //------------------------------------------------------------------------------
 
-int alloy::io::window::width()
-  const
+auto alloy::io::window::width() const -> int
 {
   return do_width();
 }
 
-int alloy::io::window::height()
-  const
+auto alloy::io::window::height() const -> int
 {
   return do_height();
 }
 
-bool alloy::io::window::is_fullscreen()
-  const
+auto alloy::io::window::is_fullscreen() const -> bool
 {
   return do_is_fullscreen();
 }
 
-bool alloy::io::window::is_focused()
-  const
+auto alloy::io::window::is_focused() const -> bool
 {
   return do_is_focused();
 }
 
-bool alloy::io::window::is_hidden()
-  const
+auto alloy::io::window::is_hidden() const -> bool
 {
   return do_is_hidden();
 }
@@ -54,12 +49,12 @@ bool alloy::io::window::is_hidden()
 // Modifiers
 //------------------------------------------------------------------------------
 
-void alloy::io::window::update()
+auto alloy::io::window::update() -> void
 {
   do_update();
 }
 
-void alloy::io::window::set_dimensions( int width, int height )
+auto alloy::io::window::set_dimensions(int width, int height) -> void
 {
   ALLOY_ASSERT( width > 0 );
   ALLOY_ASSERT( height > 0 );
@@ -67,7 +62,7 @@ void alloy::io::window::set_dimensions( int width, int height )
   do_set_dimensions(width,height);
 }
 
-void alloy::io::window::set_position( int x, int y )
+auto alloy::io::window::set_position(int x, int y) -> void
 {
   do_set_position(x,y);
 }
@@ -76,22 +71,22 @@ void alloy::io::window::set_position( int x, int y )
 // Access
 //------------------------------------------------------------------------------
 
-void alloy::io::window::fullscreen()
+auto alloy::io::window::fullscreen() -> void
 {
   do_fullscreen();
 }
 
-void alloy::io::window::focus()
+auto alloy::io::window::focus() -> void
 {
   do_focus();
 }
 
-void alloy::io::window::show()
+auto alloy::io::window::show() -> void
 {
   do_show();
 }
 
-void alloy::io::window::hide()
+auto alloy::io::window::hide() -> void
 {
   do_hide();
 }

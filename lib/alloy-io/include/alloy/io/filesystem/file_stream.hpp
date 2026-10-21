@@ -61,8 +61,8 @@ namespace alloy::io {
 
     //-------------------------------------------------------------------------
 
-    file_stream& operator=(const file_stream&) = delete;
-    file_stream& operator=(file_stream&&) = delete;
+    auto operator=(const file_stream&) -> file_stream& = delete;
+    auto operator=(file_stream&&) -> file_stream& = delete;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -72,8 +72,8 @@ namespace alloy::io {
     /// \brief Gets the number of bytes in this file stream
     ///
     /// \return the number of bytes in this file stream
-    virtual core::result<size_type,std::error_code>
-      bytes() const noexcept = 0;
+    virtual auto bytes()
+      const noexcept -> core::result<size_type,std::error_code> = 0;
 
     //-------------------------------------------------------------------------
     // File Access
@@ -81,40 +81,40 @@ namespace alloy::io {
   public:
 
     /// \brief Closes the file stream for future access
-    virtual void close() noexcept = 0;
+    virtual auto close() noexcept -> void = 0;
 
     /// \brief Resets the file cursor back to the start position
     ///
     /// \return void on success
-    virtual core::result<void,std::error_code> reset() noexcept = 0;
+    virtual auto reset() noexcept -> core::result<void,std::error_code> = 0;
 
     /// \brief Flushes the contents of the stream to storage
     ///
     /// \return void on success
-    virtual core::result<void,std::error_code> flush() noexcept;
+    virtual auto flush() noexcept -> core::result<void,std::error_code>;
 
     /// \brief Skips up to the next N bytes of the file
     ///
     /// \param offset the number of bytes to skip
     /// \return void on success
-    virtual core::result<void,std::error_code>
-      skip(offset_type offset) noexcept = 0;
+    virtual auto skip(offset_type offset)
+      noexcept -> core::result<void,std::error_code> = 0;
 
     /// \brief Reads data into the specified \p buffer, returning a buffer the
     ///        buffer that was read
     ///
     /// \param buffer the buffer to read into
     /// \return the buffer that was read on success
-    virtual core::result<mutable_buffer,std::error_code>
-      read(mutable_buffer buffer) noexcept = 0;
+    virtual auto read(mutable_buffer buffer)
+      noexcept -> core::result<mutable_buffer,std::error_code> = 0;
 
     /// \brief Writes data from the specified \p buffer, returning a buffer of
     ///        the bytes that were written
     ///
     /// \param buffer the buffer to write from
     /// \return the buffer that was written on success
-    virtual core::result<const_buffer,std::error_code>
-      write(const_buffer buffer) noexcept = 0;
+    virtual auto write(const_buffer buffer)
+      noexcept -> core::result<const_buffer,std::error_code> = 0;
   };
 
 } // namespace alloy::io
@@ -127,8 +127,9 @@ namespace alloy::io {
 // File Access
 //-----------------------------------------------------------------------------
 
-inline alloy::core::result<void,std::error_code> alloy::io::file_stream::flush()
-  noexcept
+inline
+auto alloy::io::file_stream::flush()
+  noexcept -> core::result<void,std::error_code>
 {
   return {};
 }

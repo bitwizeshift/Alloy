@@ -74,10 +74,12 @@ namespace alloy::core {
     /// \param func Function to operate on \p t
     /// \return the result of the interpolation
     template <typename V, typename T, typename Func>
-    static constexpr auto interpolate(const V& v0,
-                                      const V& v1,
-                                      const T& t, Func func)
-      noexcept -> V;
+    static constexpr auto interpolate(
+      const V& v0,
+      const V& v1,
+      const T& t,
+      Func func
+    ) noexcept -> V;
 
     //------------------------------------------------------------------------
 
@@ -146,8 +148,7 @@ namespace alloy::core {
     /// \param t  The area in the interval to interpolate to [0,1]
     /// \return the result of the interpolation
     template <typename V, typename T>
-    static auto circular(const V& v0, const V& v1, const T& t)
-      noexcept -> V;
+    static auto circular(const V& v0, const V& v1, const T& t) noexcept -> V;
 
     //------------------------------------------------------------------------
 
@@ -159,8 +160,7 @@ namespace alloy::core {
     /// \param t  The area in the interval to interpolate to [0,1]
     /// \return the result of the interpolation
     template <typename V, typename T>
-    static auto half_cosine(const V& v0, const V& v1, const T& t)
-      noexcept -> V;
+    static auto half_cosine(const V& v0, const V& v1, const T& t) noexcept -> V;
 
     /// \brief Performs cosine linear interpolation on a point between \p v0
     ///        and \p v1 at position \p t
@@ -170,8 +170,7 @@ namespace alloy::core {
     /// \param t  The area in the interval to interpolate to [0,1]
     /// \return the result of the interpolation
     template <typename V, typename T>
-    static auto cosine(const V& v0, const V& v1, const T& t)
-      noexcept -> V;
+    static auto cosine(const V& v0, const V& v1, const T& t) noexcept -> V;
 
     //------------------------------------------------------------------------
 
@@ -183,8 +182,7 @@ namespace alloy::core {
     /// \param t  The area in the interval to interpolate to [0,1]
     /// \return the result of the interpolation
     template <typename V, typename T>
-    static auto half_sine(const V& v0, const V& v1, const T& t)
-      noexcept -> V;
+    static auto half_sine(const V& v0, const V& v1, const T& t) noexcept -> V;
 
     /// \brief Performs sine linear interpolation on a point between \p v0
     ///        and \p v1 at position \p t
@@ -194,33 +192,34 @@ namespace alloy::core {
     /// \param t  The area in the interval to interpolate to [0,1]
     /// \return the result of the interpolation
     template <typename V, typename T>
-    static auto sine(const V& v0, const V& v1, const T& t)
-      noexcept -> V;
+    static auto sine(const V& v0, const V& v1, const T& t) noexcept -> V;
 
     //------------------------------------------------------------------------
 
     template <typename V, typename T>
-    static constexpr auto bilinear(const V& v00,
-                                   const V& v10,
-                                   const V& v01,
-                                   const V& v11,
-                                   const T& tx,
-                                   const T& ty)
-      noexcept -> V;
+    static constexpr auto bilinear(
+      const V& v00,
+      const V& v10,
+      const V& v01,
+      const V& v11,
+      const T& tx,
+      const T& ty
+    ) noexcept -> V;
 
     template <typename V, typename T>
-    static constexpr auto trilinear(const V& v000,
-                                    const V& v100,
-                                    const V& v010,
-                                    const V& v110,
-                                    const V& v001,
-                                    const V& v101,
-                                    const V& v011,
-                                    const V& v111,
-                                    const T& tx,
-                                    const T& ty,
-                                    const T& tz)
-      noexcept -> V;
+    static constexpr auto trilinear(
+      const V& v000,
+      const V& v100,
+      const V& v010,
+      const V& v110,
+      const V& v001,
+      const V& v101,
+      const V& v011,
+      const V& v111,
+      const T& tx,
+      const T& ty,
+      const T& tz
+    ) noexcept -> V;
   };
 
 } // namespace alloy::core
@@ -232,8 +231,11 @@ namespace alloy::core {
 template <typename T>
 template <typename Alpha>
 inline constexpr
-auto alloy::core::interpolator<T>::operator()(const T& v0, const T& v1, const Alpha& alpha)
-  noexcept -> T
+auto alloy::core::interpolator<T>::operator()(
+  const T& v0,
+  const T& v1,
+  const Alpha& alpha
+) noexcept -> T
 {
   ALLOY_ASSERT((alpha <= Alpha{1}) && (alpha >= Alpha{0}));
   const auto alpha_prime = (Alpha{1} - alpha);
@@ -247,11 +249,12 @@ auto alloy::core::interpolator<T>::operator()(const T& v0, const T& v1, const Al
 
 template <typename V, typename T, typename Func>
 inline constexpr
-auto alloy::core::interpolation::interpolate(const V& v0,
-                                             const V& v1,
-                                             const T& t,
-                                             Func func)
-  noexcept -> V
+auto alloy::core::interpolation::interpolate(
+  const V& v0,
+  const V& v1,
+  const T& t,
+  Func func
+) noexcept -> V
 {
   static_assert( std::is_nothrow_invocable<Func,T>::value, "" );
 
@@ -270,9 +273,7 @@ auto alloy::core::interpolation::linear(const V& v0, const V& v1, const T& t)
 
 template <typename V, typename T>
 inline constexpr
-auto alloy::core::interpolation::quadratic(const V& v0,
-                                           const V& v1,
-                                           const T& t)
+auto alloy::core::interpolation::quadratic(const V& v0, const V& v1, const T& t)
   noexcept -> V
 {
   return linear(v0,v1,t*t);
@@ -280,9 +281,7 @@ auto alloy::core::interpolation::quadratic(const V& v0,
 
 template <typename V, typename T>
 inline constexpr
-auto alloy::core::interpolation::cubic(const V& v0,
-                                       const V& v1,
-                                       const T& t)
+auto alloy::core::interpolation::cubic(const V& v0, const V& v1, const T& t)
   noexcept -> V
 {
   return linear(v0,v1,t*t*t);
@@ -290,9 +289,7 @@ auto alloy::core::interpolation::cubic(const V& v0,
 
 template <typename V, typename T>
 inline constexpr
-auto alloy::core::interpolation::quartic(const V& v0,
-                                         const V& v1,
-                                         const T& t)
+auto alloy::core::interpolation::quartic(const V& v0, const V& v1, const T& t)
   noexcept -> V
 {
   return linear(v0,v1,t*t*t*t);
@@ -300,9 +297,7 @@ auto alloy::core::interpolation::quartic(const V& v0,
 
 template <typename V, typename T>
 inline constexpr
-auto alloy::core::interpolation::quintic(const V& v0,
-                                         const V& v1,
-                                         const T& t)
+auto alloy::core::interpolation::quintic(const V& v0, const V& v1, const T& t)
   noexcept -> V
 {
   return linear(v0,v1,t*t*t*t*t);
@@ -312,9 +307,7 @@ auto alloy::core::interpolation::quintic(const V& v0,
 
 template <typename V, typename T>
 inline
-auto alloy::core::interpolation::circular(const V& v0,
-                                          const V& v1,
-                                          const T& t)
+auto alloy::core::interpolation::circular(const V& v0, const V& v1, const T& t)
   noexcept -> V
 {
   return linear(v0, v1, (1.0 - sqrt(1.0 - (t*t))));
@@ -324,19 +317,18 @@ auto alloy::core::interpolation::circular(const V& v0,
 
 template <typename V, typename T>
 inline
-auto alloy::core::interpolation::half_cosine(const V& v0,
-                                             const V& v1,
-                                             const T& t)
-  noexcept -> V
+auto alloy::core::interpolation::half_cosine(
+  const V& v0,
+  const V& v1,
+  const T& t
+) noexcept -> V
 {
   return linear(v0, v1, (0.5 - trigonometry::cos(t * math_constants::half_pi)));
 }
 
 template <typename V, typename T>
 inline
-auto alloy::core::interpolation::cosine(const V& v0,
-                                        const V& v1,
-                                        const T& t)
+auto alloy::core::interpolation::cosine(const V& v0, const V& v1, const T& t)
   noexcept -> V
 {
   return linear(v0, v1, (1.0 - trigonometry::cos(t * math_constants::pi)));
@@ -346,9 +338,7 @@ auto alloy::core::interpolation::cosine(const V& v0,
 
 template <typename V, typename T>
 inline
-auto alloy::core::interpolation::half_sine(const V& v0,
-                                           const V& v1,
-                                           const T& t)
+auto alloy::core::interpolation::half_sine(const V& v0, const V& v1, const T& t)
   noexcept -> V
 {
   return linear(v0, v1, (0.5 - trigonometry::sin(t * math_constants::half_pi)));
@@ -356,9 +346,7 @@ auto alloy::core::interpolation::half_sine(const V& v0,
 
 template <typename V, typename T>
 inline
-auto alloy::core::interpolation::sine(const V& v0,
-                                      const V& v1,
-                                      const T& t)
+auto alloy::core::interpolation::sine(const V& v0, const V& v1, const T& t)
   noexcept -> V
 {
   return linear(v0, v1, (1.0 - trigonometry::sin(t * math_constants::pi)));
@@ -368,31 +356,33 @@ auto alloy::core::interpolation::sine(const V& v0,
 
 template <typename V, typename T>
 inline constexpr
-auto alloy::core::interpolation::bilinear(const V& v00,
-                                          const V& v10,
-                                          const V& v01,
-                                          const V& v11,
-                                          const T& tx,
-                                          const T& ty)
-  noexcept -> V
+auto alloy::core::interpolation::bilinear(
+  const V& v00,
+  const V& v10,
+  const V& v01,
+  const V& v11,
+  const T& tx,
+  const T& ty
+) noexcept -> V
 {
   return linear( linear(v00,v10,tx), linear(v01,v11,tx), ty );
 }
 
 template <typename V, typename T>
 inline constexpr
-auto alloy::core::interpolation::trilinear(const V& v000,
-                                           const V& v100,
-                                           const V& v010,
-                                           const V& v110,
-                                           const V& v001,
-                                           const V& v101,
-                                           const V& v011,
-                                           const V& v111,
-                                           const T& tx,
-                                           const T& ty,
-                                           const T& tz)
-  noexcept -> V
+auto alloy::core::interpolation::trilinear(
+  const V& v000,
+  const V& v100,
+  const V& v010,
+  const V& v110,
+  const V& v001,
+  const V& v101,
+  const V& v011,
+  const V& v111,
+  const T& tx,
+  const T& ty,
+  const T& tz
+) noexcept -> V
 {
   return linear(
     bilinear(v000, v100, v010, v110, tx, ty),

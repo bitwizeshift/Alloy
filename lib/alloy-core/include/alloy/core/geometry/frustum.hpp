@@ -46,9 +46,14 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    static auto make(const plane& left, const plane& right,
-                     const plane& top, const plane& bottom,
-                     const plane& near, const plane& far) -> frustum;
+    static auto make(
+      const plane& left,
+      const plane& right,
+      const plane& top,
+      const plane& bottom,
+      const plane& near,
+      const plane& far
+    ) -> frustum;
 
     /// \brief Constructs a viewing frustum from 6 planes without doing any
     ///        validation
@@ -60,10 +65,14 @@ namespace alloy::core {
     /// \param near the near plane of the frustum
     /// \param far the far plane of the frustum
     /// \return the frustum
-    static constexpr auto make_unchecked(const plane& left, const plane& right,
-                                         const plane& top, const plane& bottom,
-                                         const plane& near, const plane& far)
-      noexcept -> frustum;
+    static constexpr auto make_unchecked(
+      const plane& left,
+      const plane& right,
+      const plane& top,
+      const plane& bottom,
+      const plane& near,
+      const plane& far
+    ) noexcept -> frustum;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -85,12 +94,12 @@ namespace alloy::core {
     /// \brief Gets the specified plane of this frustum
     ///
     /// \return the left plane
-    [[nodiscard]] constexpr auto left() const noexcept -> const plane&;
-    [[nodiscard]] constexpr auto right() const noexcept -> const plane&;
-    [[nodiscard]] constexpr auto top() const noexcept -> const plane&;
-    [[nodiscard]] constexpr auto bottom() const noexcept -> const plane&;
-    [[nodiscard]] constexpr auto near() const noexcept -> const plane&;
-    [[nodiscard]] constexpr auto far() const noexcept -> const plane&;
+    [[nodiscard ]] constexpr auto left() const noexcept -> const plane&;
+    [[nodiscard ]] constexpr auto right() const noexcept -> const plane&;
+    [[nodiscard ]] constexpr auto top() const noexcept -> const plane&;
+    [[nodiscard ]] constexpr auto bottom() const noexcept -> const plane&;
+    [[nodiscard ]] constexpr auto near() const noexcept -> const plane&;
+    [[nodiscard ]] constexpr auto far() const noexcept -> const plane&;
     /// \}
 
     /// \brief Returns the underlying planes in this frustum
@@ -128,9 +137,14 @@ namespace alloy::core {
 
     plane m_planes[6];
 
-    constexpr frustum(const plane& left, const plane& right,
-                      const plane& top, const plane& bottom,
-                      const plane& near, const plane& far) noexcept;
+    constexpr frustum(
+      const plane& left,
+      const plane& right,
+      const plane& top,
+      const plane& bottom,
+      const plane& near,
+      const plane& far
+    ) noexcept;
   };
 
 } // namespace alloy::core
@@ -140,13 +154,14 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::frustum::make_unchecked(const plane& left,
-                                          const plane& right,
-                                          const plane& top,
-                                          const plane& bottom,
-                                          const plane& near,
-                                          const plane& far)
-  noexcept -> frustum
+auto alloy::core::frustum::make_unchecked(
+  const plane& left,
+  const plane& right,
+  const plane& top,
+  const plane& bottom,
+  const plane& near,
+  const plane& far
+) noexcept -> frustum
 {
   return frustum{left, right, top, bottom, near, far};
 }
@@ -156,50 +171,43 @@ auto alloy::core::frustum::make_unchecked(const plane& left,
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::frustum::left()
-  const noexcept -> const plane&
+auto alloy::core::frustum::left() const noexcept -> const plane&
 {
   return m_planes[0];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::frustum::right()
-  const noexcept -> const alloy::core::plane&
+auto alloy::core::frustum::right() const noexcept -> const alloy::core::plane&
 {
   return m_planes[1];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::frustum::top()
-  const noexcept -> const plane&
+auto alloy::core::frustum::top() const noexcept -> const plane&
 {
   return m_planes[2];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::frustum::bottom()
-  const noexcept -> const plane&
+auto alloy::core::frustum::bottom() const noexcept -> const plane&
 {
   return m_planes[3];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::frustum::near()
-  const noexcept -> const plane&
+auto alloy::core::frustum::near() const noexcept -> const plane&
 {
   return m_planes[4];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::frustum::far()
-  const noexcept -> const plane&
+auto alloy::core::frustum::far() const noexcept -> const plane&
 {
   return m_planes[5];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::frustum::planes()
-  const noexcept -> std::span<const plane, 6u>
+auto alloy::core::frustum::planes() const noexcept -> std::span<const plane, 6u>
 {
   return std::span<const plane, 6u>{m_planes};
 }
@@ -209,10 +217,14 @@ auto alloy::core::frustum::planes()
 //------------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::frustum::frustum(const plane& left, const plane& right,
-                              const plane& top, const plane& bottom,
-                              const plane& near, const plane& far)
-  noexcept
+alloy::core::frustum::frustum(
+  const plane& left,
+  const plane& right,
+  const plane& top,
+  const plane& bottom,
+  const plane& near,
+  const plane& far
+) noexcept
   : m_planes{left, right, top, bottom, near, far}
 {
 

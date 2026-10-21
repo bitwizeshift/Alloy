@@ -49,8 +49,7 @@ namespace alloy::render {
 } // namespace alloy::render
 
 inline
-auto alloy::render::to_string(fill_mode m)
-  noexcept -> core::zstring_view
+auto alloy::render::to_string(fill_mode m) noexcept -> core::zstring_view
 {
   switch (m) {
     case fill_mode::solid: {

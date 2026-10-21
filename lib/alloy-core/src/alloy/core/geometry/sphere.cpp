@@ -4,8 +4,7 @@
 
 #include "alloy/core/geometry/sphere.hpp"
 
-auto alloy::core::sphere::contains(const point3& p)
-  const noexcept -> bool
+auto alloy::core::sphere::contains(const point3& p) const noexcept -> bool
 {
   const auto adjusted = (p - m_center);
 

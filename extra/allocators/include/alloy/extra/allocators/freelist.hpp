@@ -64,10 +64,10 @@ namespace alloy::extra {
     ///
     /// \param other the other freelist to move
     /// \return reference to `(*this)`
-    freelist& operator=(freelist&& other) noexcept = default;
+    auto operator=(freelist&& other) noexcept -> freelist& = default;
 
     // Deleted copy construction
-    freelist& operator=(const freelist& other) = delete;
+    auto operator=(const freelist& other) -> freelist& = delete;
 
     //----------------------------------------------------------------------
     // Observers
@@ -77,12 +77,12 @@ namespace alloy::extra {
     /// \brief Returns whether or not this memory_block_cache is empty
     ///
     /// \return `true` if this memory_block_cache is empty, `false` otherwise
-    bool empty() const noexcept;
+    auto empty() const noexcept -> bool;
 
     /// \brief Returns the number of entries in this freelist
     ///
     /// \return the number of entries in this freelist
-    size_type size() const noexcept;
+    auto size() const noexcept -> size_type;
 
     //----------------------------------------------------------------------
     // Modifiers
@@ -90,7 +90,7 @@ namespace alloy::extra {
   public:
 
     /// \brief Empties the freelist cache
-    void clear();
+    auto clear() -> void;
 
     //----------------------------------------------------------------------
     // Caching
@@ -102,12 +102,12 @@ namespace alloy::extra {
     /// The size of the returned instance is not known to the freelist
     ///
     /// \return pointer to memory, if it exists
-    void* request() noexcept;
+    auto request() noexcept -> void*;
 
     /// \brief Steals raw memory from an existing freelist
     ///
     /// \param other the other freelist to steal an entry from
-    void steal(freelist& other) noexcept;
+    auto steal(freelist& other) noexcept -> void;
 
     /// \brief Stores raw memory into this freelist
     ///
@@ -116,7 +116,7 @@ namespace alloy::extra {
     ///      pointer types.
     ///
     /// \param p pointer to the raw memory to store
-    void store(pointer p) noexcept;
+    auto store(pointer p) noexcept -> void;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -125,7 +125,7 @@ namespace alloy::extra {
 
     pointer m_head;
 
-    friend bool operator==(const freelist&, const freelist&) noexcept;
+    friend auto operator==(const freelist&, const freelist&) noexcept -> bool;
   };
 
   //============================================================================
@@ -136,8 +136,8 @@ namespace alloy::extra {
   // Equality
   //----------------------------------------------------------------------------
 
-  bool operator==(const freelist& lhs, const freelist& rhs) noexcept;
-  bool operator!=(const freelist& lhs, const freelist& rhs) noexcept;
+  auto operator==(const freelist& lhs, const freelist& rhs) noexcept -> bool;
+  auto operator!=(const freelist& lhs, const freelist& rhs) noexcept -> bool;
 
 } // namespace alloy::extra
 
@@ -149,8 +149,8 @@ namespace alloy::extra {
 // Constructors
 //------------------------------------------------------------------------------
 
-inline constexpr alloy::extra::freelist::freelist()
-  noexcept
+inline constexpr
+alloy::extra::freelist::freelist() noexcept
   : m_head{nullptr}
 {
 
@@ -160,15 +160,15 @@ inline constexpr alloy::extra::freelist::freelist()
 // Capacity
 //------------------------------------------------------------------------------
 
-inline bool alloy::extra::freelist::empty()
-  const noexcept
+inline
+auto alloy::extra::freelist::empty() const noexcept -> bool
 {
   return m_head == nullptr;
 }
 
 
-inline alloy::extra::freelist::size_type alloy::extra::freelist::size()
-  const noexcept
+inline
+auto alloy::extra::freelist::size() const noexcept -> size_type
 {
   auto size = size_type{0u};
   auto* p = m_head;
@@ -183,7 +183,8 @@ inline alloy::extra::freelist::size_type alloy::extra::freelist::size()
 // Modifiers
 //------------------------------------------------------------------------------
 
-inline void alloy::extra::freelist::clear()
+inline
+auto alloy::extra::freelist::clear() -> void
 {
   m_head = nullptr;
 }
@@ -192,8 +193,8 @@ inline void alloy::extra::freelist::clear()
 // Caching
 //------------------------------------------------------------------------------
 
-inline void* alloy::extra::freelist::request()
-  noexcept
+inline
+auto alloy::extra::freelist::request() noexcept -> void*
 {
   auto* const p = m_head;
 
@@ -204,8 +205,8 @@ inline void* alloy::extra::freelist::request()
 }
 
 
-inline void alloy::extra::freelist::steal(freelist& other)
-  noexcept
+inline
+auto alloy::extra::freelist::steal(freelist& other) noexcept -> void
 {
   auto* const p = other.request();
 
@@ -215,8 +216,8 @@ inline void alloy::extra::freelist::steal(freelist& other)
 }
 
 
-inline void alloy::extra::freelist::store(pointer p)
-  noexcept
+inline
+auto alloy::extra::freelist::store(pointer p) noexcept -> void
 {
   ALLOY_ASSERT(p != nullptr);
   ALLOY_ASSERT(alignof(pointer) <= pointer_util::align_of(p));
@@ -235,15 +236,17 @@ inline void alloy::extra::freelist::store(pointer p)
 // Equality
 //------------------------------------------------------------------------------
 
-inline bool alloy::extra::operator==(const freelist& lhs, const freelist& rhs)
-  noexcept
+inline
+auto alloy::extra::operator==(const freelist& lhs, const freelist& rhs)
+  noexcept -> bool
 {
   return lhs.m_head == rhs.m_head;
 }
 
 
-inline bool alloy::extra::operator!=(const freelist& lhs, const freelist& rhs)
-  noexcept
+inline
+auto alloy::extra::operator!=(const freelist& lhs, const freelist& rhs)
+  noexcept -> bool
 {
   return !(lhs==rhs);
 }

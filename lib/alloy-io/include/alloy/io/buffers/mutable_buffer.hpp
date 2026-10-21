@@ -47,14 +47,14 @@ namespace alloy::io {
     /// \param container the container to create a buffer from
     /// \return a mutable buffer of the sequence container
     template <typename Container>
-    static mutable_buffer from_container(Container& container) noexcept;
+    static auto from_container(Container& container) noexcept -> mutable_buffer;
 
     /// \brief Creates a mutable buffer from a raw array
     ///
     /// \param array the underlying array
     /// \return a mutable buffer of the array
     template <typename T, std::size_t N>
-    static mutable_buffer from_array(T(&array)[N]) noexcept;
+    static auto from_array(T(&array)[N]) noexcept -> mutable_buffer;
 
     /// \brief Creates a mutable buffer from a pointer and size
     ///
@@ -62,14 +62,14 @@ namespace alloy::io {
     /// \param size the size of the array
     /// \return a mutable buffer of the contiguous sequence
     template <typename T>
-    static mutable_buffer from_data(T* data, size_type size) noexcept;
+    static auto from_data(T* data, size_type size) noexcept -> mutable_buffer;
 
     /// \brief Creates a mutable buffer by reading its object representation
     ///
     /// \param object the object to view
     /// \return a mutable buffer of the object
     template <typename T>
-    static mutable_buffer from_object(T& object) noexcept;
+    static auto from_object(T& object) noexcept -> mutable_buffer;
 
     //-------------------------------------------------------------------------
     // Constructors / Assignment
@@ -97,7 +97,7 @@ namespace alloy::io {
     ///
     /// \param other the other buffer to copy
     /// \return reference to `(*this)`
-    mutable_buffer& operator=(const mutable_buffer&) = default;
+    auto operator=(const mutable_buffer&) -> mutable_buffer& = default;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -107,17 +107,17 @@ namespace alloy::io {
     /// \brief Gets a pointer to the mutable data buffer
     ///
     /// \return a pointer to the underlying data
-    pointer data() const noexcept;
+    auto data() const noexcept -> pointer;
 
     /// \brief Gets the size of this buffer
     ///
     /// \return the size of this buffer
-    size_type size() const noexcept;
+    auto size() const noexcept -> size_type;
 
     /// \brief Gets whether this buffer is empty
     ///
     /// \return `true` if empty
-    bool empty() const noexcept;
+    auto empty() const noexcept -> bool;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -136,10 +136,10 @@ namespace alloy::io {
   // Equality
   //---------------------------------------------------------------------------
 
-  bool operator==(const mutable_buffer& lhs,
-                  const mutable_buffer& rhs) noexcept;
-  bool operator!=(const mutable_buffer& lhs,
-                  const mutable_buffer& rhs) noexcept;
+  auto operator==(const mutable_buffer& lhs, const mutable_buffer& rhs)
+    noexcept -> bool;
+  auto operator!=(const mutable_buffer& lhs, const mutable_buffer& rhs)
+    noexcept -> bool;
 
 } // namespace alloy::io
 
@@ -152,27 +152,27 @@ namespace alloy::io {
 //-----------------------------------------------------------------------------
 
 template <typename Container>
-inline alloy::io::mutable_buffer
-  alloy::io::mutable_buffer::from_container(Container& container)
-  noexcept
+inline
+auto alloy::io::mutable_buffer::from_container(Container& container)
+  noexcept -> mutable_buffer
 {
   return from_data(container.data(), container.size());
 }
 
 
 template <typename T, std::size_t N>
-inline alloy::io::mutable_buffer
-  alloy::io::mutable_buffer::from_array(T(&array)[N])
-  noexcept
+inline
+auto alloy::io::mutable_buffer::from_array(T(&array)[N])
+  noexcept -> mutable_buffer
 {
   return from_data(static_cast<T*>(array), N);
 }
 
 
 template <typename T>
-inline alloy::io::mutable_buffer
-  alloy::io::mutable_buffer::from_data(T* p, size_type size)
-  noexcept
+inline
+auto alloy::io::mutable_buffer::from_data(T* p, size_type size)
+  noexcept -> mutable_buffer
 {
   return mutable_buffer{
     reinterpret_cast<std::byte*>(p),
@@ -182,9 +182,9 @@ inline alloy::io::mutable_buffer
 
 
 template <typename T>
-inline alloy::io::mutable_buffer
-  alloy::io::mutable_buffer::from_object(T& object)
-  noexcept
+inline
+auto alloy::io::mutable_buffer::from_object(T& object)
+  noexcept -> mutable_buffer
 {
   return from_data(
     std::addressof(object),
@@ -197,8 +197,8 @@ inline alloy::io::mutable_buffer
 // Constructors
 //-----------------------------------------------------------------------------
 
-inline alloy::io::mutable_buffer::mutable_buffer()
-  noexcept
+inline
+alloy::io::mutable_buffer::mutable_buffer() noexcept
   : m_bytes{nullptr},
     m_size{0u}
 {
@@ -206,8 +206,8 @@ inline alloy::io::mutable_buffer::mutable_buffer()
 }
 
 
-inline alloy::io::mutable_buffer::mutable_buffer(pointer p, size_type size)
-  noexcept
+inline
+alloy::io::mutable_buffer::mutable_buffer(pointer p, size_type size) noexcept
   : m_bytes{p},
     m_size{size}
 {
@@ -219,22 +219,22 @@ inline alloy::io::mutable_buffer::mutable_buffer(pointer p, size_type size)
 // Observers
 //-----------------------------------------------------------------------------
 
-inline alloy::io::mutable_buffer::pointer alloy::io::mutable_buffer::data()
-  const noexcept
+inline
+auto alloy::io::mutable_buffer::data() const noexcept -> pointer
 {
   return m_bytes;
 }
 
 
-inline alloy::io::mutable_buffer::size_type alloy::io::mutable_buffer::size()
-  const noexcept
+inline
+auto alloy::io::mutable_buffer::size() const noexcept -> size_type
 {
   return m_size;
 }
 
 
-inline bool alloy::io::mutable_buffer::empty()
-  const noexcept
+inline
+auto alloy::io::mutable_buffer::empty() const noexcept -> bool
 {
   return m_bytes == nullptr || m_size == 0u;
 }
@@ -248,17 +248,17 @@ inline bool alloy::io::mutable_buffer::empty()
 // Equality
 //-----------------------------------------------------------------------------
 
-inline bool alloy::io::operator==(const mutable_buffer& lhs,
-                                  const mutable_buffer& rhs)
-  noexcept
+inline
+auto alloy::io::operator==(const mutable_buffer& lhs, const mutable_buffer& rhs)
+  noexcept -> bool
 {
   return lhs.data() == rhs.data() && lhs.size() == rhs.size();
 }
 
 
-inline bool alloy::io::operator!=(const mutable_buffer& lhs,
-                                  const mutable_buffer& rhs)
-  noexcept
+inline
+auto alloy::io::operator!=(const mutable_buffer& lhs, const mutable_buffer& rhs)
+  noexcept -> bool
 {
   return !(lhs == rhs);
 }

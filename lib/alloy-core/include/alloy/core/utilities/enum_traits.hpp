@@ -108,7 +108,8 @@ namespace alloy::core {
     ///
     /// \param other the other iterator
     /// \return reference to `(*this)`
-    auto operator=(const enum_range_iterator&) -> enum_range_iterator& = default;
+    auto operator=(const enum_range_iterator&)
+      -> enum_range_iterator& = default;
 
     //--------------------------------------------------------------------------
     // Iteration
@@ -123,8 +124,10 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    constexpr auto operator==(const enum_range_iterator& other) const noexcept -> bool;
-    constexpr auto operator!=(const enum_range_iterator& other) const noexcept -> bool;
+    constexpr auto operator==(const enum_range_iterator& other)
+      const noexcept -> bool;
+    constexpr auto operator!=(const enum_range_iterator& other)
+      const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -176,8 +179,7 @@ namespace alloy::core {
 
 template <typename Enum>
 inline constexpr
-alloy::core::enum_range_iterator<Enum>::enum_range_iterator()
-  noexcept
+alloy::core::enum_range_iterator<Enum>::enum_range_iterator() noexcept
   : m_element{}
 {
 
@@ -185,8 +187,7 @@ alloy::core::enum_range_iterator<Enum>::enum_range_iterator()
 
 template <typename Enum>
 inline constexpr
-alloy::core::enum_range_iterator<Enum>::enum_range_iterator(Enum e)
-  noexcept
+alloy::core::enum_range_iterator<Enum>::enum_range_iterator(Enum e) noexcept
   : m_element{e}
 {
 }
@@ -220,16 +221,18 @@ auto alloy::core::enum_range_iterator<Enum>::operator++(int)
 
 template <typename Enum>
 inline constexpr
-auto alloy::core::enum_range_iterator<Enum>::operator==(const enum_range_iterator& other)
-  const noexcept -> bool
+auto alloy::core::enum_range_iterator<Enum>::operator==(
+  const enum_range_iterator& other
+) const noexcept -> bool
 {
   return m_element == other.m_element;
 }
 
 template <typename Enum>
 inline constexpr
-auto alloy::core::enum_range_iterator<Enum>::operator!=(const enum_range_iterator& other)
-  const noexcept -> bool
+auto alloy::core::enum_range_iterator<Enum>::operator!=(
+  const enum_range_iterator& other
+) const noexcept -> bool
 {
   return m_element != other.m_element;
 }

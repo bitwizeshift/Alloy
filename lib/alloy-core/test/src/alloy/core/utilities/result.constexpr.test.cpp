@@ -16,7 +16,9 @@ namespace {
 /// \param x the value to move
 /// \return a new T object
 template <typename T>
-constexpr auto force_move(T&& x) -> T {
+constexpr
+auto force_move(T&& x) -> T
+{
   return static_cast<T&&>(x);
 }
 
@@ -25,7 +27,8 @@ struct constexpr_type
   constexpr constexpr_type() noexcept = default;
   constexpr constexpr_type(const constexpr_type&) noexcept = default;
   constexpr constexpr_type(constexpr_type&&) noexcept = default;
-  constexpr constexpr_type(int x) noexcept : m_storage{x}{}
+  constexpr constexpr_type(int x) noexcept
+    : m_storage{x}{}
 
   auto operator=(const constexpr_type&) noexcept -> constexpr_type& = default;
   auto operator=(constexpr_type&&) noexcept -> constexpr_type& = default;
