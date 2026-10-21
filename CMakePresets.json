@@ -12,6 +12,9 @@
       "description": "The default configuration without any compilers or generator",
       "binaryDir": "${sourceDir}/build/cmake-${presetName}",
       "installDir": "${sourceDir}/install/${presetName}",
+      "environment": {
+        "CPM_SOURCE_CACHE": "${sourceDir}/.cache/cpm"
+      },
       "cacheVariables": {
         "ALLOY_COMPILE_TESTS": "ON",
         "ALLOY_COMPILE_BENCHMARKS": "ON",
@@ -95,7 +98,10 @@
     {
       "name": "default",
       "configurePreset": "default",
-      "configuration": "Debug"
+      "configuration": "Debug",
+      "environment": {
+        "CPM_SOURCE_CACHE": "${sourceDir}/.cache/cpm"
+      }
     }, {
       "name": "clang",
       "configurePreset": "clang",
@@ -133,6 +139,9 @@
         "noTestsAction": "error",
         "stopOnFailure": false,
         "jobs": 8
+      },
+      "environment": {
+        "CPM_SOURCE_CACHE": "${sourceDir}/.cache/cpm"
       }
     }, {
       "name": "clang",
