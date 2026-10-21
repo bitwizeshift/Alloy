@@ -46,6 +46,7 @@ set(source_files
   src/alloy/core/math/clamped.test.cpp
   src/alloy/core/math/saturated.test.cpp
   src/alloy/core/math/simd.test.cpp
+  src/alloy/core/math/matrix/matrix_utilities.test.cpp
 
   # Memory
   src/alloy/core/memory/packed_buffer.test.cpp

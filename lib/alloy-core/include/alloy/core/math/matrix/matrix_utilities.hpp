@@ -88,9 +88,9 @@ namespace alloy::core::detail {
     auto cast(const matrix2& from) noexcept -> matrix3
     {
       return matrix3{
-        from[0][0], from.get(0,10), real{0},
-        from[1][0], from.get(1,10), real{0},
-        real{0},    real{0},        real{1}
+        from[0][0], from[0][1], real{0},
+        from[1][0], from[1][1], real{0},
+        real{0},    real{0},    real{1}
       };
     }
   };
