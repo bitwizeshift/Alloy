@@ -35,6 +35,36 @@ CPMAddPackage(
 set(IMGUI_SOURCE_DIR "${imgui_SOURCE_DIR}" CACHE STRING "")
 
 #===============================================================================
+# Extra Dependencies
+#===============================================================================
+
+if (ALLOY_COMPILE_EXTRAS)
+  #-----------------------------------------------------------------------------
+  # SDL3 Dependency
+  #-----------------------------------------------------------------------------
+
+  CPMAddPackage(
+    NAME SDL3
+    GITHUB_REPOSITORY libsdl-org/SDL
+    GIT_TAG release-3.4.18
+    VERSION 3.4.18
+    GIT_SHALLOW TRUE
+    SYSTEM YES
+    EXCLUDE_FROM_ALL YES
+    OPTIONS
+      "SDL_SHARED OFF"
+      "SDL_STATIC ON"
+      "SDL_TEST_LIBRARY OFF"
+  )
+
+  # SDL3 is linked into Alloy's libraries, which are shared by default.
+  set_property(
+    TARGET SDL3-static
+    PROPERTY POSITION_INDEPENDENT_CODE ON
+  )
+endif ()
+
+#===============================================================================
 # Test Dependencies
 #===============================================================================
 
