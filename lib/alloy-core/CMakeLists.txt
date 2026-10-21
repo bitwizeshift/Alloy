@@ -118,6 +118,7 @@ set(header_files
   include/alloy/core/string/zstring_view.hpp
 
   # IO
+  include/alloy/core/io/buffered_reader.hpp
   include/alloy/core/io/error.hpp
   include/alloy/core/io/reader.hpp
   include/alloy/core/io/writer.hpp
@@ -225,6 +226,7 @@ set(source_files
   src/alloy/core/geometry/sphere.cpp
 
   # IO
+  src/alloy/core/io/buffered_reader.cpp
   src/alloy/core/io/error.cpp
   src/alloy/core/io/reader.cpp
   src/alloy/core/io/writer.cpp

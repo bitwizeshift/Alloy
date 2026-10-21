@@ -9,12 +9,15 @@
 # pragma once
 #endif
 
+#include <alloy/core/intrinsics.hpp>
 #include <alloy/core/io/reader.hpp>
 #include <alloy/core/io/writer.hpp>
+#include <alloy/core/memory/memory_resource.hpp>
 
 #include <algorithm>    // std::min, std::copy_n
 #include <cstddef>      // std::byte, std::size_t
 #include <limits>       // std::numeric_limits
+#include <new>          // operator new, std::align_val_t, std::nothrow
 #include <span>         // std::span
 #include <system_error> // std::error_code
 #include <vector>       // std::vector
@@ -94,6 +97,35 @@ namespace alloy::core::test {
     std::error_code m_error = {};
     std::size_t m_write_count = 0u;
     std::size_t m_last_request_size = 0u;
+  };
+
+  //===========================================================================
+  // class : counting_resource
+  //===========================================================================
+
+  /////////////////////////////////////////////////////////////////////////////
+  /// \brief A memory resource that counts its allocations and deallocations,
+  ///        and that can be made to fail every allocation
+  /////////////////////////////////////////////////////////////////////////////
+  class counting_resource final : public memory_resource
+  {
+  public:
+
+    auto fail_allocations() noexcept -> void;
+
+    auto allocations() const noexcept -> std::size_t;
+    auto deallocations() const noexcept -> std::size_t;
+
+  private:
+
+    auto do_allocate(std::size_t bytes, std::size_t align)
+      noexcept -> void* override;
+    auto do_deallocate(void* p, std::size_t bytes, std::size_t align)
+      noexcept -> void override;
+
+    bool m_fail = false;
+    std::size_t m_allocations = 0u;
+    std::size_t m_deallocations = 0u;
   };
 
   //===========================================================================
@@ -239,6 +271,57 @@ auto alloy::core::test::fake_writer::do_write(
   m_size += count;
 
   return count;
+}
+
+//=============================================================================
+// inline definitions : class : counting_resource
+//=============================================================================
+
+inline
+auto alloy::core::test::counting_resource::fail_allocations()
+  noexcept -> void
+{
+  m_fail = true;
+}
+
+inline
+auto alloy::core::test::counting_resource::allocations()
+  const noexcept -> std::size_t
+{
+  return m_allocations;
+}
+
+inline
+auto alloy::core::test::counting_resource::deallocations()
+  const noexcept -> std::size_t
+{
+  return m_deallocations;
+}
+
+inline
+auto alloy::core::test::counting_resource::do_allocate(
+  std::size_t bytes,
+  std::size_t align
+) noexcept -> void*
+{
+  if (m_fail) {
+    return nullptr;
+  }
+  ++m_allocations;
+  return ::operator new(bytes, std::align_val_t{align}, std::nothrow);
+}
+
+inline
+auto alloy::core::test::counting_resource::do_deallocate(
+  void* p,
+  std::size_t bytes,
+  std::size_t align
+) noexcept -> void
+{
+  core::compiler::unused(bytes);
+
+  ++m_deallocations;
+  ::operator delete(p, std::align_val_t{align});
 }
 
 //=============================================================================
