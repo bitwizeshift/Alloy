@@ -10,6 +10,7 @@
 #endif
 
 #include <alloy/core/io/reader.hpp>
+#include <alloy/core/io/writer.hpp>
 
 #include <algorithm>    // std::min, std::copy_n
 #include <cstddef>      // std::byte, std::size_t
@@ -54,6 +55,44 @@ namespace alloy::core::test {
     std::size_t m_chunk_size = std::numeric_limits<std::size_t>::max();
     std::error_code m_error = {};
     std::size_t m_read_count = 0u;
+    std::size_t m_last_request_size = 0u;
+  };
+
+  //===========================================================================
+  // class : fake_writer
+  //===========================================================================
+
+  /////////////////////////////////////////////////////////////////////////////
+  /// \brief A writer into a fixed region of bytes that records how it is
+  ///        written to
+  ///
+  /// Each write consumes at most the number of bytes given to
+  /// `set_chunk_size`. Once the region is full, writes consume no bytes, or
+  /// fail with the error given to `fail_when_full` if one was set.
+  /////////////////////////////////////////////////////////////////////////////
+  class fake_writer final : public writer
+  {
+  public:
+
+    explicit fake_writer(std::span<std::byte> storage) noexcept;
+
+    auto set_chunk_size(std::size_t n) noexcept -> void;
+    auto fail_when_full(std::error_code ec) noexcept -> void;
+
+    auto written() const noexcept -> std::span<const std::byte>;
+    auto write_count() const noexcept -> std::size_t;
+    auto last_request_size() const noexcept -> std::size_t;
+
+  private:
+
+    auto do_write(std::span<const std::byte> buffer)
+      noexcept -> result<std::size_t,std::error_code> override;
+
+    std::span<std::byte> m_storage;
+    std::size_t m_size = 0u;
+    std::size_t m_chunk_size = std::numeric_limits<std::size_t>::max();
+    std::error_code m_error = {};
+    std::size_t m_write_count = 0u;
     std::size_t m_last_request_size = 0u;
   };
 
@@ -131,6 +170,73 @@ auto alloy::core::test::fake_reader::do_read(std::span<std::byte> buffer)
   const auto count = std::min({buffer.size(), m_bytes.size(), m_chunk_size});
   std::copy_n(m_bytes.data(), count, buffer.data());
   m_bytes = m_bytes.subspan(count);
+
+  return count;
+}
+
+//=============================================================================
+// inline definitions : class : fake_writer
+//=============================================================================
+
+inline
+alloy::core::test::fake_writer::fake_writer(std::span<std::byte> storage)
+  noexcept
+  : m_storage{storage}
+{
+
+}
+
+inline
+auto alloy::core::test::fake_writer::set_chunk_size(std::size_t n)
+  noexcept -> void
+{
+  m_chunk_size = n;
+}
+
+inline
+auto alloy::core::test::fake_writer::fail_when_full(std::error_code ec)
+  noexcept -> void
+{
+  m_error = ec;
+}
+
+inline
+auto alloy::core::test::fake_writer::written()
+  const noexcept -> std::span<const std::byte>
+{
+  return m_storage.first(m_size);
+}
+
+inline
+auto alloy::core::test::fake_writer::write_count()
+  const noexcept -> std::size_t
+{
+  return m_write_count;
+}
+
+inline
+auto alloy::core::test::fake_writer::last_request_size()
+  const noexcept -> std::size_t
+{
+  return m_last_request_size;
+}
+
+inline
+auto alloy::core::test::fake_writer::do_write(
+  std::span<const std::byte> buffer
+) noexcept -> result<std::size_t,std::error_code>
+{
+  ++m_write_count;
+  m_last_request_size = buffer.size();
+
+  const auto available = m_storage.size() - m_size;
+  if (available == 0u && m_error) {
+    return fail(m_error);
+  }
+
+  const auto count = std::min({buffer.size(), available, m_chunk_size});
+  std::copy_n(buffer.data(), count, m_storage.data() + m_size);
+  m_size += count;
 
   return count;
 }

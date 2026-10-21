@@ -120,6 +120,7 @@ set(header_files
   # IO
   include/alloy/core/io/error.hpp
   include/alloy/core/io/reader.hpp
+  include/alloy/core/io/writer.hpp
 
   # Memory
   include/alloy/core/memory/memory_resource.hpp
