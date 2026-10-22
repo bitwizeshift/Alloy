@@ -392,7 +392,7 @@ auto alloy::core::euler_angles::dot(const euler_angles& rhs)
 {
   auto result = real{0};
   for (auto i = 0; i < 3; ++i) {
-    result = m_data[i].value() * rhs.m_data[i].value();
+    result += m_data[i].value() * rhs.m_data[i].value();
   }
   return result;
 }
