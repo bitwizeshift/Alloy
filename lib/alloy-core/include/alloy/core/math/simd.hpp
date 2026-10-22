@@ -540,7 +540,8 @@ auto alloy::core::simd<T>::load(std::span<const T, 4> p)
   if constexpr (std::is_same_v<T, f32>) {
     return simd<T>{_mm_load_ps(compiler::assume_aligned<16u>(p.data()))};
   } else {
-    return simd<T>{_mm_load_epi32(compiler::assume_aligned<16u>(p.data()))};
+    const auto* const data = compiler::assume_aligned<16u>(p.data());
+    return simd<T>{_mm_load_si128(reinterpret_cast<const __m128i*>(data))};
   }
 #else
   return set(p[0], p[1], p[2], p[3]);
@@ -564,7 +565,7 @@ auto alloy::core::simd<T>::load_unaligned(std::span<const T, 4> p)
   if constexpr (std::is_same_v<T, f32>) {
     return simd<T>{_mm_loadu_ps(p.data())};
   } else {
-    return simd<T>{_mm_loadu_epi32(p.data())};
+    return simd<T>{_mm_loadu_si128(reinterpret_cast<const __m128i*>(p.data()))};
   }
 #else
   return set(p[0], p[1], p[2], p[3]);
@@ -587,7 +588,7 @@ auto alloy::core::simd<T>::spread_scalar(T scalar) noexcept -> simd<T>
   if constexpr (std::is_same_v<T, f32>) {
     return simd<T>{_mm_set1_ps(scalar)};
   } else {
-    return simd<T>{_mm_set1_epi32(scalar)};
+    return simd<T>{_mm_set1_epi32(static_cast<int>(scalar))};
   }
 #else
   return set(scalar, scalar, scalar, scalar);
@@ -613,14 +614,14 @@ auto alloy::core::simd<T>::spread_from_lane(simd<T> v) noexcept -> simd<T>
   if constexpr (std::is_same_v<T, f32>) {
     return simd<T>{_mm_shuffle_ps(v.value, v.value, _MM_SHUFFLE(Lane, Lane, Lane, Lane))};
   } else {
-    return simd<T>{_mm_shuffle_epi32(v.value, v.value, _MM_SHUFFLE(Lane, Lane, Lane, Lane))};
+    return simd<T>{_mm_shuffle_epi32(v.value, _MM_SHUFFLE(Lane, Lane, Lane, Lane))};
   }
 #else
   return set(
-    v[Lane],
-    v[Lane],
-    v[Lane],
-    v[Lane]
+    v.value[Lane],
+    v.value[Lane],
+    v.value[Lane],
+    v.value[Lane]
   );
 #endif
 }
@@ -642,9 +643,14 @@ auto alloy::core::simd<T>::set(T v0, T v1, T v2, T v3) noexcept -> simd<T>
   }
 #elif defined(ALLOY_SIMD_SSE)
   if constexpr (std::is_same_v<T, f32>) {
-    return simd<T>{_mm_set_ps(v0, v1, v2, v3)};
+    return simd<T>{_mm_setr_ps(v0, v1, v2, v3)};
   } else {
-    return simd<T>{_mm_set_epi32(v0, v1, v2, v3)};
+    return simd<T>{_mm_setr_epi32(
+      static_cast<int>(v0),
+      static_cast<int>(v1),
+      static_cast<int>(v2),
+      static_cast<int>(v3)
+    )};
   }
 #else
   return simd<T>{{v0, v1, v2, v3}};
@@ -671,7 +677,8 @@ auto alloy::core::simd<T>::store(std::span<T,4> out) const noexcept -> void
   if constexpr (std::is_same_v<T, f32>) {
     _mm_store_ps(compiler::assume_aligned<16>(out.data()), value);
   } else {
-    _mm_store_epi32(compiler::assume_aligned<16>(out.data()), value);
+    auto* const data = compiler::assume_aligned<16>(out.data());
+    _mm_store_si128(reinterpret_cast<__m128i*>(data), value);
   }
 #else
   store_unaligned(out);
@@ -695,7 +702,7 @@ auto alloy::core::simd<T>::store_unaligned(std::span<T,4> out)
   if constexpr (std::is_same_v<T, f32>) {
     _mm_storeu_ps(out.data(), value);
   } else {
-    _mm_storeu_epi32(out.data(), value);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(out.data()), value);
   }
 #else
   // In the absence of a better mechanism, unpack each lane independently
@@ -727,9 +734,13 @@ auto alloy::core::simd<T>::lane() const noexcept -> T
   }
 #elif defined(ALLOY_SIMD_SSE)
   if constexpr (std::is_same_v<T, f32>) {
-    return _mm_shuffle_ps(value, value, _MM_SHUFFLE(Lane, Lane, Lane, Lane));
+    return _mm_cvtss_f32(
+      _mm_shuffle_ps(value, value, _MM_SHUFFLE(Lane, Lane, Lane, Lane))
+    );
   } else {
-    return _mm_shuffle_epi32(value, value, _MM_SHUFFLE(Lane, Lane, Lane, Lane));
+    return static_cast<T>(_mm_cvtsi128_si32(
+      _mm_shuffle_epi32(value, _MM_SHUFFLE(Lane, Lane, Lane, Lane))
+    ));
   }
 #elif defined(ALLOY_SIMD_NONE)
   return value[Lane];
