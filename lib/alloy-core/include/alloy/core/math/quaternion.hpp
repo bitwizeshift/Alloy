@@ -381,39 +381,56 @@ namespace alloy::core {
 
     /// \brief Computes the roll angle by reprojecting the axis
     ///
+    /// The roll is the angle about the z-axis between the x-axis and the
+    /// rotated x-axis projected onto the xy-plane.
+    ///
     /// \param reproject tag used for tag dispatch
-    /// \return the roll angle
+    /// \return the roll angle, in the range [-pi, pi]
     auto roll(reproject_axis_t reproject) const noexcept -> radian;
 
-    /// \brief Computes the roll angle by reprojecting the axis
+    /// \brief Computes the roll angle about the z-axis
     ///
-    /// \return the roll angle
+    /// The roll, yaw, and pitch are the angles of this quaternion decomposed
+    /// into a rotation about the x-axis by the pitch, followed by the y-axis
+    /// by the yaw, followed by the z-axis by the roll.
+    ///
+    /// \return the roll angle, in the range [-pi, pi]
     auto roll() const noexcept -> radian;
 
     //--------------------------------------------------------------------------
 
     /// \brief Computes the pitch angle by reprojecting the axis
     ///
+    /// The pitch is the angle about the x-axis between the y-axis and the
+    /// rotated y-axis projected onto the yz-plane.
+    ///
     /// \param reproject tag used for tag dispatch
-    /// \return the pitch angle
+    /// \return the pitch angle, in the range [-pi, pi]
     auto pitch(reproject_axis_t reproject) const noexcept -> radian;
 
-    /// \brief Computes the pitch angle by reprojecting the axis
+    /// \brief Computes the pitch angle about the x-axis
     ///
-    /// \return the pitch angle
+    /// \see roll() for the decomposition that this angle is a part of
+    ///
+    /// \return the pitch angle, in the range [-pi, pi]
     auto pitch() const noexcept -> radian;
 
     //--------------------------------------------------------------------------
 
     /// \brief Computes the yaw angle by reprojecting the axis
     ///
+    /// The yaw is the angle about the y-axis between the z-axis and the
+    /// rotated z-axis projected onto the zx-plane.
+    ///
     /// \param reproject tag used for tag dispatch
-    /// \return the yaw angle
+    /// \return the yaw angle, in the range [-pi, pi]
     auto yaw(reproject_axis_t reproject) const noexcept -> radian;
 
-    /// \brief Computes the yaw angle by reprojecting the axis
+    /// \brief Computes the yaw angle about the y-axis
     ///
-    /// \return the yaw angle
+    /// \see roll() for the decomposition that this angle is a part of
+    ///
+    /// \return the yaw angle, in the range [-pi/2, pi/2]
     auto yaw() const noexcept -> radian;
 
     //--------------------------------------------------------------------------

@@ -429,20 +429,14 @@ auto alloy::core::quaternion::roll(reproject_axis_t) const noexcept -> radian
 
   const auto f1 = txy+twz;
   const auto f2 = 1 - (tyy + tzz);
-  const auto angle = trigonometry::arctan2(f1, f2);
-  return angle >= radian_constants::half_revolution
-       ? (angle - radian_constants::half_revolution)
-       : angle;
+  return trigonometry::arctan2(f1, f2);
 }
 
 auto alloy::core::quaternion::roll() const noexcept -> radian
 {
   const auto f1 = 2*(x()*y() + w()*z());
   const auto f2 = w()*w() + x()*x() - y()*y() - z()*z();
-  const auto angle = trigonometry::arctan2(f1, f2);
-  return angle >= radian_constants::half_revolution
-       ? (angle - radian_constants::half_revolution)
-       :  angle;
+  return trigonometry::arctan2(f1, f2);
 }
 
 //----------------------------------------------------------------------------
@@ -458,20 +452,14 @@ auto alloy::core::quaternion::pitch(reproject_axis_t) const noexcept -> radian
 
   const auto f1 = tyz + twx;
   const auto f2 = 1 - (txx + tzz);
-  const auto angle = trigonometry::arctan2(f1, f2);
-  return angle >= radian_constants::half_revolution
-       ? (angle - radian_constants::half_revolution)
-       :  angle;
+  return trigonometry::arctan2(f1, f2);
 }
 
 auto alloy::core::quaternion::pitch() const noexcept -> radian
 {
   const auto f1 = 2*(y()*z() + w()*x());
   const auto f2 = w()*w() - x()*x() - y()*y() + z()*z();
-  const auto angle = trigonometry::arctan2(f1, f2);
-  return angle >= radian_constants::half_revolution
-       ? (angle - radian_constants::half_revolution)
-       :  angle;
+  return trigonometry::arctan2(f1, f2);
 }
 
 //----------------------------------------------------------------------------
@@ -488,18 +476,12 @@ auto alloy::core::quaternion::yaw(reproject_axis_t) const noexcept -> radian
 
   const auto f1 = txz + twy;
   const auto f2 = 1 - (txx + tyy);
-  const auto angle = trigonometry::arctan2(f1, f2);
-  return angle >= radian_constants::half_revolution
-       ? (angle - radian_constants::half_revolution)
-       :  angle;
+  return trigonometry::arctan2(f1, f2);
 }
 
 auto alloy::core::quaternion::yaw() const noexcept -> radian
 {
-  const auto angle = trigonometry::arcsin(-2*(x()*z() - w()*y()));
-  return angle >= radian_constants::half_revolution
-       ? (angle - radian_constants::half_revolution)
-       :  angle;
+  return trigonometry::arcsin(-2*(x()*z() - w()*y()));
 }
 
 //----------------------------------------------------------------------------

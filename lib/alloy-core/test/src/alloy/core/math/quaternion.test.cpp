@@ -94,6 +94,82 @@ TEST_CASE("quaternion::inverse()", "[quantifiers]")
   }
 }
 
+TEST_CASE("quaternion::roll()", "[quantifiers]")
+{
+  // Arrange
+  const auto sut = quaternion{0, 0, 0, 1};
+
+  SECTION("Half turn about the z-axis is a roll of pi")
+  {
+    // Act
+    const auto result = sut.roll();
+
+    // Assert
+    REQUIRE( almost_equal(result, radian_constants::half_revolution) );
+  }
+
+  SECTION("Reprojected half turn about the z-axis is a roll of pi")
+  {
+    // Act
+    const auto result = sut.roll(reproject_axis);
+
+    // Assert
+    REQUIRE( almost_equal(result, radian_constants::half_revolution) );
+  }
+}
+
+TEST_CASE("quaternion::pitch()", "[quantifiers]")
+{
+  // Arrange
+  const auto sut = quaternion{0, 1, 0, 0};
+
+  SECTION("Half turn about the x-axis is a pitch of pi")
+  {
+    // Act
+    const auto result = sut.pitch();
+
+    // Assert
+    REQUIRE( almost_equal(result, radian_constants::half_revolution) );
+  }
+
+  SECTION("Reprojected half turn about the x-axis is a pitch of pi")
+  {
+    // Act
+    const auto result = sut.pitch(reproject_axis);
+
+    // Assert
+    REQUIRE( almost_equal(result, radian_constants::half_revolution) );
+  }
+}
+
+TEST_CASE("quaternion::yaw()", "[quantifiers]")
+{
+  SECTION("Rotation about the y-axis is a yaw of its angle")
+  {
+    // Arrange
+    const auto angle = radian{0.5f};
+    const auto sut = quaternion::from_angle_axis(angle, vector3{0, 1, 0});
+
+    // Act
+    const auto result = sut.yaw();
+
+    // Assert
+    REQUIRE( almost_equal(result, angle) );
+  }
+
+  SECTION("Reprojected half turn about the y-axis is a yaw of pi")
+  {
+    // Arrange
+    const auto sut = quaternion{0, 0, 1, 0};
+
+    // Act
+    const auto result = sut.yaw(reproject_axis);
+
+    // Assert
+    REQUIRE( almost_equal(result, radian_constants::half_revolution) );
+  }
+}
+
 //------------------------------------------------------------------------------
 // Modifiers
 //------------------------------------------------------------------------------
