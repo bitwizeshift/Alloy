@@ -516,7 +516,7 @@ auto alloy::core::vector2::at(index_type n) -> reference
     throw std::out_of_range("alloy::core::vector2::at: index out of range");
   }
 #else
-  assert(n < 2 && n >= 0);
+  ALLOY_ASSERT(n < 2 && n >= 0);
 #endif
   return m_data[n];
 }
