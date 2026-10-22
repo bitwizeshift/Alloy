@@ -366,10 +366,14 @@ auto alloy::core::quaternion::extract_axes(
 
 auto alloy::core::quaternion::normalize() noexcept -> quaternion&
 {
-  const auto mag_inv = real{1} / magnitude();
+  const auto mag = magnitude();
 
-  for (auto i=0; i<4; ++i) {
-    m_data[i] *= mag_inv;
+  if (mag > real{0}) {
+    const auto mag_inv = real{1} / mag;
+
+    for (auto i=0; i<4; ++i) {
+      m_data[i] *= mag_inv;
+    }
   }
   return (*this);
 }

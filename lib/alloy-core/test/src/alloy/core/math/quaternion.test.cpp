@@ -95,6 +95,37 @@ TEST_CASE("quaternion::inverse()", "[quantifiers]")
 }
 
 //------------------------------------------------------------------------------
+// Modifiers
+//------------------------------------------------------------------------------
+
+TEST_CASE("quaternion::normalize()", "[modifiers]")
+{
+  SECTION("Non-unit quaternion becomes unit length")
+  {
+    // Arrange
+    auto sut = quaternion{1, 1, 1, 1};
+
+    // Act
+    sut.normalize();
+
+    // Assert
+    REQUIRE( almost_equal(sut, quaternion{0.5f, 0.5f, 0.5f, 0.5f}) );
+  }
+
+  SECTION("Zero quaternion is left unchanged")
+  {
+    // Arrange
+    auto sut = quaternion_constants::zero;
+
+    // Act
+    sut.normalize();
+
+    // Assert
+    REQUIRE( sut == quaternion_constants::zero );
+  }
+}
+
+//------------------------------------------------------------------------------
 // Arithmetic Operators
 //------------------------------------------------------------------------------
 

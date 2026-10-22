@@ -349,6 +349,8 @@ namespace alloy::core {
 
     /// \brief Normalizes this quaternion and returns a reference to `(*this)`
     ///
+    /// A zero quaternion has no direction, and is left as zero.
+    ///
     /// \return the reference to `(*this)`
     auto normalize() noexcept -> quaternion&;
 
