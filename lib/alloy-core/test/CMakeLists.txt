@@ -77,6 +77,7 @@ set(source_files
   src/alloy/core/io/reader.test.cpp
   src/alloy/core/io/serializer.test.cpp
   src/alloy/core/io/span_reader.test.cpp
+  src/alloy/core/io/test_doubles.hpp
   src/alloy/core/io/writer.test.cpp
 )
 

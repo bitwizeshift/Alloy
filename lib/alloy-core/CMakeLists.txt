@@ -134,6 +134,7 @@ set(header_files
   include/alloy/core/memory/memory_resource.hpp
   include/alloy/core/memory/data_quantity.hpp
   include/alloy/core/memory/allocator.hpp
+  include/alloy/core/memory/lifetime_utilities.hpp
   include/alloy/core/memory/observer_ptr.hpp
   include/alloy/core/memory/unaligned.hpp
   include/alloy/core/memory/packed_buffer.hpp

@@ -29,6 +29,7 @@ set(header_files
   include/alloy/platform/buffers/mutable_buffer.hpp
   include/alloy/platform/buffers/const_buffer.hpp
   include/alloy/platform/events/keyboard_events.hpp
+  include/alloy/platform/events/mouse_events.hpp
   include/alloy/platform/events/window_events.hpp
   include/alloy/platform/events/filesystem_events.hpp
   include/alloy/platform/event.hpp
@@ -41,6 +42,7 @@ set(header_files
   include/alloy/platform/filesystem/file_adapter.hpp
   include/alloy/platform/filesystem/file_stream.hpp
   include/alloy/platform/filesystem/file_stream_finalizer.hpp
+  include/alloy/platform/filesystem/file_stream_handle.hpp
   include/alloy/platform/filesystem/file.hpp
   include/alloy/platform/filesystem/null_filesystem.hpp
   include/alloy/platform/filesystem/random_filesystem.hpp
