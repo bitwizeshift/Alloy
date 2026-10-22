@@ -357,6 +357,7 @@ namespace alloy::core {
   /// \param v2 the second vector
   /// \param v3 the third vector
   /// \return `true` if the three vectors are linearly independent
+  ALLOY_CORE_API
   auto are_linearly_independent(
     const vector3& v1,
     const vector3& v2,
