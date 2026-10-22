@@ -34,10 +34,10 @@
 //-----------------------------------------------------------------------------
 
 #if defined(ALLOY_RESTRICT)
-# error ALLOY_RESTRICT defined before including intrinsics.hpp
+# error ALLOY_RESTRICT must not be defined before intrinsics.hpp
 #endif
 #if defined(ALLOY_NOOP)
-# error ALLOY_NOOP defined before including intrinsics.hpp
+# error ALLOY_NOOP must not be defined before intrinsics.hpp
 #endif
 
 //! \def ALLOY_RESTRICT
@@ -62,22 +62,22 @@
 //-----------------------------------------------------------------------------
 
 #if defined(ALLOY_LIKELY)
-# error ALLOY_LIKELY defined before including intrinsics.hpp
+# error ALLOY_LIKELY must not be defined before intrinsics.hpp
 #endif
 #if defined(ALLOY_UNLIKELY)
-# error ALLOY_UNLIKELY defined before including intrinsics.hpp
+# error ALLOY_UNLIKELY must not be defined before intrinsics.hpp
 #endif
 #if defined(ALLOY_ASSUME)
-# error ALLOY_ASSUME defined before including intrinsics.hpp
+# error ALLOY_ASSUME must not be defined before intrinsics.hpp
 #endif
 #if defined(ALLOY_COLD)
-# error ALLOY_COLD defined before including intrinsics.hpp
+# error ALLOY_COLD must not be defined before intrinsics.hpp
 #endif
 #if defined(ALLOY_HOT)
-# error ALLOY_HOT defined before including intrinsics.hpp
+# error ALLOY_HOT must not be defined before intrinsics.hpp
 #endif
 #if defined(ALLOY_UNREACHABLE)
-# error ALLOY_UNREACHABLE defined before including intrinsics.hpp
+# error ALLOY_UNREACHABLE must not be defined before intrinsics.hpp
 #endif
 
 //! \def ALLOY_LIKELY(x)
@@ -170,13 +170,13 @@
 //-----------------------------------------------------------------------------
 
 #if defined(ALLOY_FORCE_INLINE)
-# error ALLOY_FORCE_INLINE defined before including intrinsics.hpp
+# error ALLOY_FORCE_INLINE must not be defined before intrinsics.hpp
 #endif
 #if defined(ALLOY_FORCE_INLINE_LAMBDA)
-# error ALLOY_FORCE_INLINE_LAMBDA defined before including intrinsics.hpp
+# error ALLOY_FORCE_INLINE_LAMBDA must not be defined before intrinsics.hpp
 #endif
 #if defined(ALLOY_NO_INLINE)
-# error ALLOY_NO_INLINE defined before including intrinsics.hpp
+# error ALLOY_NO_INLINE must not be defined before intrinsics.hpp
 #endif
 
 //! \def ALLOY_FORCE_INLINE
@@ -223,7 +223,7 @@
 //-----------------------------------------------------------------------------
 
 #if defined(ALLOY_BREAKPOINT)
-# error ALLOY_BREAKPOINT defined before including intrinsics.hpp
+# error ALLOY_BREAKPOINT must not be defined before intrinsics.hpp
 #endif
 
 //! \def ALLOY_BREAKPOINT()
@@ -253,16 +253,16 @@
 //-----------------------------------------------------------------------------
 
 #if defined(ALLOY_COMPILER_SYMBOL_EXPORT)
-# error ALLOY_COMPILER_SYMBOL_EXPORT defined before including gcc.hpp
+# error ALLOY_COMPILER_SYMBOL_EXPORT must not be defined before gcc.hpp
 #endif
 #if defined(ALLOY_COMPILER_SYMBOL_IMPORT)
-# error ALLOY_COMPILER_SYMBOL_IMPORT defined before including gcc.hpp
+# error ALLOY_COMPILER_SYMBOL_IMPORT must not be defined before gcc.hpp
 #endif
 #if defined(ALLOY_COMPILER_SYMBOL_VISIBLE)
-# error ALLOY_COMPILER_SYMBOL_VISIBLE defined before including gcc.hpp
+# error ALLOY_COMPILER_SYMBOL_VISIBLE must not be defined before gcc.hpp
 #endif
 #if defined(ALLOY_COMPILER_SYMBOL_LOCAL)
-# error ALLOY_COMPILER_SYMBOL_LOCAL defined before including gcc.hpp
+# error ALLOY_COMPILER_SYMBOL_LOCAL must not be defined before gcc.hpp
 #endif
 
 #if defined(__GNUC__) || defined(__clang__)
@@ -287,7 +287,7 @@
 //------------------------------------------------------------------------------
 
 #if defined(ALLOY_COMPILER_PRAGMA)
-# error ALLOY_COMPILER_PRAGMA defined before including intrinsics.hpp
+# error ALLOY_COMPILER_PRAGMA must not be defined before intrinsics.hpp
 #endif
 
 //! \def ALLOY_COMPILER_PRAGMA(x)
@@ -302,13 +302,13 @@
 //------------------------------------------------------------------------------
 
 #if defined(ALLOY_COMPILER_CLANG_DIAGNOSTIC_PUSH)
-# error ALLOY_COMPILER_CLANG_DIAGNOSTIC_PUSH defined before including intrunsics.hpp
+# error ALLOY_COMPILER_CLANG_DIAGNOSTIC_PUSH must not be defined before intrunsics.hpp
 #endif
 #if defined(ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP)
-# error ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP defined before including intrunsics.hpp
+# error ALLOY_COMPILER_CLANG_DIAGNOSTIC_POP must not be defined before intrunsics.hpp
 #endif
 #if defined(ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE)
-# error ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE defined before including intrunsics.hpp
+# error ALLOY_COMPILER_CLANG_DIAGNOSTIC_IGNORE must not be defined before intrunsics.hpp
 #endif
 
 //------------------------------------------------------------------------------
@@ -348,13 +348,13 @@
 //------------------------------------------------------------------------------
 
 #if defined(ALLOY_COMPILER_GCC_DIAGNOSTIC_PUSH)
-# error ALLOY_COMPILER_GCC_DIAGNOSTIC_PUSH defined before including intrunsics.hpp
+# error ALLOY_COMPILER_GCC_DIAGNOSTIC_PUSH must not be defined before intrunsics.hpp
 #endif
 #if defined(ALLOY_COMPILER_GCC_DIAGNOSTIC_POP)
-# error ALLOY_COMPILER_GCC_DIAGNOSTIC_POP defined before including intrunsics.hpp
+# error ALLOY_COMPILER_GCC_DIAGNOSTIC_POP must not be defined before intrunsics.hpp
 #endif
 #if defined(ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE)
-# error ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE defined before including intrunsics.hpp
+# error ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE must not be defined before intrunsics.hpp
 #endif
 
 //------------------------------------------------------------------------------
@@ -394,13 +394,13 @@
 //------------------------------------------------------------------------------
 
 #if defined(ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH)
-# error ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH defined before including intrunsics.hpp
+# error ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH must not be defined before intrunsics.hpp
 #endif
 #if defined(ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP)
-# error ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP defined before including intrunsics.hpp
+# error ALLOY_COMPILER_MSVC_DIAGNOSTIC_POP must not be defined before intrunsics.hpp
 #endif
 #if defined(ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE)
-# error ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE defined before including intrunsics.hpp
+# error ALLOY_COMPILER_MSVC_DIAGNOSTIC_IGNORE must not be defined before intrunsics.hpp
 #endif
 
 //------------------------------------------------------------------------------
@@ -440,13 +440,13 @@
 //------------------------------------------------------------------------------
 
 #if defined(ALLOY_COMPILER_DIAGNOSTIC_PUSH)
-# error ALLOY_COMPILER_DIAGNOSTIC_PUSH defined before including intrinsics.hpp
+# error ALLOY_COMPILER_DIAGNOSTIC_PUSH must not be defined before intrinsics.hpp
 #endif
 #if defined(ALLOY_COMPILER_DIAGNOSTIC_POP)
-# error ALLOY_COMPILER_DIAGNOSTIC_POP defined before including intrinsics.hpp
+# error ALLOY_COMPILER_DIAGNOSTIC_POP must not be defined before intrinsics.hpp
 #endif
 #if defined(ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE)
-# error ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE defined before including intrinsics.hpp
+# error ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE must not be defined before intrinsics.hpp
 #endif
 
 //------------------------------------------------------------------------------

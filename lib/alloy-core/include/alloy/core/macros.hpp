@@ -16,13 +16,13 @@
 #endif
 
 #ifdef ALLOY_STRINGIZE
-# error ALLOY_STRINGIZE defined before macros.hpp included
+# error ALLOY_STRINGIZE must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_STRINGIZE_H1
-# error ALLOY_STRINGIZE_H1 defined before macros.hpp included
+# error ALLOY_STRINGIZE_H1 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_STRINGIZE_H2
-# error ALLOY_STRINGIZE_H2 defined before macros.hpp included
+# error ALLOY_STRINGIZE_H2 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_STRINGIZE(a)
@@ -37,13 +37,13 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_JOIN
-# error ALLOY_JOIN defined before macros.hpp included
+# error ALLOY_JOIN must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_JOIN_H1
-# error ALLOY_JOIN_H1 defined before macros.hpp included
+# error ALLOY_JOIN_H1 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_JOIN_H2
-# error ALLOY_JOIN_H2 defined before macros.hpp included
+# error ALLOY_JOIN_H2 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_JOIN(lhs,rhs)
@@ -60,7 +60,7 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_UNIQUE_NAME
-# error ALLOY_UNIQUE_NAME defined before macros.hpp included
+# error ALLOY_UNIQUE_NAME must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_UNIQUE_NAME(name)
@@ -77,7 +77,7 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_EMPTY
-# error ALLOY_EMPTY defined before macros.hpp included
+# error ALLOY_EMPTY must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_EMPTY
@@ -89,16 +89,16 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_ENCODE_WIDE
-# error ALLOY_ENCODE_WIDE defined before macros.hpp included
+# error ALLOY_ENCODE_WIDE must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_ENCODE_UTF8
-# error ALLOY_ENCODE_UTF8 defined before macros.hpp included
+# error ALLOY_ENCODE_UTF8 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_ENCODE_UTF16
-# error ALLOY_ENCODE_UTF16 defined before macros.hpp included
+# error ALLOY_ENCODE_UTF16 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_ENCODE_UTF32
-# error ALLOY_ENCODE_UTF32 defined before macros.hpp included
+# error ALLOY_ENCODE_UTF32 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_ENCODE_WIDE(x)
@@ -134,46 +134,46 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_TO_BOOL
-# error ALLOY_TO_BOOL defined before macros.hpp included
+# error ALLOY_TO_BOOL must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_TO_BOOL_true
-# error ALLOY_TO_BOOL_true defined before macros.hpp included
+# error ALLOY_TO_BOOL_true must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_TO_BOOL_false
-# error ALLOY_TO_BOOL_false defined before macros.hpp included
+# error ALLOY_TO_BOOL_false must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_TO_BOOL_0
-# error ALLOY_TO_BOOL_0 defined before macros.hpp included
+# error ALLOY_TO_BOOL_0 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_TO_BOOL_1
-# error ALLOY_TO_BOOL_1 defined before macros.hpp included
+# error ALLOY_TO_BOOL_1 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_TO_BOOL_2
-# error ALLOY_TO_BOOL_2 defined before macros.hpp included
+# error ALLOY_TO_BOOL_2 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_TO_BOOL_3
-# error ALLOY_TO_BOOL_3 defined before macros.hpp included
+# error ALLOY_TO_BOOL_3 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_TO_BOOL_4
-# error ALLOY_TO_BOOL_4 defined before macros.hpp included
+# error ALLOY_TO_BOOL_4 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_TO_BOOL_5
-# error ALLOY_TO_BOOL_5 defined before macros.hpp included
+# error ALLOY_TO_BOOL_5 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_TO_BOOL_6
-# error ALLOY_TO_BOOL_6 defined before macros.hpp included
+# error ALLOY_TO_BOOL_6 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_TO_BOOL_7
-# error ALLOY_TO_BOOL_7 defined before macros.hpp included
+# error ALLOY_TO_BOOL_7 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_TO_BOOL_8
-# error ALLOY_TO_BOOL_8 defined before macros.hpp included
+# error ALLOY_TO_BOOL_8 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_TO_BOOL_9
-# error ALLOY_TO_BOOL_9 defined before macros.hpp included
+# error ALLOY_TO_BOOL_9 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_TO_BOOL_10
-# error ALLOY_TO_BOOL_10 defined before macros.hpp included
+# error ALLOY_TO_BOOL_10 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_TO_BOOL(x)
@@ -204,13 +204,13 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_BOOL_NOT
-# error ALLOY_BOOL_NOT defined before macros.hpp included
+# error ALLOY_BOOL_NOT must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_NOT_0
-# error ALLOY_BOOL_NOT_0 defined before macros.hpp included
+# error ALLOY_BOOL_NOT_0 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_NOT_1
-# error ALLOY_BOOL_NOT_1 defined before macros.hpp included
+# error ALLOY_BOOL_NOT_1 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_BOOL_NOT(x)
@@ -225,19 +225,19 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_BOOL_OR
-# error ALLOY_BOOL_OR defined before macros.hpp included
+# error ALLOY_BOOL_OR must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_OR_00
-# error ALLOY_BOOL_OR_00 defined before macros.hpp included
+# error ALLOY_BOOL_OR_00 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_OR_10
-# error ALLOY_BOOL_OR_10 defined before macros.hpp included
+# error ALLOY_BOOL_OR_10 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_OR_11
-# error ALLOY_BOOL_OR_11 defined before macros.hpp included
+# error ALLOY_BOOL_OR_11 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_OR_01
-# error ALLOY_BOOL_OR_01 defined before macros.hpp included
+# error ALLOY_BOOL_OR_01 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_BOOL_OR(x,y)
@@ -255,19 +255,19 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_BOOL_AND
-# error ALLOY_BOOL_AND defined before macros.hpp included
+# error ALLOY_BOOL_AND must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_AND_00
-# error ALLOY_BOOL_AND_00 defined before macros.hpp included
+# error ALLOY_BOOL_AND_00 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_AND_10
-# error ALLOY_BOOL_AND_10 defined before macros.hpp included
+# error ALLOY_BOOL_AND_10 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_AND_11
-# error ALLOY_BOOL_AND_11 defined before macros.hpp included
+# error ALLOY_BOOL_AND_11 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_AND_01
-# error ALLOY_BOOL_AND_01 defined before macros.hpp included
+# error ALLOY_BOOL_AND_01 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_BOOL_AND(x,y)
@@ -285,19 +285,19 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_BOOL_XOR
-# error ALLOY_BOOL_XOR defined before macros.hpp included
+# error ALLOY_BOOL_XOR must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_XOR_00
-# error ALLOY_BOOL_XOR_00 defined before macros.hpp included
+# error ALLOY_BOOL_XOR_00 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_XOR_10
-# error ALLOY_BOOL_XOR_10 defined before macros.hpp included
+# error ALLOY_BOOL_XOR_10 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_XOR_11
-# error ALLOY_BOOL_XOR_11 defined before macros.hpp included
+# error ALLOY_BOOL_XOR_11 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_BOOL_XOR_01
-# error ALLOY_BOOL_XOR_01 defined before macros.hpp included
+# error ALLOY_BOOL_XOR_01 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_BOOL_XOR(x,y)
@@ -315,7 +315,7 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_BOOL_NAND
-# error ALLOY_BOOL_NAND defined before macros.hpp included
+# error ALLOY_BOOL_NAND must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_BOOL_NAND(x,y)
@@ -329,7 +329,7 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_BOOL_NOR
-# error ALLOY_BOOL_NOR defined before macros.hpp included
+# error ALLOY_BOOL_NOR must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_BOOL_NOR(x,y)
@@ -343,7 +343,7 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_BOOL_XNOR
-# error ALLOY_BOOL_XNOR defined before macros.hpp included
+# error ALLOY_BOOL_XNOR must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_BOOL_XNOR(x,y)
@@ -359,13 +359,13 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_IF
-# error ALLOY_IF defined before macros.hpp included
+# error ALLOY_IF must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_IF_0
-# error ALLOY_IF_0 defined before macros.hpp included
+# error ALLOY_IF_0 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_IF_1
-# error ALLOY_IF_1 defined before macros.hpp included
+# error ALLOY_IF_1 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_IF(cond,x)
@@ -381,13 +381,13 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_IF_ELSE
-# error ALLOY_IF defined before macros.hpp included
+# error ALLOY_IF must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_IF_ELSE_0
-# error ALLOY_IF_0 defined before macros.hpp included
+# error ALLOY_IF_0 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_IF_ELSE_1
-# error ALLOY_IF_1 defined before macros.hpp included
+# error ALLOY_IF_1 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_IF_ELSE(cond,x,y)
@@ -404,13 +404,13 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_COMMA_IF
-# error ALLOY_IF defined before macros.hpp included
+# error ALLOY_IF must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_COMMA_IF_0
-# error ALLOY_IF_0 defined before macros.hpp included
+# error ALLOY_IF_0 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_COMMA_IF_1
-# error ALLOY_IF_1 defined before macros.hpp included
+# error ALLOY_IF_1 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_COMMA_IF(cond)
@@ -427,40 +427,40 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_LIST
-# error ALLOY_LIST defined before macros.hpp included
+# error ALLOY_LIST must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_LIST_0
-# error ALLOY_LIST_0 defined before macros.hpp included
+# error ALLOY_LIST_0 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_LIST_1
-# error ALLOY_LIST_1 defined before macros.hpp included
+# error ALLOY_LIST_1 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_LIST_2
-# error ALLOY_LIST_2 defined before macros.hpp included
+# error ALLOY_LIST_2 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_LIST_3
-# error ALLOY_LIST_3 defined before macros.hpp included
+# error ALLOY_LIST_3 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_LIST_4
-# error ALLOY_LIST_4 defined before macros.hpp included
+# error ALLOY_LIST_4 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_LIST_5
-# error ALLOY_LIST_5 defined before macros.hpp included
+# error ALLOY_LIST_5 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_LIST_6
-# error ALLOY_LIST_6 defined before macros.hpp included
+# error ALLOY_LIST_6 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_LIST_7
-# error ALLOY_LIST_7 defined before macros.hpp included
+# error ALLOY_LIST_7 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_LIST_8
-# error ALLOY_LIST_8 defined before macros.hpp included
+# error ALLOY_LIST_8 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_LIST_9
-# error ALLOY_LIST_9 defined before macros.hpp included
+# error ALLOY_LIST_9 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_LIST_10
-# error ALLOY_LIST_10 defined before macros.hpp included
+# error ALLOY_LIST_10 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_LIST(count,prefix)
@@ -494,40 +494,40 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_REVERSE_LIST
-# error ALLOY_REVERSE_LIST defined before macros.hpp included
+# error ALLOY_REVERSE_LIST must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_REVERSE_LIST_0
-# error ALLOY_REVERSE_LIST_0 defined before macros.hpp included
+# error ALLOY_REVERSE_LIST_0 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_REVERSE_LIST_1
-# error ALLOY_REVERSE_LIST_1 defined before macros.hpp included
+# error ALLOY_REVERSE_LIST_1 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_REVERSE_LIST_2
-# error ALLOY_REVERSE_LIST_2 defined before macros.hpp included
+# error ALLOY_REVERSE_LIST_2 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_REVERSE_LIST_3
-# error ALLOY_REVERSE_LIST_3 defined before macros.hpp included
+# error ALLOY_REVERSE_LIST_3 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_REVERSE_LIST_4
-# error ALLOY_REVERSE_LIST_4 defined before macros.hpp included
+# error ALLOY_REVERSE_LIST_4 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_REVERSE_LIST_5
-# error ALLOY_REVERSE_LIST_5 defined before macros.hpp included
+# error ALLOY_REVERSE_LIST_5 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_REVERSE_LIST_6
-# error ALLOY_REVERSE_LIST_6 defined before macros.hpp included
+# error ALLOY_REVERSE_LIST_6 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_REVERSE_LIST_7
-# error ALLOY_REVERSE_LIST_7 defined before macros.hpp included
+# error ALLOY_REVERSE_LIST_7 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_REVERSE_LIST_8
-# error ALLOY_REVERSE_LIST_8 defined before macros.hpp included
+# error ALLOY_REVERSE_LIST_8 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_REVERSE_LIST_9
-# error ALLOY_REVERSE_LIST_9 defined before macros.hpp included
+# error ALLOY_REVERSE_LIST_9 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_REVERSE_LIST_10
-# error ALLOY_REVERSE_LIST_10 defined before macros.hpp included
+# error ALLOY_REVERSE_LIST_10 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_REVERSE_LIST(count,prefix)
@@ -562,40 +562,40 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_SELECT
-# error ALLOY_SELECT defined before macros.hpp included
+# error ALLOY_SELECT must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_SELECT_0
-# error ALLOY_SELECT_0 defined before macros.hpp included
+# error ALLOY_SELECT_0 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_SELECT_1
-# error ALLOY_SELECT_1 defined before macros.hpp included
+# error ALLOY_SELECT_1 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_SELECT_2
-# error ALLOY_SELECT_2 defined before macros.hpp included
+# error ALLOY_SELECT_2 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_SELECT_3
-# error ALLOY_SELECT_3 defined before macros.hpp included
+# error ALLOY_SELECT_3 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_SELECT_4
-# error ALLOY_SELECT_4 defined before macros.hpp included
+# error ALLOY_SELECT_4 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_SELECT_5
-# error ALLOY_SELECT_5 defined before macros.hpp included
+# error ALLOY_SELECT_5 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_SELECT_6
-# error ALLOY_SELECT_6 defined before macros.hpp included
+# error ALLOY_SELECT_6 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_SELECT_7
-# error ALLOY_SELECT_7 defined before macros.hpp included
+# error ALLOY_SELECT_7 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_SELECT_8
-# error ALLOY_SELECT_8 defined before macros.hpp included
+# error ALLOY_SELECT_8 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_SELECT_9
-# error ALLOY_SELECT_9 defined before macros.hpp included
+# error ALLOY_SELECT_9 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_SELECT_10
-# error ALLOY_SELECT_10 defined before macros.hpp included
+# error ALLOY_SELECT_10 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_SELECT(n,...)
@@ -629,10 +629,10 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_COUNT_VA_ARGS
-# error ALLOY_COUNT_VA_ARGS defined before macros.hpp included
+# error ALLOY_COUNT_VA_ARGS must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_COUNT_VA_ARGS_H
-# error ALLOY_COUNT_VA_ARGS_H defined before macros.hpp included
+# error ALLOY_COUNT_VA_ARGS_H must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_COUNT_VA_ARGS(...)
@@ -648,10 +648,10 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_VA_FIRST
-# error ALLOY_VA_FIRST defined before macros.hpp included
+# error ALLOY_VA_FIRST must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_VA_FIRST_H
-# error ALLOY_VA_FIRST_H defined before macros.hpp included
+# error ALLOY_VA_FIRST_H must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_VA_FIRST(...)
@@ -665,16 +665,16 @@
 //----------------------------------------------------------------------------
 
 #ifdef ALLOY_VA_REST
-# error ALLOY_VA_REST defined before macros.hpp included
+# error ALLOY_VA_REST must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_VA_REST_H
-# error ALLOY_VA_REST_H defined before macros.hpp included
+# error ALLOY_VA_REST_H must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_VA_REST_H1
-# error ALLOY_VA_REST_H1 defined before macros.hpp included
+# error ALLOY_VA_REST_H1 must not be defined before macros.hpp
 #endif
 #ifdef ALLOY_VA_REST_H0
-# error ALLOY_VA_REST_H0 defined before macros.hpp included
+# error ALLOY_VA_REST_H0 must not be defined before macros.hpp
 #endif
 
 //! \def ALLOY_VA_REST(...)

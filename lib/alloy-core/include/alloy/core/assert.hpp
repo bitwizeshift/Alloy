@@ -24,23 +24,23 @@
 #include <type_traits> // std::is_constructible
 
 #ifdef ALLOY_ASSERT
-# error ALLOY_ASSERT defined before assert.hpp included
+# error ALLOY_ASSERT must not be defined before assert.hpp
 #endif
 
 #ifdef ALLOY_ALWAYS_ASSERT
-# error ALLOY_ALWAYS_ASSERT defined before assert.hpp included
+# error ALLOY_ALWAYS_ASSERT must not be defined before assert.hpp
 #endif
 
 #ifdef ALLOY_ASSERT_AND_ASSUME
-# error ALLOY_ASSERT_AND_ASSSUME defined before assert.hpp included
+# error ALLOY_ASSERT_AND_ASSSUME must not be defined before assert.hpp
 #endif
 
 #ifdef ALLOY_THROW_IF
-# error ALLOY_THROW_IF defined before assert.hpp included
+# error ALLOY_THROW_IF must not be defined before assert.hpp
 #endif
 
 #ifdef ALLOY_ALWAYS_ASSERT
-# error ALLOY_ALWAYS_ASSERT defined before assert.hpp included
+# error ALLOY_ALWAYS_ASSERT must not be defined before assert.hpp
 #endif
 
 #define ALLOY_INTERNAL_ASSERT_1(condition)                                    \
