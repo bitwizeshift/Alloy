@@ -37,6 +37,7 @@ set(source_files
   src/alloy/core/geometry/intersection.test.cpp
   src/alloy/core/geometry/line.test.cpp
   src/alloy/core/geometry/plane.test.cpp
+  src/alloy/core/geometry/ray.test.cpp
 
   # Model
   src/alloy/core/model/color.test.cpp

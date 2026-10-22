@@ -132,7 +132,7 @@ namespace alloy::core {
 
     /// \brief Gets the point at distance \p dt from the origin of this ray
     ///
-    /// \pre \p dt must be greater than 0
+    /// \pre \p dt must not be negative
     /// \param dt the distance to get this point at
     /// \return the point at the distance
     [[nodiscard]]

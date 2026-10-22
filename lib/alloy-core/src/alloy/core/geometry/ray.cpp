@@ -42,14 +42,15 @@ auto alloy::core::ray::contains(const point3& p) const noexcept -> bool
 auto alloy::core::ray::contains(const point3& p, real tolerance)
   const noexcept -> bool
 {
-  const auto dx = (p.x() - m_origin.x()) / m_direction.x();
-  const auto dy = (p.y() - m_origin.y()) / m_direction.y();
-  const auto dz = (p.z() - m_origin.z()) / m_direction.z();
+  const auto offset = (p - m_origin);
 
-  return (
-    dx > 0 &&
-    almost_equal(dx, dy, tolerance) &&
-    almost_equal(dy, dz, tolerance) &&
-    almost_equal(dz, dx, tolerance)
-  );
+  // 'm_direction' is a unit vector, so the dot product is the distance along
+  // the ray, and the magnitude of the cross product is the distance from it.
+  const auto distance_along = offset.dot(m_direction);
+  if (distance_along < -tolerance) {
+    return false;
+  }
+  const auto distance_from = offset.cross(m_direction);
+
+  return distance_from.square_magnitude() <= (tolerance * tolerance);
 }
