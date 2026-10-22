@@ -4,6 +4,8 @@
 
 #include <alloy/core/math/matrix/matrix4.hpp>
 
+#include <alloy/core/math/math.hpp>
+#include <alloy/core/math/matrix/matrix4_constants.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
 
 #include <alloy/core/config.hpp>
@@ -173,6 +175,267 @@ TEST_CASE("matrix4::data()", "[observers]")
 
     // Assert
     REQUIRE( result == sut );
+  }
+}
+
+//------------------------------------------------------------------------------
+// Quantifiers
+//------------------------------------------------------------------------------
+
+TEST_CASE("matrix4::determinant()", "[quantifiers]")
+{
+  SECTION("Determinant of a diagonal matrix is the product of its diagonal")
+  {
+    // Arrange
+    const auto sut = matrix4{
+      1, 0, 0, 0,
+      0, 2, 0, 0,
+      0, 0, 3, 0,
+      0, 0, 0, 4
+    };
+
+    // Act
+    const auto result = sut.determinant();
+
+    // Assert
+    REQUIRE( almost_equal(result, real{24}) );
+  }
+
+  SECTION("Determinant of a general matrix")
+  {
+    // Arrange
+    const auto sut = matrix4{
+       1,  1,  1, -1,
+       1,  1, -1,  1,
+       1, -1,  1,  1,
+      -1,  1,  1,  1
+    };
+
+    // Act
+    const auto result = sut.determinant();
+
+    // Assert
+    REQUIRE( almost_equal(result, real{-16}) );
+  }
+}
+
+TEST_CASE("matrix4::trace()", "[quantifiers]")
+{
+  // Arrange
+  const auto sut = matrix4{
+    1, 9, 9, 9,
+    9, 2, 9, 9,
+    9, 9, 3, 9,
+    9, 9, 9, 4
+  };
+
+  // Act
+  const auto result = sut.trace();
+
+  // Assert
+  REQUIRE( almost_equal(result, real{10}) );
+}
+
+TEST_CASE("matrix4::inverse()", "[quantifiers]")
+{
+  SECTION("Inverts an affine transform")
+  {
+    // Arrange
+    const auto sut = matrix4{
+      2, 0, 0, 1,
+      0, 2, 0, 2,
+      0, 0, 2, 3,
+      0, 0, 0, 1
+    };
+    const auto expected = matrix4{
+      0.5f, 0,    0,    -0.5f,
+      0,    0.5f, 0,    -1,
+      0,    0,    0.5f, -1.5f,
+      0,    0,    0,     1
+    };
+
+    // Act
+    const auto result = sut.inverse();
+
+    // Assert
+    REQUIRE( almost_equal(result, expected) );
+  }
+
+  SECTION("Inverts a general matrix")
+  {
+    // Arrange
+    const auto sut = matrix4{
+       1,  1,  1, -1,
+       1,  1, -1,  1,
+       1, -1,  1,  1,
+      -1,  1,  1,  1
+    };
+    const auto expected = sut * real{0.25};
+
+    // Act
+    const auto result = sut.inverse();
+
+    // Assert
+    REQUIRE( almost_equal(result, expected) );
+  }
+
+  SECTION("Product with the original matrix is the identity")
+  {
+    // Arrange
+    const auto sut = matrix4{
+      4, 0, 0, 0,
+      0, 0, 2, 0,
+      0, 1, 2, 0,
+      1, 0, 0, 1
+    };
+
+    // Act
+    const auto result = sut * sut.inverse();
+
+    // Assert
+    REQUIRE( almost_equal(result, matrix4_constants::identity) );
+  }
+
+  SECTION("Singular matrix returns the identity")
+  {
+    // Arrange
+    const auto sut = matrix4{
+      1, 2, 3, 4,
+      2, 4, 6, 8,
+      0, 1, 0, 1,
+      1, 0, 1, 0
+    };
+
+    // Act
+    const auto result = sut.inverse();
+
+    // Assert
+    REQUIRE( result == matrix4_constants::identity );
+  }
+}
+
+TEST_CASE("matrix4::transposed()", "[quantifiers]")
+{
+  // Arrange
+  const auto sut = matrix4{
+     1,  2,  3,  4,
+     5,  6,  7,  8,
+     9, 10, 11, 12,
+    13, 14, 15, 16
+  };
+  const auto expected = matrix4{
+    1, 5,  9, 13,
+    2, 6, 10, 14,
+    3, 7, 11, 15,
+    4, 8, 12, 16
+  };
+
+  // Act
+  const auto result = sut.transposed();
+
+  // Assert
+  REQUIRE( result == expected );
+}
+
+//------------------------------------------------------------------------------
+// Arithmetic Operators
+//------------------------------------------------------------------------------
+
+TEST_CASE("operator*( const matrix4&, const matrix4& )", "[arithmetic]")
+{
+  SECTION("Identity is the multiplicative identity")
+  {
+    // Arrange
+    const auto sut = matrix4{
+       1,  2,  3,  4,
+       5,  6,  7,  8,
+       9, 10, 11, 12,
+      13, 14, 15, 16
+    };
+
+    // Act
+    const auto result = matrix4_constants::identity * sut;
+
+    // Assert
+    REQUIRE( result == sut );
+  }
+
+  SECTION("Product applies the right matrix first")
+  {
+    // Arrange
+    const auto translate = matrix4{
+      1, 0, 0, 5,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+    };
+    const auto scale = matrix4{
+      2, 0, 0, 0,
+      0, 2, 0, 0,
+      0, 0, 2, 0,
+      0, 0, 0, 1
+    };
+    const auto point = vector4{1, 0, 0, 1};
+
+    // Act
+    const auto result = (translate * scale) * point;
+
+    // Assert
+    REQUIRE( result == vector4{7, 0, 0, 1} );
+  }
+}
+
+TEST_CASE("operator*( const matrix4&, real )", "[arithmetic]")
+{
+  // Arrange
+  const auto sut = matrix4_constants::identity;
+
+  // Act
+  const auto result = sut * real{3};
+
+  // Assert
+  REQUIRE( result.get(2,2) == real{3} );
+  REQUIRE( result.get(2,1) == real{0} );
+}
+
+TEST_CASE("matrix4::operator/=( real )", "[arithmetic]")
+{
+  // Arrange
+  auto sut = matrix4_constants::identity * real{4};
+
+  // Act
+  sut /= real{2};
+
+  // Assert
+  REQUIRE( sut == matrix4_constants::identity * real{2} );
+}
+
+//------------------------------------------------------------------------------
+// Comparisons
+//------------------------------------------------------------------------------
+
+TEST_CASE("almost_equal( const matrix4&, const matrix4&, real )", "[comparison]")
+{
+  // Arrange
+  const auto lhs = matrix4_constants::identity;
+  auto rhs = matrix4_constants::identity;
+  rhs.get(3,0) = real{0.05};
+
+  SECTION("Matrices within tolerance are almost equal")
+  {
+    // Act
+    const auto result = almost_equal(lhs, rhs, real{0.1});
+
+    // Assert
+    REQUIRE( result );
+  }
+  SECTION("Matrices outside tolerance are not almost equal")
+  {
+    // Act
+    const auto result = almost_equal(lhs, rhs, real{0.01});
+
+    // Assert
+    REQUIRE_FALSE( result );
   }
 }
 
