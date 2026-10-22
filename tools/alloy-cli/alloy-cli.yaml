@@ -103,6 +103,41 @@ commands:
             examples:
               - alloy-cli check header-guard lib/alloy-core/include/alloy/core/assert.hpp
               - alloy-cli check header-guard --fix lib/alloy-core/include/alloy/core/assert.hpp
+          - name: include-order
+            summary: Check that C and C++ files group and sort their includes
+            description: |
+              Checks that the includes of each C and C++ file are grouped by
+              where their headers come from, in the order:
+
+              * the header of the source file itself
+              * the same subsystem of the same library
+              * another subsystem of the same library
+              * another library of the repository
+              * a third-party library
+              * the C and C++ standard libraries
+
+              Each group is separated from the next by a blank line, and the
+              includes within a group are sorted by path. A library is a
+              directory under lib or extra, and its subsystems are the
+              directories directly below the path that its headers are
+              included under, such as alloy/core/math for alloy/core.
+
+              Library headers are included with quotes from the library
+              itself, and with angle brackets from tests, benchmarks, examples
+              and binaries. All other headers are included with angle
+              brackets, except for headers included relative to the file.
+
+              Includes inside conditional blocks are not checked, and a
+              conditional block may separate two groups in place of the blank
+              line.
+
+              With --fix, the includes are regrouped, sorted, and delimited as
+              required, and each conditional block is placed after the group
+              of the last include above it. Files with a comment between their
+              includes are left for a manual fix.
+            examples:
+              - alloy-cli check include-order lib/alloy-core/src/alloy/core/math/quaternion.cpp
+              - alloy-cli check include-order --fix lib/alloy-core/src/alloy/core/math/quaternion.cpp
           - name: license-header
             summary: Check that C, C++ and CMake files start with their license header
             description: |
