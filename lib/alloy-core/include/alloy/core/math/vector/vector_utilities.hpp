@@ -5,7 +5,8 @@
 /******************************************************************************
  * \file vector_utilities.hpp
  *
- * \brief This header contains the definition of a 4d vector class
+ * \brief This header contains utilities for accessing and converting
+ *        between vector types generically
  ******************************************************************************/
 
 #ifndef ALLOY_CORE_MATH_VECTOR_VECTOR_UTILITIES_HPP
@@ -77,6 +78,8 @@ namespace alloy::core {
 
     /// \brief Converts a vector to a vector2
     ///
+    /// Components beyond the second are discarded.
+    ///
     /// \param vec the vector to convert to a vector2
     /// \return the vector2
     template<typename Vector>
@@ -85,16 +88,21 @@ namespace alloy::core {
 
     /// \brief Converts a vector to a vector3
     ///
+    /// Components that \p vec does not have are set to 0, and components
+    /// beyond the third are discarded.
+    ///
     /// \param vec the vector to convert to a vector3
     /// \return the vector3
     template<typename Vector>
       requires is_vector<Vector>::value
     auto to_vector3(const Vector& vec) noexcept -> vector3;
 
-    /// \brief Converts a vector to a vector3
+    /// \brief Converts a vector to a vector4
     ///
-    /// \param vec the vector to convert to a vector3
-    /// \return the vector3
+    /// Components that \p vec does not have are set to 0.
+    ///
+    /// \param vec the vector to convert to a vector4
+    /// \return the vector4
     template<typename Vector>
       requires is_vector<Vector>::value
     auto to_vector4(const Vector& vec) noexcept -> vector4;

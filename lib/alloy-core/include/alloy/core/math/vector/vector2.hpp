@@ -204,6 +204,8 @@ namespace alloy::core {
     /// \brief Gets the reflection vector2 of `this` reflected through the
     ///        \p normal
     ///
+    /// \pre \p normal is normalized
+    ///
     /// \param normal the normal vector2
     /// \return the reflection
     constexpr auto reflection(const vector2& normal) const noexcept -> vector2;
@@ -230,9 +232,9 @@ namespace alloy::core {
     /// \return the normalized vector2 of `this`
     auto normalized() const noexcept -> vector2;
 
-    /// \brief Gets the inverse of `this` vector2
+    /// \brief Gets the additive inverse of `this` vector2
     ///
-    /// \return the inverse of `this` vector2
+    /// \return the vector2 with every component of `this` negated
     constexpr auto inverse() const noexcept -> vector2;
 
     /// \brief Determines the angle between `this` and \p other
@@ -241,10 +243,10 @@ namespace alloy::core {
     /// \return the angle between `this` and \p other
     auto angle_between(const vector2& other) const noexcept -> radian;
 
-    /// \brief Determines the angle from \p to \p other
+    /// \brief Determines the counter-clockwise angle from `this` to \p other
     ///
     /// \param other the other vector to get the angle to
-    /// \return the angle from `this` to \p other
+    /// \return the angle from `this` to \p other, in the range [0, 2pi)
     auto angle_to(const vector2& other) const noexcept -> radian;
 
     /// \brief Queries whether this vector is normalized
@@ -262,7 +264,8 @@ namespace alloy::core {
     /// \return the reference to `(*this)`
     auto normalize() noexcept -> vector2&;
 
-    /// \brief Inverts this vector2 and returns a reference to `(*this)`
+    /// \brief Negates every component of this vector2 and returns a
+    ///        reference to `(*this)`
     ///
     /// \return the reference to `(*this)`
     constexpr auto invert() noexcept -> vector2&;
@@ -387,7 +390,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left vector2
   /// \param rhs the right vector2
-  /// \return the result of the dot product
+  /// \return the result of the cross product
   constexpr auto cross(const vector2& lhs, const vector2& rhs) noexcept -> real;
 
   /// \brief Calculates the magnitude of the vector2 \p vec

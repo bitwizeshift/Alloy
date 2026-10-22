@@ -76,7 +76,8 @@ namespace alloy::core {
     /// \brief Default constructs a vector4 with 0 values
     constexpr vector4() noexcept;
 
-    /// \brief Constructs a vector4 with components \p x and \p y
+    /// \brief Constructs a vector4 with components \p x, \p y, \p z, and
+    ///        \p w
     ///
     /// \param x the x-component of the vector4
     /// \param y the y-component of the vector4
@@ -230,9 +231,9 @@ namespace alloy::core {
     /// \return the normalized vector4 of `this`
     auto normalized() const noexcept -> vector4;
 
-    /// \brief Gets the inverse of `this` vector4
+    /// \brief Gets the additive inverse of `this` vector4
     ///
-    /// \return the inverse of `this` vector4
+    /// \return the vector4 with every component of `this` negated
     constexpr auto inverse() const noexcept -> vector4;
 
     /// \brief Queries whether this vector is normalized
@@ -250,7 +251,8 @@ namespace alloy::core {
     /// \return the reference to `(*this)`
     auto normalize() noexcept -> vector4&;
 
-    /// \brief Inverts this vector4 and returns a reference to `(*this)`
+    /// \brief Negates every component of this vector4 and returns a
+    ///        reference to `(*this)`
     ///
     /// \return the reference to `(*this)`
     constexpr auto invert() noexcept -> vector4&;
@@ -295,7 +297,7 @@ namespace alloy::core {
   struct is_vector4<vector4> : std::true_type{};
 
   /// \brief Convenience template variable to extract out
-  ///        `is_vector4::value`
+  ///        `is_vector4<T>::value`
   template<typename T>
   constexpr bool is_vector4_v = is_vector4<T>::value;
 
@@ -368,7 +370,7 @@ namespace alloy::core {
   ///
   /// \param lhs the left vector4
   /// \param rhs the right vector4
-  /// \return the result of the dot product
+  /// \return the result of the cross product
   constexpr auto cross(const vector4& lhs, const vector4& rhs)
     noexcept -> vector4;
 

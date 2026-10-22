@@ -77,7 +77,7 @@ namespace alloy::core {
     /// \brief Default constructs a vector3 with 0 values
     constexpr vector3() noexcept;
 
-    /// \brief Constructs a vector3 with components \p x and \p y
+    /// \brief Constructs a vector3 with components \p x, \p y, and \p z
     ///
     /// \param x the x-component of the vector3
     /// \param y the y-component of the vector3
@@ -203,6 +203,8 @@ namespace alloy::core {
     /// \brief Gets the reflection vector3 of `this` reflected through the
     ///        \p normal
     ///
+    /// \pre \p normal is normalized
+    ///
     /// \param normal the normal vector3
     /// \return the reflection
     constexpr auto reflection(const vector3& normal) const noexcept -> vector3;
@@ -229,9 +231,9 @@ namespace alloy::core {
     /// \return the normalized vector3 of `this`
     auto normalized() const noexcept -> vector3;
 
-    /// \brief Gets the inverse of `this` vector3
+    /// \brief Gets the additive inverse of `this` vector3
     ///
-    /// \return the inverse of `this` vector3
+    /// \return the vector3 with every component of `this` negated
     constexpr auto inverse() const noexcept -> vector3;
 
     /// \brief Determines the angle between `this` and \p other
@@ -240,10 +242,13 @@ namespace alloy::core {
     /// \return the angle between `this` and \p other
     auto angle_between(const vector3& other) const noexcept -> radian;
 
-    /// \brief Determines the angle from \p to \p other
+    /// \brief Determines the unsigned angle from `this` to \p other
+    ///
+    /// Without a reference axis, a direction of rotation cannot be defined in
+    /// three dimensions, so this is the same as `angle_between`.
     ///
     /// \param other the other vector to get the angle to
-    /// \return the angle from `this` to \p other
+    /// \return the angle from `this` to \p other, in the range [0, pi]
     auto angle_to(const vector3& other) const noexcept -> radian;
 
     /// \brief Queries whether this vector is normalized
@@ -261,7 +266,8 @@ namespace alloy::core {
     /// \return the reference to `(*this)`
     auto normalize() noexcept -> vector3&;
 
-    /// \brief Inverts this vector3 and returns a reference to `(*this)`
+    /// \brief Negates every component of this vector3 and returns a
+    ///        reference to `(*this)`
     ///
     /// \return the reference to `(*this)`
     constexpr auto invert() noexcept -> vector3&;
@@ -305,7 +311,7 @@ namespace alloy::core {
   struct is_vector3<vector3> : std::true_type{};
 
   /// \brief Convenience template variable to extract out
-  ///        `is_vector4::value`
+  ///        `is_vector3<T>::value`
   template<typename T>
   constexpr bool is_vector3_v = is_vector3<T>::value;
 
@@ -389,9 +395,9 @@ namespace alloy::core {
 
   /// \brief Performs the cross product between \p lhs and \p rhs
   ///
-  /// \param lhs the left vector2
-  /// \param rhs the right vector2
-  /// \return the result of the dot product
+  /// \param lhs the left vector3
+  /// \param rhs the right vector3
+  /// \return the result of the cross product
   constexpr auto cross(const vector3& lhs, const vector3& rhs)
     noexcept -> vector3;
 
