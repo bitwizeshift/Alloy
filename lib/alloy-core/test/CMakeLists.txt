@@ -35,6 +35,7 @@ set(source_files
   src/alloy/core/geometry/sphere.test.cpp
   src/alloy/core/geometry/triangle.test.cpp
   src/alloy/core/geometry/axis_aligned_box.test.cpp
+  src/alloy/core/geometry/capsule.test.cpp
   src/alloy/core/geometry/frustum.test.cpp
   src/alloy/core/geometry/intersection.test.cpp
   src/alloy/core/geometry/line.test.cpp

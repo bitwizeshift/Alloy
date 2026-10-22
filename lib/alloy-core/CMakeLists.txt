@@ -185,6 +185,7 @@ set(header_files
   include/alloy/core/geometry/point/polar.hpp
   include/alloy/core/geometry/point/spherical.hpp
   include/alloy/core/geometry/axis_aligned_box.hpp
+  include/alloy/core/geometry/capsule.hpp
   include/alloy/core/geometry/frustum.hpp
   include/alloy/core/geometry/intersection.hpp
   include/alloy/core/geometry/line.hpp
@@ -226,6 +227,7 @@ set(source_files
 
   # Geometry
   src/alloy/core/geometry/axis_aligned_box.cpp
+  src/alloy/core/geometry/capsule.cpp
   src/alloy/core/geometry/frustum.cpp
   src/alloy/core/geometry/line.cpp
   src/alloy/core/geometry/line_segment.cpp
