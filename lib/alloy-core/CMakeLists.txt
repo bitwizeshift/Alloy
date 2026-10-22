@@ -123,6 +123,7 @@ set(header_files
   include/alloy/core/io/buffered_writer.hpp
   include/alloy/core/io/deserializer.hpp
   include/alloy/core/io/error.hpp
+  include/alloy/core/io/indirect_reader.hpp
   include/alloy/core/io/reader.hpp
   include/alloy/core/io/serializer.hpp
   include/alloy/core/io/span_reader.hpp

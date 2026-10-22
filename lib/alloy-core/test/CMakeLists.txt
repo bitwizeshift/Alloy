@@ -57,6 +57,7 @@ set(source_files
   src/alloy/core/io/buffered_writer.test.cpp
   src/alloy/core/io/deserializer.test.cpp
   src/alloy/core/io/error.test.cpp
+  src/alloy/core/io/indirect_reader.test.cpp
   src/alloy/core/io/reader.test.cpp
   src/alloy/core/io/serializer.test.cpp
   src/alloy/core/io/span_reader.test.cpp
