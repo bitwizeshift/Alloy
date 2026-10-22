@@ -43,8 +43,8 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Default-initializes this spherical point
-    spherical() = default;
+    /// \brief Constructs this point at the origin, with all components 0
+    constexpr spherical() noexcept;
 
     /// \brief Constructs this point with the specified \p rho, \p phi, and
     ///        \p theta
@@ -174,6 +174,15 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 // Constructors
 //------------------------------------------------------------------------------
+
+inline constexpr
+alloy::core::spherical::spherical() noexcept
+  : m_rho{0},
+    m_phi{0},
+    m_theta{0}
+{
+
+}
 
 inline constexpr
 alloy::core::spherical::spherical(real rho, radian phi, radian theta) noexcept

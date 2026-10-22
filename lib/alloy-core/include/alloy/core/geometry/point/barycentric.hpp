@@ -43,7 +43,7 @@ namespace alloy::core {
     /// \param t2 the second point in the triangle
     /// \param t3 the third point in the triangle
     /// \return the barycentric coordinate
-    static auto from_cartesion(
+    static auto from_cartesian(
       const point3& p,
       const point3& t1,
       const point3& t2,
@@ -58,7 +58,7 @@ namespace alloy::core {
     /// \param t2 the second point in the triangle
     /// \param t3 the third point in the triangle
     /// \return the barycentric coordinate
-    static auto from_cartesion(
+    static auto from_cartesian(
       const point2& p,
       const point2& t1,
       const point2& t2,
@@ -69,8 +69,8 @@ namespace alloy::core {
     // Constructors / Assignment
     //--------------------------------------------------------------------------
 
-    /// \brief Default constructs this barycentric point without any value
-    barycentric() = default;
+    /// \brief Default constructs this barycentric point with all components 0
+    constexpr barycentric() noexcept;
 
     /// \brief Constructs a barycentric point from the 3 components
     ///
@@ -138,12 +138,19 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------
-  public:
+  private:
 
     real m_data[3];
   };
 
 } // namespace alloy::core
+
+inline constexpr
+alloy::core::barycentric::barycentric() noexcept
+  : m_data{0, 0, 0}
+{
+
+}
 
 inline constexpr
 alloy::core::barycentric::barycentric(real u, real v, real w) noexcept
@@ -153,7 +160,7 @@ alloy::core::barycentric::barycentric(real u, real v, real w) noexcept
 }
 
 inline
-auto alloy::core::barycentric::from_cartesion(
+auto alloy::core::barycentric::from_cartesian(
   const point3& p,
   const point3& t0,
   const point3& t1,
@@ -180,7 +187,7 @@ auto alloy::core::barycentric::from_cartesion(
 
 
 inline
-auto alloy::core::barycentric::from_cartesion(
+auto alloy::core::barycentric::from_cartesian(
   const point2& p,
   const point2& t0,
   const point2& t1,

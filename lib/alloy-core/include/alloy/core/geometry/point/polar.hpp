@@ -41,8 +41,8 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Default-initializes this polar point
-    polar() = default;
+    /// \brief Constructs this point at the origin, with all components 0
+    constexpr polar() noexcept;
 
     /// \brief Constructs this point with the specified \p distance and \p theta
     ///        angle
@@ -159,6 +159,14 @@ namespace alloy::core {
 //------------------------------------------------------------------------------
 // Constructors
 //------------------------------------------------------------------------------
+
+inline constexpr
+alloy::core::polar::polar() noexcept
+  : m_distance{0},
+    m_theta{0}
+{
+
+}
 
 inline constexpr
 alloy::core::polar::polar(real distance, radian theta) noexcept
