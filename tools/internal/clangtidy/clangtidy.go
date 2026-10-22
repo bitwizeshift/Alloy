@@ -16,6 +16,17 @@ type Command struct {
 
 	// Fix applies the suggested fixes to the file in place.
 	Fix bool
+
+	// Checks is the glob of checks that clang-tidy runs, in place of the
+	// checks enabled by the .clang-tidy configuration. The configured checks
+	// are run when Checks is empty.
+	Checks string
+
+	// FormatStyle is the clang-format style that the code around applied fixes
+	// is formatted with, or "none" to apply them as they are, in place of the
+	// FormatStyle of the .clang-tidy configuration. The configured style is
+	// used when FormatStyle is empty.
+	FormatStyle string
 }
 
 // Args returns the arguments to clang-tidy that check the file at path with
@@ -24,8 +35,14 @@ type Command struct {
 // reported.
 func (c *Command) Args(buildDir, path string, ranges []diff.Range) []string {
 	args := []string{"-p=" + buildDir}
+	if c.Checks != "" {
+		args = append(args, "--checks="+c.Checks)
+	}
 	if c.Fix {
 		args = append(args, "--fix")
+	}
+	if c.FormatStyle != "" {
+		args = append(args, "--format-style="+c.FormatStyle)
 	}
 	if len(ranges) > 0 {
 		args = append(args, "--line-filter="+c.lineFilter(path, ranges))

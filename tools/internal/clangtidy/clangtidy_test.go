@@ -15,6 +15,8 @@ func TestCommandArgs(t *testing.T) {
 	testCases := []struct {
 		name     string
 		fix      bool
+		checks   string
+		style    string
 		buildDir string
 		path     string
 		ranges   []diff.Range
@@ -23,6 +25,8 @@ func TestCommandArgs(t *testing.T) {
 		{
 			name:     "whole file",
 			fix:      false,
+			checks:   "",
+			style:    "",
 			buildDir: "build",
 			path:     "src/a.cpp",
 			ranges:   nil,
@@ -30,6 +34,8 @@ func TestCommandArgs(t *testing.T) {
 		}, {
 			name:     "changed ranges",
 			fix:      false,
+			checks:   "",
+			style:    "",
 			buildDir: "build",
 			path:     "src/a.cpp",
 			ranges: []diff.Range{
@@ -44,6 +50,8 @@ func TestCommandArgs(t *testing.T) {
 		}, {
 			name:     "fix",
 			fix:      true,
+			checks:   "",
+			style:    "",
 			buildDir: "build",
 			path:     "src/a.cpp",
 			ranges:   []diff.Range{{Start: 3, End: 3}},
@@ -51,6 +59,34 @@ func TestCommandArgs(t *testing.T) {
 				"-p=build",
 				"--fix",
 				`--line-filter=[{"name":"src/a.cpp","lines":[[3,3]]}]`,
+				"src/a.cpp",
+			},
+		}, {
+			name:     "checks",
+			fix:      true,
+			checks:   "-*,misc-include-cleaner",
+			style:    "",
+			buildDir: "build",
+			path:     "src/a.cpp",
+			ranges:   nil,
+			want: []string{
+				"-p=build",
+				"--checks=-*,misc-include-cleaner",
+				"--fix",
+				"src/a.cpp",
+			},
+		}, {
+			name:     "format style",
+			fix:      true,
+			checks:   "",
+			style:    "none",
+			buildDir: "build",
+			path:     "src/a.cpp",
+			ranges:   nil,
+			want: []string{
+				"-p=build",
+				"--fix",
+				"--format-style=none",
 				"src/a.cpp",
 			},
 		},
@@ -61,7 +97,7 @@ func TestCommandArgs(t *testing.T) {
 			t.Parallel()
 
 			// Arrange
-			sut := &clangtidy.Command{Fix: tc.fix}
+			sut := &clangtidy.Command{Fix: tc.fix, Checks: tc.checks, FormatStyle: tc.style}
 
 			// Act
 			args := sut.Args(tc.buildDir, tc.path, tc.ranges)
