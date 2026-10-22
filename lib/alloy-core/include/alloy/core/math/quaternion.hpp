@@ -302,6 +302,14 @@ namespace alloy::core {
     /// \return the inverse of `this` quaternion
     auto inverse() const noexcept -> quaternion;
 
+    /// \brief Gets the conjugate of `this` quaternion
+    ///
+    /// The conjugate negates the imaginary parts. For a unit quaternion, it
+    /// is the inverse rotation.
+    ///
+    /// \return the conjugate of `this` quaternion
+    auto conjugated() const noexcept -> quaternion;
+
     //--------------------------------------------------------------------------
     // Extraction
     //--------------------------------------------------------------------------
@@ -360,6 +368,11 @@ namespace alloy::core {
     ///
     /// \return the reference to `(*this)`
     auto invert() noexcept -> quaternion&;
+
+    /// \brief Conjugates this quaternion and returns a reference to `(*this)`
+    ///
+    /// \return the reference to `(*this)`
+    auto conjugate() noexcept -> quaternion&;
 
     //--------------------------------------------------------------------------
     // Quantifiers
@@ -711,6 +724,12 @@ inline
 auto alloy::core::quaternion::inverse() const noexcept -> quaternion
 {
   return quaternion{*this}.invert();
+}
+
+inline
+auto alloy::core::quaternion::conjugated() const noexcept -> quaternion
+{
+  return quaternion{*this}.conjugate();
 }
 
 //----------------------------------------------------------------------------

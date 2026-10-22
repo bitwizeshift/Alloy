@@ -396,6 +396,14 @@ auto alloy::core::quaternion::invert() noexcept -> quaternion&
   return (*this);
 }
 
+auto alloy::core::quaternion::conjugate() noexcept -> quaternion&
+{
+  x() = -x();
+  y() = -y();
+  z() = -z();
+  return (*this);
+}
+
 //----------------------------------------------------------------------------
 // Quantifiers
 //----------------------------------------------------------------------------

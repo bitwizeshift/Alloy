@@ -94,6 +94,38 @@ TEST_CASE("quaternion::inverse()", "[quantifiers]")
   }
 }
 
+TEST_CASE("quaternion::conjugated()", "[quantifiers]")
+{
+  SECTION("Negates the imaginary parts")
+  {
+    // Arrange
+    const auto sut = quaternion{1, 2, 3, 4};
+
+    // Act
+    const auto result = sut.conjugated();
+
+    // Assert
+    REQUIRE( result == quaternion{1, -2, -3, -4} );
+  }
+
+  SECTION("Conjugate of a rotation undoes the rotation")
+  {
+    // Arrange
+    const auto sut = quaternion::from_angles(
+      radian{0.3f},
+      radian{0.5f},
+      radian{0.7f}
+    );
+    const auto vec = vector3{1, 2, 3};
+
+    // Act
+    const auto result = sut.conjugated() * (sut * vec);
+
+    // Assert
+    REQUIRE( almost_equal(result, vec) );
+  }
+}
+
 TEST_CASE("quaternion::roll()", "[quantifiers]")
 {
   // Arrange
