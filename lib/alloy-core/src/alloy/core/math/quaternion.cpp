@@ -27,6 +27,7 @@
 #include "alloy/core/math/quaternion.hpp"
 
 #include "alloy/core/math/angle/radian.hpp"
+#include "alloy/core/math/euler_angles.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/matrix/matrix3.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"
@@ -278,6 +279,37 @@ auto alloy::core::quaternion::z_axis() const noexcept -> vector3
   const auto tyz = tz * y();
 
   return vector3{txz+twy, tyz-twx, 1.0f-(txx+tyy)};
+}
+
+//----------------------------------------------------------------------------
+
+auto alloy::core::quaternion::to_euler_angles() const noexcept -> euler_angles
+{
+  // Entries of the rotation matrix Ry(yaw) * Rx(pitch) * Rz(roll) that
+  // `from_angles` produces.
+  const auto r02 = real{2} * (x()*z() + w()*y());
+  const auto r22 = real{1} - real{2} * (x()*x() + y()*y());
+  const auto r12 = real{2} * (y()*z() - w()*x());
+  const auto r10 = real{2} * (x()*y() + w()*z());
+  const auto r11 = real{1} - real{2} * (x()*x() + z()*z());
+
+  const auto pitch = trigonometry::arcsin(clamp(-r12, real{-1}, real{1}));
+
+  // r02 and r22 are the sine and cosine of the yaw, each scaled by the cosine
+  // of the pitch. At a quarter turn of pitch, they vanish along with the
+  // entries that the roll is read from.
+  if ((r02*r02 + r22*r22) < default_tolerance) {
+    const auto r00 = real{1} - real{2} * (y()*y() + z()*z());
+    const auto r20 = real{2} * (x()*z() - w()*y());
+    const auto yaw = trigonometry::arctan2(-r20, r00);
+
+    return euler_angles{yaw, pitch, radian{0}};
+  }
+
+  const auto yaw = trigonometry::arctan2(r02, r22);
+  const auto roll = trigonometry::arctan2(r10, r11);
+
+  return euler_angles{yaw, pitch, roll};
 }
 
 //----------------------------------------------------------------------------

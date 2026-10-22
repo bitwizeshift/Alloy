@@ -348,6 +348,19 @@ namespace alloy::core {
     /// \return a tuple containing the x, y, and z vector axes
     auto axes() const noexcept -> std::tuple<vector3,vector3,vector3>;
 
+    /// \brief Decomposes this rotation into the angles of `from_angles`
+    ///
+    /// `from_angles` applied to the result produces this rotation again. The
+    /// pitch is in the range [-pi/2, pi/2], and the yaw and roll are in the
+    /// range [-pi, pi]. When the pitch is a quarter turn, the yaw and roll
+    /// rotate about the same axis, so the roll is set to 0 and the yaw holds
+    /// their combined rotation.
+    ///
+    /// \pre this quaternion is normalized
+    ///
+    /// \return the yaw, pitch, and roll of this rotation
+    auto to_euler_angles() const noexcept -> euler_angles;
+
     //--------------------------------------------------------------------------
 
     /// \brief Gets the normalized quaternion of `this`

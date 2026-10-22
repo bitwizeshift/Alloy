@@ -5,6 +5,7 @@
 #include <alloy/core/math/quaternion.hpp>
 
 #include <alloy/core/math/angle/radian.hpp>
+#include <alloy/core/math/euler_angles.hpp>
 #include <alloy/core/math/interpolation.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix3.hpp>
@@ -48,6 +49,54 @@ TEST_CASE("quaternion::angle_axis()", "[observers]")
 
     // Assert
     REQUIRE( result_angle == radian{0} );
+  }
+}
+
+TEST_CASE("quaternion::to_euler_angles()", "[observers]")
+{
+  SECTION("Recovers the angles that the quaternion was made from")
+  {
+    // Arrange
+    const auto expected = euler_angles{radian{0.3f}, radian{-0.5f}, radian{2.5f}};
+    const auto sut = quaternion::from_angles(expected);
+
+    // Act
+    const auto result = sut.to_euler_angles();
+
+    // Assert
+    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+  }
+
+  SECTION("Gimbal lock reproduces the same rotation")
+  {
+    // Arrange
+    const auto sut = quaternion::from_angles(
+      radian{0.3f},
+      radian_constants::quarter_revolution,
+      radian{0.7f}
+    );
+
+    // Act
+    const auto result = quaternion::from_angles(sut.to_euler_angles());
+
+    // Assert
+    REQUIRE( almost_equal(result, sut, real{1e-3f}) );
+  }
+
+  SECTION("Gimbal lock sets the roll to 0")
+  {
+    // Arrange
+    const auto sut = quaternion::from_angles(
+      radian{0.3f},
+      radian_constants::quarter_revolution,
+      radian{0.7f}
+    );
+
+    // Act
+    const auto result = sut.to_euler_angles();
+
+    // Assert
+    REQUIRE( result.roll() == radian{0} );
   }
 }
 
