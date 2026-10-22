@@ -1242,5 +1242,40 @@ TEST_CASE("buffered_reader::skip_until(std::byte)", "[reading]")
   }
 }
 
+//=============================================================================
+// alias : indirect_buffered_reader
+//=============================================================================
+
+TEST_CASE("indirect_buffered_reader::read(std::span<std::byte>)", "[reading]")
+{
+  // Arrange
+  static constexpr auto capacity = std::size_t{16};
+  const auto input = sequence_bytes(40u);
+  auto source = fake_reader{input};
+  auto sut = indirect_buffered_reader{&source, capacity};
+  auto storage = std::array<std::byte,4>{};
+
+  // Act
+  const auto result = sut.read(storage);
+
+  // Assert
+  SECTION("Reads from the source that it refers to")
+  {
+    REQUIRE( &sut.source().source() == &source );
+    REQUIRE( source.read_count() == 1u );
+  }
+  SECTION("Fills the whole buffer with one read")
+  {
+    REQUIRE( source.last_request_size() == capacity );
+    REQUIRE( sut.buffer().size() == capacity - storage.size() );
+  }
+  SECTION("Writes the first bytes of the source")
+  {
+    REQUIRE( result.has_value() );
+    REQUIRE( *result == storage.size() );
+    REQUIRE( std::equal(storage.begin(), storage.end(), input.begin()) );
+  }
+}
+
 } // namespace
 } // namespace alloy::core::test

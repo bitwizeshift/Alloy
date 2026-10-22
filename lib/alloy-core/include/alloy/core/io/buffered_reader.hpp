@@ -19,6 +19,7 @@
 #include "alloy/core/api.hpp"
 #include "alloy/core/assert.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/io/indirect_reader.hpp"
 #include "alloy/core/io/reader.hpp"
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/memory/allocator.hpp"
@@ -453,6 +454,15 @@ namespace alloy::core {
   template <typename U>
   buffered_reader(U&&, std::size_t, allocator)
     -> buffered_reader<std::remove_cvref_t<U>>;
+
+  //===========================================================================
+  // aliases : class : buffered_reader
+  //===========================================================================
+
+  /// \brief A buffered_reader of a reader that it does not own
+  ///
+  /// \note The underlying reader must outlive the indirect_buffered_reader
+  using indirect_buffered_reader = buffered_reader<indirect_reader>;
 
 } // namespace alloy::core
 
