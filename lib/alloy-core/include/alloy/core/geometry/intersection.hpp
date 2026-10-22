@@ -268,54 +268,6 @@ auto alloy::core::intersection<Types...>::as() const -> const Type&
 // Equality
 //------------------------------------------------------------------------------
 
-namespace alloy::core::detail {
-
-  /// A visitor that compares using 'almost_equal' for any types that may
-  /// compare with 'almost_equal'. For anything that is not comparable, it
-  /// returns false.
-  struct intersection_almost_equal_visitor
-  {
-    real tolerance;
-
-    template<typename T>
-    inline constexpr
-    auto operator()(const std::monostate&, const std::monostate&)
-      noexcept -> bool
-    {
-      return true; // two monostates are always equal
-    }
-
-    template<typename T>
-    inline constexpr
-    auto operator()(const T&, const std::monostate&) noexcept -> bool
-    {
-      return false;
-    }
-
-    template<typename T>
-    inline constexpr
-    auto operator()(const std::monostate&, const T&) noexcept -> bool
-    {
-      return false;
-    }
-
-    template<typename T>
-    inline constexpr
-    auto operator()(const T& lhs, const T& rhs) noexcept -> bool
-    {
-      return almost_equal(lhs, rhs, tolerance);
-    }
-
-    template<typename T, typename U>
-    inline constexpr
-    auto operator()(const T&, const U&) noexcept -> bool
-    {
-      return false;
-    }
-  };
-
-} // namespace alloy::core::detail
-
 template<typename... Types>
 inline constexpr
 auto alloy::core::operator==(
@@ -346,8 +298,23 @@ auto alloy::core::almost_equal(
   real tolerance
 ) noexcept -> bool
 {
+  if (lhs.m_intersection_types.index() != rhs.m_intersection_types.index()) {
+    return false;
+  }
+  const auto compare = [tolerance]<typename T, typename U>(
+    const T& l,
+    const U& r
+  ) -> bool {
+    if constexpr (!std::same_as<T, U>) {
+      return false;
+    } else if constexpr (std::same_as<T, std::monostate>) {
+      return true;
+    } else {
+      return almost_equal(l, r, tolerance);
+    }
+  };
   return std::visit(
-    detail::intersection_almost_equal_visitor{tolerance},
+    compare,
     lhs.m_intersection_types,
     rhs.m_intersection_types
   );
