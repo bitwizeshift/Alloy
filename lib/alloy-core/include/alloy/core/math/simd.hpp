@@ -20,6 +20,7 @@
 
 #include <algorithm> // IWYU pragma: keep
 #include <array>
+#include <cmath>     // IWYU pragma: keep
 #include <cstddef>
 #include <span>
 #include <type_traits>
@@ -804,7 +805,7 @@ auto alloy::core::simd_negate(simd<f32> v) noexcept -> simd<f32>
 #if defined(ALLOY_SIMD_NEON)
   return simd<f32>{vnegq_f32(v.value)};
 #elif defined(ALLOY_SIMD_SSE)
-  return simd<f32>{_mm_sub_ps(_mm_set1_ps(0.0f), v)};
+  return simd<f32>{_mm_sub_ps(_mm_set1_ps(0.0f), v.value)};
 #else
   return simd<f32>::set(
     -v.lane<0>(),
@@ -821,14 +822,15 @@ auto alloy::core::simd_abs(simd<f32> v) noexcept -> simd<f32>
 #if defined(ALLOY_SIMD_NEON)
   return simd<f32>{vabsq_f32(v.value)};
 #elif defined(ALLOY_SIMD_SSE)
-  const auto mask = _mm_castsi128_ps(_mm_set1_epi32(~(1u<<31u));
+  // Clearing the sign bit of an IEEE-754 float produces its absolute value
+  const auto mask = _mm_castsi128_ps(_mm_set1_epi32(0x7fffffff));
   return simd<f32>{_mm_and_ps(mask, v.value)};
 #else
   return simd<f32>::set(
-    -v.lane<0>(),
-    -v.lane<1>(),
-    -v.lane<2>(),
-    -v.lane<3>()
+    std::abs(v.lane<0>()),
+    std::abs(v.lane<1>()),
+    std::abs(v.lane<2>()),
+    std::abs(v.lane<3>())
   );
 #endif
 }
@@ -1239,10 +1241,10 @@ auto alloy::core::simd_fast_sqrt(simd<f32> v) noexcept -> simd<f32>
   return simd<f32>{_mm_sqrt_ps(v.value)};
 #else
   return simd<f32>::set(
-    sqrt(v.lane<0>()),
-    sqrt(v.lane<1>()),
-    sqrt(v.lane<2>()),
-    sqrt(v.lane<3>())
+    std::sqrt(v.lane<0>()),
+    std::sqrt(v.lane<1>()),
+    std::sqrt(v.lane<2>()),
+    std::sqrt(v.lane<3>())
   );
 #endif
 }
