@@ -64,7 +64,7 @@ auto alloy::core::axis_aligned_box::top_plane() const noexcept -> plane
 auto alloy::core::axis_aligned_box::bottom_plane() const noexcept -> plane
 {
   const auto normal = vector3_constants::neg_unit_y;
-  const auto distance = m_bottom_left.y();
+  const auto distance = -m_bottom_left.y();
 
   return plane{normal, distance};
 }
@@ -80,7 +80,7 @@ auto alloy::core::axis_aligned_box::front_plane() const noexcept -> plane
 auto alloy::core::axis_aligned_box::back_plane() const noexcept -> plane
 {
   const auto normal = vector3_constants::neg_unit_z;
-  const auto distance = m_bottom_left.z();
+  const auto distance = -m_bottom_left.z();
 
   return plane{normal, distance};
 }
@@ -88,7 +88,7 @@ auto alloy::core::axis_aligned_box::back_plane() const noexcept -> plane
 auto alloy::core::axis_aligned_box::left_plane() const noexcept -> plane
 {
   const auto normal = vector3_constants::neg_unit_x;
-  const auto distance = m_bottom_left.x();
+  const auto distance = -m_bottom_left.x();
 
   return plane{normal, distance};
 }

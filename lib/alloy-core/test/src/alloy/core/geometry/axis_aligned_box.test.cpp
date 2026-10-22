@@ -4,11 +4,13 @@
 
 #include <alloy/core/geometry/axis_aligned_box.hpp>
 
+#include <alloy/core/geometry/plane.hpp>
 #include <alloy/core/geometry/point/point3.hpp>
 
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector3_constants.hpp>
+#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
@@ -177,7 +179,33 @@ TEST_CASE("axis_aligned_box::contains(const point3&, real)", "[observers]") {
 }
 
 TEST_CASE("axis_aligned_box::distance_to(const point&)", "[observers]") {
+  // Arrange
+  const auto sut = axis_aligned_box::from_points(
+    point3{-1, -1, -1},
+    point3{1, 1, 1}
+  );
 
+  SECTION("Point is inside the box") {
+    // Act
+    const auto result = sut.distance_to(point3{0.5f, 0, -0.5f});
+
+    // Assert
+    REQUIRE(almost_equal(result, real{0}));
+  }
+  SECTION("Point is outside a face") {
+    // Act
+    const auto result = sut.distance_to(point3{0, 4, 0});
+
+    // Assert
+    REQUIRE(almost_equal(result, real{3}));
+  }
+  SECTION("Point is outside a corner") {
+    // Act
+    const auto result = sut.distance_to(point3{2, 2, 1});
+
+    // Assert
+    REQUIRE(almost_equal(result, sqrt(real{2})));
+  }
 }
 
 TEST_CASE("axis_aligned_box::nearest_point(const point&)", "[observers]") {
@@ -513,6 +541,71 @@ TEST_CASE("axis_aligned_box::encloses(const axis_aligned_box&)", "[observers]") 
 
       // Assert
       REQUIRE(result);
+    }
+  }
+}
+
+TEST_CASE("axis_aligned_box::planes()", "[observers]") {
+  // Arrange
+  const auto bottom_left = point3{1, 2, 3};
+  const auto top_right = point3{4, 6, 8};
+  const auto sut = axis_aligned_box{bottom_left, top_right};
+
+  SECTION("Top plane") {
+    // Act
+    const auto result = sut.top_plane();
+
+    // Assert
+    REQUIRE(result.contains(top_right));
+    REQUIRE(almost_equal(result.normal(), vector3_constants::unit_y));
+  }
+  SECTION("Bottom plane") {
+    // Act
+    const auto result = sut.bottom_plane();
+
+    // Assert
+    REQUIRE(result.contains(bottom_left));
+    REQUIRE(almost_equal(result.normal(), vector3_constants::neg_unit_y));
+  }
+  SECTION("Front plane") {
+    // Act
+    const auto result = sut.front_plane();
+
+    // Assert
+    REQUIRE(result.contains(top_right));
+    REQUIRE(almost_equal(result.normal(), vector3_constants::unit_z));
+  }
+  SECTION("Back plane") {
+    // Act
+    const auto result = sut.back_plane();
+
+    // Assert
+    REQUIRE(result.contains(bottom_left));
+    REQUIRE(almost_equal(result.normal(), vector3_constants::neg_unit_z));
+  }
+  SECTION("Left plane") {
+    // Act
+    const auto result = sut.left_plane();
+
+    // Assert
+    REQUIRE(result.contains(bottom_left));
+    REQUIRE(almost_equal(result.normal(), vector3_constants::neg_unit_x));
+  }
+  SECTION("Right plane") {
+    // Act
+    const auto result = sut.right_plane();
+
+    // Assert
+    REQUIRE(result.contains(top_right));
+    REQUIRE(almost_equal(result.normal(), vector3_constants::unit_x));
+  }
+  SECTION("Box center is under every plane") {
+    // Act
+    const auto result = sut.planes();
+
+    // Assert
+    for (const auto& p : result) {
+      REQUIRE(is_point_under_plane(point3{2.5f, 4, 5.5f}, p));
     }
   }
 }

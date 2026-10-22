@@ -126,6 +126,8 @@ namespace alloy::core {
     /// \{
     /// \brief Get the plane that defines the specified side
     ///
+    /// The normal of each plane faces away from the box.
+    ///
     /// \return the plane that define sthe specified side
     [[nodiscard]] auto top_plane() const noexcept -> plane;
     [[nodiscard]] auto bottom_plane() const noexcept -> plane;
@@ -290,7 +292,7 @@ alloy::core::axis_aligned_box::axis_aligned_box(
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE
-auto alloy::core::axis_aligned_box::top_normal() const noexcept ->vector3
+auto alloy::core::axis_aligned_box::top_normal() const noexcept -> vector3
 {
   return top_plane().normal();
 }
