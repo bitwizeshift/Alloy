@@ -327,7 +327,7 @@ auto alloy::core::quaternion::extract_angle_axis(
   if (squared_length > real{0}){
 
     const auto inv_length = real{1} / sqrt(squared_length);
-    (*angle) = 2 * trigonometry::arccos(x());
+    (*angle) = 2 * trigonometry::arccos(clamp(w(), real{-1}, real{1}));
     axis->x() = x() * inv_length;
     axis->y() = y() * inv_length;
     axis->z() = z() * inv_length;

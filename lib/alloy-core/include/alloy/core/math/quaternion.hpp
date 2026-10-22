@@ -318,6 +318,11 @@ namespace alloy::core {
 
     /// \brief Extracts the \p angle and \p axis from this quaternion
     ///
+    /// The angle is in the range [0, 2pi]. A quaternion with no rotation
+    /// extracts an angle of 0 about the x-axis.
+    ///
+    /// \pre this quaternion is normalized
+    ///
     /// \param angle the angle to extract into
     /// \param axis the vector to extract into
     auto extract_angle_axis(not_null<radian*> angle,
