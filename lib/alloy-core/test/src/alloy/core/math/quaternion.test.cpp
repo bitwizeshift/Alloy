@@ -6,6 +6,7 @@
 
 #include <alloy/core/math/angle/radian.hpp>
 #include <alloy/core/math/math.hpp>
+#include <alloy/core/math/matrix/matrix3.hpp>
 #include <alloy/core/math/quaternion_constants.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 
@@ -266,6 +267,26 @@ TEST_CASE("quaternion::normalize()", "[modifiers]")
 // Static Factories
 //------------------------------------------------------------------------------
 
+TEST_CASE("quaternion::from_angles( radian, radian, radian )", "[factory]")
+{
+  // Arrange
+  const auto yaw = radian{0.3f};
+  const auto pitch = radian{0.5f};
+  const auto roll = radian{0.7f};
+  const auto expected = quaternion::from_angle_axis(yaw, vector3{0, 1, 0})
+                      * quaternion::from_angle_axis(pitch, vector3{1, 0, 0})
+                      * quaternion::from_angle_axis(roll, vector3{0, 0, 1});
+
+  // Act
+  const auto result = quaternion::from_angles(yaw, pitch, roll);
+
+  // Assert
+  SECTION("Composes the yaw, then the pitch, then the roll")
+  {
+    REQUIRE( almost_equal(result, expected) );
+  }
+}
+
 TEST_CASE("quaternion::from_rotation_axes( ... )", "[factory]")
 {
   // Arrange
@@ -288,6 +309,43 @@ TEST_CASE("quaternion::from_rotation_axes( ... )", "[factory]")
   }
 }
 
+TEST_CASE("quaternion::from_rotation_matrix( const matrix3& )", "[factory]")
+{
+  SECTION("Round-trips a rotation with a positive trace")
+  {
+    // Arrange
+    const auto expected = quaternion::from_angle_axis(
+      radian{0.5f},
+      vector3{1, 2, 3}.normalized()
+    );
+
+    // Act
+    const auto result = quaternion::from_rotation_matrix(
+      expected.rotation_matrix()
+    );
+
+    // Assert
+    REQUIRE( almost_equal(result, expected) );
+  }
+
+  SECTION("Round-trips a rotation with a negative trace")
+  {
+    // Arrange
+    const auto expected = quaternion::from_angle_axis(
+      radian{3},
+      vector3{1, 2, 3}.normalized()
+    );
+
+    // Act
+    const auto result = quaternion::from_rotation_matrix(
+      expected.rotation_matrix()
+    );
+
+    // Assert
+    REQUIRE( almost_equal(result, expected) );
+  }
+}
+
 //------------------------------------------------------------------------------
 // Arithmetic Operators
 //------------------------------------------------------------------------------
@@ -304,6 +362,110 @@ TEST_CASE("operator+( const quaternion&, const quaternion& )", "[arithmetic]")
   SECTION("Adding the zero quaternion leaves the quaternion unchanged")
   {
     REQUIRE( result == lhs );
+  }
+}
+
+TEST_CASE("operator*( const quaternion&, const quaternion& )", "[arithmetic]")
+{
+  // Arrange
+  const auto i = quaternion{0, 1, 0, 0};
+  const auto j = quaternion{0, 0, 1, 0};
+  const auto k = quaternion{0, 0, 0, 1};
+  const auto negative_one = quaternion{-1, 0, 0, 0};
+
+  SECTION("i squared is -1")
+  {
+    // Act
+    const auto result = i * i;
+
+    // Assert
+    REQUIRE( result == negative_one );
+  }
+  SECTION("j squared is -1")
+  {
+    // Act
+    const auto result = j * j;
+
+    // Assert
+    REQUIRE( result == negative_one );
+  }
+  SECTION("k squared is -1")
+  {
+    // Act
+    const auto result = k * k;
+
+    // Assert
+    REQUIRE( result == negative_one );
+  }
+  SECTION("ijk is -1")
+  {
+    // Act
+    const auto result = i * j * k;
+
+    // Assert
+    REQUIRE( result == negative_one );
+  }
+  SECTION("ij is k")
+  {
+    // Act
+    const auto result = i * j;
+
+    // Assert
+    REQUIRE( result == k );
+  }
+}
+
+TEST_CASE("operator*( const quaternion&, const vector3& )", "[arithmetic]")
+{
+  SECTION("Quarter turn about the z-axis takes the x-axis to the y-axis")
+  {
+    // Arrange
+    const auto sut = quaternion::from_angle_axis(
+      radian_constants::quarter_revolution,
+      vector3{0, 0, 1}
+    );
+
+    // Act
+    const auto result = sut * vector3{1, 0, 0};
+
+    // Assert
+    REQUIRE( almost_equal(result, vector3{0, 1, 0}) );
+  }
+
+  SECTION("Agrees with the rotation matrix")
+  {
+    // Arrange
+    const auto sut = quaternion::from_angles(
+      radian{0.3f},
+      radian{0.5f},
+      radian{0.7f}
+    );
+    const auto vec = vector3{1, 2, 3};
+
+    // Act
+    const auto result = sut * vec;
+
+    // Assert
+    REQUIRE( almost_equal(result, sut.rotation_matrix() * vec) );
+  }
+
+  SECTION("Composition rotates by the right quaternion first")
+  {
+    // Arrange
+    const auto about_z = quaternion::from_angle_axis(
+      radian_constants::quarter_revolution,
+      vector3{0, 0, 1}
+    );
+    const auto about_x = quaternion::from_angle_axis(
+      radian_constants::quarter_revolution,
+      vector3{1, 0, 0}
+    );
+
+    // Act
+    const auto result = (about_x * about_z) * vector3{1, 0, 0};
+
+    // Assert
+    REQUIRE( almost_equal(result, vector3{0, 0, 1}) );
   }
 }
 
