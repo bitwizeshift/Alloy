@@ -251,64 +251,56 @@ TEST_CASE("vector2::reflection( const vector2& vec )", "[quantifiers]")
 
 TEST_CASE("vector2::projection( const vector2& vec )", "[quantifiers]")
 {
-  SECTION("Projection onto x-axis")
+  SECTION("Vector is parallel to the projected vector")
   {
-//    const auto axis = alloy::core::vector2_constants::unit_y;
+    // Arrange
+    const auto sut = vector2{2,2};
+    const auto onto = vector2{1,1};
 
-    SECTION("Vector is parallel to axis")
-    {
-      // TODO(bitwizeshift): test this condition
-    }
+    // Act
+    const auto result = sut.projection(onto);
 
-    SECTION("Vector is perpendicular to axis")
-    {
-      // TODO(bitwizeshift): test this condition
-    }
-
-    SECTION("Vector can project on axis")
-    {
-      // TODO(bitwizeshift): test this condition
-    }
+    // Assert
+    REQUIRE( almost_equal(result, sut) );
   }
 
-  SECTION("Projection onto y-axis")
+  SECTION("Vector is perpendicular to the projected vector")
   {
-//    const auto axis = alloy::core::vector2_constants::unit_x;
+    // Arrange
+    const auto sut = vector2{1,-1};
+    const auto onto = vector2{1,1};
 
-    SECTION("Vector is parallel to axis")
-    {
-      // TODO(bitwizeshift): test this condition
-    }
+    // Act
+    const auto result = sut.projection(onto);
 
-    SECTION("Vector is perpendicular to axis")
-    {
-      // TODO(bitwizeshift): test this condition
-    }
-
-    SECTION("Vector can project on axis")
-    {
-      // TODO(bitwizeshift): test this condition
-    }
+    // Assert
+    REQUIRE( almost_equal(result, vector2_constants::zero) );
   }
 
-  SECTION("Projection onto arbitrary axis")
+  SECTION("Vector projects onto a unit axis")
   {
-//    const auto axis = alloy::core::vector2{1,1}.normalize();
+    // Arrange
+    const auto sut = vector2{2,3};
+    const auto onto = vector2_constants::unit_x;
 
-    SECTION("Vector is parallel to axis")
-    {
-      // TODO(bitwizeshift): test this condition
-    }
+    // Act
+    const auto result = sut.projection(onto);
 
-    SECTION("Vector is perpendicular to axis")
-    {
-      // TODO(bitwizeshift): test this condition
-    }
+    // Assert
+    REQUIRE( almost_equal(result, vector2{2,0}) );
+  }
 
-    SECTION("Vector can project on axis")
-    {
-      // TODO(bitwizeshift): test this condition
-    }
+  SECTION("Vector projects onto a non-unit vector")
+  {
+    // Arrange
+    const auto sut = vector2{3,4};
+    const auto onto = vector2{0,2};
+
+    // Act
+    const auto result = sut.projection(onto);
+
+    // Assert
+    REQUIRE( almost_equal(result, vector2{0,4}) );
   }
 }
 
@@ -316,7 +308,44 @@ TEST_CASE("vector2::projection( const vector2& vec )", "[quantifiers]")
 
 TEST_CASE("vector2::rejection( const vector2& vec )", "[quantifiers]")
 {
-  // TODO(bitwizeshift): test this
+  SECTION("Vector is parallel to the rejected vector")
+  {
+    // Arrange
+    const auto sut = vector2{2,2};
+    const auto from = vector2{1,1};
+
+    // Act
+    const auto result = sut.rejection(from);
+
+    // Assert
+    REQUIRE( almost_equal(result, vector2_constants::zero) );
+  }
+
+  SECTION("Vector is perpendicular to the rejected vector")
+  {
+    // Arrange
+    const auto sut = vector2{1,-1};
+    const auto from = vector2{1,1};
+
+    // Act
+    const auto result = sut.rejection(from);
+
+    // Assert
+    REQUIRE( almost_equal(result, sut) );
+  }
+
+  SECTION("Vector is rejected from a non-unit vector")
+  {
+    // Arrange
+    const auto sut = vector2{3,4};
+    const auto from = vector2{0,2};
+
+    // Act
+    const auto result = sut.rejection(from);
+
+    // Assert
+    REQUIRE( almost_equal(result, vector2{3,0}) );
+  }
 }
 
 //-----------------------------------------------------------------------------

@@ -238,6 +238,81 @@ TEST_CASE("vector3::midpoint( const vector3& vec )", "[quantifiers]")
 
 //-----------------------------------------------------------------------------
 
+TEST_CASE("vector3::projection( const vector3& vec )", "[quantifiers]")
+{
+  SECTION("Vector is parallel to the projected vector")
+  {
+    // Arrange
+    const auto sut = vector3{2,2,2};
+    const auto onto = vector3{1,1,1};
+
+    // Act
+    const auto result = sut.projection(onto);
+
+    // Assert
+    REQUIRE( almost_equal(result, sut) );
+  }
+
+  SECTION("Vector is perpendicular to the projected vector")
+  {
+    // Arrange
+    const auto sut = vector3{1,-1,0};
+    const auto onto = vector3{1,1,1};
+
+    // Act
+    const auto result = sut.projection(onto);
+
+    // Assert
+    REQUIRE( almost_equal(result, vector3_constants::zero) );
+  }
+
+  SECTION("Vector projects onto a non-unit vector")
+  {
+    // Arrange
+    const auto sut = vector3{3,4,5};
+    const auto onto = vector3{0,0,2};
+
+    // Act
+    const auto result = sut.projection(onto);
+
+    // Assert
+    REQUIRE( almost_equal(result, vector3{0,0,5}) );
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+TEST_CASE("vector3::rejection( const vector3& vec )", "[quantifiers]")
+{
+  SECTION("Vector is parallel to the rejected vector")
+  {
+    // Arrange
+    const auto sut = vector3{2,2,2};
+    const auto from = vector3{1,1,1};
+
+    // Act
+    const auto result = sut.rejection(from);
+
+    // Assert
+    REQUIRE( almost_equal(result, vector3_constants::zero) );
+  }
+
+  SECTION("Vector is rejected from a non-unit vector")
+  {
+    // Arrange
+    const auto sut = vector3{3,4,5};
+    const auto from = vector3{0,0,2};
+
+    // Act
+    const auto result = sut.rejection(from);
+
+    // Assert
+    REQUIRE( almost_equal(result, vector3{3,4,0}) );
+  }
+}
+
+//-----------------------------------------------------------------------------
+
 TEST_CASE("vector3::normalized()", "[quantifiers]")
 {
   // TODO(bitwizeshift): test this

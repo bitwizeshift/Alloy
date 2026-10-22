@@ -623,12 +623,12 @@ inline constexpr
 auto alloy::core::vector3::projection(const vector3& vector)
   const noexcept -> vector3
 {
-  const auto multiplier = dot(vector) / dot(*this);
+  const auto multiplier = dot(vector) / vector.dot(vector);
 
   return vector3{
-    multiplier * x(),
-    multiplier * y(),
-    multiplier * z()
+    multiplier * vector.x(),
+    multiplier * vector.y(),
+    multiplier * vector.z()
   };
 }
 

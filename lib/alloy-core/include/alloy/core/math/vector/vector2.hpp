@@ -599,7 +599,7 @@ inline constexpr
 auto alloy::core::vector2::projection(const vector2& vector)
   const noexcept -> vector2
 {
-  const auto multiplier = dot(vector) / dot(*this);
+  const auto multiplier = dot(vector) / vector.dot(vector);
 
   return vector2{
     multiplier * vector.x(),
