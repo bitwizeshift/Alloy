@@ -17,6 +17,7 @@
 #include "alloy/core/geometry/rectangle.hpp"
 #include "alloy/core/geometry/sphere.hpp"
 #include "alloy/core/geometry/triangle.hpp"
+#include "slab_clipping.hpp"
 
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
@@ -33,6 +34,9 @@ namespace {
   using alloy::core::axis_aligned_box;
   using alloy::core::capsule;
   using alloy::core::default_tolerance;
+  using alloy::core::detail::clip_to_box;
+  using alloy::core::detail::clip_to_slabs;
+  using alloy::core::detail::interval;
   using alloy::core::line_segment;
   using alloy::core::oriented_box;
   using alloy::core::plane;
@@ -43,46 +47,6 @@ namespace {
   using alloy::core::vector3;
 
   constexpr auto infinity = std::numeric_limits<real>::infinity();
-
-  /// The range of distances along a line-like object that lie in a shape
-  struct interval
-  {
-    real near;
-    real far;
-  };
-
-  /// Clips the range [t_min, t_max] of the line 'origin + t * direction' to
-  /// the range that lies within the box [box_min, box_max]
-  auto clip_to_slabs(
-    const point3& origin,
-    const vector3& direction,
-    interval range,
-    const point3& box_min,
-    const point3& box_max
-  ) noexcept -> std::optional<interval>
-  {
-    for (auto i = 0; i < 3; ++i) {
-      if (alloy::core::abs(direction[i]) <= default_tolerance) {
-        // Parallel to this slab: either always inside of it, or never.
-        if (origin[i] < box_min[i] || origin[i] > box_max[i]) {
-          return std::nullopt;
-        }
-        continue;
-      }
-      const auto reciprocal = real{1} / direction[i];
-      auto t0 = (box_min[i] - origin[i]) * reciprocal;
-      auto t1 = (box_max[i] - origin[i]) * reciprocal;
-      if (t0 > t1) {
-        std::swap(t0, t1);
-      }
-      range.near = std::max(range.near, t0);
-      range.far = std::min(range.far, t1);
-      if (range.near > range.far) {
-        return std::nullopt;
-      }
-    }
-    return range;
-  }
 
   /// Gets the distance from the plane 'p' to the point 'q' in units of the
   /// world, regardless of whether 'p' is normalized
@@ -267,38 +231,6 @@ namespace {
     return extents.x() * alloy::core::abs(n.dot(axes[0])) +
            extents.y() * alloy::core::abs(n.dot(axes[1])) +
            extents.z() * alloy::core::abs(n.dot(axes[2]));
-  }
-
-  /// Clips the range of the line 'origin + t * direction' to the box 'b', by
-  /// clipping it in the space of the box
-  auto clip_to_box(
-    const point3& origin,
-    const vector3& direction,
-    interval range,
-    const oriented_box& b
-  ) noexcept -> std::optional<interval>
-  {
-    const auto axes = b.axes();
-    const auto offset = (origin - b.center());
-    const auto local_origin = point3{
-      offset.dot(axes[0]),
-      offset.dot(axes[1]),
-      offset.dot(axes[2])
-    };
-    const auto local_direction = vector3{
-      direction.dot(axes[0]),
-      direction.dot(axes[1]),
-      direction.dot(axes[2])
-    };
-    const auto& extents = b.half_extents();
-
-    return clip_to_slabs(
-      local_origin,
-      local_direction,
-      range,
-      point3{-extents.x(), -extents.y(), -extents.z()},
-      point3{extents.x(), extents.y(), extents.z()}
-    );
   }
 
   /// Determines whether the boxes 'a' and 'b' are separated, by the 15 axes

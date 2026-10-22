@@ -239,6 +239,7 @@ set(source_files
   src/alloy/core/geometry/oriented_box.cpp
   src/alloy/core/geometry/plane.cpp
   src/alloy/core/geometry/rectangle.cpp
+  src/alloy/core/geometry/slab_clipping.hpp
   src/alloy/core/geometry/ray.cpp
   src/alloy/core/geometry/sphere.cpp
   src/alloy/core/geometry/triangle.cpp
