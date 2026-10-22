@@ -34,6 +34,22 @@ auto alloy::core::line_segment::point_at_percent(real percent)
   return m_start + (percent * direction());
 }
 
+auto alloy::core::line_segment::nearest_point(const point3& p)
+  const noexcept -> point3
+{
+  const auto dir = direction();
+  const auto square_length = dir.dot(dir);
+
+  // A degenerate segment is a single point, and has no direction to project
+  // onto.
+  if (square_length <= real{0}) {
+    return m_start;
+  }
+  const auto percent = saturate((p - m_start).dot(dir) / square_length);
+
+  return m_start + (percent * dir);
+}
+
 auto alloy::core::line_segment::contains(const point3& p) const noexcept -> bool
 {
   return contains(p, default_tolerance);
@@ -42,15 +58,7 @@ auto alloy::core::line_segment::contains(const point3& p) const noexcept -> bool
 auto alloy::core::line_segment::contains(const point3& p, real tolerance)
   const noexcept -> bool
 {
-  const auto dir = direction();
-  const auto square_length = dir.dot(dir);
-
-  // A degenerate segment is a single point, and has no direction to project
-  // onto.
-  const auto percent = (square_length > real{0})
-    ? saturate((p - m_start).dot(dir) / square_length)
-    : real{0};
-  const auto offset = (p - (m_start + (percent * dir)));
+  const auto offset = (p - nearest_point(p));
 
   return offset.square_magnitude() <= (tolerance * tolerance);
 }

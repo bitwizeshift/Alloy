@@ -121,6 +121,13 @@ namespace alloy::core {
     [[nodiscard]]
     auto point_at_percent(real percent) const noexcept -> point3;
 
+    /// \brief Gets the point on this line_segment nearest to the point \p p
+    ///
+    /// \param p the point to find the nearest point to
+    /// \return the nearest point
+    [[nodiscard]]
+    auto nearest_point(const point3& p) const noexcept -> point3;
+
     /// \brief Checks if this line_segment intersects the given point \p p
     ///
     /// \param p the point to check for intersection

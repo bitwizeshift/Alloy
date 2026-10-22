@@ -57,6 +57,43 @@ TEST_CASE("line_segment::point_at_percent(real)", "[quantifier]") {
   }
 }
 
+TEST_CASE("line_segment::nearest_point(const point3&)", "[quantifier]") {
+  // Arrange
+  const auto sut = line_segment{point3{1, 0, 0}, point3{5, 0, 0}};
+
+  SECTION("Point projects between the end points") {
+    // Act
+    const auto result = sut.nearest_point(point3{3, 2, -1});
+
+    // Assert
+    REQUIRE(almost_equal(result, point3{3, 0, 0}));
+  }
+  SECTION("Point projects before the start point") {
+    // Act
+    const auto result = sut.nearest_point(point3{-3, 2, 0});
+
+    // Assert
+    REQUIRE(almost_equal(result, point3{1, 0, 0}));
+  }
+  SECTION("Point projects past the end point") {
+    // Act
+    const auto result = sut.nearest_point(point3{8, 2, 0});
+
+    // Assert
+    REQUIRE(almost_equal(result, point3{5, 0, 0}));
+  }
+  SECTION("Segment has no length") {
+    // Arrange
+    const auto degenerate = line_segment{point3{1, 2, 3}, point3{1, 2, 3}};
+
+    // Act
+    const auto result = degenerate.nearest_point(point3{8, 2, 0});
+
+    // Assert
+    REQUIRE(almost_equal(result, point3{1, 2, 3}));
+  }
+}
+
 TEST_CASE("line_segment::contains(const point3&)", "[quantifier]") {
   SECTION("Segment is aligned to an axis") {
     // Arrange
