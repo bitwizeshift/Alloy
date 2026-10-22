@@ -15,8 +15,10 @@
 # pragma once
 #endif
 
-#include "alloy/core/math/math_constants.hpp" // math_constants::half_pi, etc
-#include "alloy/core/math/trigonometry.hpp"   // trigonometry::cos, etc
+#include "alloy/core/math/angle/radian.hpp"    // radian
+#include "alloy/core/math/math.hpp"            // core::sqrt
+#include "alloy/core/math/math_constants.hpp"  // math_constants::half_pi, etc
+#include "alloy/core/math/trigonometry.hpp"    // trigonometry::cos, etc
 
 #include "alloy/core/assert.hpp"
 
@@ -144,6 +146,9 @@ namespace alloy::core {
     /// \brief Performs circular linear interpolation on a point between \p v0
     ///        and \p v1 at position \p t
     ///
+    /// The position follows a quarter circle, `1 - sqrt(1 - t^2)`, which
+    /// starts slowly and ends abruptly.
+    ///
     /// \param v0 The starting point
     /// \param v1 The ending point
     /// \param t  The area in the interval to interpolate to [0,1]
@@ -156,6 +161,9 @@ namespace alloy::core {
     /// \brief Performs half-cosine linear interpolation on a point between
     ///        \p v0 and \p v1 at position \p t
     ///
+    /// The position follows a quarter period of cosine, `1 - cos(t pi/2)`,
+    /// which starts slowly and ends at full speed.
+    ///
     /// \param v0 The starting point
     /// \param v1 The ending point
     /// \param t  The area in the interval to interpolate to [0,1]
@@ -165,6 +173,9 @@ namespace alloy::core {
 
     /// \brief Performs cosine linear interpolation on a point between \p v0
     ///        and \p v1 at position \p t
+    ///
+    /// The position follows a half period of cosine, `(1 - cos(t pi)) / 2`,
+    /// which starts and ends slowly.
     ///
     /// \param v0 The starting point
     /// \param v1 The ending point
@@ -178,6 +189,9 @@ namespace alloy::core {
     /// \brief Performs half-sine linear interpolation on a point between
     ///        \p v0 and \p v1 at position \p t
     ///
+    /// The position follows a quarter period of sine, `sin(t pi/2)`, which
+    /// starts at full speed and ends slowly.
+    ///
     /// \param v0 The starting point
     /// \param v1 The ending point
     /// \param t  The area in the interval to interpolate to [0,1]
@@ -187,6 +201,10 @@ namespace alloy::core {
 
     /// \brief Performs sine linear interpolation on a point between \p v0
     ///        and \p v1 at position \p t
+    ///
+    /// The position follows a half period of sine,
+    /// `(1 + sin((t - 1/2) pi)) / 2`, which starts and ends slowly. This is
+    /// the same curve as \ref cosine, phase-shifted into sine.
     ///
     /// \param v0 The starting point
     /// \param v1 The ending point
@@ -311,7 +329,7 @@ inline
 auto alloy::core::interpolation::circular(const V& v0, const V& v1, const T& t)
   noexcept -> V
 {
-  return linear(v0, v1, (1.0 - sqrt(1.0 - (t*t))));
+  return linear(v0, v1, (T{1} - sqrt(T{1} - (t*t))));
 }
 
 //----------------------------------------------------------------------------
@@ -324,7 +342,9 @@ auto alloy::core::interpolation::half_cosine(
   const T& t
 ) noexcept -> V
 {
-  return linear(v0, v1, (0.5 - trigonometry::cos(t * math_constants::half_pi)));
+  const auto angle = radian{t * math_constants::half_pi};
+
+  return linear(v0, v1, (T{1} - trigonometry::cos(angle)));
 }
 
 template <typename V, typename T>
@@ -332,7 +352,9 @@ inline
 auto alloy::core::interpolation::cosine(const V& v0, const V& v1, const T& t)
   noexcept -> V
 {
-  return linear(v0, v1, (1.0 - trigonometry::cos(t * math_constants::pi)));
+  const auto angle = radian{t * math_constants::pi};
+
+  return linear(v0, v1, (T{1} - trigonometry::cos(angle)) * T{0.5});
 }
 
 //----------------------------------------------------------------------------
@@ -342,7 +364,9 @@ inline
 auto alloy::core::interpolation::half_sine(const V& v0, const V& v1, const T& t)
   noexcept -> V
 {
-  return linear(v0, v1, (0.5 - trigonometry::sin(t * math_constants::half_pi)));
+  const auto angle = radian{t * math_constants::half_pi};
+
+  return linear(v0, v1, trigonometry::sin(angle));
 }
 
 template <typename V, typename T>
@@ -350,7 +374,9 @@ inline
 auto alloy::core::interpolation::sine(const V& v0, const V& v1, const T& t)
   noexcept -> V
 {
-  return linear(v0, v1, (1.0 - trigonometry::sin(t * math_constants::pi)));
+  const auto angle = radian{(t - T{0.5}) * math_constants::pi};
+
+  return linear(v0, v1, (T{1} + trigonometry::sin(angle)) * T{0.5});
 }
 
 //-----------------------------------------------------------------------------
