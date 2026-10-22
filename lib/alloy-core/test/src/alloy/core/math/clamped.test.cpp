@@ -34,10 +34,10 @@ TEST_CASE("clamped<Float>::make(Float)", "[factory]") {
     }
   }
   SECTION("Input precedes 0.0") {
-    const auto sut = clamped<float>::make(2.0f);
+    const auto sut = clamped<float>::make(-1.0f);
 
     SECTION("Results in underflow error") {
-      REQUIRE(sut == fail(clamped<float>::error::overflow));
+      REQUIRE(sut == fail(clamped<float>::error::underflow));
     }
   }
   SECTION("Input is NaN") {
