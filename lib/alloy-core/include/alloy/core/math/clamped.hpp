@@ -312,7 +312,7 @@ namespace alloy::core {
             typename=decltype(std::declval<const Float&>() >= std::declval<const T&>())>
   constexpr auto operator>=(clamped<Float> lhs, const T& rhs) noexcept -> bool;
   template <typename Float, typename T,
-            typename=decltype(std::declval<const T&>() == std::declval<const Float&>())>
+            typename=decltype(std::declval<const T&>() >= std::declval<const Float&>())>
   constexpr auto operator>=(const T& lhs, clamped<Float> rhs) noexcept -> bool;
 
   //---------------------------------------------------------------------------

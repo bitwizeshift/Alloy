@@ -141,4 +141,29 @@ TEST_CASE("std::hash<clamped<Float>>", "[hash]") {
   }
 }
 
+//-----------------------------------------------------------------------------
+// Comparisons
+//-----------------------------------------------------------------------------
+
+struct clamped_only_equality_comparable {
+  friend auto operator==(clamped_only_equality_comparable, float) -> bool;
+};
+
+template <typename L, typename R>
+concept clamped_greater_equal_comparable = requires(const L& lhs, const R& rhs) {
+  lhs >= rhs;
+};
+
+TEST_CASE("operator>=(const T&, clamped<Float>)", "[comparison]") {
+  SECTION("Requires T to be ordered against Float") {
+    // Assert
+    STATIC_REQUIRE_FALSE(
+      clamped_greater_equal_comparable<
+        clamped_only_equality_comparable,
+        clamped<float>
+      >
+    );
+  }
+}
+
 } // namespace alloy::core::test

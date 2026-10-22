@@ -456,4 +456,29 @@ TEST_CASE("std::hash<saturated<Float>>", "[hash]") {
   }
 }
 
+//-----------------------------------------------------------------------------
+// Comparisons
+//-----------------------------------------------------------------------------
+
+struct saturated_only_equality_comparable {
+  friend auto operator==(saturated_only_equality_comparable, float) -> bool;
+};
+
+template <typename L, typename R>
+concept saturated_greater_equal_comparable = requires(const L& lhs, const R& rhs) {
+  lhs >= rhs;
+};
+
+TEST_CASE("operator>=(const T&, saturated<Float>)", "[comparison]") {
+  SECTION("Requires T to be ordered against Float") {
+    // Assert
+    STATIC_REQUIRE_FALSE(
+      saturated_greater_equal_comparable<
+        saturated_only_equality_comparable,
+        saturated<float>
+      >
+    );
+  }
+}
+
 } // namespace alloy::core::test

@@ -299,7 +299,7 @@ namespace alloy::core {
   constexpr auto operator>=(saturated<Float> lhs, const T& rhs)
     noexcept -> bool;
   template <typename Float, typename T,
-            typename=decltype(std::declval<const T&>() == std::declval<const Float&>())>
+            typename=decltype(std::declval<const T&>() >= std::declval<const Float&>())>
   constexpr auto operator>=(const T& lhs, saturated<Float> rhs)
     noexcept -> bool;
 
