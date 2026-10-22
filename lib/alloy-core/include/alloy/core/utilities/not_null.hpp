@@ -19,11 +19,11 @@
 #include "alloy/core/assert.hpp"
 #include "alloy/core/intrinsics.hpp"
 
-#include <cstddef>     // std::nullptr_t
-#include <utility>     // std::forward, std::move
 #include <concepts>
-#include <type_traits> // std::decay_t
+#include <cstddef>     // std::nullptr_t
 #include <memory>      // std::pointer_traits
+#include <type_traits> // std::decay_t
+#include <utility>     // std::forward, std::move
 
 namespace alloy::core {
 

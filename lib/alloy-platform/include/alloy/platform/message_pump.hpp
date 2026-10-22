@@ -15,15 +15,15 @@
 # pragma once
 #endif
 
-#include <type_traits>
 #include "alloy/platform/api.hpp"
 #include "alloy/platform/event.hpp"
 
 #include "alloy/core/utilities/signal.hpp"
 
-#include <vector>      // std::vector
 #include <cstddef>     // std::size_t
+#include <type_traits>
 #include <utility>     // std::forward
+#include <vector>      // std::vector
 
 namespace alloy::platform {
 

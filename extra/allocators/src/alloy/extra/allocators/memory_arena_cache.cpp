@@ -5,8 +5,9 @@
 #include "alloy/extra/allocators/memory_arena_cache.hpp"
 
 #include "alloy/extra/allocators/pointer_util.hpp"
-#include "alloy/core/intrinsics.hpp"
+
 #include "alloy/core/assert.hpp"
+#include "alloy/core/intrinsics.hpp"
 
 #include <cstddef>
 

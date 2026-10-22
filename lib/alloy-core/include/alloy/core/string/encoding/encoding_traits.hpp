@@ -15,19 +15,19 @@
 # pragma once
 #endif
 
+#include "alloy/core/assert.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/traits/always_false.hpp"
+#include "alloy/core/traits/detected.hpp"     // is_detected
+#include "alloy/core/types.hpp"               // char32
+#include "alloy/core/utilities/quantity.hpp"  // uquantity
+
 #include <array>
 #include <cstddef>
-#include "alloy/core/types.hpp" // char32
-#include "alloy/core/assert.hpp"
-#include "alloy/core/traits/detected.hpp"    // is_detected
-#include "alloy/core/utilities/quantity.hpp" // uquantity
-#include "alloy/core/traits/always_false.hpp"
-
-#include <utility>     // std::declval, std::pair
-#include <tuple>       // std::tie
 #include <iterator>    // std::distance
+#include <tuple>       // std::tie
 #include <type_traits> // std::is_class_v
+#include <utility>     // std::declval, std::pair
 
 namespace alloy::core {
 

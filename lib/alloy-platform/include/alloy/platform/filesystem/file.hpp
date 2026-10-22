@@ -17,8 +17,9 @@
 
 #include "alloy/platform/filesystem/file_stream.hpp"
 #include "alloy/platform/filesystem/file_stream_finalizer.hpp"
-#include "alloy/platform/api.hpp"
 #include "alloy/platform/filesystem/file_stream_handle.hpp"
+
+#include "alloy/platform/api.hpp"
 #include "alloy/platform/buffers/const_buffer.hpp"
 #include "alloy/platform/buffers/mutable_buffer.hpp"
 
@@ -29,10 +30,10 @@
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/result.hpp"
 
+#include <cstddef>      // std::byte, std::size_t
+#include <span>         // std::span
 #include <system_error>
 #include <type_traits>
-#include <cstddef> // std::byte, std::size_t
-#include <span>    // std::span
 
 namespace alloy::platform {
 

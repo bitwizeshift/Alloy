@@ -15,13 +15,14 @@
 # pragma once
 #endif
 
-#include "alloy/core/types.hpp"      // char32
-#include "alloy/core/intrinsics.hpp" // compiler::unused
-#include "alloy/core/traits/detected.hpp" // is_detected_v
 #include "alloy/core/string/encoding/encoding_traits.hpp"
 
-#include <utility> // std::declval, std::pair
+#include "alloy/core/intrinsics.hpp"      // compiler::unused
+#include "alloy/core/traits/detected.hpp" // is_detected_v
+#include "alloy/core/types.hpp"           // char32
+
 #include <tuple>   // std::tie
+#include <utility> // std::declval, std::pair
 
 namespace alloy::core {
 

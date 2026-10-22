@@ -15,20 +15,21 @@
 # pragma once
 #endif
 
-#include "alloy/core/string/zstring_view.hpp"
-#include <system_error>
 #include "alloy/render/gl/shader/shader.hpp"
+
 #include "alloy/render/gl/error.hpp"
 
 #include "alloy/core/assert.hpp"
+#include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/utilities/result.hpp"
 
 #include <GL/glew.h>
 
-#include <limits>      // std::numeric_limits
-#include <utility>     // std::move
 #include <initializer_list> // std::initializer_list
-#include <iterator> // std::advance, std::next
+#include <iterator>         // std::advance, std::next
+#include <limits>           // std::numeric_limits
+#include <system_error>
+#include <utility>          // std::move
 
 namespace alloy::render::gl::detail {
 

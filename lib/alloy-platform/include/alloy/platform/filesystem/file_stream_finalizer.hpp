@@ -15,8 +15,9 @@
 # pragma once
 #endif
 
-#include "alloy/platform/api.hpp"
 #include "alloy/platform/filesystem/file_stream.hpp"
+
+#include "alloy/platform/api.hpp"
 
 namespace alloy::platform {
 

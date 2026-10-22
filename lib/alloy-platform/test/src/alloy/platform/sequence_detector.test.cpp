@@ -3,6 +3,7 @@
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
 #include <alloy/platform/sequence_detector.hpp>
+
 #include <alloy/core/containers/vector.hpp>
 
 #include <catch2/catch_test_macros.hpp>

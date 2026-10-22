@@ -18,10 +18,10 @@
 #include "alloy/core/intrinsics.hpp" // ALLOY_FORCE_INLINE
 #include "alloy/core/traits/for_each_member.hpp"
 
-#include <functional>  // std::hash
 #include <cstddef>     // std::size_t
-#include <type_traits> // std::enable_if, std::is_enum_v, etc
 #include <cstring>     // std::memcopy
+#include <functional>  // std::hash
+#include <type_traits> // std::enable_if, std::is_enum_v, etc
 
 namespace alloy::core {
 

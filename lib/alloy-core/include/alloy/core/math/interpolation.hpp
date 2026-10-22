@@ -17,6 +17,7 @@
 
 #include "alloy/core/math/math_constants.hpp" // math_constants::half_pi, etc
 #include "alloy/core/math/trigonometry.hpp"   // trigonometry::cos, etc
+
 #include "alloy/core/assert.hpp"
 
 #include <type_traits> // std::common_type

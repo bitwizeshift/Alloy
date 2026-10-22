@@ -17,8 +17,8 @@
 
 #include "alloy/extra/logging/log_level.hpp"
 #include "alloy/extra/logging/logger.hpp"
-#include "alloy/platform/filesystem/file.hpp"
 
+#include "alloy/platform/filesystem/file.hpp"
 
 #include <chrono>
 #include <string_view>

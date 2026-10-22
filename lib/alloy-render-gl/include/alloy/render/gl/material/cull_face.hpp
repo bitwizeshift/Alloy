@@ -15,12 +15,12 @@
 # pragma once
 #endif
 
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/render/material/cull_face.hpp"
 
-#include "alloy/core/intrinsics.hpp"
+#include <GL/glew.h>
 
 #include <optional>
-#include <GL/glew.h>
 
 namespace alloy::render::gl {
 

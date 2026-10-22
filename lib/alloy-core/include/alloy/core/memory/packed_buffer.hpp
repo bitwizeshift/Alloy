@@ -15,21 +15,20 @@
 # pragma once
 #endif
 
-#include "alloy/core/assert.hpp"
-#include "alloy/core/intrinsics.hpp"
-#include <cstring>
-#include <iterator>
+#include "alloy/core/memory/allocator.hpp"
+#include "alloy/core/memory/data_quantity.hpp" // bytes
+
 #include "alloy/core/api.hpp"
+#include "alloy/core/assert.hpp"
+#include "alloy/core/containers/vector.hpp"
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/utilities/casts.hpp"    // narrow_cast
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/result.hpp"
-#include "alloy/core/utilities/casts.hpp"    // narrow_cast
-
-#include "alloy/core/memory/data_quantity.hpp" // bytes
-#include "alloy/core/memory/allocator.hpp"
-
-#include "alloy/core/containers/vector.hpp"
 
 #include <cstddef>      // std::byte
+#include <cstring>
+#include <iterator>
 #include <span>         // std::span
 #include <system_error> // std::error_code
 #include <type_traits>  // std::true_type

@@ -2,14 +2,17 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include "alloy/core/config.hpp"
-#include "alloy/core/precision/real.hpp"
 #include <alloy/core/math/vector/vector3.hpp>
-#include <alloy/core/math/vector/vector3_constants.hpp>
+
 #include <alloy/core/math/angle/radian.hpp>
 #include <alloy/core/math/math.hpp>
+#include <alloy/core/math/vector/vector3_constants.hpp>
+
+#include <alloy/core/config.hpp>
+#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
+
 #include <limits>
 #include <stdexcept>
 

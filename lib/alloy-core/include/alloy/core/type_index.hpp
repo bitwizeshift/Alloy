@@ -17,8 +17,8 @@
 
 #include "alloy/core/api.hpp"
 
-#include <type_traits> // std::is_const, std::is_reference, etc
 #include <cstdint>     // std::uint32_t
+#include <type_traits> // std::is_const, std::is_reference, etc
 
 namespace alloy::core {
 

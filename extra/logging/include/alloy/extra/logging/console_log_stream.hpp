@@ -18,7 +18,6 @@
 #include "alloy/extra/logging/log_level.hpp"
 #include "alloy/extra/logging/logger.hpp"
 
-
 #include <chrono>
 #include <string_view>
 

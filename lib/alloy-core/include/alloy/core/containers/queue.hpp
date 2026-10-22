@@ -16,8 +16,9 @@
 # pragma once
 #endif
 
-#include "alloy/core/utilities/explicitly_copyable.hpp"
 #include "alloy/core/containers/deque.hpp"
+
+#include "alloy/core/utilities/explicitly_copyable.hpp"
 
 #include <queue>  // std::queue
 

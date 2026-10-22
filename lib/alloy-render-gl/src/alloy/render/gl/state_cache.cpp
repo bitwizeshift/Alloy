@@ -4,11 +4,12 @@
 
 #include "alloy/render/gl/state_cache.hpp"
 
-#include "alloy/render/gl/mesh/fill_mode.hpp"
 #include "alloy/render/gl/material/blend_equation.hpp"
 #include "alloy/render/gl/material/blend_factor.hpp"
 #include "alloy/render/gl/material/cull_face.hpp"
 #include "alloy/render/gl/material/depth_compare.hpp"
+#include "alloy/render/gl/mesh/fill_mode.hpp"
+
 #include "alloy/render/material/blend_equation.hpp"
 #include "alloy/render/material/blend_factor.hpp"
 #include "alloy/render/material/cull_face.hpp"

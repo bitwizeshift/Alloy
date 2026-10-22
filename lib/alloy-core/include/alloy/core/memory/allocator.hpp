@@ -15,19 +15,20 @@
 # pragma once
 #endif
 
-#include "alloy/core/assert.hpp"
 #include "alloy/core/memory/lifetime_utilities.hpp"
 #include "alloy/core/memory/memory_resource.hpp"
+
+#include "alloy/core/assert.hpp"
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/scope_guard.hpp"
-#include "alloy/core/intrinsics.hpp"
 
-#include <cstring>     // std::memcpy
-#include <cstddef>     // std::size_t, std::max_align_t
 #include <concepts>
-#include <type_traits> // std::is_constructible, etc
+#include <cstddef>     // std::size_t, std::max_align_t
 #include <cstdlib>     // std::aligned_alloc, std::free
+#include <cstring>     // std::memcpy
 #include <new>         // ::operator new, ::operator delete
+#include <type_traits> // std::is_constructible, etc
 
 namespace alloy::core {
 

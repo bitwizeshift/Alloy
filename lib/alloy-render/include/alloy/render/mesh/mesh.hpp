@@ -15,12 +15,13 @@
 # pragma once
 #endif
 
-#include "alloy/core/memory/allocator.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
+
 #include "alloy/core/containers/vector.hpp"
+#include "alloy/core/geometry/axis_aligned_box.hpp"
+#include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/memory/data_quantity.hpp"
 #include "alloy/core/memory/packed_buffer.hpp"
-#include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/utilities/result.hpp"
 

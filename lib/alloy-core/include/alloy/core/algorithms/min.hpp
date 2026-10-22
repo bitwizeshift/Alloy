@@ -16,6 +16,7 @@
 #endif
 
 #include "alloy/core/algorithms/compare_reduce.hpp"
+
 #include "alloy/core/utilities/compare.hpp"
 
 namespace alloy::core {

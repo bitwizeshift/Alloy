@@ -4,9 +4,10 @@
 
 #include "alloy/core/io/writer.hpp"
 
-#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/io/error.hpp"
 #include "alloy/core/io/reader.hpp"
+
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/utilities/result.hpp"
 
 #include <algorithm> // std::min

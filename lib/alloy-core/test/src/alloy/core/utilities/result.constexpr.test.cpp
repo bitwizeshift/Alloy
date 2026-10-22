@@ -2,9 +2,10 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include "alloy/core/utilities/result.hpp"
+#include <alloy/core/utilities/result.hpp>
 
 #include <catch2/catch_test_macros.hpp>
+
 #include <type_traits>
 #include <utility>
 

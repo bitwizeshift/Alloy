@@ -15,11 +15,12 @@
 # pragma once
 #endif
 
+#include "alloy/core/math/vector/vector2.hpp"
+#include "alloy/core/math/vector/vector3.hpp"
+
 #include "alloy/core/api.hpp"
 #include "alloy/core/assert.hpp"
 #include "alloy/core/precision.hpp"
-#include "alloy/core/math/vector/vector2.hpp"
-#include "alloy/core/math/vector/vector3.hpp"
 
 #include <cassert>
 

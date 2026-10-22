@@ -2,10 +2,11 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include "test_doubles.hpp"
+#include <alloy/core/io/reader.hpp>
 
 #include <alloy/core/io/error.hpp>
-#include <alloy/core/io/reader.hpp>
+#include "test_doubles.hpp"
+
 #include <alloy/core/containers/vector.hpp>
 
 #include <catch2/catch_test_macros.hpp>

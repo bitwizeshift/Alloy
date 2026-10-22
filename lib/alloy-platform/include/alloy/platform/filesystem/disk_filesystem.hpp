@@ -15,16 +15,17 @@
 # pragma once
 #endif
 
-#include "alloy/platform/api.hpp"
 #include "alloy/platform/filesystem/file.hpp"
 #include "alloy/platform/filesystem/file_stream.hpp"
 #include "alloy/platform/filesystem/file_stream_finalizer.hpp"
 
+#include "alloy/platform/api.hpp"
+
 #include "alloy/core/memory/allocator.hpp"
 
+#include <cstdint>     // std::uint8_t
 #include <string_view> // std::string_view
 #include <type_traits> // std::underlying_type
-#include <cstdint>     // std::uint8_t
 
 namespace alloy::platform {
 

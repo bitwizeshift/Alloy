@@ -4,10 +4,12 @@
 
 #include "alloy/render/gl/shader/program.hpp"
 
+#include "alloy/render/gl/error.hpp"
+
+#include "alloy/core/string/string.hpp"
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/core/utilities/scope_guard.hpp"
-#include "alloy/core/string/string.hpp"
-#include "alloy/render/gl/error.hpp"
+
 #include <initializer_list>
 #include <utility>
 

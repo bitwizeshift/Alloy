@@ -15,18 +15,18 @@
 # pragma once
 #endif
 
-#include "alloy/extra/logging/log_level.hpp"
 #include "alloy/extra/logging/log_filter.hpp"
+#include "alloy/extra/logging/log_level.hpp"
 
-#include "alloy/platform/buffers/mutable_buffer.hpp"
-#include "alloy/core/utilities/not_null.hpp"
-#include "alloy/core/utilities/delegate.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/utilities/delegate.hpp"
+#include "alloy/core/utilities/not_null.hpp"
+#include "alloy/platform/buffers/mutable_buffer.hpp"
 
-#include <cstddef>     // std::ptrdiff_t
-#include <string_view> // std::string_views
 #include <chrono>      // std::chrono
+#include <cstddef>     // std::ptrdiff_t
 #include <format>      // std::format_to_n, std::format_string
+#include <string_view> // std::string_views
 
 namespace alloy::extra {
 

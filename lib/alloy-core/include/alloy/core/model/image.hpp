@@ -15,14 +15,15 @@
 # pragma once
 #endif
 
-#include "alloy/core/api.hpp"
 #include "alloy/core/model/color.hpp"
-#include "alloy/core/memory/allocator.hpp"
+
+#include "alloy/core/api.hpp"
 #include "alloy/core/containers/vector.hpp"
+#include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/result.hpp"
 
-#include <cstdint>      // std::uint8_t
 #include <cstddef>      // std::size_t, std::byte
+#include <cstdint>      // std::uint8_t
 #include <system_error> // std::error_code, std::is_error_code_enum
 #include <type_traits>  // std::true_type
 

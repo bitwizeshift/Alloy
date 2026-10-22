@@ -17,8 +17,8 @@
 #endif
 
 #include "alloy/core/math/angle/basic_angle.hpp" // IWYU pragma: export
-#include "alloy/core/math/angle/radian.hpp" // IWYU pragma: export
-#include "alloy/core/math/angle/degree.hpp" // IWYU pragma: export
-#include "alloy/core/math/angle/gradian.hpp" // IWYU pragma: export
+#include "alloy/core/math/angle/degree.hpp"      // IWYU pragma: export
+#include "alloy/core/math/angle/gradian.hpp"     // IWYU pragma: export
+#include "alloy/core/math/angle/radian.hpp"      // IWYU pragma: export
 
 #endif /* ALLOY_CORE_MATH_ANGLE_HPP */

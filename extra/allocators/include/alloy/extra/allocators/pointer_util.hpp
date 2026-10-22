@@ -16,8 +16,8 @@
 #endif
 
 #include "alloy/core/assert.hpp"
-#include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/aligned_storage.hpp"
+#include "alloy/core/utilities/not_null.hpp"
 
 #include <cstddef>     // std::size_t, std::ptrdiff_t
 #include <cstdint>     // std::uint8_t, std::uint16_t, etc

@@ -20,10 +20,10 @@
 
 #include "alloy/core/precision.hpp" // core::real
 
-#include <concepts>
-#include <type_traits> // std::common_type, std::conditional_t, etc
-#include <cstddef>     // std::size_t
 #include <cmath>       // std::fmod
+#include <concepts>
+#include <cstddef>     // std::size_t
+#include <type_traits> // std::common_type, std::conditional_t, etc
 
 namespace alloy::core {
 

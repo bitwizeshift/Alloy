@@ -15,10 +15,11 @@
 # pragma once
 #endif
 
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/math/matrix/matrix2.hpp"
 #include "alloy/core/math/matrix/matrix3.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"
+
+#include "alloy/core/precision/real.hpp"
 
 #include <type_traits> // std::true_type
 

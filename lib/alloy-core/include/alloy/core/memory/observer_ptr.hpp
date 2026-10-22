@@ -18,9 +18,9 @@
 #include "alloy/core/utilities/not_null.hpp"
 
 #include <concepts>    // std::convertible_to
+#include <cstddef>     // std::nullptr_t
 #include <type_traits> // type traits
-#include <cstddef> // std::nullptr_t
-#include <utility> // std::move
+#include <utility>     // std::move
 
 namespace alloy::core {
 

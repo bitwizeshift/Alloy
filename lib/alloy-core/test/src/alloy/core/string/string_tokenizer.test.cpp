@@ -2,8 +2,9 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include "alloy/core/intrinsics.hpp"
 #include <alloy/core/string/string_tokenizer.hpp>
+
+#include <alloy/core/intrinsics.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 

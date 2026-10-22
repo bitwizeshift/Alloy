@@ -17,8 +17,8 @@
 
 #include "alloy/core/api.hpp"
 #include "alloy/core/config.hpp"
-#include "alloy/core/macros.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/macros.hpp"
 
 #include <cstddef>     // std::size_t
 

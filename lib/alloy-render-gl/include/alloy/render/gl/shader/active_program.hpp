@@ -15,20 +15,19 @@
 # pragma once
 #endif
 
-#include "alloy/core/intrinsics.hpp"
 #include "alloy/render/gl/shader/program.hpp"
 
-#include "alloy/core/model/color.hpp"
-
-#include "alloy/core/math/vector/vector2.hpp"
-#include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/math/vector/vector4.hpp"
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/matrix/matrix2.hpp"
 #include "alloy/core/math/matrix/matrix3.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"
-
+#include "alloy/core/math/vector/vector2.hpp"
+#include "alloy/core/math/vector/vector3.hpp"
+#include "alloy/core/math/vector/vector4.hpp"
+#include "alloy/core/model/color.hpp"
 
 #include <GL/glew.h>
+
 #include <span>
 
 namespace alloy::render::gl {

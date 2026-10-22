@@ -16,10 +16,11 @@
 # pragma once
 #endif
 
-#include "alloy/core/api.hpp"
-#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/io/indirect_writer.hpp"
 #include "alloy/core/io/writer.hpp"
+
+#include "alloy/core/api.hpp"
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/result.hpp"
 

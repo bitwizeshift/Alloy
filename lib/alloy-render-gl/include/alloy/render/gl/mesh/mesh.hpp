@@ -15,10 +15,11 @@
 # pragma once
 #endif
 
-#include <cstddef>
 #include "alloy/render/mesh/mesh.hpp"
 
 #include <GL/glew.h>
+
+#include <cstddef>
 
 
 namespace alloy::render::gl {

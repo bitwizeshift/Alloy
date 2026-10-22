@@ -15,16 +15,17 @@
 # pragma once
 #endif
 
+#include "alloy/core/api.hpp"
+#include "alloy/core/assert.hpp"
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/math/math.hpp"
+#include "alloy/core/precision.hpp"
+#include "alloy/core/types.hpp"
+#include "alloy/core/utilities/int_utilities.hpp"
+#include "alloy/core/utilities/not_null.hpp"
+
 #include <cstddef>
 #include <limits>
-#include "alloy/core/api.hpp"
-#include "alloy/core/types.hpp"
-#include "alloy/core/intrinsics.hpp"
-#include "alloy/core/precision.hpp"
-#include "alloy/core/assert.hpp"
-#include "alloy/core/math/math.hpp"
-#include "alloy/core/utilities/not_null.hpp"
-#include "alloy/core/utilities/int_utilities.hpp"
 
 
 namespace alloy::core::detail {

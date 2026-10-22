@@ -3,10 +3,12 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/engine/image/image_manager.hpp"
+
 #include "alloy/core/assert.hpp"
 #include "alloy/core/model/image.hpp"
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/platform/filesystem/file.hpp"
+
 #include <string>
 #include <system_error>
 

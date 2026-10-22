@@ -15,19 +15,19 @@
 # pragma once
 #endif
 
-#include "alloy/platform/filesystem/file.hpp"
 #include "alloy/engine/image/image_loader.hpp"
 
-#include "alloy/core/utilities/result.hpp"
-#include "alloy/core/model/image.hpp"
 #include "alloy/core/assert.hpp"
+#include "alloy/core/model/image.hpp"
+#include "alloy/core/utilities/result.hpp"
+#include "alloy/platform/filesystem/file.hpp"
 
+#include <memory>        // std::unique_ptr
+#include <string>        // std::string
+#include <system_error>  // std::error_code
+#include <type_traits>   // std::true_type
 #include <unordered_map> // std::unordered_map
-#include <string> // std::string
-#include <memory> // std::unique_ptr
-#include <utility> // std::forward
-#include <system_error> // std::error_code
-#include <type_traits> // std::true_type
+#include <utility>       // std::forward
 
 namespace alloy::engine {
 

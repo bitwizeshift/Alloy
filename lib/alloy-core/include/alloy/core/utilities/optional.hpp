@@ -15,13 +15,13 @@
 # pragma once
 #endif
 
-#include <functional>
 #include "alloy/core/utilities/result.hpp"
 
-#include <concepts> // std::convertible_to
-#include <optional> // std::optional
+#include <concepts>    // std::convertible_to
+#include <functional>
+#include <optional>    // std::optional
 #include <type_traits> // std::constructible_from
-#include <utility>  // std::reference_wrapper
+#include <utility>     // std::reference_wrapper
 
 namespace alloy::core {
 

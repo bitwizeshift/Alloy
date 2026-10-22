@@ -15,19 +15,20 @@
 # pragma once
 #endif
 
-#include "alloy/core/api.hpp"    // ALLOY_CORE_API
-#include "alloy/core/intrinsics.hpp"
-#include "alloy/core/assert.hpp" // ALLOY_ASSERT
-#include "alloy/core/config.hpp" // ALLOY_CORE_EXCEPTIONS_ENABLED
-#include "alloy/core/precision.hpp" // core::real
-#include "alloy/core/utilities/piecewise_compare.hpp" // core::piecewise_compare
 #include "alloy/core/math/angle/radian.hpp" // core::radian
 #include "alloy/core/math/math.hpp"         // core::sqrt
 
-#include <type_traits> // std::true_type, std::false_type, std::common_type
+#include "alloy/core/api.hpp"                         // ALLOY_CORE_API
+#include "alloy/core/assert.hpp"                      // ALLOY_ASSERT
+#include "alloy/core/config.hpp"                      // ALLOY_CORE_EXCEPTIONS_ENABLED
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/precision.hpp"                   // core::real
+#include "alloy/core/utilities/piecewise_compare.hpp" // core::piecewise_compare
+
 #include <cstddef>     // std::size_t, std::ptrdiff_t
 #include <stdexcept>   // std::out_of_range
 #include <tuple>       // std::tuple_element, std::tuple_size
+#include <type_traits> // std::true_type, std::false_type, std::common_type
 
 namespace alloy::core {
 

@@ -2,12 +2,15 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include "alloy/core/io/reader.hpp"
-#include "alloy/core/io/writer.hpp"
 #include <alloy/platform/filesystem/file.hpp>
+
 #include <alloy/platform/filesystem/memory_filesystem.hpp>
+
 #include <alloy/platform/buffers/mutable_buffer.hpp>
+
 #include <alloy/core/io/error.hpp>
+#include <alloy/core/io/reader.hpp>
+#include <alloy/core/io/writer.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 

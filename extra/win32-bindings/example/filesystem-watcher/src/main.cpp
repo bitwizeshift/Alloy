@@ -4,9 +4,9 @@
 
 #include <alloy/core/intrinsics.hpp>
 #include <alloy/core/utilities/signal.hpp>
-#include <alloy/platform/message_pump.hpp>
-#include <alloy/platform/filesystem/filesystem_monitor.hpp>
 #include <alloy/extra/win32-bindings/win32_filesystem_monitor.hpp>
+#include <alloy/platform/filesystem/filesystem_monitor.hpp>
+#include <alloy/platform/message_pump.hpp>
 
 #include <iostream>
 

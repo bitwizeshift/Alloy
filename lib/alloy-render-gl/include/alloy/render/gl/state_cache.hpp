@@ -15,11 +15,11 @@
 # pragma once
 #endif
 
-#include "alloy/render/mesh/fill_mode.hpp"
 #include "alloy/render/material/blend_equation.hpp"
 #include "alloy/render/material/blend_factor.hpp"
 #include "alloy/render/material/cull_face.hpp"
 #include "alloy/render/material/depth_compare.hpp"
+#include "alloy/render/mesh/fill_mode.hpp"
 
 #include <GL/glew.h>
 

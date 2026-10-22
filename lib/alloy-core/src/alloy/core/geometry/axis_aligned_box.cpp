@@ -3,8 +3,10 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/core/geometry/axis_aligned_box.hpp"
+
 #include "alloy/core/geometry/plane.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
+
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/math/vector/vector3_constants.hpp"

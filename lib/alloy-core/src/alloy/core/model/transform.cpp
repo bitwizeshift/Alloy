@@ -3,6 +3,7 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/core/model/transform.hpp"
+
 #include "alloy/core/math/angle/radian.hpp"
 #include "alloy/core/math/euler_angles.hpp"
 #include "alloy/core/math/interpolation.hpp"

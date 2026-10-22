@@ -74,14 +74,14 @@
 # pragma once
 #endif
 
-#include "alloy/core/types.hpp"      // char32, char8
-#include "alloy/core/intrinsics.hpp" // ALLOY_UNLIKELY
+#include "alloy/core/intrinsics.hpp"         // ALLOY_UNLIKELY
+#include "alloy/core/types.hpp"              // char32, char8
 #include "alloy/core/utilities/quantity.hpp" // uquantity
 
-#include <utility>   // std::pair
-#include <array>     // std::array
 #include <algorithm> // std::copy
+#include <array>     // std::array
 #include <iterator>  // std::distance
+#include <utility>   // std::pair
 
 namespace alloy::core {
 

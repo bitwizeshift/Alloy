@@ -18,25 +18,26 @@
 # pragma once
 #endif
 
+#include "alloy/core/string/encoding/ansi_encoding.hpp"
+#include "alloy/core/string/encoding/ascii_encoding.hpp"
+#include "alloy/core/string/encoding/encoding_converter.hpp"
+#include "alloy/core/string/encoding/encoding_traits.hpp"
+#include "alloy/core/string/encoding/latin1_encoding.hpp"
+#include "alloy/core/string/encoding/utf16_encoding.hpp"
+#include "alloy/core/string/encoding/utf32_encoding.hpp"
+#include "alloy/core/string/encoding/utf8_encoding.hpp"
+#include "alloy/core/string/encoding/wide_encoding.hpp"
+
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/types.hpp"              // char32
+#include "alloy/core/utilities/mixins.hpp"   // uninstantiable
+#include "alloy/core/utilities/optional.hpp"
+#include "alloy/core/utilities/quantity.hpp" // uquantity
+
 #include <iterator>
 #include <optional>
 #include <tuple>
 #include <type_traits>
-#include "alloy/core/types.hpp" // char32
-#include "alloy/core/utilities/mixins.hpp"   // uninstantiable
-#include "alloy/core/utilities/quantity.hpp" // uquantity
-#include "alloy/core/utilities/optional.hpp"
-
-#include "alloy/core/string/encoding/ansi_encoding.hpp"
-#include "alloy/core/string/encoding/ascii_encoding.hpp"
-#include "alloy/core/string/encoding/latin1_encoding.hpp"
-#include "alloy/core/string/encoding/wide_encoding.hpp"
-#include "alloy/core/string/encoding/utf8_encoding.hpp"
-#include "alloy/core/string/encoding/utf16_encoding.hpp"
-#include "alloy/core/string/encoding/utf32_encoding.hpp"
-#include "alloy/core/string/encoding/encoding_traits.hpp"
-#include "alloy/core/string/encoding/encoding_converter.hpp"
 
 namespace alloy::core {
 

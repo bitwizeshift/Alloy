@@ -15,8 +15,8 @@
 # pragma once
 #endif
 
-#include <cstdint> // std::uint32_t, std::uint64_t
 #include <cstddef> // std::byte, std::size_t
+#include <cstdint> // std::uint32_t, std::uint64_t
 
 namespace alloy::core {
 

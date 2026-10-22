@@ -15,9 +15,8 @@
 # pragma once
 #endif
 
-#include "alloy/render/material/blend_factor.hpp"
-
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/render/material/blend_factor.hpp"
 
 #include <GL/glew.h>
 

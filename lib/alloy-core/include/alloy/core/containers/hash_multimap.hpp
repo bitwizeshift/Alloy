@@ -19,8 +19,8 @@
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 
-#include <unordered_map> // std::unordered_multimap
 #include <functional>    // std::equal_to, std::hash
+#include <unordered_map> // std::unordered_multimap
 #include <utility>       // std::pair
 
 namespace alloy::core {

@@ -2,13 +2,16 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include "alloy/core/math/simd.hpp"
-#include "alloy/core/math/math.hpp"
-#include "alloy/core/types.hpp"
+#include <alloy/core/math/simd.hpp>
+
+#include <alloy/core/math/math.hpp>
+
+#include <alloy/core/types.hpp>
+
+#include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include <algorithm>
-#include <catch2/catch_test_macros.hpp>
-#include <catch2/catch_template_test_macros.hpp>
 #include <array>
 #include <cstddef>
 #include <span>

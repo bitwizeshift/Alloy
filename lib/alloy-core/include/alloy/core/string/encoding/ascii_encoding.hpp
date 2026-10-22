@@ -15,8 +15,8 @@
 # pragma once
 #endif
 
-#include "alloy/core/types.hpp"      // char32
 #include "alloy/core/intrinsics.hpp" // ALLOY_UNLIKELY
+#include "alloy/core/types.hpp"      // char32
 
 #include <utility> // std::pair
 

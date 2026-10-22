@@ -16,8 +16,9 @@
 #endif
 
 #include "alloy/render/light/light.hpp"
-#include "alloy/core/model/color.hpp"
+
 #include "alloy/core/geometry/point/point3.hpp"
+#include "alloy/core/model/color.hpp"
 
 namespace alloy::render {
 

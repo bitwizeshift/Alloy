@@ -16,16 +16,17 @@
 # pragma once
 #endif
 
-#include <cstddef>
+#include "alloy/core/math/saturated.hpp"
+
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/result.hpp"
-#include "alloy/core/math/saturated.hpp"
 
 #include <concepts>    // std::convertible_to
-#include <type_traits> // std::is_floating_point
-#include <functional>  // std::hash
+#include <cstddef>
 #include <cstdint>     // std::uint8_t
+#include <functional>  // std::hash
+#include <type_traits> // std::is_floating_point
 
 namespace alloy::core {
 

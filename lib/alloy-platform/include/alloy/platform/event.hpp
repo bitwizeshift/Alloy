@@ -15,19 +15,19 @@
 # pragma once
 #endif
 
-#include "alloy/core/intrinsics.hpp"
-#include "alloy/core/assert.hpp"
-#include "alloy/core/utilities/aligned_storage.hpp"
-
 #include "alloy/platform/api.hpp"
 #include "alloy/platform/config.hpp"
 
-#include <cstdint>     // std::uint32_t
-#include <cstddef>     // std::size_t
+#include "alloy/core/assert.hpp"
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/utilities/aligned_storage.hpp"
+
 #include <concepts>    // std::same_as
+#include <cstddef>     // std::size_t
+#include <cstdint>     // std::uint32_t
+#include <new>         // placement ::new
 #include <type_traits> // std::decay_t, std::is_nothrow_constructible
 #include <utility>     // std::forward, std::move
-#include <new>         // placement ::new
 
 namespace alloy::platform {
 

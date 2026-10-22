@@ -3,16 +3,17 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/extra/win32-bindings/win32_filesystem_monitor.hpp"
-#include "alloy/core/utilities/aligned_storage.hpp"
-#include "alloy/core/intrinsics.hpp"
 
 #include "windows.hpp"
 
-#include <vector>
-#include <map>
-#include <string>
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/utilities/aligned_storage.hpp"
+
 #include <codecvt>
 #include <locale>
+#include <map>
+#include <string>
+#include <vector>
 
 namespace {
 

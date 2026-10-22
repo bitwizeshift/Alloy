@@ -15,8 +15,8 @@
 # pragma once
 #endif
 
-#include <cstddef> // std::size_t
 #include <cassert>
+#include <cstddef> // std::size_t
 
 namespace alloy::core {
 

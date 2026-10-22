@@ -2,11 +2,13 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include "alloy/core/geometry/axis_aligned_box.hpp"
-#include "alloy/core/geometry/point/point3.hpp"
-#include "alloy/core/math/math.hpp"
-#include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/math/vector/vector3_constants.hpp"
+#include <alloy/core/geometry/axis_aligned_box.hpp>
+
+#include <alloy/core/geometry/point/point3.hpp>
+
+#include <alloy/core/math/math.hpp>
+#include <alloy/core/math/vector/vector3.hpp>
+#include <alloy/core/math/vector/vector3_constants.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>

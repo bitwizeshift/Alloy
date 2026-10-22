@@ -20,9 +20,9 @@
 
 #include "alloy/core/utilities/not_null.hpp"
 
-#include <vector>  // std::vector
-#include <queue>   // std::queue
 #include <cstddef> // std::size_t
+#include <queue>   // std::queue
+#include <vector>  // std::vector
 
 namespace alloy::engine {
 

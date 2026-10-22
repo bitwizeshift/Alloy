@@ -2,13 +2,14 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include "test_doubles.hpp"
-#include "alloy/core/io/reader.hpp"
-#include "alloy/core/utilities/result.hpp"
-
 #include <alloy/core/io/buffered_reader.hpp>
-#include <alloy/core/memory/allocator.hpp>
+
+#include <alloy/core/io/reader.hpp>
+#include "test_doubles.hpp"
+
 #include <alloy/core/containers/vector.hpp>
+#include <alloy/core/memory/allocator.hpp>
+#include <alloy/core/utilities/result.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
@@ -16,8 +17,8 @@
 #include <algorithm>    // std::equal
 #include <array>        // std::array
 #include <cstddef>      // std::byte, std::size_t
-#include <span>         // std::span
 #include <memory>       // std::allocator_arg
+#include <span>         // std::span
 #include <system_error> // std::error_code, std::errc
 #include <type_traits>  // std::is_same_v, std::is_move_constructible_v
 #include <utility>      // std::move, std::in_place

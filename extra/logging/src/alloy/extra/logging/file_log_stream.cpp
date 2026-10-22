@@ -5,6 +5,7 @@
 #include "alloy/extra/logging/file_log_stream.hpp"
 
 #include "alloy/extra/logging/log_level.hpp"
+
 #include "alloy/platform/buffers/const_buffer.hpp"
 #include "alloy/platform/filesystem/file.hpp"
 

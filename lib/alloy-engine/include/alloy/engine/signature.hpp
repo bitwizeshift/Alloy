@@ -16,10 +16,11 @@
 #endif
 
 #include "alloy/engine/component.hpp"
+
 #include "alloy/core/assert.hpp"
 
-#include <cstdint> // std::uint32_t
 #include <climits> // CHAR_BIT
+#include <cstdint> // std::uint32_t
 
 namespace alloy::engine {
 

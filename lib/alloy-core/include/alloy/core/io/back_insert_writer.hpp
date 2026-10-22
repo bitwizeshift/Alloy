@@ -16,9 +16,9 @@
 # pragma once
 #endif
 
-#include <type_traits>
-#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/io/writer.hpp"
+
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/utilities/delegate.hpp"
 #include "alloy/core/utilities/result.hpp"
 
@@ -26,6 +26,7 @@
 #include <cstddef>      // std::byte, std::size_t
 #include <span>         // std::span
 #include <system_error> // std::error_code
+#include <type_traits>
 
 namespace alloy::core {
 

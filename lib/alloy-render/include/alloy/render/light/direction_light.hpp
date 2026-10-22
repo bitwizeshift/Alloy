@@ -16,6 +16,7 @@
 #endif
 
 #include "alloy/render/light/light.hpp"
+
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/model/color.hpp"
 

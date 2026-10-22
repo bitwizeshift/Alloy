@@ -15,16 +15,16 @@
 # pragma once
 #endif
 
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/utilities/not_null.hpp"
+
 #if defined(_MSC_VER)
 # pragma once
 #endif
 
-#include "alloy/core/intrinsics.hpp"
-
+#include <cstddef>
 #include <iterator>
 #include <tuple>
-#include <cstddef>
 #include <type_traits>
 #include <utility>
 

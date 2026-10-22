@@ -15,9 +15,10 @@
 # pragma once
 #endif
 
-#include <array>
-#include "alloy/core/types.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/types.hpp"
+
+#include <array>
 #include <cstddef>
 #include <span>
 

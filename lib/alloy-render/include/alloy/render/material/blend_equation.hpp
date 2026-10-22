@@ -15,9 +15,9 @@
 # pragma once
 #endif
 
-#include "alloy/core/string/zstring_view.hpp"
-#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/assert.hpp"
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/string/zstring_view.hpp"
 
 namespace alloy::render {
 

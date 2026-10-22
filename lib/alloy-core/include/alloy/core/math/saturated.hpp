@@ -16,14 +16,14 @@
 # pragma once
 #endif
 
-#include <cstddef>
-#include "alloy/core/precision/real.hpp" // real
-#include "alloy/core/intrinsics.hpp"     // ALLOY_FORCE_INLINE
 #include "alloy/core/assert.hpp"
+#include "alloy/core/intrinsics.hpp"     // ALLOY_FORCE_INLINE
+#include "alloy/core/precision/real.hpp" // real
 
 #include <concepts>    // std::convertible_to
-#include <type_traits> // std::is_floating_point
+#include <cstddef>
 #include <functional>  // std::hash
+#include <type_traits> // std::is_floating_point
 
 namespace alloy::core {
 

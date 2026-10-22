@@ -19,8 +19,8 @@
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 
-#include <set>        // std::multiset
 #include <functional> // std::less
+#include <set>        // std::multiset
 
 namespace alloy::core {
 

@@ -4,18 +4,19 @@
 
 #include "alloy/engine/image/tga_image_loader.hpp"
 
+#include "alloy/core/containers/vector.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/model/image.hpp"
 #include "alloy/core/utilities/not_null.hpp"
-#include "alloy/core/containers/vector.hpp"
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/platform/filesystem/file.hpp"
+
+#include <tga.h>
 
 #include <cstddef>
 #include <cstdint>
 #include <string>
 #include <system_error>
-#include <tga.h>
 #include <utility>
 
 namespace alloy::engine {

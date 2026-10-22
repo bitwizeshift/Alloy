@@ -20,9 +20,9 @@
 
 #include <GL/glew.h>
 
+#include <memory>       // std::shared_ptr
 #include <system_error> // std::error_category
-#include <memory> // std::shared_ptr
-#include <type_traits> // std::true_type
+#include <type_traits>  // std::true_type
 
 namespace alloy::render::gl {
 

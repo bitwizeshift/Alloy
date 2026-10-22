@@ -3,9 +3,11 @@
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
 #include <alloy/platform/event.hpp>
+
 #include <alloy/platform/events/window_events.hpp>
 
 #include <catch2/catch_test_macros.hpp>
+
 #include <utility>
 
 namespace {

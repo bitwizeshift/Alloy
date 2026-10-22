@@ -17,9 +17,9 @@
 
 #include "alloy/core/intrinsics.hpp"
 
+#include <tuple>       // std::tuple
 #include <type_traits>
-#include <utility> // std::forward
-#include <tuple>   // std::tuple
+#include <utility>     // std::forward
 
 namespace alloy::core {
 

@@ -16,6 +16,7 @@
 #endif
 
 #include "alloy/render/light/light.hpp"
+
 #include "alloy/core/model/color.hpp"
 
 namespace alloy::render {

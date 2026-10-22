@@ -4,10 +4,12 @@
 
 #include "alloy/engine/entity_manager.hpp"
 
-#include "alloy/core/assert.hpp"
-#include "alloy/core/utilities/not_null.hpp"
 #include "alloy/engine/entity.hpp"
 #include "alloy/engine/signature.hpp"
+
+#include "alloy/core/assert.hpp"
+#include "alloy/core/utilities/not_null.hpp"
+
 #include <algorithm>
 #include <utility>
 

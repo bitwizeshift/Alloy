@@ -16,11 +16,12 @@
 # pragma once
 #endif
 
-#include "alloy/core/utilities/explicitly_copyable.hpp"
 #include "alloy/core/containers/deque.hpp"
 
-#include <queue>      // std::priority_queue
+#include "alloy/core/utilities/explicitly_copyable.hpp"
+
 #include <functional> // std::less
+#include <queue>      // std::priority_queue
 
 namespace alloy::core {
 

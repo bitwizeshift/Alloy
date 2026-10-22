@@ -15,13 +15,13 @@
 # pragma once
 #endif
 
-#include <ratio>   // std::ratio
-#include <cstdint> // std::uint64_t, etc
-#include <climits> // CHAR_BIT
-#include <cstddef> // std::byte
+#include <climits>     // CHAR_BIT
 #include <concepts>    // std::convertible_to
+#include <cstddef>     // std::byte
+#include <cstdint>     // std::uint64_t, etc
+#include <limits>      // std::numeric_limits
+#include <ratio>       // std::ratio
 #include <type_traits> // std::common_type
-#include <limits> // std::numeric_limits
 
 namespace alloy::core {
 

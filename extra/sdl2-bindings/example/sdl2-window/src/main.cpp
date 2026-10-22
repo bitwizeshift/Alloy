@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: MIT
 // See the LICENSE file at the root of this repository for the full text.
 
-#include "alloy/platform/event.hpp"
-#include "alloy/platform/events/window_events.hpp"
-#include <alloy/core/utilities/signal.hpp>
 #include <alloy/core/intrinsics.hpp>
-#include <alloy/platform/message_pump.hpp>
-#include <alloy/platform/window.hpp>
+#include <alloy/core/utilities/signal.hpp>
 #include <alloy/extra/sdl2-bindings/sdl2_gl_window.hpp>
 #include <alloy/extra/sdl2-bindings/sdl2_pump_source.hpp>
+#include <alloy/platform/event.hpp>
+#include <alloy/platform/events/window_events.hpp>
+#include <alloy/platform/message_pump.hpp>
+#include <alloy/platform/window.hpp>
 
 #include <SDL3/SDL.h>      // ::SDL_Init, ::SDL_Quit, etc
 #include <SDL3/SDL_main.h> // main
@@ -20,8 +20,8 @@
 # include <GL/gl.h> // ::glClear, ::glClearColor
 #endif
 
-#include <iostream> // std::cout, std::endl
 #include <chrono>   // std::chrono::steady_clock
+#include <iostream> // std::cout, std::endl
 #include <random>   // std::random
 
 namespace {

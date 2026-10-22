@@ -3,9 +3,11 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/core/string/string_tokenizer.hpp"
+
+#include "alloy/core/string/zstring_view.hpp"
+
 #include "alloy/core/assert.hpp"
 #include "alloy/core/intrinsics.hpp"
-#include "alloy/core/string/zstring_view.hpp"
 
 auto alloy::core::get_message(tokenizer_error error) noexcept -> zstring_view
 {

@@ -18,9 +18,9 @@
 #endif
 
 
-#include <cstdlib> // std::abort
-#include <type_traits> // std::invoke_result_t
+#include <cstdlib>     // std::abort
 #include <functional>  // std::invoke
+#include <type_traits> // std::invoke_result_t
 
 //=============================================================================
 // macro definitions

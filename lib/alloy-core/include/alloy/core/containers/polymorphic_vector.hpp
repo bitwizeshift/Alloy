@@ -16,15 +16,16 @@
 # pragma once
 #endif
 
-#include "alloy/core/intrinsics.hpp"
-#include <functional>
 #include "alloy/core/containers/vector.hpp"
+
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/memory/allocator.hpp"
 
 #include <concepts>
-#include <type_traits> // std::add_const, etc
-#include <iterator>    // std::reverse_iterator
 #include <cstddef>     // std::size_t, std::ptrdiff_t
+#include <functional>
+#include <iterator>    // std::reverse_iterator
+#include <type_traits> // std::add_const, etc
 
 namespace alloy::core {
 

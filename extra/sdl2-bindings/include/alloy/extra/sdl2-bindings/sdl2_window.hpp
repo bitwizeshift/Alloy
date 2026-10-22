@@ -16,8 +16,9 @@
 #endif
 
 #include "alloy/extra/sdl2-bindings/api.hpp"
-#include "alloy/platform/window.hpp"
+
 #include "alloy/core/utilities/not_null.hpp"
+#include "alloy/platform/window.hpp"
 
 #include <SDL3/SDL.h>
 

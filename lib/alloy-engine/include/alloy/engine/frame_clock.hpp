@@ -15,11 +15,11 @@
 # pragma once
 #endif
 
-#include <cstddef>
-#include <ratio>
 #include "alloy/core/intrinsics.hpp"
 
-#include <chrono> // std::chrono::...
+#include <chrono>  // std::chrono::...
+#include <cstddef>
+#include <ratio>
 
 namespace alloy::engine {
 

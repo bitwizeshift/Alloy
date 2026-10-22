@@ -3,8 +3,10 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/core/memory/packed_buffer.hpp"
+
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/memory/data_quantity.hpp"
+
 #include "alloy/core/utilities/casts.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 

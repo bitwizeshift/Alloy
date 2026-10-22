@@ -16,14 +16,14 @@
 #endif
 
 #include "alloy/core/assert.hpp"
-#include "alloy/core/memory/allocator.hpp"
-#include <utility>
-#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/containers/vector.hpp"
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/quantity.hpp"
 
 #include <concepts>
 #include <thread>
+#include <utility>
 
 #if defined(_MSC_VER)
 # pragma once

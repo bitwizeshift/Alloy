@@ -19,9 +19,9 @@
 #include "alloy/core/intrinsics.hpp"
 
 #include <concepts>    // std::integral, std::convertible_to
+#include <cstring>     // std::memcpy
 #include <type_traits> // std::declval, std::is_trivially_copyable_v, etc
 #include <utility>     // std::forward
-#include <cstring>     // std::memcpy
 
 namespace alloy::core {
   inline namespace casts {

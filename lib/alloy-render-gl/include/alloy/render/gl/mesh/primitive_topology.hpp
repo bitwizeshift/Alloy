@@ -15,9 +15,8 @@
 # pragma once
 #endif
 
-#include "alloy/render/mesh/primitive_topology.hpp"
-
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/render/mesh/primitive_topology.hpp"
 
 #include <GL/glew.h>
 

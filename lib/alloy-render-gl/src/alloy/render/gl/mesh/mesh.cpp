@@ -3,6 +3,7 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/render/gl/mesh/mesh.hpp"
+
 #include "alloy/render/gl/mesh/primitive_topology.hpp"
 
 #include "alloy/render/mesh/attribute_locations.hpp"

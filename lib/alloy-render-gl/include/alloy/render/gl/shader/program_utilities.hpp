@@ -15,11 +15,13 @@
 # pragma once
 #endif
 
+#include "alloy/render/gl/shader/program.hpp"
+
+#include "alloy/render/gl/error.hpp"
+
 #include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/platform/filesystem/file.hpp"
-#include "alloy/render/gl/shader/program.hpp"
-#include "alloy/render/gl/error.hpp"
 
 namespace alloy::render::gl {
 

@@ -2,10 +2,10 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include "test_doubles.hpp"
+#include <alloy/core/io/serializer.hpp>
 
 #include <alloy/core/io/error.hpp>
-#include <alloy/core/io/serializer.hpp>
+#include "test_doubles.hpp"
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>

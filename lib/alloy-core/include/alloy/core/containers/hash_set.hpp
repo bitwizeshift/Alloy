@@ -19,8 +19,8 @@
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 
-#include <unordered_set> // std::set
 #include <functional>    // std::equal_to, std::hash
+#include <unordered_set> // std::set
 
 namespace alloy::core {
 

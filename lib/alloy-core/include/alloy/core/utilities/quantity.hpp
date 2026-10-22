@@ -16,9 +16,9 @@
 #endif
 
 #include <concepts>
-#include <type_traits> // std::make_signed_t
 #include <cstddef>     // std::size_t
 #include <limits>      // std::numeric_limits
+#include <type_traits> // std::make_signed_t
 
 namespace alloy::core {
 

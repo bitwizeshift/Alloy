@@ -16,11 +16,13 @@
 #endif
 
 #include "alloy/extra/sdl2-bindings/api.hpp"
-#include "alloy/platform/message_pump.hpp"
+
 #include "alloy/core/utilities/not_null.hpp"
+#include "alloy/platform/keyboard.hpp"
+#include "alloy/platform/message_pump.hpp"
 
 #include <SDL3/SDL.h>
-#include <alloy/platform/keyboard.hpp>
+
 #include <map>
 
 namespace alloy::extra {

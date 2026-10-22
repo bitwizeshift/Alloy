@@ -3,13 +3,14 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/core/assert.hpp"
+
 #include "alloy/core/intrinsics.hpp"
 
-#include <cstdio>      // std::printf
-#include <exception>   // std::terminate
-#include <atomic>      // std::atomic
-#include <cstdlib>     // std::abort
-#include <array>       // std::array
+#include <array>     // std::array
+#include <atomic>    // std::atomic
+#include <cstdio>    // std::printf
+#include <cstdlib>   // std::abort
+#include <exception> // std::terminate
 
 namespace alloy::core {
 namespace {

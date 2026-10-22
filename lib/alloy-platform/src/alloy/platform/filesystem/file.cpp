@@ -3,13 +3,16 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/platform/filesystem/file.hpp"
+
+#include "alloy/platform/filesystem/file_stream.hpp"
+#include "alloy/platform/filesystem/file_stream_finalizer.hpp"
+
+#include "alloy/platform/buffers/const_buffer.hpp"
+#include "alloy/platform/buffers/mutable_buffer.hpp"
+
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/result.hpp"
-#include "alloy/platform/buffers/const_buffer.hpp"
-#include "alloy/platform/buffers/mutable_buffer.hpp"
-#include "alloy/platform/filesystem/file_stream.hpp"
-#include "alloy/platform/filesystem/file_stream_finalizer.hpp"
 
 #include <cstddef>
 #include <span>

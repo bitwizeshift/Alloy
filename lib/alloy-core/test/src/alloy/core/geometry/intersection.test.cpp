@@ -2,9 +2,10 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include "alloy/core/geometry/intersection.hpp"
-#include "alloy/core/geometry/line.hpp"
-#include "alloy/core/geometry/point/point3.hpp"
+#include <alloy/core/geometry/intersection.hpp>
+
+#include <alloy/core/geometry/line.hpp>
+#include <alloy/core/geometry/point/point3.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 

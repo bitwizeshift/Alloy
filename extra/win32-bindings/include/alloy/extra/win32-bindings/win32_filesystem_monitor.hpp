@@ -16,12 +16,13 @@
 #endif
 
 #include "alloy/extra/win32-bindings/api.hpp"
+
 #include "alloy/platform/events/filesystem_events.hpp"
 #include "alloy/platform/filesystem/filesystem_monitor.hpp"
 #include "alloy/platform/message_pump.hpp"
 
-#include <string_view> // std::string_view
 #include <memory>      // std::unique_ptr
+#include <string_view> // std::string_view
 
 namespace alloy::extra {
 

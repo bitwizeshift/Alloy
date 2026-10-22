@@ -4,7 +4,10 @@
 
 #include "alloy/render/mesh/unsafe_mesh_builder.hpp"
 
+#include "alloy/render/mesh/mesh.hpp"
+#include "alloy/render/mesh/primitive_topology.hpp"
 #include "attribute_packer.hpp"
+
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
@@ -12,8 +15,7 @@
 #include "alloy/core/memory/data_quantity.hpp"
 #include "alloy/core/model/color.hpp"
 #include "alloy/core/utilities/quantity.hpp"
-#include "alloy/render/mesh/mesh.hpp"
-#include "alloy/render/mesh/primitive_topology.hpp"
+
 #include <cstddef>
 #include <cstdint>
 #include <utility>

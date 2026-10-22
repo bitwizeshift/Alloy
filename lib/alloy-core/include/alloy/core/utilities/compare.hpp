@@ -15,11 +15,13 @@
 # pragma once
 #endif
 
-#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/utilities/int_utilities.hpp"
+
+#include "alloy/core/intrinsics.hpp"
+
 #include <functional>  // std::less, std::greater, etc
-#include <utility>     // std::declval
 #include <type_traits> // std::is_integral_v
+#include <utility>     // std::declval
 
 namespace alloy::core {
 

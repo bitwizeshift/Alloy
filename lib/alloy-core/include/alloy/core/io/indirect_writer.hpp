@@ -16,8 +16,9 @@
 # pragma once
 #endif
 
-#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/io/writer.hpp"
+
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/result.hpp"
 

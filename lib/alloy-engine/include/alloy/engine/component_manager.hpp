@@ -17,16 +17,17 @@
 
 #include "alloy/engine/component.hpp"
 #include "alloy/engine/entity.hpp"
+
 #include "alloy/core/assert.hpp"
 #include "alloy/core/type_index.hpp"
 
-#include <cstddef>       // std::size_t
-#include <unordered_map> // std::unordered_map
-#include <vector>        // std::vector
-#include <type_traits>   // std::is_reference, std::is_const, etc
 #include <algorithm>     // std::find
+#include <cstddef>       // std::size_t
 #include <iterator>      // std::distance
 #include <memory>        // std::unique_ptr
+#include <type_traits>   // std::is_reference, std::is_const, etc
+#include <unordered_map> // std::unordered_map
+#include <vector>        // std::vector
 
 namespace alloy::engine {
 

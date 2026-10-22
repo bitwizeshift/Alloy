@@ -16,13 +16,13 @@
 # pragma once
 #endif
 
-#include <cstddef>
-#include <utility>
-#include "alloy/core/types.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/types.hpp"
 
-#include <type_traits> // std::make_signed
 #include <array>       // std::array
+#include <cstddef>
+#include <type_traits> // std::make_signed
+#include <utility>
 
 namespace alloy::core {
 

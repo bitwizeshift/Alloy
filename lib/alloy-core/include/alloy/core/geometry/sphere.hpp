@@ -16,12 +16,13 @@
 # pragma once
 #endif
 
-#include "alloy/core/api.hpp"
-#include "alloy/core/intrinsics.hpp"
-#include "alloy/core/assert.hpp"    // ALLOY_ASSERT
-#include "alloy/core/precision.hpp" // core::real
-#include "alloy/core/math/math.hpp" // core::almost_equal
 #include "alloy/core/geometry/point/point3.hpp"// core::point
+
+#include "alloy/core/api.hpp"
+#include "alloy/core/assert.hpp"     // ALLOY_ASSERT
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/math/math.hpp"  // core::almost_equal
+#include "alloy/core/precision.hpp"  // core::real
 
 namespace alloy::core {
 

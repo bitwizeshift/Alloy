@@ -15,8 +15,9 @@
 # pragma once
 #endif
 
-#include "alloy/core/precision.hpp"
 #include "alloy/core/math/angle/basic_angle.hpp"
+
+#include "alloy/core/precision.hpp"
 
 #include <type_traits> // std::enable_if
 

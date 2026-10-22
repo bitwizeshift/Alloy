@@ -15,20 +15,20 @@
 # pragma once
 #endif
 
-#include "alloy/core/geometry/axis_aligned_box.hpp"
-#include "alloy/render/mesh/mesh_builder.hpp"
 #include "alloy/render/mesh/mesh.hpp"
+#include "alloy/render/mesh/mesh_builder.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
 
-#include "alloy/core/utilities/quantity.hpp"
+#include "alloy/core/containers/vector.hpp"
+#include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/memory/packed_buffer.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/memory/data_quantity.hpp"
-#include "alloy/core/containers/vector.hpp"
+#include "alloy/core/memory/packed_buffer.hpp"
 #include "alloy/core/model/color.hpp"
+#include "alloy/core/utilities/quantity.hpp"
 
 #include <cstddef>
 #include <cstdint>

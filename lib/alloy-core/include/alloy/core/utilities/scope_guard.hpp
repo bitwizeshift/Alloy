@@ -17,11 +17,11 @@
 
 #include "alloy/core/macros.hpp" // ALLOY_UNIQUE_NAME
 
-#include <exception>   // std::uncaught_exceptions
-#include <utility>     // std::move
 #include <concepts>
-#include <type_traits> // std::is_nothrow_move_constructible, std::decay_t
+#include <exception>   // std::uncaught_exceptions
 #include <limits>
+#include <type_traits> // std::is_nothrow_move_constructible, std::decay_t
+#include <utility>     // std::move
 
 namespace alloy::core {
   namespace detail {

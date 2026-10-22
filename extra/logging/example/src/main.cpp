@@ -2,17 +2,16 @@
 // SPDX-License-Identifier: MIT
 // See the LICENSE file at the root of this repository for the full text.
 
-#include <alloy/extra/logging/file_log_stream.hpp>
 #include <alloy/extra/logging/console_log_stream.hpp>
+#include <alloy/extra/logging/file_log_stream.hpp>
 #include <alloy/extra/logging/logger.hpp>
-
-#include <alloy/platform/filesystem/disk_filesystem.hpp>
 #include <alloy/platform/buffers/mutable_buffer.hpp>
+#include <alloy/platform/filesystem/disk_filesystem.hpp>
 
 #include <array>
+#include <chrono>
 #include <string>
 #include <thread>
-#include <chrono>
 #include <utility>
 
 namespace {

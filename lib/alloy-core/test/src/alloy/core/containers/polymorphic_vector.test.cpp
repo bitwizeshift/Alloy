@@ -2,11 +2,13 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include "alloy/core/containers/polymorphic_vector.hpp"
-#include "alloy/core/memory/allocator.hpp"
+#include <alloy/core/containers/polymorphic_vector.hpp>
+
+#include <alloy/core/memory/allocator.hpp>
+
+#include <catch2/catch_test_macros.hpp>
 
 #include <algorithm>
-#include <catch2/catch_test_macros.hpp>
 #include <utility>
 
 namespace alloy::core {

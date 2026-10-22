@@ -19,11 +19,11 @@
 #include "alloy/core/memory/data_quantity.hpp"
 
 #include <array>            // std::array
+#include <concepts>
 #include <cstddef>          // std::byte
 #include <initializer_list> // std::initialize_list
 #include <new>              // std::launder, placement-new
-#include <concepts>
-#include <type_traits>     // std::constructible_from
+#include <type_traits>      // std::constructible_from
 #include <utility>          // std::forward
 
 namespace alloy::core {

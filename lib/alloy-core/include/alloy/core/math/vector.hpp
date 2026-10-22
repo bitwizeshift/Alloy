@@ -16,12 +16,12 @@
 # pragma once
 #endif
 
-#include "alloy/core/math/vector/vector2.hpp" // IWYU pragma: export
-#include "alloy/core/math/vector/vector3.hpp" // IWYU pragma: export
-#include "alloy/core/math/vector/vector4.hpp" // IWYU pragma: export
+#include "alloy/core/math/vector/vector2.hpp"           // IWYU pragma: export
 #include "alloy/core/math/vector/vector2_constants.hpp" // IWYU pragma: export
+#include "alloy/core/math/vector/vector3.hpp"           // IWYU pragma: export
 #include "alloy/core/math/vector/vector3_constants.hpp" // IWYU pragma: export
+#include "alloy/core/math/vector/vector4.hpp"           // IWYU pragma: export
 #include "alloy/core/math/vector/vector4_constants.hpp" // IWYU pragma: export
-#include "alloy/core/math/vector/vector_utilities.hpp" // IWYU pragma: export
+#include "alloy/core/math/vector/vector_utilities.hpp"  // IWYU pragma: export
 
 #endif /* ALLOY_CORE_MATH_VECTOR_HPP */

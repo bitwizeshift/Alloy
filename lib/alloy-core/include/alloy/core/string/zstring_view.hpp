@@ -16,9 +16,10 @@
 #endif
 
 #include "alloy/core/string/string.hpp"
+#include "alloy/core/string/string_view.hpp"
+
 #include <cstddef>
 #include <string>
-#include "alloy/core/string/string_view.hpp"
 
 namespace alloy::core {
 

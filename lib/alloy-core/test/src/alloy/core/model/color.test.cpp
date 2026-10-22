@@ -2,15 +2,18 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include "alloy/core/model/color.hpp"
-#include "alloy/core/math/math.hpp"
-#include "alloy/core/model/color_constants.hpp"
-#include "alloy/core/types.hpp"
+#include <alloy/core/model/color.hpp>
+
+#include <alloy/core/model/color_constants.hpp>
+
+#include <alloy/core/math/math.hpp>
+#include <alloy/core/types.hpp>
 
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/generators/catch_generators.hpp>
 #include <catch2/catch_tostring.hpp>
+#include <catch2/generators/catch_generators.hpp>
+
 #include <string>
 
 namespace Catch {

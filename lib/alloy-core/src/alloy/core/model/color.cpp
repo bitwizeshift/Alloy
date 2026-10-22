@@ -7,6 +7,7 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/precision/real.hpp"
+
 #include <algorithm> // std::min, std::max
 
 //==============================================================================

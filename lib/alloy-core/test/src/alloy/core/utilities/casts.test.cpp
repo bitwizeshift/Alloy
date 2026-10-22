@@ -5,9 +5,10 @@
 #include <alloy/core/utilities/casts.hpp>
 
 #include <catch2/catch_test_macros.hpp>
-#include <cstdint> // std::uint8_t, std::uint64_t
-#include <cstddef> // std::byte
-#include <algorithm> // std::equal
+
+#include <algorithm>   // std::equal
+#include <cstddef>     // std::byte
+#include <cstdint>     // std::uint8_t, std::uint64_t
 #include <limits>
 #include <type_traits>
 

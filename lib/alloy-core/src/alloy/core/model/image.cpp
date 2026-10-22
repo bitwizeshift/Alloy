@@ -4,19 +4,20 @@
 
 #include "alloy/core/model/image.hpp"
 
+#include "alloy/core/model/color.hpp"
+
 #include "alloy/core/assert.hpp"
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/memory/allocator.hpp"
-#include "alloy/core/model/color.hpp"
 #include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/result.hpp"
 
 #include <cstddef>
+#include <cstdint>      // std::uint8_t
+#include <string>       // std::string
 #include <system_error>
-#include <utility> // std::move
-#include <string>  // std::string
-#include <cstdint> // std::uint8_t
+#include <utility>      // std::move
 
 namespace {
 

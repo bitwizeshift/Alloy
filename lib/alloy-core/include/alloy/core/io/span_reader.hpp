@@ -16,8 +16,9 @@
 # pragma once
 #endif
 
-#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/io/reader.hpp"
+
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/utilities/result.hpp"
 
 #include <algorithm>    // std::min, std::copy_n

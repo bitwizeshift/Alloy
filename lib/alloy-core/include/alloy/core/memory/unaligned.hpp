@@ -15,15 +15,15 @@
 # pragma once
 #endif
 
-#include <cstddef>
+#include "alloy/core/assert.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/precision/real.hpp"
-#include "alloy/core/assert.hpp"
 
-#include <cstdint> // std::uint8_t, std::uint16_t
-#include <cstring> // std::memcpy
-#include <memory>  // std::addressof
-#include <span>      // std::span
+#include <cstddef>
+#include <cstdint>     // std::uint8_t, std::uint16_t
+#include <cstring>     // std::memcpy
+#include <memory>      // std::addressof
+#include <span>        // std::span
 #include <type_traits> // std::is_trivially_copyable_v
 
 namespace alloy::core {

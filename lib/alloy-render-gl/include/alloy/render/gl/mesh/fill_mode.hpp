@@ -15,9 +15,8 @@
 # pragma once
 #endif
 
-#include "alloy/render/mesh/fill_mode.hpp"
-
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/render/mesh/fill_mode.hpp"
 
 #include <GL/glew.h>
 

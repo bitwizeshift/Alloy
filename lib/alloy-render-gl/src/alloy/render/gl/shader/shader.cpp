@@ -3,13 +3,16 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/render/gl/shader/shader.hpp"
+
+#include "alloy/render/gl/error.hpp"
+
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/core/utilities/scope_guard.hpp"
 #include "alloy/platform/buffers/mutable_buffer.hpp"
 #include "alloy/platform/filesystem/file.hpp"
-#include "alloy/render/gl/error.hpp"
+
 #include <utility>
 
 //=============================================================================

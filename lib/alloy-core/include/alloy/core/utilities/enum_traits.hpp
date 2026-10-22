@@ -15,10 +15,10 @@
 # pragma once
 #endif
 
-#include <type_traits> // std::true_type, std::underlying_type, etc
-#include <limits>      // std::numeric_limits
-#include <iterator>    // std::*_iterator_category
 #include <cstddef>     // std::size_t
+#include <iterator>    // std::*_iterator_category
+#include <limits>      // std::numeric_limits
+#include <type_traits> // std::true_type, std::underlying_type, etc
 
 namespace alloy::core {
 

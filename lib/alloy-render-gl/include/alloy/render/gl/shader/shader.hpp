@@ -15,14 +15,13 @@
 # pragma once
 #endif
 
-#include "alloy/core/memory/allocator.hpp"
 #include "alloy/render/gl/error.hpp"
 
 #include "alloy/core/assert.hpp"
-#include "alloy/core/utilities/result.hpp"
-#include "alloy/core/utilities/ctor_function.hpp"
+#include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/string/zstring_view.hpp"
-
+#include "alloy/core/utilities/ctor_function.hpp"
+#include "alloy/core/utilities/result.hpp"
 #include "alloy/platform/filesystem/file.hpp"
 
 #include <GL/glew.h>

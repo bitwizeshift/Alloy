@@ -16,16 +16,16 @@
 # pragma once
 #endif
 
-#include <utility>
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/utilities/delegate.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/result.hpp"
-#include "alloy/core/utilities/delegate.hpp"
 
-#include <cstddef>     // std::size_t
 #include <concepts>
-#include <type_traits> // std::decay_t
+#include <cstddef>     // std::size_t
 #include <memory>      // std::addressof
+#include <type_traits> // std::decay_t
+#include <utility>
 
 namespace alloy::core {
 

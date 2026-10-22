@@ -4,9 +4,9 @@
 
 #include <alloy/core/containers/set_view.hpp>
 
-
-#include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
+
 #include <set>
 #include <unordered_set>
 

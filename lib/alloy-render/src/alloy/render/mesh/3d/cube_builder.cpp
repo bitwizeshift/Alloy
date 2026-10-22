@@ -4,12 +4,14 @@
 
 #include "alloy/render/mesh/3d/cube_builder.hpp"
 
-#include "alloy/core/geometry/axis_aligned_box.hpp"
-#include "alloy/core/memory/allocator.hpp"
-#include "alloy/core/utilities/quantity.hpp"
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
 #include "alloy/render/mesh/unsafe_mesh_builder.hpp"
+
+#include "alloy/core/geometry/axis_aligned_box.hpp"
+#include "alloy/core/memory/allocator.hpp"
+#include "alloy/core/utilities/quantity.hpp"
+
 #include <utility>
 
 auto alloy::render::cube_builder::build_with(core::allocator alloc)

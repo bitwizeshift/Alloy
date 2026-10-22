@@ -15,9 +15,9 @@
 # pragma once
 #endif
 
-#include "alloy/core/assert.hpp"             // ALLOY_ASSERT
-#include "alloy/core/precision.hpp"          // real
-#include "alloy/core/math/math.hpp"          // default_tolerance
+#include "alloy/core/assert.hpp"    // ALLOY_ASSERT
+#include "alloy/core/math/math.hpp" // default_tolerance
+#include "alloy/core/precision.hpp" // real
 
 #include <concepts>
 #include <type_traits> // std::conjunction, std::negation, std::is_reference

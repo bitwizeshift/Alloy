@@ -48,13 +48,13 @@
 #include "alloy/core/config.hpp"
 #include "alloy/core/intrinsics.hpp" // ALLOY_FORCE_INLINE
 
-#include <cstddef>      // std::size_t
-#include <type_traits>  // std::enable_if, std::is_constructible, etc
-#include <memory>       // std::address_of
-#include <functional>   // std::reference_wrapper, std::invoke
-#include <utility>      // std::in_place_t, std::forward
+#include <cstddef>          // std::size_t
+#include <functional>       // std::reference_wrapper, std::invoke
 #include <initializer_list> // std::initializer_list
-#include <string>       // std::string (for exception message)
+#include <memory>           // std::address_of
+#include <string>           // std::string (for exception message)
+#include <type_traits>      // std::enable_if, std::is_constructible, etc
+#include <utility>          // std::in_place_t, std::forward
 
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
 # include <stdexcept> // std::logic_error

@@ -15,8 +15,8 @@
 # pragma once
 #endif
 
-#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/assert.hpp"
+#include "alloy/core/intrinsics.hpp"
 
 #include <cstddef> // std::max_align_t, std::size_t, etc
 #include <limits>  // std::numeric_limits

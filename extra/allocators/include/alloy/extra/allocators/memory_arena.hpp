@@ -16,8 +16,8 @@
 #endif
 
 #include <cstddef>     // std::size_t
-#include <type_traits> // std::is_const_v
 #include <memory>      // std::addressof
+#include <type_traits> // std::is_const_v
 
 namespace alloy::extra {
 
