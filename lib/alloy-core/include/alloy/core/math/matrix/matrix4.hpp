@@ -494,7 +494,7 @@ inline constexpr
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::matrix4::at(index_type c, index_type r) -> reference
+auto alloy::core::matrix4::at(index_type r, index_type c) -> reference
 {
   if (c >=columns || c < 0 || r >=rows || r < 0) {
     throw std::out_of_range{"matrix4::at: index out of range"};
@@ -504,7 +504,7 @@ auto alloy::core::matrix4::at(index_type c, index_type r) -> reference
 
 
 inline constexpr
-auto alloy::core::matrix4::at(index_type c, index_type r)
+auto alloy::core::matrix4::at(index_type r, index_type c)
   const -> const_reference
 {
   if(c >=columns || c < 0 || r >=rows || r < 0) {

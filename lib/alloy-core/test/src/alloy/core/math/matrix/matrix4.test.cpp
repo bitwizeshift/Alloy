@@ -63,6 +63,26 @@ TEST_CASE("matrix4::matrix4( const real(&)[4][4] )", "[ctor]")
 // Element Access
 //------------------------------------------------------------------------------
 
+TEST_CASE("matrix4::at( index_type, index_type )", "[element access]")
+{
+  // Arrange
+  const auto sut = matrix4{
+     1,  2,  3,  4,
+     5,  6,  7,  8,
+     9, 10, 11, 12,
+    13, 14, 15, 16
+  };
+
+  // Act
+  const auto result = sut.at(0,3);
+
+  // Assert
+  SECTION("Retrieves the entry at the row and column")
+  {
+    REQUIRE( result == real{4} );
+  }
+}
+
 TEST_CASE("matrix4::operator[]( index_type )", "[element access]")
 {
   // Arrange
