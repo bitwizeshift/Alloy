@@ -232,9 +232,9 @@ auto alloy::core::camera::extract_matrix(not_null<matrix4*> out)
   const auto y_pos = -dot(y_axis, m_translation);
   const auto z_pos = -dot(z_axis, m_translation);
 
-  result[0][3] = x_pos;
-  result[1][3] = y_pos;
-  result[2][3] = z_pos;
+  result[3][0] = x_pos;
+  result[3][1] = y_pos;
+  result[3][2] = z_pos;
 }
 
 auto alloy::core::camera::to_matrix4() const noexcept -> matrix4

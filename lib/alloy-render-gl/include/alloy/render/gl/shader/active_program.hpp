@@ -360,7 +360,7 @@ auto alloy::render::gl::active_program::bind_uniform(
   const core::matrix4& mat
 ) noexcept -> void
 {
-  ::glUniformMatrix4fv(static_cast<::GLint>(loc), 1, true, mat.data());
+  ::glUniformMatrix4fv(static_cast<::GLint>(loc), 1, false, mat.data());
 }
 
 ALLOY_FORCE_INLINE

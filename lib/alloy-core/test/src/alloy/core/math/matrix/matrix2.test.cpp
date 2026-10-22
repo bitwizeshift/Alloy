@@ -12,7 +12,52 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <algorithm> // std::ranges::equal
+#include <span>      // std::span
+
 namespace alloy::core::test {
+
+//------------------------------------------------------------------------------
+// Element Access
+//------------------------------------------------------------------------------
+
+TEST_CASE("matrix2::operator[]( index_type )", "[element access]")
+{
+  // Arrange
+  const auto sut = matrix2{
+    1, 2,
+    3, 4
+  };
+
+  // Act
+  const auto* const column = sut[1];
+
+  // Assert
+  SECTION("Retrieves the column at the index")
+  {
+    REQUIRE( column[0] == real{2} );
+    REQUIRE( column[1] == real{4} );
+  }
+}
+
+TEST_CASE("matrix2::data()", "[observers]")
+{
+  // Arrange
+  const auto sut = matrix2{
+    1, 2,
+    3, 4
+  };
+  const real expected[4] = {1, 3, 2, 4};
+
+  // Act
+  const auto* const result = sut.data();
+
+  // Assert
+  SECTION("Stores the entries column by column")
+  {
+    REQUIRE( std::ranges::equal(std::span{result, 4}, expected) );
+  }
+}
 
 //------------------------------------------------------------------------------
 // Quantifiers

@@ -54,13 +54,10 @@ auto alloy::core::matrix2::combine(const vector2& vec) const noexcept -> vector2
 {
   auto result = vector2{};
 
-  for (auto r = 0; r < columns; ++r) {
-    auto sum = real{0};
-
-    for (auto c = 0; c < rows; ++c) {
-      sum += vec[c] * get(r,c);
+  for (auto c = 0; c < columns; ++c) {
+    for (auto r = 0; r < rows; ++r) {
+      result[r] += get(r,c) * vec[c];
     }
-    result[r] = sum;
   }
   return result;
 }

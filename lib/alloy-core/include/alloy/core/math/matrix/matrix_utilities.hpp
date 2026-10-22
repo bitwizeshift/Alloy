@@ -89,11 +89,13 @@ namespace alloy::core::detail {
     static constexpr
     auto cast(const matrix2& from) noexcept -> matrix3
     {
-      return matrix3{
-        from[0][0], from[0][1], real{0},
-        from[1][0], from[1][1], real{0},
-        real{0},    real{0},    real{1}
+      const real entries[3][3] = {
+        {from[0][0], from[0][1], real{0}},
+        {from[1][0], from[1][1], real{0}},
+        {real{0},    real{0},    real{1}}
       };
+
+      return matrix3{entries};
     }
   };
 
@@ -103,12 +105,14 @@ namespace alloy::core::detail {
     static constexpr
     auto cast(const matrix2& from) noexcept -> matrix4
     {
-      return matrix4{
-        from[0][0], from[0][1], real{0}, real{0},
-        from[1][0], from[1][1], real{0}, real{0},
-        real{0},    real{0},    real{1}, real{0},
-        real{0},    real{0},    real{0}, real{1}
+      const real entries[4][4] = {
+        {from[0][0], from[0][1], real{0}, real{0}},
+        {from[1][0], from[1][1], real{0}, real{0}},
+        {real{0},    real{0},    real{1}, real{0}},
+        {real{0},    real{0},    real{0}, real{1}}
       };
+
+      return matrix4{entries};
     }
   };
 
@@ -120,10 +124,12 @@ namespace alloy::core::detail {
     static constexpr
     auto cast(const matrix3& from) noexcept -> matrix2
     {
-      return matrix2{
-        from[0][0], from[0][1],
-        from[1][0], from[1][1]
+      const real entries[2][2] = {
+        {from[0][0], from[0][1]},
+        {from[1][0], from[1][1]}
       };
+
+      return matrix2{entries};
     }
   };
 
@@ -143,12 +149,14 @@ namespace alloy::core::detail {
     static constexpr
     auto cast(const matrix3& from) noexcept -> matrix4
     {
-      return matrix4{
-        from[0][0], from[0][1], from[0][2], real{0},
-        from[1][0], from[1][1], from[1][2], real{0},
-        from[2][0], from[2][1], from[2][2], real{0},
-        real{0},    real{0},    real{0},    real{1}
+      const real entries[4][4] = {
+        {from[0][0], from[0][1], from[0][2], real{0}},
+        {from[1][0], from[1][1], from[1][2], real{0}},
+        {from[2][0], from[2][1], from[2][2], real{0}},
+        {real{0},    real{0},    real{0},    real{1}}
       };
+
+      return matrix4{entries};
     }
   };
 
@@ -160,10 +168,12 @@ namespace alloy::core::detail {
     static constexpr
     auto cast(const matrix4& from) noexcept -> matrix2
     {
-      return matrix2{
-        from[0][0], from[0][1],
-        from[1][0], from[1][1]
+      const real entries[2][2] = {
+        {from[0][0], from[0][1]},
+        {from[1][0], from[1][1]}
       };
+
+      return matrix2{entries};
     }
   };
 
@@ -173,11 +183,13 @@ namespace alloy::core::detail {
     static constexpr
     auto cast(const matrix4& from) noexcept -> matrix3
     {
-      return matrix3{
-        from[0][0], from[0][1], from[0][2],
-        from[1][0], from[1][1], from[1][2],
-        from[2][0], from[2][1], from[2][2]
+      const real entries[3][3] = {
+        {from[0][0], from[0][1], from[0][2]},
+        {from[1][0], from[1][1], from[1][2]},
+        {from[2][0], from[2][1], from[2][2]}
       };
+
+      return matrix3{entries};
     }
   };
 

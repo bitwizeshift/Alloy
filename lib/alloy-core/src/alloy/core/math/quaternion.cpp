@@ -108,9 +108,9 @@ auto alloy::core::quaternion::from_rotation_matrix(const matrix3& rot)
     root = sqrt(trace + 1);
     const auto w = real{0.5} * root;
     root = real{0.5} / root;
-    const auto x = (rot[2][1] - rot[1][2]) * root;
-    const auto y = (rot[0][2] - rot[2][0]) * root;
-    const auto z = (rot[1][0] - rot[0][1]) * root;
+    const auto x = (rot[1][2] - rot[2][1]) * root;
+    const auto y = (rot[2][0] - rot[0][2]) * root;
+    const auto z = (rot[0][1] - rot[1][0]) * root;
 
     return {w,x,y,z};
   }
@@ -260,15 +260,15 @@ auto alloy::core::quaternion::extract_rotation_matrix(not_null<matrix3*> rot)
   auto& matrix = (*rot);
 
   matrix[0][0] = real{1} - (tyy + tzz);
-  matrix[0][1] = txy - twz;
-  matrix[0][2] = txz + twy;
+  matrix[0][1] = txy + twz;
+  matrix[0][2] = txz - twy;
 
-  matrix[1][0] = txy + twz;
+  matrix[1][0] = txy - twz;
   matrix[1][1] = real{1} - (txx + tzz);
-  matrix[1][2] = tyz - twx;
+  matrix[1][2] = tyz + twx;
 
-  matrix[2][0] = txz - twy;
-  matrix[2][1] = tyz + twx;
+  matrix[2][0] = txz + twy;
+  matrix[2][1] = tyz - twx;
   matrix[2][2] = real{1} - (txx + tyy);
 }
 
@@ -295,17 +295,17 @@ auto alloy::core::quaternion::extract_rotation_matrix(not_null<matrix4*> rot)
   auto& matrix = (*rot);
 
   matrix[0][0] = real{1} - (tyy + tzz);
-  matrix[0][1] = txy - twz;
-  matrix[0][2] = txz + twy;
+  matrix[0][1] = txy + twz;
+  matrix[0][2] = txz - twy;
   matrix[0][3] = real{0};
 
-  matrix[1][0] = txy + twz;
+  matrix[1][0] = txy - twz;
   matrix[1][1] = real{1} - (txx + tzz);
-  matrix[1][2] = tyz - twx;
+  matrix[1][2] = tyz + twx;
   matrix[1][3] = real{0};
 
-  matrix[2][0] = txz - twy;
-  matrix[2][1] = tyz + twx;
+  matrix[2][0] = txz + twy;
+  matrix[2][1] = tyz - twx;
   matrix[2][2] = real{1} - (txx + tyy);
   matrix[2][3] = real{0};
 

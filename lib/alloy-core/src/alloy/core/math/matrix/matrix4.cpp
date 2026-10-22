@@ -72,13 +72,10 @@ auto alloy::core::matrix4::combine(const vector4& vec) const noexcept -> vector4
 {
   auto result = vector4{};
 
-  for(auto r = 0; r < columns; ++r) {
-    auto sum = real{0};
-
-    for(auto c = 0; c < rows; ++c) {
-      sum += vec[c] * get(r,c);
+  for (auto c = 0; c < columns; ++c) {
+    for (auto r = 0; r < rows; ++r) {
+      result[r] += get(r,c) * vec[c];
     }
-    result[r] = sum;
   }
   return result;
 }
@@ -223,8 +220,8 @@ auto alloy::core::matrix4::invert() noexcept -> matrix4&
 
   const auto inv_det = real{1} / det;
 
-  for (auto r = 0; r < rows; ++r) {
-    for (auto c = 0; c < columns; ++c) {
+  for (auto c = 0; c < columns; ++c) {
+    for (auto r = 0; r < rows; ++r) {
       get(r,c) = inv[r][c] * inv_det;
     }
   }
