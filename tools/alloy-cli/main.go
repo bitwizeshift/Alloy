@@ -16,6 +16,7 @@ var specYAML []byte
 func main() {
 	rooter := &root.CachedRooter{Rooter: root.GitRooter{}}
 	cli.FromBytes(specYAML,
+		cli.BindBuilder("alloy-cli.check.cmake-sources", &checkcmd.CMakeSourcesBuilder{Rooter: rooter}),
 		cli.BindBuilder("alloy-cli.check.commit-msg", &checkcmd.CommitMsgBuilder{Rooter: rooter}),
 		cli.BindBuilder("alloy-cli.check.cpp-clang-tidy", &checkcmd.ClangTidyBuilder{Rooter: rooter}),
 		cli.BindBuilder("alloy-cli.check.cpp-include-cleaner", checkcmd.IncludeCleaner(rooter)),

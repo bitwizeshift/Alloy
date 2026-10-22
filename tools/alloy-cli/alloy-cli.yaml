@@ -35,6 +35,22 @@ commands:
             examples:
               - alloy-cli check commit-msg .git/COMMIT_EDITMSG
         Files:
+          - name: cmake-sources
+            summary: Check that C and C++ files are listed in their CMakeLists.txt
+            description: |
+              Checks that each C and C++ file is listed in the CMakeLists.txt
+              that builds it, which is the nearest one in the directory of the
+              file or above it. Sources are listed rather than globbed, so a
+              file that is not listed is left out of the build without an
+              error.
+
+              The file must appear as an argument of a command in the
+              CMakeLists.txt, by its path relative to the directory of the
+              CMakeLists.txt, either alone or after
+              ${CMAKE_CURRENT_SOURCE_DIR}/ or ${CMAKE_CURRENT_LIST_DIR}/. Paths
+              that only appear in comments are not counted.
+            examples:
+              - alloy-cli check cmake-sources lib/alloy-core/include/alloy/core/assert.hpp
           - name: cpp-clang-tidy
             summary: Run clang-tidy over the changed lines of C and C++ files
             description: |
