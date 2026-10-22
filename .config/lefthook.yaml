@@ -17,6 +17,11 @@ pre-commit:
       run: "{check} cpp-clang-tidy {staged_files}"
       fail_text: Fix with `lefthook run fix --job "c++ clang-tidy"`
 
+    - name: c++ include cleaner
+      glob: "{lib,extra,bin,example}/**/*.{h,hpp,c,cpp}"
+      run: "{check} cpp-include-cleaner {staged_files}"
+      fail_text: Fix with `lefthook run fix --job "c++ include cleaner"`
+
     - name: header guard
       glob: "{lib,extra,bin,example}/**/*.{h,hpp}"
       run: "{check} header-guard {staged_files}"
@@ -83,6 +88,12 @@ fix:
     - name: c++ clang-tidy
       glob: "*.{h,hpp,c,cpp}"
       run: "{check} cpp-clang-tidy --fix {staged_files}"
+
+    # Runs before the header guard job, which moves the includes that
+    # clang-tidy adds above the #pragma once block to below it.
+    - name: c++ include cleaner
+      glob: "{lib,extra,bin,example}/**/*.{h,hpp,c,cpp}"
+      run: "{check} cpp-include-cleaner --fix {staged_files}"
 
     - name: header guard
       glob: "{lib,extra,bin,example}/**/*.{h,hpp}"
