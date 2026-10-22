@@ -191,6 +191,7 @@ set(header_files
   include/alloy/core/geometry/line_segment.hpp
   include/alloy/core/geometry/plane.hpp
   include/alloy/core/geometry/sphere.hpp
+  include/alloy/core/geometry/triangle.hpp
   include/alloy/core/geometry/ray.hpp
 
   # Model
@@ -231,6 +232,7 @@ set(source_files
   src/alloy/core/geometry/plane.cpp
   src/alloy/core/geometry/ray.cpp
   src/alloy/core/geometry/sphere.cpp
+  src/alloy/core/geometry/triangle.cpp
 
   # IO
   src/alloy/core/io/buffered_reader.cpp
