@@ -37,8 +37,8 @@ auto alloy::core::matrix2::inverse() const noexcept -> matrix2
   const auto inv_det = (real{1} / det);
 
   return matrix2{
-     get(1,1) * inv_det, -get(1,0) * inv_det,
-    -get(0,1) * inv_det,  get(0,0) * inv_det
+     get(1,1) * inv_det, -get(0,1) * inv_det,
+    -get(1,0) * inv_det,  get(0,0) * inv_det
   };
 }
 

@@ -65,6 +65,8 @@ set(source_files
   src/alloy/core/math/saturated.test.cpp
   src/alloy/core/math/simd.test.cpp
   src/alloy/core/math/trigonometry.test.cpp
+  src/alloy/core/math/matrix/matrix2.test.cpp
+  src/alloy/core/math/matrix/matrix3.test.cpp
   src/alloy/core/math/matrix/matrix_utilities.test.cpp
 
   # Memory

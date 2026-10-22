@@ -47,15 +47,15 @@ auto alloy::core::matrix3::inverse() const noexcept -> matrix3
 
   return matrix3{
     (get(1,1)*get(2,2) - get(1,2)*get(2,1)) * inv_det,
-    (get(1,2)*get(2,0) - get(1,0)*get(2,2)) * inv_det,
-    (get(1,0)*get(2,1) - get(1,1)*get(2,0)) * inv_det,
-
     (get(0,2)*get(2,1) - get(0,1)*get(2,2)) * inv_det,
-    (get(0,0)*get(2,2) - get(0,2)*get(2,0)) * inv_det,
-    (get(0,1)*get(2,0) - get(0,0)*get(2,1)) * inv_det,
-
     (get(0,1)*get(1,2) - get(0,2)*get(1,1)) * inv_det,
+
+    (get(1,2)*get(2,0) - get(1,0)*get(2,2)) * inv_det,
+    (get(0,0)*get(2,2) - get(0,2)*get(2,0)) * inv_det,
     (get(0,2)*get(1,0) - get(0,0)*get(1,2)) * inv_det,
+
+    (get(1,0)*get(2,1) - get(1,1)*get(2,0)) * inv_det,
+    (get(0,1)*get(2,0) - get(0,0)*get(2,1)) * inv_det,
     (get(0,0)*get(1,1) - get(0,1)*get(1,0)) * inv_det
   };
 }
