@@ -35,6 +35,7 @@ set(source_files
   src/alloy/core/geometry/sphere.test.cpp
   src/alloy/core/geometry/axis_aligned_box.test.cpp
   src/alloy/core/geometry/intersection.test.cpp
+  src/alloy/core/geometry/line.test.cpp
   src/alloy/core/geometry/plane.test.cpp
 
   # Model

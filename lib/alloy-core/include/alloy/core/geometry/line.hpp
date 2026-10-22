@@ -140,14 +140,27 @@ namespace alloy::core {
   // Equality
   //----------------------------------------------------------------------------
 
+  /// \{
+  /// \brief Determines whether two lines pass through the same points
+  ///
+  /// Lines are equal regardless of which point on them is their origin, and
+  /// regardless of which of the two opposite directions they extend toward.
+  ///
+  /// \param lhs the left line
+  /// \param rhs the right line
+  /// \return `true` if the two lines are the same set of points
   ALLOY_CORE_API
   auto operator==(const line& lhs, const line& rhs) noexcept -> bool;
   auto operator!=(const line& lhs, const line& rhs) noexcept -> bool;
+  /// \}
 
   //----------------------------------------------------------------------------
 
   /// \brief Determines equality between two lines relative to
   ///        \p tolerance
+  ///
+  /// As with `operator==`, the origin and the sign of the direction of each
+  /// line do not matter.
   ///
   /// \param lhs the left line
   /// \param rhs the right line

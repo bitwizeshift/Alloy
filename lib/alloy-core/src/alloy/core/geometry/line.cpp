@@ -28,13 +28,11 @@ auto alloy::core::line::contains(const point3& p) const noexcept -> bool
 auto alloy::core::line::contains(const point3& p, real tolerance)
   const noexcept -> bool
 {
-  const auto dx = (p.x() - m_origin.x()) / m_direction.x();
-  const auto dy = (p.y() - m_origin.y()) / m_direction.y();
-  const auto dz = (p.z() - m_origin.z()) / m_direction.z();
+  // 'm_direction' is a unit vector, so the magnitude of the cross product is
+  // the distance from 'p' to this line.
+  const auto offset = (p - m_origin).cross(m_direction);
 
-  return almost_equal(dx, dy, tolerance) &&
-         almost_equal(dy, dz, tolerance) &&
-         almost_equal(dz, dx, tolerance);
+  return offset.square_magnitude() <= (tolerance * tolerance);
 }
 
 //==============================================================================
@@ -50,27 +48,12 @@ ALLOY_COMPILER_GNULIKE_DIAGNOSTIC_IGNORE(-Wfloat-equal)
 
 auto alloy::core::operator==(const line& lhs, const line& rhs) noexcept -> bool
 {
-  const auto& lhs_direction = lhs.direction();
-  const auto& rhs_direction = rhs.direction();
+  const auto& direction = lhs.direction();
+  const auto parallel = direction.cross(rhs.direction());
+  const auto offset = (rhs.origin() - lhs.origin()).cross(direction);
 
-  // direction should be normalized
-  if (lhs_direction != rhs_direction) {
-    return false;
-  }
-
-  const auto& lhs_origin = lhs.origin();
-  const auto& rhs_origin = rhs.origin();
-
-  const auto lhs_factor = lhs_origin.x() / lhs_direction.x();
-  const auto rhs_factor = rhs_origin.x() / rhs_direction.x();
-
-  const auto lhs_ty = lhs_direction.y() * lhs_factor;
-  const auto lhs_tz = lhs_direction.z() * lhs_factor;
-  const auto rhs_ty = rhs_direction.y() * rhs_factor;
-  const auto rhs_tz = rhs_direction.z() * rhs_factor;
-
-  return (lhs_origin.y() - lhs_ty) == (rhs_origin.y() - rhs_ty) &&
-         (lhs_origin.z() - lhs_tz) == (rhs_origin.z() - rhs_tz);
+  return parallel.square_magnitude() == real{0} &&
+         offset.square_magnitude() == real{0};
 }
 
 ALLOY_COMPILER_DIAGNOSTIC_POP()
@@ -80,29 +63,8 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 auto alloy::core::almost_equal(const line& lhs, const line& rhs, real tolerance)
   noexcept -> bool
 {
-  const auto& lhs_direction = lhs.direction();
-  const auto& rhs_direction = rhs.direction();
+  const auto parallel = lhs.direction().cross(rhs.direction());
 
-  // direction should be normalized
-  if (almost_equal(lhs_direction, rhs_direction, tolerance)) {
-    return false;
-  }
-
-  const auto& lhs_origin = lhs.origin();
-  const auto& rhs_origin = rhs.origin();
-
-  const auto lhs_factor = lhs_origin.x() / lhs_direction.x();
-  const auto rhs_factor = rhs_origin.x() / rhs_direction.x();
-
-  const auto lhs_ty = lhs_direction.y() * lhs_factor;
-  const auto lhs_tz = lhs_direction.z() * lhs_factor;
-  const auto rhs_ty = rhs_direction.y() * rhs_factor;
-  const auto rhs_tz = rhs_direction.z() * rhs_factor;
-
-  return almost_equal((lhs_origin.y() - lhs_ty),
-                      (rhs_origin.y() - rhs_ty),
-                      tolerance) &&
-         almost_equal((lhs_origin.z() - lhs_tz),
-                      (rhs_origin.z() - rhs_tz),
-                      tolerance);
+  return parallel.square_magnitude() <= (tolerance * tolerance) &&
+         lhs.contains(rhs.origin(), tolerance);
 }
