@@ -48,6 +48,7 @@ set(source_files
   src/alloy/core/geometry/point/polar.test.cpp
   src/alloy/core/geometry/point/spherical.test.cpp
   src/alloy/core/geometry/ray.test.cpp
+  src/alloy/core/geometry/raycast.test.cpp
   src/alloy/core/geometry/rectangle.test.cpp
 
   # Model
