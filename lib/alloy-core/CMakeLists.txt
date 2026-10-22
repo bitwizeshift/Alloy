@@ -120,8 +120,10 @@ set(header_files
   # IO
   include/alloy/core/io/buffered_reader.hpp
   include/alloy/core/io/buffered_writer.hpp
+  include/alloy/core/io/deserializer.hpp
   include/alloy/core/io/error.hpp
   include/alloy/core/io/reader.hpp
+  include/alloy/core/io/serializer.hpp
   include/alloy/core/io/writer.hpp
 
   # Memory
