@@ -15,8 +15,10 @@
 #include <array>        // std::array
 #include <cstddef>      // std::byte, std::size_t
 #include <span>         // std::span
+#include <memory>       // std::allocator_arg
 #include <system_error> // std::error_code, std::errc
-#include <utility>      // std::move
+#include <type_traits>  // std::is_same_v, std::is_move_constructible_v
+#include <utility>      // std::move, std::in_place
 #include <vector>       // std::vector
 
 namespace alloy::core::test {
@@ -46,18 +48,51 @@ auto read_all_by(reader& source, std::size_t request) -> std::vector<std::byte>
   }
 }
 
-/// \brief Makes a buffered_reader of \p source that holds \p capacity bytes
-///
-/// \param capacity the capacity of the buffer
-/// \param source the reader to read from
-/// \return the buffered_reader
-auto make_buffered_reader(std::size_t capacity, reader& source)
-  -> buffered_reader
+//=============================================================================
+// class : immovable_reader
+//=============================================================================
+
+/// \brief A reader that is neither move constructible nor move assignable
+class immovable_reader final : public reader
 {
-  auto made = buffered_reader::with_capacity(capacity, &source);
-  REQUIRE( made.has_value() );
-  return std::move(made).value();
-}
+public:
+
+  immovable_reader() noexcept = default;
+  immovable_reader(immovable_reader&&) = delete;
+
+  auto operator=(immovable_reader&&) -> immovable_reader& = delete;
+
+private:
+
+  auto do_read(std::span<std::byte>)
+    noexcept -> result<std::size_t,std::error_code> override
+  {
+    return 0u;
+  }
+};
+
+//=============================================================================
+// class : unassignable_reader
+//=============================================================================
+
+/// \brief A reader that is move constructible, but not move assignable
+class unassignable_reader final : public reader
+{
+public:
+
+  unassignable_reader() noexcept = default;
+  unassignable_reader(unassignable_reader&&) noexcept = default;
+
+  auto operator=(unassignable_reader&&) -> unassignable_reader& = delete;
+
+private:
+
+  auto do_read(std::span<std::byte>)
+    noexcept -> result<std::size_t,std::error_code> override
+  {
+    return 0u;
+  }
+};
 
 //=============================================================================
 // class : buffered_reader
@@ -67,189 +102,302 @@ auto make_buffered_reader(std::size_t capacity, reader& source)
 // Constructors / Destructor / Assignment
 //-----------------------------------------------------------------------------
 
-TEST_CASE("buffered_reader::from_reader(not_null<reader*>, allocator)",
+TEST_CASE("buffered_reader::buffered_reader(U&&, std::size_t, allocator)",
           "[ctor]")
 {
   const auto input = sequence_bytes(16u);
 
-  SECTION("Allocation succeeds")
+  SECTION("Capacity is not specified")
   {
     // Arrange
     auto source = fake_reader{input};
 
     // Act
-    const auto sut = buffered_reader::from_reader(&source);
+    const auto sut = buffered_reader{std::move(source)};
 
     // Assert
     SECTION("Uses the default capacity")
     {
-      REQUIRE( sut.has_value() );
-      REQUIRE( sut->capacity() == buffered_reader::default_capacity );
+      using sut_type = buffered_reader<fake_reader>;
+
+      REQUIRE( sut.capacity() == sut_type::default_capacity );
     }
     SECTION("Starts with an empty buffer")
     {
-      REQUIRE( sut.has_value() );
-      REQUIRE( sut->buffer().empty() );
+      REQUIRE( sut.buffer().empty() );
     }
-    SECTION("Reads from the source")
+    SECTION("Owns the source")
     {
-      REQUIRE( sut.has_value() );
-      REQUIRE( &sut->source() == &source );
+      REQUIRE( sut.source().remaining() == input.size() );
     }
     SECTION("Does not read from the source yet")
     {
-      REQUIRE( source.read_count() == 0u );
+      REQUIRE( sut.source().read_count() == 0u );
     }
   }
 
-  SECTION("Allocation fails")
-  {
-    // Arrange
-    auto source = fake_reader{input};
-    auto resource = counting_resource{};
-    resource.fail_allocations();
-
-    // Act
-    const auto sut = buffered_reader::from_reader(
-      &source,
-      allocator{&resource}
-    );
-
-    // Assert
-    SECTION("Fails with not enough memory")
-    {
-      REQUIRE( sut.has_error() );
-      REQUIRE( sut.error() == std::errc::not_enough_memory );
-    }
-  }
-}
-
-TEST_CASE("buffered_reader::with_capacity(std::size_t, not_null<reader*>, "
-          "allocator)", "[ctor]")
-{
-  const auto input = sequence_bytes(16u);
-
-  SECTION("Allocation succeeds")
+  SECTION("Capacity and allocator are specified")
   {
     // Arrange
     const auto capacity = GENERATE(
       std::size_t{1}, std::size_t{16}, std::size_t{4096}
     );
-    auto source = fake_reader{input};
     auto resource = counting_resource{};
 
     // Act
-    const auto sut = buffered_reader::with_capacity(
+    const auto sut = buffered_reader{
+      fake_reader{input},
       capacity,
-      &source,
       allocator{&resource}
-    );
+    };
 
     // Assert
     SECTION("Uses the requested capacity")
     {
-      REQUIRE( sut.has_value() );
-      REQUIRE( sut->capacity() == capacity );
+      REQUIRE( sut.capacity() == capacity );
     }
-    SECTION("Allocates the buffer from the allocator once")
+    SECTION("Does not allocate the buffer yet")
     {
-      REQUIRE( resource.allocations() == 1u );
+      REQUIRE( resource.allocations() == 0u );
     }
     SECTION("Starts with an empty buffer")
     {
-      REQUIRE( sut.has_value() );
-      REQUIRE( sut->buffer().empty() );
+      REQUIRE( sut.buffer().empty() );
     }
   }
 
-  SECTION("Allocation fails")
+  SECTION("Source is an lvalue")
   {
     // Arrange
     auto source = fake_reader{input};
-    auto resource = counting_resource{};
-    resource.fail_allocations();
+    source.set_chunk_size(4u);
 
     // Act
-    const auto sut = buffered_reader::with_capacity(
-      16u,
-      &source,
-      allocator{&resource}
-    );
+    auto sut = buffered_reader{source};
 
     // Assert
-    SECTION("Fails with not enough memory")
+    SECTION("Owns a copy of the source")
     {
-      REQUIRE( sut.has_error() );
-      REQUIRE( sut.error() == std::errc::not_enough_memory );
+      REQUIRE( &sut.source() != &source );
+    }
+    SECTION("Does not read from the original source")
+    {
+      REQUIRE( sut.fill_buffer().has_value() );
+      REQUIRE( source.read_count() == 0u );
+    }
+  }
+}
+
+TEST_CASE("buffered_reader::buffered_reader(std::in_place_t, Args&&...)",
+          "[ctor]")
+{
+  // Arrange
+  const auto input = sequence_bytes(16u);
+
+  // Act
+  const auto sut = buffered_reader<fake_reader>{
+    std::in_place,
+    std::span<const std::byte>{input}
+  };
+
+  // Assert
+  SECTION("Uses the default capacity")
+  {
+    REQUIRE( sut.capacity() == buffered_reader<fake_reader>::default_capacity );
+  }
+  SECTION("Constructs the source from the arguments")
+  {
+    REQUIRE( sut.source().remaining() == input.size() );
+  }
+  SECTION("Starts with an empty buffer")
+  {
+    REQUIRE( sut.buffer().empty() );
+  }
+}
+
+TEST_CASE("buffered_reader::buffered_reader(std::allocator_arg_t, allocator, "
+          "std::size_t, std::in_place_t, Args&&...)", "[ctor]")
+{
+  // Arrange
+  const auto input = sequence_bytes(16u);
+  auto resource = counting_resource{};
+
+  // Act
+  auto sut = buffered_reader<fake_reader>{
+    std::allocator_arg,
+    allocator{&resource},
+    8u,
+    std::in_place,
+    std::span<const std::byte>{input}
+  };
+
+  // Assert
+  SECTION("Uses the requested capacity")
+  {
+    REQUIRE( sut.capacity() == 8u );
+  }
+  SECTION("Constructs the source from the arguments")
+  {
+    REQUIRE( sut.source().remaining() == input.size() );
+  }
+  SECTION("Allocates the buffer from the allocator once it is needed")
+  {
+    REQUIRE( resource.allocations() == 0u );
+    REQUIRE( sut.fill_buffer().has_value() );
+    REQUIRE( resource.allocations() == 1u );
+  }
+}
+
+TEST_CASE("buffered_reader deduction guides", "[ctor]")
+{
+  const auto input = sequence_bytes(16u);
+
+  SECTION("Source is an lvalue")
+  {
+    // Arrange
+    auto source = fake_reader{input};
+
+    // Act
+    auto sut = buffered_reader{source};
+
+    // Assert
+    SECTION("Deduces the type of the source")
+    {
+      STATIC_REQUIRE(
+        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>
+      );
+    }
+  }
+
+  SECTION("Source is a const lvalue")
+  {
+    // Arrange
+    const auto source = fake_reader{input};
+
+    // Act
+    auto sut = buffered_reader{source};
+
+    // Assert
+    SECTION("Deduces the type of the source without const")
+    {
+      STATIC_REQUIRE(
+        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>
+      );
+    }
+  }
+
+  SECTION("Source is an rvalue")
+  {
+    // Act
+    auto sut = buffered_reader{fake_reader{input}};
+
+    // Assert
+    SECTION("Deduces the type of the source")
+    {
+      STATIC_REQUIRE(
+        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>
+      );
+    }
+  }
+
+  SECTION("Source and capacity are given")
+  {
+    // Arrange
+    auto source = fake_reader{input};
+
+    // Act
+    auto sut = buffered_reader{source, 8u};
+
+    // Assert
+    SECTION("Deduces the type of the source")
+    {
+      STATIC_REQUIRE(
+        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>
+      );
+    }
+  }
+
+  SECTION("Source, capacity, and allocator are given")
+  {
+    // Arrange
+    auto source = fake_reader{input};
+
+    // Act
+    auto sut = buffered_reader{source, 8u, allocator{}};
+
+    // Assert
+    SECTION("Deduces the type of the source")
+    {
+      STATIC_REQUIRE(
+        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>
+      );
     }
   }
 }
 
 TEST_CASE("buffered_reader::buffered_reader(buffered_reader&&)", "[ctor]")
 {
-  // Arrange
-  const auto input = sequence_bytes(16u);
-  auto source = fake_reader{input};
-  auto resource = counting_resource{};
-  auto made = buffered_reader::with_capacity(
-    8u,
-    &source,
-    allocator{&resource}
-  );
-  REQUIRE( made.has_value() );
-  auto& other = *made;
-  REQUIRE( other.fill_buffer().has_value() );
-  other.consume(3u);
-  const auto expected = other.buffer();
+  SECTION("Source is move constructible")
+  {
+    // Arrange
+    const auto input = sequence_bytes(16u);
+    auto resource = counting_resource{};
+    auto other = buffered_reader{fake_reader{input}, 8u, allocator{&resource}};
+    REQUIRE( other.fill_buffer().has_value() );
+    other.consume(3u);
+    const auto expected = other.buffer();
 
-  // Act
-  auto sut = std::move(other);
+    // Act
+    auto sut = std::move(other);
 
-  // Assert
-  SECTION("Takes the capacity of the other reader")
-  {
-    REQUIRE( sut.capacity() == 8u );
+    // Assert
+    SECTION("Takes the capacity of the other reader")
+    {
+      REQUIRE( sut.capacity() == 8u );
+    }
+    SECTION("Takes the buffered bytes of the other reader")
+    {
+      REQUIRE( sut.buffer().data() == expected.data() );
+      REQUIRE( sut.buffer().size() == expected.size() );
+    }
+    SECTION("Takes the source of the other reader")
+    {
+      REQUIRE( sut.source().remaining() == input.size() - 8u );
+    }
+    SECTION("Leaves the other reader without a buffer")
+    {
+      // NOLINTNEXTLINE(bugprone-use-after-move)
+      REQUIRE( other.capacity() == 0u );
+      REQUIRE( other.buffer().empty() );
+    }
+    SECTION("Does not allocate another buffer")
+    {
+      REQUIRE( resource.allocations() == 1u );
+    }
   }
-  SECTION("Takes the buffered bytes of the other reader")
+
+  SECTION("Source is not move constructible")
   {
-    REQUIRE( sut.buffer().data() == expected.data() );
-    REQUIRE( sut.buffer().size() == expected.size() );
-  }
-  SECTION("Takes the source of the other reader")
-  {
-    REQUIRE( &sut.source() == &source );
-  }
-  SECTION("Leaves the other reader without a buffer")
-  {
-    // NOLINTNEXTLINE(bugprone-use-after-move)
-    REQUIRE( other.capacity() == 0u );
-    REQUIRE( other.buffer().empty() );
-  }
-  SECTION("Does not allocate another buffer")
-  {
-    REQUIRE( resource.allocations() == 1u );
+    STATIC_REQUIRE_FALSE(
+      std::is_move_constructible_v<buffered_reader<immovable_reader>>
+    );
   }
 }
 
 TEST_CASE("buffered_reader::~buffered_reader()", "[dtor]")
 {
   const auto input = sequence_bytes(16u);
-  auto source = fake_reader{input};
   auto resource = counting_resource{};
 
-  SECTION("Reader owns a buffer")
+  SECTION("Buffer was allocated")
   {
     // Arrange
-    auto made = buffered_reader::with_capacity(
-      8u,
-      &source,
-      allocator{&resource}
-    );
-    REQUIRE( made.has_value() );
+    auto sut = buffered_reader{fake_reader{input}, 8u, allocator{&resource}};
+    REQUIRE( sut.fill_buffer().has_value() );
 
     // Act
     {
-      auto sut = std::move(made).value();
+      auto destroyed = std::move(sut);
     }
 
     // Assert
@@ -259,20 +407,30 @@ TEST_CASE("buffered_reader::~buffered_reader()", "[dtor]")
     }
   }
 
+  SECTION("Buffer was never allocated")
+  {
+    // Act
+    {
+      auto sut = buffered_reader{fake_reader{input}, 8u, allocator{&resource}};
+    }
+
+    // Assert
+    SECTION("Does not release a buffer")
+    {
+      REQUIRE( resource.deallocations() == 0u );
+    }
+  }
+
   SECTION("Reader was moved from")
   {
     // Arrange
-    auto made = buffered_reader::with_capacity(
-      8u,
-      &source,
-      allocator{&resource}
-    );
-    REQUIRE( made.has_value() );
+    auto sut = buffered_reader{fake_reader{input}, 8u, allocator{&resource}};
+    REQUIRE( sut.fill_buffer().has_value() );
 
     // Act
     {
-      auto sut = std::move(made).value();
-      auto other = std::move(sut);
+      auto destroyed = std::move(sut);
+      auto other = std::move(destroyed);
     }
 
     // Assert
@@ -285,54 +443,59 @@ TEST_CASE("buffered_reader::~buffered_reader()", "[dtor]")
 
 TEST_CASE("buffered_reader::operator=(buffered_reader&&)", "[assignment]")
 {
-  // Arrange
-  const auto input = sequence_bytes(16u);
-  auto source = fake_reader{input};
-  auto other_source = fake_reader{input};
-  auto resource = counting_resource{};
-  auto sut_made = buffered_reader::with_capacity(
-    4u,
-    &source,
-    allocator{&resource}
-  );
-  auto other_made = buffered_reader::with_capacity(
-    8u,
-    &other_source,
-    allocator{&resource}
-  );
-  REQUIRE( sut_made.has_value() );
-  REQUIRE( other_made.has_value() );
-  auto& sut = *sut_made;
-  auto& other = *other_made;
-  REQUIRE( other.fill_buffer().has_value() );
-  const auto expected = other.buffer();
+  SECTION("Source is move assignable")
+  {
+    // Arrange
+    const auto input = sequence_bytes(16u);
+    const auto other_input = sequence_bytes(32u);
+    auto resource = counting_resource{};
+    auto sut = buffered_reader{fake_reader{input}, 4u, allocator{&resource}};
+    auto other = buffered_reader{
+      fake_reader{other_input},
+      8u,
+      allocator{&resource}
+    };
+    REQUIRE( sut.fill_buffer().has_value() );
+    REQUIRE( other.fill_buffer().has_value() );
+    const auto expected = other.buffer();
 
-  // Act
-  sut = std::move(other);
+    // Act
+    sut = std::move(other);
 
-  // Assert
-  SECTION("Releases the previous buffer")
-  {
-    REQUIRE( resource.deallocations() == 1u );
+    // Assert
+    SECTION("Releases the previous buffer")
+    {
+      REQUIRE( resource.deallocations() == 1u );
+    }
+    SECTION("Takes the capacity of the other reader")
+    {
+      REQUIRE( sut.capacity() == 8u );
+    }
+    SECTION("Takes the buffered bytes of the other reader")
+    {
+      REQUIRE( sut.buffer().data() == expected.data() );
+      REQUIRE( sut.buffer().size() == expected.size() );
+    }
+    SECTION("Takes the source of the other reader")
+    {
+      REQUIRE( sut.source().remaining() == other_input.size() - 8u );
+    }
+    SECTION("Leaves the other reader without a buffer")
+    {
+      // NOLINTNEXTLINE(bugprone-use-after-move)
+      REQUIRE( other.capacity() == 0u );
+      REQUIRE( other.buffer().empty() );
+    }
   }
-  SECTION("Takes the capacity of the other reader")
+
+  SECTION("Source is not move assignable")
   {
-    REQUIRE( sut.capacity() == 8u );
-  }
-  SECTION("Takes the buffered bytes of the other reader")
-  {
-    REQUIRE( sut.buffer().data() == expected.data() );
-    REQUIRE( sut.buffer().size() == expected.size() );
-  }
-  SECTION("Takes the source of the other reader")
-  {
-    REQUIRE( &sut.source() == &other_source );
-  }
-  SECTION("Leaves the other reader without a buffer")
-  {
-    // NOLINTNEXTLINE(bugprone-use-after-move)
-    REQUIRE( other.capacity() == 0u );
-    REQUIRE( other.buffer().empty() );
+    STATIC_REQUIRE(
+      std::is_move_constructible_v<buffered_reader<unassignable_reader>>
+    );
+    STATIC_REQUIRE_FALSE(
+      std::is_move_assignable_v<buffered_reader<unassignable_reader>>
+    );
   }
 }
 
@@ -351,7 +514,7 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     const auto chunk_size = GENERATE(std::size_t{5}, std::size_t{100});
     auto source = fake_reader{input};
     source.set_chunk_size(chunk_size);
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
 
     // Act
     const auto result = sut.fill_buffer();
@@ -359,11 +522,11 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     // Assert
     SECTION("Reads from the source once")
     {
-      REQUIRE( source.read_count() == 1u );
+      REQUIRE( sut.source().read_count() == 1u );
     }
     SECTION("Requests the whole capacity from the source")
     {
-      REQUIRE( source.last_request_size() == capacity );
+      REQUIRE( sut.source().last_request_size() == capacity );
     }
     SECTION("Returns the bytes that were read")
     {
@@ -383,7 +546,7 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
   {
     // Arrange
     auto source = fake_reader{input};
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
     REQUIRE( sut.fill_buffer().has_value() );
     sut.consume(3u);
 
@@ -393,7 +556,7 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     // Assert
     SECTION("Does not read from the source again")
     {
-      REQUIRE( source.read_count() == 1u );
+      REQUIRE( sut.source().read_count() == 1u );
     }
     SECTION("Returns the bytes that are still buffered")
     {
@@ -407,7 +570,7 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
   {
     // Arrange
     auto source = fake_reader{input};
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
     REQUIRE( sut.fill_buffer().has_value() );
     sut.consume(capacity);
 
@@ -417,7 +580,7 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     // Assert
     SECTION("Reads from the source again")
     {
-      REQUIRE( source.read_count() == 2u );
+      REQUIRE( sut.source().read_count() == 2u );
     }
     SECTION("Returns the next bytes of the source")
     {
@@ -433,7 +596,7 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
   {
     // Arrange
     auto source = fake_reader{std::span<const std::byte>{}};
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
 
     // Act
     const auto result = sut.fill_buffer();
@@ -452,7 +615,7 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     const auto expected = std::make_error_code(std::errc::io_error);
     auto source = fake_reader{std::span<const std::byte>{}};
     source.fail_at_end(expected);
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
 
     // Act
     const auto result = sut.fill_buffer();
@@ -464,6 +627,55 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
       REQUIRE( result.error() == expected );
     }
   }
+
+  SECTION("Buffer cannot be allocated")
+  {
+    // Arrange
+    auto resource = counting_resource{};
+    resource.fail_allocations();
+    auto sut = buffered_reader{
+      fake_reader{input},
+      capacity,
+      allocator{&resource}
+    };
+
+    // Act
+    const auto result = sut.fill_buffer();
+
+    // Assert
+    SECTION("Fails with not enough memory")
+    {
+      REQUIRE( result.has_error() );
+      REQUIRE( result.error() == std::errc::not_enough_memory );
+    }
+    SECTION("Does not read from the source")
+    {
+      REQUIRE( sut.source().read_count() == 0u );
+    }
+  }
+
+  SECTION("Buffer was allocated by a previous fill")
+  {
+    // Arrange
+    auto resource = counting_resource{};
+    auto sut = buffered_reader{
+      fake_reader{input},
+      capacity,
+      allocator{&resource}
+    };
+    REQUIRE( sut.fill_buffer().has_value() );
+    sut.consume(capacity);
+
+    // Act
+    const auto result = sut.fill_buffer();
+
+    // Assert
+    SECTION("Reuses the buffer")
+    {
+      REQUIRE( result.has_value() );
+      REQUIRE( resource.allocations() == 1u );
+    }
+  }
 }
 
 TEST_CASE("buffered_reader::consume(std::size_t)", "[buffering]")
@@ -473,7 +685,7 @@ TEST_CASE("buffered_reader::consume(std::size_t)", "[buffering]")
   const auto input = sequence_bytes(40u);
   const auto n = GENERATE(std::size_t{0}, std::size_t{1}, capacity);
   auto source = fake_reader{input};
-  auto sut = make_buffered_reader(capacity, source);
+  auto sut = buffered_reader{std::move(source), capacity};
   REQUIRE( sut.fill_buffer().has_value() );
 
   // Act
@@ -489,7 +701,7 @@ TEST_CASE("buffered_reader::consume(std::size_t)", "[buffering]")
   }
   SECTION("Does not read from the source")
   {
-    REQUIRE( source.read_count() == 1u );
+    REQUIRE( sut.source().read_count() == 1u );
   }
 }
 
@@ -499,7 +711,7 @@ TEST_CASE("buffered_reader::discard_buffer()", "[buffering]")
   static constexpr auto capacity = std::size_t{16};
   const auto input = sequence_bytes(40u);
   auto source = fake_reader{input};
-  auto sut = make_buffered_reader(capacity, source);
+  auto sut = buffered_reader{std::move(source), capacity};
   REQUIRE( sut.fill_buffer().has_value() );
 
   // Act
@@ -541,7 +753,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     );
     auto source = fake_reader{input};
     source.set_chunk_size(chunk_size);
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
 
     // Act
     const auto output = read_all_by(sut, request);
@@ -559,7 +771,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
   {
     // Arrange
     auto source = fake_reader{input};
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
     auto storage = std::array<std::byte,4>{};
 
     // Act
@@ -577,8 +789,8 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     }
     SECTION("Fills the whole buffer with one read")
     {
-      REQUIRE( source.read_count() == 1u );
-      REQUIRE( source.last_request_size() == capacity );
+      REQUIRE( sut.source().read_count() == 1u );
+      REQUIRE( sut.source().last_request_size() == capacity );
     }
     SECTION("Keeps the rest of the read in the buffer")
     {
@@ -590,7 +802,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
   {
     // Arrange
     auto source = fake_reader{input};
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
     auto storage = std::array<std::byte,4>{};
     REQUIRE( sut.read(storage).has_value() );
 
@@ -609,7 +821,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     }
     SECTION("Does not read from the source again")
     {
-      REQUIRE( source.read_count() == 1u );
+      REQUIRE( sut.source().read_count() == 1u );
     }
   }
 
@@ -617,7 +829,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
   {
     // Arrange
     auto source = fake_reader{input};
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
     auto storage = std::array<std::byte,64>{};
     REQUIRE( sut.fill_buffer().has_value() );
     sut.consume(10u);
@@ -639,7 +851,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     }
     SECTION("Does not read from the source again")
     {
-      REQUIRE( source.read_count() == 1u );
+      REQUIRE( sut.source().read_count() == 1u );
     }
     SECTION("Empties the buffer")
     {
@@ -652,7 +864,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     // Arrange
     const auto request = GENERATE(capacity, capacity + 1u, capacity * 4u);
     auto source = fake_reader{input};
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
     auto storage = std::vector<std::byte>(request);
 
     // Act
@@ -661,8 +873,8 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     // Assert
     SECTION("Reads directly into the buffer of the caller")
     {
-      REQUIRE( source.read_count() == 1u );
-      REQUIRE( source.last_request_size() == request );
+      REQUIRE( sut.source().read_count() == 1u );
+      REQUIRE( sut.source().last_request_size() == request );
     }
     SECTION("Returns the number of bytes read")
     {
@@ -683,7 +895,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
   {
     // Arrange
     auto source = fake_reader{input};
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
     REQUIRE( sut.fill_buffer().has_value() );
 
     // Act
@@ -697,7 +909,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     }
     SECTION("Does not read from the source again")
     {
-      REQUIRE( source.read_count() == 1u );
+      REQUIRE( sut.source().read_count() == 1u );
     }
     SECTION("Keeps the buffered bytes")
     {
@@ -710,7 +922,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     // Arrange
     const auto request = GENERATE(std::size_t{1}, capacity);
     auto source = fake_reader{std::span<const std::byte>{}};
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
     auto storage = std::vector<std::byte>(request);
 
     // Act
@@ -731,7 +943,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     const auto expected = std::make_error_code(std::errc::io_error);
     auto source = fake_reader{std::span<const std::byte>{}};
     source.fail_at_end(expected);
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
     auto storage = std::vector<std::byte>(request);
 
     // Act
@@ -746,6 +958,57 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     SECTION("Leaves the buffer empty")
     {
       REQUIRE( sut.buffer().empty() );
+    }
+  }
+
+  SECTION("Buffer cannot be allocated")
+  {
+    // Arrange
+    auto resource = counting_resource{};
+    resource.fail_allocations();
+    auto sut = buffered_reader{
+      fake_reader{input},
+      capacity,
+      allocator{&resource}
+    };
+    auto storage = std::array<std::byte,4>{};
+
+    // Act
+    const auto result = sut.read(storage);
+
+    // Assert
+    SECTION("Fails with not enough memory")
+    {
+      REQUIRE( result.has_error() );
+      REQUIRE( result.error() == std::errc::not_enough_memory );
+    }
+    SECTION("Does not read from the source")
+    {
+      REQUIRE( sut.source().read_count() == 0u );
+    }
+  }
+
+  SECTION("Read bypasses a buffer that cannot be allocated")
+  {
+    // Arrange
+    auto resource = counting_resource{};
+    resource.fail_allocations();
+    auto sut = buffered_reader{
+      fake_reader{input},
+      capacity,
+      allocator{&resource}
+    };
+    auto storage = std::vector<std::byte>(capacity);
+
+    // Act
+    const auto result = sut.read(storage);
+
+    // Assert
+    SECTION("Reads directly into the buffer of the caller")
+    {
+      REQUIRE( result.has_value() );
+      REQUIRE( *result == capacity );
+      REQUIRE( std::equal(storage.begin(), storage.end(), input.begin()) );
     }
   }
 }
@@ -764,7 +1027,7 @@ TEST_CASE("buffered_reader::read_until(std::byte, "
       std::size_t{1}, std::size_t{3}, std::size_t{11}, std::size_t{64}
     );
     auto source = fake_reader{input};
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
     auto out = vector<std::byte>{};
 
     // Act
@@ -795,7 +1058,7 @@ TEST_CASE("buffered_reader::read_until(std::byte, "
   {
     // Arrange
     auto source = fake_reader{std::span{input}.subspan(10u)};
-    auto sut = make_buffered_reader(16u, source);
+    auto sut = buffered_reader{std::move(source), 16u};
     auto out = vector<std::byte>{};
 
     // Act
@@ -816,7 +1079,7 @@ TEST_CASE("buffered_reader::read_until(std::byte, "
     // Arrange
     const auto capacity = GENERATE(std::size_t{3}, std::size_t{64});
     auto source = fake_reader{std::span{input}.first(10u)};
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
     auto out = vector<std::byte>{};
 
     // Act
@@ -838,7 +1101,7 @@ TEST_CASE("buffered_reader::read_until(std::byte, "
     // Arrange
     const auto existing = sequence_bytes(3u);
     auto source = fake_reader{input};
-    auto sut = make_buffered_reader(16u, source);
+    auto sut = buffered_reader{std::move(source), 16u};
     auto out = vector<std::byte>{existing.begin(), existing.end()};
 
     // Act
@@ -866,7 +1129,7 @@ TEST_CASE("buffered_reader::read_until(std::byte, "
     const auto expected = std::make_error_code(std::errc::io_error);
     auto source = fake_reader{std::span{input}.first(5u)};
     source.fail_at_end(expected);
-    auto sut = make_buffered_reader(3u, source);
+    auto sut = buffered_reader{std::move(source), 3u};
     auto out = vector<std::byte>{};
 
     // Act
@@ -899,7 +1162,7 @@ TEST_CASE("buffered_reader::skip_until(std::byte)", "[reading]")
       std::size_t{1}, std::size_t{3}, std::size_t{11}, std::size_t{64}
     );
     auto source = fake_reader{input};
-    auto sut = make_buffered_reader(capacity, source);
+    auto sut = buffered_reader{std::move(source), capacity};
 
     // Act
     const auto result = sut.skip_until(delimiter);
@@ -927,7 +1190,7 @@ TEST_CASE("buffered_reader::skip_until(std::byte)", "[reading]")
       delimiter, delimiter, delimiter
     };
     auto source = fake_reader{repeated};
-    auto sut = make_buffered_reader(16u, source);
+    auto sut = buffered_reader{std::move(source), 16u};
 
     // Act
     const auto result = sut.skip_until(delimiter);
@@ -945,7 +1208,7 @@ TEST_CASE("buffered_reader::skip_until(std::byte)", "[reading]")
   {
     // Arrange
     auto source = fake_reader{std::span{input}.first(10u)};
-    auto sut = make_buffered_reader(3u, source);
+    auto sut = buffered_reader{std::move(source), 3u};
 
     // Act
     const auto result = sut.skip_until(delimiter);
@@ -955,7 +1218,7 @@ TEST_CASE("buffered_reader::skip_until(std::byte)", "[reading]")
     {
       REQUIRE( result.has_value() );
       REQUIRE( *result == 10u );
-      REQUIRE( source.remaining() == 0u );
+      REQUIRE( sut.source().remaining() == 0u );
     }
   }
 
@@ -965,7 +1228,7 @@ TEST_CASE("buffered_reader::skip_until(std::byte)", "[reading]")
     const auto expected = std::make_error_code(std::errc::io_error);
     auto source = fake_reader{std::span{input}.first(5u)};
     source.fail_at_end(expected);
-    auto sut = make_buffered_reader(3u, source);
+    auto sut = buffered_reader{std::move(source), 3u};
 
     // Act
     const auto result = sut.skip_until(delimiter);
