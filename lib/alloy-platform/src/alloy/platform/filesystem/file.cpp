@@ -205,6 +205,46 @@ auto alloy::platform::file::write(const_buffer buffer)
   return m_handle->write(buffer);
 }
 
+//-----------------------------------------------------------------------------
+// Virtual Hooks : Reading
+//-----------------------------------------------------------------------------
+
+auto alloy::platform::file::do_read(std::span<std::byte> buffer)
+  noexcept -> core::result<std::size_t,std::error_code>
+{
+  auto result = read(mutable_buffer{buffer.data(), buffer.size()});
+
+  // Files signal the end with an error, whereas readers signal it by reading
+  // no bytes
+  if (result.has_error()) {
+    if (result.error() == error_code::eof) {
+      return 0u;
+    }
+    return core::fail(result.error());
+  }
+  return result->size();
+}
+
+//-----------------------------------------------------------------------------
+// Virtual Hooks : Writing
+//-----------------------------------------------------------------------------
+
+auto alloy::platform::file::do_write(std::span<const std::byte> buffer)
+  noexcept -> core::result<std::size_t,std::error_code>
+{
+  auto result = write(const_buffer{buffer.data(), buffer.size()});
+
+  // Files signal that no more bytes fit with an error, whereas writers signal
+  // it by writing no bytes
+  if (result.has_error()) {
+    if (result.error() == error_code::eof) {
+      return 0u;
+    }
+    return core::fail(result.error());
+  }
+  return result->size();
+}
+
 //=============================================================================
 // inline definitions : non-member functions : enum : file::error_code
 //=============================================================================

@@ -20,13 +20,19 @@
 #include "alloy/platform/buffers/const_buffer.hpp"
 #include "alloy/platform/buffers/mutable_buffer.hpp"
 
+#include "alloy/core/io/deserializer.hpp"
+#include "alloy/core/io/reader.hpp"
+#include "alloy/core/io/serializer.hpp"
+#include "alloy/core/io/writer.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/result.hpp"
 
 #include <system_error>
 #include <type_traits>
 #include <array>   // std::array
+#include <cstddef> // std::byte, std::size_t
 #include <cstdint> // std::uint8_t
+#include <span>    // std::span
 
 namespace alloy::platform {
 
@@ -41,6 +47,8 @@ namespace alloy::platform {
   /// upon completion.
   /////////////////////////////////////////////////////////////////////////////
   class ALLOY_PLATFORM_API file
+    : public core::reader,
+      public core::writer
   {
     //-------------------------------------------------------------------------
     // Public Member Types
@@ -183,12 +191,15 @@ namespace alloy::platform {
     auto write(const_buffer buffer)
       noexcept -> core::result<const_buffer,std::error_code>;
 
+    using core::reader::read;
+    using core::writer::write;
+
     //-------------------------------------------------------------------------
 
     /// \brief Reads an object from this file
     ///
-    /// This uses the file_serializer<T> customization point to read arbitrary
-    /// types.
+    /// This uses the core::deserializer<T> customization point to read
+    /// arbitrary types.
     ///
     /// \note Reading objects directly from the file is meant to not only
     ///       provide a means of reading stronger data-types, but also provide
@@ -205,8 +216,8 @@ namespace alloy::platform {
 
     /// \brief Writes an object to this file
     ///
-    /// This uses the file_serializer<T> customization point to write arbitrary
-    /// types.
+    /// This uses the core::serializer<T> customization point to write
+    /// arbitrary types.
     ///
     /// \note Writing objects directly from the file is meant to not only
     ///       provide a means of reading stronger data-types, but also provide
@@ -221,6 +232,22 @@ namespace alloy::platform {
     template <typename T>
     auto write_object(const T& v)
       noexcept -> core::result<void,std::error_code>;
+
+    //-------------------------------------------------------------------------
+    // Virtual Hooks : Reading
+    //-------------------------------------------------------------------------
+  private:
+
+    auto do_read(std::span<std::byte> buffer)
+      noexcept -> core::result<std::size_t,std::error_code> override;
+
+    //-------------------------------------------------------------------------
+    // Virtual Hooks : Writing
+    //-------------------------------------------------------------------------
+  private:
+
+    auto do_write(std::span<const std::byte> buffer)
+      noexcept -> core::result<std::size_t,std::error_code> override;
 
     //-------------------------------------------------------------------------
     // Private Members
@@ -298,15 +325,7 @@ template <typename T>
 inline
 auto alloy::platform::file::read_object() noexcept -> core::result<T,std::error_code>
 {
-  static_assert(
-    noexcept(file_serializer<T>::deserialize(*this)),
-    "user-defined file_serializer<T>::deserialize requests must be non-throwing. "
-    "Please ensure your implementation translates all errors to an "
-    "result<T,std::error_code> type and returns them accordingly, then mark the function "
-    "'noexcept'."
-  );
-
-  return file_serializer<T>::deserialize(*this);
+  return core::deserialize<T>(*this);
 }
 
 template <typename T>
@@ -314,15 +333,7 @@ inline
 auto alloy::platform::file::write_object(const T& v)
   noexcept -> core::result<void,std::error_code>
 {
-  static_assert(
-    noexcept(file_serializer<T>::serialize(*this, v)),
-    "user-defined file_serializer<T>::serialize requests must be non-throwing. "
-    "Please ensure your implementation translates all errors to an "
-    "result<void,std::error_code> type and returns them accordingly, then mark the function "
-    "'noexcept'."
-  );
-
-  return file_serializer<T>::serialize(*this, v);
+  return core::serialize(*this, v);
 }
 
 //=============================================================================
