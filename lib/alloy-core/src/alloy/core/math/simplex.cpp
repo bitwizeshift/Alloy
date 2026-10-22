@@ -66,7 +66,9 @@ namespace alloy::core {
     constexpr
     auto floor_f_to_i(real x) noexcept -> int
     {
-      return x > 0 ? static_cast<int>(x) : static_cast<int>(x) - 1;
+      const auto truncated = static_cast<int>(x);
+
+      return (x < static_cast<real>(truncated)) ? truncated - 1 : truncated;
     }
   } // anonymous namespace
 } // namespace alloy::core
@@ -80,8 +82,7 @@ auto alloy::core::simplex::raw_noise(real x, real y) noexcept -> real
   static const auto s_sqrt3 = static_cast<real>(sqrt( 3.0 ));
   static const auto s_skew  = real{0.5} * (s_sqrt3 - real{1});
 
-  static const auto s_sqrt5 = static_cast<real>(sqrt( 5.0 ));
-  static const auto s_unskew = (real{3} - s_sqrt5) / real{6};
+  static const auto s_unskew = (real{3} - s_sqrt3) / real{6};
 
   // Noise contributions from the three corners
   auto n0 = real{};
