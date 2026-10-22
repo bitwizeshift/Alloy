@@ -24,6 +24,7 @@
 #include "alloy/core/geometry/line_segment.hpp"
 #include "alloy/core/geometry/oriented_box.hpp"
 #include "alloy/core/geometry/plane.hpp"
+#include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/geometry/ray.hpp"
 #include "alloy/core/geometry/rectangle.hpp"
 #include "alloy/core/geometry/sphere.hpp"
@@ -36,6 +37,7 @@
 
 #include <concepts>
 #include <type_traits> // std::conjunction, std::negation, std::is_reference
+#include <utility>     // std::declval
 #include <variant>
 
 namespace alloy::core {
@@ -220,6 +222,11 @@ namespace alloy::core {
   /// whether the two objects share at least one point. Objects that only touch
   /// at their boundaries intersect.
   ///
+  /// Specializations for pairs whose intersection is itself geometry may also
+  /// provide the static member function `intersection(const L&, const R&)`,
+  /// which gets that geometry as a `core::intersection` of the types that it
+  /// may be.
+  ///
   /// Only one of `<L, R>` and `<R, L>` is specialized for each pair of types,
   /// since `intersects` accepts its arguments in either order.
   ///
@@ -236,18 +243,24 @@ namespace alloy::core {
   struct ALLOY_CORE_API intersection_traits<plane, plane>
   {
     static auto intersects(const plane& a, const plane& b) noexcept -> bool;
+    static auto intersection(const plane& a, const plane& b)
+      noexcept -> core::intersection<line, plane>;
   };
 
   template <>
   struct ALLOY_CORE_API intersection_traits<plane, line>
   {
     static auto intersects(const plane& a, const line& b) noexcept -> bool;
+    static auto intersection(const plane& a, const line& b)
+      noexcept -> core::intersection<point3, line>;
   };
 
   template <>
   struct ALLOY_CORE_API intersection_traits<plane, ray>
   {
     static auto intersects(const plane& a, const ray& b) noexcept -> bool;
+    static auto intersection(const plane& a, const ray& b)
+      noexcept -> core::intersection<point3, ray>;
   };
 
   template <>
@@ -255,6 +268,8 @@ namespace alloy::core {
   {
     static auto intersects(const plane& a, const line_segment& b)
       noexcept -> bool;
+    static auto intersection(const plane& a, const line_segment& b)
+      noexcept -> core::intersection<point3, line_segment>;
   };
 
   template <>
@@ -299,6 +314,8 @@ namespace alloy::core {
   struct ALLOY_CORE_API intersection_traits<line, sphere>
   {
     static auto intersects(const line& a, const sphere& b) noexcept -> bool;
+    static auto intersection(const line& a, const sphere& b)
+      noexcept -> core::intersection<point3, line_segment>;
   };
 
   template <>
@@ -312,6 +329,8 @@ namespace alloy::core {
   {
     static auto intersects(const line& a, const axis_aligned_box& b)
       noexcept -> bool;
+    static auto intersection(const line& a, const axis_aligned_box& b)
+      noexcept -> core::intersection<point3, line_segment>;
   };
 
   template <>
@@ -331,6 +350,8 @@ namespace alloy::core {
   struct ALLOY_CORE_API intersection_traits<ray, sphere>
   {
     static auto intersects(const ray& a, const sphere& b) noexcept -> bool;
+    static auto intersection(const ray& a, const sphere& b)
+      noexcept -> core::intersection<point3, line_segment>;
   };
 
   template <>
@@ -344,6 +365,8 @@ namespace alloy::core {
   {
     static auto intersects(const ray& a, const axis_aligned_box& b)
       noexcept -> bool;
+    static auto intersection(const ray& a, const axis_aligned_box& b)
+      noexcept -> core::intersection<point3, line_segment>;
   };
 
   template <>
@@ -365,6 +388,8 @@ namespace alloy::core {
   {
     static auto intersects(const line_segment& a, const sphere& b)
       noexcept -> bool;
+    static auto intersection(const line_segment& a, const sphere& b)
+      noexcept -> core::intersection<point3, line_segment>;
   };
 
   template <>
@@ -379,6 +404,8 @@ namespace alloy::core {
   {
     static auto intersects(const line_segment& a, const axis_aligned_box& b)
       noexcept -> bool;
+    static auto intersection(const line_segment& a, const axis_aligned_box& b)
+      noexcept -> core::intersection<point3, line_segment>;
   };
 
   template <>
@@ -578,6 +605,78 @@ namespace alloy::core {
     requires intersectable<L, R>
   constexpr auto intersects(const L& lhs, const R& rhs) noexcept -> bool;
 
+  //============================================================================
+  // concept : intersection_computable
+  //============================================================================
+
+  namespace detail {
+
+    template <typename L, typename R>
+    concept has_intersection_member = requires(const L& l, const R& r) {
+      intersection_traits<L, R>::intersection(l, r);
+    };
+
+    template <typename L, typename R>
+    struct intersection_of_result
+    {
+      using type = decltype(
+        intersection_traits<R, L>::intersection(
+          std::declval<const R&>(),
+          std::declval<const L&>()
+        )
+      );
+    };
+
+    template <typename L, typename R>
+      requires has_intersection_member<L, R>
+    struct intersection_of_result<L, R>
+    {
+      using type = decltype(
+        intersection_traits<L, R>::intersection(
+          std::declval<const L&>(),
+          std::declval<const R&>()
+        )
+      );
+    };
+
+  } // namespace detail
+
+  /// \brief Determines whether the geometry of the intersection of objects
+  ///        of the types \p L and \p R can be computed, in either order
+  ///
+  /// \tparam L the type of the left object
+  /// \tparam R the type of the right object
+  template <typename L, typename R>
+  concept intersection_computable = detail::has_intersection_member<L, R> ||
+                                    detail::has_intersection_member<R, L>;
+
+  /// \brief The type of the intersection of objects of the types \p L and
+  ///        \p R
+  ///
+  /// \tparam L the type of the left object
+  /// \tparam R the type of the right object
+  template <typename L, typename R>
+    requires intersection_computable<L, R>
+  using intersection_of_t = typename detail::intersection_of_result<L, R>::type;
+
+  //============================================================================
+  // functions : intersection_of
+  //============================================================================
+
+  /// \brief Gets the geometry where the objects \p lhs and \p rhs intersect
+  ///
+  /// This evaluates the `intersection_traits` specialized for the types of
+  /// the arguments, in whichever order it is specialized.
+  ///
+  /// \param lhs the first object
+  /// \param rhs the second object
+  /// \return the intersection, which has no value if \p lhs and \p rhs do
+  ///         not intersect
+  template <typename L, typename R>
+    requires intersection_computable<L, R>
+  constexpr auto intersection_of(const L& lhs, const R& rhs)
+    noexcept -> intersection_of_t<L, R>;
+
 } // namespace alloy::core
 
 //==============================================================================
@@ -742,6 +841,23 @@ auto alloy::core::intersects(const L& lhs, const R& rhs) noexcept -> bool
     return intersection_traits<L, R>::intersects(lhs, rhs);
   } else {
     return intersection_traits<R, L>::intersects(rhs, lhs);
+  }
+}
+
+//==============================================================================
+// functions : intersection_of
+//==============================================================================
+
+template <typename L, typename R>
+  requires alloy::core::intersection_computable<L, R>
+inline constexpr
+auto alloy::core::intersection_of(const L& lhs, const R& rhs)
+  noexcept -> intersection_of_t<L, R>
+{
+  if constexpr (detail::has_intersection_member<L, R>) {
+    return intersection_traits<L, R>::intersection(lhs, rhs);
+  } else {
+    return intersection_traits<R, L>::intersection(rhs, lhs);
   }
 }
 

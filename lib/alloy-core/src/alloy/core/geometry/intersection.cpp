@@ -290,6 +290,64 @@ namespace {
     return t.contains(crossing);
   }
 
+  using chord = alloy::core::intersection<point3, line_segment>;
+
+  /// Gets the range of 't' where 'origin + t * direction' is within the
+  /// sphere 's'
+  auto range_within(
+    const point3& origin,
+    const vector3& direction,
+    const sphere& s
+  ) noexcept -> std::optional<interval>
+  {
+    // Solves '|offset + t * direction|^2 = radius^2' for both 't'.
+    const auto offset = (origin - s.center());
+    const auto a = direction.square_magnitude();
+    const auto b = offset.dot(direction);
+    const auto c = offset.square_magnitude() - (s.radius() * s.radius());
+    if (a <= (default_tolerance * default_tolerance)) {
+      // Without a direction, the line is a single point.
+      if (c > real{0}) {
+        return std::nullopt;
+      }
+      return interval{-infinity, infinity};
+    }
+    const auto discriminant = (b * b) - (a * c);
+    if (discriminant < real{0}) {
+      return std::nullopt;
+    }
+    const auto root = alloy::core::sqrt(discriminant);
+
+    return interval{(-b - root) / a, (-b + root) / a};
+  }
+
+  /// Gets the part of 'range' that is also within 'limits' of the line
+  /// 'origin + t * direction', as the point where that part is a single
+  /// point, or as a segment otherwise
+  auto chord_within(
+    const point3& origin,
+    const vector3& direction,
+    interval limits,
+    std::optional<interval> range
+  ) noexcept -> chord
+  {
+    if (!range.has_value()) {
+      return {};
+    }
+    const auto near = std::max(limits.near, range->near);
+    const auto far = std::min(limits.far, range->far);
+    if (near > far) {
+      return {};
+    }
+    const auto start = origin + (direction * near);
+    const auto end = origin + (direction * far);
+    const auto length = (end - start).square_magnitude();
+    if (length <= (default_tolerance * default_tolerance)) {
+      return start;
+    }
+    return line_segment{start, end};
+  }
+
 } // namespace
 
 //------------------------------------------------------------------------------
@@ -318,6 +376,31 @@ auto alloy::core::intersection_traits<
 
 auto alloy::core::intersection_traits<
   alloy::core::plane,
+  alloy::core::plane
+>::intersection(const plane& a, const plane& b)
+  noexcept -> core::intersection<line, plane>
+{
+  const auto na = a.normalized();
+  const auto nb = b.normalized();
+  const auto direction = na.normal().cross(nb.normal());
+  const auto square_length = direction.square_magnitude();
+  if (square_length <= (default_tolerance * default_tolerance)) {
+    if (intersects(a, b)) {
+      return a;
+    }
+    return {};
+  }
+
+  // The point on both planes nearest to the origin, as described in
+  // "Real-Time Collision Detection" by Christer Ericson, section 5.4.4.
+  const auto offsets = (nb.normal() * -na.d()) - (na.normal() * -nb.d());
+  const auto origin = point3{} + (offsets.cross(direction) / square_length);
+
+  return line{origin, direction / sqrt(square_length)};
+}
+
+auto alloy::core::intersection_traits<
+  alloy::core::plane,
   alloy::core::line
 >::intersects(const plane& a, const line& b) noexcept -> bool
 {
@@ -326,6 +409,24 @@ auto alloy::core::intersection_traits<
     return true;
   }
   return abs(n.distance_to(b.origin())) <= default_tolerance;
+}
+
+auto alloy::core::intersection_traits<
+  alloy::core::plane,
+  alloy::core::line
+>::intersection(const plane& a, const line& b)
+  noexcept -> core::intersection<point3, line>
+{
+  const auto n = a.normalized();
+  const auto distance = n.distance_to(b.origin());
+  const auto approach = n.normal().dot(b.direction());
+  if (abs(approach) <= default_tolerance) {
+    if (abs(distance) <= default_tolerance) {
+      return b;
+    }
+    return {};
+  }
+  return b.point_at_distance(-distance / approach);
 }
 
 auto alloy::core::intersection_traits<
@@ -345,6 +446,28 @@ auto alloy::core::intersection_traits<
 
 auto alloy::core::intersection_traits<
   alloy::core::plane,
+  alloy::core::ray
+>::intersection(const plane& a, const ray& b)
+  noexcept -> core::intersection<point3, ray>
+{
+  const auto n = a.normalized();
+  const auto distance = n.distance_to(b.origin());
+  const auto approach = n.normal().dot(b.direction());
+  if (abs(approach) <= default_tolerance) {
+    if (abs(distance) <= default_tolerance) {
+      return b;
+    }
+    return {};
+  }
+  const auto t = -distance / approach;
+  if (t < real{0}) {
+    return {};
+  }
+  return b.point_at_distance(t);
+}
+
+auto alloy::core::intersection_traits<
+  alloy::core::plane,
   alloy::core::line_segment
 >::intersects(const plane& a, const line_segment& b) noexcept -> bool
 {
@@ -352,6 +475,24 @@ auto alloy::core::intersection_traits<
   const auto d1 = a.distance_to(b.end_point());
 
   return (d0 * d1) <= real{0};
+}
+
+auto alloy::core::intersection_traits<
+  alloy::core::plane,
+  alloy::core::line_segment
+>::intersection(const plane& a, const line_segment& b)
+  noexcept -> core::intersection<point3, line_segment>
+{
+  const auto n = a.normalized();
+  const auto d0 = n.distance_to(b.start_point());
+  const auto d1 = n.distance_to(b.end_point());
+  if (abs(d0) <= default_tolerance && abs(d1) <= default_tolerance) {
+    return b;
+  }
+  if ((d0 * d1) > real{0}) {
+    return {};
+  }
+  return b.start_point() + (b.direction() * (d0 / (d0 - d1)));
 }
 
 auto alloy::core::intersection_traits<
@@ -441,6 +582,20 @@ auto alloy::core::intersection_traits<
 
 auto alloy::core::intersection_traits<
   alloy::core::line,
+  alloy::core::sphere
+>::intersection(const line& a, const sphere& b)
+  noexcept -> core::intersection<point3, line_segment>
+{
+  return chord_within(
+    a.origin(),
+    a.direction(),
+    interval{-infinity, infinity},
+    range_within(a.origin(), a.direction(), b)
+  );
+}
+
+auto alloy::core::intersection_traits<
+  alloy::core::line,
   alloy::core::capsule
 >::intersects(const line& a, const capsule& b) noexcept -> bool
 {
@@ -466,6 +621,24 @@ auto alloy::core::intersection_traits<
     b.bottom_left_point(),
     b.top_right_point()
   ).has_value();
+}
+
+auto alloy::core::intersection_traits<
+  alloy::core::line,
+  alloy::core::axis_aligned_box
+>::intersection(const line& a, const axis_aligned_box& b)
+  noexcept -> core::intersection<point3, line_segment>
+{
+  const auto limits = interval{-infinity, infinity};
+  const auto range = clip_to_slabs(
+    a.origin(),
+    a.direction(),
+    limits,
+    b.bottom_left_point(),
+    b.top_right_point()
+  );
+
+  return chord_within(a.origin(), a.direction(), limits, range);
 }
 
 auto alloy::core::intersection_traits<
@@ -513,6 +686,20 @@ auto alloy::core::intersection_traits<
 
 auto alloy::core::intersection_traits<
   alloy::core::ray,
+  alloy::core::sphere
+>::intersection(const ray& a, const sphere& b)
+  noexcept -> core::intersection<point3, line_segment>
+{
+  return chord_within(
+    a.origin(),
+    a.direction(),
+    interval{real{0}, infinity},
+    range_within(a.origin(), a.direction(), b)
+  );
+}
+
+auto alloy::core::intersection_traits<
+  alloy::core::ray,
   alloy::core::capsule
 >::intersects(const ray& a, const capsule& b) noexcept -> bool
 {
@@ -538,6 +725,24 @@ auto alloy::core::intersection_traits<
     b.bottom_left_point(),
     b.top_right_point()
   ).has_value();
+}
+
+auto alloy::core::intersection_traits<
+  alloy::core::ray,
+  alloy::core::axis_aligned_box
+>::intersection(const ray& a, const axis_aligned_box& b)
+  noexcept -> core::intersection<point3, line_segment>
+{
+  const auto limits = interval{real{0}, infinity};
+  const auto range = clip_to_slabs(
+    a.origin(),
+    a.direction(),
+    limits,
+    b.bottom_left_point(),
+    b.top_right_point()
+  );
+
+  return chord_within(a.origin(), a.direction(), limits, range);
 }
 
 auto alloy::core::intersection_traits<
@@ -575,6 +780,20 @@ auto alloy::core::intersection_traits<
 
 auto alloy::core::intersection_traits<
   alloy::core::line_segment,
+  alloy::core::sphere
+>::intersection(const line_segment& a, const sphere& b)
+  noexcept -> core::intersection<point3, line_segment>
+{
+  return chord_within(
+    a.start_point(),
+    a.direction(),
+    interval{real{0}, real{1}},
+    range_within(a.start_point(), a.direction(), b)
+  );
+}
+
+auto alloy::core::intersection_traits<
+  alloy::core::line_segment,
   alloy::core::capsule
 >::intersects(const line_segment& a, const capsule& b) noexcept -> bool
 {
@@ -593,6 +812,24 @@ auto alloy::core::intersection_traits<
     b.bottom_left_point(),
     b.top_right_point()
   ).has_value();
+}
+
+auto alloy::core::intersection_traits<
+  alloy::core::line_segment,
+  alloy::core::axis_aligned_box
+>::intersection(const line_segment& a, const axis_aligned_box& b)
+  noexcept -> core::intersection<point3, line_segment>
+{
+  const auto limits = interval{real{0}, real{1}};
+  const auto range = clip_to_slabs(
+    a.start_point(),
+    a.direction(),
+    limits,
+    b.bottom_left_point(),
+    b.top_right_point()
+  );
+
+  return chord_within(a.start_point(), a.direction(), limits, range);
 }
 
 auto alloy::core::intersection_traits<

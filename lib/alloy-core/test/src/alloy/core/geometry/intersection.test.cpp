@@ -2435,4 +2435,431 @@ TEST_CASE("intersects(const rectangle&, const rectangle&)", "[intersects]") {
   }
 }
 
+TEST_CASE("intersection_computable<L, R>", "[intersection_of]") {
+  SECTION("Traits provide the intersection in the given order") {
+    STATIC_REQUIRE(intersection_computable<plane, plane>);
+  }
+  SECTION("Traits provide the intersection in the reverse order") {
+    STATIC_REQUIRE(intersection_computable<sphere, ray>);
+  }
+  SECTION("Traits only test for the intersection") {
+    STATIC_REQUIRE_FALSE(intersection_computable<sphere, sphere>);
+  }
+}
+
+TEST_CASE("intersection_of(const plane&, const plane&)", "[intersection_of]") {
+  // Arrange
+  const auto a = plane{vector3{0, 0, 1}, 1};
+  const auto tolerance = real{1e-4f};
+
+  SECTION("Planes cross") {
+    // Arrange
+    const auto b = plane{vector3{1, 0, 0}, 2};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<line>());
+    REQUIRE(almost_equal(
+      result.as<line>(),
+      line{point3{2, 0, 1}, vector3{0, 1, 0}},
+      tolerance
+    ));
+  }
+  SECTION("Planes are the same") {
+    // Arrange
+    const auto b = plane{0, 0, -2, 2};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<plane>());
+    REQUIRE(almost_equal(result.as<plane>(), a, tolerance));
+  }
+  SECTION("Planes are parallel and distinct") {
+    // Arrange
+    const auto b = plane{vector3{0, 0, 1}, 2};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE_FALSE(result.has_intersection());
+  }
+}
+
+TEST_CASE("intersection_of(const plane&, const line&)", "[intersection_of]") {
+  // Arrange
+  const auto a = plane{vector3{0, 0, 1}, 1};
+  const auto tolerance = real{1e-4f};
+
+  SECTION("Line crosses the plane") {
+    // Arrange
+    const auto b = line{point3{3, 2, 5}, vector3{0, 0, -1}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<point3>());
+    REQUIRE(almost_equal(result.as<point3>(), point3{3, 2, 1}, tolerance));
+  }
+  SECTION("Line lies on the plane") {
+    // Arrange
+    const auto b = line{point3{3, 2, 1}, vector3{1, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<line>());
+    REQUIRE(almost_equal(result.as<line>(), b, tolerance));
+  }
+  SECTION("Line is parallel to the plane") {
+    // Arrange
+    const auto b = line{point3{3, 2, 5}, vector3{1, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE_FALSE(result.has_intersection());
+  }
+  SECTION("Arguments are reversed") {
+    // Arrange
+    const auto b = line{point3{3, 2, 5}, vector3{0, 0, -1}};
+
+    // Act
+    const auto result = intersection_of(b, a);
+
+    // Assert
+    REQUIRE(result.contains<point3>());
+    REQUIRE(almost_equal(result.as<point3>(), point3{3, 2, 1}, tolerance));
+  }
+}
+
+TEST_CASE("intersection_of(const plane&, const ray&)", "[intersection_of]") {
+  // Arrange
+  const auto a = plane{vector3{0, 0, 1}, 1};
+  const auto tolerance = real{1e-4f};
+
+  SECTION("Ray faces the plane") {
+    // Arrange
+    const auto b = ray{point3{3, 2, 5}, vector3{0, 0, -1}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<point3>());
+    REQUIRE(almost_equal(result.as<point3>(), point3{3, 2, 1}, tolerance));
+  }
+  SECTION("Ray faces away from the plane") {
+    // Arrange
+    const auto b = ray{point3{3, 2, 5}, vector3{0, 0, 1}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE_FALSE(result.has_intersection());
+  }
+  SECTION("Ray lies on the plane") {
+    // Arrange
+    const auto b = ray{point3{3, 2, 1}, vector3{1, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<ray>());
+    REQUIRE(almost_equal(result.as<ray>(), b, tolerance));
+  }
+}
+
+TEST_CASE("intersection_of(const plane&, const line_segment&)", "[intersection_of]") {
+  // Arrange
+  const auto a = plane{vector3{0, 0, 1}, 1};
+  const auto tolerance = real{1e-4f};
+
+  SECTION("Segment crosses the plane") {
+    // Arrange
+    const auto b = line_segment{point3{0, 0, 0}, point3{4, 2, 2}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<point3>());
+    REQUIRE(almost_equal(result.as<point3>(), point3{2, 1, 1}, tolerance));
+  }
+  SECTION("Segment lies on the plane") {
+    // Arrange
+    const auto b = line_segment{point3{0, 0, 1}, point3{4, 2, 1}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<line_segment>());
+    REQUIRE(almost_equal(result.as<line_segment>(), b, tolerance));
+  }
+  SECTION("Segment is on one side of the plane") {
+    // Arrange
+    const auto b = line_segment{point3{0, 0, 2}, point3{4, 2, 3}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE_FALSE(result.has_intersection());
+  }
+}
+
+TEST_CASE("intersection_of(const line&, const sphere&)", "[intersection_of]") {
+  // Arrange
+  const auto b = sphere{point3{5, 0, 0}, real{1}};
+  const auto tolerance = real{1e-4f};
+
+  SECTION("Line passes through the sphere") {
+    // Arrange
+    const auto a = line{point3{0, 0, 0}, vector3{1, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<line_segment>());
+    REQUIRE(almost_equal(
+      result.as<line_segment>(),
+      line_segment{point3{4, 0, 0}, point3{6, 0, 0}},
+      tolerance
+    ));
+  }
+  SECTION("Line touches the sphere") {
+    // Arrange
+    const auto a = line{point3{0, 1, 0}, vector3{1, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<point3>());
+    REQUIRE(almost_equal(result.as<point3>(), point3{5, 1, 0}, tolerance));
+  }
+  SECTION("Line misses the sphere") {
+    // Arrange
+    const auto a = line{point3{0, 2, 0}, vector3{1, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE_FALSE(result.has_intersection());
+  }
+  SECTION("Arguments are reversed") {
+    // Arrange
+    const auto a = line{point3{0, 0, 0}, vector3{1, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(b, a);
+
+    // Assert
+    REQUIRE(result.contains<line_segment>());
+    REQUIRE(almost_equal(
+      result.as<line_segment>(),
+      line_segment{point3{4, 0, 0}, point3{6, 0, 0}},
+      tolerance
+    ));
+  }
+}
+
+TEST_CASE("intersection_of(const ray&, const sphere&)", "[intersection_of]") {
+  // Arrange
+  const auto b = sphere{point3{5, 0, 0}, real{1}};
+  const auto tolerance = real{1e-4f};
+
+  SECTION("Ray starts inside the sphere") {
+    // Arrange
+    const auto a = ray{point3{5, 0, 0}, vector3{1, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<line_segment>());
+    REQUIRE(almost_equal(
+      result.as<line_segment>(),
+      line_segment{point3{5, 0, 0}, point3{6, 0, 0}},
+      tolerance
+    ));
+  }
+  SECTION("Sphere is behind the ray") {
+    // Arrange
+    const auto a = ray{point3{0, 0, 0}, vector3{-1, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE_FALSE(result.has_intersection());
+  }
+}
+
+TEST_CASE("intersection_of(const line_segment&, const sphere&)", "[intersection_of]") {
+  // Arrange
+  const auto b = sphere{point3{5, 0, 0}, real{1}};
+  const auto tolerance = real{1e-4f};
+
+  SECTION("Segment ends inside the sphere") {
+    // Arrange
+    const auto a = line_segment{point3{0, 0, 0}, point3{5, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<line_segment>());
+    REQUIRE(almost_equal(
+      result.as<line_segment>(),
+      line_segment{point3{4, 0, 0}, point3{5, 0, 0}},
+      tolerance
+    ));
+  }
+  SECTION("Segment ends short of the sphere") {
+    // Arrange
+    const auto a = line_segment{point3{0, 0, 0}, point3{3, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE_FALSE(result.has_intersection());
+  }
+}
+
+TEST_CASE("intersection_of(const line&, const axis_aligned_box&)", "[intersection_of]") {
+  // Arrange
+  const auto b = make_unit_box();
+  const auto tolerance = real{1e-4f};
+
+  SECTION("Line passes through the box") {
+    // Arrange
+    const auto a = line{point3{0, 0, 0}, vector3{1, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<line_segment>());
+    REQUIRE(almost_equal(
+      result.as<line_segment>(),
+      line_segment{point3{-1, 0, 0}, point3{1, 0, 0}},
+      tolerance
+    ));
+  }
+  SECTION("Line touches an edge of the box") {
+    // Arrange
+    const auto a = line{point3{2, 0, 0}, vector3{-1, 1, 0}.normalized()};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<point3>());
+    REQUIRE(almost_equal(result.as<point3>(), point3{1, 1, 0}, tolerance));
+  }
+  SECTION("Line misses the box") {
+    // Arrange
+    const auto a = line{point3{0, 2, 0}, vector3{1, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE_FALSE(result.has_intersection());
+  }
+}
+
+TEST_CASE("intersection_of(const ray&, const axis_aligned_box&)", "[intersection_of]") {
+  // Arrange
+  const auto b = make_unit_box();
+  const auto tolerance = real{1e-4f};
+
+  SECTION("Ray starts inside the box") {
+    // Arrange
+    const auto a = ray{point3{0, 0, 0}, vector3{0, 0, 1}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<line_segment>());
+    REQUIRE(almost_equal(
+      result.as<line_segment>(),
+      line_segment{point3{0, 0, 0}, point3{0, 0, 1}},
+      tolerance
+    ));
+  }
+  SECTION("Box is behind the ray") {
+    // Arrange
+    const auto a = ray{point3{0, 0, 5}, vector3{0, 0, 1}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE_FALSE(result.has_intersection());
+  }
+}
+
+TEST_CASE("intersection_of(const line_segment&, const axis_aligned_box&)", "[intersection_of]") {
+  // Arrange
+  const auto b = make_unit_box();
+  const auto tolerance = real{1e-4f};
+
+  SECTION("Segment passes through the box") {
+    // Arrange
+    const auto a = line_segment{point3{-5, 0, 0}, point3{5, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE(result.contains<line_segment>());
+    REQUIRE(almost_equal(
+      result.as<line_segment>(),
+      line_segment{point3{-1, 0, 0}, point3{1, 0, 0}},
+      tolerance
+    ));
+  }
+  SECTION("Segment ends short of the box") {
+    // Arrange
+    const auto a = line_segment{point3{-5, 0, 0}, point3{-2, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(a, b);
+
+    // Assert
+    REQUIRE_FALSE(result.has_intersection());
+  }
+  SECTION("Arguments are reversed") {
+    // Arrange
+    const auto a = line_segment{point3{-5, 0, 0}, point3{0, 0, 0}};
+
+    // Act
+    const auto result = intersection_of(b, a);
+
+    // Assert
+    REQUIRE(result.contains<line_segment>());
+    REQUIRE(almost_equal(
+      result.as<line_segment>(),
+      line_segment{point3{-1, 0, 0}, point3{0, 0, 0}},
+      tolerance
+    ));
+  }
+}
+
 } // namespace alloy::core::test
