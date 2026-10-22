@@ -479,6 +479,7 @@ namespace alloy::core {
     noexcept -> quaternion;
   auto operator*(const quaternion& lhs, real rhs) noexcept -> quaternion;
   auto operator*(real lhs, const quaternion& rhs) noexcept -> quaternion;
+  ALLOY_CORE_API
   auto operator*(const quaternion& lhs, const vector3& rhs) noexcept -> vector3;
   auto operator/(const quaternion& lhs, real rhs) noexcept -> quaternion;
 
