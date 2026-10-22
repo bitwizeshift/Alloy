@@ -38,8 +38,13 @@ namespace alloy::core {
   //////////////////////////////////////////////////////////////////////////////
   /// \brief Defines a 4x4 Matrix
   ///
-  /// The matrix is accessed in column-major format (e.g. mat[col][row]) as
-  /// opposed to the native [row][col] way that C++ handles 2d arrays
+  /// The matrix follows the column-vector convention: it transforms a vector
+  /// as `M * v`, and the product `A * B` applies `B` first. This matches the
+  /// conventions of OpenGL and GLSL.
+  ///
+  /// The entries are stored column by column, so `data()` can be uploaded to
+  /// a GLSL `mat4` without being transposed, and `mat[c][r]` is the entry at
+  /// row `r` and column `c`.
   //////////////////////////////////////////////////////////////////////////////
   class ALLOY_CORE_API matrix4
   {
@@ -78,18 +83,19 @@ namespace alloy::core {
 
     /// \brief Constructs a matrix4 from 4 row vectors
     ///
-    /// This constructor is to allow a fluid interface for construction:
     /// \code
-    /// auto mat = matrix4 { { 1, 0, 0, 0 },
-    ///                             { 0, 1, 0, 0 },
-    ///                             { 0, 0, 1, 0 },
-    ///                             { 0, 0, 0, 1 } };
+    /// auto mat = matrix4{
+    ///   vector4{1, 0, 0, 0},
+    ///   vector4{0, 1, 0, 0},
+    ///   vector4{0, 0, 1, 0},
+    ///   vector4{0, 0, 0, 1}
+    /// };
     /// \endcode
     ///
-    /// \param v0 the first row vector
-    /// \param v1 the second row vector
-    /// \param v2 the third row vector
-    /// \param v3 the fourth row vector
+    /// \param v0 the first row
+    /// \param v1 the second row
+    /// \param v2 the third row
+    /// \param v3 the fourth row
     constexpr matrix4(
       const vector4& v0,
       const vector4& v1,
@@ -207,11 +213,13 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
 
     /// \{
-    /// \brief Retrieves the matrix entry at column \p c, and returns a
-    ///        proxy to that row
+    /// \brief Retrieves the matrix entry at row \p r and column \p c
     ///
+    /// \pre \p r and \p c are within the matrix
+    ///
+    /// \param r the row
     /// \param c the column
-    /// \return a proxy to the row
+    /// \return reference to the entry
     constexpr auto get(index_type r, index_type c) noexcept -> reference;
     constexpr auto get(index_type r, index_type c)
       const noexcept -> const_reference;
@@ -224,7 +232,7 @@ namespace alloy::core {
     /// \param r the row index to retrieve
     constexpr auto row(index_type r) const noexcept -> vector4;
 
-    /// \brief Retrieves the vector at row \p c
+    /// \brief Retrieves the vector at column \p c
     ///
     /// \param c the column index to retrieve
     constexpr auto column(index_type c) const noexcept -> vector4;
@@ -264,7 +272,7 @@ namespace alloy::core {
 
     /// \brief Computes the inverse of this matrix4
     ///
-    /// If no inverse is possible, this returns \ref matrix4::identity
+    /// If this matrix is singular, this returns `matrix4_constants::identity`
     ///
     /// \return the inverse of this matrix4
     auto inverse() const noexcept -> matrix4;
@@ -288,9 +296,8 @@ namespace alloy::core {
     /// \brief Inverts this current matrix4, and returns a reference to
     ///        `(*this)`
     ///
-    /// If there is no inverse possible, this function returns a
-    /// reference to \ref matrix4::identity, and the current matrix4
-    /// is left unmodified
+    /// If this matrix is singular, it is overwritten with
+    /// `matrix4_constants::identity`
     ///
     /// \return reference to `(*this)`
     auto invert() noexcept -> matrix4&;

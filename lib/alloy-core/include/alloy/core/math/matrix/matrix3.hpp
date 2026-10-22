@@ -38,8 +38,13 @@ namespace alloy::core {
   //////////////////////////////////////////////////////////////////////////////
   /// \brief Defines a 3x3 Matrix
   ///
-  /// The matrix is accessed in column-major format (e.g. mat[col][row]) as
-  /// opposed to the native [row][col] way that C++ handles 2d arrays
+  /// The matrix follows the column-vector convention: it transforms a vector
+  /// as `M * v`, and the product `A * B` applies `B` first. This matches the
+  /// conventions of OpenGL and GLSL.
+  ///
+  /// The entries are stored column by column, so `data()` can be uploaded to
+  /// a GLSL `mat3` without being transposed, and `mat[c][r]` is the entry at
+  /// row `r` and column `c`.
   //////////////////////////////////////////////////////////////////////////////
   class ALLOY_CORE_API matrix3
   {
@@ -76,16 +81,19 @@ namespace alloy::core {
     /// Default constructs a matrix3 with an empty matrix (0 values)
     constexpr matrix3() noexcept;
 
-    /// \brief Constructs a matrix3 from 2 row vectors
+    /// \brief Constructs a matrix3 from 3 row vectors
     ///
-    /// This constructor is to allow a fluid interface for construction:
     /// \code
-    /// auto mat = matrix3 { { 1, 0 },
-    ///                      { 0, 1 } };
+    /// auto mat = matrix3{
+    ///   vector3{1, 0, 0},
+    ///   vector3{0, 1, 0},
+    ///   vector3{0, 0, 1}
+    /// };
     /// \endcode
     ///
-    /// \param v0 the first row vector
-    /// \param v1 the second row vector
+    /// \param v0 the first row
+    /// \param v1 the second row
+    /// \param v2 the third row
     constexpr matrix3(const vector3& v0, const vector3& v1, const vector3& v2)
       noexcept;
 
@@ -174,11 +182,13 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
 
     /// \{
-    /// \brief Retrieves the matrix entry at column \p c and row \p r
+    /// \brief Retrieves the matrix entry at row \p r and column \p c
     ///
-    /// \param r the row to retrieve
-    /// \param c the column to retrieve
-    /// \return a proxy to the row
+    /// \pre \p r and \p c are within the matrix
+    ///
+    /// \param r the row
+    /// \param c the column
+    /// \return reference to the entry
     constexpr auto get(index_type r, index_type c) noexcept -> reference;
     constexpr auto get(index_type r, index_type c)
       const noexcept -> const_reference;
@@ -191,7 +201,7 @@ namespace alloy::core {
     /// \param r the row index to retrieve
     constexpr auto row(index_type r) const noexcept -> vector3;
 
-    /// \brief Retrieves the vector at row \p c
+    /// \brief Retrieves the vector at column \p c
     ///
     /// \param c the column index to retrieve
     constexpr auto column(index_type c) const noexcept -> vector3;
@@ -231,7 +241,7 @@ namespace alloy::core {
 
     /// \brief Computes the inverse of this matrix3
     ///
-    /// If no inverse is possible, this returns \ref matrix3::identity
+    /// If this matrix is singular, this returns `matrix3_constants::identity`
     ///
     /// \return the inverse of this matrix3
     auto inverse() const noexcept -> matrix3;
@@ -255,9 +265,8 @@ namespace alloy::core {
     /// \brief Inverts this current matrix3, and returns a reference to
     ///        `(*this)`
     ///
-    /// If there is no inverse possible, this function returns a
-    /// reference to \ref matrix3::identity, and the current matrix3
-    /// is left unmodified
+    /// If this matrix is singular, it is overwritten with
+    /// `matrix3_constants::identity`
     ///
     /// \return reference to `(*this)`
     auto invert() noexcept -> matrix3&;

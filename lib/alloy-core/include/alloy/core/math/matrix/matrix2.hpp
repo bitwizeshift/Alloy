@@ -39,8 +39,13 @@ namespace alloy::core {
   //////////////////////////////////////////////////////////////////////////////
   /// \brief Defines a 2x2 Matrix
   ///
-  /// The matrix is accessed in column-major format (e.g. mat[col][row]) as
-  /// opposed to the native [row][col] way that C++ handles 2d arrays
+  /// The matrix follows the column-vector convention: it transforms a vector
+  /// as `M * v`, and the product `A * B` applies `B` first. This matches the
+  /// conventions of OpenGL and GLSL.
+  ///
+  /// The entries are stored column by column, so `data()` can be uploaded to
+  /// a GLSL `mat2` without being transposed, and `mat[c][r]` is the entry at
+  /// row `r` and column `c`.
   //////////////////////////////////////////////////////////////////////////////
   class ALLOY_CORE_API matrix2
   {
@@ -79,14 +84,15 @@ namespace alloy::core {
 
     /// \brief Constructs a matrix2 from 2 row vectors
     ///
-    /// This constructor is to allow a fluid interface for construction:
     /// \code
-    /// auto mat = matrix2{ vector2{ 1, 0 },
-    ///                     vector2{ 0, 1 } };
+    /// auto mat = matrix2{
+    ///   vector2{1, 0},
+    ///   vector2{0, 1}
+    /// };
     /// \endcode
     ///
-    /// \param v0 the first row vector
-    /// \param v1 the second row vector
+    /// \param v0 the first row
+    /// \param v1 the second row
     constexpr matrix2(const vector2& v0, const vector2& v1) noexcept;
 
     /// \brief Constructs a matrix2 from an array of 4 entries
@@ -159,7 +165,9 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
 
     /// \{
-    /// \brief Retrieves the matrix entry at column \p c and row \p r
+    /// \brief Retrieves the matrix entry at row \p r and column \p c
+    ///
+    /// \pre \p r and \p c are within the matrix
     ///
     /// \param r the row
     /// \param c the column
@@ -176,7 +184,7 @@ namespace alloy::core {
     /// \param r the row index to retrieve
     constexpr auto row(index_type r) const noexcept -> vector2;
 
-    /// \brief Retrieves the vector at row \p c
+    /// \brief Retrieves the vector at column \p c
     ///
     /// \param c the column index to retrieve
     constexpr auto column(index_type c) const noexcept -> vector2;
@@ -216,7 +224,7 @@ namespace alloy::core {
 
     /// \brief Computes the inverse of this matrix2
     ///
-    /// If no inverse is possible, this returns the identity
+    /// If this matrix is singular, this returns `matrix2_constants::identity`
     ///
     /// \return the inverse of this matrix2
     auto inverse() const noexcept -> matrix2;
@@ -240,9 +248,8 @@ namespace alloy::core {
     /// \brief Inverts this current matrix2, and returns a reference to
     ///        `(*this)`
     ///
-    /// If there is no inverse possible, this function returns a
-    /// reference to \ref matrix2::identity, and the current matrix2
-    /// is left unmodified
+    /// If this matrix is singular, it is overwritten with
+    /// `matrix2_constants::identity`
     ///
     /// \return reference to `(*this)`
     auto invert() noexcept -> matrix2&;
