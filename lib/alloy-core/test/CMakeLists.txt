@@ -38,6 +38,7 @@ set(source_files
   src/alloy/core/geometry/line.test.cpp
   src/alloy/core/geometry/line_segment.test.cpp
   src/alloy/core/geometry/plane.test.cpp
+  src/alloy/core/geometry/point/point2.test.cpp
   src/alloy/core/geometry/ray.test.cpp
 
   # Model

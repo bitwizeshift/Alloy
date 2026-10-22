@@ -16,6 +16,7 @@
 # pragma once
 #endif
 
+#include "alloy/core/assert.hpp"                      // ALLOY_ASSERT
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"                   // core::almost_equal
 #include "alloy/core/math/vector/vector3.hpp"         // core::vector3
@@ -300,6 +301,7 @@ auto alloy::core::point3::data() const noexcept -> const_pointer
 inline constexpr
 auto alloy::core::point3::operator[](index_type n) noexcept -> reference
 {
+  ALLOY_ASSERT(n >= 0 && n < 3);
   return m_data[n];
 }
 
@@ -307,6 +309,7 @@ inline constexpr
 auto alloy::core::point3::operator[](index_type n)
   const noexcept -> const_reference
 {
+  ALLOY_ASSERT(n >= 0 && n < 3);
   return m_data[n];
 }
 

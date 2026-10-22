@@ -222,7 +222,7 @@ alloy::core::point2::point2(real x, real y) noexcept
 inline
 auto alloy::core::point2::operator+=(const vector2& rhs) noexcept -> point2&
 {
-  for (auto i = 0; i < 3; ++i) {
+  for (auto i = 0; i < 2; ++i) {
     m_data[i] = m_data[i] + rhs[i];
   }
   return (*this);
@@ -231,7 +231,7 @@ auto alloy::core::point2::operator+=(const vector2& rhs) noexcept -> point2&
 inline
 auto alloy::core::point2::operator-=(const vector2& rhs) noexcept -> point2&
 {
-  for (auto i = 0; i < 3; ++i) {
+  for (auto i = 0; i < 2; ++i) {
     m_data[i] = m_data[i] - rhs[i];
   }
   return (*this);
@@ -280,7 +280,7 @@ auto alloy::core::point2::data() const noexcept -> const_pointer
 inline constexpr
 auto alloy::core::point2::operator[](index_type n) noexcept -> reference
 {
-  ALLOY_ASSERT(n >= 0 && n < 3);
+  ALLOY_ASSERT(n >= 0 && n < 2);
   return m_data[n];
 }
 
@@ -288,7 +288,7 @@ inline constexpr
 auto alloy::core::point2::operator[](index_type n)
   const noexcept -> const_reference
 {
-  ALLOY_ASSERT(n >= 0 && n < 3);
+  ALLOY_ASSERT(n >= 0 && n < 2);
   return m_data[n];
 }
 
