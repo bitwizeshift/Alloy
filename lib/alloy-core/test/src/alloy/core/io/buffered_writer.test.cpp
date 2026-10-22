@@ -6,7 +6,6 @@
 
 #include <alloy/core/io/buffered_writer.hpp>
 #include <alloy/core/io/error.hpp>
-#include <alloy/core/io/indirect_writer.hpp>
 #include <alloy/core/memory/allocator.hpp>
 
 #include <catch2/catch_test_macros.hpp>
@@ -994,6 +993,40 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
       REQUIRE( result.has_value() );
       REQUIRE( resource.allocations() == 1u );
     }
+  }
+}
+
+//=============================================================================
+// alias : indirect_buffered_writer
+//=============================================================================
+
+TEST_CASE("indirect_buffered_writer::write(std::span<const std::byte>)",
+          "[writing]")
+{
+  // Arrange
+  static constexpr auto capacity = std::size_t{16};
+  const auto input = sequence_bytes(capacity + 4u);
+  auto storage = std::vector<std::byte>(input.size());
+  auto destination = fake_writer{storage};
+  auto sut = indirect_buffered_writer{&destination, capacity};
+  REQUIRE( sut.write(std::span{input}.first(4u)).has_value() );
+
+  // Act
+  const auto result = sut.write(std::span{input}.subspan(4u));
+
+  // Assert
+  SECTION("Writes to the destination that it refers to")
+  {
+    REQUIRE( &sut.destination().destination() == &destination );
+  }
+  SECTION("Writes every byte to the destination in order")
+  {
+    const auto written = destination.written();
+
+    REQUIRE( result.has_value() );
+    REQUIRE(
+      std::equal(written.begin(), written.end(), input.begin(), input.end())
+    );
   }
 }
 

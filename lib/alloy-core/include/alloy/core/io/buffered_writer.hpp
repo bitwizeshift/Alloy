@@ -18,6 +18,7 @@
 
 #include "alloy/core/api.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/io/indirect_writer.hpp"
 #include "alloy/core/io/writer.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/result.hpp"
@@ -380,6 +381,15 @@ namespace alloy::core {
   template <typename U>
   buffered_writer(U&&, std::size_t, allocator)
     -> buffered_writer<std::remove_cvref_t<U>>;
+
+  //===========================================================================
+  // aliases : class : buffered_writer
+  //===========================================================================
+
+  /// \brief A buffered_writer of a writer that it does not own
+  ///
+  /// \note The underlying writer must outlive the indirect_buffered_writer
+  using indirect_buffered_writer = buffered_writer<indirect_writer>;
 
 } // namespace alloy::core
 
