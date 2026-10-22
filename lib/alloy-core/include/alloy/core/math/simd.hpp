@@ -18,29 +18,26 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/types.hpp"
 
+#include <algorithm> // IWYU pragma: keep
 #include <array>
 #include <cstddef>
 #include <span>
+#include <type_traits>
 
-// Detect target platform and include appropriate SIMD support
-#if !ALLOY_DISABLE_SIMD
-# if defined(__aarch64__)
-#   if defined(__ARM_NEON__) && __has_include(<arm_neon.h>)
-#     include <arm_neon.h>
-#     define ALLOY_SIMD_NEON 1
-#   endif
-# elif defined(__i386__) || defined(__x86_64__)
-#   if defined(__SSE__) && __has_include(<emmintrin.h>)
-#     include <emmintrin.h>
-#   endif
-#   if defined(__SSE2__) && __has_include(<immintrin.h>)
-#     include <immintrin.h>
-#   endif
+// Detect target platform and include appropriate SIMD support. Defining
+// ALLOY_DISABLE_SIMD to a non-zero value forces the portable fallback.
+#if !defined(ALLOY_DISABLE_SIMD) || !ALLOY_DISABLE_SIMD
+# if defined(__ARM_NEON) || defined(_M_ARM64)
+#   include <arm_neon.h>
+#   define ALLOY_SIMD_NEON 1
+# elif defined(__SSE2__) || defined(_M_X64) || \
+       (defined(_M_IX86_FP) && _M_IX86_FP >= 2)
+#   include <immintrin.h>
 #   define ALLOY_SIMD_SSE 1
 # endif
 #endif
 
-#if defined(ALLOY_DISABLE_SIMD) || !defined(ALLOY_SIMD_NEON) && !defined(ALLOY_SIMD_SSE)
+#if !defined(ALLOY_SIMD_NEON) && !defined(ALLOY_SIMD_SSE)
 # define ALLOY_SIMD_NONE 1
 #endif
 
@@ -114,7 +111,7 @@ namespace alloy::core {
     using type = ::int32x4_t;
   };
 
-#elif defined(__SSE__)
+#elif defined(ALLOY_SIMD_SSE)
 
   template <>
   struct simd_type<f32>
