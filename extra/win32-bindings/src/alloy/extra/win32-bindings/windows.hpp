@@ -46,17 +46,11 @@
 # define _WIN32_WINNT 0x0501
 #endif
 
-#define DIRECTINPUT_VERSION 0x0800
-
 #define OEMRESOURCE
 
 // IWYU pragma: begin_exports
-#include <wctype.h>
 #include <Windows.h>
 #include <windef.h>
-#include <dinput.h>
-#include <Xinput.h>
-#include <Dbt.h>
 // IWYU pragma: end_exports
 
 #endif /* ALLOY_EXTRA_WIN32_BINDINGS_WINDOWS_HPP */
