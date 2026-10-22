@@ -158,6 +158,20 @@ namespace alloy::core {
                                    const vector3& z_axis)
       noexcept -> quaternion;
 
+    /// \brief Constructs the shortest rotation that turns the direction
+    ///        \p from to the direction \p to
+    ///
+    /// If the directions are opposite, any half turn about an axis that is
+    /// perpendicular to both is a shortest rotation, and one is chosen.
+    ///
+    /// \pre \p from and \p to are not zero vectors
+    ///
+    /// \param from the direction to rotate from
+    /// \param to the direction to rotate to
+    /// \return the constructed quaternion
+    static auto from_to(const vector3& from, const vector3& to)
+      noexcept -> quaternion;
+
     //--------------------------------------------------------------------------
     // Constructors / Assignment
     //--------------------------------------------------------------------------

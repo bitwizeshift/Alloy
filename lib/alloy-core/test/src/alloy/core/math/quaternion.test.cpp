@@ -312,6 +312,64 @@ TEST_CASE("quaternion::from_rotation_axes( ... )", "[factory]")
   }
 }
 
+TEST_CASE("quaternion::from_to( const vector3&, const vector3& )", "[factory]")
+{
+  SECTION("Rotates the first direction onto the second")
+  {
+    // Arrange
+    const auto from = vector3{1, 0, 0};
+    const auto to = vector3{0, 2, 2};
+
+    // Act
+    const auto result = quaternion::from_to(from, to);
+
+    // Assert
+    REQUIRE( almost_equal(result * from, to.normalized()) );
+  }
+
+  SECTION("Rotates about the axis perpendicular to both directions")
+  {
+    // Arrange
+    const auto from = vector3{1, 0, 0};
+    const auto to = vector3{0, 1, 0};
+    const auto expected = quaternion::from_angle_axis(
+      radian_constants::quarter_revolution,
+      vector3{0, 0, 1}
+    );
+
+    // Act
+    const auto result = quaternion::from_to(from, to);
+
+    // Assert
+    REQUIRE( almost_equal(result, expected) );
+  }
+
+  SECTION("Same directions produce the identity")
+  {
+    // Arrange
+    const auto from = vector3{1, 2, 3};
+
+    // Act
+    const auto result = quaternion::from_to(from, from);
+
+    // Assert
+    REQUIRE( almost_equal(result, quaternion_constants::identity) );
+  }
+
+  SECTION("Opposite directions produce a half turn")
+  {
+    // Arrange
+    const auto from = vector3{0, 0, 1};
+    const auto to = vector3{0, 0, -1};
+
+    // Act
+    const auto result = quaternion::from_to(from, to);
+
+    // Assert
+    REQUIRE( almost_equal(result * from, to) );
+  }
+}
+
 TEST_CASE("quaternion::from_rotation_matrix( const matrix3& )", "[factory]")
 {
   SECTION("Round-trips a rotation with a positive trace")

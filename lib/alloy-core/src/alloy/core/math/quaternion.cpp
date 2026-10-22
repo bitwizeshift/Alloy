@@ -167,6 +167,35 @@ auto alloy::core::quaternion::from_rotation_axes(
   });
 }
 
+auto alloy::core::quaternion::from_to(const vector3& from, const vector3& to)
+  noexcept -> quaternion
+{
+  const auto from_dir = from.normalized();
+  const auto to_dir = to.normalized();
+  const auto cos_theta = from_dir.dot(to_dir);
+
+  // The cross product of opposite directions is 0, so it cannot provide the
+  // axis of the half turn between them.
+  if (cos_theta < real{-1} + default_tolerance) {
+    return from_angle_axis(
+      radian_constants::half_revolution,
+      from_dir.perpendicular()
+    );
+  }
+
+  // A rotation by theta about the unit axis n is {cos(theta/2), sin(theta/2)n}.
+  // {1 + cos(theta), sin(theta)n} is that quaternion scaled by 2cos(theta/2),
+  // and its imaginary part is the cross product.
+  const auto axis = from_dir.cross(to_dir);
+
+  return quaternion{
+    real{1} + cos_theta,
+    axis.x(),
+    axis.y(),
+    axis.z()
+  }.normalized();
+}
+
 //----------------------------------------------------------------------------
 // Element Access
 //----------------------------------------------------------------------------
