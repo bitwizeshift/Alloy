@@ -53,6 +53,7 @@ set(source_files
 
   # Model
   src/alloy/core/model/color.test.cpp
+  src/alloy/core/model/transform.test.cpp
 
   # Math
   src/alloy/core/math/vector/vector2.test.cpp

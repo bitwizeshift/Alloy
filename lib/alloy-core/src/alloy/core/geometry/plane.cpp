@@ -108,7 +108,7 @@ auto alloy::core::plane::projection(const vector3& vec)
   matrix.get(2,1) = -norm.z() * norm.y();
   matrix.get(2,2) = real{1} - norm.z() * norm.z();
 
-  return vec * matrix;
+  return matrix * vec;
 }
 
 auto alloy::core::plane::contains(const point3& p) const noexcept -> bool

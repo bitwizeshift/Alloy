@@ -277,8 +277,8 @@ auto alloy::core::transform::extract_matrix(not_null<matrix4*> out)
 
   auto& result = *out;
 
-  result = rotation;
-  result *= translation;
+  result = translation;
+  result *= rotation;
   result *= scale;
 }
 

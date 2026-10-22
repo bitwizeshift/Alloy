@@ -217,10 +217,10 @@ namespace alloy::core {
     /// \return the transpose of this matrix2
     auto transposed() const noexcept -> matrix2;
 
-    /// \brief Combines `(*this)` with \p vec
+    /// \brief Transforms the column vector \p vec by `(*this)`
     ///
-    /// \param vec the vector to combine
-    /// \return the result of `vec` * matrix
+    /// \param vec the vector to transform
+    /// \return the product `(*this) * vec`
     auto combine(const vector2& vec) const noexcept -> vector2;
 
     //--------------------------------------------------------------------------
@@ -273,8 +273,31 @@ namespace alloy::core {
 
   auto operator+(const matrix2& lhs, const matrix2& rhs) noexcept -> matrix2;
   auto operator-(const matrix2& lhs, const matrix2& rhs) noexcept -> matrix2;
+
+  /// \brief Multiplies \p lhs by \p rhs
+  ///
+  /// The product transforms a column vector by \p rhs first, and then by
+  /// \p lhs.
+  ///
+  /// \param lhs the left matrix2
+  /// \param rhs the right matrix2
+  /// \return the product `lhs * rhs`
   auto operator*(const matrix2& lhs, const matrix2& rhs) noexcept -> matrix2;
+
+  /// \brief Transforms the column vector \p rhs by \p lhs
+  ///
+  /// \param lhs the matrix2
+  /// \param rhs the column vector
+  /// \return the column vector `lhs * rhs`
+  auto operator*(const matrix2& lhs, const vector2& rhs) noexcept -> vector2;
+
+  /// \brief Multiplies the row vector \p lhs by \p rhs
+  ///
+  /// \param lhs the row vector
+  /// \param rhs the matrix2
+  /// \return the row vector `lhs * rhs`, which is `transpose(rhs) * lhs`
   auto operator*(const vector2& lhs, const matrix2& rhs) noexcept -> vector2;
+
   auto operator*(real lhs, const matrix2& rhs) noexcept -> matrix2;
   auto operator*(const matrix2& lhs, real rhs) noexcept -> matrix2;
 
@@ -524,7 +547,7 @@ auto alloy::core::matrix2::operator*=(const matrix2& rhs) noexcept -> matrix2&
       auto sum = real{0};
 
       for (auto i = 0; i < columns; ++i) {
-        sum += (get(i,c) * rhs.get(r,i));
+        sum += (get(r,i) * rhs.get(i,c));
       }
       result.get(r,c) = sum;
     }
@@ -589,10 +612,27 @@ auto alloy::core::operator*(const matrix2& lhs, const matrix2& rhs)
 }
 
 inline
+auto alloy::core::operator*(const matrix2& lhs, const vector2& rhs)
+  noexcept -> vector2
+{
+  return lhs.combine(rhs);
+}
+
+inline
 auto alloy::core::operator*(const vector2& lhs, const matrix2& rhs)
   noexcept -> vector2
 {
-  return rhs.combine(lhs);
+  auto result = vector2{};
+
+  for (auto c = 0; c < matrix2::columns; ++c) {
+    auto sum = real{0};
+
+    for (auto r = 0; r < matrix2::rows; ++r) {
+      sum += lhs[r] * rhs.get(r,c);
+    }
+    result[c] = sum;
+  }
+  return result;
 }
 
 inline

@@ -6,6 +6,7 @@
 
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix2_constants.hpp>
+#include <alloy/core/math/vector/vector2.hpp>
 
 #include <alloy/core/precision/real.hpp>
 
@@ -116,6 +117,88 @@ TEST_CASE("matrix2::transposed()", "[quantifiers]")
 
   // Assert
   REQUIRE( result == expected );
+}
+
+//------------------------------------------------------------------------------
+// Arithmetic Operators
+//------------------------------------------------------------------------------
+
+TEST_CASE("operator*( const matrix2&, const matrix2& )", "[arithmetic]")
+{
+  SECTION("Computes the matrix product")
+  {
+    // Arrange
+    const auto lhs = matrix2{
+      1, 2,
+      3, 4
+    };
+    const auto rhs = matrix2{
+      5, 6,
+      7, 8
+    };
+    const auto expected = matrix2{
+      19, 22,
+      43, 50
+    };
+
+    // Act
+    const auto result = lhs * rhs;
+
+    // Assert
+    REQUIRE( result == expected );
+  }
+
+  SECTION("Product applies the right matrix first")
+  {
+    // Arrange
+    const auto rotate = matrix2{
+      0, -1,
+      1,  0
+    };
+    const auto scale_x = matrix2{
+      2, 0,
+      0, 1
+    };
+    const auto vec = vector2{1,0};
+
+    // Act
+    const auto result = (rotate * scale_x) * vec;
+
+    // Assert
+    REQUIRE( result == vector2{0,2} );
+  }
+}
+
+TEST_CASE("operator*( const matrix2&, const vector2& )", "[arithmetic]")
+{
+  // Arrange
+  const auto lhs = matrix2{
+    1, 2,
+    3, 4
+  };
+  const auto rhs = vector2{1,2};
+
+  // Act
+  const auto result = lhs * rhs;
+
+  // Assert
+  REQUIRE( result == vector2{5,11} );
+}
+
+TEST_CASE("operator*( const vector2&, const matrix2& )", "[arithmetic]")
+{
+  // Arrange
+  const auto lhs = vector2{1,2};
+  const auto rhs = matrix2{
+    1, 2,
+    3, 4
+  };
+
+  // Act
+  const auto result = lhs * rhs;
+
+  // Assert
+  REQUIRE( result == vector2{7,10} );
 }
 
 } // namespace alloy::core::test

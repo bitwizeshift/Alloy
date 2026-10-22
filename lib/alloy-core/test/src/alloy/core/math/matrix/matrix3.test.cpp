@@ -6,6 +6,7 @@
 
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix3_constants.hpp>
+#include <alloy/core/math/vector/vector3.hpp>
 
 #include <alloy/core/precision/real.hpp>
 
@@ -124,6 +125,72 @@ TEST_CASE("matrix3::transposed()", "[quantifiers]")
 
   // Assert
   REQUIRE( result == expected );
+}
+
+//------------------------------------------------------------------------------
+// Arithmetic Operators
+//------------------------------------------------------------------------------
+
+TEST_CASE("operator*( const matrix3&, const matrix3& )", "[arithmetic]")
+{
+  // Arrange
+  const auto translate = matrix3{
+    1, 0, 5,
+    0, 1, 0,
+    0, 0, 1
+  };
+  const auto scale = matrix3{
+    2, 0, 0,
+    0, 2, 0,
+    0, 0, 1
+  };
+  const auto point = vector3{1,0,1};
+
+  // Act
+  const auto result = (translate * scale) * point;
+
+  // Assert
+  SECTION("Product applies the right matrix first")
+  {
+    REQUIRE( result == vector3{7,0,1} );
+  }
+}
+
+TEST_CASE("operator*( const matrix3&, const vector3& )", "[arithmetic]")
+{
+  // Arrange
+  const auto translate = matrix3{
+    1, 0, 5,
+    0, 1, 3,
+    0, 0, 1
+  };
+  const auto point = vector3{1,2,1};
+
+  // Act
+  const auto result = translate * point;
+
+  // Assert
+  SECTION("Translation is read from the last column")
+  {
+    REQUIRE( result == vector3{6,5,1} );
+  }
+}
+
+TEST_CASE("operator*( const vector3&, const matrix3& )", "[arithmetic]")
+{
+  // Arrange
+  const auto lhs = vector3{1,2,3};
+  const auto rhs = matrix3{
+    1, 2, 3,
+    4, 5, 6,
+    7, 8, 9
+  };
+
+  // Act
+  const auto result = lhs * rhs;
+
+  // Assert
+  REQUIRE( result == vector3{30,36,42} );
 }
 
 } // namespace alloy::core::test
