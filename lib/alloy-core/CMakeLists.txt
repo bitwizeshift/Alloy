@@ -233,6 +233,7 @@ set(source_files
   src/alloy/core/geometry/capsule.cpp
   src/alloy/core/geometry/circle.cpp
   src/alloy/core/geometry/frustum.cpp
+  src/alloy/core/geometry/intersection.cpp
   src/alloy/core/geometry/line.cpp
   src/alloy/core/geometry/line_segment.cpp
   src/alloy/core/geometry/oriented_box.cpp

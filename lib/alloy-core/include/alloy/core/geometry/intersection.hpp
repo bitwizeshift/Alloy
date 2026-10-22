@@ -5,7 +5,8 @@
 /*****************************************************************************
  * \file intersection.hpp
  *
- * \brief This header defines the result of an intersection calculation
+ * \brief This header defines the tests for intersections between geometric
+ *        objects, and the result of an intersection calculation
  *****************************************************************************/
 
 #ifndef ALLOY_CORE_GEOMETRY_INTERSECTION_HPP
@@ -15,6 +16,20 @@
 # pragma once
 #endif
 
+#include "alloy/core/geometry/axis_aligned_box.hpp"
+#include "alloy/core/geometry/capsule.hpp"
+#include "alloy/core/geometry/circle.hpp"
+#include "alloy/core/geometry/frustum.hpp"
+#include "alloy/core/geometry/line.hpp"
+#include "alloy/core/geometry/line_segment.hpp"
+#include "alloy/core/geometry/oriented_box.hpp"
+#include "alloy/core/geometry/plane.hpp"
+#include "alloy/core/geometry/ray.hpp"
+#include "alloy/core/geometry/rectangle.hpp"
+#include "alloy/core/geometry/sphere.hpp"
+#include "alloy/core/geometry/triangle.hpp"
+
+#include "alloy/core/api.hpp"
 #include "alloy/core/assert.hpp"    // ALLOY_ASSERT
 #include "alloy/core/math/math.hpp" // default_tolerance
 #include "alloy/core/precision.hpp" // real
@@ -192,6 +207,377 @@ namespace alloy::core {
     real tolerance
   ) noexcept -> bool;
 
+  //============================================================================
+  // struct : intersection_traits
+  //============================================================================
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief A trait that determines whether objects of the types \p L and
+  ///        \p R intersect
+  ///
+  /// Specializations provide the static member function
+  /// `intersects(const L&, const R&) noexcept -> bool`, which determines
+  /// whether the two objects share at least one point. Objects that only touch
+  /// at their boundaries intersect.
+  ///
+  /// Only one of `<L, R>` and `<R, L>` is specialized for each pair of types,
+  /// since `intersects` accepts its arguments in either order.
+  ///
+  /// The specializations in this header accept planes that are not
+  /// normalized.
+  ///
+  /// \tparam L the type of the left object
+  /// \tparam R the type of the right object
+  //////////////////////////////////////////////////////////////////////////////
+  template <typename L, typename R>
+  struct intersection_traits {};
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<plane, plane>
+  {
+    static auto intersects(const plane& a, const plane& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<plane, line>
+  {
+    static auto intersects(const plane& a, const line& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<plane, ray>
+  {
+    static auto intersects(const plane& a, const ray& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<plane, line_segment>
+  {
+    static auto intersects(const plane& a, const line_segment& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<plane, triangle>
+  {
+    static auto intersects(const plane& a, const triangle& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<plane, sphere>
+  {
+    static auto intersects(const plane& a, const sphere& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<plane, capsule>
+  {
+    static auto intersects(const plane& a, const capsule& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<plane, axis_aligned_box>
+  {
+    static auto intersects(const plane& a, const axis_aligned_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<plane, oriented_box>
+  {
+    static auto intersects(const plane& a, const oriented_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<line, triangle>
+  {
+    static auto intersects(const line& a, const triangle& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<line, sphere>
+  {
+    static auto intersects(const line& a, const sphere& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<line, capsule>
+  {
+    static auto intersects(const line& a, const capsule& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<line, axis_aligned_box>
+  {
+    static auto intersects(const line& a, const axis_aligned_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<line, oriented_box>
+  {
+    static auto intersects(const line& a, const oriented_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<ray, triangle>
+  {
+    static auto intersects(const ray& a, const triangle& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<ray, sphere>
+  {
+    static auto intersects(const ray& a, const sphere& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<ray, capsule>
+  {
+    static auto intersects(const ray& a, const capsule& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<ray, axis_aligned_box>
+  {
+    static auto intersects(const ray& a, const axis_aligned_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<ray, oriented_box>
+  {
+    static auto intersects(const ray& a, const oriented_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<line_segment, triangle>
+  {
+    static auto intersects(const line_segment& a, const triangle& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<line_segment, sphere>
+  {
+    static auto intersects(const line_segment& a, const sphere& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<line_segment, capsule>
+  {
+    static auto intersects(const line_segment& a, const capsule& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<line_segment, axis_aligned_box>
+  {
+    static auto intersects(const line_segment& a, const axis_aligned_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<line_segment, oriented_box>
+  {
+    static auto intersects(const line_segment& a, const oriented_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<triangle, triangle>
+  {
+    static auto intersects(const triangle& a, const triangle& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<triangle, sphere>
+  {
+    static auto intersects(const triangle& a, const sphere& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<triangle, capsule>
+  {
+    static auto intersects(const triangle& a, const capsule& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<triangle, axis_aligned_box>
+  {
+    static auto intersects(const triangle& a, const axis_aligned_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<triangle, oriented_box>
+  {
+    static auto intersects(const triangle& a, const oriented_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<sphere, sphere>
+  {
+    static auto intersects(const sphere& a, const sphere& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<sphere, capsule>
+  {
+    static auto intersects(const sphere& a, const capsule& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<sphere, axis_aligned_box>
+  {
+    static auto intersects(const sphere& a, const axis_aligned_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<sphere, oriented_box>
+  {
+    static auto intersects(const sphere& a, const oriented_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<capsule, capsule>
+  {
+    static auto intersects(const capsule& a, const capsule& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<capsule, axis_aligned_box>
+  {
+    static auto intersects(const capsule& a, const axis_aligned_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<capsule, oriented_box>
+  {
+    static auto intersects(const capsule& a, const oriented_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct intersection_traits<axis_aligned_box, axis_aligned_box>
+  {
+    static auto intersects(const axis_aligned_box& a, const axis_aligned_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<axis_aligned_box, oriented_box>
+  {
+    static auto intersects(const axis_aligned_box& a, const oriented_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<oriented_box, oriented_box>
+  {
+    static auto intersects(const oriented_box& a, const oriented_box& b)
+      noexcept -> bool;
+  };
+
+  /// \brief Determines whether an object may be inside of a frustum
+  ///
+  /// This is the conventional test for culling: it rejects the object only
+  /// when the object lies entirely outside of one of the planes of the
+  /// frustum. An object near a corner of the frustum may lie outside of the
+  /// frustum, but outside of no single plane, so this may report an
+  /// intersection where there is none. It never fails to report one that
+  /// exists.
+  template <>
+  struct ALLOY_CORE_API intersection_traits<frustum, sphere>
+  {
+    static auto intersects(const frustum& a, const sphere& b) noexcept -> bool;
+  };
+
+  /// \copydoc intersection_traits<frustum, sphere>
+  template <>
+  struct ALLOY_CORE_API intersection_traits<frustum, axis_aligned_box>
+  {
+    static auto intersects(const frustum& a, const axis_aligned_box& b)
+      noexcept -> bool;
+  };
+
+  /// \copydoc intersection_traits<frustum, sphere>
+  template <>
+  struct ALLOY_CORE_API intersection_traits<frustum, oriented_box>
+  {
+    static auto intersects(const frustum& a, const oriented_box& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<circle, circle>
+  {
+    static auto intersects(const circle& a, const circle& b) noexcept -> bool;
+  };
+
+  template <>
+  struct ALLOY_CORE_API intersection_traits<circle, rectangle>
+  {
+    static auto intersects(const circle& a, const rectangle& b)
+      noexcept -> bool;
+  };
+
+  template <>
+  struct intersection_traits<rectangle, rectangle>
+  {
+    static auto intersects(const rectangle& a, const rectangle& b)
+      noexcept -> bool;
+  };
+
+  //============================================================================
+  // concept : intersectable
+  //============================================================================
+
+  namespace detail {
+
+    template <typename L, typename R>
+    concept has_intersection_traits = requires(const L& l, const R& r) {
+      { intersection_traits<L, R>::intersects(l, r) } -> std::same_as<bool>;
+    };
+
+  } // namespace detail
+
+  /// \brief Determines whether objects of the types \p L and \p R can be
+  ///        tested for an intersection, in either order
+  ///
+  /// \tparam L the type of the left object
+  /// \tparam R the type of the right object
+  template <typename L, typename R>
+  concept intersectable = detail::has_intersection_traits<L, R> ||
+                          detail::has_intersection_traits<R, L>;
+
+  //============================================================================
+  // functions : intersects
+  //============================================================================
+
+  /// \brief Determines whether the objects \p lhs and \p rhs share at least
+  ///        one point
+  ///
+  /// This evaluates the `intersection_traits` specialized for the types of
+  /// the arguments, in whichever order it is specialized.
+  ///
+  /// \param lhs the first object
+  /// \param rhs the second object
+  /// \return `true` if \p lhs and \p rhs intersect
+  template <typename L, typename R>
+    requires intersectable<L, R>
+  constexpr auto intersects(const L& lhs, const R& rhs) noexcept -> bool;
+
 } // namespace alloy::core
 
 //==============================================================================
@@ -318,6 +704,45 @@ auto alloy::core::almost_equal(
     lhs.m_intersection_types,
     rhs.m_intersection_types
   );
+}
+
+//==============================================================================
+// struct : intersection_traits
+//==============================================================================
+
+inline
+auto alloy::core::intersection_traits<
+  alloy::core::axis_aligned_box,
+  alloy::core::axis_aligned_box
+>::intersects(const axis_aligned_box& a, const axis_aligned_box& b)
+  noexcept -> bool
+{
+  return a.intersects(b);
+}
+
+inline
+auto alloy::core::intersection_traits<
+  alloy::core::rectangle,
+  alloy::core::rectangle
+>::intersects(const rectangle& a, const rectangle& b) noexcept -> bool
+{
+  return a.intersects(b);
+}
+
+//==============================================================================
+// functions : intersects
+//==============================================================================
+
+template <typename L, typename R>
+  requires alloy::core::intersectable<L, R>
+inline constexpr
+auto alloy::core::intersects(const L& lhs, const R& rhs) noexcept -> bool
+{
+  if constexpr (detail::has_intersection_traits<L, R>) {
+    return intersection_traits<L, R>::intersects(lhs, rhs);
+  } else {
+    return intersection_traits<R, L>::intersects(rhs, lhs);
+  }
 }
 
 #endif /* ALLOY_CORE_GEOMETRY_INTERSECTION_HPP */
