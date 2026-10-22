@@ -15,8 +15,9 @@
 # pragma once
 #endif
 
-#include "alloy/core/math/angle/radian.hpp" // radian
-#include "alloy/core/math/math.hpp"         // almost_equals
+#include "alloy/core/math/angle/basic_angle.hpp" // core::almost_equal
+#include "alloy/core/math/angle/radian.hpp"      // radian
+#include "alloy/core/math/math.hpp"             // almost_equals
 
 #include "alloy/core/config.hpp"            // ALLOY_CORE_EXCEPTIONS_ENABLED
 #include "alloy/core/intrinsics.hpp"        // ALLOY_COMPILER_DIAGNOSTIC_PUSH
@@ -558,7 +559,7 @@ auto alloy::core::almost_equal(const euler_angles& lhs,
   noexcept -> bool
 {
   for (auto i = 0; i < 3; ++i) {
-    if (!almost_equal(lhs,rhs,tolerance)) {
+    if (!almost_equal(lhs[i], rhs[i], tolerance)) {
       return false;
     }
   }

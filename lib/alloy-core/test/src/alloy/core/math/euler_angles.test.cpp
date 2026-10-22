@@ -33,4 +33,38 @@ TEST_CASE("euler_angles::dot( const euler_angles& )", "[quantifiers]")
   }
 }
 
+//------------------------------------------------------------------------------
+// Comparisons
+//------------------------------------------------------------------------------
+
+TEST_CASE("almost_equal( const euler_angles&, const euler_angles&, real )", "[comparison]")
+{
+  // Arrange
+  const auto lhs = euler_angles{radian{1}, radian{2}, radian{3}};
+
+  SECTION("Angles within tolerance are almost equal")
+  {
+    // Arrange
+    const auto rhs = euler_angles{radian{1}, radian{2.05f}, radian{3}};
+
+    // Act
+    const auto result = almost_equal(lhs, rhs, real{0.1});
+
+    // Assert
+    REQUIRE( result );
+  }
+
+  SECTION("Angles outside tolerance are not almost equal")
+  {
+    // Arrange
+    const auto rhs = euler_angles{radian{1}, radian{2}, radian{3.5f}};
+
+    // Act
+    const auto result = almost_equal(lhs, rhs, real{0.1});
+
+    // Assert
+    REQUIRE_FALSE( result );
+  }
+}
+
 } // namespace alloy::core::test
