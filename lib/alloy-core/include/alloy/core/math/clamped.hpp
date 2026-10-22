@@ -382,7 +382,8 @@ namespace std {
   template <typename Float>
   struct hash<::alloy::core::clamped<Float>>
   {
-    constexpr auto operator()(alloy::core::clamped<Float> f) -> std::size_t
+    constexpr auto operator()(alloy::core::clamped<Float> f)
+      const -> std::size_t
     {
       return std::hash<Float>{}(f.value());
     }

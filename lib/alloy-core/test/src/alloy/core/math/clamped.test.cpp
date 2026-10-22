@@ -11,6 +11,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <functional> // std::hash
 #include <type_traits>
 
 namespace alloy::core::test {
@@ -120,4 +121,24 @@ TEST_CASE("clamped<Float>::operator=(const clamped&)", "[assign]") {
     REQUIRE(sut == copy);
   }
 }
+
+//-----------------------------------------------------------------------------
+// Hashing
+//-----------------------------------------------------------------------------
+
+TEST_CASE("std::hash<clamped<Float>>", "[hash]") {
+  // Arrange
+  const auto hasher = std::hash<clamped<float>>{};
+  const auto value = clamped<float>::make_unchecked(0.5f);
+  const auto expected = std::hash<float>{}(0.5f);
+
+  // Act
+  const auto result = hasher(value);
+
+  // Assert
+  SECTION("Hashes the underlying value") {
+    REQUIRE(result == expected);
+  }
+}
+
 } // namespace alloy::core::test

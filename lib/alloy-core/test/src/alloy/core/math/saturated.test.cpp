@@ -8,6 +8,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <functional> // std::hash
 #include <type_traits>
 
 namespace alloy::core::test {
@@ -433,6 +434,25 @@ TEST_CASE("operator>=(saturated<Float>,saturated<Float>)", "[comparison]") {
 
       REQUIRE(lhs >= rhs);
     }
+  }
+}
+
+//-----------------------------------------------------------------------------
+// Hashing
+//-----------------------------------------------------------------------------
+
+TEST_CASE("std::hash<saturated<Float>>", "[hash]") {
+  // Arrange
+  const auto hasher = std::hash<saturated<float>>{};
+  const auto value = saturated<float>::make_unchecked(0.5f);
+  const auto expected = std::hash<float>{}(0.5f);
+
+  // Act
+  const auto result = hasher(value);
+
+  // Assert
+  SECTION("Hashes the underlying value") {
+    REQUIRE(result == expected);
   }
 }
 
