@@ -80,6 +80,8 @@ namespace alloy::core {
     /// \{
     /// \brief Gets the theta component of this polar
     ///
+    /// Theta is measured from the positive x-axis toward the positive y-axis.
+    ///
     /// \return reference to the theta component
     constexpr auto theta() noexcept -> radian&;
     constexpr auto theta() const noexcept -> radian;
@@ -242,7 +244,7 @@ inline
 auto alloy::core::to_polar(const point2& p) noexcept -> polar
 {
   const auto distance = to_vector(p).magnitude();
-  const auto theta = trigonometry::arctan2(p.x(), p.y());
+  const auto theta = trigonometry::arctan2(p.y(), p.x());
 
   return polar{distance, theta};
 }

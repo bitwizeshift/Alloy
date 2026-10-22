@@ -83,6 +83,8 @@ namespace alloy::core {
     /// \{
     /// \brief Gets the phi component of this spherical
     ///
+    /// Phi is the polar angle, measured from the positive z-axis.
+    ///
     /// \return reference to the phi component
     constexpr auto phi() noexcept -> radian&;
     constexpr auto phi() const noexcept -> radian;
@@ -90,6 +92,9 @@ namespace alloy::core {
 
     /// \{
     /// \brief Gets the theta component of this spherical
+    ///
+    /// Theta is the azimuthal angle in the xy-plane, measured from the
+    /// positive x-axis toward the positive y-axis.
     ///
     /// \return reference to the theta component
     constexpr auto theta() noexcept -> radian&;
@@ -286,7 +291,7 @@ auto alloy::core::to_point(const spherical& p) noexcept -> point3
   const auto sin_phi = trigonometry::sin(p.phi());
   const auto cos_phi = trigonometry::cos(p.phi());
   const auto cos_theta = trigonometry::cos(p.theta());
-  const auto sin_theta = trigonometry::cos(p.theta());
+  const auto sin_theta = trigonometry::sin(p.theta());
 
   const auto x = p.rho() * sin_phi * cos_theta;
   const auto y = p.rho() * sin_phi * sin_theta;
