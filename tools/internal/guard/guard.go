@@ -3,6 +3,7 @@ package guard
 import (
 	"fmt"
 	"io"
+	"regexp"
 	"strings"
 
 	"github.com/bitwizeshift/alloy/tools/internal/check"
@@ -10,6 +11,8 @@ import (
 
 // pragmaOnce is the block that follows the #define of every include guard.
 var pragmaOnce = []string{"#ifdef _MSC_VER", "# pragma once", "#endif"}
+
+var includePattern = regexp.MustCompile(`^\s*#\s*include\b`)
 
 // Checker reports and fixes headers whose include guard does not follow the
 // layout:
@@ -71,6 +74,9 @@ func (c *Checker) Check(path string, r io.Reader) ([]check.Finding, error) {
 	if h.line(h.open+1) != h.define() {
 		findings = append(findings, h.finding(h.open+1, "include guard must continue with %q", h.define()))
 	}
+	if h.strays < h.straysEnd {
+		findings = append(findings, h.finding(h.strays, "#include must come after the %q block", pragmaOnce[0]))
+	}
 	if !h.hasPragmaOnce() {
 		findings = append(findings, h.finding(h.pragma, "include guard must be followed by %q holding %q", pragmaOnce[0], pragmaOnce[1]))
 	}
@@ -81,15 +87,17 @@ func (c *Checker) Check(path string, r io.Reader) ([]check.Finding, error) {
 }
 
 // Fix copies r to w with the include guard rewritten to follow the layout for
-// path. The rest of the header is copied unchanged, and a header whose guard
-// is not an #ifndef and #define pair closed by an #endif is copied as is. An
-// error is returned if r cannot be read, or w cannot be written.
+// path. Includes between the #define and the #pragma once block are moved
+// below the block, and the rest of the header is copied unchanged. A header
+// whose guard is not an #ifndef and #define pair closed by an #endif is copied
+// as is. An error is returned if r cannot be read, or w cannot be written.
 func (c *Checker) Fix(path string, r io.Reader, w io.Writer) error {
 	h, err := c.read(path, r)
 	if err != nil {
 		return err
 	}
 	if h.isGuarded() {
+		h.moveStrays()
 		h.fix()
 	}
 	_, err = io.WriteString(w, strings.Join(h.lines, "\n"))
@@ -130,6 +138,10 @@ type header struct {
 	// and are equal where the block is to be inserted if there is none.
 	pragma, pragmaEnd int
 
+	// strays and straysEnd delimit the includes between the #define and the
+	// #pragma once block, and are equal if there are none.
+	strays, straysEnd int
+
 	// close is the index of the last line that is not blank.
 	close int
 }
@@ -158,12 +170,18 @@ func (h *header) finding(i int, format string, args ...any) check.Finding {
 func (h *header) locate() {
 	h.open = h.skipComments()
 	h.pragma = h.skipBlank(h.open + 2)
+	h.strays, h.straysEnd = h.pragma, h.pragma
+	for includePattern.MatchString(h.line(h.pragma)) {
+		h.straysEnd = h.pragma + 1
+		h.pragma = h.skipBlank(h.straysEnd)
+	}
 	h.pragmaEnd = h.pragma
 	if h.isPragmaOnce(h.pragma) {
 		h.pragmaEnd = h.pragma + len(pragmaOnce)
 	} else {
 		h.pragma = min(h.open+2, len(h.lines))
 		h.pragmaEnd = h.pragma
+		h.strays, h.straysEnd = h.pragma, h.pragma
 	}
 	h.close = len(h.lines) - 1
 	for h.close >= 0 && strings.TrimSpace(h.lines[h.close]) == "" {
@@ -225,6 +243,27 @@ func (h *header) isGuarded() bool {
 		strings.HasPrefix(h.line(h.open), "#ifndef ") &&
 		strings.HasPrefix(h.line(h.open+1), "#define ") &&
 		strings.HasPrefix(h.line(h.close), "#endif")
+}
+
+// moveStrays moves the includes between the #define and the #pragma once
+// block to just before the first line after the block that is not blank, and
+// locates the guard again.
+func (h *header) moveStrays() {
+	if h.strays == h.straysEnd {
+		return
+	}
+	var strays []string
+	for _, line := range h.lines[h.strays:h.straysEnd] {
+		if strings.TrimSpace(line) != "" {
+			strays = append(strays, line)
+		}
+	}
+	next := h.skipBlank(h.pragmaEnd)
+	moved := append([]string{}, h.lines[:h.strays]...)
+	moved = append(moved, h.lines[h.pragma:next]...)
+	moved = append(moved, strays...)
+	h.lines = append(moved, h.lines[next:]...)
+	h.locate()
 }
 
 // fix rewrites the lines of the include guard, from the bottom up so that the
