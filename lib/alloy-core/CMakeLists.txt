@@ -190,6 +190,7 @@ set(header_files
   include/alloy/core/geometry/intersection.hpp
   include/alloy/core/geometry/line.hpp
   include/alloy/core/geometry/line_segment.hpp
+  include/alloy/core/geometry/oriented_box.hpp
   include/alloy/core/geometry/plane.hpp
   include/alloy/core/geometry/sphere.hpp
   include/alloy/core/geometry/triangle.hpp
@@ -231,6 +232,7 @@ set(source_files
   src/alloy/core/geometry/frustum.cpp
   src/alloy/core/geometry/line.cpp
   src/alloy/core/geometry/line_segment.cpp
+  src/alloy/core/geometry/oriented_box.cpp
   src/alloy/core/geometry/plane.cpp
   src/alloy/core/geometry/ray.cpp
   src/alloy/core/geometry/sphere.cpp
