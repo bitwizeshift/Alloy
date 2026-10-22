@@ -21,8 +21,6 @@
 #include "alloy/render/material/cull_face.hpp"
 #include "alloy/render/material/depth_compare.hpp"
 
-//#include "program.hpp"
-
 #include <GL/glew.h>
 
 
