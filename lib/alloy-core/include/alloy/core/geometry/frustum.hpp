@@ -20,6 +20,7 @@
 
 #include "alloy/core/api.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/math/matrix/matrix4.hpp"
 
 #include <span>
 
@@ -40,6 +41,9 @@ namespace alloy::core {
   ///
   /// Frustums in alloy are largely buckets of state that act as generic
   /// geometric objects.
+  ///
+  /// The normal of every plane faces into the frustum, so a point is inside
+  /// of the frustum when it is on the side that every normal faces.
   //////////////////////////////////////////////////////////////////////////////
   class ALLOY_CORE_API frustum
   {
@@ -48,6 +52,29 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
+    /// \brief Constructs a frustum from the clip-space transformation
+    ///        \p view_projection
+    ///
+    /// \p view_projection maps points to clip space by multiplying them as
+    /// column vectors, with a clip-space depth between `-w` and `w`, as the
+    /// matrices of `projection` do. The planes of the frustum are normalized.
+    ///
+    /// \param view_projection the transformation into clip space
+    /// \return the frustum of the points that are not clipped
+    static auto from_matrix(const matrix4& view_projection) noexcept -> frustum;
+
+    /// \brief Constructs a viewing frustum from 6 planes
+    ///
+    /// \pre the normals of each pair of opposite planes face toward each
+    ///      other
+    ///
+    /// \param left the left plane of the frustum
+    /// \param right the right plane of the frustum
+    /// \param top the top plane of the frustum
+    /// \param bottom the bottom plane of the frustum
+    /// \param near the near plane of the frustum
+    /// \param far the far plane of the frustum
+    /// \return the frustum
     static auto make(
       const plane& left,
       const plane& right,
@@ -55,7 +82,7 @@ namespace alloy::core {
       const plane& bottom,
       const plane& near,
       const plane& far
-    ) -> frustum;
+    ) noexcept -> frustum;
 
     /// \brief Constructs a viewing frustum from 6 planes without doing any
     ///        validation
@@ -125,10 +152,10 @@ namespace alloy::core {
   public:
 
     /// \brief Checks whether a given point \p p is contained within this
-    ///        sphere
+    ///        frustum
     ///
     /// \param p the point to check
-    /// \return `true` if the point is contained in this sphere
+    /// \return `true` if the point is contained in this frustum
     [[nodiscard]]
     auto contains(const point3& p) const noexcept -> bool;
 
@@ -179,7 +206,7 @@ auto alloy::core::frustum::left() const noexcept -> const plane&
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::frustum::right() const noexcept -> const alloy::core::plane&
+auto alloy::core::frustum::right() const noexcept -> const plane&
 {
   return m_planes[1];
 }
