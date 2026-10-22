@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
+	"slices"
 	"testing"
 
 	"github.com/bitwizeshift/go-cli/arg"
@@ -51,15 +52,21 @@ func (d errDiffer) Changes(context.Context, ...string) ([]diff.File, error) {
 	return nil, d.err
 }
 
-// databaseWriter returns dir as the directory of the compilation database, and
-// fails to remove it with removeErr.
+// databaseWriter returns dir as the directory of the compilation database,
+// fails to remove it with removeErr, and covers every file but those in
+// uncovered.
 type databaseWriter struct {
 	dir       string
 	removeErr error
+	uncovered []string
 }
 
 func (dw databaseWriter) WriteDatabase() (string, func() error, error) {
 	return dw.dir, func() error { return dw.removeErr }, nil
+}
+
+func (dw databaseWriter) Covers(path string) bool {
+	return !slices.Contains(dw.uncovered, path)
 }
 
 // errDatabaseWriter fails to write the compilation database.
@@ -69,6 +76,10 @@ type errDatabaseWriter struct {
 
 func (dw errDatabaseWriter) WriteDatabase() (string, func() error, error) {
 	return "", nil, dw.err
+}
+
+func (errDatabaseWriter) Covers(string) bool {
+	return true
 }
 
 // noOpTidier succeeds for every file without output.
@@ -86,4 +97,13 @@ type echoTidier struct {
 
 func (et echoTidier) Tidy(_ context.Context, buildDir, path string, ranges []diff.Range) ([]byte, error) {
 	return fmt.Appendf(nil, "%s %s %v\n", buildDir, path, ranges), et.err
+}
+
+// fixApplier fails to apply fixes with err.
+type fixApplier struct {
+	err error
+}
+
+func (fa fixApplier) ApplyFixes(context.Context) error {
+	return fa.err
 }

@@ -69,6 +69,36 @@ func (db Database) Config(config string) Database {
 	return result
 }
 
+// Covers reports whether the database compiles any file in the project
+// directory of path, which is relative to dir. The project directory is the
+// first two directories of path, such as lib/alloy-core or
+// extra/sdl2-bindings, which hold the sources and headers of a library.
+// Headers have no entries of their own, so a header is covered by the sources
+// compiled beside it.
+func (db Database) Covers(dir, path string) bool {
+	project := projectDir(filepath.ToSlash(path))
+	for _, entry := range db {
+		file := entry.File
+		if !filepath.IsAbs(file) {
+			file = filepath.Join(entry.Directory, file)
+		}
+		rel, err := filepath.Rel(dir, file)
+		if err != nil {
+			continue
+		}
+		if project == "" || strings.HasPrefix(filepath.ToSlash(rel), project+"/") {
+			return true
+		}
+	}
+	return false
+}
+
+func projectDir(path string) string {
+	parts := strings.Split(path, "/")
+	parts = parts[:len(parts)-1]
+	return strings.Join(parts[:min(len(parts), 2)], "/")
+}
+
 // Write writes the database to w as JSON.
 //
 // An error is returned if w cannot be written to.
@@ -92,6 +122,9 @@ type ConfigDatabase struct {
 
 	// Config is the configuration whose entries are kept.
 	Config string
+
+	db    Database
+	found bool
 }
 
 // WriteDatabase writes the entries of Config to a compile_commands.json in a
@@ -114,16 +147,32 @@ func (cd *ConfigDatabase) WriteDatabase() (string, func() error, error) {
 	if err != nil {
 		return "", nil, err
 	}
+	cd.db, cd.found = db.Config(cd.Config), true
 
 	dir, err := os.MkdirTemp("", "alloy-clang-tidy-")
 	if err != nil {
 		return "", nil, err
 	}
 	remove := func() error { return os.RemoveAll(dir) }
-	if err := cd.write(filepath.Join(dir, DatabaseFile), db.Config(cd.Config)); err != nil {
+	if err := cd.write(filepath.Join(dir, DatabaseFile), cd.db); err != nil {
 		return "", nil, errors.Join(err, remove())
 	}
 	return dir, remove, nil
+}
+
+// Covers reports whether the database last written by
+// [ConfigDatabase.WriteDatabase] covers the file at path, relative to Dir, as
+// described by [Database.Covers]. Every file is covered when no database was
+// found, so that clang-tidy reports the missing database for each of them.
+func (cd *ConfigDatabase) Covers(path string) bool {
+	if !cd.found {
+		return true
+	}
+	dir, err := filepath.Abs(cd.Dir)
+	if err != nil {
+		return true
+	}
+	return cd.db.Covers(dir, path)
 }
 
 func (cd *ConfigDatabase) buildDir() string {

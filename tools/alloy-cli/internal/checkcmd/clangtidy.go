@@ -46,6 +46,10 @@ type DatabaseWriter interface {
 	// database, and a function that removes it once it is no longer needed.
 	// It returns an error if the database cannot be written.
 	WriteDatabase() (dir string, remove func() error, err error)
+
+	// Covers reports whether the written database holds the compile commands
+	// that the file at path is checked with.
+	Covers(path string) bool
 }
 
 // Tidier runs clang-tidy over a file.
@@ -57,12 +61,54 @@ type Tidier interface {
 	Tidy(ctx context.Context, buildDir, path string, ranges []diff.Range) ([]byte, error)
 }
 
+// FixApplier applies the fixes that a [Tidier] suggested.
+type FixApplier interface {
+	// ApplyFixes applies the fixes suggested for every file checked so far.
+	// It returns an error if they cannot be applied.
+	ApplyFixes(ctx context.Context) error
+}
+
+// includeCleanerChecks selects only the clang-tidy check that reports
+// includes that are unused, and symbols whose header is not directly included.
+const includeCleanerChecks = "-*,misc-include-cleaner"
+
+// IncludeCleaner returns a [ClangTidyBuilder] for the check that C and C++
+// files directly include the headers of the symbols they use, and no others.
+//
+// An include is made unused by changes to the lines that use it, rather than
+// to the include itself, so diagnostics are reported on every line. Fixes are
+// applied without formatting, since formatting re-sorts and realigns every
+// include around each added or removed one.
+func IncludeCleaner(rooter root.Rooter) *ClangTidyBuilder {
+	return &ClangTidyBuilder{
+		Rooter:      rooter,
+		Checks:      includeCleanerChecks,
+		FormatStyle: "none",
+		WholeFiles:  true,
+	}
+}
+
 // ClangTidyBuilder builds a [ClangTidyRunner] for the C and C++ files named on
 // the command line.
 type ClangTidyBuilder struct {
 	// Rooter reports the repository root that file paths and the build
 	// directory are relative to.
 	Rooter root.Rooter
+
+	// Checks is the glob of checks that clang-tidy runs, in place of the
+	// checks enabled by the .clang-tidy configuration. The configured checks
+	// are run when Checks is empty.
+	Checks string
+
+	// FormatStyle is the clang-format style that the code around applied fixes
+	// is formatted with, or "none" to apply them as they are, in place of the
+	// FormatStyle of the .clang-tidy configuration. The configured style is
+	// used when FormatStyle is empty.
+	FormatStyle string
+
+	// WholeFiles selects reporting the diagnostics on every line of each
+	// file, instead of only those near its changes.
+	WholeFiles bool
 
 	fix      bool
 	buildDir string
@@ -128,17 +174,35 @@ func (cb *ClangTidyBuilder) Build(ctx context.Context) (cli.Runner, error) {
 		return nil, err
 	}
 	cb.warnMissingDatabase(ctx, dir)
+	tidier := &clangtidy.Command{
+		Dir:         dir,
+		Fix:         cb.fix,
+		Checks:      cb.Checks,
+		FormatStyle: cb.FormatStyle,
+	}
+	var fixer FixApplier
+	if cb.fix {
+		fixer = tidier
+	}
 	return &ClangTidyRunner{
-		Differ: diff.Git{Dir: dir, Context: contextLines},
+		Differ: cb.differ(dir),
 		Database: &clangtidy.ConfigDatabase{
 			Dir:      dir,
 			BuildDir: cb.buildDir,
 			Config:   cb.config,
 		},
-		Tidier: &clangtidy.Command{Dir: dir, Fix: cb.fix},
+		Tidier: tidier,
+		Fixer:  fixer,
 		Jobs:   cb.jobs,
 		Paths:  cb.paths,
 	}, nil
+}
+
+func (cb *ClangTidyBuilder) differ(dir string) Differ {
+	if cb.WholeFiles {
+		return nil
+	}
+	return diff.Git{Dir: dir, Context: contextLines}
 }
 
 func (cb *ClangTidyBuilder) warnMissingDatabase(ctx context.Context, dir string) {
@@ -159,7 +223,8 @@ var (
 // ClangTidyRunner runs clang-tidy over files, limiting its diagnostics to the
 // lines near their changes.
 type ClangTidyRunner struct {
-	// Differ reports the changed lines of each file.
+	// Differ reports the changed lines of each file. Every file is checked in
+	// full when Differ is nil.
 	Differ Differ
 
 	// Database writes the compilation database that Tidier reads.
@@ -167,6 +232,10 @@ type ClangTidyRunner struct {
 
 	// Tidier runs clang-tidy over each file.
 	Tidier Tidier
+
+	// Fixer applies the fixes that Tidier suggests, once every file has been
+	// checked. No fixes are applied when Fixer is nil.
+	Fixer FixApplier
 
 	// Jobs is the number of files checked at once.
 	Jobs int
@@ -176,13 +245,19 @@ type ClangTidyRunner struct {
 }
 
 // Run runs clang-tidy over each file, reporting only the diagnostics within
-// the ranges from Differ; a file without changes is checked in full. The
-// output for each file that clang-tidy fails on is written to the error
-// stream, in the order of Paths.
+// the ranges from Differ; a file without changes, or any file when Differ is
+// nil, is checked in full. The output for each file that clang-tidy fails on
+// is written to the error stream, in the order of Paths.
+//
+// Files that the database does not cover, such as those of a library that is
+// only built on another platform, are skipped with a notice on the error
+// stream, since clang-tidy cannot compile them. Once every file has been
+// checked, the fixes suggested for all of them are applied by Fixer.
 //
 // [ErrClangTidy] is returned if clang-tidy fails for any file. Any other error
-// is returned if the changes cannot be read from Differ, or if the compilation
-// database cannot be written or removed by Database.
+// is returned if the changes cannot be read from Differ, if the compilation
+// database cannot be written or removed by Database, or if Fixer cannot apply
+// the fixes.
 func (cr *ClangTidyRunner) Run(ctx context.Context) (err error) {
 	ranges, err := cr.ranges(ctx)
 	if err != nil {
@@ -195,14 +270,27 @@ func (cr *ClangTidyRunner) Run(ctx context.Context) (err error) {
 	defer func() { err = errors.Join(err, remove()) }()
 
 	out := stream.Verbatim(cli.ErrStream(ctx))
+	var paths []string
+	for _, path := range cr.Paths {
+		if !cr.Database.Covers(path) {
+			fmt.Fprintf(out, "%s: skipped, not covered by the compilation database\n", path)
+			continue
+		}
+		paths = append(paths, path)
+	}
 	failed := false
-	for _, result := range cr.tidy(ctx, buildDir, ranges) {
+	for _, result := range cr.tidy(ctx, buildDir, paths, ranges) {
 		if result.err == nil {
 			continue
 		}
 		failed = true
 		out.Write(result.output)
 		fmt.Fprintf(out, "%s: %v\n", result.path, result.err)
+	}
+	if cr.Fixer != nil {
+		if err := cr.Fixer.ApplyFixes(ctx); err != nil {
+			return err
+		}
 	}
 	if failed {
 		return ErrClangTidy
@@ -211,6 +299,9 @@ func (cr *ClangTidyRunner) Run(ctx context.Context) (err error) {
 }
 
 func (cr *ClangTidyRunner) ranges(ctx context.Context) (map[string][]diff.Range, error) {
+	if cr.Differ == nil {
+		return nil, nil
+	}
 	files, err := cr.Differ.Changes(ctx, cr.Paths...)
 	if err != nil {
 		return nil, err
@@ -228,13 +319,13 @@ type tidyResult struct {
 	err    error
 }
 
-// tidy runs the Tidier over each of Paths with up to Jobs running at once, and
-// returns the results in the same order as Paths.
-func (cr *ClangTidyRunner) tidy(ctx context.Context, buildDir string, ranges map[string][]diff.Range) []tidyResult {
-	results := make([]tidyResult, len(cr.Paths))
+// tidy runs the Tidier over each of paths with up to Jobs running at once, and
+// returns the results in the same order as paths.
+func (cr *ClangTidyRunner) tidy(ctx context.Context, buildDir string, paths []string, ranges map[string][]diff.Range) []tidyResult {
+	results := make([]tidyResult, len(paths))
 	limit := make(chan struct{}, max(cr.Jobs, 1))
 	var wg sync.WaitGroup
-	for i, path := range cr.Paths {
+	for i, path := range paths {
 		wg.Go(func() {
 			limit <- struct{}{}
 			defer func() { <-limit }()

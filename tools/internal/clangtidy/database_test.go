@@ -191,6 +191,109 @@ func TestDatabaseWrite(t *testing.T) {
 	}
 }
 
+func TestDatabaseCovers(t *testing.T) {
+	t.Parallel()
+
+	db := clangtidy.Database{
+		{Directory: "/repo/build", File: "/repo/lib/alloy-core/src/a.cpp"},
+		{Directory: "/repo/extra/logging", File: "src/b.cpp"},
+	}
+	testCases := []struct {
+		name string
+		path string
+		want bool
+	}{
+		{
+			name: "compiled source",
+			path: "lib/alloy-core/src/a.cpp",
+			want: true,
+		}, {
+			name: "header beside compiled sources",
+			path: "lib/alloy-core/include/alloy/core/a.hpp",
+			want: true,
+		}, {
+			name: "relative entry",
+			path: "extra/logging/include/b.hpp",
+			want: true,
+		}, {
+			name: "uncompiled project",
+			path: "extra/win32-bindings/src/c.cpp",
+			want: false,
+		}, {
+			name: "project prefix",
+			path: "lib/alloy-core-extra/src/a.cpp",
+			want: false,
+		}, {
+			name: "root file",
+			path: "a.cpp",
+			want: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			// Arrange
+			sut := db
+
+			// Act
+			covered := sut.Covers("/repo", tc.path)
+
+			// Assert
+			if got, want := covered, tc.want; !cmp.Equal(got, want) {
+				t.Errorf("Database.Covers() = %v, want %v", got, want)
+			}
+		})
+	}
+}
+
+func TestConfigDatabaseCovers(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name     string
+		buildDir string
+		path     string
+		want     bool
+	}{
+		{
+			name:     "uncovered",
+			buildDir: "multi-config",
+			path:     "lib/alloy-core/a.cpp",
+			want:     false,
+		}, {
+			name:     "missing database",
+			buildDir: "missing",
+			path:     "lib/alloy-core/a.cpp",
+			want:     true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			// Arrange
+			sut := &clangtidy.ConfigDatabase{
+				Dir:      "testdata",
+				BuildDir: tc.buildDir,
+				Config:   "Debug",
+			}
+			_, remove := writeDatabase(t, sut)
+			t.Cleanup(func() { _ = remove() })
+
+			// Act
+			covered := sut.Covers(tc.path)
+
+			// Assert
+			if got, want := covered, tc.want; !cmp.Equal(got, want) {
+				t.Errorf("ConfigDatabase.Covers() = %v, want %v", got, want)
+			}
+		})
+	}
+}
+
 func TestConfigDatabaseWriteDatabase(t *testing.T) {
 	t.Parallel()
 

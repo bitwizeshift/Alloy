@@ -44,10 +44,35 @@ commands:
               checked in full.
 
               clang-tidy reads how each file is compiled from the
-              compile_commands.json in the build directory.
+              compile_commands.json in the build directory. Files of a library
+              or extra that the database compiles nothing of, such as one that
+              is only built on another platform, are skipped.
             examples:
               - alloy-cli check cpp-clang-tidy lib/alloy-core/src/alloy/core/assert.cpp
               - alloy-cli check cpp-clang-tidy --fix -j 4 lib/alloy-core/src/alloy/core/assert.cpp
+          - name: cpp-include-cleaner
+            summary: Check that C and C++ files include exactly the headers they use
+            description: |
+              Runs the misc-include-cleaner check of clang-tidy over C and C++
+              files, which reports includes that nothing in the file uses, and
+              symbols that are used without directly including the header that
+              provides them. These are the same diagnostics that clangd shows
+              for unused and missing includes.
+
+              Diagnostics are reported on every line, rather than only near the
+              changes, since removing the last use of a header makes its
+              include unused without changing the include itself.
+
+              With --fix, unused includes are removed and missing ones are
+              added, without reformatting the includes around them.
+
+              clang-tidy reads how each file is compiled from the
+              compile_commands.json in the build directory. Files of a library
+              or extra that the database compiles nothing of, such as one that
+              is only built on another platform, are skipped.
+            examples:
+              - alloy-cli check cpp-include-cleaner lib/alloy-core/include/alloy/core/assert.hpp
+              - alloy-cli check cpp-include-cleaner --fix lib/alloy-core/include/alloy/core/assert.hpp
           - name: header-guard
             summary: Check that C and C++ headers have a well-formed include guard
             description: |

@@ -105,8 +105,36 @@ func TestClangTidyBuilderBuild(t *testing.T) {
 					Config:   "Release",
 				},
 				Tidier: &clangtidy.Command{Dir: "/repo", Fix: true},
+				Fixer:  &clangtidy.Command{Dir: "/repo", Fix: true},
 				Jobs:   3,
 				Paths:  []string{"a.cpp"},
+			},
+			wantErr: nil,
+		}, {
+			name:    "include cleaner",
+			builder: checkcmd.IncludeCleaner(roottest.Rooter("/repo")),
+			args:    []string{"--fix", "a.hpp"},
+			want: &checkcmd.ClangTidyRunner{
+				Differ: nil,
+				Database: &clangtidy.ConfigDatabase{
+					Dir:      "/repo",
+					BuildDir: "build",
+					Config:   "Debug",
+				},
+				Tidier: &clangtidy.Command{
+					Dir:         "/repo",
+					Fix:         true,
+					Checks:      "-*,misc-include-cleaner",
+					FormatStyle: "none",
+				},
+				Fixer: &clangtidy.Command{
+					Dir:         "/repo",
+					Fix:         true,
+					Checks:      "-*,misc-include-cleaner",
+					FormatStyle: "none",
+				},
+				Jobs:  runtime.NumCPU(),
+				Paths: []string{"a.hpp"},
 			},
 			wantErr: nil,
 		}, {
@@ -134,8 +162,9 @@ func TestClangTidyBuilderBuild(t *testing.T) {
 			if got, want := err, tc.wantErr; !cmp.Equal(got, want, cmpopts.EquateErrors()) {
 				t.Fatalf("ClangTidyBuilder.Build() = %v, want %v", got, want)
 			}
-			if got, want := runner, tc.want; !cmp.Equal(got, want) {
-				t.Errorf("ClangTidyBuilder.Build() = %v, want %v\n%s", got, want, cmp.Diff(want, got))
+			opts := cmpopts.IgnoreUnexported(clangtidy.ConfigDatabase{}, clangtidy.Command{})
+			if got, want := runner, tc.want; !cmp.Equal(got, want, opts) {
+				t.Errorf("ClangTidyBuilder.Build() = %v, want %v\n%s", got, want, cmp.Diff(want, got, opts))
 			}
 		})
 	}
@@ -171,6 +200,7 @@ func TestClangTidyRunnerRun(t *testing.T) {
 		differ     checkcmd.Differ
 		database   checkcmd.DatabaseWriter
 		tidier     checkcmd.Tidier
+		fixer      checkcmd.FixApplier
 		paths      []string
 		wantStderr string
 		wantErr    error
@@ -204,6 +234,43 @@ func TestClangTidyRunnerRun(t *testing.T) {
 				"db b.cpp [{1 3} {9 12}]\n" +
 				"b.cpp: test error\n",
 			wantErr: checkcmd.ErrClangTidy,
+		}, {
+			name:     "whole files",
+			differ:   nil,
+			database: databaseWriter{dir: "db"},
+			tidier:   echoTidier{err: testErr},
+			paths:    []string{"a.cpp"},
+			wantStderr: "db a.cpp []\n" +
+				"a.cpp: test error\n",
+			wantErr: checkcmd.ErrClangTidy,
+		}, {
+			name:     "uncovered files",
+			differ:   nil,
+			database: databaseWriter{dir: "db", uncovered: []string{"a.cpp"}},
+			tidier:   echoTidier{err: testErr},
+			paths:    []string{"a.cpp", "b.cpp"},
+			wantStderr: "a.cpp: skipped, not covered by the compilation database\n" +
+				"db b.cpp []\n" +
+				"b.cpp: test error\n",
+			wantErr: checkcmd.ErrClangTidy,
+		}, {
+			name:       "fixes applied",
+			differ:     nil,
+			database:   databaseWriter{dir: "db"},
+			tidier:     noOpTidier{},
+			fixer:      fixApplier{err: nil},
+			paths:      []string{"a.cpp"},
+			wantStderr: "",
+			wantErr:    nil,
+		}, {
+			name:       "fix error",
+			differ:     nil,
+			database:   databaseWriter{dir: "db"},
+			tidier:     noOpTidier{},
+			fixer:      fixApplier{err: testErr},
+			paths:      []string{"a.cpp"},
+			wantStderr: "",
+			wantErr:    testErr,
 		}, {
 			name:       "differ error",
 			differ:     errDiffer{err: testErr},
@@ -241,6 +308,7 @@ func TestClangTidyRunnerRun(t *testing.T) {
 				Differ:   tc.differ,
 				Database: tc.database,
 				Tidier:   tc.tidier,
+				Fixer:    tc.fixer,
 				Jobs:     2,
 				Paths:    tc.paths,
 			}
