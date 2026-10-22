@@ -52,6 +52,7 @@ set(source_files
   src/alloy/core/memory/packed_buffer.test.cpp
 
   # IO
+  src/alloy/core/io/back_insert_writer.test.cpp
   src/alloy/core/io/buffered_reader.test.cpp
   src/alloy/core/io/buffered_writer.test.cpp
   src/alloy/core/io/deserializer.test.cpp

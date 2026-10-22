@@ -119,6 +119,7 @@ set(header_files
 
   # IO
   include/alloy/core/io/buffered_reader.hpp
+  include/alloy/core/io/back_insert_writer.hpp
   include/alloy/core/io/buffered_writer.hpp
   include/alloy/core/io/deserializer.hpp
   include/alloy/core/io/error.hpp
