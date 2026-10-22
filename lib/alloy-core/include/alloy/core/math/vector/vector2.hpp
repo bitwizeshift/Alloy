@@ -356,6 +356,7 @@ namespace alloy::core {
   /// \param v1 the first vector
   /// \param v2 the second vector
   /// \return `true` if the two vectors are linearly independent
+  ALLOY_CORE_API
   auto are_linearly_independent(const vector2& v1, const vector2& v2)
     noexcept -> bool;
 
