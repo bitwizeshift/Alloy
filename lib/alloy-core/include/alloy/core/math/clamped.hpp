@@ -75,9 +75,10 @@ namespace alloy::core {
     ///////////////////////////////////////////////////////////////////////////
     enum class error : std::uint8_t
     {
-      none,      ///< No error
-      overflow,  ///< Constructed value exceeds 1.0
-      underflow, ///< Constructed value precedes 0.0
+      none,         ///< No error
+      overflow,     ///< Constructed value exceeds 1.0
+      underflow,    ///< Constructed value precedes 0.0
+      not_a_number, ///< Constructed value is NaN
     };
 
     //-------------------------------------------------------------------------
@@ -105,12 +106,12 @@ namespace alloy::core {
     /// ALLOY_ASSERT(clamped::make(0.5f) == 0.5f);
     /// ```
     ///
-    /// \pre `value >= 0` and `value <= 1`
     /// \param value the value
     /// \return the clamped value, if \p value is within [0,1]; an error
     ///         otherwise. If \p value exceeds 1.0, this returns
     ///         `error::overflow`. If \p value precedes 0.0, this returns
-    ///         `error::underflow`.
+    ///         `error::underflow`. If \p value is NaN, this returns
+    ///         `error::not_a_number`.
     static constexpr auto make(element_type value)
       noexcept -> result<clamped, error>;
 
@@ -403,6 +404,10 @@ inline constexpr
 auto alloy::core::clamped<Float>::make(element_type value)
   noexcept -> result<clamped, error>
 {
+  // NaN is the only value that compares unequal to itself
+  if (value != value) {
+    return fail(error::not_a_number);
+  }
   if (value < Float{0}) {
     return fail(error::underflow);
   }

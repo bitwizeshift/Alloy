@@ -12,6 +12,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <functional> // std::hash
+#include <limits>     // std::numeric_limits
 #include <type_traits>
 
 namespace alloy::core::test {
@@ -37,6 +38,18 @@ TEST_CASE("clamped<Float>::make(Float)", "[factory]") {
 
     SECTION("Results in underflow error") {
       REQUIRE(sut == fail(clamped<float>::error::overflow));
+    }
+  }
+  SECTION("Input is NaN") {
+    // Arrange
+    const auto value = std::numeric_limits<float>::quiet_NaN();
+
+    // Act
+    const auto sut = clamped<float>::make(value);
+
+    // Assert
+    SECTION("Results in not a number error") {
+      REQUIRE(sut == fail(clamped<float>::error::not_a_number));
     }
   }
   SECTION("Input is between 1.0 and 0.0") {
