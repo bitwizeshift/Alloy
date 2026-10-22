@@ -55,12 +55,19 @@ namespace alloy::core {
   //============================================================================
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief A quaternion is a mathematical construct representing
-  ///        4-dimensions of a rotation about the x,y,z axis.
+  /// \brief A quaternion, used to represent a rotation in 3 dimensions
   ///
-  /// A quaternion is conventionally represented as q = {x,y,z,w}, where
-  /// x,y, and z represent rotations around the respective axes
-  /// (representing roll, pitch, and yaw respectively).
+  /// The components are stored in the order {w, x, y, z}, where w is the real
+  /// part and x, y, and z are the imaginary parts.
+  ///
+  /// Products follow the Hamilton convention, where i^2 = j^2 = k^2 = ijk =
+  /// -1. A unit quaternion q rotates a vector v as q v q^-1, so the product
+  /// `a * b` rotates by `b` first and then by `a`, in the same order as the
+  /// column-vector matrices.
+  ///
+  /// Rotations are right-handed: a positive angle about an axis rotates
+  /// counter-clockwise when looking down the axis toward the origin, so a
+  /// quarter turn about the z-axis takes the x-axis to the y-axis.
   //////////////////////////////////////////////////////////////////////////////
   class ALLOY_CORE_API quaternion
   {
@@ -100,6 +107,11 @@ namespace alloy::core {
 
     /// \brief Constructs a quaternion from the given a \p yaw, \p pitch, and
     ///        \p roll
+    ///
+    /// The yaw is about the y-axis, the pitch is about the x-axis, and the
+    /// roll is about the z-axis. The result is the product
+    /// `yaw * pitch * roll`, which yaws, then pitches about the yawed
+    /// x-axis, then rolls about the resulting z-axis.
     ///
     /// \param yaw the yaw angle
     /// \param pitch the pitch angle
@@ -187,9 +199,9 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Gets the number of components in the vector2
+    /// \brief Gets the number of components in the quaternion
     ///
-    /// \return the number of components in the vector2
+    /// \return the number of components in the quaternion
     constexpr auto size() const noexcept -> size_type;
 
     /// \{
@@ -288,6 +300,11 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
 
     /// \brief Calculates and returns the 3x3 rotation matrix
+    ///
+    /// The matrix rotates column vectors, so `rotation_matrix() * v` is the
+    /// same as `(*this) * v`.
+    ///
+    /// \pre this quaternion is normalized
     ///
     /// \return the rotation matrix
     auto rotation_matrix() const noexcept -> matrix3;
@@ -503,14 +520,38 @@ namespace alloy::core {
     noexcept -> quaternion;
   auto operator-(const quaternion& lhs, const quaternion& rhs)
     noexcept -> quaternion;
+
+  /// \brief Computes the Hamilton product of \p lhs and \p rhs
+  ///
+  /// As a rotation, the product rotates by \p rhs first and then by \p lhs.
+  ///
+  /// \param lhs the left quaternion
+  /// \param rhs the right quaternion
+  /// \return the product `lhs * rhs`
   auto operator*(const quaternion& lhs, const quaternion& rhs)
     noexcept -> quaternion;
+
+  /// \brief Multiplies \p lhs by the inverse of \p rhs
+  ///
+  /// \param lhs the left quaternion
+  /// \param rhs the right quaternion
+  /// \return the product `lhs * rhs.inverse()`
   auto operator/(const quaternion& lhs, const quaternion& rhs)
     noexcept -> quaternion;
+
   auto operator*(const quaternion& lhs, real rhs) noexcept -> quaternion;
   auto operator*(real lhs, const quaternion& rhs) noexcept -> quaternion;
+
+  /// \brief Rotates the vector \p rhs by \p lhs
+  ///
+  /// \pre \p lhs is normalized
+  ///
+  /// \param lhs the rotation
+  /// \param rhs the vector to rotate
+  /// \return the rotated vector
   ALLOY_CORE_API
   auto operator*(const quaternion& lhs, const vector3& rhs) noexcept -> vector3;
+
   auto operator/(const quaternion& lhs, real rhs) noexcept -> quaternion;
 
   //----------------------------------------------------------------------------
