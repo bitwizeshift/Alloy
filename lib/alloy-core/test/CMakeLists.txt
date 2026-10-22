@@ -64,6 +64,7 @@ set(source_files
   src/alloy/core/math/clamped.test.cpp
   src/alloy/core/math/euler_angles.test.cpp
   src/alloy/core/math/math.test.cpp
+  src/alloy/core/math/quaternion.test.cpp
   src/alloy/core/math/saturated.test.cpp
   src/alloy/core/math/simd.test.cpp
   src/alloy/core/math/trigonometry.test.cpp

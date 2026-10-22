@@ -30,9 +30,16 @@ namespace alloy::core {
   {
     ~quaternion_constants() = delete;
 
-    inline static const auto zero = quaternion{};
+    /// \brief A quaternion with every component set to 0
+    inline static constexpr auto zero = quaternion{
+      real{0},
+      real{0},
+      real{0},
+      real{0}
+    };
 
-    inline static const auto identity = quaternion{
+    /// \brief The quaternion that represents no rotation
+    inline static constexpr auto identity = quaternion{
       real{1},
       real{0},
       real{0},
