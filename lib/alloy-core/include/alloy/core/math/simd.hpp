@@ -20,6 +20,7 @@
 
 #include <algorithm> // IWYU pragma: keep
 #include <array>
+#include <bit>       // IWYU pragma: keep
 #include <cmath>     // IWYU pragma: keep
 #include <cstddef>
 #include <span>
@@ -247,16 +248,17 @@ namespace alloy::core {
   // Casting
   //---------------------------------------------------------------------------
 
-  /// \brief Reinterprets the underlying SIMD object into a different formed
-  ///        SIMD object
+  /// \brief Reinterprets the bits of the SIMD value \p v as a SIMD value of
+  ///        \p To
   ///
   /// In general, this operation should be a no-op and not actually generate
   /// any assembly; it should only change how the data is viewed
   ///
+  /// \tparam To the element type to reinterpret the lanes as
   /// \param v the value to cast
   /// \return the casted value
   template <typename To, typename From>
-  auto simd_cast(simd<To> v) noexcept -> simd<From>;
+  auto simd_cast(simd<From> v) noexcept -> simd<To>;
 
   //---------------------------------------------------------------------------
   // Unary Arithmetic
@@ -754,45 +756,43 @@ auto alloy::core::simd<T>::lane() const noexcept -> T
 
 template <typename To, typename From>
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_cast(simd<To> v) noexcept -> simd<From>
+auto alloy::core::simd_cast(simd<From> v) noexcept -> simd<To>
 {
   if constexpr (std::is_same_v<To,From>) {
     return v;
-  }
+  } else {
 #if defined(ALLOY_SIMD_NEON)
-  if constexpr (std::is_same_v<To, f32>) {
-    if constexpr (std::is_same_v<From, u32>) {
+    if constexpr (std::is_same_v<To, f32> && std::is_same_v<From, u32>) {
       return simd<To>{vreinterpretq_f32_u32(v.value)};
-    } else if constexpr (std::is_same_v<From, s32>) {
+    } else if constexpr (std::is_same_v<To, f32>) {
       return simd<To>{vreinterpretq_f32_s32(v.value)};
-    }
-  } else if constexpr (std::is_same_v<To, u32>) {
-    if constexpr (std::is_same_v<From, f32>) {
+    } else if constexpr (std::is_same_v<To, u32> && std::is_same_v<From, f32>) {
       return simd<To>{vreinterpretq_u32_f32(v.value)};
-    } else if constexpr (std::is_same_v<From, s32>) {
+    } else if constexpr (std::is_same_v<To, u32>) {
       return simd<To>{vreinterpretq_u32_s32(v.value)};
-    }
-  } else if constexpr (std::is_same_v<To, s32>) {
-    if constexpr (std::is_same_v<From, f32>) {
+    } else if constexpr (std::is_same_v<From, f32>) {
       return simd<To>{vreinterpretq_s32_f32(v.value)};
-    } else if constexpr (std::is_same_v<From, u32>) {
+    } else {
       return simd<To>{vreinterpretq_s32_u32(v.value)};
     }
-  }
 #elif defined(ALLOY_SIMD_SSE)
-  if constexpr (std::is_same_v<To, f32>) {
-    return simd<To>{_mm_castsi128_ps(v.value)};
-  } else if constexpr (std::is_same_v<To, u32> || std::is_same_v<To, s32>) {
-    return simd<To>{_mm_castps_si128(v.value)};
-  }
+    if constexpr (std::is_same_v<To, f32>) {
+      return simd<To>{_mm_castsi128_ps(v.value)};
+    } else if constexpr (std::is_same_v<From, f32>) {
+      return simd<To>{_mm_castps_si128(v.value)};
+    } else {
+      // Signed and unsigned lanes share the same __m128i representation
+      return simd<To>{v.value};
+    }
 #else
-  return simd<To>::set(
-    reinterpret_cast<To>(v.template lane<0>()),
-    reinterpret_cast<To>(v.template lane<1>()),
-    reinterpret_cast<To>(v.template lane<2>()),
-    reinterpret_cast<To>(v.template lane<3>())
-  );
+    return simd<To>::set(
+      std::bit_cast<To>(v.template lane<0>()),
+      std::bit_cast<To>(v.template lane<1>()),
+      std::bit_cast<To>(v.template lane<2>()),
+      std::bit_cast<To>(v.template lane<3>())
+    );
 #endif
+  }
 }
 
 //-----------------------------------------------------------------------------

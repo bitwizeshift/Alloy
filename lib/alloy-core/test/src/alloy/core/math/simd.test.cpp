@@ -208,6 +208,47 @@ TEMPLATE_TEST_CASE("simd<T>::set(T, T, T, T)", "[factory]", f32, u32, s32) {
 }
 
 //-----------------------------------------------------------------------------
+// Casting
+//-----------------------------------------------------------------------------
+
+TEST_CASE("simd_cast<To>(simd<From>)", "[casting]") {
+  SECTION("Reinterprets f32 bits as u32") {
+    // Arrange
+    const auto sut = simd<f32>::spread_scalar(1.0f);
+
+    // Act
+    const auto result = simd_cast<u32>(sut);
+
+    // Assert
+    REQUIRE(result.lane<0>() == u32{0x3f800000});
+  }
+  SECTION("Reinterprets s32 bits as u32") {
+    // Arrange
+    const auto sut = simd<s32>::set(-1, 0, 1, -2);
+
+    // Act
+    const auto result = simd_cast<u32>(sut);
+
+    // Assert
+    REQUIRE(result.lane<0>() == u32{0xffffffff});
+    REQUIRE(result.lane<3>() == u32{0xfffffffe});
+  }
+  SECTION("Round-trips through another type") {
+    // Arrange
+    const auto sut = simd<f32>::set(1.5f, -2.0f, 0.25f, 8.0f);
+
+    // Act
+    const auto result = simd_cast<f32>(simd_cast<s32>(sut));
+
+    // Assert
+    REQUIRE(result.lane<0>() == 1.5f);
+    REQUIRE(result.lane<1>() == -2.0f);
+    REQUIRE(result.lane<2>() == 0.25f);
+    REQUIRE(result.lane<3>() == 8.0f);
+  }
+}
+
+//-----------------------------------------------------------------------------
 // Unary Arithmetic
 //-----------------------------------------------------------------------------
 
