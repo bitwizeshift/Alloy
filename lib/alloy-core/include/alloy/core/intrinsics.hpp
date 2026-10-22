@@ -677,7 +677,7 @@ auto alloy::core::compiler::assume_aligned(T* p) noexcept -> T*
 #if defined(__clang__) || (defined(__GNUC__) && !defined(__ICC))
   return static_cast<T*>(__builtin_assume_aligned(p, N));
 #elif defined(_MSC_VER)
-  if ((reinterpret_cast<std::uintptr_t>(p) & ((1 << N) - 1)) == 0) {
+  if ((reinterpret_cast<std::uintptr_t>(p) & (N - 1)) == 0) {
     return p;
   } else {
     __assume(0);
