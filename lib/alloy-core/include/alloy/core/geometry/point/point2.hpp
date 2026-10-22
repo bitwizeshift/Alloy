@@ -23,7 +23,6 @@
 #include "alloy/core/math/math.hpp"           // core::almost_equal
 
 #include <cstddef>     // std::size_t, std::ptrdiff_t
-#include <type_traits> // std::true_type, std::false_type
 
 namespace alloy::core {
 

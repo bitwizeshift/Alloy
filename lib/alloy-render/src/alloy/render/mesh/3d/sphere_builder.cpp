@@ -4,11 +4,17 @@
 
 #include "alloy/render/mesh/3d/sphere_builder.hpp"
 
+#include "alloy/core/memory/allocator.hpp"
+#include "alloy/core/utilities/quantity.hpp"
+#include "alloy/render/mesh/mesh.hpp"
+#include "alloy/render/mesh/primitive_topology.hpp"
 #include "alloy/render/mesh/unsafe_mesh_builder.hpp"
 
 #include "alloy/core/math/trigonometry.hpp"
 #include "alloy/core/math/math_constants.hpp"
 #include "alloy/core/math/angle/radian.hpp"
+#include <cstddef>
+#include <utility>
 
 alloy::render::sphere_builder::sphere_builder(
   std::size_t x_segments,

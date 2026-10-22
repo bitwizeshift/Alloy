@@ -9,6 +9,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "alloy/core/geometry/frustum.hpp"
+#include "alloy/core/assert.hpp"
+#include "alloy/core/geometry/point/point3.hpp"
 
 auto alloy::core::frustum::contains(const point3& p) const noexcept -> bool
 {

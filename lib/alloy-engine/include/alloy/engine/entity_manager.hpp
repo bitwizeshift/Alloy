@@ -15,7 +15,6 @@
 # pragma once
 #endif
 
-#include "alloy/engine/component.hpp"
 #include "alloy/engine/entity.hpp"
 #include "alloy/engine/signature.hpp"
 

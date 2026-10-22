@@ -15,9 +15,9 @@
 # pragma once
 #endif
 
+#include "alloy/extra/logging/log_level.hpp"
 #include "alloy/extra/logging/logger.hpp"
 
-#include "alloy/core/utilities/not_null.hpp"
 
 #include <chrono>
 #include <string_view>

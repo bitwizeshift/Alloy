@@ -15,6 +15,8 @@
 # pragma once
 #endif
 
+#include "alloy/core/string/zstring_view.hpp"
+#include <system_error>
 #include "alloy/render/gl/shader/shader.hpp"
 #include "alloy/render/gl/error.hpp"
 
@@ -25,7 +27,6 @@
 
 #include <limits>      // std::numeric_limits
 #include <utility>     // std::move
-#include <type_traits> // std::false_type
 #include <initializer_list> // std::initializer_list
 #include <iterator> // std::advance, std::next
 

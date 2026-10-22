@@ -17,7 +17,6 @@
 
 #include <cstdint> // std::uint32_t, std::uint64_t
 #include <cstddef> // std::byte, std::size_t
-#include <type_traits> // sizeof checks
 
 namespace alloy::core {
 

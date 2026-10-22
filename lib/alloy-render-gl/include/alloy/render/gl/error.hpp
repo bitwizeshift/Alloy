@@ -15,7 +15,6 @@
 # pragma once
 #endif
 
-#include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/string/string.hpp"
 #include "alloy/core/string/zstring_view.hpp"
 
@@ -23,7 +22,6 @@
 
 #include <system_error> // std::error_category
 #include <memory> // std::shared_ptr
-#include <utility> // std::move
 #include <type_traits> // std::true_type
 
 namespace alloy::render::gl {

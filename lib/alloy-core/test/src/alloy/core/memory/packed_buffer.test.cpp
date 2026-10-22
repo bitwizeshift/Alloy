@@ -2,6 +2,7 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
+#include "alloy/core/utilities/result.hpp"
 #include <alloy/core/memory/data_quantity.hpp>
 #include <alloy/core/memory/packed_buffer.hpp>
 
@@ -9,6 +10,8 @@
 
 #include <array>     // std::array
 #include <algorithm> // std::equal
+#include <cstdint>
+#include <system_error>
 #include <utility>   // std::move
 #include <cstddef>   // std::byte
 

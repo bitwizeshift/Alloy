@@ -17,7 +17,6 @@
 
 #include "alloy/core/config.hpp"            // ALLOY_CORE_EXCEPTIONS_ENABLED
 #include "alloy/core/intrinsics.hpp"        // ALLOY_COMPILER_DIAGNOSTIC_PUSH
-#include "alloy/core/assert.hpp"            // ALLOY_ASSERT
 #include "alloy/core/precision.hpp"         // real
 #include "alloy/core/math/math.hpp"         // almost_equals
 #include "alloy/core/math/angle/radian.hpp" // radian

@@ -6,8 +6,11 @@
 #include "alloy/render/gl/mesh/primitive_topology.hpp"
 
 #include "alloy/render/mesh/attribute_locations.hpp"
+#include "alloy/render/mesh/mesh.hpp"
 
 #include <array>
+#include <cstddef>
+#include <utility>
 
 auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
 {

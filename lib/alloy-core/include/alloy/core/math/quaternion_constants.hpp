@@ -15,6 +15,8 @@
 # pragma once
 #endif
 
+#include "alloy/core/api.hpp"
+#include "alloy/core/precision/real.hpp"
 #include "alloy/core/math/quaternion.hpp"
 
 namespace alloy::core {

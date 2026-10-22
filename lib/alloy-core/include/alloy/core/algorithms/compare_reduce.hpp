@@ -15,7 +15,6 @@
 # pragma once
 #endif
 
-#include "alloy/core/macros.hpp"
 #include "alloy/core/intrinsics.hpp"
 
 #include <type_traits>

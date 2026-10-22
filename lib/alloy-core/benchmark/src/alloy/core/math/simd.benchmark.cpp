@@ -3,18 +3,19 @@
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
 #include "alloy/core/math/simd.hpp"
-#include "alloy/core/math/math.hpp"
-#include "alloy/core/math/vector.hpp"
 #include "alloy/core/memory/allocator.hpp"
+#include "alloy/core/types.hpp"
+#include "alloy/core/utilities/not_null.hpp"
 
 #include <array>
+#include <catch2/benchmark/catch_benchmark.hpp>
+#include <catch2/benchmark/catch_chronometer.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/benchmark/catch_benchmark_all.hpp>
 #include <cstdlib>
+#include <memory>
 #include <random>
 #include <span>
 #include <string>
-#include <utility>
 
 namespace alloy::core::benchmark {
 

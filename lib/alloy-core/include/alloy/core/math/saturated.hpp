@@ -16,6 +16,7 @@
 # pragma once
 #endif
 
+#include <cstddef>
 #include "alloy/core/precision/real.hpp" // real
 #include "alloy/core/intrinsics.hpp"     // ALLOY_FORCE_INLINE
 #include "alloy/core/assert.hpp"

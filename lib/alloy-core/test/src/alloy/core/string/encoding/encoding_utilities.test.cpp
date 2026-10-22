@@ -2,12 +2,14 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
+#include "alloy/core/types.hpp"
 #include <alloy/core/string/encoding/encoding_utilities.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
 #include <algorithm>
 #include <array>
+#include <string_view>
 
 // Note: These tests try to cover general behavior, but may still be missing
 //       some edge-cases.

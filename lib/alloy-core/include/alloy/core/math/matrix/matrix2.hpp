@@ -15,6 +15,7 @@
 # pragma once
 #endif
 
+#include "alloy/core/math/math.hpp"
 #include "alloy/core/api.hpp"                 // ALLOY_CORE_API
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/precision.hpp"           // core::real

@@ -4,9 +4,17 @@
 
 #include "alloy/core/io/reader.hpp"
 
+#include "alloy/core/assert.hpp"
+#include "alloy/core/containers/vector.hpp"
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/io/error.hpp"
+#include "alloy/core/utilities/not_null.hpp"
+#include "alloy/core/utilities/result.hpp"
 
 #include <algorithm> // std::max
+#include <cstddef>
+#include <span>
+#include <system_error>
 
 //=============================================================================
 // non-member functions : class : reader

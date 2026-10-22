@@ -4,10 +4,13 @@
 
 #include "alloy/extra/logging/console_log_stream.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/extra/logging/log_level.hpp"
 
 #include <array>  // std::array
+#include <chrono>
 #include <ctime>  // std::localtime
 #include <cstdio> // std::printf
+#include <string_view>
 
 namespace alloy::extra {
 namespace {

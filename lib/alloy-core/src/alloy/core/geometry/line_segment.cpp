@@ -3,7 +3,9 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/core/geometry/line_segment.hpp"
+#include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/math.hpp" // core::sqrt
+#include "alloy/core/precision/real.hpp"
 
 //==============================================================================
 // class : line_segment

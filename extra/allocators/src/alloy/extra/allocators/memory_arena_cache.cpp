@@ -8,7 +8,7 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/assert.hpp"
 
-#include <new>
+#include <cstddef>
 
 //==============================================================================
 // definitions : class : memory_arena_cache

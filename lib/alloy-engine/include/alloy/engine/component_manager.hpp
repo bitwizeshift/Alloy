@@ -22,7 +22,6 @@
 
 #include <cstddef>       // std::size_t
 #include <unordered_map> // std::unordered_map
-#include <array>         // std::array
 #include <vector>        // std::vector
 #include <type_traits>   // std::is_reference, std::is_const, etc
 #include <algorithm>     // std::find

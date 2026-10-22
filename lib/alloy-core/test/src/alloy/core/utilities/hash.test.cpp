@@ -5,6 +5,9 @@
 #include "alloy/core/utilities/hash.hpp"
 
 #include <catch2/catch_test_macros.hpp>
+#include <cstdint>
+#include <functional>
+#include <type_traits>
 
 namespace alloy::core::test {
 namespace {

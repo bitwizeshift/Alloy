@@ -6,9 +6,13 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <functional>
+#include <memory>
 #include <string>
+#include <system_error>
 #include <type_traits>
 #include <ios> // std::ios_errc
+#include <utility>
 
 #if defined(_MSC_VER)
 # pragma warning(push)

@@ -15,11 +15,11 @@
 # pragma once
 #endif
 
+#include <cstddef>
 #include "alloy/core/utilities/enum_traits.hpp"
 
 #include <bitset>   // std::bitset
 #include <concepts> // std::same_as
-#include <utility> // std::index_sequence
 
 namespace alloy::core {
 

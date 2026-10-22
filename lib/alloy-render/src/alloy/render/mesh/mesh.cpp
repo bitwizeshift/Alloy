@@ -3,7 +3,14 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/render/mesh/mesh.hpp"
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/memory/allocator.hpp"
+#include "alloy/core/string/zstring_view.hpp"
+#include "alloy/core/utilities/result.hpp"
+#include "alloy/render/mesh/primitive_topology.hpp"
 
+#include <cstddef>
+#include <cstdint>
 #include <utility>
 
 namespace alloy::render {

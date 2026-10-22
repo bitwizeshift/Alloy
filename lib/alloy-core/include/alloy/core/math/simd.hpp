@@ -15,11 +15,10 @@
 # pragma once
 #endif
 
+#include <array>
 #include "alloy/core/types.hpp"
 #include "alloy/core/intrinsics.hpp"
-#include "alloy/core/math/math.hpp" // sqrt
 #include <cstddef>
-#include <algorithm> // std::min
 #include <span>
 
 // Detect target platform and include appropriate SIMD support

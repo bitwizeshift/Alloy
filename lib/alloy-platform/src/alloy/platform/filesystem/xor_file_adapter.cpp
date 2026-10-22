@@ -4,10 +4,19 @@
 
 #include "alloy/platform/filesystem/xor_file_adapter.hpp"
 
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/utilities/result.hpp"
+#include "alloy/platform/buffers/const_buffer.hpp"
+#include "alloy/platform/buffers/mutable_buffer.hpp"
+#include "alloy/platform/filesystem/file.hpp"
+#include "alloy/platform/filesystem/file_stream.hpp"
 #include "alloy/platform/filesystem/file_stream_handle.hpp"
 
 #include <array>     // std::array
 #include <algorithm> // std::min
+#include <cstddef>
+#include <system_error>
+#include <utility>
 
 namespace {
 

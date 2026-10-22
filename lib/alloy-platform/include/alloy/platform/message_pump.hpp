@@ -15,17 +15,15 @@
 # pragma once
 #endif
 
+#include <type_traits>
 #include "alloy/platform/api.hpp"
 #include "alloy/platform/event.hpp"
 
-#include "alloy/core/utilities/not_null.hpp" // core::not_null
-#include "alloy/core/assert.hpp"             // ALLOY_ASSERT
 #include "alloy/core/utilities/signal.hpp"
 
 #include <vector>      // std::vector
 #include <cstddef>     // std::size_t
 #include <utility>     // std::forward
-#include <new>         // placement new
 
 namespace alloy::platform {
 

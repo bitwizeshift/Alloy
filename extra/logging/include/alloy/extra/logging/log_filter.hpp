@@ -16,9 +16,9 @@
 # pragma once
 #endif
 
+#include <type_traits>
 #include "alloy/extra/logging/log_level.hpp"
 
-#include "alloy/core/assert.hpp"
 #include "alloy/core/utilities/option_set.hpp"
 
 namespace alloy::extra {

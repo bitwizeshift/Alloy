@@ -15,6 +15,7 @@
 # pragma once
 #endif
 
+#include "alloy/core/precision/real.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 
 namespace alloy::core {

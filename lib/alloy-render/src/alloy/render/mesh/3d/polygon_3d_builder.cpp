@@ -5,7 +5,18 @@
 #include "alloy/render/mesh/3d/polygon_3d_builder.hpp"
 
 #include "../attribute_packer.hpp"
+#include "alloy/core/assert.hpp"
+#include "alloy/core/geometry/point/point2.hpp"
+#include "alloy/core/geometry/point/point3.hpp"
+#include "alloy/core/math/vector/vector3.hpp"
+#include "alloy/core/memory/allocator.hpp"
+#include "alloy/core/memory/data_quantity.hpp"
+#include "alloy/core/model/color.hpp"
+#include "alloy/render/mesh/mesh.hpp"
+#include "alloy/render/mesh/primitive_topology.hpp"
 
+#include <cstddef>
+#include <cstdint>
 #include <utility> // std::move
 
 namespace {

@@ -3,8 +3,10 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/platform/message_pump.hpp"
+#include "alloy/core/utilities/signal.hpp"
+#include "alloy/platform/event.hpp"
 
-#include <algorithm> // std::find
+#include <utility>
 
 //==============================================================================
 // class : message_pump

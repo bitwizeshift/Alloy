@@ -18,7 +18,6 @@
 #include "alloy/core/assert.hpp"             // ALLOY_ASSERT
 #include "alloy/core/precision.hpp"          // real
 #include "alloy/core/math/math.hpp"          // default_tolerance
-#include "alloy/core/utilities/result.hpp"   // result
 
 #include <concepts>
 #include <type_traits> // std::conjunction, std::negation, std::is_reference

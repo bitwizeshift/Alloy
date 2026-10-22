@@ -21,7 +21,6 @@
 #include "alloy/core/intrinsics.hpp"
 
 #include <cstddef>     // std::size_t
-#include <type_traits> // std::is_constructible
 
 #ifdef ALLOY_ASSERT
 # error ALLOY_ASSERT must not be defined before assert.hpp

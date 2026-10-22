@@ -3,6 +3,8 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/core/math/simplex.hpp"
+#include "alloy/core/math/math.hpp"
+#include "alloy/core/precision/real.hpp"
 
 namespace alloy::core {
   namespace {

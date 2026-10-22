@@ -21,7 +21,6 @@
 #include "alloy/core/intrinsics.hpp"
 
 #include <cstddef> // std::size_t
-#include <new>     // placement new
 
 namespace alloy::extra {
 

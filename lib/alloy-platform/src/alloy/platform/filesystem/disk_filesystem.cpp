@@ -4,13 +4,19 @@
 
 // Visual Studios requires this define before including cstdio in order to be
 // allowed to use 'std::fopen', which Microsoft decided to deprecate.
+#include "alloy/core/memory/allocator.hpp"
+#include "alloy/core/utilities/result.hpp"
+#include "alloy/platform/buffers/const_buffer.hpp"
+#include "alloy/platform/buffers/mutable_buffer.hpp"
+#include "alloy/platform/filesystem/file.hpp"
+#include <string_view>
+#include <system_error>
 #if defined(_MSC_VER)
 # define _CRT_SECURE_NO_DEPRECATE 1
 #endif
 
 #include "alloy/platform/filesystem/disk_filesystem.hpp"
 #include "alloy/platform/filesystem/file_stream.hpp"
-#include "alloy/platform/filesystem/file_stream_finalizer.hpp"
 
 #include "alloy/core/intrinsics.hpp" // core::compiler::unreachable
 #include "alloy/core/string/string.hpp"

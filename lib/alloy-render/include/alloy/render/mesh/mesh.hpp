@@ -15,6 +15,7 @@
 # pragma once
 #endif
 
+#include "alloy/core/memory/allocator.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/memory/data_quantity.hpp"
@@ -22,7 +23,6 @@
 #include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/utilities/result.hpp"
-#include "alloy/core/intrinsics.hpp"
 
 #include <cstddef> // std::byte
 #include <cstdint> // std::uint8_t, std::uint16_t, etc

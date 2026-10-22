@@ -17,7 +17,6 @@
 #endif
 
 #include <cstddef>
-#include <type_traits>
 
 template <std::size_t N, typename...Args>
 struct select_nth;

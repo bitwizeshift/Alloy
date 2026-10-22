@@ -20,7 +20,6 @@
 #include "alloy/core/math/angle/basic_angle.hpp"
 
 #include <type_traits> // std::enable_if
-#include <utility>     // std::swap
 
 namespace alloy::core {
 

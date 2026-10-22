@@ -15,9 +15,9 @@
 # pragma once
 #endif
 
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/render/gl/shader/program.hpp"
 
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/model/color.hpp"
 
 #include "alloy/core/math/vector/vector2.hpp"

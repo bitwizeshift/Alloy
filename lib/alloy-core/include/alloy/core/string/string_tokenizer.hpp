@@ -23,7 +23,6 @@
 
 #include <utility> // std::forward
 #include <string>  // std::char_traits
-#include <type_traits>  // std::true_type
 
 namespace alloy::core {
 

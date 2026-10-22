@@ -16,9 +16,7 @@
 # pragma once
 #endif
 
-#include "alloy/core/string/string.hpp"
 
-#include "alloy/core/macros.hpp" // ALLOY_UNIQUE_NAME
 
 #include <string_view> // std::basic_string_view
 #include <string>      // std::char_traits, std::basic_string

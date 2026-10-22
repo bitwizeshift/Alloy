@@ -3,6 +3,7 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/platform/filesystem/filesystem_monitor.hpp"
+#include <string_view>
 
 //==============================================================================
 // class : filesystem_monitor

@@ -5,6 +5,9 @@
 #include "alloy/extra/logging/logger.hpp"
 
 #include "alloy/core/assert.hpp"
+#include "alloy/core/utilities/not_null.hpp"
+#include "alloy/extra/logging/log_filter.hpp"
+#include "alloy/platform/buffers/mutable_buffer.hpp"
 
 //==============================================================================
 // class : log_stream

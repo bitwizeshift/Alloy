@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: MIT
 // See the LICENSE file at the root of this repository for the full text.
 
+#include "alloy/platform/event.hpp"
+#include "alloy/platform/events/window_events.hpp"
 #include <alloy/core/utilities/signal.hpp>
 #include <alloy/core/intrinsics.hpp>
 #include <alloy/platform/message_pump.hpp>

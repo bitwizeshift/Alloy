@@ -15,6 +15,8 @@
 # pragma once
 #endif
 
+#include <cstddef>
+#include <limits>
 #include "alloy/core/api.hpp"
 #include "alloy/core/types.hpp"
 #include "alloy/core/intrinsics.hpp"
@@ -24,7 +26,6 @@
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/int_utilities.hpp"
 
-#include <type_traits>
 
 namespace alloy::core::detail {
 

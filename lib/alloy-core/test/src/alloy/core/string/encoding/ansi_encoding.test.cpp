@@ -2,13 +2,13 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include <alloy/core/string/encoding/encoding_utilities.hpp>
+#include "alloy/core/string/encoding/ansi_encoding.hpp"
+#include "alloy/core/types.hpp"
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 #include <catch2/generators/catch_generators_range.hpp>
 
-#include <array>
 
 // Note: These tests try to cover general behavior, but may still be missing
 //       some edge-cases.

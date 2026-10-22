@@ -19,7 +19,6 @@
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 
 #include <string>
-#include <memory> // std::allocator
 
 namespace alloy::core {
 

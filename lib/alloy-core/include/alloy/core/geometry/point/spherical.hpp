@@ -15,6 +15,10 @@
 # pragma once
 #endif
 
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/math/angle/basic_angle.hpp"
+#include "alloy/core/math/math.hpp"
+#include "alloy/core/utilities/piecewise_compare.hpp"
 #include "alloy/core/math/trigonometry.hpp"
 #include "alloy/core/math/angle/radian.hpp"
 #include "alloy/core/math/vector/vector2.hpp"

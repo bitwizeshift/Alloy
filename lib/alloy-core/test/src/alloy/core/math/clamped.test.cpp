@@ -3,9 +3,12 @@
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
 #include "alloy/core/math/clamped.hpp"
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/saturated.hpp"
+#include "alloy/core/utilities/result.hpp"
 
 #include <catch2/catch_test_macros.hpp>
+#include <type_traits>
 
 namespace alloy::core::test {
 

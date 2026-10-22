@@ -18,13 +18,11 @@
 
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/intrinsics.hpp"
-#include "alloy/core/assert.hpp"    // ALLOY_ASSERT
 #include "alloy/core/utilities/piecewise_compare.hpp" // core::piecewise_compare
 #include "alloy/core/math/vector/vector3.hpp" // core::vector3
 #include "alloy/core/math/math.hpp"           // core::almost_equal
 
 #include <cstddef>     // std::size_t, std::ptrdiff_t
-#include <type_traits> // std::true_type, std::false_type
 
 namespace alloy::core {
 

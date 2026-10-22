@@ -8,6 +8,8 @@
 #include <cstdint> // std::uint8_t, std::uint64_t
 #include <cstddef> // std::byte
 #include <algorithm> // std::equal
+#include <limits>
+#include <type_traits>
 
 namespace alloy::core::test {
 namespace {

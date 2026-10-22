@@ -15,6 +15,7 @@
 # pragma once
 #endif
 
+#include <type_traits>
 #include "alloy/core/api.hpp"                 // ALLOY_CORE_API
 #include "alloy/core/intrinsics.hpp"          // ALLOY_FORCE_INLINE
 #include "alloy/core/precision.hpp"           // core::real

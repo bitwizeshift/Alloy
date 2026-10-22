@@ -3,6 +3,7 @@
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
 #include "test_doubles.hpp"
+#include "alloy/core/io/writer.hpp"
 
 #include <alloy/core/io/back_insert_writer.hpp>
 #include <alloy/core/io/span_reader.hpp>

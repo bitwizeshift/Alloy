@@ -3,6 +3,12 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/render/gl/error.hpp"
+#include "alloy/core/string/string.hpp"
+#include "alloy/core/string/zstring_view.hpp"
+#include <memory>
+#include <string>
+#include <system_error>
+#include <utility>
 
 //=============================================================================
 // non-member functions : errors

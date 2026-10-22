@@ -15,6 +15,7 @@
 # pragma once
 #endif
 
+#include "alloy/platform/filesystem/file.hpp"
 #include "alloy/engine/image/image_loader.hpp"
 
 #include "alloy/core/utilities/result.hpp"

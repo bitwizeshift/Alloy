@@ -3,12 +3,17 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/platform/filesystem/null_filesystem.hpp"
+#include "alloy/core/utilities/result.hpp"
+#include "alloy/platform/buffers/const_buffer.hpp"
+#include "alloy/platform/buffers/mutable_buffer.hpp"
+#include "alloy/platform/filesystem/file.hpp"
 #include "alloy/platform/filesystem/file_stream.hpp"
 #include "alloy/platform/filesystem/file_stream_finalizer.hpp"
 
 #include "alloy/core/intrinsics.hpp" // core::compiler::unused
 
 #include <cstddef> // std::byte
+#include <system_error>
 
 namespace {
 

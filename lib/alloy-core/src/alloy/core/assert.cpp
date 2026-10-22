@@ -3,6 +3,7 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/core/assert.hpp"
+#include "alloy/core/intrinsics.hpp"
 
 #include <cstdio>      // std::printf
 #include <exception>   // std::terminate

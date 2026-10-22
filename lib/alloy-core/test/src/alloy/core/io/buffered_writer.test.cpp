@@ -3,6 +3,8 @@
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
 #include "test_doubles.hpp"
+#include "alloy/core/io/writer.hpp"
+#include "alloy/core/utilities/result.hpp"
 
 #include <alloy/core/io/buffered_writer.hpp>
 #include <alloy/core/io/error.hpp>

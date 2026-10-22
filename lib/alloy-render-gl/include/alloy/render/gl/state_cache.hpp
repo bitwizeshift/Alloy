@@ -25,7 +25,6 @@
 
 #include <GL/glew.h>
 
-#include <optional> // std::optional
 
 namespace alloy::render::gl {
 

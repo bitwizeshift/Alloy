@@ -22,12 +22,9 @@
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/delegate.hpp"
 #include "alloy/core/intrinsics.hpp"
-#include "alloy/core/utilities/option_set.hpp"
 
 #include <cstddef>     // std::ptrdiff_t
-#include <cstdint>     // std::uint8_t
 #include <string_view> // std::string_views
-#include <optional>    // std::optional
 #include <chrono>      // std::chrono
 #include <format>      // std::format_to_n, std::format_string
 

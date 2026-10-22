@@ -16,6 +16,7 @@
 # pragma once
 #endif
 
+#include <type_traits>
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/io/writer.hpp"
 #include "alloy/core/utilities/delegate.hpp"

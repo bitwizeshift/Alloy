@@ -15,11 +15,11 @@
 # pragma once
 #endif
 
+#include <string>
 #include "alloy/core/utilities/hash.hpp"
 #include "alloy/core/utilities/fnv1a_hash.hpp"
 #include "alloy/core/string/string_view.hpp"
 
-#include <utility> // std::hash
 #include <climits> // CHAR_BIT
 
 namespace alloy::core {

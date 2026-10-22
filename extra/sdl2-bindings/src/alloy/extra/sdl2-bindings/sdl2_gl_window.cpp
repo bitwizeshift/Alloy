@@ -5,6 +5,9 @@
 #include "alloy/extra/sdl2-bindings/sdl2_gl_window.hpp"
 
 #include "alloy/core/assert.hpp"
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/utilities/not_null.hpp"
+#include "alloy/extra/sdl2-bindings/sdl2_window.hpp"
 
 #include <string>    // std::string
 #include <stdexcept> // std::runtime_error

@@ -4,7 +4,15 @@
 
 #include "alloy/core/model/camera.hpp"
 
+#include "alloy/core/math/angle/radian.hpp"
+#include "alloy/core/math/euler_angles.hpp"
+#include "alloy/core/math/interpolation.hpp"
+#include "alloy/core/math/matrix/matrix4.hpp"
+#include "alloy/core/math/quaternion.hpp"
+#include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/math/vector/vector_utilities.hpp"
+#include "alloy/core/precision/real.hpp"
+#include "alloy/core/utilities/not_null.hpp"
 
 //-----------------------------------------------------------------------------
 // World Translations

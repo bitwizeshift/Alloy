@@ -18,7 +18,6 @@
 #include "alloy/engine/frame_clock.hpp"
 
 #include <atomic>    // std::atomic
-#include <algorithm> // std::min
 
 namespace alloy::engine {
 

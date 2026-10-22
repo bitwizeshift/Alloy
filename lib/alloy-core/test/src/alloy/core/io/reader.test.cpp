@@ -14,6 +14,7 @@
 #include <algorithm>    // std::equal
 #include <array>        // std::array
 #include <cstddef>      // std::byte, std::size_t
+#include <span>
 #include <system_error> // std::error_code, std::errc
 
 namespace alloy::core::test {

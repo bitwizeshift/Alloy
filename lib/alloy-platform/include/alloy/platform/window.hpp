@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/platform/api.hpp"
-#include "alloy/platform/event.hpp"
 
 namespace alloy::platform {
 

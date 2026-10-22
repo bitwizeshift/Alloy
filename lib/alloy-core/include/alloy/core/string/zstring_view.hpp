@@ -15,6 +15,9 @@
 # pragma once
 #endif
 
+#include "alloy/core/string/string.hpp"
+#include <cstddef>
+#include <string>
 #include "alloy/core/string/string_view.hpp"
 
 namespace alloy::core {

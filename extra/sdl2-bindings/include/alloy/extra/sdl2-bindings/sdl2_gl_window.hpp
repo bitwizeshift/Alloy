@@ -21,7 +21,6 @@
 
 #include <SDL3/SDL.h>
 
-#include <cstdint> // std::uint32_t
 
 namespace alloy::extra {
 

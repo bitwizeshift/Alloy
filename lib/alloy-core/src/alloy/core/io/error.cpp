@@ -7,6 +7,7 @@
 #include "alloy/core/intrinsics.hpp"
 
 #include <string> // std::string
+#include <system_error>
 
 // Disable this warning for the error_category message function.
 // It is legal for enums to take on values outside of the switch case, and

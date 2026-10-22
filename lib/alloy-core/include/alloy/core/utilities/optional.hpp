@@ -15,6 +15,7 @@
 # pragma once
 #endif
 
+#include <functional>
 #include "alloy/core/utilities/result.hpp"
 
 #include <concepts> // std::convertible_to

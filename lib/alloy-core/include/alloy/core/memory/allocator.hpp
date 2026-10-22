@@ -15,6 +15,7 @@
 # pragma once
 #endif
 
+#include "alloy/core/assert.hpp"
 #include "alloy/core/memory/lifetime_utilities.hpp"
 #include "alloy/core/memory/memory_resource.hpp"
 #include "alloy/core/utilities/not_null.hpp"
@@ -27,7 +28,6 @@
 #include <type_traits> // std::is_constructible, etc
 #include <cstdlib>     // std::aligned_alloc, std::free
 #include <new>         // ::operator new, ::operator delete
-#include <algorithm>   // std::copy
 
 namespace alloy::core {
 

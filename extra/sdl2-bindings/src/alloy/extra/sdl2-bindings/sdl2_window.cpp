@@ -5,10 +5,8 @@
 #include "alloy/extra/sdl2-bindings/sdl2_window.hpp"
 
 #include "alloy/core/assert.hpp"
+#include "alloy/core/utilities/not_null.hpp"
 
-#include <string>    // std::string
-#include <stdexcept> // std::runtime_error
-#include <utility>   // std::move
 
 //------------------------------------------------------------------------------
 // Protected Constructors / Destructor

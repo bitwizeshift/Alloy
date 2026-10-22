@@ -16,6 +16,8 @@
 # pragma once
 #endif
 
+#include "alloy/core/intrinsics.hpp"
+#include <functional>
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/memory/allocator.hpp"
 

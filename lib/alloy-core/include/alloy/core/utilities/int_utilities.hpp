@@ -16,6 +16,8 @@
 # pragma once
 #endif
 
+#include <cstddef>
+#include <utility>
 #include "alloy/core/types.hpp"
 #include "alloy/core/intrinsics.hpp"
 

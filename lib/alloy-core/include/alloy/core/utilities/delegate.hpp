@@ -15,6 +15,7 @@
 # pragma once
 #endif
 
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/assert.hpp" // ALLOY_ASSERT
 #include "alloy/core/config.hpp" // ALLOY_CORE_EXCEPTIONS_ENABLE
 #include "alloy/core/traits/function_traits.hpp" // function_traits

@@ -6,10 +6,15 @@
 
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/io/error.hpp"
+#include "alloy/core/io/reader.hpp"
+#include "alloy/core/utilities/result.hpp"
 
 #include <algorithm> // std::min
 #include <array>     // std::array
+#include <cstddef>
 #include <limits>    // std::numeric_limits
+#include <span>
+#include <system_error>
 
 namespace {
 

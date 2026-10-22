@@ -3,8 +3,16 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/core/string/string_utilities.hpp"
+#include "alloy/core/assert.hpp"
+#include "alloy/core/config.hpp"
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/precision/real.hpp"
+#include "alloy/core/string/string_view.hpp"
+#include "alloy/core/string/zstring_view.hpp"
+#include "alloy/core/utilities/result.hpp"
 
 #include <charconv>
+#include <cstdint>
 #include <system_error> // std::errc
 
 namespace alloy::core {

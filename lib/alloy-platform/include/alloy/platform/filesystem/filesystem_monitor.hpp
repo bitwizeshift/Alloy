@@ -16,10 +16,8 @@
 #endif
 
 #include "alloy/platform/api.hpp"
-#include "alloy/platform/event.hpp"
 #include "alloy/platform/message_pump.hpp"
 
-#include <string>      // std::string
 #include <string_view> // std::string_view
 
 namespace alloy::platform {

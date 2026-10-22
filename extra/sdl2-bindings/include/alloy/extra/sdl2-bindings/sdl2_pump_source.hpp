@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/extra/sdl2-bindings/api.hpp"
-#include "alloy/platform/events/window_events.hpp"
 #include "alloy/platform/message_pump.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 

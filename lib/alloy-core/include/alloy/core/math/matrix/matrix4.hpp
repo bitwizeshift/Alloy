@@ -15,17 +15,16 @@
 # pragma once
 #endif
 
+#include "alloy/core/math/math.hpp"
 #include "alloy/core/api.hpp"                 // ALLOY_CORE_API
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/precision.hpp"           // core::real
-#include "alloy/core/math/vector/vector3.hpp" // vector3
 #include "alloy/core/math/vector/vector4.hpp" // vector4
 
 #include <type_traits> // std::true_type, std::false_type, std::common_type
 #include <cstddef>     // std::size_t, std::ptrdiff_t
 #include <stdexcept>   // std::out_of_range
 #include <cassert>     // assert
-#include <utility>     // std::swap
 
 namespace alloy::core {
 

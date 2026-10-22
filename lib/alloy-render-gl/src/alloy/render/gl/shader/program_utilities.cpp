@@ -3,7 +3,14 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include <alloy/platform/filesystem/disk_filesystem.hpp>
+#include <utility>
 #include "alloy/render/gl/shader/program_utilities.hpp"
+#include "alloy/core/string/zstring_view.hpp"
+#include "alloy/core/utilities/result.hpp"
+#include "alloy/platform/filesystem/file.hpp"
+#include "alloy/render/gl/error.hpp"
+#include "alloy/render/gl/shader/program.hpp"
+#include "alloy/render/gl/shader/shader.hpp"
 
 auto alloy::render::gl::program_utilities::make_program_from_sources(
   core::zstring_view vertex,

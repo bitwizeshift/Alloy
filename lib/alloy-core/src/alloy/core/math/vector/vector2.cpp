@@ -3,6 +3,10 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/core/math/vector/vector2.hpp"
+#include "alloy/core/math/angle/radian.hpp"
+#include "alloy/core/math/math.hpp"
+#include "alloy/core/math/trigonometry.hpp"
+#include "alloy/core/precision/real.hpp"
 
 //=============================================================================
 // class : vector2

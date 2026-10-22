@@ -15,13 +15,15 @@
 # pragma once
 #endif
 
+#include "alloy/core/intrinsics.hpp"
+#include <array>
+#include <cstddef>
 #include "alloy/core/types.hpp" // char32
 #include "alloy/core/assert.hpp"
 #include "alloy/core/traits/detected.hpp"    // is_detected
 #include "alloy/core/utilities/quantity.hpp" // uquantity
 #include "alloy/core/traits/always_false.hpp"
 
-#include <algorithm>   // std::find
 #include <utility>     // std::declval, std::pair
 #include <tuple>       // std::tie
 #include <iterator>    // std::distance

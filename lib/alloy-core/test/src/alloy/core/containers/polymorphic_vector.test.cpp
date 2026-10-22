@@ -3,8 +3,11 @@
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
 #include "alloy/core/containers/polymorphic_vector.hpp"
+#include "alloy/core/memory/allocator.hpp"
 
+#include <algorithm>
 #include <catch2/catch_test_macros.hpp>
+#include <utility>
 
 namespace alloy::core {
 namespace {

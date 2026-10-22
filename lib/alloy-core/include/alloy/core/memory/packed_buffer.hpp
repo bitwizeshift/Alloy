@@ -15,6 +15,10 @@
 # pragma once
 #endif
 
+#include "alloy/core/assert.hpp"
+#include "alloy/core/intrinsics.hpp"
+#include <cstring>
+#include <iterator>
 #include "alloy/core/api.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/result.hpp"

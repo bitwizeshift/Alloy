@@ -27,7 +27,6 @@
 #include <cstddef>
 #include <type_traits>
 #include <utility>
-#include <new>
 
 namespace alloy::core {
 

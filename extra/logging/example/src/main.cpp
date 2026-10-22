@@ -9,8 +9,11 @@
 #include <alloy/platform/filesystem/disk_filesystem.hpp>
 #include <alloy/platform/buffers/mutable_buffer.hpp>
 
+#include <array>
+#include <string>
 #include <thread>
 #include <chrono>
+#include <utility>
 
 namespace {
   /// A buffer used for the string formatting in the logger

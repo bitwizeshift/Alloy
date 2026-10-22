@@ -22,7 +22,6 @@
 #include <type_traits> // std::declval, std::is_trivially_copyable_v, etc
 #include <utility>     // std::forward
 #include <cstring>     // std::memcpy
-#include <limits>      // std::numeric_limits
 
 namespace alloy::core {
   inline namespace casts {

@@ -3,17 +3,21 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/extra/sdl2-bindings/sdl2_pump_source.hpp"
+#include "alloy/core/utilities/not_null.hpp"
 #include "alloy/extra/sdl2-bindings/sdl2_window.hpp"
 
 #include "alloy/core/assert.hpp"
 
+#include "alloy/platform/events/window_events.hpp"
 #include "alloy/platform/keyboard.hpp"
 #include "alloy/platform/events/keyboard_events.hpp"
 #include "alloy/platform/events/mouse_events.hpp"
+#include "alloy/platform/message_pump.hpp"
 
 #include <SDL3/SDL.h>
 
 #include <cstdint> // std::int32_t
+#include <optional>
 
 
 namespace {

@@ -3,6 +3,7 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 #include "alloy/engine/component_manager.hpp"
+#include "alloy/engine/entity.hpp"
 
 auto alloy::engine::component_manager::detach_all_components(entity e) -> void
 {

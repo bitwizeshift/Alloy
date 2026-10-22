@@ -15,6 +15,7 @@
 # pragma once
 #endif
 
+#include <cstddef>
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/precision/real.hpp"
 #include "alloy/core/assert.hpp"

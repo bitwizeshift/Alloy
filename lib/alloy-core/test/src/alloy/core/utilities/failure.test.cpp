@@ -6,6 +6,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <functional>
+#include <memory>
+#include <string>
 #include <utility> // std::reference_wrapper
 #include <type_traits>
 

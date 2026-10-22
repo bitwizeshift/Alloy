@@ -4,6 +4,7 @@
 
 #include "alloy/core/geometry/sphere.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
+#include "alloy/core/precision/real.hpp"
 
 #include <catch2/catch_test_macros.hpp>
 

@@ -7,9 +7,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <cstddef>
 #include <vector>
 #include <iterator>
-#include <array>
 
 namespace alloy::core::test {
 

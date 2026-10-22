@@ -15,6 +15,7 @@
 # pragma once
 #endif
 
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/api.hpp"
 #include "alloy/core/geometry/plane.hpp"
 #include "alloy/core/geometry/point/point3.hpp"

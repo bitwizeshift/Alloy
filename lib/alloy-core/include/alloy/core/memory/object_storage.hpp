@@ -17,7 +17,6 @@
 #endif
 
 #include "alloy/core/memory/data_quantity.hpp"
-#include "alloy/core/intrinsics.hpp"
 
 #include <array>            // std::array
 #include <cstddef>          // std::byte

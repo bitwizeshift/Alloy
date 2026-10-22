@@ -21,8 +21,6 @@
 #include "alloy/core/config.hpp" // ALLOY_CORE_EXCEPTIONS_ENABLED
 #include "alloy/core/precision.hpp" // core::real
 #include "alloy/core/utilities/piecewise_compare.hpp" // core::piecewise_compare
-#include "alloy/core/math/angle/radian.hpp" // core::radian
-#include "alloy/core/math/trigonometry.hpp" // core::cos, core::sin, etc
 #include "alloy/core/math/math.hpp"         // core::sqrt
 
 #include <type_traits> // std::true_type, std::false_type, std::common_type

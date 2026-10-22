@@ -15,6 +15,8 @@
 # pragma once
 #endif
 
+#include <cstddef>
+#include <ratio>
 #include "alloy/core/intrinsics.hpp"
 
 #include <chrono> // std::chrono::...
