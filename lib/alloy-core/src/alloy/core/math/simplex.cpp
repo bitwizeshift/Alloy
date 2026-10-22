@@ -54,14 +54,24 @@ namespace alloy::core {
              static_cast<real>(a[1]) * y;
     }
 
-    // constexpr alloy::core::real dot3( const int* a,
-    //                                   alloy::core::real x,
-    //                                   alloy::core::real y,
-    //                                   alloy::core::real z )
-    //   noexcept
-    // {
-    //   return a[0]*x + a[1]*y + a[2]*z;
-    // }
+    constexpr
+    auto dot3(const int* a, real x, real y, real z) noexcept -> real
+    {
+      return static_cast<real>(a[0]) * x +
+             static_cast<real>(a[1]) * y +
+             static_cast<real>(a[2]) * z;
+    }
+
+    constexpr
+    auto corner3(int gi, real x, real y, real z) noexcept -> real
+    {
+      auto t = real{0.6} - (x*x) - (y*y) - (z*z);
+      if (t < real{0}) {
+        return real{0};
+      }
+      t *= t;
+      return t * t * dot3(g_grad[gi], x, y, z);
+    }
 
     constexpr
     auto floor_f_to_i(real x) noexcept -> int
@@ -173,8 +183,79 @@ auto alloy::core::simplex::raw_noise(real x, real y) noexcept -> real
 
 auto alloy::core::simplex::raw_noise(real x, real y, real z) noexcept -> real
 {
-  // TODO(matthew rodusek) 2017-04-22: Implement
-  return static_cast<real>(x+y+z);
+  static constexpr auto s_skew = real{1} / real{3};
+  static constexpr auto s_unskew = real{1} / real{6};
+
+  // Skew the input space to determine which simplex cell we are in
+  const auto s = (x + y + z) * s_skew;
+  const auto i = floor_f_to_i(x + s);
+  const auto j = floor_f_to_i(y + s);
+  const auto k = floor_f_to_i(z + s);
+
+  const auto t = static_cast<real>(i + j + k) * s_unskew;
+
+  // The x,y,z distances from the unskewed cell origin
+  const auto x0 = x - (static_cast<real>(i) - t);
+  const auto y0 = y - (static_cast<real>(j) - t);
+  const auto z0 = z - (static_cast<real>(k) - t);
+
+  // For the 3D case, the simplex shape is a slightly irregular tetrahedron.
+  // The order of the offsets determines which of the six simplices of the
+  // cell we are in, and so the (i,j,k) offsets of its second and third
+  // corners.
+  auto i1 = int{}; auto j1 = int{}; auto k1 = int{};
+  auto i2 = int{}; auto j2 = int{}; auto k2 = int{};
+
+  if (x0 >= y0) {
+    if (y0 >= z0) {        // X Y Z order
+      i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 1; k2 = 0;
+    } else if (x0 >= z0) { // X Z Y order
+      i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 0; k2 = 1;
+    } else {               // Z X Y order
+      i1 = 0; j1 = 0; k1 = 1; i2 = 1; j2 = 0; k2 = 1;
+    }
+  } else {
+    if (y0 < z0) {         // Z Y X order
+      i1 = 0; j1 = 0; k1 = 1; i2 = 0; j2 = 1; k2 = 1;
+    } else if (x0 < z0) {  // Y Z X order
+      i1 = 0; j1 = 1; k1 = 0; i2 = 0; j2 = 1; k2 = 1;
+    } else {               // Y X Z order
+      i1 = 0; j1 = 1; k1 = 0; i2 = 1; j2 = 1; k2 = 0;
+    }
+  }
+
+  // A step of 1 in (i,j,k) is a step of (1 - c) in that axis and -c in the
+  // others in (x,y,z), where c = 1/6
+  const auto x1 = x0 - static_cast<real>(i1) + s_unskew;
+  const auto y1 = y0 - static_cast<real>(j1) + s_unskew;
+  const auto z1 = z0 - static_cast<real>(k1) + s_unskew;
+
+  const auto x2 = x0 - static_cast<real>(i2) + real{2} * s_unskew;
+  const auto y2 = y0 - static_cast<real>(j2) + real{2} * s_unskew;
+  const auto z2 = z0 - static_cast<real>(k2) + real{2} * s_unskew;
+
+  const auto x3 = x0 - real{1} + real{3} * s_unskew;
+  const auto y3 = y0 - real{1} + real{3} * s_unskew;
+  const auto z3 = z0 - real{1} + real{3} * s_unskew;
+
+  // Work out the hashed gradient indices of the four simplex corners
+  const auto ii = i & 255;
+  const auto jj = j & 255;
+  const auto kk = k & 255;
+  const auto* const p = g_permutation_table;
+  const auto gi0 = p[ii + p[jj + p[kk]]] % 12;
+  const auto gi1 = p[ii + i1 + p[jj + j1 + p[kk + k1]]] % 12;
+  const auto gi2 = p[ii + i2 + p[jj + j2 + p[kk + k2]]] % 12;
+  const auto gi3 = p[ii + 1 + p[jj + 1 + p[kk + 1]]] % 12;
+
+  // Add contributions from each corner to get the final noise value.
+  // The result is scaled to stay just inside [-1,1]
+  return real{32} * (
+    corner3(gi0, x0, y0, z0) +
+    corner3(gi1, x1, y1, z1) +
+    corner3(gi2, x2, y2, z2) +
+    corner3(gi3, x3, y3, z3)
+  );
 }
 
 //------------------------------------------------------------------------------
