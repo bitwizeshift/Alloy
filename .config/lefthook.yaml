@@ -22,6 +22,11 @@ pre-commit:
       run: "{check} cpp-include-cleaner {staged_files}"
       fail_text: Fix with `lefthook run fix --job "c++ include cleaner"`
 
+    - name: cmake sources
+      glob: "{lib,extra,bin,example}/**/*.{h,hpp,c,cpp}"
+      run: "{check} cmake-sources {staged_files}"
+      fail_text: Add the files to their CMakeLists.txt
+
     - name: header guard
       glob: "{lib,extra,bin,example}/**/*.{h,hpp}"
       run: "{check} header-guard {staged_files}"
