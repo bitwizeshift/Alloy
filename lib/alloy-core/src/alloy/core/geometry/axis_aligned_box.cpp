@@ -6,6 +6,7 @@
 
 #include "alloy/core/geometry/plane.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
+#include "alloy/core/geometry/sphere.hpp"
 
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
@@ -45,6 +46,40 @@ auto alloy::core::axis_aligned_box::from_points(
     std::max(p0.x(), p1.x()),
     std::max(p0.y(), p1.y()),
     std::max(p0.z(), p1.z())
+  };
+  return axis_aligned_box{min_point, max_point};
+}
+
+auto alloy::core::axis_aligned_box::from_sphere(const sphere& s)
+  noexcept -> axis_aligned_box
+{
+  const auto extent = vector3{s.radius(), s.radius(), s.radius()};
+
+  return axis_aligned_box{s.center() - extent, s.center() + extent};
+}
+
+auto alloy::core::axis_aligned_box::enclosing(
+  const axis_aligned_box& box,
+  const axis_aligned_box& other
+) noexcept -> axis_aligned_box
+{
+  return enclosing(enclosing(box, other.m_bottom_left), other.m_top_right);
+}
+
+auto alloy::core::axis_aligned_box::enclosing(
+  const axis_aligned_box& box,
+  const point3& other
+) noexcept -> axis_aligned_box
+{
+  const auto min_point = point3{
+    std::min(box.m_bottom_left.x(), other.x()),
+    std::min(box.m_bottom_left.y(), other.y()),
+    std::min(box.m_bottom_left.z(), other.z())
+  };
+  const auto max_point = point3{
+    std::max(box.m_top_right.x(), other.x()),
+    std::max(box.m_top_right.y(), other.y()),
+    std::max(box.m_top_right.z(), other.z())
   };
   return axis_aligned_box{min_point, max_point};
 }

@@ -17,6 +17,7 @@
 
 #include "alloy/core/geometry/plane.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
+#include "alloy/core/geometry/sphere.hpp"
 
 #include "alloy/core/api.hpp"
 #include "alloy/core/assert.hpp"
@@ -65,6 +66,28 @@ namespace alloy::core {
     /// \return the created box
     static auto from_points(const point3& p0, const point3& p1)
       noexcept -> axis_aligned_box;
+
+    /// \brief Constructs the smallest aligned box that encloses the sphere
+    ///        \p s
+    ///
+    /// \param s the sphere
+    /// \return the created box
+    static auto from_sphere(const sphere& s) noexcept -> axis_aligned_box;
+
+    /// \{
+    /// \brief Constructs the smallest aligned box that encloses both \p box
+    ///        and \p other
+    ///
+    /// \param box the box to enclose
+    /// \param other the other box or point to enclose
+    /// \return the created box
+    static auto enclosing(
+      const axis_aligned_box& box,
+      const axis_aligned_box& other
+    ) noexcept -> axis_aligned_box;
+    static auto enclosing(const axis_aligned_box& box, const point3& other)
+      noexcept -> axis_aligned_box;
+    /// \}
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment

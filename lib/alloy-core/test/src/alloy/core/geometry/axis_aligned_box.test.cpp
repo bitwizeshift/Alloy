@@ -6,6 +6,7 @@
 
 #include <alloy/core/geometry/plane.hpp>
 #include <alloy/core/geometry/point/point3.hpp>
+#include <alloy/core/geometry/sphere.hpp>
 
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
@@ -58,6 +59,58 @@ TEST_CASE("axis_aligned_box::from_points(const point3&, const point3&)", "[facto
     SECTION("Bottom-left Z is less than top-right Z") {
       REQUIRE(sut.bottom_left_point().z() <= sut.top_right_point().z());
     }
+  }
+}
+
+TEST_CASE("axis_aligned_box::from_sphere(const sphere&)", "[factory][static]") {
+  // Arrange
+  const auto s = sphere{point3{1, 2, 3}, real{2}};
+
+  // Act
+  const auto sut = axis_aligned_box::from_sphere(s);
+
+  // Assert
+  SECTION("Extends by the radius in every direction") {
+    REQUIRE(almost_equal(sut.bottom_left_point(), point3{-1, 0, 1}));
+    REQUIRE(almost_equal(sut.top_right_point(), point3{3, 4, 5}));
+  }
+}
+
+TEST_CASE("axis_aligned_box::enclosing(const axis_aligned_box&, const axis_aligned_box&)", "[factory][static]") {
+  // Arrange
+  const auto box = axis_aligned_box{point3{0, 0, 0}, point3{1, 1, 1}};
+  const auto other = axis_aligned_box{point3{-1, 0.5f, 0}, point3{0.5f, 2, 1}};
+
+  // Act
+  const auto sut = axis_aligned_box::enclosing(box, other);
+
+  // Assert
+  SECTION("Encloses both boxes") {
+    REQUIRE(sut.encloses(box));
+    REQUIRE(sut.encloses(other));
+  }
+  SECTION("Is the smallest enclosing box") {
+    REQUIRE(sut == axis_aligned_box{point3{-1, 0, 0}, point3{1, 2, 1}});
+  }
+}
+
+TEST_CASE("axis_aligned_box::enclosing(const axis_aligned_box&, const point3&)", "[factory][static]") {
+  // Arrange
+  const auto box = axis_aligned_box{point3{0, 0, 0}, point3{1, 1, 1}};
+
+  SECTION("Point is outside the box") {
+    // Act
+    const auto sut = axis_aligned_box::enclosing(box, point3{2, -1, 0.5f});
+
+    // Assert
+    REQUIRE(sut == axis_aligned_box{point3{0, -1, 0}, point3{2, 1, 1}});
+  }
+  SECTION("Point is inside the box") {
+    // Act
+    const auto sut = axis_aligned_box::enclosing(box, point3{0.5f, 0.5f, 0.5f});
+
+    // Assert
+    REQUIRE(sut == box);
   }
 }
 
