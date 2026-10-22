@@ -6,12 +6,14 @@
 
 #include <alloy/core/math/vector/vector4.hpp>
 
+#include <alloy/core/config.hpp>
 #include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
 #include <algorithm> // std::copy_n, std::ranges::equal
 #include <span>      // std::span
+#include <stdexcept> // std::out_of_range
 
 namespace alloy::core::test {
 
@@ -82,6 +84,25 @@ TEST_CASE("matrix4::at( index_type, index_type )", "[element access]")
     REQUIRE( result == real{4} );
   }
 }
+
+#if ALLOY_CORE_EXCEPTIONS_ENABLED
+TEST_CASE("matrix4::at( index_type, index_type ) out of range", "[element access]")
+{
+  // Arrange
+  const auto sut = matrix4{};
+
+  SECTION("Row >= rows")
+  {
+    // Act / Assert
+    REQUIRE_THROWS_AS(sut.at(4,0), std::out_of_range);
+  }
+  SECTION("Column < 0")
+  {
+    // Act / Assert
+    REQUIRE_THROWS_AS(sut.at(0,-1), std::out_of_range);
+  }
+}
+#endif // ALLOY_CORE_EXCEPTIONS_ENABLED
 
 TEST_CASE("matrix4::operator[]( index_type )", "[element access]")
 {

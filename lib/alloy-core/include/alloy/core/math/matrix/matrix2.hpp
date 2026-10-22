@@ -19,6 +19,8 @@
 #include "alloy/core/math/vector/vector2.hpp" // vector2
 
 #include "alloy/core/api.hpp"                 // ALLOY_CORE_API
+#include "alloy/core/assert.hpp"              // IWYU pragma: keep
+#include "alloy/core/config.hpp"              // ALLOY_CORE_EXCEPTIONS_ENABLED
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/precision.hpp"           // core::real
 
@@ -131,8 +133,7 @@ namespace alloy::core {
     /// \{
     /// \brief Retrieves the matrix entry at column \p c and row \p r
     ///
-    /// \throw std::out_of_range if \p c or \p r is greater than 2, or less
-    ///        than 0.
+    /// \throw std::out_of_range if \p r or \p c is >= 2 or < 0
     ///
     /// \param r the row to retrieve
     /// \param c the column to retrieve
@@ -415,9 +416,13 @@ alloy::core::matrix2::matrix2(real m00, real m01, real m10, real m11) noexcept
 inline constexpr
 auto alloy::core::matrix2::at(index_type r, index_type c) -> reference
 {
-  if (c >=columns || c < 0 || r >=rows || r < 0) {
+#if ALLOY_CORE_EXCEPTIONS_ENABLED
+  if (c >= columns || c < 0 || r >= rows || r < 0) {
     throw std::out_of_range{"matrix2::at: index out of range"};
   }
+#else
+  ALLOY_ASSERT(c < columns && c >= 0 && r < rows && r >= 0);
+#endif
   return get(r,c);
 }
 
@@ -426,9 +431,13 @@ inline constexpr
 auto alloy::core::matrix2::at(index_type r, index_type c)
   const -> const_reference
 {
-  if (c >=columns || c < 0 || r >=rows || r < 0) {
+#if ALLOY_CORE_EXCEPTIONS_ENABLED
+  if (c >= columns || c < 0 || r >= rows || r < 0) {
     throw std::out_of_range{"matrix2::at: index out of range"};
   }
+#else
+  ALLOY_ASSERT(c < columns && c >= 0 && r < rows && r >= 0);
+#endif
   return get(r,c);
 }
 
