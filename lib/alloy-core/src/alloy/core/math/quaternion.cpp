@@ -376,13 +376,13 @@ auto alloy::core::quaternion::normalize() noexcept -> quaternion&
 
 auto alloy::core::quaternion::invert() noexcept -> quaternion&
 {
-  const auto mag = magnitude();
-  if (mag > real{0}){
-    const auto mag_inv = real{1} / mag;
-    w() *=  mag_inv;
-    x() *= -mag_inv;
-    y() *= -mag_inv;
-    z() *= -mag_inv;
+  const auto square_mag = dot(*this);
+  if (square_mag > real{0}){
+    const auto square_mag_inv = real{1} / square_mag;
+    w() *=  square_mag_inv;
+    x() *= -square_mag_inv;
+    y() *= -square_mag_inv;
+    z() *= -square_mag_inv;
   } else {
     // Return an invalid quaternion to signify that this is not invertable
     for (auto i=0; i<4; ++i) {

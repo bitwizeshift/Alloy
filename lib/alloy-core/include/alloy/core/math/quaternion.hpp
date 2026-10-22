@@ -296,6 +296,9 @@ namespace alloy::core {
 
     /// \brief Gets the inverse of `this` quaternion
     ///
+    /// The inverse is the quaternion whose product with `this` is the
+    /// identity. A zero quaternion has no inverse, and inverts to zero.
+    ///
     /// \return the inverse of `this` quaternion
     auto inverse() const noexcept -> quaternion;
 
@@ -350,6 +353,8 @@ namespace alloy::core {
     auto normalize() noexcept -> quaternion&;
 
     /// \brief Inverts this quaternion and returns a reference to `(*this)`
+    ///
+    /// A zero quaternion has no inverse, and is left as zero.
     ///
     /// \return the reference to `(*this)`
     auto invert() noexcept -> quaternion&;

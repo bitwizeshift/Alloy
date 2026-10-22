@@ -48,6 +48,53 @@ TEST_CASE("quaternion::angle_axis()", "[observers]")
 }
 
 //------------------------------------------------------------------------------
+// Quantifiers
+//------------------------------------------------------------------------------
+
+TEST_CASE("quaternion::inverse()", "[quantifiers]")
+{
+  SECTION("Product with a non-unit quaternion is the identity")
+  {
+    // Arrange
+    const auto sut = quaternion{1, 2, 3, 4};
+
+    // Act
+    const auto result = sut * sut.inverse();
+
+    // Assert
+    REQUIRE( almost_equal(result, quaternion_constants::identity) );
+  }
+
+  SECTION("Inverse of a unit quaternion is its conjugate")
+  {
+    // Arrange
+    const auto sut = quaternion::from_angle_axis(
+      radian_constants::quarter_revolution,
+      vector3{1, 0, 0}
+    );
+    const auto expected = quaternion{sut.w(), -sut.x(), -sut.y(), -sut.z()};
+
+    // Act
+    const auto result = sut.inverse();
+
+    // Assert
+    REQUIRE( almost_equal(result, expected) );
+  }
+
+  SECTION("Zero quaternion inverts to zero")
+  {
+    // Arrange
+    const auto sut = quaternion_constants::zero;
+
+    // Act
+    const auto result = sut.inverse();
+
+    // Assert
+    REQUIRE( result == quaternion_constants::zero );
+  }
+}
+
+//------------------------------------------------------------------------------
 // Arithmetic Operators
 //------------------------------------------------------------------------------
 
