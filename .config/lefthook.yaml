@@ -27,6 +27,11 @@ pre-commit:
       run: "{check} header-guard {staged_files}"
       fail_text: Fix with `lefthook run fix --job "header guard"`
 
+    - name: include order
+      glob: "{lib,extra,bin,example}/**/*.{h,hpp,c,cpp}"
+      run: "{check} include-order {staged_files}"
+      fail_text: Fix with `lefthook run fix --job "include order"`
+
     - name: license header
       glob: "*.{h,hpp,c,cpp,cmake}"
       # Sources adapted from other projects keep the license notices of the
@@ -98,6 +103,10 @@ fix:
     - name: header guard
       glob: "{lib,extra,bin,example}/**/*.{h,hpp}"
       run: "{check} header-guard --fix {staged_files}"
+
+    - name: include order
+      glob: "{lib,extra,bin,example}/**/*.{h,hpp,c,cpp}"
+      run: "{check} include-order --fix {staged_files}"
 
     - name: license year
       run: "{check} license-year --fix"
