@@ -82,7 +82,7 @@ namespace alloy::core {
     /// \return the result of `tan(rad)`
     static auto tan(radian rad) noexcept -> real;
 
-    /// \brief Calculates the tangent of the given \ref gradian angle, \p grad
+    /// \brief Calculates the tangent of the given \p angle
     ///
     /// \note A conversion is performed in order to make this value a
     ///       \ref radian first
@@ -94,7 +94,7 @@ namespace alloy::core {
 
     //--------------------------------------------------------------------------
 
-    /// \brief Calculates the secant of the given \ref gradian angle, \p grad
+    /// \brief Calculates the secant of the given \p angle
     ///
     /// \note A conversion is performed in order to make this value a
     ///       \ref radian first
@@ -104,7 +104,7 @@ namespace alloy::core {
     template<typename AngleUnit>
     static auto sec(basic_angle<AngleUnit> angle) noexcept -> real;
 
-    /// \brief Calculates the cosecant of the given \ref gradian angle, \p grad
+    /// \brief Calculates the cosecant of the given \p angle
     ///
     /// \note A conversion is performed in order to make this value a
     ///       \ref radian first
@@ -114,7 +114,7 @@ namespace alloy::core {
     template<typename AngleUnit>
     static auto csc(basic_angle<AngleUnit> angle) noexcept -> real;
 
-    /// \brief Calculates the cotangent of the given \ref gradian angle, \p grad
+    /// \brief Calculates the cotangent of the given \p angle
     ///
     /// \note A conversion is performed in order to make this value a
     ///       \ref radian first
@@ -130,27 +130,31 @@ namespace alloy::core {
 
     /// \brief Calculates the inverse cosine
     ///
-    /// \param f the value
-    /// \return the inverse cosine
+    /// \param f the value, in [-1, 1]
+    /// \return the inverse cosine, in [0, pi]
     static auto arccos(real f) noexcept -> radian;
 
     /// \brief Calculates the inverse sine
     ///
-    /// \param f the value
-    /// \return the inverse sine
+    /// \param f the value, in [-1, 1]
+    /// \return the inverse sine, in [-pi/2, pi/2]
     static auto arcsin(real f) noexcept -> radian;
 
     /// \brief Calculates the inverse tangent
     ///
     /// \param f the value
-    /// \return the inverse tangent
+    /// \return the inverse tangent, in [-pi/2, pi/2]
     static auto arctan(real f) noexcept -> radian;
 
-    /// \brief Calculates the inverse tangent 2
+    /// \brief Calculates the angle of the point (\p f2, \p f1) from the
+    ///        positive x-axis, as if by `std::atan2(f1, f2)`
     ///
-    /// \param f1 the first value
-    /// \param f2 the second value
-    /// \return the inverse tangent 2
+    /// The quadrant is determined from the signs of both arguments, so the
+    /// result lies in [-pi, pi].
+    ///
+    /// \param f1 the y-coordinate
+    /// \param f2 the x-coordinate
+    /// \return the angle of the point
     static auto arctan2(real f1, real f2) noexcept -> radian;
   };
 

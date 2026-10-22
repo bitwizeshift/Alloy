@@ -83,10 +83,10 @@ namespace alloy::core {
   template<typename Arithmetic>
   auto ceil(Arithmetic a) noexcept -> Arithmetic;
 
-  /// \brief Computes the smallest integer value not less than \p a
+  /// \brief Computes the largest integer value not greater than \p a
   ///
   /// \param a the floating point value
-  /// \return the ceiling of \p a
+  /// \return the floor of \p a
   template<typename Arithmetic>
   auto floor(Arithmetic a) noexcept -> Arithmetic;
 
@@ -97,10 +97,10 @@ namespace alloy::core {
   template<typename Arithmetic>
   auto trunc(Arithmetic a) noexcept -> Arithmetic;
 
-  /// \brief Calculates the modulo of \p num by \p den
+  /// \brief Calculates the floating-point remainder of \p num divided by
+  ///        \p den
   ///
-  /// This function promotes the return value to the common type of
-  /// \p num and \p den
+  /// The result has the same sign as \p num, as if by `std::fmod`
   ///
   /// \param num the numerator
   /// \param den the denominator
@@ -122,7 +122,7 @@ namespace alloy::core {
   // Logarithms
   //---------------------------------------------------------------------------
 
-  /// \brief Computes the logarithm (base-10) of \p a
+  /// \brief Computes the natural logarithm (base-e) of \p a
   ///
   /// \param a the arithmetic type to determine the logarithm
   /// \return the result of the logarithm

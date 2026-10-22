@@ -5,7 +5,8 @@
 /*****************************************************************************
  * \file basic_angle.hpp
  *
- * \todo description
+ * \brief This header defines the angle type that is generic over its unit
+ *        of measurement
  *****************************************************************************/
 
 #ifndef ALLOY_CORE_MATH_ANGLE_BASIC_ANGLE_HPP
@@ -48,9 +49,9 @@ namespace alloy::core {
   /// side-effects:
   ///
   /// \code
-  /// r = AngleUnit::one_revolution();
+  /// r = AngleUnit::revolution();
   /// \endcode
-  /// `one_revolution()` is a static function which returns the numeric
+  /// `revolution()` is a static function which returns the numeric
   /// representation of the value of a single revolution in that angular unit.
   ///
   /// This function must be marked `constexpr`, and must not `throw` an
@@ -61,8 +62,8 @@ namespace alloy::core {
   namespace exemplar {
     struct AngleUnit
     {
-      // Returns the value of one full revolution (e.g. 3.14 for radian)
-      static constexpr auto one_revolution() noexcept -> core::real; // NOLINT
+      // Returns the value of one full revolution (e.g. 6.28 for radian)
+      static constexpr auto revolution() noexcept -> core::real; // NOLINT
     };
   } // namespace exemplar
 #endif
@@ -130,6 +131,9 @@ namespace alloy::core {
   public:
 
     /// \brief Constrains this basic_angle to be within one revolution
+    ///
+    /// The angle is wrapped into [0, `AngleUnit::revolution()`), so negative
+    /// angles become their positive equivalent.
     ///
     /// \return a reference to `(*this)`
     auto constrain() noexcept -> basic_angle&;
@@ -282,7 +286,7 @@ namespace alloy::core {
   template<typename AngleUnit>
   auto ceil(basic_angle<AngleUnit> angle) noexcept -> basic_angle<AngleUnit>;
 
-  /// \brief Rounds a given \p angle up as if by calling
+  /// \brief Rounds a given \p angle down as if by calling
   ///        \code floor( angle.value() ) \endcode
   ///
   /// \param angle the angle to round down
@@ -294,7 +298,7 @@ namespace alloy::core {
   ///        \code trunc( angle.value() ) \endcode
   ///
   /// \param angle the angle to truncate
-  /// \return the rounded angle
+  /// \return the truncated angle
   template<typename AngleUnit>
   auto trunc(basic_angle<AngleUnit> angle) noexcept -> basic_angle<AngleUnit>;
 
@@ -304,7 +308,7 @@ namespace alloy::core {
   ///        as if by calling \code abs( angle.value() ) \endcode
   ///
   /// \param angle the angle to retrieve the absolute value of
-  /// \return the rounded angle
+  /// \return the absolute angle
   template<typename AngleUnit>
   auto abs(basic_angle<AngleUnit> angle) noexcept -> basic_angle<AngleUnit>;
 
@@ -331,7 +335,7 @@ namespace alloy::core {
   //============================================================================
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief A collection of gradian constants
+  /// \brief A collection of constants for angles measured in \p AngleUnit
   //////////////////////////////////////////////////////////////////////////////
   template<typename AngleUnit>
   struct basic_angle_constants
