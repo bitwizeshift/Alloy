@@ -59,6 +59,7 @@ set(source_files
   src/alloy/core/math/vector/vector3.test.cpp
   src/alloy/core/math/angle/basic_angle.test.cpp
   src/alloy/core/math/clamped.test.cpp
+  src/alloy/core/math/math.test.cpp
   src/alloy/core/math/saturated.test.cpp
   src/alloy/core/math/simd.test.cpp
   src/alloy/core/math/matrix/matrix_utilities.test.cpp

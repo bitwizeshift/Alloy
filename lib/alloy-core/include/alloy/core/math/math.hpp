@@ -62,7 +62,7 @@ namespace alloy::core {
   /// \param rhs the right array
   /// \return the dot product of the two arrays
   template<typename T, typename U, std::size_t N>
-  constexpr auto dot(T(&lhs)[N], U(&rhs)[N])
+  constexpr auto dot(const T(&lhs)[N], const U(&rhs)[N])
     noexcept -> std::common_type_t<T, U>;
 
   //---------------------------------------------------------------------------
@@ -258,11 +258,11 @@ namespace alloy::core {
 
 template<typename T, typename U, std::size_t N>
 inline constexpr
-auto alloy::core::dot(T (&lhs)[N], U (&rhs)[N])
+auto alloy::core::dot(const T (&lhs)[N], const U (&rhs)[N])
   noexcept -> std::common_type_t<T, U>
 {
   auto result = std::common_type_t<T,U>{0};
-  for( auto i = 0; i < N; ++i ) {
+  for (auto i = std::size_t{0}; i < N; ++i) {
     result += (lhs[i] * rhs[i]);
   }
   return result;
