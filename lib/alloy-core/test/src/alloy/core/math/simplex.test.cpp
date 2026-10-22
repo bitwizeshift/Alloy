@@ -190,4 +190,43 @@ TEST_CASE("simplex::raw_noise( real, real, real )", "[noise]")
   }
 }
 
+//------------------------------------------------------------------------------
+// Octave Noise
+//------------------------------------------------------------------------------
+
+TEST_CASE("simplex::octave_noise( real, real, real, real, real )", "[noise]")
+{
+  SECTION("A single octave is the raw noise at the scaled position")
+  {
+    // Arrange
+    const auto expected = simplex::raw_noise(real{0.6f}, real{1.4f});
+
+    // Act
+    const auto result = simplex::octave_noise(
+      real{1}, real{0.5f}, real{2}, real{0.3f}, real{0.7f}
+    );
+
+    // Assert
+    REQUIRE( result == expected );
+  }
+
+  SECTION("Several octaves stay within [-1, 1]")
+  {
+    // Act
+    auto samples = std::vector<real>{};
+    for (auto i = -40; i <= 40; ++i) {
+      const auto x = static_cast<real>(i) * real{0.13f};
+
+      samples.push_back(simplex::octave_noise(
+        real{4}, real{0.5f}, real{1}, x, real{0.25f}
+      ));
+    }
+    const auto [lowest, highest] = std::ranges::minmax(samples);
+
+    // Assert
+    REQUIRE( lowest >= real{-1} );
+    REQUIRE( highest <= real{1} );
+  }
+}
+
 } // namespace alloy::core::test

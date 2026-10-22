@@ -86,6 +86,20 @@ namespace alloy::core {
     // Octave Noise
     //----------------------------------------------------------------------
 
+    /// \brief Generates simplex noise as the sum of \p octaves layers of raw
+    ///        noise
+    ///
+    /// Each octave doubles the frequency of the last, and scales its
+    /// amplitude by \p persistence. The sum is normalized back into [-1, 1].
+    ///
+    /// \pre \p octaves is at least 1
+    ///
+    /// \param octaves the number of layers of noise
+    /// \param persistence the amplitude of each octave relative to the last
+    /// \param scale the frequency of the first octave
+    /// \param x the x-coordinate
+    /// \param y the y-coordinate
+    /// \return the result of the octave noise
     static auto octave_noise(
       real octaves,
       real persistence,
@@ -94,6 +108,21 @@ namespace alloy::core {
       real y
     ) noexcept -> real;
 
+    /// \brief Generates simplex noise as the sum of \p octaves layers of raw
+    ///        noise
+    ///
+    /// Each octave doubles the frequency of the last, and scales its
+    /// amplitude by \p persistence. The sum is normalized back into [-1, 1].
+    ///
+    /// \pre \p octaves is at least 1
+    ///
+    /// \param octaves the number of layers of noise
+    /// \param persistence the amplitude of each octave relative to the last
+    /// \param scale the frequency of the first octave
+    /// \param x the x-coordinate
+    /// \param y the y-coordinate
+    /// \param z the z-coordinate
+    /// \return the result of the octave noise
     static auto octave_noise(
       real octaves,
       real persistence,

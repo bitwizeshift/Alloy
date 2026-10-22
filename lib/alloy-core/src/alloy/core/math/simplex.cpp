@@ -6,6 +6,7 @@
 
 #include "alloy/core/math/math.hpp"
 
+#include "alloy/core/assert.hpp"
 #include "alloy/core/precision/real.hpp"
 
 namespace alloy::core {
@@ -270,6 +271,7 @@ auto alloy::core::simplex::octave_noise(
   real y
 ) noexcept -> real
 {
+    ALLOY_ASSERT(octaves >= real{1});
 
     auto frequency = scale;
     auto total     = real{0};
@@ -297,6 +299,7 @@ auto alloy::core::simplex::octave_noise(
   real z
 ) noexcept -> real
 {
+    ALLOY_ASSERT(octaves >= real{1});
 
     auto frequency = scale;
     auto total     = real{0};
