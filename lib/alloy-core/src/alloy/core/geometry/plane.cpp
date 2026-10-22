@@ -119,9 +119,7 @@ auto alloy::core::plane::contains(const point3& p) const noexcept -> bool
 auto alloy::core::plane::contains(const point3& p, real tolerance)
   const noexcept -> bool
 {
-  const auto dt = normal().dot(to_vector(p)) - d();
-
-  return almost_equal(dt, real{0}, tolerance);
+  return almost_equal(distance_to(p), real{0}, tolerance);
 }
 
 //------------------------------------------------------------------------------
@@ -131,11 +129,11 @@ auto alloy::core::plane::contains(const point3& p, real tolerance)
 auto alloy::core::is_point_over_plane(const point3& p, const plane& plane)
   noexcept -> bool
 {
-  return plane.normal().dot(to_vector(p)) > plane.d();
+  return plane.distance_to(p) > real{0};
 }
 
 auto alloy::core::is_point_under_plane(const point3& p, const plane& plane)
   noexcept -> bool
 {
-  return plane.normal().dot(to_vector(p)) < plane.d();
+  return plane.distance_to(p) < real{0};
 }

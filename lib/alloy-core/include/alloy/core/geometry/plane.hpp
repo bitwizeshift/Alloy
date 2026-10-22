@@ -140,7 +140,12 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Gets the distance between this plane and the specified \p point
+    /// \brief Gets the signed distance between this plane and the specified
+    ///        point \p p
+    ///
+    /// The distance is positive on the side that the normal faces, and
+    /// negative on the other. It is only a true distance if this plane is
+    /// normalized; otherwise it is scaled by the magnitude of the normal.
     ///
     /// \param p the point to get the distance to
     /// \return the distance
@@ -149,6 +154,8 @@ namespace alloy::core {
 
     /// \brief Gets the projection of the specified vector onto this plane
     ///
+    /// \pre this plane is normalized
+    ///
     /// \param vec the vector to project
     /// \return the projection
     [[nodiscard]]
@@ -156,8 +163,11 @@ namespace alloy::core {
 
     /// \brief Gets the rejection of the specified vector off of this plane
     ///
-    /// The rejection of the vector is the difference of the normal of the
-    /// plane and the projection of the vector.
+    /// The rejection of the vector is the component of \p vec along the
+    /// normal of this plane; it is the difference of \p vec and its
+    /// projection onto this plane.
+    ///
+    /// \pre this plane is normalized
     ///
     /// \param vec the vector to reject
     /// \return the rejection
@@ -330,7 +340,7 @@ auto alloy::core::plane::normal() const noexcept -> vector3
 inline
 auto alloy::core::plane::rejection(const vector3& vec) const noexcept -> vector3
 {
-  return normal() - projection(vec);
+  return vec - projection(vec);
 }
 
 inline
