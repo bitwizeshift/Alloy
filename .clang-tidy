@@ -88,6 +88,10 @@ CheckOptions:
     value:           ',hpp'
   - key:             misc-definitions-in-headers.UseHeaderFileExtension
     value:           '1'
+  # SDL is meant to be included through its umbrella <SDL3/SDL.h>, rather than
+  # through the headers that each of its symbols are declared in.
+  - key:             misc-include-cleaner.IgnoreHeaders
+    value:           'SDL3/.*'
   - key:             misc-throw-by-value-catch-by-reference.CheckThrowTemporaries
     value:           '1'
   - key:             misc-unused-parameters.StrictMode
