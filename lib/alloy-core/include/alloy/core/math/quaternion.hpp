@@ -17,6 +17,7 @@
 
 #include "alloy/core/math/angle/radian.hpp"   // radian
 #include "alloy/core/math/euler_angles.hpp"   // euler_angles
+#include "alloy/core/math/interpolation.hpp"  // interpolator
 #include "alloy/core/math/math.hpp"           // almost_equal
 #include "alloy/core/math/matrix/matrix3.hpp" // matrix3
 #include "alloy/core/math/matrix/matrix4.hpp" // matrix4
@@ -594,6 +595,53 @@ namespace alloy::core {
   auto magnitude(const quaternion& x) noexcept -> real;
 
   //----------------------------------------------------------------------------
+  // Interpolation
+  //----------------------------------------------------------------------------
+
+  /// \brief Interpolates between \p q0 and \p q1 by normalizing their
+  ///        linear interpolation
+  ///
+  /// The interpolation takes the shortest path between the two rotations.
+  /// It is cheaper than \ref slerp, but does not rotate at a constant
+  /// angular velocity.
+  ///
+  /// \pre \p q0 and \p q1 are normalized
+  ///
+  /// \param q0 the start rotation
+  /// \param q1 the end rotation
+  /// \param alpha the amount to interpolate [0, 1]
+  /// \return the normalized interpolated rotation
+  ALLOY_CORE_API
+  auto nlerp(const quaternion& q0, const quaternion& q1, real alpha)
+    noexcept -> quaternion;
+
+  /// \brief Spherically interpolates between \p q0 and \p q1
+  ///
+  /// The interpolation takes the shortest path between the two rotations,
+  /// at a constant angular velocity.
+  ///
+  /// \pre \p q0 and \p q1 are normalized
+  ///
+  /// \param q0 the start rotation
+  /// \param q1 the end rotation
+  /// \param alpha the amount to interpolate [0, 1]
+  /// \return the interpolated rotation
+  ALLOY_CORE_API
+  auto slerp(const quaternion& q0, const quaternion& q1, real alpha)
+    noexcept -> quaternion;
+
+  /// \brief Interpolates rotations with \ref nlerp
+  ///
+  /// A component-wise linear interpolation of two unit quaternions is not
+  /// itself unit length, and so is not a rotation.
+  template <>
+  struct interpolator<quaternion>
+  {
+    auto operator()(const quaternion& v0, const quaternion& v1, real alpha)
+      noexcept -> quaternion;
+  };
+
+  //----------------------------------------------------------------------------
   // Type Traits
   //----------------------------------------------------------------------------
 
@@ -922,6 +970,20 @@ auto alloy::core::almost_equal(const quaternion& lhs,
     }
   }
   return true;
+}
+
+//==============================================================================
+// struct : interpolator<quaternion>
+//==============================================================================
+
+inline
+auto alloy::core::interpolator<alloy::core::quaternion>::operator()(
+  const quaternion& v0,
+  const quaternion& v1,
+  real alpha
+) noexcept -> quaternion
+{
+  return nlerp(v0, v1, alpha);
 }
 
 #endif /* ALLOY_CORE_MATH_QUATERNION_HPP */

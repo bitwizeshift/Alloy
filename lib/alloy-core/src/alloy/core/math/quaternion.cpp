@@ -578,3 +578,41 @@ auto alloy::core::operator*(const quaternion& lhs, const vector3& rhs)
 
   return (rhs + uv + uuv);
 }
+
+//----------------------------------------------------------------------------
+// Interpolation
+//----------------------------------------------------------------------------
+
+auto alloy::core::nlerp(const quaternion& q0, const quaternion& q1, real alpha)
+  noexcept -> quaternion
+{
+  // q and -q are the same rotation; picking the one closer to q0 takes the
+  // shorter of the two paths between them.
+  const auto end = (dot(q0, q1) < real{0}) ? -q1 : q1;
+
+  return ((q0 * (real{1} - alpha)) + (end * alpha)).normalized();
+}
+
+auto alloy::core::slerp(const quaternion& q0, const quaternion& q1, real alpha)
+  noexcept -> quaternion
+{
+  auto cos_theta = dot(q0, q1);
+  auto end = q1;
+  if (cos_theta < real{0}) {
+    cos_theta = -cos_theta;
+    end = -q1;
+  }
+
+  // Nearly parallel rotations would divide by a sine that is close to 0, and
+  // are close enough for a linear interpolation to be indistinguishable.
+  if (cos_theta > real{0.9995}) {
+    return nlerp(q0, end, alpha);
+  }
+
+  const auto theta = trigonometry::arccos(cos_theta);
+  const auto sin_theta = trigonometry::sin(theta);
+  const auto s0 = trigonometry::sin(theta * (real{1} - alpha)) / sin_theta;
+  const auto s1 = trigonometry::sin(theta * alpha) / sin_theta;
+
+  return (q0 * s0) + (end * s1);
+}

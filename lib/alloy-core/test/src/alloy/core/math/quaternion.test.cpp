@@ -5,10 +5,13 @@
 #include <alloy/core/math/quaternion.hpp>
 
 #include <alloy/core/math/angle/radian.hpp>
+#include <alloy/core/math/interpolation.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix3.hpp>
 #include <alloy/core/math/quaternion_constants.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
+
+#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -466,6 +469,110 @@ TEST_CASE("operator*( const quaternion&, const vector3& )", "[arithmetic]")
 
     // Assert
     REQUIRE( almost_equal(result, vector3{0, 0, 1}) );
+  }
+}
+
+//------------------------------------------------------------------------------
+// Interpolation
+//------------------------------------------------------------------------------
+
+TEST_CASE("slerp( const quaternion&, const quaternion&, real )", "[interpolation]")
+{
+  // Arrange
+  const auto start = quaternion_constants::identity;
+  const auto end = quaternion::from_angle_axis(
+    radian_constants::quarter_revolution,
+    vector3{0, 0, 1}
+  );
+
+  SECTION("Interpolates at a constant angular velocity")
+  {
+    // Arrange
+    const auto expected = quaternion::from_angle_axis(
+      radian_constants::quarter_revolution * real{0.25},
+      vector3{0, 0, 1}
+    );
+
+    // Act
+    const auto result = slerp(start, end, real{0.25});
+
+    // Assert
+    REQUIRE( almost_equal(result, expected) );
+  }
+
+  SECTION("Takes the shortest path when the end is negated")
+  {
+    // Arrange
+    const auto expected = quaternion::from_angle_axis(
+      radian_constants::quarter_revolution * real{0.5},
+      vector3{0, 0, 1}
+    );
+
+    // Act
+    const auto result = slerp(start, -end, real{0.5});
+
+    // Assert
+    REQUIRE( almost_equal(result, expected) );
+  }
+
+  SECTION("Returns the start at 0")
+  {
+    // Act
+    const auto result = slerp(start, end, real{0});
+
+    // Assert
+    REQUIRE( almost_equal(result, start) );
+  }
+
+  SECTION("Returns the end at 1")
+  {
+    // Act
+    const auto result = slerp(start, end, real{1});
+
+    // Assert
+    REQUIRE( almost_equal(result, end) );
+  }
+}
+
+TEST_CASE("nlerp( const quaternion&, const quaternion&, real )", "[interpolation]")
+{
+  // Arrange
+  const auto start = quaternion_constants::identity;
+  const auto end = quaternion::from_angle_axis(
+    radian_constants::quarter_revolution,
+    vector3{0, 0, 1}
+  );
+  const auto expected = quaternion::from_angle_axis(
+    radian_constants::quarter_revolution * real{0.5},
+    vector3{0, 0, 1}
+  );
+
+  // Act
+  const auto result = nlerp(start, end, real{0.5});
+
+  // Assert
+  SECTION("Midpoint is the half rotation")
+  {
+    REQUIRE( almost_equal(result, expected) );
+  }
+}
+
+TEST_CASE("interpolator<quaternion>", "[interpolation]")
+{
+  // Arrange
+  const auto start = quaternion_constants::identity;
+  const auto end = quaternion::from_angle_axis(
+    radian_constants::half_revolution * real{0.9},
+    vector3{1, 0, 0}
+  );
+
+  // Act
+  const auto result = interpolation::linear(start, end, real{0.5});
+
+  // Assert
+  SECTION("Interpolated rotation is unit length")
+  {
+    REQUIRE( almost_equal(result.magnitude(), real{1}) );
   }
 }
 
