@@ -42,27 +42,15 @@ auto alloy::core::line_segment::contains(const point3& p) const noexcept -> bool
 auto alloy::core::line_segment::contains(const point3& p, real tolerance)
   const noexcept -> bool
 {
-  const auto dir = (m_end - m_start);
+  const auto dir = direction();
+  const auto square_length = dir.dot(dir);
 
-  const auto dx = (p.x() - m_start.x()) / dir.x();
-  const auto dy = (p.y() - m_start.y()) / dir.y();
-  const auto dz = (p.z() - m_start.z()) / dir.z();
+  // A degenerate segment is a single point, and has no direction to project
+  // onto.
+  const auto percent = (square_length > real{0})
+    ? saturate((p - m_start).dot(dir) / square_length)
+    : real{0};
+  const auto offset = (p - (m_start + (percent * dir)));
 
-  // If the scale in the x, y, or z-direction is negative, the point must
-  // preceed the starting point. If any scale is over 1, it must exceed the
-  // end point.
-  // For a point to be on the line, all 3 scales should be the same -- so we
-  // only check 1 to avoid redundant checks.
-  if (dx < real{0} || dx > real{1}) {
-    return false;
-  }
-
-  // The same scale means it must be in the same direction vector
-
-  // NOTE: we check all 3 almost-equality statements to account for relative
-  //       loss. Otherwise dx and dz might be off by a factor of up to
-  //       2*epsilon, which no longer satisfies the almost-equality.
-  return almost_equal(dx, dy, tolerance) &&
-         almost_equal(dy, dz, tolerance) &&
-         almost_equal(dz, dx, tolerance);
+  return offset.square_magnitude() <= (tolerance * tolerance);
 }
