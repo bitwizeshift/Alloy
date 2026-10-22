@@ -6,6 +6,7 @@
 
 #include <alloy/core/io/buffered_writer.hpp>
 #include <alloy/core/io/error.hpp>
+#include <alloy/core/io/indirect_writer.hpp>
 #include <alloy/core/memory/allocator.hpp>
 
 #include <catch2/catch_test_macros.hpp>
@@ -15,8 +16,10 @@
 #include <array>        // std::array
 #include <cstddef>      // std::byte, std::size_t
 #include <span>         // std::span
+#include <memory>       // std::allocator_arg
 #include <system_error> // std::error_code, std::errc
-#include <utility>      // std::move
+#include <type_traits>  // std::is_same_v, std::is_move_constructible_v
+#include <utility>      // std::move, std::in_place
 #include <vector>       // std::vector
 
 namespace alloy::core::test {
@@ -45,19 +48,51 @@ auto write_all_by(
   }
 }
 
-/// \brief Makes a buffered_writer of \p destination that holds \p capacity
-///        bytes
-///
-/// \param capacity the capacity of the buffer
-/// \param destination the writer to write to
-/// \return the buffered_writer
-auto make_buffered_writer(std::size_t capacity, writer& destination)
-  -> buffered_writer
+//=============================================================================
+// class : immovable_writer
+//=============================================================================
+
+/// \brief A writer that is neither move constructible nor move assignable
+class immovable_writer final : public writer
 {
-  auto made = buffered_writer::with_capacity(capacity, &destination);
-  REQUIRE( made.has_value() );
-  return std::move(made).value();
-}
+public:
+
+  immovable_writer() noexcept = default;
+  immovable_writer(immovable_writer&&) = delete;
+
+  auto operator=(immovable_writer&&) -> immovable_writer& = delete;
+
+private:
+
+  auto do_write(std::span<const std::byte>)
+    noexcept -> result<std::size_t,std::error_code> override
+  {
+    return 0u;
+  }
+};
+
+//=============================================================================
+// class : unassignable_writer
+//=============================================================================
+
+/// \brief A writer that is move constructible, but not move assignable
+class unassignable_writer final : public writer
+{
+public:
+
+  unassignable_writer() noexcept = default;
+  unassignable_writer(unassignable_writer&&) noexcept = default;
+
+  auto operator=(unassignable_writer&&) -> unassignable_writer& = delete;
+
+private:
+
+  auto do_write(std::span<const std::byte>)
+    noexcept -> result<std::size_t,std::error_code> override
+  {
+    return 0u;
+  }
+};
 
 //=============================================================================
 // class : buffered_writer
@@ -67,167 +102,297 @@ auto make_buffered_writer(std::size_t capacity, writer& destination)
 // Constructors / Destructor / Assignment
 //-----------------------------------------------------------------------------
 
-TEST_CASE("buffered_writer::from_writer(not_null<writer*>, allocator)",
+TEST_CASE("buffered_writer::buffered_writer(U&&, std::size_t, allocator)",
           "[ctor]")
 {
   auto storage = std::array<std::byte,16>{};
 
-  SECTION("Allocation succeeds")
+  SECTION("Capacity is not specified")
   {
     // Arrange
     auto destination = fake_writer{storage};
 
     // Act
-    const auto sut = buffered_writer::from_writer(&destination);
+    const auto sut = buffered_writer{std::move(destination)};
 
     // Assert
     SECTION("Uses the default capacity")
     {
-      REQUIRE( sut.has_value() );
-      REQUIRE( sut->capacity() == buffered_writer::default_capacity );
+      using sut_type = buffered_writer<fake_writer>;
+
+      REQUIRE( sut.capacity() == sut_type::default_capacity );
     }
     SECTION("Starts with an empty buffer")
     {
-      REQUIRE( sut.has_value() );
-      REQUIRE( sut->buffer().empty() );
+      REQUIRE( sut.buffer().empty() );
     }
-    SECTION("Writes to the destination")
+    SECTION("Owns the destination")
     {
-      REQUIRE( sut.has_value() );
-      REQUIRE( &sut->destination() == &destination );
+      REQUIRE( sut.destination().written().data() == storage.data() );
     }
     SECTION("Does not write to the destination yet")
     {
-      REQUIRE( destination.write_count() == 0u );
+      REQUIRE( sut.destination().write_count() == 0u );
     }
   }
 
-  SECTION("Allocation fails")
-  {
-    // Arrange
-    auto destination = fake_writer{storage};
-    auto resource = counting_resource{};
-    resource.fail_allocations();
-
-    // Act
-    const auto sut = buffered_writer::from_writer(
-      &destination,
-      allocator{&resource}
-    );
-
-    // Assert
-    SECTION("Fails with not enough memory")
-    {
-      REQUIRE( sut.has_error() );
-      REQUIRE( sut.error() == std::errc::not_enough_memory );
-    }
-  }
-}
-
-TEST_CASE("buffered_writer::with_capacity(std::size_t, not_null<writer*>, "
-          "allocator)", "[ctor]")
-{
-  auto storage = std::array<std::byte,16>{};
-
-  SECTION("Allocation succeeds")
+  SECTION("Capacity and allocator are specified")
   {
     // Arrange
     const auto capacity = GENERATE(
       std::size_t{1}, std::size_t{16}, std::size_t{4096}
     );
-    auto destination = fake_writer{storage};
     auto resource = counting_resource{};
 
     // Act
-    const auto sut = buffered_writer::with_capacity(
+    const auto sut = buffered_writer{
+      fake_writer{storage},
       capacity,
-      &destination,
       allocator{&resource}
-    );
+    };
 
     // Assert
     SECTION("Uses the requested capacity")
     {
-      REQUIRE( sut.has_value() );
-      REQUIRE( sut->capacity() == capacity );
+      REQUIRE( sut.capacity() == capacity );
     }
-    SECTION("Allocates the buffer from the allocator once")
+    SECTION("Does not allocate the buffer yet")
     {
-      REQUIRE( resource.allocations() == 1u );
+      REQUIRE( resource.allocations() == 0u );
     }
     SECTION("Starts with an empty buffer")
     {
-      REQUIRE( sut.has_value() );
-      REQUIRE( sut->buffer().empty() );
+      REQUIRE( sut.buffer().empty() );
     }
   }
 
-  SECTION("Allocation fails")
+  SECTION("Destination is an lvalue")
   {
     // Arrange
     auto destination = fake_writer{storage};
-    auto resource = counting_resource{};
-    resource.fail_allocations();
 
     // Act
-    const auto sut = buffered_writer::with_capacity(
-      16u,
-      &destination,
-      allocator{&resource}
-    );
+    auto sut = buffered_writer{destination, 4u};
 
     // Assert
-    SECTION("Fails with not enough memory")
+    SECTION("Owns a copy of the destination")
     {
-      REQUIRE( sut.has_error() );
-      REQUIRE( sut.error() == std::errc::not_enough_memory );
+      REQUIRE( &sut.destination() != &destination );
+    }
+    SECTION("Does not write to the original destination")
+    {
+      const auto input = sequence_bytes(8u);
+
+      REQUIRE( sut.write(input).has_value() );
+      REQUIRE( destination.write_count() == 0u );
+    }
+  }
+}
+
+TEST_CASE("buffered_writer::buffered_writer(std::in_place_t, Args&&...)",
+          "[ctor]")
+{
+  // Arrange
+  auto storage = std::array<std::byte,16>{};
+
+  // Act
+  const auto sut = buffered_writer<fake_writer>{
+    std::in_place,
+    std::span<std::byte>{storage}
+  };
+
+  // Assert
+  SECTION("Uses the default capacity")
+  {
+    using sut_type = buffered_writer<fake_writer>;
+
+    REQUIRE( sut.capacity() == sut_type::default_capacity );
+  }
+  SECTION("Constructs the destination from the arguments")
+  {
+    REQUIRE( sut.destination().written().data() == storage.data() );
+  }
+  SECTION("Starts with an empty buffer")
+  {
+    REQUIRE( sut.buffer().empty() );
+  }
+}
+
+TEST_CASE("buffered_writer::buffered_writer(std::allocator_arg_t, allocator, "
+          "std::size_t, std::in_place_t, Args&&...)", "[ctor]")
+{
+  // Arrange
+  const auto input = sequence_bytes(3u);
+  auto storage = std::array<std::byte,16>{};
+  auto resource = counting_resource{};
+
+  // Act
+  auto sut = buffered_writer<fake_writer>{
+    std::allocator_arg,
+    allocator{&resource},
+    8u,
+    std::in_place,
+    std::span<std::byte>{storage}
+  };
+
+  // Assert
+  SECTION("Uses the requested capacity")
+  {
+    REQUIRE( sut.capacity() == 8u );
+  }
+  SECTION("Constructs the destination from the arguments")
+  {
+    REQUIRE( sut.destination().written().data() == storage.data() );
+  }
+  SECTION("Allocates the buffer from the allocator once it is needed")
+  {
+    REQUIRE( resource.allocations() == 0u );
+    REQUIRE( sut.write(input).has_value() );
+    REQUIRE( resource.allocations() == 1u );
+  }
+}
+
+TEST_CASE("buffered_writer deduction guides", "[ctor]")
+{
+  auto storage = std::array<std::byte,16>{};
+
+  SECTION("Destination is an lvalue")
+  {
+    // Arrange
+    auto destination = fake_writer{storage};
+
+    // Act
+    auto sut = buffered_writer{destination};
+
+    // Assert
+    SECTION("Deduces the type of the destination")
+    {
+      STATIC_REQUIRE(
+        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>
+      );
+    }
+  }
+
+  SECTION("Destination is a const lvalue")
+  {
+    // Arrange
+    const auto destination = fake_writer{storage};
+
+    // Act
+    auto sut = buffered_writer{destination};
+
+    // Assert
+    SECTION("Deduces the type of the destination without const")
+    {
+      STATIC_REQUIRE(
+        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>
+      );
+    }
+  }
+
+  SECTION("Destination is an rvalue")
+  {
+    // Act
+    auto sut = buffered_writer{fake_writer{storage}};
+
+    // Assert
+    SECTION("Deduces the type of the destination")
+    {
+      STATIC_REQUIRE(
+        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>
+      );
+    }
+  }
+
+  SECTION("Destination and capacity are given")
+  {
+    // Arrange
+    auto destination = fake_writer{storage};
+
+    // Act
+    auto sut = buffered_writer{destination, 8u};
+
+    // Assert
+    SECTION("Deduces the type of the destination")
+    {
+      STATIC_REQUIRE(
+        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>
+      );
+    }
+  }
+
+  SECTION("Destination, capacity, and allocator are given")
+  {
+    // Arrange
+    auto destination = fake_writer{storage};
+
+    // Act
+    auto sut = buffered_writer{destination, 8u, allocator{}};
+
+    // Assert
+    SECTION("Deduces the type of the destination")
+    {
+      STATIC_REQUIRE(
+        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>
+      );
     }
   }
 }
 
 TEST_CASE("buffered_writer::buffered_writer(buffered_writer&&)", "[ctor]")
 {
-  // Arrange
-  const auto input = sequence_bytes(3u);
-  auto storage = std::array<std::byte,16>{};
-  auto destination = fake_writer{storage};
-  auto resource = counting_resource{};
-  auto made = buffered_writer::with_capacity(
-    8u,
-    &destination,
-    allocator{&resource}
-  );
-  REQUIRE( made.has_value() );
-  auto& other = *made;
-  REQUIRE( other.write(input).has_value() );
-  const auto expected = other.buffer();
+  SECTION("Destination is move constructible")
+  {
+    // Arrange
+    const auto input = sequence_bytes(3u);
+    auto storage = std::array<std::byte,16>{};
+    auto resource = counting_resource{};
+    auto other = buffered_writer{
+      fake_writer{storage},
+      8u,
+      allocator{&resource}
+    };
+    REQUIRE( other.write(input).has_value() );
+    const auto expected = other.buffer();
 
-  // Act
-  auto sut = std::move(other);
+    // Act
+    auto sut = std::move(other);
 
-  // Assert
-  SECTION("Takes the capacity of the other writer")
-  {
-    REQUIRE( sut.capacity() == 8u );
+    // Assert
+    SECTION("Takes the capacity of the other writer")
+    {
+      REQUIRE( sut.capacity() == 8u );
+    }
+    SECTION("Takes the buffered bytes of the other writer")
+    {
+      REQUIRE( sut.buffer().data() == expected.data() );
+      REQUIRE( sut.buffer().size() == expected.size() );
+    }
+    SECTION("Takes the destination of the other writer")
+    {
+      REQUIRE( sut.destination().written().data() == storage.data() );
+    }
+    SECTION("Leaves the other writer without a buffer")
+    {
+      // NOLINTNEXTLINE(bugprone-use-after-move)
+      REQUIRE( other.capacity() == 0u );
+      REQUIRE( other.buffer().empty() );
+    }
+    SECTION("Does not allocate another buffer")
+    {
+      REQUIRE( resource.allocations() == 1u );
+    }
+    SECTION("Does not write to the destination")
+    {
+      REQUIRE( sut.destination().write_count() == 0u );
+    }
   }
-  SECTION("Takes the buffered bytes of the other writer")
+
+  SECTION("Destination is not move constructible")
   {
-    REQUIRE( sut.buffer().data() == expected.data() );
-    REQUIRE( sut.buffer().size() == expected.size() );
-  }
-  SECTION("Takes the destination of the other writer")
-  {
-    REQUIRE( &sut.destination() == &destination );
-  }
-  SECTION("Leaves the other writer without a buffer")
-  {
-    // NOLINTNEXTLINE(bugprone-use-after-move)
-    REQUIRE( other.capacity() == 0u );
-    REQUIRE( other.buffer().empty() );
-  }
-  SECTION("Does not allocate another buffer")
-  {
-    REQUIRE( resource.allocations() == 1u );
+    STATIC_REQUIRE_FALSE(
+      std::is_move_constructible_v<buffered_writer<immovable_writer>>
+    );
   }
 }
 
@@ -240,18 +405,14 @@ TEST_CASE("buffered_writer::~buffered_writer()", "[dtor]")
 
   SECTION("Writer has buffered bytes")
   {
-    // Arrange
-    auto made = buffered_writer::with_capacity(
-      8u,
-      &destination,
-      allocator{&resource}
-    );
-    REQUIRE( made.has_value() );
-    REQUIRE( made->write(input).has_value() );
-
     // Act
     {
-      auto sut = std::move(made).value();
+      auto sut = buffered_writer{
+        indirect_writer{&destination},
+        8u,
+        allocator{&resource}
+      };
+      REQUIRE( sut.write(input).has_value() );
     }
 
     // Assert
@@ -269,19 +430,38 @@ TEST_CASE("buffered_writer::~buffered_writer()", "[dtor]")
     }
   }
 
-  SECTION("Writer was moved from")
+  SECTION("Buffer was never allocated")
   {
-    // Arrange
-    auto made = buffered_writer::with_capacity(
-      8u,
-      &destination,
-      allocator{&resource}
-    );
-    REQUIRE( made.has_value() );
-
     // Act
     {
-      auto sut = std::move(made).value();
+      auto sut = buffered_writer{
+        indirect_writer{&destination},
+        8u,
+        allocator{&resource}
+      };
+    }
+
+    // Assert
+    SECTION("Does not release a buffer")
+    {
+      REQUIRE( resource.deallocations() == 0u );
+    }
+    SECTION("Does not write to the destination")
+    {
+      REQUIRE( destination.write_count() == 0u );
+    }
+  }
+
+  SECTION("Writer was moved from")
+  {
+    // Act
+    {
+      auto sut = buffered_writer{
+        indirect_writer{&destination},
+        8u,
+        allocator{&resource}
+      };
+      REQUIRE( sut.write(input).has_value() );
       auto other = std::move(sut);
     }
 
@@ -290,61 +470,87 @@ TEST_CASE("buffered_writer::~buffered_writer()", "[dtor]")
     {
       REQUIRE( resource.deallocations() == 1u );
     }
+    SECTION("Flushes the buffered bytes only once")
+    {
+      REQUIRE( destination.write_count() == 1u );
+      REQUIRE( destination.written().size() == input.size() );
+    }
   }
 }
 
 TEST_CASE("buffered_writer::operator=(buffered_writer&&)", "[assignment]")
 {
-  // Arrange
-  const auto input = sequence_bytes(3u);
-  auto storage = std::array<std::byte,16>{};
-  auto other_storage = std::array<std::byte,16>{};
-  auto destination = fake_writer{storage};
-  auto other_destination = fake_writer{other_storage};
-  auto resource = counting_resource{};
-  auto sut_made = buffered_writer::with_capacity(
-    4u,
-    &destination,
-    allocator{&resource}
-  );
-  auto other_made = buffered_writer::with_capacity(
-    8u,
-    &other_destination,
-    allocator{&resource}
-  );
-  REQUIRE( sut_made.has_value() );
-  REQUIRE( other_made.has_value() );
-  auto& sut = *sut_made;
-  auto& other = *other_made;
-  REQUIRE( other.write(input).has_value() );
-  const auto expected = other.buffer();
+  SECTION("Destination is move assignable")
+  {
+    // Arrange
+    const auto input = sequence_bytes(3u);
+    auto storage = std::array<std::byte,16>{};
+    auto other_storage = std::array<std::byte,16>{};
+    auto destination = fake_writer{storage};
+    auto other_destination = fake_writer{other_storage};
+    auto resource = counting_resource{};
+    auto sut = buffered_writer{
+      indirect_writer{&destination},
+      4u,
+      allocator{&resource}
+    };
+    auto other = buffered_writer{
+      indirect_writer{&other_destination},
+      8u,
+      allocator{&resource}
+    };
+    REQUIRE( sut.write(std::span{input}.first(2u)).has_value() );
+    REQUIRE( other.write(input).has_value() );
+    const auto expected = other.buffer();
 
-  // Act
-  sut = std::move(other);
+    // Act
+    sut = std::move(other);
 
-  // Assert
-  SECTION("Releases the previous buffer")
-  {
-    REQUIRE( resource.deallocations() == 1u );
+    // Assert
+    SECTION("Flushes the previous buffered bytes to the previous destination")
+    {
+      const auto written = destination.written();
+
+      REQUIRE( written.size() == 2u );
+      REQUIRE( std::equal(written.begin(), written.end(), input.begin()) );
+    }
+    SECTION("Releases the previous buffer")
+    {
+      REQUIRE( resource.deallocations() == 1u );
+    }
+    SECTION("Takes the capacity of the other writer")
+    {
+      REQUIRE( sut.capacity() == 8u );
+    }
+    SECTION("Takes the buffered bytes of the other writer")
+    {
+      REQUIRE( sut.buffer().data() == expected.data() );
+      REQUIRE( sut.buffer().size() == expected.size() );
+    }
+    SECTION("Takes the destination of the other writer")
+    {
+      REQUIRE( &sut.destination().destination() == &other_destination );
+    }
+    SECTION("Does not write to the new destination")
+    {
+      REQUIRE( other_destination.write_count() == 0u );
+    }
+    SECTION("Leaves the other writer without a buffer")
+    {
+      // NOLINTNEXTLINE(bugprone-use-after-move)
+      REQUIRE( other.capacity() == 0u );
+      REQUIRE( other.buffer().empty() );
+    }
   }
-  SECTION("Takes the capacity of the other writer")
+
+  SECTION("Destination is not move assignable")
   {
-    REQUIRE( sut.capacity() == 8u );
-  }
-  SECTION("Takes the buffered bytes of the other writer")
-  {
-    REQUIRE( sut.buffer().data() == expected.data() );
-    REQUIRE( sut.buffer().size() == expected.size() );
-  }
-  SECTION("Takes the destination of the other writer")
-  {
-    REQUIRE( &sut.destination() == &other_destination );
-  }
-  SECTION("Leaves the other writer without a buffer")
-  {
-    // NOLINTNEXTLINE(bugprone-use-after-move)
-    REQUIRE( other.capacity() == 0u );
-    REQUIRE( other.buffer().empty() );
+    STATIC_REQUIRE(
+      std::is_move_constructible_v<buffered_writer<unassignable_writer>>
+    );
+    STATIC_REQUIRE_FALSE(
+      std::is_move_assignable_v<buffered_writer<unassignable_writer>>
+    );
   }
 }
 
@@ -366,7 +572,7 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     auto storage = std::array<std::byte,32>{};
     auto destination = fake_writer{storage};
     destination.set_chunk_size(chunk_size);
-    auto sut = make_buffered_writer(capacity, destination);
+    auto sut = buffered_writer{std::move(destination), capacity};
     REQUIRE( sut.write(input).has_value() );
 
     // Act
@@ -379,7 +585,7 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     }
     SECTION("Writes every buffered byte in order")
     {
-      const auto written = destination.written();
+      const auto written = sut.destination().written();
 
       REQUIRE(
         std::equal(written.begin(), written.end(), input.begin(), input.end())
@@ -396,7 +602,7 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     // Arrange
     auto storage = std::array<std::byte,32>{};
     auto destination = fake_writer{storage};
-    auto sut = make_buffered_writer(capacity, destination);
+    auto sut = buffered_writer{std::move(destination), capacity};
 
     // Act
     const auto result = sut.flush();
@@ -408,7 +614,7 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     }
     SECTION("Does not write to the destination")
     {
-      REQUIRE( destination.write_count() == 0u );
+      REQUIRE( sut.destination().write_count() == 0u );
     }
   }
 
@@ -417,7 +623,7 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     // Arrange
     auto storage = std::array<std::byte,4>{};
     auto destination = fake_writer{storage};
-    auto sut = make_buffered_writer(capacity, destination);
+    auto sut = buffered_writer{std::move(destination), capacity};
     REQUIRE( sut.write(input).has_value() );
 
     // Act
@@ -446,7 +652,7 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     auto storage = std::array<std::byte,4>{};
     auto destination = fake_writer{storage};
     destination.fail_when_full(expected);
-    auto sut = make_buffered_writer(capacity, destination);
+    auto sut = buffered_writer{std::move(destination), capacity};
     REQUIRE( sut.write(input).has_value() );
 
     // Act
@@ -474,10 +680,10 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     auto storage = std::array<std::byte,16>{};
     auto destination = fake_writer{storage};
     destination.set_chunk_size(0u);
-    auto sut = make_buffered_writer(capacity, destination);
+    auto sut = buffered_writer{std::move(destination), capacity};
     REQUIRE( sut.write(input).has_value() );
     REQUIRE( sut.flush().has_error() );
-    destination.set_chunk_size(3u);
+    sut.destination().set_chunk_size(3u);
 
     // Act
     const auto result = sut.flush();
@@ -485,7 +691,7 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     // Assert
     SECTION("Writes every buffered byte in order")
     {
-      const auto written = destination.written();
+      const auto written = sut.destination().written();
 
       REQUIRE( result.has_value() );
       REQUIRE(
@@ -517,7 +723,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     auto storage = std::vector<std::byte>(input.size());
     auto destination = fake_writer{storage};
     destination.set_chunk_size(chunk_size);
-    auto sut = make_buffered_writer(capacity, destination);
+    auto sut = buffered_writer{std::move(destination), capacity};
 
     // Act
     write_all_by(sut, input, request);
@@ -526,7 +732,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     // Assert
     SECTION("Writes every byte to the destination in order")
     {
-      const auto written = destination.written();
+      const auto written = sut.destination().written();
 
       REQUIRE( result.has_value() );
       REQUIRE(
@@ -540,7 +746,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     // Arrange
     auto storage = std::vector<std::byte>(input.size());
     auto destination = fake_writer{storage};
-    auto sut = make_buffered_writer(capacity, destination);
+    auto sut = buffered_writer{std::move(destination), capacity};
     const auto bytes = std::span{input}.first(capacity - 1u);
 
     // Act
@@ -562,7 +768,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     }
     SECTION("Does not write to the destination")
     {
-      REQUIRE( destination.write_count() == 0u );
+      REQUIRE( sut.destination().write_count() == 0u );
     }
   }
 
@@ -571,7 +777,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     // Arrange
     auto storage = std::vector<std::byte>(input.size());
     auto destination = fake_writer{storage};
-    auto sut = make_buffered_writer(capacity, destination);
+    auto sut = buffered_writer{std::move(destination), capacity};
     REQUIRE( sut.write(std::span{input}.first(10u)).has_value() );
     const auto bytes = std::span{input}.subspan(10u, 6u);
 
@@ -586,7 +792,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     }
     SECTION("Writes the previously buffered bytes to the destination")
     {
-      const auto written = destination.written();
+      const auto written = sut.destination().written();
 
       REQUIRE( written.size() == 10u );
       REQUIRE( std::equal(written.begin(), written.end(), input.begin()) );
@@ -607,7 +813,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     const auto request = GENERATE(capacity, capacity + 1u, capacity * 4u);
     auto storage = std::vector<std::byte>(input.size());
     auto destination = fake_writer{storage};
-    auto sut = make_buffered_writer(capacity, destination);
+    auto sut = buffered_writer{std::move(destination), capacity};
     const auto bytes = std::span{input}.first(request);
 
     // Act
@@ -616,8 +822,8 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     // Assert
     SECTION("Writes directly from the buffer of the caller")
     {
-      REQUIRE( destination.write_count() == 1u );
-      REQUIRE( destination.last_request_size() == request );
+      REQUIRE( sut.destination().write_count() == 1u );
+      REQUIRE( sut.destination().last_request_size() == request );
     }
     SECTION("Returns the number of bytes written")
     {
@@ -635,7 +841,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     // Arrange
     auto storage = std::vector<std::byte>(input.size());
     auto destination = fake_writer{storage};
-    auto sut = make_buffered_writer(capacity, destination);
+    auto sut = buffered_writer{std::move(destination), capacity};
     REQUIRE( sut.write(std::span{input}.first(4u)).has_value() );
     const auto bytes = std::span{input}.subspan(4u, capacity);
 
@@ -650,7 +856,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     }
     SECTION("Writes the buffered bytes before the new bytes")
     {
-      const auto written = destination.written();
+      const auto written = sut.destination().written();
 
       REQUIRE( written.size() == 4u + capacity );
       REQUIRE( std::equal(written.begin(), written.end(), input.begin()) );
@@ -668,7 +874,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     auto storage = std::array<std::byte,4>{};
     auto destination = fake_writer{storage};
     destination.fail_when_full(expected);
-    auto sut = make_buffered_writer(capacity, destination);
+    auto sut = buffered_writer{std::move(destination), capacity};
     REQUIRE( sut.write(std::span{input}.first(10u)).has_value() );
 
     // Act
@@ -698,7 +904,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     const auto expected = std::make_error_code(std::errc::io_error);
     auto destination = fake_writer{std::span<std::byte>{}};
     destination.fail_when_full(expected);
-    auto sut = make_buffered_writer(capacity, destination);
+    auto sut = buffered_writer{std::move(destination), capacity};
 
     // Act
     const auto result = sut.write(std::span{input}.first(capacity));
@@ -708,6 +914,85 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     {
       REQUIRE( result.has_error() );
       REQUIRE( result.error() == expected );
+    }
+  }
+
+  SECTION("Buffer cannot be allocated")
+  {
+    // Arrange
+    auto storage = std::vector<std::byte>(input.size());
+    auto resource = counting_resource{};
+    resource.fail_allocations();
+    auto sut = buffered_writer{
+      fake_writer{storage},
+      capacity,
+      allocator{&resource}
+    };
+
+    // Act
+    const auto result = sut.write(std::span{input}.first(4u));
+
+    // Assert
+    SECTION("Fails with not enough memory")
+    {
+      REQUIRE( result.has_error() );
+      REQUIRE( result.error() == std::errc::not_enough_memory );
+    }
+    SECTION("Does not write to the destination")
+    {
+      REQUIRE( sut.destination().write_count() == 0u );
+    }
+  }
+
+  SECTION("Write bypasses a buffer that cannot be allocated")
+  {
+    // Arrange
+    auto storage = std::vector<std::byte>(input.size());
+    auto resource = counting_resource{};
+    resource.fail_allocations();
+    auto sut = buffered_writer{
+      fake_writer{storage},
+      capacity,
+      allocator{&resource}
+    };
+    const auto bytes = std::span{input}.first(capacity);
+
+    // Act
+    const auto result = sut.write(bytes);
+
+    // Assert
+    SECTION("Writes directly from the buffer of the caller")
+    {
+      const auto written = sut.destination().written();
+
+      REQUIRE( result.has_value() );
+      REQUIRE( *result == capacity );
+      REQUIRE(
+        std::equal(written.begin(), written.end(), bytes.begin(), bytes.end())
+      );
+    }
+  }
+
+  SECTION("Buffer was allocated by a previous write")
+  {
+    // Arrange
+    auto storage = std::vector<std::byte>(input.size());
+    auto resource = counting_resource{};
+    auto sut = buffered_writer{
+      fake_writer{storage},
+      capacity,
+      allocator{&resource}
+    };
+    REQUIRE( sut.write(std::span{input}.first(10u)).has_value() );
+
+    // Act
+    const auto result = sut.write(std::span{input}.subspan(10u, 10u));
+
+    // Assert
+    SECTION("Reuses the buffer")
+    {
+      REQUIRE( result.has_value() );
+      REQUIRE( resource.allocations() == 1u );
     }
   }
 }
