@@ -51,7 +51,7 @@ namespace alloy::render {
   ///
   /// \warning
   /// This type has a strict requirement on the order of attributes being
-  /// stored, and no automatic checking to ensure it's being used correctly.
+  /// stored, which is only checked by assertions in debug builds.
   /// This can be dangerous if misused.
   /// Use at your own risk.
   /// In general, this exists to be used in the creation of other
@@ -166,8 +166,43 @@ namespace alloy::render {
     /// The last attribute present in each vertex
     attribute m_last_attribute;
 
+    /// The attribute expected to be added next. This is only advanced in
+    /// debug builds, where it is used to check the order of attributes.
+    attribute m_next_attribute;
+
     /// The number of bytes of padding following the last attribute
     std::uint8_t m_vertex_padding;
+
+    //--------------------------------------------------------------------------
+    // Private Observers
+    //--------------------------------------------------------------------------
+  private:
+
+    /// \brief Gets the number of components of attribute \p a
+    ///
+    /// \param a the attribute
+    /// \return the number of components
+    auto component_count(attribute a) const noexcept -> std::uint8_t;
+
+    /// \brief Gets the attribute present in each vertex that follows \p a,
+    ///        wrapping around to the first attribute of the next vertex
+    ///
+    /// \param a the attribute
+    /// \return the next attribute
+    auto next_attribute_after(attribute a) const noexcept -> attribute;
+
+    /// \brief Asserts that attribute \p a is the next attribute in the
+    ///        vertex, and that it is being supplied from a value with at
+    ///        least as many \p dimensions as it has components
+    ///
+    /// \param a the attribute being added
+    /// \param dimensions the dimensions of the value being added
+    auto check_attribute(attribute a, std::size_t dimensions) const noexcept
+      -> void;
+
+    /// \brief Asserts that only whole vertices have been added, and that
+    ///        every index refers to one of them
+    auto check_complete() const noexcept -> void;
 
     //--------------------------------------------------------------------------
     // Private Modifiers
@@ -182,7 +217,8 @@ namespace alloy::render {
     static auto last_attribute_of(const vertex_components& components)
       noexcept -> attribute;
 
-    /// \brief Pads the end of the vertex if \p a is its last attribute
+    /// \brief Pads the end of the vertex if \p a is its last attribute, and
+    ///        advances the expected attribute in debug builds
     ///
     /// \param a the attribute that was just added
     auto complete_attribute(attribute a) -> void;
