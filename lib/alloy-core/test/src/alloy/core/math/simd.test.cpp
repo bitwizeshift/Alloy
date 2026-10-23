@@ -209,6 +209,45 @@ TEMPLATE_TEST_CASE("simd<T>::set(T, T, T, T)", "[factory]", f32, u32, s32) {
 }
 
 //-----------------------------------------------------------------------------
+// Storing
+//-----------------------------------------------------------------------------
+
+TEMPLATE_TEST_CASE("simd<T>::store(std::span<T,4>)", "[storing]", f32, u32, s32) {
+  // Arrange
+  const auto sut = simd<TestType>::set(1, 2, 3, 4);
+  auto out = simd_aligned_array<TestType, 4>{};
+
+  // Act
+  sut.store(out);
+
+  // Assert
+  SECTION("Stores the lanes in order") {
+    REQUIRE(out[0] == TestType(1));
+    REQUIRE(out[1] == TestType(2));
+    REQUIRE(out[2] == TestType(3));
+    REQUIRE(out[3] == TestType(4));
+  }
+}
+
+TEMPLATE_TEST_CASE("simd<T>::store_unaligned(std::span<T,4>)", "[storing]", f32, u32, s32) {
+  // Arrange
+  const auto sut = simd<TestType>::set(1, 2, 3, 4);
+  auto storage = simd_aligned_array<TestType, 5>{};
+  const auto out = std::span<TestType, 4>{storage.data() + 1, 4u};
+
+  // Act
+  sut.store_unaligned(out);
+
+  // Assert
+  SECTION("Stores the lanes in order at an unaligned address") {
+    REQUIRE(storage[1] == TestType(1));
+    REQUIRE(storage[2] == TestType(2));
+    REQUIRE(storage[3] == TestType(3));
+    REQUIRE(storage[4] == TestType(4));
+  }
+}
+
+//-----------------------------------------------------------------------------
 // Casting
 //-----------------------------------------------------------------------------
 
@@ -406,6 +445,40 @@ TEMPLATE_TEST_CASE("simd_multiply(simd<T>,simd<T>)", "[arithmetic]", f32, s32, u
   }
 }
 
+TEST_CASE("simd_multiply(simd<s32>,simd<s32>) with signs and overflow", "[arithmetic]") {
+  // Arrange
+  const auto lhs = simd<s32>::set(-2, 3, -4, 0x10000);
+  const auto rhs = simd<s32>::set(3, -5, -6, 0x10000);
+
+  // Act
+  const auto result = simd_multiply(lhs, rhs);
+
+  // Assert
+  SECTION("Every lane is the low 32 bits of its product") {
+    REQUIRE(result.lane<0>() == -6);
+    REQUIRE(result.lane<1>() == -15);
+    REQUIRE(result.lane<2>() == 24);
+    REQUIRE(result.lane<3>() == 0);
+  }
+}
+
+TEST_CASE("simd_multiply(simd<u32>,simd<u32>) with large values", "[arithmetic]") {
+  // Arrange
+  const auto lhs = simd<u32>::set(0xffffffffu, 2u, 0x80000000u, 70000u);
+  const auto rhs = simd<u32>::set(2u, 0x7fffffffu, 3u, 70000u);
+
+  // Act
+  const auto result = simd_multiply(lhs, rhs);
+
+  // Assert
+  SECTION("Every lane is the low 32 bits of its product") {
+    REQUIRE(result.lane<0>() == 0xfffffffeu);
+    REQUIRE(result.lane<1>() == 0xfffffffeu);
+    REQUIRE(result.lane<2>() == 0x80000000u);
+    REQUIRE(result.lane<3>() == 0x24101100u);
+  }
+}
+
 TEST_CASE("simd_multiply_scalar(simd<f32>,f32)", "[arithmetic]") {
   // Arrange
   const auto lhs = simd<f32>::set(1,2,3,4);
@@ -503,9 +576,38 @@ TEST_CASE("simd_abs_difference(simd<f32>,simd<f32>)", "[arithmetic]") {
 // Fused Arithmetic
 //-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-// Comparisons
-//-----------------------------------------------------------------------------
+TEST_CASE("simd_fuse_add_multiply(simd<f32>,simd<f32>,simd<f32>)", "[arithmetic]") {
+  // Arrange
+  const auto add = simd<f32>::set(1, 2, 3, 4);
+  const auto lhs = simd<f32>::set(2, 3, 4, 5);
+  const auto rhs = simd<f32>::set(-1, 0.5f, 2, 10);
+
+  // Act
+  const auto result = simd_fuse_add_multiply(add, lhs, rhs);
+
+  // Assert
+  SECTION("Adds the product to the first argument") {
+    REQUIRE(result.lane<0>() == -1.0f);
+    REQUIRE(result.lane<1>() == 3.5f);
+    REQUIRE(result.lane<2>() == 11.0f);
+    REQUIRE(result.lane<3>() == 54.0f);
+  }
+}
+
+TEST_CASE("simd_fuse_add_multiply_scalar(simd<f32>,simd<f32>,f32)", "[arithmetic]") {
+  // Arrange
+  const auto add = simd<f32>::set(1, 2, 3, 4);
+  const auto lhs = simd<f32>::set(2, 3, 4, 5);
+
+  // Act
+  const auto result = simd_fuse_add_multiply_scalar(add, lhs, 2.0f);
+
+  // Assert
+  SECTION("Adds the scaled vector to the first argument") {
+    REQUIRE(result.lane<0>() == 5.0f);
+    REQUIRE(result.lane<3>() == 14.0f);
+  }
+}
 
 //-----------------------------------------------------------------------------
 // Comparisons
@@ -836,39 +938,6 @@ TEST_CASE("simd_sqrt(simd<f32>) of zero", "[algorithm][math]") {
   // Assert
   SECTION("Square root of 0 is 0") {
     REQUIRE(result.lane<0>() == 0.0f);
-  }
-}
-
-TEST_CASE("simd_fuse_add_multiply(simd<f32>,simd<f32>,simd<f32>)", "[arithmetic]") {
-  // Arrange
-  const auto add = simd<f32>::set(1, 2, 3, 4);
-  const auto lhs = simd<f32>::set(2, 3, 4, 5);
-  const auto rhs = simd<f32>::set(-1, 0.5f, 2, 10);
-
-  // Act
-  const auto result = simd_fuse_add_multiply(add, lhs, rhs);
-
-  // Assert
-  SECTION("Adds the product to the first argument") {
-    REQUIRE(result.lane<0>() == -1.0f);
-    REQUIRE(result.lane<1>() == 3.5f);
-    REQUIRE(result.lane<2>() == 11.0f);
-    REQUIRE(result.lane<3>() == 54.0f);
-  }
-}
-
-TEST_CASE("simd_fuse_add_multiply_scalar(simd<f32>,simd<f32>,f32)", "[arithmetic]") {
-  // Arrange
-  const auto add = simd<f32>::set(1, 2, 3, 4);
-  const auto lhs = simd<f32>::set(2, 3, 4, 5);
-
-  // Act
-  const auto result = simd_fuse_add_multiply_scalar(add, lhs, 2.0f);
-
-  // Assert
-  SECTION("Adds the scaled vector to the first argument") {
-    REQUIRE(result.lane<0>() == 5.0f);
-    REQUIRE(result.lane<3>() == 14.0f);
   }
 }
 
