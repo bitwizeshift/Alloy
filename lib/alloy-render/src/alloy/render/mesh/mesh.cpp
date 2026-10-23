@@ -169,6 +169,7 @@ alloy::render::mesh::mesh(const mesh& other)
     m_submeshes{other.m_submeshes.copy()},
     m_bounding_volume{other.m_bounding_volume},
     m_topology{other.m_topology},
+    m_winding{other.m_winding},
     m_components{other.m_components}
 {
 
@@ -183,6 +184,7 @@ alloy::render::mesh::mesh(const mesh& other, core::allocator alloc)
     )},
     m_bounding_volume{other.m_bounding_volume},
     m_topology{other.m_topology},
+    m_winding{other.m_winding},
     m_components{other.m_components}
 {
 
@@ -195,6 +197,7 @@ alloy::render::mesh::mesh(alloy::render::mesh_config config)
     m_submeshes{std::move(config.submeshes)},
     m_bounding_volume{config.bounding_volume},
     m_topology{config.topology},
+    m_winding{config.winding},
     m_components{config.components}
 {
 

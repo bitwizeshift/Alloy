@@ -18,6 +18,7 @@
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/mesh/mesh_builder.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
+#include "alloy/render/mesh/winding_order.hpp"
 
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/geometry/point/point2.hpp"
@@ -58,9 +59,11 @@ namespace alloy::render {
     /// \brief Constructs this mesh_2d_builder with the specified topology
     ///
     /// \param topology the topology for the mesh
+    /// \param winding the winding order of front faces in the mesh
     /// \param alloc the allocator to use for intermediate allocations
     explicit polygon_2d_builder(
       primitive_topology topology = primitive_topology::triangles,
+      winding_order winding = winding_order::counter_clockwise,
       core::allocator alloc = core::allocator{}
     ) noexcept;
     polygon_2d_builder(polygon_2d_builder&&) = delete;
@@ -218,6 +221,7 @@ namespace alloy::render {
     core::vector<index_type> m_indices;
     core::vector<submesh_start> m_submesh_starts;
     primitive_topology m_topology;
+    winding_order m_winding;
   };
 
 } // namespace alloy::render

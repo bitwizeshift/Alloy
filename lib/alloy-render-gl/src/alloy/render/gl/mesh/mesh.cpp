@@ -10,6 +10,7 @@
 #include "alloy/render/mesh/attribute_locations.hpp"
 #include "alloy/render/mesh/index_format.hpp"
 #include "alloy/render/mesh/mesh.hpp"
+#include "alloy/render/mesh/winding_order.hpp"
 
 #include <array>   // std::array
 #include <cstddef> // std::size_t
@@ -18,6 +19,19 @@
 
 namespace alloy::render::gl {
 namespace {
+
+auto to_opengl_type(winding_order w) noexcept -> ::GLenum
+{
+  switch (w) {
+    case winding_order::counter_clockwise: {
+      return GL_CCW;
+    }
+    case winding_order::clockwise: {
+      return GL_CW;
+    }
+  }
+  core::compiler::unreachable();
+}
 
 auto to_opengl_type(index_format f) noexcept -> ::GLenum
 {
@@ -184,9 +198,18 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
   }
 
   const auto topology = to_opengl_type(m.topology());
+  const auto front_face = to_opengl_type(m.winding());
 
   if (!m.has_indices()) {
-    return mesh{vao, vbo, ebo, topology, GL_NONE, m.vertex_count()};
+    return mesh{
+      vao,
+      vbo,
+      ebo,
+      topology,
+      front_face,
+      GL_NONE,
+      m.vertex_count()
+    };
   }
 
   const auto indices = m.index_data();
@@ -200,7 +223,15 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
 
   const auto index_type = to_opengl_type(m.index_format());
 
-  return mesh{vao, vbo, ebo, topology, index_type, m.index_count()};
+  return mesh{
+    vao,
+    vbo,
+    ebo,
+    topology,
+    front_face,
+    index_type,
+    m.index_count()
+  };
 }
 
 alloy::render::gl::mesh::mesh(
@@ -208,6 +239,7 @@ alloy::render::gl::mesh::mesh(
   ::GLuint vbo,
   ::GLuint ebo,
   ::GLenum topology,
+  ::GLenum front_face,
   ::GLenum index_type,
   std::size_t count
 )
@@ -215,6 +247,7 @@ alloy::render::gl::mesh::mesh(
     m_vbo{vbo},
     m_ebo{ebo},
     m_topology{topology},
+    m_front_face{front_face},
     m_index_type{index_type},
     m_count{count}
 {
@@ -226,6 +259,7 @@ alloy::render::gl::mesh::mesh(alloy::render::gl::mesh&& other)
     m_vbo{std::exchange(other.m_vbo, 0)},
     m_ebo{std::exchange(other.m_ebo, 0)},
     m_topology{other.m_topology},
+    m_front_face{other.m_front_face},
     m_index_type{other.m_index_type},
     m_count{other.m_count}
 {
@@ -245,6 +279,7 @@ alloy::render::gl::mesh::~mesh()
 auto alloy::render::gl::mesh::draw() -> void
 {
   ::glBindVertexArray(m_vao);
+  ::glFrontFace(m_front_face);
   if (m_ebo == 0) {
     ::glDrawArrays(m_topology, 0, static_cast<::GLsizei>(m_count));
     return;
@@ -260,6 +295,7 @@ auto alloy::render::gl::mesh::draw() -> void
 auto alloy::render::gl::mesh::draw(const render::submesh& s) -> void
 {
   ::glBindVertexArray(m_vao);
+  ::glFrontFace(m_front_face);
   if (m_ebo == 0) {
     ::glDrawArrays(
       m_topology,

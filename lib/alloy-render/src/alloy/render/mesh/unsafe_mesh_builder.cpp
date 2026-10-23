@@ -7,6 +7,7 @@
 #include "alloy/render/mesh/index_format.hpp"
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
+#include "alloy/render/mesh/winding_order.hpp"
 #include "attribute_packer.hpp"
 
 #include "alloy/core/assert.hpp"
@@ -82,6 +83,7 @@ auto narrow_indices(const core::packed_buffer& indices, core::allocator alloc)
 alloy::render::unsafe_mesh_builder::unsafe_mesh_builder(
   vertex_components components,
   primitive_topology topology,
+  winding_order winding,
   core::allocator alloc
 ) noexcept
   : m_allocator{alloc},
@@ -91,6 +93,7 @@ alloy::render::unsafe_mesh_builder::unsafe_mesh_builder(
     m_index_writer{&m_index_data},
     m_submesh_starts{core::stl_allocator_adapter<submesh_start>{alloc}},
     m_topology{topology},
+    m_winding{winding},
     m_bound{},
     m_components{components},
     m_last_attribute{last_attribute_of(components)},
@@ -294,6 +297,7 @@ auto alloy::render::unsafe_mesh_builder::release() && -> mesh
     : std::move(m_index_data);
   config.index_format = format;
   config.topology = m_topology;
+  config.winding = m_winding;
   config.components = m_components;
   config.submeshes = std::move(submeshes);
   config.bounding_volume = m_bound;
@@ -315,6 +319,7 @@ auto alloy::render::unsafe_mesh_builder::build_with(core::allocator alloc)
     : m_index_data.copy_with(alloc);
   config.index_format = format;
   config.topology = m_topology;
+  config.winding = m_winding;
   config.components = m_components;
   config.submeshes = make_submeshes(alloc);
   config.bounding_volume = m_bound;

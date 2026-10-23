@@ -17,6 +17,7 @@ set(header_files
   include/alloy/render/mesh/primitive_topology.hpp
   include/alloy/render/mesh/mesh.hpp
   include/alloy/render/mesh/mesh_builder.hpp
+  include/alloy/render/mesh/winding_order.hpp
   include/alloy/render/mesh/2d/polygon_2d_builder.hpp
   include/alloy/render/mesh/3d/polygon_3d_builder.hpp
   include/alloy/render/mesh/3d/cube_builder.hpp

@@ -18,6 +18,7 @@
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/mesh/mesh_builder.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
+#include "alloy/render/mesh/winding_order.hpp"
 
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/geometry/axis_aligned_box.hpp"
@@ -81,10 +82,12 @@ namespace alloy::render {
     ///
     /// \param components the number of components of each vertex attribute
     /// \param topology the topology of the built mesh
+    /// \param winding the winding order of front faces in the built mesh
     /// \param alloc the allocator to build the mesh with
     explicit unsafe_mesh_builder(
       vertex_components components,
       primitive_topology topology = primitive_topology::triangles,
+      winding_order winding = winding_order::counter_clockwise,
       core::allocator alloc = core::allocator{}
     ) noexcept;
 
@@ -196,6 +199,7 @@ namespace alloy::render {
     core::packed_buffer_writer m_index_writer;
     core::vector<submesh_start> m_submesh_starts;
     primitive_topology m_topology;
+    winding_order m_winding;
     core::axis_aligned_box m_bound;
     vertex_components m_components;
 

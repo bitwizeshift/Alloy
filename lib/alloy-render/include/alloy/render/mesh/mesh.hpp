@@ -17,6 +17,7 @@
 
 #include "alloy/render/mesh/index_format.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
+#include "alloy/render/mesh/winding_order.hpp"
 
 #include "alloy/core/assert.hpp"
 #include "alloy/core/containers/vector.hpp"
@@ -110,15 +111,11 @@ namespace alloy::render {
   //////////////////////////////////////////////////////////////////////////////
   struct mesh_config
   {
-    // TODO(bitwizeshift): Determine whether mesh objects should contain the
-    //   winding-order. Logically, a mesh knows what direction its "face"
-    //   objects should be -- not the material. But the material needs this
-    //   information to render.
-
     core::packed_buffer vertex_data;
     core::packed_buffer index_data;
     render::index_format index_format;
     primitive_topology topology;
+    winding_order winding;
     vertex_components components;
     core::vector<submesh> submeshes;
     core::axis_aligned_box bounding_volume;
@@ -352,6 +349,11 @@ namespace alloy::render {
     /// \return the topology of this mesh
     auto topology() const noexcept -> primitive_topology;
 
+    /// \brief Gets the order in which the vertices of front faces appear
+    ///
+    /// \return the winding order of this mesh
+    auto winding() const noexcept -> winding_order;
+
     /// \brief Gets the (compressed) data associated with this mesh
     ///
     /// \return the data as a span
@@ -416,6 +418,9 @@ namespace alloy::render {
 
     /// The topology required to draw this mesh
     primitive_topology m_topology;
+
+    /// The order in which the vertices of front faces appear
+    winding_order m_winding;
 
     /// The number of components of each vertex attribute
     vertex_components m_components;
@@ -718,6 +723,12 @@ inline
 auto alloy::render::mesh::topology() const noexcept -> primitive_topology
 {
   return m_topology;
+}
+
+inline
+auto alloy::render::mesh::winding() const noexcept -> winding_order
+{
+  return m_winding;
 }
 
 inline

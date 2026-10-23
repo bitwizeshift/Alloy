@@ -7,6 +7,7 @@
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
 #include "alloy/render/mesh/unsafe_mesh_builder.hpp"
+#include "alloy/render/mesh/winding_order.hpp"
 
 #include "alloy/core/assert.hpp"
 #include "alloy/core/containers/vector.hpp"
@@ -50,6 +51,7 @@ auto components_of(const alloy::core::vector<T>& attribute, std::uint8_t n)
 
 alloy::render::polygon_3d_builder::polygon_3d_builder(
   primitive_topology topology,
+  winding_order winding,
   core::allocator alloc
 ) noexcept
   : m_positions{core::stl_allocator_adapter<core::point3>{alloc}},
@@ -62,7 +64,8 @@ alloy::render::polygon_3d_builder::polygon_3d_builder(
     m_joints{core::stl_allocator_adapter<std::array<std::uint8_t,4>>{alloc}},
     m_indices{core::stl_allocator_adapter<index_type>{alloc}},
     m_submesh_starts{core::stl_allocator_adapter<submesh_start>{alloc}},
-    m_topology{topology}
+    m_topology{topology},
+    m_winding{winding}
 {
 
 }
@@ -307,7 +310,12 @@ auto alloy::render::polygon_3d_builder::build_with(core::allocator alloc)
   ALLOY_ASSERT(m_colors.empty() || m_colors.size() == positions);
   ALLOY_ASSERT(m_joints.empty() || m_joints.size() == positions);
 
-  auto builder = unsafe_mesh_builder{components, m_topology, alloc};
+  auto builder = unsafe_mesh_builder{
+    components,
+    m_topology,
+    m_winding,
+    alloc
+  };
   builder.reserve_vertices(positions);
   builder.reserve_indices(
     (m_indices.size() + ::entries_per_indices - 1u) / ::entries_per_indices

@@ -6,6 +6,8 @@
 
 #include "../mesh_test_utilities.hpp"
 #include <alloy/render/mesh/mesh.hpp>
+#include <alloy/render/mesh/primitive_topology.hpp>
+#include <alloy/render/mesh/winding_order.hpp>
 
 #include <alloy/core/containers/vector.hpp>
 #include <alloy/core/geometry/axis_aligned_box.hpp>
@@ -99,6 +101,20 @@ TEST_CASE("polygon_3d_builder::build()", "[build]") {
 
     // Assert
     REQUIRE(submesh_ranges(result) == expected);
+  }
+  SECTION("Winding order is that of the builder") {
+    // Arrange
+    auto sut = polygon_3d_builder{
+      primitive_topology::triangles,
+      winding_order::clockwise
+    };
+    sut.add_position(core::point3{});
+
+    // Act
+    const auto result = sut.build();
+
+    // Assert
+    REQUIRE(result.winding() == winding_order::clockwise);
   }
   SECTION("Tangent handedness is preserved") {
     // Arrange

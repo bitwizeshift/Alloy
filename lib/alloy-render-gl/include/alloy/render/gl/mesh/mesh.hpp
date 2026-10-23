@@ -75,6 +75,7 @@ namespace alloy::render::gl {
     ::GLuint m_vbo;
     ::GLuint m_ebo;
     ::GLenum m_topology;
+    ::GLenum m_front_face;
     ::GLenum m_index_type;
 
     /// The number of indices to draw, or of vertices for meshes without
@@ -91,6 +92,7 @@ namespace alloy::render::gl {
       ::GLuint vbo,
       ::GLuint ebo,
       ::GLenum topology,
+      ::GLenum front_face,
       ::GLenum index_type,
       std::size_t count
     );

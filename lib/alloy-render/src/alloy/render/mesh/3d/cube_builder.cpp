@@ -7,6 +7,7 @@
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
 #include "alloy/render/mesh/unsafe_mesh_builder.hpp"
+#include "alloy/render/mesh/winding_order.hpp"
 
 #include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/memory/allocator.hpp"
@@ -28,6 +29,7 @@ auto alloy::render::cube_builder::build_with(core::allocator alloc)
   auto builder = unsafe_mesh_builder{
     components,
     primitive_topology::triangles,
+    winding_order::counter_clockwise,
     alloc
   };
 

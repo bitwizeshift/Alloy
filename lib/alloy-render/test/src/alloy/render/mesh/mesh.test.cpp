@@ -6,6 +6,7 @@
 
 #include <alloy/render/mesh/index_format.hpp>
 #include <alloy/render/mesh/primitive_topology.hpp>
+#include <alloy/render/mesh/winding_order.hpp>
 
 #include <alloy/core/containers/vector.hpp>
 #include <alloy/core/geometry/axis_aligned_box.hpp>
@@ -374,6 +375,19 @@ TEST_CASE("mesh::index_at(std::size_t)", "[element access]") {
     // Assert
     REQUIRE(result == 70000u);
   }
+}
+
+TEST_CASE("mesh::winding()", "[element access]") {
+  // Arrange
+  auto config = make_position_config(3u);
+  config.winding = winding_order::clockwise;
+  const auto sut = mesh::from_config_unchecked(std::move(config));
+
+  // Act
+  const auto result = sut.winding();
+
+  // Assert
+  REQUIRE(result == winding_order::clockwise);
 }
 
 TEST_CASE("mesh::bounding_volume()", "[observer]") {
