@@ -196,6 +196,18 @@ auto alloy::core::quaternion::from_to(const vector3& from, const vector3& to)
   }.normalized();
 }
 
+auto alloy::core::quaternion::look_rotation(
+  const vector3& forward,
+  const vector3& up
+) noexcept -> quaternion
+{
+  const auto z_axis = (-forward).normalized();
+  const auto x_axis = up.cross(z_axis).normalized();
+  const auto y_axis = z_axis.cross(x_axis);
+
+  return from_rotation_axes(x_axis, y_axis, z_axis);
+}
+
 //----------------------------------------------------------------------------
 // Element Access
 //----------------------------------------------------------------------------

@@ -370,6 +370,48 @@ TEST_CASE("quaternion::from_to( const vector3&, const vector3& )", "[factory]")
   }
 }
 
+TEST_CASE("quaternion::look_rotation( const vector3&, const vector3& )", "[factory]")
+{
+  SECTION("Facing down the negative z-axis is the identity")
+  {
+    // Arrange
+    const auto forward = vector3{0, 0, -1};
+    const auto up = vector3{0, 1, 0};
+
+    // Act
+    const auto result = quaternion::look_rotation(forward, up);
+
+    // Assert
+    REQUIRE( almost_equal(result, quaternion_constants::identity) );
+  }
+
+  SECTION("Maps the negative z-axis to the forward direction")
+  {
+    // Arrange
+    const auto forward = vector3{1, 0, 0};
+    const auto up = vector3{0, 1, 0};
+
+    // Act
+    const auto result = quaternion::look_rotation(forward, up);
+
+    // Assert
+    REQUIRE( almost_equal(result * vector3{0, 0, -1}, forward) );
+  }
+
+  SECTION("Orients the y-axis towards the up direction")
+  {
+    // Arrange
+    const auto forward = vector3{1, 0, 0};
+    const auto up = vector3{0, 1, 1};
+
+    // Act
+    const auto result = quaternion::look_rotation(forward, up);
+
+    // Assert
+    REQUIRE( almost_equal(result.y_axis(), up.normalized()) );
+  }
+}
+
 TEST_CASE("quaternion::from_rotation_matrix( const matrix3& )", "[factory]")
 {
   SECTION("Round-trips a rotation with a positive trace")

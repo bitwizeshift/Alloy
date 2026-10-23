@@ -172,6 +172,20 @@ namespace alloy::core {
     static auto from_to(const vector3& from, const vector3& to)
       noexcept -> quaternion;
 
+    /// \brief Constructs the rotation that faces the \p forward direction,
+    ///        with its y-axis as close to \p up as possible
+    ///
+    /// Following the convention of OpenGL cameras, the rotation faces down
+    /// its negative z-axis, so it maps the negative z-axis to \p forward.
+    ///
+    /// \pre \p forward is not a zero vector, and is not parallel to \p up
+    ///
+    /// \param forward the direction to face
+    /// \param up the direction that the y-axis is oriented towards
+    /// \return the constructed quaternion
+    static auto look_rotation(const vector3& forward, const vector3& up)
+      noexcept -> quaternion;
+
     //--------------------------------------------------------------------------
     // Constructors / Assignment
     //--------------------------------------------------------------------------
