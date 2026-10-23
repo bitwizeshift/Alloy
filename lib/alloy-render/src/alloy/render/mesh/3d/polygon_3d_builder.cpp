@@ -29,6 +29,7 @@ inline constexpr auto entries_per_uv        = 2u;
 inline constexpr auto entries_per_normal    = 3u;
 inline constexpr auto entries_per_tangent   = 3u;
 inline constexpr auto entries_per_bitangent = 3u;
+inline constexpr auto entries_per_indices   = 3u;
 
 } // namespace <anonymous>
 
@@ -99,7 +100,7 @@ auto alloy::render::polygon_3d_builder::reserve_bitangents(std::size_t n)
 
 auto alloy::render::polygon_3d_builder::reserve_indices(std::size_t n) -> void
 {
-  m_indices.reserve(n);
+  m_indices.reserve(n * ::entries_per_indices);
 }
 
 //------------------------------------------------------------------------------

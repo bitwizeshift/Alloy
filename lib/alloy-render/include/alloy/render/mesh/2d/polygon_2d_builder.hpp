@@ -92,8 +92,12 @@ namespace alloy::render {
     auto reserve_colors(std::size_t n) -> void;
     auto reserve_uvs(std::size_t n) -> void;
     auto reserve_normals(std::size_t n) -> void;
-    auto reserve_indices(std::size_t n) -> void;
     /// \}
+
+    /// \brief Reserves space for the indices of \p n triangle faces
+    ///
+    /// \param n the number of faces
+    auto reserve_indices(std::size_t n) -> void;
 
     //--------------------------------------------------------------------------
     // Setters
