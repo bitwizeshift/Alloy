@@ -17,20 +17,24 @@ namespace {
 
 TEST_CASE("string_tokenizer::string_tokenizer(string_type, string_type)", "[ctor]")
 {
+  // Arrange
   const auto input = "Hello World";
   const auto delimiters = " ";
-  auto tokenizer = string_tokenizer(input, delimiters);
 
+  // Act
+  auto sut = string_tokenizer(input, delimiters);
+
+  // Assert
   SECTION("Has non-empty buffer") {
-    REQUIRE(tokenizer.buffer().size() > 0);
+    REQUIRE(sut.buffer().size() > 0);
   }
 
   SECTION("Has specified delimiters") {
-    REQUIRE(tokenizer.delimiters() == delimiters);
+    REQUIRE(sut.delimiters() == delimiters);
   }
 
   SECTION("Has specifeid buffer") {
-    REQUIRE(tokenizer.buffer() == input);
+    REQUIRE(sut.buffer() == input);
   }
 }
 
@@ -40,11 +44,16 @@ TEST_CASE("string_tokenizer::string_tokenizer(string_type, string_type)", "[ctor
 
 TEST_CASE("string_tokenizer::buffer()")
 {
+  // Arrange
   const auto input = "Hello World";
-  auto tokenizer = string_tokenizer(input, " ");
+  auto sut = string_tokenizer(input, " ");
 
   SECTION("Returns the buffer") {
-    REQUIRE(tokenizer.buffer() == input);
+    // Act
+    const auto result = sut.buffer();
+
+    // Assert
+    REQUIRE(result == input);
   }
 }
 
@@ -52,11 +61,16 @@ TEST_CASE("string_tokenizer::buffer()")
 
 TEST_CASE("string_tokenizer::delimiters()")
 {
+  // Arrange
   const auto delimiters = "\n\r\t";
-  auto tokenizer = string_tokenizer("",delimiters);
+  auto sut = string_tokenizer("",delimiters);
 
   SECTION("Returns the delimiter") {
-    REQUIRE(tokenizer.delimiters() == delimiters);
+    // Act
+    const auto result = sut.delimiters();
+
+    // Assert
+    REQUIRE(result == delimiters);
   }
 }
 
@@ -67,24 +81,39 @@ TEST_CASE("string_tokenizer::delimiters()")
 TEST_CASE("string_tokenizer::has_more()")
 {
   SECTION("Doesn't have more tokens with empty string") {
-    auto tokenizer = string_tokenizer("", " ");
+    // Arrange
+    auto sut = string_tokenizer("", " ");
 
-    REQUIRE_FALSE(tokenizer.has_more());
+    // Act
+    const auto result = sut.has_more();
+
+    // Assert
+    REQUIRE_FALSE(result);
   }
 
   SECTION("Has more before tokenizing") {
-    auto tokenizer = string_tokenizer("Hello World", " ");
+    // Arrange
+    auto sut = string_tokenizer("Hello World", " ");
 
-    REQUIRE(tokenizer.has_more());
+    // Act
+    const auto result = sut.has_more();
+
+    // Assert
+    REQUIRE(result);
   }
 
   SECTION("Doesn't have more after tokenizing") {
-    auto tokenizer = string_tokenizer("Hello World", " ");
+    // Arrange
+    auto sut = string_tokenizer("Hello World", " ");
 
-    alloy::core::compiler::unused(tokenizer.next());
-    alloy::core::compiler::unused(tokenizer.next());
+    alloy::core::compiler::unused(sut.next());
+    alloy::core::compiler::unused(sut.next());
 
-    REQUIRE_FALSE(tokenizer.has_more());
+    // Act
+    const auto result = sut.has_more();
+
+    // Assert
+    REQUIRE_FALSE(result);
   }
 }
 
@@ -93,10 +122,13 @@ TEST_CASE("string_tokenizer::has_more()")
 TEST_CASE("string_tokenizer::next()")
 {
   SECTION("Tokenize empty string") {
-    auto tokenizer = string_tokenizer("", " ");
+    // Arrange
+    auto sut = string_tokenizer("", " ");
 
-    auto token = tokenizer.next();
+    // Act
+    auto token = sut.next();
 
+    // Assert
     SECTION("Result is an error") {
       REQUIRE(token.has_error());
     }
@@ -106,24 +138,35 @@ TEST_CASE("string_tokenizer::next()")
   }
 
   SECTION("Tokenize delimited string") {
-    auto tokenizer = string_tokenizer("Hello World", " ");
+    // Arrange
+    auto sut = string_tokenizer("Hello World", " ");
 
     SECTION("Retrieves first token") {
-      REQUIRE(tokenizer.next() == "Hello");
+      // Act
+      const auto result = sut.next();
+
+      // Assert
+      REQUIRE(result == "Hello");
     }
 
     SECTION("Retrieves second token") {
-      alloy::core::compiler::unused(tokenizer.next());
+      alloy::core::compiler::unused(sut.next());
 
-      REQUIRE(tokenizer.next() == "World");
+      // Act
+      const auto result = sut.next();
+
+      // Assert
+      REQUIRE(result == "World");
     }
 
     SECTION("Retrieves empty string token") {
-      alloy::core::compiler::unused(tokenizer.next());
-      alloy::core::compiler::unused(tokenizer.next());
+      alloy::core::compiler::unused(sut.next());
+      alloy::core::compiler::unused(sut.next());
 
-      auto token = tokenizer.next();
+      // Act
+      auto token = sut.next();
 
+      // Assert
       SECTION("Result is an error") {
         REQUIRE(token.has_error());
       }
@@ -134,17 +177,24 @@ TEST_CASE("string_tokenizer::next()")
   }
 
   SECTION("String contains only delimiter") {
-    auto tokenizer = string_tokenizer(";", ";");
+    // Arrange
+    auto sut = string_tokenizer(";", ";");
 
     SECTION("Token is empty") {
-      REQUIRE(tokenizer.next() == "");
+      // Act
+      const auto result = sut.next();
+
+      // Assert
+      REQUIRE(result == "");
     }
 
     SECTION("Retrieves empty string token second") {
-      alloy::core::compiler::unused(tokenizer.next());
+      alloy::core::compiler::unused(sut.next());
 
-      auto token = tokenizer.next();
+      // Act
+      auto token = sut.next();
 
+      // Assert
       SECTION("Result is an error") {
         REQUIRE(token.has_error());
       }
@@ -155,16 +205,24 @@ TEST_CASE("string_tokenizer::next()")
   }
 
   SECTION("String ends in delimiter") {
-    auto tokenizer = string_tokenizer("hello;", ";");
+    // Arrange
+    auto sut = string_tokenizer("hello;", ";");
 
     SECTION("Token is first string") {
-      REQUIRE(tokenizer.next() == "hello");
+      // Act
+      const auto result = sut.next();
+
+      // Assert
+      REQUIRE(result == "hello");
     }
 
     SECTION("Second token is an error") {
-      alloy::core::compiler::unused(tokenizer.next());
-      auto token = tokenizer.next();
+      alloy::core::compiler::unused(sut.next());
 
+      // Act
+      auto token = sut.next();
+
+      // Assert
       SECTION("Result is an error") {
         REQUIRE(token.has_error());
       }
@@ -180,10 +238,13 @@ TEST_CASE("string_tokenizer::next()")
 TEST_CASE("string_tokenizer::next(const string_type&)")
 {
   SECTION("Tokenize empty string") {
-    auto tokenizer = string_tokenizer("", "_");
+    // Arrange
+    auto sut = string_tokenizer("", "_");
 
-    auto token = tokenizer.next(" ");
+    // Act
+    auto token = sut.next(" ");
 
+    // Assert
     SECTION("Result is an error") {
       REQUIRE(token.has_error());
     }
@@ -193,16 +254,24 @@ TEST_CASE("string_tokenizer::next(const string_type&)")
   }
 
   SECTION("Tokenize delimited string") {
-    auto tokenizer = string_tokenizer("Hello World", "_");
+    // Arrange
+    auto sut = string_tokenizer("Hello World", "_");
 
     SECTION("First token is first word") {
-      REQUIRE(tokenizer.next(" ") == "Hello");
+      // Act
+      const auto result = sut.next(" ");
+
+      // Assert
+      REQUIRE(result == "Hello");
     }
 
     SECTION("Second token is an error") {
-      alloy::core::compiler::unused(tokenizer.next());
-      auto token = tokenizer.next();
+      alloy::core::compiler::unused(sut.next());
 
+      // Act
+      auto token = sut.next();
+
+      // Assert
       SECTION("Result is an error") {
         REQUIRE(token.has_error());
       }
@@ -213,17 +282,24 @@ TEST_CASE("string_tokenizer::next(const string_type&)")
   }
 
   SECTION("String contains only delimiter") {
-    auto tokenizer = string_tokenizer(";", "_");
+    // Arrange
+    auto sut = string_tokenizer(";", "_");
 
     SECTION("Token is empty") {
-      REQUIRE(tokenizer.next(";") == "");
+      // Act
+      const auto result = sut.next(";");
+
+      // Assert
+      REQUIRE(result == "");
     }
 
     SECTION("Second token is empty") {
-      alloy::core::compiler::unused(tokenizer.next());
+      alloy::core::compiler::unused(sut.next());
 
-      auto token = tokenizer.next(";");
+      // Act
+      auto token = sut.next(";");
 
+      // Assert
       SECTION("Result is an error") {
         REQUIRE(token.has_error());
       }
@@ -234,16 +310,24 @@ TEST_CASE("string_tokenizer::next(const string_type&)")
   }
 
   SECTION("String ends in delimiter") {
-    auto tokenizer = string_tokenizer("hello;", "_");
+    // Arrange
+    auto sut = string_tokenizer("hello;", "_");
 
     SECTION("First token is first word") {
-      REQUIRE(tokenizer.next(";") == "hello");
+      // Act
+      const auto result = sut.next(";");
+
+      // Assert
+      REQUIRE(result == "hello");
     }
 
     SECTION("Second token is an error") {
-      alloy::core::compiler::unused(tokenizer.next());
-      auto token = tokenizer.next();
+      alloy::core::compiler::unused(sut.next());
 
+      // Act
+      auto token = sut.next();
+
+      // Assert
       SECTION("Result is an error") {
         REQUIRE(token.has_error());
       }

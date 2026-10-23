@@ -24,8 +24,10 @@ TEST_CASE("delegate::make<Fn>()")
 {
   SECTION("Can bind exact function")
   {
+    // Act
     const auto sut = delegate<bool(bool&)>::make<&set_bool>();
 
+    // Assert
     SECTION("Creates bound delegate")
     {
       REQUIRE(static_cast<bool>(sut));
@@ -41,8 +43,10 @@ TEST_CASE("delegate::make<Fn>()")
 
   SECTION("Can bind similar function")
   {
+    // Act
     const auto sut = delegate<void(bool&)>::make<&set_bool>();
 
+    // Assert
     SECTION("Creates bound delegate")
     {
       REQUIRE(static_cast<bool>(sut));
@@ -74,12 +78,15 @@ struct setter
 
 TEST_CASE("delegate::make<MemberFn>(C*)")
 {
+  // Arrange
   auto to_bind = setter{false};
 
   SECTION("Can bind exact function")
   {
+    // Act
     const auto sut = delegate<bool()>::make<&setter::set_bool>(&to_bind);
 
+    // Assert
     SECTION("Creates bound delegate")
     {
       REQUIRE(static_cast<bool>(sut));
@@ -94,8 +101,10 @@ TEST_CASE("delegate::make<MemberFn>(C*)")
 
   SECTION("Can bind similar function")
   {
+    // Act
     const auto sut = delegate<void()>::make<&setter::set_bool>(&to_bind);
 
+    // Assert
     SECTION("Creates bound delegate")
     {
       REQUIRE(static_cast<bool>(sut));
@@ -111,12 +120,15 @@ TEST_CASE("delegate::make<MemberFn>(C*)")
 
 TEST_CASE("delegate::make<MemberFn>(const C*)")
 {
+  // Arrange
   const auto to_bind = setter{false};
 
   SECTION("Can bind exact function")
   {
+    // Act
     const auto sut = delegate<bool(bool&)>::make<&setter::set_other_bool>(&to_bind);
 
+    // Assert
     SECTION("Creates bound delegate")
     {
       REQUIRE(static_cast<bool>(sut));
@@ -132,8 +144,10 @@ TEST_CASE("delegate::make<MemberFn>(const C*)")
 
   SECTION("Can bind similar function")
   {
+    // Act
     const auto sut = delegate<void(bool&)>::make<&setter::set_other_bool>(&to_bind);
 
+    // Assert
     SECTION("Creates bound delegate")
     {
       REQUIRE(static_cast<bool>(sut));
@@ -164,12 +178,15 @@ TEST_CASE("delegate::make(const Callable*)")
 {
   SECTION("Can bind non-template functor")
   {
+    // Arrange
     auto to_bind = bool_setting_functor{false};
 
     SECTION("Can bind exact function")
     {
+      // Act
       const auto sut = delegate<bool()>::make(&to_bind);
 
+      // Assert
       SECTION("Creates bound delegate")
       {
         REQUIRE(static_cast<bool>(sut));
@@ -184,8 +201,10 @@ TEST_CASE("delegate::make(const Callable*)")
 
     SECTION("Can bind similar function")
     {
+      // Act
       const auto sut = delegate<void()>::make(&to_bind);
 
+      // Assert
       SECTION("Creates bound delegate")
       {
         REQUIRE(static_cast<bool>(sut));
@@ -201,12 +220,15 @@ TEST_CASE("delegate::make(const Callable*)")
 
   SECTION("Can bind template functor")
   {
+    // Arrange
     auto to_bind = any_setter_functor{};
 
     SECTION("Can bind exact function")
     {
+      // Act
       const auto sut = delegate<bool(bool&, const bool&)>::make(&to_bind);
 
+      // Assert
       SECTION("Creates bound delegate")
       {
         REQUIRE(static_cast<bool>(sut));
@@ -222,8 +244,10 @@ TEST_CASE("delegate::make(const Callable*)")
 
     SECTION("Can bind similar function")
     {
+      // Act
       const auto sut = delegate<void(bool&, bool)>::make(&to_bind);
 
+      // Assert
       SECTION("Creates bound delegate")
       {
         REQUIRE(static_cast<bool>(sut));
@@ -240,14 +264,17 @@ TEST_CASE("delegate::make(const Callable*)")
 
   SECTION("Can bind lambda")
   {
+    // Arrange
     const auto to_bind = [](bool& out, bool value) {
       return out = value;
     };
 
     SECTION("Can bind exact function")
     {
+      // Act
       const auto sut = delegate<bool(bool&, const bool&)>::make(&to_bind);
 
+      // Assert
       SECTION("Creates bound delegate")
       {
         REQUIRE(static_cast<bool>(sut));
@@ -263,8 +290,10 @@ TEST_CASE("delegate::make(const Callable*)")
 
     SECTION("Can bind similar function")
     {
+      // Act
       const auto sut = delegate<void(bool&, bool)>::make(&to_bind);
 
+      // Assert
       SECTION("Creates bound delegate")
       {
         REQUIRE(static_cast<bool>(sut));
@@ -281,14 +310,17 @@ TEST_CASE("delegate::make(const Callable*)")
 
   SECTION("Can bind auto-capture lambda")
   {
+    // Arrange
     const auto to_bind = [](auto& out, auto value) {
       return out = value;
     };
 
     SECTION("Can bind exact function")
     {
+      // Act
       const auto sut = delegate<bool(bool&, const bool&)>::make(&to_bind);
 
+      // Assert
       SECTION("Creates bound delegate")
       {
         REQUIRE(static_cast<bool>(sut));
@@ -304,8 +336,10 @@ TEST_CASE("delegate::make(const Callable*)")
 
     SECTION("Can bind similar function")
     {
+      // Act
       const auto sut = delegate<void(bool&, bool)>::make(&to_bind);
 
+      // Assert
       SECTION("Creates bound delegate")
       {
         REQUIRE(static_cast<bool>(sut));
@@ -327,7 +361,10 @@ TEST_CASE("delegate::make(const Callable*)")
 
 TEST_CASE("delegate::delegate()")
 {
+  // Act
   const auto sut = delegate<void()>{};
+
+  // Assert
   SECTION("Creates unbound delegate")
   {
     REQUIRE(!static_cast<bool>(sut));
@@ -346,19 +383,23 @@ TEST_CASE("delegate::reset()")
 {
   SECTION("Delegate has a value")
   {
+    // Arrange
     const auto to_bind = []{};
     auto sut = delegate<void()>::make(&to_bind);
     const auto state_before = static_cast<bool>(sut);
 
+    // Act
     sut.reset();
 
     SECTION("State changes")
     {
       const auto state_after = static_cast<bool>(sut);
 
+      // Assert
       REQUIRE(state_before != state_after);
     }
 
+    // Assert
     SECTION("Delegate no longer contains state")
     {
       REQUIRE(!static_cast<bool>(sut));
@@ -367,11 +408,14 @@ TEST_CASE("delegate::reset()")
 
   SECTION("Delegate does not have a value")
   {
+    // Arrange
     auto sut = delegate<void()>{};
     const auto state_before = static_cast<bool>(sut);
 
+    // Act
     sut.reset();
 
+    // Assert
     SECTION("Delegate does not contain state")
     {
       REQUIRE(!static_cast<bool>(sut));
@@ -395,16 +439,29 @@ TEST_CASE("delegate::operator(Args...)")
 #if ALLOY_CORE_EXCEPTIONS_ENABLED
   SECTION("Delegate is unbound")
   {
+    // Arrange
     const auto sut = delegate<void()>{};
     SECTION("Throws bad_delegate_call exception")
     {
-      REQUIRE_THROWS_AS(sut(), bad_delegate_call);
+      // Arrange
+      auto threw_expected = false;
+
+      // Act
+      try {
+        sut();
+      } catch (const bad_delegate_call&) {
+        threw_expected = true;
+      }
+
+      // Assert
+      REQUIRE(threw_expected);
     }
   }
 #endif
 
   SECTION("Delegate is bound")
   {
+    // Arrange
     const auto to_bind = [](auto ptr) {
       return ptr != nullptr;
     };
@@ -413,13 +470,22 @@ TEST_CASE("delegate::operator(Args...)")
 
     SECTION("Delegate calls bound function with prvalue")
     {
-      REQUIRE(sut(std::make_unique<int>(5)));
+      // Act
+      const auto result = sut(std::make_unique<int>(5));
+
+      // Assert
+      REQUIRE(result);
     }
 
     SECTION("Delegate calls bound function with rvlaue")
     {
       auto input = std::make_unique<int>(5);
-      REQUIRE(sut(std::move(input)));
+
+      // Act
+      const auto result = sut(std::move(input));
+
+      // Assert
+      REQUIRE(result);
     }
 
   }

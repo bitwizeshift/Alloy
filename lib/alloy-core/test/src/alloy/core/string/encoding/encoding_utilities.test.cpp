@@ -55,8 +55,11 @@ TEST_CASE("encoding_utilities::ansi::to_ansi(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces identical output") {
     REQUIRE(output_string == expected);
   }
@@ -93,8 +96,11 @@ TEST_CASE("encoding_utilities::ansi::to_latin1(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces identical output") {
     REQUIRE(output_string == expected);
   }
@@ -130,8 +136,11 @@ TEST_CASE("encoding_utilities::ansi::to_wide(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -167,8 +176,11 @@ TEST_CASE("encoding_utilities::ansi::to_utf8(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -204,8 +216,11 @@ TEST_CASE("encoding_utilities::ansi::to_utf16(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -241,8 +256,11 @@ TEST_CASE("encoding_utilities::ansi::to_utf32(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -254,14 +272,17 @@ TEST_CASE("encoding_utilities::ansi::to_utf32(ForwardIt, ForwardIt, char32)") {
 //-----------------------------------------------------------------------------
 
 TEST_CASE("encoding_utilities::ansi::length(ForwardIt, ForwardIt)") {
+  // Arrange
   using sut_type = encoding_utilities::ansi;
 
   SECTION("Input range is empty") {
     constexpr auto data = std::array<char,0u>{};
 
     SECTION("Returns 0") {
+      // Act
       const auto result = sut_type::length(data.begin(), data.end());
 
+      // Assert
       REQUIRE(result == uquantity<char32>{0u});
     }
   }
@@ -269,8 +290,10 @@ TEST_CASE("encoding_utilities::ansi::length(ForwardIt, ForwardIt)") {
     constexpr auto data = std::array<char,12u>{"Hello world"};
 
     SECTION("Returns length") {
+      // Act
       const auto result = sut_type::length(data.begin(), data.end());
 
+      // Assert
       REQUIRE(result == uquantity<char32>{data.size()});
     }
   }
@@ -279,6 +302,7 @@ TEST_CASE("encoding_utilities::ansi::length(ForwardIt, ForwardIt)") {
 //-----------------------------------------------------------------------------
 
 TEST_CASE("encoding_utilities::ansi::range_from(ForwardIt, ForwardIt)") {
+  // Arrange
   using sut_type = encoding_utilities::ansi;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
   using encoded_string = std::basic_string_view<char32>;
@@ -291,8 +315,10 @@ TEST_CASE("encoding_utilities::ansi::range_from(ForwardIt, ForwardIt)") {
   };
 
   SECTION("Range converts to UTF32 codepoint range") {
+    // Act
     constexpr auto sut = sut_type::range_from(std::begin(input), std::end(input));
 
+    // Assert
     REQUIRE(std::equal(sut.begin(), sut.end(), expected.begin(), expected.end()));
   }
 }
@@ -331,8 +357,11 @@ TEST_CASE("encoding_utilities::latin1::to_ansi(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces output with untranslatable characters") {
     REQUIRE(output_string == expected);
   }
@@ -367,8 +396,11 @@ TEST_CASE("encoding_utilities::latin1::to_latin1(ForwardIt, ForwardIt, char32)")
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces identical output") {
     REQUIRE(output_string == expected);
   }
@@ -406,8 +438,11 @@ TEST_CASE("encoding_utilities::latin1::to_wide(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -445,8 +480,11 @@ TEST_CASE("encoding_utilities::latin1::to_utf8(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -484,8 +522,11 @@ TEST_CASE("encoding_utilities::latin1::to_utf16(ForwardIt, ForwardIt, char32)") 
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -523,8 +564,11 @@ TEST_CASE("encoding_utilities::latin1::to_utf32(ForwardIt, ForwardIt, char32)") 
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -536,6 +580,7 @@ TEST_CASE("encoding_utilities::latin1::to_utf32(ForwardIt, ForwardIt, char32)") 
 //-----------------------------------------------------------------------------
 
 TEST_CASE("encoding_utilities::latin1::range_from(ForwardIt, ForwardIt)") {
+  // Arrange
   using sut_type = encoding_utilities::latin1;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
   using encoded_string = std::basic_string_view<char32>;
@@ -550,8 +595,10 @@ TEST_CASE("encoding_utilities::latin1::range_from(ForwardIt, ForwardIt)") {
   };
 
   SECTION("Range converts to UTF32 codepoint range") {
+    // Act
     constexpr auto sut = sut_type::range_from(std::begin(input), std::end(input));
 
+    // Assert
     REQUIRE(std::equal(sut.begin(), sut.end(), expected.begin(), expected.end()));
   }
 }
@@ -587,8 +634,11 @@ TEST_CASE("encoding_utilities::wide::to_ansi(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -626,8 +676,11 @@ TEST_CASE("encoding_utilities::wide::to_latin1(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -665,8 +718,11 @@ TEST_CASE("encoding_utilities::wide::to_wide(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -704,8 +760,11 @@ TEST_CASE("encoding_utilities::wide::to_utf8(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -743,8 +802,11 @@ TEST_CASE("encoding_utilities::wide::to_utf16(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -782,8 +844,11 @@ TEST_CASE("encoding_utilities::wide::to_utf32(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -796,6 +861,7 @@ TEST_CASE("encoding_utilities::wide::to_utf32(ForwardIt, ForwardIt, char32)") {
 //-----------------------------------------------------------------------------
 
 TEST_CASE("encoding_utilities::wide::range_from(ForwardIt, ForwardIt)") {
+  // Arrange
   using sut_type = encoding_utilities::wide;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
   using encoded_string = std::basic_string_view<char32>;
@@ -810,8 +876,10 @@ TEST_CASE("encoding_utilities::wide::range_from(ForwardIt, ForwardIt)") {
   };
 
   SECTION("Range converts to UTF32 codepoint range") {
+    // Act
     constexpr auto sut = sut_type::range_from(std::begin(input), std::end(input));
 
+    // Assert
     REQUIRE(std::equal(sut.begin(), sut.end(), expected.begin(), expected.end()));
   }
 }
@@ -853,8 +921,11 @@ TEST_CASE("encoding_utilities::utf8::to_ansi(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -899,8 +970,11 @@ TEST_CASE("encoding_utilities::utf8::to_latin1(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -940,6 +1014,8 @@ TEST_CASE("encoding_utilities::utf8::to_wide(ForwardIt, ForwardIt, char32)","[sk
   const auto output_string = encoded_string{output.data(), output.size()};
 
   // Asserts
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -978,8 +1054,11 @@ TEST_CASE("encoding_utilities::utf8::to_utf8(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -1023,8 +1102,11 @@ TEST_CASE("encoding_utilities::utf8::to_utf16(ForwardIt, ForwardIt, char32)") {
     auto input_length = sut_type::length(input.begin(), input.end());
     auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length.count() == output_length.count());
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(expected == output_string);
   }
@@ -1068,8 +1150,11 @@ TEST_CASE("encoding_utilities::utf8::to_utf32(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(expected == output_string);
   }
@@ -1081,6 +1166,7 @@ TEST_CASE("encoding_utilities::utf8::to_utf32(ForwardIt, ForwardIt, char32)") {
 //-----------------------------------------------------------------------------
 
 TEST_CASE("encoding_utilities::utf8::range_from(ForwardIt, ForwardIt)") {
+  // Arrange
   using sut_type = encoding_utilities::utf8;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
   using encoded_string = std::basic_string_view<char32>;
@@ -1101,8 +1187,10 @@ TEST_CASE("encoding_utilities::utf8::range_from(ForwardIt, ForwardIt)") {
   };
 
   SECTION("Range converts to UTF32 codepoint range") {
+    // Act
     constexpr auto sut = sut_type::range_from(std::begin(input), std::end(input));
 
+    // Assert
     REQUIRE(std::equal(sut.begin(), sut.end(), expected.begin(), expected.end()));
   }
 }
@@ -1144,8 +1232,11 @@ TEST_CASE("encoding_utilities::utf16::to_ansi(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length.count() == output_length.count());
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -1189,8 +1280,11 @@ TEST_CASE("encoding_utilities::utf16::to_latin1(ForwardIt, ForwardIt, char32)") 
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -1240,8 +1334,11 @@ TEST_CASE("encoding_utilities::utf16::to_utf8(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(expected == output_string);
   }
@@ -1279,8 +1376,11 @@ TEST_CASE("encoding_utilities::utf16::to_utf16(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -1324,8 +1424,11 @@ TEST_CASE("encoding_utilities::utf16::to_utf32(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(expected == output_string);
   }
@@ -1337,6 +1440,7 @@ TEST_CASE("encoding_utilities::utf16::to_utf32(ForwardIt, ForwardIt, char32)") {
 //-----------------------------------------------------------------------------
 
 TEST_CASE("encoding_utilities::utf16::range_from(ForwardIt, ForwardIt)") {
+  // Arrange
   using sut_type = encoding_utilities::utf16;
   using pre_encoded_string = std::basic_string_view<typename sut_type::char_type>;
   using encoded_string = std::basic_string_view<char32>;
@@ -1357,8 +1461,10 @@ TEST_CASE("encoding_utilities::utf16::range_from(ForwardIt, ForwardIt)") {
   };
 
   SECTION("Range converts to UTF32 codepoint range") {
+    // Act
     constexpr auto sut = sut_type::range_from(std::begin(input), std::end(input));
 
+    // Assert
     REQUIRE(std::equal(sut.begin(), sut.end(), expected.begin(), expected.end()));
   }
 }
@@ -1400,8 +1506,11 @@ TEST_CASE("encoding_utilities::utf32::to_ansi(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length.count() == output_length.count());
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -1445,8 +1554,11 @@ TEST_CASE("encoding_utilities::utf32::to_latin1(ForwardIt, ForwardIt, char32)") 
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -1496,8 +1608,11 @@ TEST_CASE("encoding_utilities::utf32::to_utf8(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(expected == output_string);
   }
@@ -1541,8 +1656,11 @@ TEST_CASE("encoding_utilities::utf32::to_utf16(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(expected == output_string);
   }
@@ -1580,8 +1698,11 @@ TEST_CASE("encoding_utilities::utf32::to_utf32(ForwardIt, ForwardIt, char32)") {
     const auto input_length = sut_type::length(input.begin(), input.end());
     const auto output_length = other_type::length(expected.begin(), expected.end());
 
+    // Assert
     REQUIRE(input_length == output_length);
   }
+
+  // Assert
   SECTION("Produces expected output") {
     REQUIRE(output_string == expected);
   }
@@ -1593,6 +1714,7 @@ TEST_CASE("encoding_utilities::utf32::to_utf32(ForwardIt, ForwardIt, char32)") {
 //-----------------------------------------------------------------------------
 
 TEST_CASE("encoding_utilities::utf32::range_from(ForwardIt, ForwardIt)") {
+  // Arrange
   using sut_type = encoding_utilities::utf32;
   using encoded_string = std::basic_string_view<char32>;
 
@@ -1606,8 +1728,10 @@ TEST_CASE("encoding_utilities::utf32::range_from(ForwardIt, ForwardIt)") {
   constexpr auto expected = input;
 
   SECTION("Range converts to UTF32 codepoint range") {
+    // Act
     constexpr auto sut = sut_type::range_from(std::begin(input), std::end(input));
 
+    // Assert
     REQUIRE(std::equal(sut.begin(), sut.end(), expected.begin(), expected.end()));
   }
 }

@@ -7,6 +7,8 @@
 #include <alloy/core/io/error.hpp>
 #include "test_doubles.hpp"
 
+#include <alloy/core/utilities/result.hpp>
+
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 
@@ -30,6 +32,7 @@ namespace {
 
 TEST_CASE("writer::write(std::span<const std::byte>)", "[writing]")
 {
+  // Arrange
   const auto input = sequence_bytes(4u);
   auto storage = std::array<std::byte,8>{};
 
@@ -49,8 +52,7 @@ TEST_CASE("writer::write(std::span<const std::byte>)", "[writing]")
     }
     SECTION("Returns the number of bytes written")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == input.size() );
+      REQUIRE( result == input.size() );
     }
     SECTION("Writes the bytes of the buffer")
     {
@@ -76,8 +78,7 @@ TEST_CASE("writer::write(std::span<const std::byte>)", "[writing]")
     // Assert
     SECTION("Returns the error of the underlying writer")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 }
@@ -92,6 +93,7 @@ TEST_CASE("writer::write(std::span<const std::byte>)", "[writing]")
 
 TEST_CASE("write_all(writer&, std::span<const std::byte>)", "[utilities]")
 {
+  // Arrange
   const auto input = sequence_bytes(16u);
   auto storage = std::array<std::byte,16>{};
 
@@ -152,8 +154,7 @@ TEST_CASE("write_all(writer&, std::span<const std::byte>)", "[utilities]")
     // Assert
     SECTION("Fails with write zero")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == io_error::write_zero );
+      REQUIRE( result == fail(io_error::write_zero) );
     }
   }
 
@@ -170,8 +171,7 @@ TEST_CASE("write_all(writer&, std::span<const std::byte>)", "[utilities]")
     // Assert
     SECTION("Returns the error of the destination")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 }
@@ -199,8 +199,7 @@ TEST_CASE("copy(reader&, writer&)", "[utilities]")
     // Assert
     SECTION("Returns the number of bytes copied")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == input.size() );
+      REQUIRE( result == input.size() );
     }
     SECTION("Writes every byte in order")
     {
@@ -228,8 +227,7 @@ TEST_CASE("copy(reader&, writer&)", "[utilities]")
     // Assert
     SECTION("Returns the error of the source")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 
@@ -247,8 +245,7 @@ TEST_CASE("copy(reader&, writer&)", "[utilities]")
     // Assert
     SECTION("Fails with write zero")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == io_error::write_zero );
+      REQUIRE( result == fail(io_error::write_zero) );
     }
   }
 
@@ -268,14 +265,14 @@ TEST_CASE("copy(reader&, writer&)", "[utilities]")
     // Assert
     SECTION("Returns the error of the destination")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 }
 
 TEST_CASE("copy_n(reader&, writer&, std::size_t)", "[utilities]")
 {
+  // Arrange
   const auto input = sequence_bytes(20000u);
   auto storage = std::vector<std::byte>(input.size());
 
@@ -302,8 +299,9 @@ TEST_CASE("copy_n(reader&, writer&, std::size_t)", "[utilities]")
     {
       const auto written = destination.written();
 
-      REQUIRE( written.size() == n );
-      REQUIRE( std::equal(written.begin(), written.end(), input.begin()) );
+      REQUIRE( std::ranges::equal(
+        written, std::span{input}.subspan(0u, n)
+      ) );
     }
     SECTION("Leaves the bytes after n in the source")
     {
@@ -343,8 +341,7 @@ TEST_CASE("copy_n(reader&, writer&, std::size_t)", "[utilities]")
     // Assert
     SECTION("Fails with unexpected end of file")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == io_error::unexpected_eof );
+      REQUIRE( result == fail(io_error::unexpected_eof) );
     }
   }
 
@@ -362,8 +359,7 @@ TEST_CASE("copy_n(reader&, writer&, std::size_t)", "[utilities]")
     // Assert
     SECTION("Returns the error of the source")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 }

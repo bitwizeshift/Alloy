@@ -37,15 +37,25 @@ struct base_200_unit {
 
 TEST_CASE("basic_angle", "[requirements]") {
   SECTION("Is trivially destructible") {
-    STATIC_REQUIRE(std::is_trivially_destructible_v<basic_angle<base_100_unit>>);
+    // Act
+    constexpr auto property_holds =
+      std::is_trivially_destructible_v<basic_angle<base_100_unit>>;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
   SECTION("Is trivially copyable") {
-    STATIC_REQUIRE(std::is_trivially_copyable_v<basic_angle<base_100_unit>>);
+    // Act
+    constexpr auto property_holds =
+      std::is_trivially_copyable_v<basic_angle<base_100_unit>>;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
 }
 
 TEST_CASE("basic_angle::basic_angle()", "[ctor]") {
-  // Arrange / Act
+  // Act
   const auto sut = basic_angle<base_100_unit>{};
 
   // Assert

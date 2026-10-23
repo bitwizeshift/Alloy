@@ -40,6 +40,8 @@ TEST_CASE("ansi_encoding::decode(InputIt, InputIt, char32, const std::locale&)")
     const auto [result, it] = ansi_encoding::decode(begin, end);
 
     // Asserts
+
+    // Assert
     SECTION("Iterator points to after the consumed character") {
       REQUIRE(it == end);
     }
@@ -68,9 +70,12 @@ TEST_CASE("ansi_encoding::encode(char32, OutputIt, char8)") {
     SECTION("Iterator points to after the consumed character") {
       const auto end = (&result + 1);
 
+      // Assert
       REQUIRE(it == end);
     }
     // All ASCII values are the same verbatim in UTF-32
+
+    // Assert
     SECTION("Result is widened utf-32 character") {
       REQUIRE(input == static_cast<char32>(result));
     }
@@ -92,9 +97,12 @@ TEST_CASE("ansi_encoding::encode(char32, OutputIt, char8)") {
     SECTION("Iterator points to after the consumed character") {
       const auto end = (&result + 1);
 
+      // Assert
       REQUIRE(it == end);
     }
     // All ASCII values are the same verbatim in UTF-32
+
+    // Assert
     SECTION("Decodes into replacement character") {
       REQUIRE(result == expected);
     }

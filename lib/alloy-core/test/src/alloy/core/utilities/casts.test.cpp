@@ -20,10 +20,13 @@ TEST_CASE("implicit_cast")
 {
   SECTION("Performs implicit cast")
   {
+    // Arrange
     const auto from = std::uint64_t{42};
 
+    // Act
     const auto to = implicit_cast<std::uint8_t>(from);
 
+    // Assert
     REQUIRE(to == from);
   }
 }
@@ -32,31 +35,40 @@ TEST_CASE("narrow_cast")
 {
   SECTION("Allows casting without loss of precision")
   {
+    // Arrange
     const auto from = std::uint64_t{64};
 
+    // Act
     const auto to = narrow_cast<std::uint8_t>(from);
 
+    // Assert
     REQUIRE(to == from);
   }
 
   SECTION("Allows casting with loss of precision")
   {
+    // Arrange
     const auto from = std::uint64_t{0xffffffff};
 
+    // Act
     const auto to = narrow_cast<std::uint8_t>(from);
 
+    // Assert
     REQUIRE(to != from);
   }
 }
 
-TEST_CASE("safe_narrow_cast")
+TEST_CASE("checked_narrow_cast")
 {
   SECTION("Allows casting without loss of precision")
   {
+    // Arrange
     const auto from = std::uint64_t{64};
 
+    // Act
     const auto to = checked_narrow_cast<std::int8_t>(from);
 
+    // Assert
     REQUIRE(to == from);
   }
 
@@ -75,11 +87,14 @@ TEST_CASE("pointer_cast")
 {
   SECTION("Allows casts to proper base")
   {
+    // Arrange
     auto x = Derived{};
     auto* p = static_cast<Base*>(&x);
 
+    // Act
     auto* result = pointer_cast<Derived*>(p);
 
+    // Assert
     REQUIRE(p == result);
   }
 
@@ -93,9 +108,12 @@ TEST_CASE("bit_cast")
 {
   SECTION("Casts to the underlying byte representation")
   {
+    // Arrange
     static_assert(sizeof(std::uint32_t) == sizeof(float));
 
     const auto from = std::uint32_t{0x01234567};
+
+    // Act
     const auto to = bit_cast<float>(from);
 
     const auto* begin1 = reinterpret_cast<const std::byte*>(&from);
@@ -103,6 +121,7 @@ TEST_CASE("bit_cast")
     const auto* begin2 = reinterpret_cast<const std::byte*>(&to);
     const auto* end2   = begin2 + sizeof(to);
 
+    // Assert
     REQUIRE(std::equal(begin1, end1, begin2, end2));
   }
 }
@@ -115,9 +134,13 @@ TEST_CASE("as_signed")
 {
   SECTION("With signed integral input")
   {
+    // Arrange
     const auto from = std::int32_t{42};
+
+    // Act
     const auto to = as_signed(from);
 
+    // Assert
     SECTION("Value is unchanged")
     {
       REQUIRE(from == to);
@@ -133,9 +156,13 @@ TEST_CASE("as_signed")
   {
     SECTION("Input is out of signed range")
     {
+      // Arrange
       const auto from = std::numeric_limits<std::uint32_t>::max();
+
+      // Act
       const auto to = as_signed(from);
 
+      // Assert
       SECTION("Result has different sign than input")
       {
         REQUIRE((to < 0) != (from < 0));
@@ -154,9 +181,13 @@ TEST_CASE("as_signed")
 
     SECTION("Input is within signed range")
     {
+      // Arrange
       const auto from = std::uint32_t{42};
+
+      // Act
       const auto to = as_signed(from);
 
+      // Assert
       SECTION("Result has same sign as input")
       {
         REQUIRE((to < 0) == (from < 0));
@@ -176,9 +207,13 @@ TEST_CASE("as_signed")
 
   SECTION("With enum input")
   {
+    // Arrange
     const auto from = std::byte{42};
+
+    // Act
     const auto to = as_signed(from);
 
+    // Assert
     SECTION("Value is (signed) integral representation of enum value")
     {
       REQUIRE(static_cast<std::int8_t>(from) == to);
@@ -198,9 +233,13 @@ TEST_CASE("as_unsigned")
   {
     SECTION("Input is out of signed range")
     {
+      // Arrange
       const auto from = std::numeric_limits<std::int32_t>::min();
+
+      // Act
       const auto to = as_unsigned(from);
 
+      // Assert
       SECTION("Result has different sign than input")
       {
         REQUIRE((to < 0) != (from < 0));
@@ -219,9 +258,13 @@ TEST_CASE("as_unsigned")
 
     SECTION("Input is within signed range")
     {
+      // Arrange
       const auto from = std::uint32_t{42};
+
+      // Act
       const auto to = as_unsigned(from);
 
+      // Assert
       SECTION("Result has same sign as input")
       {
         REQUIRE((to < 0) == (from < 0));
@@ -241,9 +284,13 @@ TEST_CASE("as_unsigned")
 
   SECTION("With unsigned integral input")
   {
+    // Arrange
     const auto from = std::uint32_t{42};
+
+    // Act
     const auto to = as_unsigned(from);
 
+    // Assert
     SECTION("Value is unchanged")
     {
       REQUIRE(from == to);
@@ -257,9 +304,13 @@ TEST_CASE("as_unsigned")
 
   SECTION("With enum input")
   {
+    // Arrange
     const auto from = std::byte{42};
+
+    // Act
     const auto to = as_unsigned(from);
 
+    // Assert
     SECTION("Value is integral representation of enum value")
     {
       REQUIRE(static_cast<std::uint8_t>(from) == to);

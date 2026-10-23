@@ -7,6 +7,8 @@
 #include <alloy/core/io/reader.hpp>
 #include "test_doubles.hpp"
 
+#include <alloy/core/intrinsics.hpp>
+
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 
@@ -37,8 +39,12 @@ TEST_CASE("span_reader::span_reader(std::span<const std::byte>)", "[ctor]")
   // Assert
   SECTION("Has every byte remaining")
   {
-    REQUIRE( sut.remaining().data() == input.data() );
-    REQUIRE( sut.remaining().size() == input.size() );
+    SECTION("Views the original span without copying its bytes") {
+      REQUIRE( sut.remaining().data() == input.data() );
+    }
+    SECTION("Exposes the full input extent") {
+      REQUIRE( sut.remaining().size() == input.size() );
+    }
   }
 }
 
@@ -48,6 +54,7 @@ TEST_CASE("span_reader::span_reader(std::span<const std::byte>)", "[ctor]")
 
 TEST_CASE("span_reader::read(std::span<std::byte>)", "[read]")
 {
+  // Arrange
   const auto input = sequence_bytes(8u);
 
   SECTION("Buffer is smaller than the remaining bytes")
@@ -64,8 +71,7 @@ TEST_CASE("span_reader::read(std::span<std::byte>)", "[read]")
     // Assert
     SECTION("Reads enough bytes to fill the buffer")
     {
-      REQUIRE( bytes_read.has_value() );
-      REQUIRE( *bytes_read == request );
+      REQUIRE( bytes_read == request );
     }
     SECTION("Reads the leading bytes")
     {
@@ -73,8 +79,12 @@ TEST_CASE("span_reader::read(std::span<std::byte>)", "[read]")
     }
     SECTION("Leaves the bytes after them remaining")
     {
-      REQUIRE( sut.remaining().data() == input.data() + request );
-      REQUIRE( sut.remaining().size() == input.size() - request );
+      SECTION("Advances past the consumed prefix") {
+        REQUIRE( sut.remaining().data() == input.data() + request );
+      }
+      SECTION("Exposes only the unread extent") {
+        REQUIRE( sut.remaining().size() == input.size() - request );
+      }
     }
   }
 
@@ -91,8 +101,12 @@ TEST_CASE("span_reader::read(std::span<std::byte>)", "[read]")
     SECTION("Reads every remaining byte")
     {
       REQUIRE( bytes_read.has_value() );
-      REQUIRE( *bytes_read == input.size() );
-      REQUIRE( std::equal(input.begin(), input.end(), output.begin()) );
+      SECTION("Reports the full input length") {
+        REQUIRE( *bytes_read == input.size() );
+      }
+      SECTION("Preserves the input byte order") {
+        REQUIRE( std::equal(input.begin(), input.end(), output.begin()) );
+      }
     }
     SECTION("Leaves no bytes remaining")
     {
@@ -114,7 +128,7 @@ TEST_CASE("span_reader::read(std::span<std::byte>)", "[read]")
     auto output = std::array<std::byte,8>{};
     const auto first = std::span{output}.first(3u);
     const auto second = std::span{output}.subspan(3u);
-    REQUIRE( sut.read(first).has_value() );
+    compiler::unused(sut.read(first));
 
     // Act
     const auto bytes_read = sut.read(second);
@@ -123,8 +137,12 @@ TEST_CASE("span_reader::read(std::span<std::byte>)", "[read]")
     SECTION("Reads the following bytes")
     {
       REQUIRE( bytes_read.has_value() );
-      REQUIRE( *bytes_read == second.size() );
-      REQUIRE( std::equal(input.begin(), input.end(), output.begin()) );
+      SECTION("Reports the bytes following the previous read") {
+        REQUIRE( *bytes_read == second.size() );
+      }
+      SECTION("Preserves the input byte order") {
+        REQUIRE( std::equal(input.begin(), input.end(), output.begin()) );
+      }
     }
   }
 
@@ -133,7 +151,7 @@ TEST_CASE("span_reader::read(std::span<std::byte>)", "[read]")
     // Arrange
     auto sut = span_reader{input};
     auto output = std::array<std::byte,8>{};
-    REQUIRE( sut.read(output).has_value() );
+    compiler::unused(sut.read(output));
 
     // Act
     const auto bytes_read = sut.read(output);
@@ -141,8 +159,7 @@ TEST_CASE("span_reader::read(std::span<std::byte>)", "[read]")
     // Assert
     SECTION("Signals the end of the stream")
     {
-      REQUIRE( bytes_read.has_value() );
-      REQUIRE( *bytes_read == 0u );
+      REQUIRE( bytes_read == 0u );
     }
   }
 
@@ -158,8 +175,7 @@ TEST_CASE("span_reader::read(std::span<std::byte>)", "[read]")
     // Assert
     SECTION("Signals the end of the stream")
     {
-      REQUIRE( bytes_read.has_value() );
-      REQUIRE( *bytes_read == 0u );
+      REQUIRE( bytes_read == 0u );
     }
   }
 
@@ -174,8 +190,7 @@ TEST_CASE("span_reader::read(std::span<std::byte>)", "[read]")
     // Assert
     SECTION("Reads no bytes")
     {
-      REQUIRE( bytes_read.has_value() );
-      REQUIRE( *bytes_read == 0u );
+      REQUIRE( bytes_read == 0u );
     }
     SECTION("Leaves every byte remaining")
     {
@@ -201,7 +216,9 @@ TEST_CASE("read_all(reader&) with a span_reader", "[read]")
   SECTION("Reads every byte of the span")
   {
     REQUIRE( bytes.has_value() );
-    REQUIRE( std::ranges::equal(*bytes, input) );
+    SECTION("Returns all input bytes in order") {
+      REQUIRE( std::ranges::equal(*bytes, input) );
+    }
   }
 }
 

@@ -28,12 +28,24 @@ TEST_CASE("frustum::from_matrix(const matrix4&)", "[factory][static]") {
 
     // Assert
     SECTION("Planes bound the clip-space cube") {
-      REQUIRE(almost_equal(sut.left(), plane{vector3{1, 0, 0}, -1}, default_tolerance));
-      REQUIRE(almost_equal(sut.right(), plane{vector3{-1, 0, 0}, -1}, default_tolerance));
-      REQUIRE(almost_equal(sut.top(), plane{vector3{0, -1, 0}, -1}, default_tolerance));
-      REQUIRE(almost_equal(sut.bottom(), plane{vector3{0, 1, 0}, -1}, default_tolerance));
-      REQUIRE(almost_equal(sut.near(), plane{vector3{0, 0, 1}, -1}, default_tolerance));
-      REQUIRE(almost_equal(sut.far(), plane{vector3{0, 0, -1}, -1}, default_tolerance));
+      SECTION("Left plane bounds the negative x face") {
+        REQUIRE(almost_equal(sut.left(), plane{vector3{1, 0, 0}, -1}, default_tolerance));
+      }
+      SECTION("Right plane bounds the positive x face") {
+        REQUIRE(almost_equal(sut.right(), plane{vector3{-1, 0, 0}, -1}, default_tolerance));
+      }
+      SECTION("Top plane bounds the positive y face") {
+        REQUIRE(almost_equal(sut.top(), plane{vector3{0, -1, 0}, -1}, default_tolerance));
+      }
+      SECTION("Bottom plane bounds the negative y face") {
+        REQUIRE(almost_equal(sut.bottom(), plane{vector3{0, 1, 0}, -1}, default_tolerance));
+      }
+      SECTION("Near plane bounds the negative z face") {
+        REQUIRE(almost_equal(sut.near(), plane{vector3{0, 0, 1}, -1}, default_tolerance));
+      }
+      SECTION("Far plane bounds the positive z face") {
+        REQUIRE(almost_equal(sut.far(), plane{vector3{0, 0, -1}, -1}, default_tolerance));
+      }
     }
   }
   SECTION("Matrix is a perspective projection") {

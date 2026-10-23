@@ -6,6 +6,8 @@
 
 #include "test_doubles.hpp"
 
+#include <alloy/core/utilities/result.hpp>
+
 #include <catch2/catch_test_macros.hpp>
 
 #include <algorithm>    // std::equal
@@ -69,6 +71,7 @@ TEST_CASE("indirect_reader::indirect_reader(const indirect_reader&)",
 
 TEST_CASE("indirect_reader::read(std::span<std::byte>)", "[reading]")
 {
+  // Arrange
   const auto input = sequence_bytes(8u);
 
   SECTION("Source has bytes")
@@ -93,8 +96,7 @@ TEST_CASE("indirect_reader::read(std::span<std::byte>)", "[reading]")
     }
     SECTION("Returns the result of the source")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == 3u );
+      REQUIRE( result == 3u );
     }
     SECTION("Writes the bytes of the source")
     {
@@ -119,8 +121,7 @@ TEST_CASE("indirect_reader::read(std::span<std::byte>)", "[reading]")
     // Assert
     SECTION("Returns the error of the source")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 }

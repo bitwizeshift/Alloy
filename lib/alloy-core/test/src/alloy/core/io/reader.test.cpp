@@ -8,6 +8,7 @@
 #include "test_doubles.hpp"
 
 #include <alloy/core/containers/vector.hpp>
+#include <alloy/core/utilities/result.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
@@ -31,6 +32,7 @@ namespace {
 
 TEST_CASE("reader::read(std::span<std::byte>)", "[reading]")
 {
+  // Arrange
   const auto input = sequence_bytes(8u);
   auto storage = std::array<std::byte,4>{};
 
@@ -50,8 +52,7 @@ TEST_CASE("reader::read(std::span<std::byte>)", "[reading]")
     }
     SECTION("Returns the number of bytes read")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == storage.size() );
+      REQUIRE( result == storage.size() );
     }
     SECTION("Writes the bytes into the buffer")
     {
@@ -73,8 +74,7 @@ TEST_CASE("reader::read(std::span<std::byte>)", "[reading]")
     // Assert
     SECTION("Returns the error of the underlying reader")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 }
@@ -90,6 +90,7 @@ TEST_CASE("reader::read(std::span<std::byte>)", "[reading]")
 TEST_CASE("read_at_least(reader&, std::span<std::byte>, std::size_t)",
           "[utilities]")
 {
+  // Arrange
   const auto input = sequence_bytes(16u);
   auto storage = std::array<std::byte,8>{};
 
@@ -104,8 +105,7 @@ TEST_CASE("read_at_least(reader&, std::span<std::byte>, std::size_t)",
     // Assert
     SECTION("Returns zero bytes read")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == 0u );
+      REQUIRE( result == 0u );
     }
     SECTION("Does not read from the source")
     {
@@ -130,19 +130,25 @@ TEST_CASE("read_at_least(reader&, std::span<std::byte>, std::size_t)",
     SECTION("Reads at least the minimum number of bytes")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( *result >= min );
+      SECTION("Reads at least the requested minimum") {
+        REQUIRE( *result >= min );
+      }
     }
     SECTION("Reads no more than the buffer holds")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( *result <= storage.size() );
+      SECTION("Stops within the output buffer") {
+        REQUIRE( *result <= storage.size() );
+      }
     }
     SECTION("Writes the bytes into the buffer in order")
     {
       REQUIRE( result.has_value() );
-      REQUIRE(
-        std::equal(storage.begin(), storage.begin() + *result, input.begin())
-      );
+      SECTION("Copies the bytes in source order") {
+        REQUIRE(
+          std::equal(storage.begin(), storage.begin() + *result, input.begin())
+        );
+      }
     }
     SECTION("Stops reading once the minimum is reached")
     {
@@ -161,8 +167,7 @@ TEST_CASE("read_at_least(reader&, std::span<std::byte>, std::size_t)",
     // Assert
     SECTION("Fails with unexpected end of file")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == io_error::unexpected_eof );
+      REQUIRE( result == fail(io_error::unexpected_eof) );
     }
   }
 
@@ -179,14 +184,14 @@ TEST_CASE("read_at_least(reader&, std::span<std::byte>, std::size_t)",
     // Assert
     SECTION("Returns the error of the source")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 }
 
 TEST_CASE("read_exact(reader&, std::span<std::byte>)", "[utilities]")
 {
+  // Arrange
   const auto input = sequence_bytes(16u);
   auto storage = std::array<std::byte,8>{};
 
@@ -247,8 +252,7 @@ TEST_CASE("read_exact(reader&, std::span<std::byte>)", "[utilities]")
     // Assert
     SECTION("Fails with unexpected end of file")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == io_error::unexpected_eof );
+      REQUIRE( result == fail(io_error::unexpected_eof) );
     }
   }
 
@@ -265,8 +269,7 @@ TEST_CASE("read_exact(reader&, std::span<std::byte>)", "[utilities]")
     // Assert
     SECTION("Returns the error of the source")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 }
@@ -293,8 +296,7 @@ TEST_CASE("read_all_into(reader&, not_null<vector<std::byte>*>)",
     // Assert
     SECTION("Returns the number of bytes read")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == input.size() );
+      REQUIRE( result == input.size() );
     }
     SECTION("Appends every byte in order")
     {
@@ -320,8 +322,7 @@ TEST_CASE("read_all_into(reader&, not_null<vector<std::byte>*>)",
     // Assert
     SECTION("Returns only the number of bytes read")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == input.size() );
+      REQUIRE( result == input.size() );
     }
     SECTION("Keeps the existing contents")
     {
@@ -348,8 +349,7 @@ TEST_CASE("read_all_into(reader&, not_null<vector<std::byte>*>)",
     // Assert
     SECTION("Returns the error of the source")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
     SECTION("Keeps the bytes read before the failure")
     {
@@ -377,9 +377,11 @@ TEST_CASE("read_all(reader&)", "[utilities]")
     SECTION("Returns every byte in order")
     {
       REQUIRE( result.has_value() );
-      REQUIRE(
-        std::equal(result->begin(), result->end(), input.begin(), input.end())
-      );
+      SECTION("Returns the complete stream contents in order") {
+        REQUIRE(
+          std::equal(result->begin(), result->end(), input.begin(), input.end())
+        );
+      }
     }
     SECTION("Consumes the source")
     {
@@ -401,8 +403,7 @@ TEST_CASE("read_all(reader&)", "[utilities]")
     // Assert
     SECTION("Returns the error of the source")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 }

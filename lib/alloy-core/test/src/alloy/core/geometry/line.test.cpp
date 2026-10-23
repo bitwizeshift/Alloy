@@ -100,8 +100,11 @@ TEST_CASE("operator==(const line&, const line&)", "[equality]") {
     // Act
     const auto result = (lhs == rhs);
 
+    // Act
+    const auto actual = result;
+
     // Assert
-    REQUIRE(result);
+    REQUIRE(actual);
   }
   SECTION("Lines have opposite directions") {
     // Arrange
@@ -110,8 +113,11 @@ TEST_CASE("operator==(const line&, const line&)", "[equality]") {
     // Act
     const auto result = (lhs == rhs);
 
+    // Act
+    const auto actual = result;
+
     // Assert
-    REQUIRE(result);
+    REQUIRE(actual);
   }
   SECTION("Lines are parallel and distinct") {
     // Arrange
@@ -120,8 +126,11 @@ TEST_CASE("operator==(const line&, const line&)", "[equality]") {
     // Act
     const auto result = (lhs == rhs);
 
+    // Act
+    const auto actual = result;
+
     // Assert
-    REQUIRE_FALSE(result);
+    REQUIRE_FALSE(actual);
   }
   SECTION("Lines cross") {
     // Arrange
@@ -130,8 +139,11 @@ TEST_CASE("operator==(const line&, const line&)", "[equality]") {
     // Act
     const auto result = (lhs == rhs);
 
+    // Act
+    const auto actual = result;
+
     // Assert
-    REQUIRE_FALSE(result);
+    REQUIRE_FALSE(actual);
   }
 }
 

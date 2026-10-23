@@ -48,12 +48,15 @@ namespace alloy::core::test {
 // hardware. Such tests are labeled "inexact"
 
 TEST_CASE("color::from_rgb8(u8,u8,u8)", "[factory][inexact]") {
+  // Arrange
   constexpr auto red   = u8{42};
   constexpr auto green = u8{0x1e};
   constexpr auto blue  = u8{0xe7};
 
+  // Act
   const auto sut = color::from_rgb8(red,green,blue);
 
+  // Assert
   SECTION("Constructed color's red channel is correct") {
     REQUIRE(sut.r8() == red);
   }
@@ -69,13 +72,16 @@ TEST_CASE("color::from_rgb8(u8,u8,u8)", "[factory][inexact]") {
 }
 
 TEST_CASE("color::from_rgba8(u8,u8,u8,u8)", "[factory][inexact]") {
+  // Arrange
   constexpr auto red   = u8{42};
   constexpr auto green = u8{0x1e};
   constexpr auto blue  = u8{0xe7};
   constexpr auto alpha = u8{10};
 
+  // Act
   const auto sut = color::from_rgba8(red,green,blue,alpha);
 
+  // Assert
   SECTION("Constructed color's red channel is correct") {
     REQUIRE(sut.r8() == red);
   }
@@ -91,12 +97,15 @@ TEST_CASE("color::from_rgba8(u8,u8,u8,u8)", "[factory][inexact]") {
 }
 
 TEST_CASE("color::from_rgb16(u16,u16,u16)", "[factory][inexact]") {
+  // Arrange
   constexpr auto red   = u16{42};
   constexpr auto green = u16{0x1ee7};
   constexpr auto blue  = u16{0xdead};
 
+  // Act
   const auto sut = color::from_rgb16(red,green,blue);
 
+  // Assert
   SECTION("Constructed color's red channel is correct") {
     REQUIRE(sut.r16() == red);
   }
@@ -112,13 +121,16 @@ TEST_CASE("color::from_rgb16(u16,u16,u16)", "[factory][inexact]") {
 }
 
 TEST_CASE("color::from_rgba16(u16,u16,u16,u16)", "[factory][inexact]") {
+  // Arrange
   constexpr auto red   = u16{42};
   constexpr auto green = u16{0x1ee7};
   constexpr auto blue  = u16{0xdead};
   constexpr auto alpha = u16{0xbeef};
 
+  // Act
   const auto sut = color::from_rgba16(red,green,blue,alpha);
 
+  // Assert
   SECTION("Constructed color's red channel is correct") {
     REQUIRE(sut.r16() == red);
   }
@@ -139,87 +151,105 @@ TEST_CASE("color::from_rgba16(u16,u16,u16,u16)", "[factory][inexact]") {
 
 TEST_CASE("color::color()","[ctor]") {
   SECTION("Default constructed color is transparent black") {
+    // Arrange
     auto expected = color_constants::black;
     expected.a8() = 0u;
 
-    REQUIRE(color{} == expected);
+    // Act
+    const auto sut = color{};
+
+    // Assert
+    REQUIRE(sut == expected);
   }
 }
 
 TEST_CASE("color::color(real r, real g, real b)","[ctor]") {
+  // Arrange
   constexpr auto r = 0.25f;
   constexpr auto g = 0.5f;
   constexpr auto b = 0.75f;
 
-  const auto value = color{r,g,b};
+  // Act
+  const auto sut = color{r,g,b};
 
+  // Assert
   SECTION("Alpha is opaque by default") {
-    REQUIRE(value.a() == 1.0f);
+    REQUIRE(sut.a() == 1.0f);
   }
   SECTION("Color is set to input") {
     SECTION("Red") {
-      REQUIRE(value.r() == r);
+      REQUIRE(sut.r() == r);
     }
     SECTION("Green") {
-      REQUIRE(value.g() == g);
+      REQUIRE(sut.g() == g);
     }
     SECTION("Blue") {
-      REQUIRE(value.b() == b);
+      REQUIRE(sut.b() == b);
     }
   }
 }
 
 TEST_CASE("color::color(real r, real g, real b, real a)","[ctor]") {
+  // Arrange
   constexpr auto r = 0.25f;
   constexpr auto g = 0.5f;
   constexpr auto b = 0.75f;
   constexpr auto a = 0.125f;
 
-  const auto value = color{r,g,b,a};
+  // Act
+  const auto sut = color{r,g,b,a};
 
+  // Assert
   SECTION("Color is set to input") {
     SECTION("Red") {
-      REQUIRE(value.r() == r);
+      REQUIRE(sut.r() == r);
     }
     SECTION("Green") {
-      REQUIRE(value.g() == g);
+      REQUIRE(sut.g() == g);
     }
     SECTION("Blue") {
-      REQUIRE(value.b() == b);
+      REQUIRE(sut.b() == b);
     }
     SECTION("Alpha") {
-      REQUIRE(value.a() == a);
+      REQUIRE(sut.a() == a);
     }
   }
 }
 
-TEST_CASE("color::invert()", "[modifier]") {
-
+TEST_CASE("color::inverted()", "[modifier]") {
+  // Arrange
   constexpr auto r = 0.0f;
   constexpr auto g = 0.25f;
   constexpr auto b = 0.5f;
-  const auto before = color{r,g,b};
-  const auto after = before.inverted();
+  const auto sut = color{r,g,b};
+
+  // Act
+  const auto result = sut.inverted();
 
   SECTION("Color components are inverted") {
     SECTION("Red is inverted") {
       constexpr auto expected = (1.0f - r);
 
-      REQUIRE(after.r() == expected);
+      // Assert
+      REQUIRE(result.r() == expected);
     }
     SECTION("Green is inverted") {
       constexpr auto expected = (1.0f - g);
 
-      REQUIRE(after.g() == expected);
+      // Assert
+      REQUIRE(result.g() == expected);
     }
     SECTION("Blue is inverted") {
       constexpr auto expected = (1.0f - b);
-      REQUIRE(after.b() == expected);
+
+      // Assert
+      REQUIRE(result.b() == expected);
     }
   }
 
+  // Assert
   SECTION("Alpha is untouched") {
-    REQUIRE(before.a() == after.a());
+    REQUIRE(sut.a() == result.a());
   }
 }
 
@@ -227,6 +257,7 @@ TEST_CASE("color hsb conversion", "[conversion][parametric]") {
   SECTION("Opaque colors survive round trip through hsb conversions") {
 
     // Convert all color constants
+    // Arrange
     const auto input = GENERATE(
       color_constants::white,
       color_constants::silver,
@@ -371,17 +402,20 @@ TEST_CASE("color hsb conversion", "[conversion][parametric]") {
       color_constants::dark_slate_gray
     );
 
-    const auto hsb = input.to_hsb();
-
     // Unfortunately, Catch::StringMaker does not work in the INFO macros; so
     // just call the function manually and concatenate the strings to produce
     // the messages
     const auto& to_string = &Catch::StringMaker<color>::convert;
 
     SECTION("With input '" + to_string(input) + "'") {
+      // Act
+      const auto hsb = input.to_hsb();
       const auto output = color::from_hsb(hsb);
 
+      // Assert
       INFO("output = " + to_string(output));
+
+      // Assert
       REQUIRE(almost_equal(input, output));
     }
   }

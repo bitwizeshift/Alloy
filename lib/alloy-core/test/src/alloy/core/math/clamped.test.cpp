@@ -27,15 +27,19 @@ namespace alloy::core::test {
 
 TEST_CASE("clamped<Float>::make(Float)", "[factory]") {
   SECTION("Input exceeds 1.0") {
+    // Act
     const auto sut = clamped<float>::make(2.0f);
 
+    // Assert
     SECTION("Results in overflow error") {
       REQUIRE(sut == fail(clamped<float>::error::overflow));
     }
   }
   SECTION("Input precedes 0.0") {
+    // Act
     const auto sut = clamped<float>::make(-1.0f);
 
+    // Assert
     SECTION("Results in underflow error") {
       REQUIRE(sut == fail(clamped<float>::error::underflow));
     }
@@ -53,9 +57,13 @@ TEST_CASE("clamped<Float>::make(Float)", "[factory]") {
     }
   }
   SECTION("Input is between 1.0 and 0.0") {
+    // Arrange
     const auto expected = 0.5f;
+
+    // Act
     const auto sut = clamped<float>::make(expected);
 
+    // Assert
     SECTION("Results in a clamped containing the input") {
       REQUIRE(sut == expected);
     }
@@ -63,9 +71,13 @@ TEST_CASE("clamped<Float>::make(Float)", "[factory]") {
 }
 
 TEST_CASE("clamped<Float>::make_unchecked(Float)", "[factory]") {
+  // Arrange
   const auto expected = 0.5f;
-  const auto sut = clamped<float>::make(expected);
 
+  // Act
+  const auto sut = clamped<float>::make_unchecked(expected);
+
+  // Assert
   SECTION("Results in a clamped containing the input") {
     REQUIRE(sut == expected);
   }
@@ -77,41 +89,65 @@ TEST_CASE("clamped<Float>::make_unchecked(Float)", "[factory]") {
 
 TEST_CASE("clamped<Float>::clamped()", "[ctor]") {
   SECTION("Constructor is trivial") {
-    STATIC_REQUIRE(std::is_trivially_constructible_v<clamped<float>>);
+    // Act
+    constexpr auto property_holds =
+      std::is_trivially_constructible_v<clamped<float>>;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
   SECTION("Constructs a default-initialized underlying float") {
+    // Act
     const auto sut = clamped<float>{};
 
+    // Assert
     REQUIRE(sut.value() == 0.0f);
   }
 }
 
 TEST_CASE("clamped<Float>::clamped(const clamped&)", "[ctor]") {
   SECTION("Constructor is trivial") {
-    STATIC_REQUIRE(std::is_trivially_copy_constructible_v<clamped<float>>);
+    // Act
+    constexpr auto property_holds =
+      std::is_trivially_copy_constructible_v<clamped<float>>;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
   SECTION("Copies underlying float") {
-    const auto sut = clamped<float>::make_unchecked(0.5);
-    const auto result = sut;
+    // Arrange
+    const auto source = clamped<float>::make_unchecked(0.5);
 
-    REQUIRE(sut == result);
+    // Act
+    const auto sut = source;
+
+    // Assert
+    REQUIRE(sut == source);
   }
 }
 
 TEST_CASE("clamped<Float>::clamped(const saturated<UFloat>&)", "[ctor]") {
   SECTION("Copies underlying float") {
+    // Arrange
     const auto to_copy = saturated<float>::make_unchecked(0.5);
+
+    // Act
     const auto sut = clamped<float>{to_copy};
 
+    // Assert
     REQUIRE(sut == to_copy.value());
   }
 }
 
 TEST_CASE("clamped<Float>::clamped(const clamped<UFloat>&)", "[ctor]") {
   SECTION("Copies underlying float") {
+    // Arrange
     const auto to_copy = clamped<double>::make_unchecked(0.5);
+
+    // Act
     const auto sut = clamped<float>{to_copy};
 
+    // Assert
     REQUIRE(sut == static_cast<float>(to_copy.value()));
   }
 }
@@ -122,15 +158,23 @@ TEST_CASE("clamped<Float>::clamped(const clamped<UFloat>&)", "[ctor]") {
 
 TEST_CASE("clamped<Float>::operator=(const clamped&)", "[assign]") {
   SECTION("Assignment is trivial") {
-    STATIC_REQUIRE(std::is_trivially_copy_assignable_v<clamped<float>>);
+    // Act
+    constexpr auto property_holds =
+      std::is_trivially_copy_assignable_v<clamped<float>>;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
   SECTION("Assigns the underlying value") {
+    // Arrange
     const auto copy = clamped<float>::make_unchecked(0.5);
     auto sut = clamped<float>{};
     compiler::unused(sut);
 
+    // Act
     sut = copy;
 
+    // Assert
     REQUIRE(sut == copy);
   }
 }
@@ -169,13 +213,14 @@ concept clamped_greater_equal_comparable = requires(const L& lhs, const R& rhs) 
 
 TEST_CASE("operator>=(const T&, clamped<Float>)", "[comparison]") {
   SECTION("Requires T to be ordered against Float") {
-    // Assert
-    STATIC_REQUIRE_FALSE(
-      clamped_greater_equal_comparable<
+    // Act
+    constexpr auto property_holds = clamped_greater_equal_comparable<
         clamped_only_equality_comparable,
         clamped<float>
-      >
-    );
+      >;
+
+    // Assert
+    STATIC_REQUIRE_FALSE(property_holds);
   }
 }
 

@@ -36,8 +36,12 @@ TEST_CASE("simplex::raw_noise( real, real )", "[noise]")
     const auto [lowest, highest] = std::ranges::minmax(samples);
 
     // Assert
-    REQUIRE( lowest >= real{-1} );
-    REQUIRE( highest <= real{1} );
+    SECTION("Never falls below the normalized lower bound") {
+      REQUIRE( lowest >= real{-1} );
+    }
+    SECTION("Never exceeds the normalized upper bound") {
+      REQUIRE( highest <= real{1} );
+    }
   }
 
   SECTION("Noise is continuous")
@@ -120,8 +124,12 @@ TEST_CASE("simplex::raw_noise( real, real, real )", "[noise]")
     const auto [lowest, highest] = std::ranges::minmax(samples);
 
     // Assert
-    REQUIRE( lowest >= real{-1} );
-    REQUIRE( highest <= real{1} );
+    SECTION("Never falls below the normalized lower bound") {
+      REQUIRE( lowest >= real{-1} );
+    }
+    SECTION("Never exceeds the normalized upper bound") {
+      REQUIRE( highest <= real{1} );
+    }
   }
 
   SECTION("Noise is continuous")
@@ -185,8 +193,12 @@ TEST_CASE("simplex::raw_noise( real, real, real )", "[noise]")
     const auto [lowest, highest] = std::ranges::minmax(samples);
 
     // Assert
-    REQUIRE( lowest < real{-0.3f} );
-    REQUIRE( highest > real{0.3f} );
+    SECTION("Produces substantial negative variation") {
+      REQUIRE( lowest < real{-0.3f} );
+    }
+    SECTION("Produces substantial positive variation") {
+      REQUIRE( highest > real{0.3f} );
+    }
   }
 }
 
@@ -224,8 +236,12 @@ TEST_CASE("simplex::octave_noise( real, real, real, real, real )", "[noise]")
     const auto [lowest, highest] = std::ranges::minmax(samples);
 
     // Assert
-    REQUIRE( lowest >= real{-1} );
-    REQUIRE( highest <= real{1} );
+    SECTION("Never falls below the normalized lower bound") {
+      REQUIRE( lowest >= real{-1} );
+    }
+    SECTION("Never exceeds the normalized upper bound") {
+      REQUIRE( highest <= real{1} );
+    }
   }
 }
 

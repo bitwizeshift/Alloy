@@ -66,52 +66,72 @@ static_assert(std::is_trivially_destructible<literal_sut>::value, "");
 //-----------------------------------------------------------------------------
 
 TEST_CASE("constexpr result<T,E>::result()", "[constexpr][ctor]") {
+  // Act
   constexpr literal_sut sut{};
 
+  // Assert
   STATIC_REQUIRE(sut.has_value());
 }
 
 TEST_CASE("constexpr result<T,E>::result(const result&)", "[constexpr][ctor]") {
+  // Arrange
   constexpr literal_sut original{};
+
+  // Act
   constexpr literal_sut sut{original};
 
+  // Assert
   STATIC_REQUIRE(sut.has_value());
 }
 
 TEST_CASE("constexpr result<T,E>::result(result&&)", "[constexpr][ctor]") {
+  // Act
   constexpr literal_sut sut{ force_move(literal_sut{}) };
 
+  // Assert
   STATIC_REQUIRE(sut.has_value());
 }
 
 TEST_CASE("constexpr result<T,E>::result(in_place_t, Args&&...)", "[constexpr][ctor]") {
+  // Act
   constexpr literal_sut sut{std::in_place, 42};
 
+  // Assert
   STATIC_REQUIRE(sut.has_value());
 }
 
 TEST_CASE("constexpr result<T,E>::result(in_place_error_t, Args&&...)", "[constexpr][ctor]") {
+  // Act
   constexpr literal_sut sut{in_place_error, 42};
 
+  // Assert
   STATIC_REQUIRE(sut.has_error());
 }
 
 TEST_CASE("constexpr result<T,E>::result(U&&) (implicit)", "[constexpr][ctor]") {
+  // Act
   constexpr literal_sut sut = 42;
 
+  // Assert
   STATIC_REQUIRE(sut.has_value());
 }
 
 TEST_CASE("constexpr result<T,E>::result(U&&) (explicit)", "[constexpr][ctor]") {
+  // Act
   constexpr literal_sut sut{42};
 
+  // Assert
   STATIC_REQUIRE(sut.has_value());
 }
 
 TEST_CASE("constexpr result<T,E>::result(const unresult<U>&)", "[constexpr][ctor]") {
+  // Arrange
   constexpr failure<int> value{42};
+
+  // Act
   constexpr literal_sut sut{value};
 
+  // Assert
   STATIC_REQUIRE(sut.has_error());
 }
 
@@ -121,8 +141,10 @@ TEST_CASE("constexpr result<T,E>::result(const unresult<U>&)", "[constexpr][ctor
 // member functions to be constexpr, which disallows extracting an rvalue
 // references from 'failure' in a constant expression. C++14 fixes this
 TEST_CASE("constexpr result<T,E>::result(failure<U>&&)") {
+  // Act
   constexpr literal_sut sut{failure<int>{42}};
 
+  // Assert
   STATIC_REQUIRE(sut.has_error());
 }
 #endif
@@ -132,25 +154,40 @@ TEST_CASE("constexpr result<T,E>::result(failure<U>&&)") {
 //-----------------------------------------------------------------------------
 
 TEST_CASE("constexpr result<T,E>::value() const &", "[constexpr][observer]") {
+  // Arrange
   constexpr auto value = 42;
   constexpr literal_sut sut{value};
 
-  STATIC_REQUIRE(sut.value() == value);
+  // Act
+  constexpr auto output = sut.value();
+
+  // Assert
+  STATIC_REQUIRE(output == value);
 }
 
 TEST_CASE("constexpr result<T,E>::value() const &&", "[constexpr][observer]") {
+  // Arrange
   constexpr auto value = 42;
   constexpr literal_sut sut{value};
 
-  STATIC_REQUIRE(static_cast<const literal_sut&&>(sut).value() == value);
+  // Act
+  constexpr auto output = static_cast<const literal_sut&&>(sut).value();
+
+  // Assert
+  STATIC_REQUIRE(output == value);
 }
 
 TEST_CASE("constexpr result<T,E>::error() const &", "[constexpr][observer]") {
+  // Arrange
   constexpr auto value = 42;
   constexpr auto error = failure<int>{value};
   constexpr literal_sut sut{error};
 
-  STATIC_REQUIRE(sut.error() == value);
+  // Act
+  constexpr auto output = sut.error();
+
+  // Assert
+  STATIC_REQUIRE(output == value);
 }
 
 //=============================================================================
@@ -162,35 +199,49 @@ TEST_CASE("constexpr result<T,E>::error() const &", "[constexpr][observer]") {
 //-----------------------------------------------------------------------------
 
 TEST_CASE("constexpr result<void,E>::result()", "[constexpr][ctor]") {
+  // Act
   constexpr result<void,int> sut{};
 
+  // Assert
   STATIC_REQUIRE(sut.has_value());
 }
 
 TEST_CASE("constexpr result<void,E>::result(const result&)", "[constexpr][ctor]") {
+  // Arrange
   constexpr result<void,int> original{};
+
+  // Act
   constexpr result<void,int> sut{original};
 
+  // Assert
   STATIC_REQUIRE(sut.has_value());
 }
 
 TEST_CASE("constexpr result<void,E>::result(result&&)", "[constexpr][ctor]") {
+  // Act
   constexpr result<void,int> sut{ force_move(result<void,int>{}) };
 
+  // Assert
   STATIC_REQUIRE(sut.has_value());
 }
 
 
 TEST_CASE("constexpr result<void,E>::result(in_place_error_t, Args&&...)", "[constexpr][ctor]") {
+  // Act
   constexpr result<void,int> sut{in_place_error, 42};
 
+  // Assert
   STATIC_REQUIRE(sut.has_error());
 }
 
 TEST_CASE("constexpr result<void,E>::result(const failure<U>&)", "[constexpr][ctor]") {
+  // Arrange
   constexpr failure<int> value{42};
+
+  // Act
   constexpr result<void,int> sut{value};
 
+  // Assert
   STATIC_REQUIRE(sut.has_error());
 }
 
@@ -200,8 +251,10 @@ TEST_CASE("constexpr result<void,E>::result(const failure<U>&)", "[constexpr][ct
 // member functions to be constexpr, which disallows extracting an rvalue
 // references from 'failure' in a constant expression. C++14 fixes this
 TEST_CASE("constexpr result<void,E>::result(failure<U>&&)") {
+  // Act
   constexpr result<void,int> sut{failure<int>{42}};
 
+  // Assert
   STATIC_REQUIRE(sut.has_error());
 }
 #endif
@@ -213,19 +266,29 @@ TEST_CASE("constexpr result<void,E>::result(failure<U>&&)") {
 #if __cplusplus >= 201402L
 
 TEST_CASE("constexpr result<void,E>::value() const", "[constexpr][observer]") {
+  // Arrange
   constexpr result<void,int> sut{};
 
-  STATIC_REQUIRE((sut.value(),true));
+  // Act
+  constexpr auto property_holds = (sut.value(),true);
+
+  // Assert
+  STATIC_REQUIRE(property_holds);
 }
 
 #endif // __cplusplus >= 201402L
 
 TEST_CASE("constexpr result<void,E>::error() const &", "[constexpr][observer]") {
+  // Arrange
   constexpr auto value = 42;
   constexpr auto error = failure<int>{value};
   constexpr result<void,int> sut{error};
 
-  STATIC_REQUIRE(sut.error() == value);
+  // Act
+  constexpr auto output = sut.error();
+
+  // Assert
+  STATIC_REQUIRE(output == value);
 }
 
 } // namespace test

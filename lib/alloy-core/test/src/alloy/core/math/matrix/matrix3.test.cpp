@@ -13,6 +13,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <algorithm> // std::ranges::equal
+#include <array>     // std::array
 #include <span>      // std::span
 
 namespace alloy::core::test {
@@ -30,16 +31,15 @@ TEST_CASE("matrix3::operator[]( index_type )", "[element access]")
     7, 8, 9
   };
 
+  const auto expected = std::array<real,3>{3, 6, 9};
+
   // Act
   const auto* const column = sut[2];
 
   // Assert
-  SECTION("Retrieves the column at the index")
-  {
-    REQUIRE( column[0] == real{3} );
-    REQUIRE( column[1] == real{6} );
-    REQUIRE( column[2] == real{9} );
-  }
+  REQUIRE( std::ranges::equal(
+    std::span{column, 3u}, expected
+  ) );
 }
 
 TEST_CASE("matrix3::data()", "[observers]")

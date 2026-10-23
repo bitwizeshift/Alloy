@@ -78,6 +78,7 @@ namespace std {
 namespace alloy::core::test {
 
 TEST_CASE("hash_value(const T&)") {
+  // Arrange
   using alloy::core::hash_value;
 
   SECTION("With std::hash-able value") {
@@ -86,17 +87,21 @@ TEST_CASE("hash_value(const T&)") {
       auto was_called = false;
       auto sut = std_hashable{42, &was_called};
 
+      // Act
       auto result = hash_value(sut);
       (void) result;
 
+      // Assert
       REQUIRE(was_called);
     }
     SECTION("Provides the same hash as std::hash would") {
       const auto value = int{42};
 
+      // Act
       const auto r1 = hash_value(value);
       const auto r2 = std::hash<int>{}(value);
 
+      // Assert
       REQUIRE(r1 == r2);
     }
   }
@@ -105,8 +110,10 @@ TEST_CASE("hash_value(const T&)") {
     SECTION("Calls overload") {
       auto sut = adl_hashable{};
 
+      // Act
       const auto result = hash_value(sut);
 
+      // Assert
       REQUIRE(result == test_sentinel);
     }
   }
@@ -119,8 +126,11 @@ TEST_CASE("hash_value(const T&)") {
       };
 
       const auto expected = hash_values(sut.a, sut.b);
+
+      // Act
       const auto actual   = hash_value(sut);
 
+      // Assert
       REQUIRE(expected == actual);
     }
   }
@@ -128,22 +138,29 @@ TEST_CASE("hash_value(const T&)") {
     SECTION("Hashes the raw bytes") {
       auto sut = unique_representable_hashable{};
 
+      // Act
       const auto result = hash_value(sut);
 
+      // Assert
       REQUIRE(result != hash_type{0u});
     }
   }
 }
 
 TEST_CASE("hash_value(const T(&)[N])") {
+  // Arrange
   using alloy::core::hash_value;
 
   SECTION("Hashes and combines each value") {
     long input[2] = {42, 0x1337};
 
-    const auto result   = hash_value(input);
+    // Arrange
     const auto expected = hash_values(input[0], input[1]);
 
+    // Act
+    const auto result   = hash_value(input);
+
+    // Assert
     REQUIRE(result == expected);
   }
 }
@@ -151,23 +168,28 @@ TEST_CASE("hash_value(const T(&)[N])") {
 TEST_CASE("hash_object(const T&)") {
   SECTION("With std::hash-able value") {
     SECTION("ADL-calls the std::hash implementation") {
-
+      // Arrange
       auto was_called = false;
       auto sut = std_hashable{42, &was_called};
 
+      // Act
       auto result = hash_object(sut);
       (void) result;
 
+      // Assert
       REQUIRE(was_called);
     }
   }
 
   SECTION("With overloaded hash_value") {
     SECTION("ADL-calls the overload") {
+      // Arrange
       auto sut = adl_hashable{};
 
+      // Act
       const auto result = hash_object(sut);
 
+      // Assert
       REQUIRE(result == test_sentinel);
     }
   }

@@ -14,6 +14,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <algorithm> // std::copy_n, std::ranges::equal
+#include <array>     // std::array
 #include <span>      // std::span
 #include <stdexcept> // std::out_of_range
 
@@ -95,13 +96,33 @@ TEST_CASE("matrix4::at( index_type, index_type ) out of range", "[element access
 
   SECTION("Row >= rows")
   {
-    // Act / Assert
-    REQUIRE_THROWS_AS(sut.at(4,0), std::out_of_range);
+    // Arrange
+    auto threw_expected = false;
+
+    // Act
+    try {
+      sut.at(4,0);
+    } catch (const std::out_of_range&) {
+      threw_expected = true;
+    }
+
+    // Assert
+    REQUIRE(threw_expected);
   }
   SECTION("Column < 0")
   {
-    // Act / Assert
-    REQUIRE_THROWS_AS(sut.at(0,-1), std::out_of_range);
+    // Arrange
+    auto threw_expected = false;
+
+    // Act
+    try {
+      sut.at(0,-1);
+    } catch (const std::out_of_range&) {
+      threw_expected = true;
+    }
+
+    // Assert
+    REQUIRE(threw_expected);
   }
 }
 #endif // ALLOY_CORE_EXCEPTIONS_ENABLED
@@ -116,17 +137,15 @@ TEST_CASE("matrix4::operator[]( index_type )", "[element access]")
     13, 14, 15, 16
   };
 
+  const auto expected = std::array<real,4>{2, 6, 10, 14};
+
   // Act
   const auto* const column = sut[1];
 
   // Assert
-  SECTION("Retrieves the column at the index")
-  {
-    REQUIRE( column[0] == real{2} );
-    REQUIRE( column[1] == real{6} );
-    REQUIRE( column[2] == real{10} );
-    REQUIRE( column[3] == real{14} );
-  }
+  REQUIRE( std::ranges::equal(
+    std::span{column, 4u}, expected
+  ) );
 }
 
 //------------------------------------------------------------------------------
@@ -168,6 +187,8 @@ TEST_CASE("matrix4::data()", "[observers]")
       13, 14, 15, 16
     };
     real array[16] = {};
+
+    // Act
     std::copy_n(sut.data(), 16, array);
 
     // Act
@@ -390,12 +411,18 @@ TEST_CASE("operator*( const matrix4&, real )", "[arithmetic]")
   // Arrange
   const auto sut = matrix4_constants::identity;
 
+  const auto expected = matrix4{
+    3, 0, 0, 0,
+    0, 3, 0, 0,
+    0, 0, 3, 0,
+    0, 0, 0, 3
+  };
+
   // Act
   const auto result = sut * real{3};
 
   // Assert
-  REQUIRE( result.get(2,2) == real{3} );
-  REQUIRE( result.get(2,1) == real{0} );
+  REQUIRE( result == expected );
 }
 
 TEST_CASE("matrix4::operator/=( real )", "[arithmetic]")

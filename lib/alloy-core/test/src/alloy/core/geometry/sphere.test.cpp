@@ -13,7 +13,6 @@
 namespace alloy::core::test {
 
 TEST_CASE("sphere::contains(const point&)", "[containment]") {
-
   // Arrange
   constexpr auto radius = 3.0;
   constexpr auto center = point3{1,1,1};
@@ -22,10 +21,13 @@ TEST_CASE("sphere::contains(const point&)", "[containment]") {
     radius,
   };
 
-  // Act / Assert
   SECTION("Point is inside of sphere") {
     SECTION("Returns true") {
-      REQUIRE(sut.contains(center));
+      // Act
+      const auto result = sut.contains(center);
+
+      // Assert
+      REQUIRE(result);
     }
   }
   SECTION("Point is on the border") {
@@ -36,9 +38,12 @@ TEST_CASE("sphere::contains(const point&)", "[containment]") {
       center.z(),
     };
 
-    // Act / Assert
     SECTION("Returns true") {
-      REQUIRE(sut.contains(border));
+      // Act
+      const auto result = sut.contains(border);
+
+      // Assert
+      REQUIRE(result);
     }
   }
   SECTION("Point is outside of sphere") {
@@ -49,15 +54,17 @@ TEST_CASE("sphere::contains(const point&)", "[containment]") {
       center.z() + center.z() * 2,
     };
 
-    // Act / Assert
     SECTION("Returns false") {
-      REQUIRE_FALSE(sut.contains(point));
+      // Act
+      const auto result = sut.contains(point);
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
 }
 
 TEST_CASE("sphere::contains(const point&, real)", "[containment]") {
-
   // Arrange
   constexpr auto tolerance = real{0.1};
   constexpr auto radius = 3.0;
@@ -69,7 +76,11 @@ TEST_CASE("sphere::contains(const point&, real)", "[containment]") {
 
   SECTION("Point is inside of sphere") {
     SECTION("Returns true") {
-      REQUIRE(sut.contains(center, tolerance));
+      // Act
+      const auto result = sut.contains(center, tolerance);
+
+      // Assert
+      REQUIRE(result);
     }
   }
   SECTION("Point is outside of sphere") {
@@ -80,7 +91,11 @@ TEST_CASE("sphere::contains(const point&, real)", "[containment]") {
         center.z()
       };
       SECTION("Returns true") {
-        REQUIRE(sut.contains(point, tolerance));
+        // Act
+        const auto result = sut.contains(point, tolerance);
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("Point is outside of tolerance") {
@@ -90,7 +105,11 @@ TEST_CASE("sphere::contains(const point&, real)", "[containment]") {
         center.z()
       };
       SECTION("Returns false") {
-        REQUIRE_FALSE(sut.contains(point, tolerance));
+        // Act
+        const auto result = sut.contains(point, tolerance);
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }

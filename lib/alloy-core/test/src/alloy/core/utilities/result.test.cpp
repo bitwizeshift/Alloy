@@ -6,6 +6,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <exception>    // std::exception_ptr, std::current_exception
 #include <functional>
 #include <ios>          // std::ios_errc
 #include <memory>
@@ -199,18 +200,27 @@ auto suppress_unused(const T&) -> void {}
 TEST_CASE("result<T,E>::result()", "[ctor]") {
   SECTION("T is default-constructible") {
     SECTION("Result is default-constructible") {
+      // Arrange
       using sut_type = result<int,int>;
 
-      STATIC_REQUIRE(std::is_default_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_default_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     // Note: 'E' must be default-constructible for use in 'error()', but
     //       otherwise does not contribute to this.
     SECTION("Default constructs the underlying T") {
+      // Arrange
       using value_type = std::string;
       using sut_type = result<value_type,int>;
 
+      // Act
       auto sut = sut_type{};
 
+      // Assert
       REQUIRE(*sut == value_type());
     }
     SECTION("Invokes T's default-construction") {
@@ -220,9 +230,15 @@ TEST_CASE("result<T,E>::result()", "[ctor]") {
 
   SECTION("T is not default-constructible") {
     SECTION("Result is not default-constructible") {
+      // Arrange
       using sut_type = result<not_default_constructible,int>;
 
-      STATIC_REQUIRE_FALSE(std::is_default_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_default_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 }
@@ -232,18 +248,26 @@ TEST_CASE("result<T,E>::result(const result&)", "[ctor]") {
   // Constructible:
 
   SECTION("T and E are both trivially copy-constructible") {
+    // Arrange
     using sut_type = result<int,int>;
 
     SECTION("Result is trivially copy-constructible") {
-      STATIC_REQUIRE(std::is_trivially_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Copy source contained a value") {
       const auto value = 42;
       const sut_type source{value};
 
+      // Act
       const auto sut = source;
 
+      // Assert
       SECTION("Copy contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -256,8 +280,10 @@ TEST_CASE("result<T,E>::result(const result&)", "[ctor]") {
       const auto error = fail(42);
       const sut_type source{error};
 
+      // Act
       const auto sut = source;
 
+      // Assert
       SECTION("Copy contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -268,22 +294,35 @@ TEST_CASE("result<T,E>::result(const result&)", "[ctor]") {
   } // T and E are both trivially copy-constructible
 
   SECTION("T is copy-constructible, but not trivial") {
+    // Arrange
     using sut_type = result<std::string,int>;
 
     SECTION("Result is not trivially copy-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_trivially_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
 
     SECTION("Result is copy-constructible") {
-      STATIC_REQUIRE(std::is_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Copy source contained a value") {
       const auto value = "hello world";
       const sut_type source{value};
 
+      // Act
       const auto sut = source;
 
+      // Assert
       SECTION("Copy contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -296,8 +335,10 @@ TEST_CASE("result<T,E>::result(const result&)", "[ctor]") {
       const auto error = fail(42);
       const sut_type source{error};
 
+      // Act
       const auto sut = source;
 
+      // Assert
       SECTION("Copy contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -308,22 +349,35 @@ TEST_CASE("result<T,E>::result(const result&)", "[ctor]") {
   } // T is copy-constructible, but not trivial
 
   SECTION("E is copy-constructible, but not trivial") {
+    // Arrange
     using sut_type = result<int,std::string>;
 
     SECTION("Result is not trivially copy-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_trivially_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
 
     SECTION("Result is copy-constructible") {
-      STATIC_REQUIRE(std::is_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Copy source contained a value") {
       const auto value = 42;
       const sut_type source{value};
 
+      // Act
       const auto sut = source;
 
+      // Assert
       SECTION("Copy contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -336,8 +390,10 @@ TEST_CASE("result<T,E>::result(const result&)", "[ctor]") {
       const auto error = fail("Hello world");
       const sut_type source{error};
 
+      // Act
       const auto sut = source;
 
+      // Assert
       SECTION("Copy contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -348,22 +404,35 @@ TEST_CASE("result<T,E>::result(const result&)", "[ctor]") {
   }
 
   SECTION("T and E are both copy-constructible, but not trivial") {
+    // Arrange
     using sut_type = result<std::string,std::string>;
 
     SECTION("Result is not trivially copy-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_trivially_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
 
     SECTION("Result is copy-constructible") {
-      STATIC_REQUIRE(std::is_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Copy source contained a value") {
       const auto value = "Hello world";
       const sut_type source{value};
 
+      // Act
       const auto sut = source;
 
+      // Assert
       SECTION("Copy contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -376,8 +445,10 @@ TEST_CASE("result<T,E>::result(const result&)", "[ctor]") {
       const auto error = fail("Goodbye world");
       const sut_type source{error};
 
+      // Act
       const auto sut = source;
 
+      // Assert
       SECTION("Copy contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -390,26 +461,44 @@ TEST_CASE("result<T,E>::result(const result&)", "[ctor]") {
   // Not constructible:
 
   SECTION("T is not copy-constructible") {
+    // Arrange
     using sut_type = result<not_copy_or_moveable,int>;
 
     SECTION("Result is not copy-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is not copy-constructible") {
+    // Arrange
     using sut_type = result<int,not_copy_or_moveable>;
 
     SECTION("Result is not copy-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T and E are not copy-constructible") {
+    // Arrange
     using sut_type = result<not_copy_or_moveable,not_copy_or_moveable>;
 
     SECTION("Result is not copy-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 }
@@ -419,18 +508,26 @@ TEST_CASE("result<T,E>::result(result&&)", "[ctor]") {
   // Constructible:
 
   SECTION("T and E are both trivially move-constructible") {
+    // Arrange
     using sut_type = result<int,int>;
 
     SECTION("Result is trivially move-constructible") {
-      STATIC_REQUIRE(std::is_trivially_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Move source contained a value") {
       const auto value = 42;
       sut_type source{value};
 
+      // Act
       const auto sut = std::move(source);
 
+      // Assert
       SECTION("New result contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -443,8 +540,10 @@ TEST_CASE("result<T,E>::result(result&&)", "[ctor]") {
       const auto error = fail(42);
       sut_type source{error};
 
+      // Act
       const auto sut = std::move(source);
 
+      // Assert
       SECTION("New result contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -455,22 +554,35 @@ TEST_CASE("result<T,E>::result(result&&)", "[ctor]") {
   } // T and E are both trivially move-constructible
 
   SECTION("T is move-constructible, but not trivial") {
+    // Arrange
     using sut_type = result<move_only<std::string>,int>;
 
     SECTION("Result is not trivially move-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_trivially_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
 
     SECTION("Result is move-constructible") {
-      STATIC_REQUIRE(std::is_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Move source contained a value") {
       const auto value = "hello world";
       sut_type source{value};
 
+      // Act
       const auto sut = std::move(source);
 
+      // Assert
       SECTION("New result contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -483,8 +595,10 @@ TEST_CASE("result<T,E>::result(result&&)", "[ctor]") {
       const auto error = fail(42);
       sut_type source{error};
 
+      // Act
       const auto sut = std::move(source);
 
+      // Assert
       SECTION("New result contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -495,22 +609,35 @@ TEST_CASE("result<T,E>::result(result&&)", "[ctor]") {
   } // T is move-constructible, but not trivial
 
   SECTION("E is move-constructible, but not trivial") {
+    // Arrange
     using sut_type = result<int,move_only<std::string>>;
 
     SECTION("Result is not trivially move-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_trivially_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
 
     SECTION("Result is move-constructible") {
-      STATIC_REQUIRE(std::is_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Move source contained a value") {
       const auto value = 42;
       sut_type source{value};
 
+      // Act
       const auto sut = std::move(source);
 
+      // Assert
       SECTION("New result contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -523,8 +650,10 @@ TEST_CASE("result<T,E>::result(result&&)", "[ctor]") {
       const auto error = fail("Hello world");
       sut_type source{error};
 
+      // Act
       const auto sut = std::move(source);
 
+      // Assert
       SECTION("New result contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -535,22 +664,35 @@ TEST_CASE("result<T,E>::result(result&&)", "[ctor]") {
   }
 
   SECTION("T and E are both move-constructible, but not trivial") {
+    // Arrange
     using sut_type = result<move_only<std::string>,move_only<std::string>>;
 
     SECTION("Result is not trivially move-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_trivially_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
 
     SECTION("Result is move-constructible") {
-      STATIC_REQUIRE(std::is_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Move source contained a value") {
       const auto value = "Hello world";
       sut_type source{value};
 
+      // Act
       const auto sut = std::move(source);
 
+      // Assert
       SECTION("New result contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -563,8 +705,10 @@ TEST_CASE("result<T,E>::result(result&&)", "[ctor]") {
       const auto error = fail("Goodbye world");
       sut_type source{error};
 
+      // Act
       const auto sut = std::move(source);
 
+      // Assert
       SECTION("New result contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -577,26 +721,44 @@ TEST_CASE("result<T,E>::result(result&&)", "[ctor]") {
   // Not constructible:
 
   SECTION("T is not move-constructible") {
+    // Arrange
     using sut_type = result<not_copy_or_moveable,int>;
 
     SECTION("Result is not move-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is not move-constructible") {
+    // Arrange
     using sut_type = result<int,not_copy_or_moveable>;
 
     SECTION("Result is not move-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T and E are not move-constructible") {
+    // Arrange
     using sut_type = result<not_copy_or_moveable,not_copy_or_moveable>;
 
     SECTION("Result is not move-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 }
@@ -605,23 +767,36 @@ TEST_CASE("result<T,E>::result(const result<T2,E2>&)", "[ctor]") {
   // Constructible:
 
   SECTION("T and E are both constructible from T2 and E2") {
+    // Arrange
     using copy_type = result<const char*, const char*>;
     using sut_type = result<std::string,std::string>;
 
     SECTION("Result is constructible") {
-      STATIC_REQUIRE(std::is_constructible<sut_type,const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type,const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Result is implicit constructible") {
-      STATIC_REQUIRE(std::is_convertible<const copy_type&,sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_convertible<const copy_type&,sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Copy source contained a value") {
       const auto value = "Hello world";
       const copy_type source{value};
 
+      // Act
       const sut_type sut = source;
 
+      // Assert
       SECTION("Copy contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -634,8 +809,10 @@ TEST_CASE("result<T,E>::result(const result<T2,E2>&)", "[ctor]") {
       const auto error = fail("Goodbye world");
       const copy_type source{error};
 
+      // Act
       const sut_type sut = source;
 
+      // Assert
       SECTION("Copy contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -648,29 +825,47 @@ TEST_CASE("result<T,E>::result(const result<T2,E2>&)", "[ctor]") {
   // Not Constructible:
 
   SECTION("T is not constructible from T2") {
+    // Arrange
     using copy_type = result<std::string,int>;
     using sut_type = result<int,int>;
 
     SECTION("Result is not constructible") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is not constructible from E2") {
+    // Arrange
     using copy_type = result<int,std::string>;
     using sut_type = result<int,int>;
 
     SECTION("Result is not constructible") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T and E are not constructible from T2 and E2") {
+    // Arrange
     using copy_type = result<std::string,std::string>;
     using sut_type = result<int,int>;
 
     SECTION("Result is not constructible") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 }
@@ -681,23 +876,36 @@ TEST_CASE("result<T,E>::result(const result<T2,E2>&) (explicit)", "[ctor]") {
 
   SECTION("T and E are both constructible from T2 and E2") {
     SECTION("T is explicit constructible from T2") {
+      // Arrange
       using copy_type = result<std::string, const char*>;
       using sut_type = result<explicit_type<std::string>,std::string>;
 
       SECTION("Result is constructible") {
-        STATIC_REQUIRE(std::is_constructible<sut_type,const copy_type&>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_constructible<sut_type,const copy_type&>::value;
+
+        // Assert
+        STATIC_REQUIRE(property_holds);
       }
 
       SECTION("Result is not implicit constructible") {
-        STATIC_REQUIRE_FALSE(std::is_convertible<const copy_type&,sut_type>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_convertible<const copy_type&,sut_type>::value;
+
+        // Assert
+        STATIC_REQUIRE_FALSE(property_holds);
       }
 
       SECTION("Copy source contained a value") {
         const auto value = "Hello world";
         const copy_type source{value};
 
+        // Act
         const sut_type sut{source};
 
+        // Assert
         SECTION("Copy contains a value") {
           REQUIRE(sut.has_value());
         }
@@ -710,8 +918,10 @@ TEST_CASE("result<T,E>::result(const result<T2,E2>&) (explicit)", "[ctor]") {
         const auto error = fail("Goodbye world");
         const copy_type source{error};
 
+        // Act
         const sut_type sut{source};
 
+        // Assert
         SECTION("Copy contains an error") {
           REQUIRE(sut.has_error());
         }
@@ -722,23 +932,36 @@ TEST_CASE("result<T,E>::result(const result<T2,E2>&) (explicit)", "[ctor]") {
     }
 
     SECTION("E is explicit constructible from E2") {
+      // Arrange
       using copy_type = result<const char*,std::string>;
       using sut_type = result<std::string,explicit_type<std::string>>;
 
       SECTION("Result is constructible") {
-        STATIC_REQUIRE(std::is_constructible<sut_type,const copy_type&>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_constructible<sut_type,const copy_type&>::value;
+
+        // Assert
+        STATIC_REQUIRE(property_holds);
       }
 
       SECTION("Result is not implicit constructible") {
-        STATIC_REQUIRE_FALSE(std::is_convertible<const copy_type&,sut_type>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_convertible<const copy_type&,sut_type>::value;
+
+        // Assert
+        STATIC_REQUIRE_FALSE(property_holds);
       }
 
       SECTION("Copy source contained a value") {
         const auto value = "Hello world";
         const copy_type source{value};
 
+        // Act
         const sut_type sut{source};
 
+        // Assert
         SECTION("Copy contains a value") {
           REQUIRE(sut.has_value());
         }
@@ -751,8 +974,10 @@ TEST_CASE("result<T,E>::result(const result<T2,E2>&) (explicit)", "[ctor]") {
         const auto error = fail("Goodbye world");
         const copy_type source{error};
 
+        // Act
         const sut_type sut{source};
 
+        // Assert
         SECTION("Copy contains an error") {
           REQUIRE(sut.has_error());
         }
@@ -762,23 +987,36 @@ TEST_CASE("result<T,E>::result(const result<T2,E2>&) (explicit)", "[ctor]") {
       }
     }
     SECTION("T and E are explicit constructible from T2 and E2") {
+      // Arrange
       using copy_type = result<std::string, std::string>;
       using sut_type = result<explicit_type<std::string>,explicit_type<std::string>>;
 
       SECTION("Result is constructible") {
-        STATIC_REQUIRE(std::is_constructible<sut_type,const copy_type&>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_constructible<sut_type,const copy_type&>::value;
+
+        // Assert
+        STATIC_REQUIRE(property_holds);
       }
 
       SECTION("Result is not implicit constructible") {
-        STATIC_REQUIRE_FALSE(std::is_convertible<const copy_type&,sut_type>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_convertible<const copy_type&,sut_type>::value;
+
+        // Assert
+        STATIC_REQUIRE_FALSE(property_holds);
       }
 
       SECTION("Copy source contained a value") {
         const auto value = "Hello world";
         const copy_type source{value};
 
+        // Act
         const sut_type sut{source};
 
+        // Assert
         SECTION("Copy contains a value") {
           REQUIRE(sut.has_value());
         }
@@ -791,8 +1029,10 @@ TEST_CASE("result<T,E>::result(const result<T2,E2>&) (explicit)", "[ctor]") {
         const auto error = fail("Goodbye world");
         const copy_type source{error};
 
+        // Act
         const sut_type sut{source};
 
+        // Assert
         SECTION("Copy contains an error") {
           REQUIRE(sut.has_error());
         }
@@ -806,29 +1046,47 @@ TEST_CASE("result<T,E>::result(const result<T2,E2>&) (explicit)", "[ctor]") {
   // Not Constructible:
 
   SECTION("T is not constructible from T2") {
+    // Arrange
     using copy_type = result<std::string,int>;
     using sut_type = result<int,int>;
 
     SECTION("Result is not constructible") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is not constructible from E2") {
+    // Arrange
     using copy_type = result<int,std::string>;
     using sut_type = result<int,int>;
 
     SECTION("Result is not constructible") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T and E are not constructible from T2 and E2") {
+    // Arrange
     using copy_type = result<std::string,std::string>;
     using sut_type = result<int,int>;
 
     SECTION("Result is not constructible") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 }
@@ -838,23 +1096,36 @@ TEST_CASE("result<T,E>::result(result<T2,E2>&&)", "[ctor]") {
   // Constructible Case:
 
   SECTION("T and E are both constructible from T2 and E2") {
+    // Arrange
     using copy_type = result<std::string,std::string>;
     using sut_type = result<move_only<std::string>,move_only<std::string>>;
 
     SECTION("Result is constructible") {
-      STATIC_REQUIRE(std::is_constructible<sut_type,copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type,copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Result is implicit constructible") {
-      STATIC_REQUIRE(std::is_convertible<copy_type&&,sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_convertible<copy_type&&,sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Copy source contained a value") {
       const auto value = "Hello world";
       copy_type source{value};
 
+      // Act
       const sut_type sut = std::move(source);
 
+      // Assert
       SECTION("Copy contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -867,8 +1138,10 @@ TEST_CASE("result<T,E>::result(result<T2,E2>&&)", "[ctor]") {
       const auto error = fail("Goodbye world");
       copy_type source{error};
 
+      // Act
       const sut_type sut = std::move(source);
 
+      // Assert
       SECTION("Copy contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -881,29 +1154,47 @@ TEST_CASE("result<T,E>::result(result<T2,E2>&&)", "[ctor]") {
   // Not Constructible:
 
   SECTION("T is not constructible from T2") {
+    // Arrange
     using copy_type = result<std::string,int>;
     using sut_type = result<int,int>;
 
     SECTION("Result is not constructible") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is not constructible from E2") {
+    // Arrange
     using copy_type = result<int,std::string>;
     using sut_type = result<int,int>;
 
     SECTION("Result is not constructible") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T and E are not constructible from T2 and E2") {
+    // Arrange
     using copy_type = result<std::string,std::string>;
     using sut_type = result<int,int>;
 
     SECTION("Result is not constructible") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 }
@@ -914,23 +1205,36 @@ TEST_CASE("result<T,E>::result(result<T2,E2>&&) (explicit)", "[ctor]") {
 
   SECTION("T and E are both constructible from T2 and E2") {
     SECTION("T is explicit constructible from T2") {
+      // Arrange
       using copy_type = result<std::string, const char*>;
       using sut_type = result<explicit_type<move_only<std::string>>,std::string>;
 
       SECTION("Result is constructible") {
-        STATIC_REQUIRE(std::is_constructible<sut_type,copy_type&&>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_constructible<sut_type,copy_type&&>::value;
+
+        // Assert
+        STATIC_REQUIRE(property_holds);
       }
 
       SECTION("Result is not implicit constructible") {
-        STATIC_REQUIRE_FALSE(std::is_convertible<copy_type&&,sut_type>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_convertible<copy_type&&,sut_type>::value;
+
+        // Assert
+        STATIC_REQUIRE_FALSE(property_holds);
       }
 
       SECTION("Copy source contained a value") {
         const auto value = "Hello world";
         copy_type source{value};
 
+        // Act
         const sut_type sut{std::move(source)};
 
+        // Assert
         SECTION("Copy contains a value") {
           REQUIRE(sut.has_value());
         }
@@ -943,8 +1247,10 @@ TEST_CASE("result<T,E>::result(result<T2,E2>&&) (explicit)", "[ctor]") {
         const auto error = fail("Goodbye world");
         copy_type source{error};
 
+        // Act
         const sut_type sut{std::move(source)};
 
+        // Assert
         SECTION("Copy contains an error") {
           REQUIRE(sut.has_error());
         }
@@ -955,23 +1261,36 @@ TEST_CASE("result<T,E>::result(result<T2,E2>&&) (explicit)", "[ctor]") {
     }
 
     SECTION("E is explicit constructible from E2") {
+      // Arrange
       using copy_type = result<const char*,std::string>;
       using sut_type = result<std::string,explicit_type<move_only<std::string>>>;
 
       SECTION("Result is constructible") {
-        STATIC_REQUIRE(std::is_constructible<sut_type,copy_type&&>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_constructible<sut_type,copy_type&&>::value;
+
+        // Assert
+        STATIC_REQUIRE(property_holds);
       }
 
       SECTION("Result is not implicit constructible") {
-        STATIC_REQUIRE_FALSE(std::is_convertible<copy_type&&,sut_type>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_convertible<copy_type&&,sut_type>::value;
+
+        // Assert
+        STATIC_REQUIRE_FALSE(property_holds);
       }
 
       SECTION("Copy source contained a value") {
         const auto value = "Hello world";
         copy_type source{value};
 
+        // Act
         const sut_type sut{std::move(source)};
 
+        // Assert
         SECTION("Copy contains a value") {
           REQUIRE(sut.has_value());
         }
@@ -984,8 +1303,10 @@ TEST_CASE("result<T,E>::result(result<T2,E2>&&) (explicit)", "[ctor]") {
         const auto error = fail("Goodbye world");
         copy_type source{error};
 
+        // Act
         const sut_type sut{std::move(source)};
 
+        // Assert
         SECTION("Copy contains an error") {
           REQUIRE(sut.has_error());
         }
@@ -995,6 +1316,7 @@ TEST_CASE("result<T,E>::result(result<T2,E2>&&) (explicit)", "[ctor]") {
       }
     }
     SECTION("T and E are explicit constructible from T2 and E2") {
+      // Arrange
       using copy_type = result<std::string, std::string>;
       using sut_type = result<
         explicit_type<move_only<std::string>>,
@@ -1002,19 +1324,31 @@ TEST_CASE("result<T,E>::result(result<T2,E2>&&) (explicit)", "[ctor]") {
       >;
 
       SECTION("Result is constructible") {
-        STATIC_REQUIRE(std::is_constructible<sut_type,copy_type&&>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_constructible<sut_type,copy_type&&>::value;
+
+        // Assert
+        STATIC_REQUIRE(property_holds);
       }
 
       SECTION("Result is not implicit constructible") {
-        STATIC_REQUIRE_FALSE(std::is_convertible<copy_type&&,sut_type>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_convertible<copy_type&&,sut_type>::value;
+
+        // Assert
+        STATIC_REQUIRE_FALSE(property_holds);
       }
 
       SECTION("Copy source contained a value") {
         const auto value = "Hello world";
         copy_type source{value};
 
+        // Act
         const sut_type sut{std::move(source)};
 
+        // Assert
         SECTION("Copy contains a value") {
           REQUIRE(sut.has_value());
         }
@@ -1027,8 +1361,10 @@ TEST_CASE("result<T,E>::result(result<T2,E2>&&) (explicit)", "[ctor]") {
         const auto error = fail("Goodbye world");
         copy_type source{error};
 
+        // Act
         const sut_type sut{std::move(source)};
 
+        // Assert
         SECTION("Copy contains an error") {
           REQUIRE(sut.has_error());
         }
@@ -1042,42 +1378,63 @@ TEST_CASE("result<T,E>::result(result<T2,E2>&&) (explicit)", "[ctor]") {
   // Not Constructible:
 
   SECTION("T is not constructible from T2") {
+    // Arrange
     using copy_type = result<std::string,int>;
     using sut_type = result<int,int>;
 
     SECTION("Result is not constructible") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is not constructible from E2") {
+    // Arrange
     using copy_type = result<int,std::string>;
     using sut_type = result<int,int>;
 
     SECTION("Result is not constructible") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T and E are not constructible from T2 and E2") {
+    // Arrange
     using copy_type = result<std::string,std::string>;
     using sut_type = result<int,int>;
 
     SECTION("Result is not constructible") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 }
 
 TEST_CASE("result<T,E>::result(in_place_t, Args&&...)", "[ctor]") {
+  // Arrange
   using sut_type = result<std::string,int>;
 
   const auto input = "hello world";
   const auto size = 5;
   const auto value = std::string{input, size};
 
+  // Act
   const sut_type sut(std::in_place, input, size);
 
+  // Assert
   SECTION("Contains a value") {
     REQUIRE(sut.has_value());
   }
@@ -1088,14 +1445,17 @@ TEST_CASE("result<T,E>::result(in_place_t, Args&&...)", "[ctor]") {
 }
 
 TEST_CASE("result<T,E>::result(in_place_t, std::initializer_list<U>, Args&&...)", "[ctor]") {
+  // Arrange
   using sut_type = result<std::string,int>;
 
   const auto value = std::string{
     {'h','e','l','l','o'}, std::allocator<char>{}
   };
 
+  // Act
   const sut_type sut(std::in_place, {'h','e','l','l','o'}, std::allocator<char>{});
 
+  // Assert
   SECTION("Contains a value") {
     REQUIRE(sut.has_value());
   }
@@ -1106,14 +1466,17 @@ TEST_CASE("result<T,E>::result(in_place_t, std::initializer_list<U>, Args&&...)"
 }
 
 TEST_CASE("result<T,E>::result(in_place_error_t, Args&&...)", "[ctor]") {
+  // Arrange
   using sut_type = result<int,std::string>;
 
   const auto input = "hello world";
   const auto size = 5;
   const auto result = std::string{input, size};
 
+  // Act
   const sut_type sut(in_place_error, input, size);
 
+  // Assert
   SECTION("Contains an error") {
     REQUIRE(sut.has_error());
   }
@@ -1124,14 +1487,17 @@ TEST_CASE("result<T,E>::result(in_place_error_t, Args&&...)", "[ctor]") {
 }
 
 TEST_CASE("result<T,E>::result(in_place_error_t, std::initializer_list<U>, Args&&...)", "[ctor]") {
+  // Arrange
   using sut_type = result<int,std::string>;
 
   const auto value = std::string{
     {'h','e','l','l','o'}, std::allocator<char>{}
   };
 
+  // Act
   const sut_type sut(in_place_error, {'h','e','l','l','o'}, std::allocator<char>{});
 
+  // Assert
   SECTION("Contains an error") {
     REQUIRE(sut.has_error());
   }
@@ -1142,11 +1508,14 @@ TEST_CASE("result<T,E>::result(in_place_error_t, std::initializer_list<U>, Args&
 }
 
 TEST_CASE("result<T,E>::result(const failure<E2>&)", "[ctor]") {
+  // Arrange
   using sut_type = result<int,std::string>;
   const auto source = fail<std::string>("hello world");
 
+  // Act
   const sut_type sut{source};
 
+  // Assert
   SECTION("Contains an error") {
     REQUIRE(sut.has_error());
   }
@@ -1157,12 +1526,15 @@ TEST_CASE("result<T,E>::result(const failure<E2>&)", "[ctor]") {
 }
 
 TEST_CASE("result<T,E>::result(failure<E2>&&)", "[ctor]") {
+  // Arrange
   using sut_type = result<int,move_only<std::string>>;
   auto source = fail<std::string>("hello world");
   const auto copy = source;
 
+  // Act
   const sut_type sut{std::move(source)};
 
+  // Assert
   SECTION("Contains an error") {
     REQUIRE(sut.has_error());
   }
@@ -1173,12 +1545,15 @@ TEST_CASE("result<T,E>::result(failure<E2>&&)", "[ctor]") {
 }
 
 TEST_CASE("result<T,E>::result(U&&)", "[ctor]") {
+  // Arrange
   using sut_type = result<std::string,int>;
   auto source = "Hello world";
   const auto copy = std::string{source};
 
+  // Act
   const sut_type sut = source;
 
+  // Assert
   SECTION("Contains a value") {
     REQUIRE(sut.has_value());
   }
@@ -1188,17 +1563,25 @@ TEST_CASE("result<T,E>::result(U&&)", "[ctor]") {
   }
 
   SECTION("Is disabled for explicit constructors") {
-    STATIC_REQUIRE_FALSE(std::is_convertible<const std::string&,explicit_type<std::string>>::value);
+    // Act
+    constexpr auto property_holds =
+      std::is_convertible<const std::string&,explicit_type<std::string>>::value;
+
+    // Assert
+    STATIC_REQUIRE_FALSE(property_holds);
   }
 }
 
 TEST_CASE("result<T,E>::result(U&&) (explicit)", "[ctor]") {
+  // Arrange
   using sut_type = result<explicit_type<std::string>,int>;
   auto source = "Hello world";
   const auto copy = std::string{source};
 
+  // Act
   const sut_type sut{source};
 
+  // Assert
   SECTION("Contains a value") {
     REQUIRE(sut.has_value());
   }
@@ -1212,72 +1595,110 @@ TEST_CASE("result<T,E>::result(U&&) (explicit)", "[ctor]") {
 
 TEST_CASE("result<T,E>::~result()", "[dtor]") {
   SECTION("T and E are trivially destructible") {
+    // Arrange
     using sut_type = result<int, int>;
 
     SECTION("result's destructor is trivial") {
-      STATIC_REQUIRE(std::is_trivially_destructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_destructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
   SECTION("T is not trivially destructible") {
+    // Arrange
     using sut_type = result<report_destructor, int>;
 
     auto invoked = false;
+
+    // Act
     {
       sut_type sut{std::in_place, &invoked};
       (void) sut;
     }
 
     SECTION("result's destructor is not trivial") {
-      STATIC_REQUIRE_FALSE(std::is_trivially_destructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_destructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
 
+    // Assert
     SECTION("Invokes T's underlying destructor") {
       REQUIRE(invoked);
     }
   }
   SECTION("E is not trivially destructible") {
+    // Arrange
     using sut_type = result<int, report_destructor>;
 
     auto invoked = false;
+
+    // Act
     {
       sut_type sut{in_place_error, &invoked};
       (void) sut;
     }
 
     SECTION("result's destructor is not trivial") {
-      STATIC_REQUIRE_FALSE(std::is_trivially_destructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_destructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
 
+    // Assert
     SECTION("Invokes E's underlying destructor") {
       REQUIRE(invoked);
     }
   }
   SECTION("T and E are not trivially destructible") {
+    // Arrange
     using sut_type = result<report_destructor, report_destructor>;
 
     SECTION("T is active") {
       SECTION("Invokes T's underlying destructor") {
         auto invoked = false;
+
+        // Act
         {
           sut_type sut{std::in_place, &invoked};
           (void) sut;
         }
+
+        // Assert
         REQUIRE(invoked);
       }
     }
     SECTION("E is active") {
       SECTION("Invokes E's underlying destructor") {
         auto invoked = false;
+
+        // Act
         {
           sut_type sut{in_place_error, &invoked};
           (void) sut;
         }
+
+        // Assert
         REQUIRE(invoked);
       }
     }
 
     SECTION("result's destructor is not trivial") {
-      STATIC_REQUIRE_FALSE(std::is_trivially_destructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_destructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 }
@@ -1287,66 +1708,110 @@ TEST_CASE("result<T,E>::~result()", "[dtor]") {
 TEST_CASE("result<T,E>::operator=(const result&)", "[assign]") {
   SECTION("T is not nothrow copy constructible") {
     SECTION("Result is not copy-assignable") {
+      // Arrange
       using sut_type = result<std::string,int>;
 
-      STATIC_REQUIRE_FALSE(std::is_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("E is not nothrow copy constructible") {
     SECTION("Result is not copy-assignable") {
+      // Arrange
       using sut_type = result<int,std::string>;
 
-      STATIC_REQUIRE_FALSE(std::is_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("T and E are not nothrow copy constructible") {
     SECTION("Result is not copy-assignable") {
+      // Arrange
       using sut_type = result<std::string,std::string>;
 
-      STATIC_REQUIRE_FALSE(std::is_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T is not copy-assignable") {
     SECTION("Result is not copy-assignable") {
+      // Arrange
       using sut_type = result<not_copy_or_moveable,int>;
 
-      STATIC_REQUIRE_FALSE(std::is_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("E is not copy-assignable") {
     SECTION("Result is not copy-assignable") {
+      // Arrange
       using sut_type = result<int,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("T and E are not copy-assignable") {
     SECTION("Result is not copy-assignable") {
+      // Arrange
       using sut_type = result<not_copy_or_moveable,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T and E are nothrow copy-constructible") {
     SECTION("Result is copy-assignable") {
+      // Arrange
       using sut_type = result<int,std::error_code>;
 
-      STATIC_REQUIRE(std::is_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("result contains a value") {
       SECTION("'other' contains a value") {
+        // Arrange
         using sut_type = result<int,std::error_code>;
 
         const auto value = 42;
         const sut_type copy{value};
         sut_type sut{};
 
+        // Act
         sut = copy;
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_copy_assignable<sut_type>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_copy_assignable<sut_type>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("active element is value") {
           REQUIRE(sut.has_value());
         }
@@ -1355,6 +1820,7 @@ TEST_CASE("result<T,E>::operator=(const result&)", "[assign]") {
         }
       }
       SECTION("'other' contains an error") {
+        // Arrange
         using sut_type = result<report_destructor,const char*>;
 
         const auto value = fail("42");
@@ -1362,10 +1828,18 @@ TEST_CASE("result<T,E>::operator=(const result&)", "[assign]") {
         const sut_type copy{value};
         sut_type sut{&is_invoked};
 
+        // Act
         sut = copy;
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_copy_assignable<sut_type>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_copy_assignable<sut_type>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("Calls 'T's destructor first") {
           REQUIRE(is_invoked);
         }
@@ -1379,6 +1853,7 @@ TEST_CASE("result<T,E>::operator=(const result&)", "[assign]") {
     }
     SECTION("result contains an error") {
       SECTION("'other' contains a value") {
+        // Arrange
         using sut_type = result<int,report_destructor>;
 
         const auto value = 42;
@@ -1386,11 +1861,19 @@ TEST_CASE("result<T,E>::operator=(const result&)", "[assign]") {
         const sut_type copy{value};
         sut_type sut{in_place_error, &is_invoked};
 
+        // Act
         sut = copy;
 
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_copy_assignable<sut_type>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_copy_assignable<sut_type>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("Calls 'T's destructor first") {
           REQUIRE(is_invoked);
         }
@@ -1402,16 +1885,25 @@ TEST_CASE("result<T,E>::operator=(const result&)", "[assign]") {
         }
       }
       SECTION("'other' contains an error") {
+        // Arrange
         using sut_type = result<int,int>;
 
         const auto value = fail(42);
         const sut_type copy{value};
         sut_type sut{fail(0)};
 
+        // Act
         sut = copy;
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_copy_assignable<sut_type>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_copy_assignable<sut_type>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("active element is error") {
           REQUIRE(sut.has_error());
         }
@@ -1423,13 +1915,23 @@ TEST_CASE("result<T,E>::operator=(const result&)", "[assign]") {
   }
 
   SECTION("T and E are trivial copy-constructible and copy-assignable") {
+    // Arrange
     using sut_type = result<int, int>;
 
     SECTION("Result is copy-assignable") {
-      STATIC_REQUIRE(std::is_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Result is trivial copy-assignable") {
-      STATIC_REQUIRE(std::is_trivially_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 }
@@ -1437,66 +1939,110 @@ TEST_CASE("result<T,E>::operator=(const result&)", "[assign]") {
 TEST_CASE("result<T,E>::operator=(result&&)", "[assign]") {
   SECTION("T is not nothrow move constructible") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using sut_type = result<throwing<std::string>,int>;
 
-      STATIC_REQUIRE_FALSE(std::is_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("E is not nothrow move constructible") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using sut_type = result<int,throwing<std::string>>;
 
-      STATIC_REQUIRE_FALSE(std::is_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("T and E are not nothrow move constructible") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using sut_type = result<throwing<std::string>,throwing<std::string>>;
 
-      STATIC_REQUIRE_FALSE(std::is_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T is not move-assignable") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using sut_type = result<not_copy_or_moveable,int>;
 
-      STATIC_REQUIRE_FALSE(std::is_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("E is not move-assignable") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using sut_type = result<int,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("T and E are not move-assignable") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using sut_type = result<not_copy_or_moveable,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T and E are nothrow copy-constructible") {
     SECTION("Result is move-assignable") {
+      // Arrange
       using sut_type = result<int,std::error_code>;
 
-      STATIC_REQUIRE(std::is_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("result contains a value") {
       SECTION("'other' contains a value") {
+        // Arrange
         using sut_type = result<move_only<std::string>,std::error_code>;
 
         const auto value = "Hello world";
         sut_type original{value};
         sut_type sut{};
 
+        // Act
         sut = std::move(original);
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_move_assignable<sut_type>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_move_assignable<sut_type>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("active element is value") {
           REQUIRE(sut.has_value());
         }
@@ -1505,6 +2051,7 @@ TEST_CASE("result<T,E>::operator=(result&&)", "[assign]") {
         }
       }
       SECTION("'other' contains an error") {
+        // Arrange
         using sut_type = result<move_only<report_destructor>,const char*>;
 
         const auto value = fail("42");
@@ -1512,10 +2059,18 @@ TEST_CASE("result<T,E>::operator=(result&&)", "[assign]") {
         sut_type original{value};
         sut_type sut{&is_invoked};
 
+        // Act
         sut = std::move(original);
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_move_assignable<sut_type>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_move_assignable<sut_type>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("Calls 'T's destructor first") {
           REQUIRE(is_invoked);
         }
@@ -1529,6 +2084,7 @@ TEST_CASE("result<T,E>::operator=(result&&)", "[assign]") {
     }
     SECTION("result contains an error") {
       SECTION("'other' contains a value") {
+        // Arrange
         using sut_type = result<int,move_only<report_destructor>>;
 
         const auto value = 42;
@@ -1536,11 +2092,19 @@ TEST_CASE("result<T,E>::operator=(result&&)", "[assign]") {
         sut_type original{value};
         sut_type sut{in_place_error, &is_invoked};
 
+        // Act
         sut = std::move(original);
 
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_move_assignable<sut_type>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_move_assignable<sut_type>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("Calls 'T's destructor first") {
           REQUIRE(is_invoked);
         }
@@ -1552,16 +2116,25 @@ TEST_CASE("result<T,E>::operator=(result&&)", "[assign]") {
         }
       }
       SECTION("'other' contains an error") {
+        // Arrange
         using sut_type = result<int,move_only<std::string>>;
 
         const auto value = fail("hello world");
         sut_type copy{value};
         sut_type sut{fail("goodbye world")};
 
+        // Act
         sut = std::move(copy);
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_move_assignable<sut_type>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_move_assignable<sut_type>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("active element is error") {
           REQUIRE(sut.has_error());
         }
@@ -1573,13 +2146,23 @@ TEST_CASE("result<T,E>::operator=(result&&)", "[assign]") {
   }
 
   SECTION("T and E are trivial copy-constructible and copy-assignable") {
+    // Arrange
     using sut_type = result<int, int>;
 
     SECTION("Result is move-assignable") {
-      STATIC_REQUIRE(std::is_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Result is trivial move-assignable") {
-      STATIC_REQUIRE(std::is_trivially_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 }
@@ -1587,63 +2170,106 @@ TEST_CASE("result<T,E>::operator=(result&&)", "[assign]") {
 TEST_CASE("result<T,E>::operator=(const result<T2,E2>&)", "[assign]") {
 SECTION("T is not nothrow constructible from T2") {
     SECTION("Result is not assignable") {
+      // Arrange
       using copy_type = result<std::string, long>;
       using sut_type = result<throwing<std::string>,int>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type, const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type, const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("E is not nothrow constructible from E2") {
     SECTION("Result is not assignable") {
+      // Arrange
       using copy_type = result<int,std::string>;
       using sut_type = result<int,throwing<std::string>>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type, const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type, const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("T and E are not nothrow move constructible") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using copy_type = result<std::string,std::string>;
       using sut_type = result<throwing<std::string>,throwing<std::string>>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type, const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type, const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T is not move-assignable") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using copy_type = result<not_copy_or_moveable,long>;
       using sut_type = result<not_copy_or_moveable,int>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type, const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type, const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("E is not move-assignable") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using copy_type = result<long,not_copy_or_moveable>;
       using sut_type = result<int,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type, const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type, const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("T and E are not move-assignable") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using copy_type = result<not_copy_or_moveable,not_copy_or_moveable>;
       using sut_type = result<not_copy_or_moveable,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type, const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type, const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T and E are nothrow copy-constructible") {
     SECTION("Result is move-assignable") {
+      // Arrange
       using copy_type = result<long,std::io_errc>;
       using sut_type = result<int,move_only<std::error_code>>;
 
-      STATIC_REQUIRE(std::is_assignable<sut_type,const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("result contains a value") {
       SECTION("'other' contains a value") {
+        // Arrange
         using copy_type = result<const char*,std::error_code>;
         using sut_type = result<nonthrowing<std::string>,std::error_code>;
 
@@ -1651,11 +2277,19 @@ SECTION("T is not nothrow constructible from T2") {
         copy_type original{value};
         sut_type sut{};
 
+        // Act
         sut = original;
 
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_assignable<sut_type,const copy_type&>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_assignable<sut_type,const copy_type&>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("active element is value") {
           REQUIRE(sut.has_value());
         }
@@ -1664,6 +2298,7 @@ SECTION("T is not nothrow constructible from T2") {
         }
       }
       SECTION("'other' contains an error") {
+        // Arrange
         using copy_type = result<report_destructor,const char*>;
         using sut_type = result<report_destructor,const char*>;
 
@@ -1672,11 +2307,19 @@ SECTION("T is not nothrow constructible from T2") {
         copy_type original{value};
         sut_type sut{&is_invoked};
 
+        // Act
         sut = original;
 
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_assignable<sut_type,copy_type&&>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_assignable<sut_type,copy_type&&>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("Calls 'T's destructor first") {
           REQUIRE(is_invoked);
         }
@@ -1690,6 +2333,7 @@ SECTION("T is not nothrow constructible from T2") {
     }
     SECTION("result contains an error") {
       SECTION("'other' contains a value") {
+        // Arrange
         using copy_type = result<int,report_destructor>;
         using sut_type = result<int,report_destructor>;
 
@@ -1698,11 +2342,19 @@ SECTION("T is not nothrow constructible from T2") {
         copy_type original{value};
         sut_type sut{in_place_error, &is_invoked};
 
+        // Act
         sut = original;
 
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_assignable<sut_type,const copy_type&>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_assignable<sut_type,const copy_type&>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("Calls 'T's destructor first") {
           REQUIRE(is_invoked);
         }
@@ -1714,6 +2366,7 @@ SECTION("T is not nothrow constructible from T2") {
         }
       }
       SECTION("'other' contains an error") {
+        // Arrange
         using copy_type = result<int,const char*>;
         using sut_type = result<int,nonthrowing<std::string>>;
 
@@ -1721,11 +2374,19 @@ SECTION("T is not nothrow constructible from T2") {
         copy_type copy{value};
         sut_type sut{fail("goodbye world")};
 
+        // Act
         sut = copy;
 
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_assignable<sut_type,const copy_type&>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_assignable<sut_type,const copy_type&>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("active element is error") {
           REQUIRE(sut.has_error());
         }
@@ -1740,63 +2401,106 @@ SECTION("T is not nothrow constructible from T2") {
 TEST_CASE("result<T,E>::operator=(result<T2,E2>&&)", "[assign]") {
   SECTION("T is not nothrow constructible from T2") {
     SECTION("Result is not assignable") {
+      // Arrange
       using copy_type = result<std::string, long>;
       using sut_type = result<throwing<std::string>,int>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type, copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type, copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("E is not nothrow constructible from E2") {
     SECTION("Result is not assignable") {
+      // Arrange
       using copy_type = result<int,std::string>;
       using sut_type = result<int,throwing<std::string>>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type, copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type, copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("T and E are not nothrow move constructible") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using copy_type = result<std::string,std::string>;
       using sut_type = result<throwing<std::string>,throwing<std::string>>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type, copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type, copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T is not move-assignable") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using copy_type = result<not_copy_or_moveable,long>;
       using sut_type = result<not_copy_or_moveable,int>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type, copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type, copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("E is not move-assignable") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using copy_type = result<long,not_copy_or_moveable>;
       using sut_type = result<int,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type, copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type, copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("T and E are not move-assignable") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using copy_type = result<not_copy_or_moveable,not_copy_or_moveable>;
       using sut_type = result<not_copy_or_moveable,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type,copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("T and E are nothrow copy-constructible") {
     SECTION("Result is move-assignable") {
+      // Arrange
       using copy_type = result<long,std::io_errc>;
       using sut_type = result<int,move_only<std::error_code>>;
 
-      STATIC_REQUIRE(std::is_assignable<sut_type,copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("result contains a value") {
       SECTION("'other' contains a value") {
+        // Arrange
         using copy_type = result<std::string,std::error_code>;
         using sut_type = result<move_only<std::string>,std::error_code>;
 
@@ -1804,10 +2508,18 @@ TEST_CASE("result<T,E>::operator=(result<T2,E2>&&)", "[assign]") {
         copy_type original{value};
         sut_type sut{};
 
+        // Act
         sut = std::move(original);
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_assignable<sut_type,copy_type&&>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_assignable<sut_type,copy_type&&>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("active element is value") {
           REQUIRE(sut.has_value());
         }
@@ -1816,6 +2528,7 @@ TEST_CASE("result<T,E>::operator=(result<T2,E2>&&)", "[assign]") {
         }
       }
       SECTION("'other' contains an error") {
+        // Arrange
         using copy_type = result<report_destructor,const char*>;
         using sut_type = result<move_only<report_destructor>,const char*>;
 
@@ -1824,11 +2537,19 @@ TEST_CASE("result<T,E>::operator=(result<T2,E2>&&)", "[assign]") {
         copy_type original{value};
         sut_type sut{&is_invoked};
 
+        // Act
         sut = std::move(original);
 
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_assignable<sut_type,copy_type&&>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_assignable<sut_type,copy_type&&>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("Calls 'T's destructor first") {
           REQUIRE(is_invoked);
         }
@@ -1842,6 +2563,7 @@ TEST_CASE("result<T,E>::operator=(result<T2,E2>&&)", "[assign]") {
     }
     SECTION("result contains an error") {
       SECTION("'other' contains a value") {
+        // Arrange
         using copy_type = result<int,report_destructor>;
         using sut_type = result<int,move_only<report_destructor>>;
 
@@ -1850,11 +2572,19 @@ TEST_CASE("result<T,E>::operator=(result<T2,E2>&&)", "[assign]") {
         copy_type original{value};
         sut_type sut{in_place_error, &is_invoked};
 
+        // Act
         sut = std::move(original);
 
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_assignable<sut_type,copy_type&&>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_assignable<sut_type,copy_type&&>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("Calls 'T's destructor first") {
           REQUIRE(is_invoked);
         }
@@ -1866,6 +2596,7 @@ TEST_CASE("result<T,E>::operator=(result<T2,E2>&&)", "[assign]") {
         }
       }
       SECTION("'other' contains an error") {
+        // Arrange
         using copy_type = result<int,std::string>;
         using sut_type = result<int,move_only<std::string>>;
 
@@ -1873,11 +2604,19 @@ TEST_CASE("result<T,E>::operator=(result<T2,E2>&&)", "[assign]") {
         copy_type copy{value};
         sut_type sut{fail("goodbye world")};
 
+        // Act
         sut = std::move(copy);
 
         SECTION("Result can be assigned") {
-          STATIC_REQUIRE(std::is_assignable<sut_type,copy_type&&>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_assignable<sut_type,copy_type&&>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
+
+        // Assert
         SECTION("active element is error") {
           REQUIRE(sut.has_error());
         }
@@ -1892,32 +2631,57 @@ TEST_CASE("result<T,E>::operator=(result<T2,E2>&&)", "[assign]") {
 TEST_CASE("result<T,E>::operator=(U&&)", "[assign]") {
   SECTION("T is not nothrow constructible from U") {
     SECTION("result is not assignable from U") {
-      STATIC_REQUIRE_FALSE(std::is_assignable<result<throwing<std::string>,std::error_code>,const char*>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<result<throwing<std::string>,std::error_code>,const char*>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("T is constructible from U, and nothrow move constructible") {
     SECTION("result is assignable from U") {
       // This works by creating an intermediate `result` object which then
       // is moved through non-throwing move-assignment
-      STATIC_REQUIRE(std::is_assignable<result<std::string,std::error_code>,const char*>::value);
+
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<result<std::string,std::error_code>,const char*>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
   SECTION("T is not assignable or constructible from U") {
     SECTION("result is not assignable from U") {
-      STATIC_REQUIRE_FALSE(std::is_assignable<result<int,std::error_code>,const char*>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<result<int,std::error_code>,const char*>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("result contains a value") {
+    // Arrange
     using sut_type = result<int,std::error_code>;
 
     const auto value = 42ll;
     sut_type sut{};
 
+    // Act
     sut = value;
 
     SECTION("Result can be assigned") {
-      STATIC_REQUIRE(std::is_assignable<sut_type,decltype(value)>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,decltype(value)>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
+
+    // Assert
     SECTION("active element is value") {
       REQUIRE(sut.has_value());
     }
@@ -1926,16 +2690,25 @@ TEST_CASE("result<T,E>::operator=(U&&)", "[assign]") {
     }
   }
   SECTION("result contains an error") {
+    // Arrange
     using sut_type = result<int, report_destructor>;
 
     const auto value = 42ll;
     auto is_invoked = false;
     sut_type sut{in_place_error, &is_invoked};
 
+    // Act
     sut = value;
     SECTION("Result can be assigned") {
-      STATIC_REQUIRE(std::is_assignable<sut_type,decltype(value)>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,decltype(value)>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
+
+    // Assert
     SECTION("Calls 'T's destructor first") {
       REQUIRE(is_invoked);
     }
@@ -1951,23 +2724,39 @@ TEST_CASE("result<T,E>::operator=(U&&)", "[assign]") {
 TEST_CASE("result<T,E>::operator=(const failure<E2>&)", "[assign]") {
   SECTION("E cant be constructed or assigned from E2") {
     SECTION("Result cannot be assigned from E2") {
+      // Arrange
       using copy_type = failure<not_copy_or_moveable>;
       using sut_type  = result<int,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type,const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("E is not nothrow constructible from E2") {
     SECTION("Result is not copy-assignable") {
+      // Arrange
       using copy_type = failure<const char*>;
       using sut_type = result<int,throwing<std::string>>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type,const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
-  SECTION("E is not nothrow move constructible from E2, but is nothrow-move constructible") {
+  SECTION(
+    "E is not nothrow move constructible from E2, but is nothrow-move "
+    "constructible"
+  ) {
     SECTION("Result is move-assignable") {
+      // Arrange
       using copy_type = failure<const char*>;
       using sut_type = result<int,std::string>;
 
@@ -1975,12 +2764,18 @@ TEST_CASE("result<T,E>::operator=(const failure<E2>&)", "[assign]") {
       // between. The result is then move-constructed instead -- which is
       // non-throwing.
 
-      STATIC_REQUIRE(std::is_assignable<sut_type,const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 
   SECTION("E can be constructed and assigned from E2") {
     SECTION("active element is T") {
+      // Arrange
       using copy_type = failure<long>;
       using sut_type = result<report_destructor, int>;
 
@@ -1989,11 +2784,19 @@ TEST_CASE("result<T,E>::operator=(const failure<E2>&)", "[assign]") {
       auto is_invoked = false;
       sut_type sut{&is_invoked};
 
+      // Act
       sut = value;
 
       SECTION("Result can be assigned") {
-        STATIC_REQUIRE(std::is_assignable<sut_type,const copy_type&>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_assignable<sut_type,const copy_type&>::value;
+
+        // Assert
+        STATIC_REQUIRE(property_holds);
       }
+
+      // Assert
       SECTION("Calls 'T's destructor first") {
         REQUIRE(is_invoked);
       }
@@ -2006,17 +2809,26 @@ TEST_CASE("result<T,E>::operator=(const failure<E2>&)", "[assign]") {
     }
 
     SECTION("active element is E") {
+      // Arrange
       using copy_type = failure<int>;
       using sut_type = result<int, long>;
 
       const auto value = copy_type{42};
       sut_type sut{copy_type{0}};
 
+      // Act
       sut = value;
 
       SECTION("Result can be assigned") {
-        STATIC_REQUIRE(std::is_assignable<sut_type,const copy_type&>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_assignable<sut_type,const copy_type&>::value;
+
+        // Assert
+        STATIC_REQUIRE(property_holds);
       }
+
+      // Assert
       SECTION("active element is error") {
         REQUIRE(sut.has_error());
       }
@@ -2030,23 +2842,39 @@ TEST_CASE("result<T,E>::operator=(const failure<E2>&)", "[assign]") {
 TEST_CASE("result<T,E>::operator=(failure<E2>&&)", "[assign]") {
   SECTION("E cant be constructed or assigned from E2") {
     SECTION("Result cannot be assigned from E2") {
+      // Arrange
       using copy_type = failure<not_copy_or_moveable>;
       using sut_type  = result<int,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type,copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("E is not nothrow move constructible from E2") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using copy_type = failure<const char*>;
       using sut_type = result<int,throwing<std::string>>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type,copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
-  SECTION("E is not nothrow move constructible from E2, but is nothrow-move constructible") {
+  SECTION(
+    "E is not nothrow move constructible from E2, but is nothrow-move "
+    "constructible"
+  ) {
     SECTION("Result is move-assignable") {
+      // Arrange
       using copy_type = failure<const char*>;
       using sut_type = result<int,std::string>;
 
@@ -2054,12 +2882,18 @@ TEST_CASE("result<T,E>::operator=(failure<E2>&&)", "[assign]") {
       // between. The result is then move-constructed instead -- which is
       // non-throwing.
 
-      STATIC_REQUIRE(std::is_assignable<sut_type,copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 
   SECTION("E can be constructed and assigned from E2") {
     SECTION("active element is T") {
+      // Arrange
       using copy_type = failure<std::string>;
       using sut_type = result<report_destructor, move_only<std::string>>;
 
@@ -2069,11 +2903,19 @@ TEST_CASE("result<T,E>::operator=(failure<E2>&&)", "[assign]") {
       auto is_invoked = false;
       sut_type sut{&is_invoked};
 
+      // Act
       sut = std::move(value);
 
       SECTION("Result can be assigned") {
-        STATIC_REQUIRE(std::is_assignable<sut_type,copy_type&&>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_assignable<sut_type,copy_type&&>::value;
+
+        // Assert
+        STATIC_REQUIRE(property_holds);
       }
+
+      // Assert
       SECTION("Calls 'T's destructor first") {
         REQUIRE(is_invoked);
       }
@@ -2086,6 +2928,7 @@ TEST_CASE("result<T,E>::operator=(failure<E2>&&)", "[assign]") {
     }
 
     SECTION("active element is E") {
+      // Arrange
       using copy_type = failure<std::string>;
       using sut_type = result<int, move_only<std::string>>;
 
@@ -2093,11 +2936,19 @@ TEST_CASE("result<T,E>::operator=(failure<E2>&&)", "[assign]") {
       const auto copy = value;
       sut_type sut{copy_type{"hello world"}};
 
+      // Act
       sut = std::move(value);
 
       SECTION("Result can be assigned") {
-        STATIC_REQUIRE(std::is_assignable<sut_type,copy_type&&>::value);
+        // Act
+        constexpr auto property_holds =
+          std::is_assignable<sut_type,copy_type&&>::value;
+
+        // Assert
+        STATIC_REQUIRE(property_holds);
       }
+
+      // Assert
       SECTION("active element is error") {
         REQUIRE(sut.has_error());
       }
@@ -2113,80 +2964,131 @@ TEST_CASE("result<T,E>::operator=(failure<E2>&&)", "[assign]") {
 //-----------------------------------------------------------------------------
 
 TEST_CASE("result<T,E>::operator->()", "[observers]") {
+  // Arrange
   auto sut = result<int,int>{42};
 
   SECTION("Returns pointer to internal structure") {
-    REQUIRE(&*sut == sut.operator->());
+    // Act
+    const auto* pointer = sut.operator->();
+
+    // Assert
+    REQUIRE(pointer == &*sut);
   }
 
   SECTION("Returns a mutable pointer") {
-    STATIC_REQUIRE(std::is_same<decltype(sut.operator->()),int*>::value);
+    // Act
+    constexpr auto property_holds =
+      std::is_same<decltype(sut.operator->()),int*>::value;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
 }
 
 TEST_CASE("result<T,E>::operator->() const", "[observers]") {
+  // Arrange
   const auto sut = result<int,int>{42};
 
   SECTION("Returns pointer to internal structure") {
-    REQUIRE(&*sut == sut.operator->());
+    // Act
+    const auto* pointer = sut.operator->();
+
+    // Assert
+    REQUIRE(pointer == &*sut);
   }
 
   SECTION("Returns a const pointer") {
-    STATIC_REQUIRE(std::is_same<decltype(sut.operator->()),const int*>::value);
+    // Act
+    constexpr auto property_holds =
+      std::is_same<decltype(sut.operator->()),const int*>::value;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
 }
 
 //-----------------------------------------------------------------------------
 
 TEST_CASE("result<T,E>::operator*() &", "[observers]") {
+  // Arrange
   auto sut = result<int,int>{42};
 
   SECTION("Returns mutable lvalue reference") {
-    STATIC_REQUIRE(std::is_same<decltype(*sut),int&>::value);
+    // Act
+    constexpr auto property_holds = std::is_same<decltype(*sut),int&>::value;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
   SECTION("Returns reference to internal structure") {
+    // Act
     auto& x = sut.operator*();
 
-    SUCCEED("Value is " << x);
+    // Assert
+    REQUIRE(x == 42);
   }
 }
 
 TEST_CASE("result<T,E>::operator*() const &", "[observers]") {
+  // Arrange
   const auto sut = result<int,int>{42};
 
   SECTION("Returns const lvalue reference") {
-    STATIC_REQUIRE(std::is_same<decltype(*sut),const int&>::value);
+    // Act
+    constexpr auto property_holds =
+      std::is_same<decltype(*sut),const int&>::value;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
   SECTION("Returns reference to internal structure") {
+    // Act
     auto& x = sut.operator*();
 
-    SUCCEED("Value is " << x);
+    // Assert
+    REQUIRE(x == 42);
   }
 }
 
 TEST_CASE("result<T,E>::operator*() &&", "[observers]") {
+  // Arrange
   auto sut = result<int,int>{42};
 
   SECTION("Returns mutable rvalue reference") {
-    STATIC_REQUIRE(std::is_same<decltype(*std::move(sut)),int&&>::value);
+    // Act
+    constexpr auto property_holds =
+      std::is_same<decltype(*std::move(sut)),int&&>::value;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
   SECTION("Returns reference to internal structure") {
+    // Act
     auto&& x = std::move(sut).operator*();
 
-    SUCCEED("Value is " << x);
+    // Assert
+    REQUIRE(x == 42);
   }
 }
 
 TEST_CASE("result<T,E>::operator*() const &&", "[observers]") {
+  // Arrange
   const auto sut = result<int,int>{42};
 
   SECTION("Returns const rvalue reference") {
-    STATIC_REQUIRE(std::is_same<decltype(*std::move(sut)),const int&&>::value);
+    // Act
+    constexpr auto property_holds =
+      std::is_same<decltype(*std::move(sut)),const int&&>::value;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
   SECTION("Returns reference to internal structure") {
+    // Act
     auto&& x = std::move(sut).operator*();
 
-    SUCCEED("Value is " << x);
+    // Assert
+    REQUIRE(x == 42);
   }
 }
 
@@ -2195,16 +3097,26 @@ TEST_CASE("result<T,E>::operator*() const &&", "[observers]") {
 TEST_CASE("result<T,E>::operator bool()", "[observers]") {
   SECTION("result contains a value") {
     SECTION("Returns true") {
+      // Arrange
       auto sut = result<int, int>{};
 
-      REQUIRE(static_cast<bool>(sut));
+      // Act
+      const auto actual = static_cast<bool>(sut);
+
+      // Assert
+      REQUIRE(actual);
     }
   }
   SECTION("result does not contain a value") {
     SECTION("Returns false") {
+      // Arrange
       auto sut = result<int, int>{fail(42)};
 
-      REQUIRE_FALSE(static_cast<bool>(sut));
+      // Act
+      const auto actual = static_cast<bool>(sut);
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
 }
@@ -2212,16 +3124,26 @@ TEST_CASE("result<T,E>::operator bool()", "[observers]") {
 TEST_CASE("result<T,E>::has_value()", "[observers]") {
   SECTION("result contains a value") {
     SECTION("Returns true") {
+      // Arrange
       auto sut = result<int, int>{};
 
-      REQUIRE(sut.has_value());
+      // Act
+      const auto actual = sut.has_value();
+
+      // Assert
+      REQUIRE(actual);
     }
   }
   SECTION("result does not contain a value") {
     SECTION("Returns false") {
+      // Arrange
       auto sut = result<int, int>{fail(42)};
 
-      REQUIRE_FALSE(sut.has_value());
+      // Act
+      const auto actual = sut.has_value();
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
 }
@@ -2229,16 +3151,26 @@ TEST_CASE("result<T,E>::has_value()", "[observers]") {
 TEST_CASE("result<T,E>::has_error()", "[observers]") {
   SECTION("result contains a value") {
     SECTION("Returns false") {
+      // Arrange
       auto sut = result<int, int>{};
 
-      REQUIRE_FALSE(sut.has_error());
+      // Act
+      const auto actual = sut.has_error();
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
   SECTION("result does not contain a value") {
     SECTION("Returns true") {
+      // Arrange
       auto sut = result<int, int>{fail(42)};
 
-      REQUIRE(sut.has_error());
+      // Act
+      const auto actual = sut.has_error();
+
+      // Assert
+      REQUIRE(actual);
     }
   }
 }
@@ -2247,84 +3179,200 @@ TEST_CASE("result<T,E>::has_error()", "[observers]") {
 
 TEST_CASE("result<T,E>::value() &", "[observers]") {
   SECTION("result contains a value") {
+    // Arrange
     auto sut = result<int,std::error_code>{42};
     SECTION("Does not throw exception") {
-      REQUIRE_NOTHROW(suppress_unused(sut.value()));
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        suppress_unused(sut.value());
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
     SECTION("Returns mutable lvalue reference to internal storage") {
-      STATIC_REQUIRE(std::is_same<decltype(sut.value()),int&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_same<decltype(sut.value()),int&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
   SECTION("result contains an error") {
     SECTION("throws bad_result_access") {
+      // Arrange
       auto sut = result<int,int>{
         fail(42)
       };
 
-      REQUIRE_THROWS_AS(suppress_unused(sut.value()), bad_result_access<int>);
+      // Arrange
+      auto threw_expected = false;
+
+      // Act
+      try {
+        suppress_unused(sut.value());
+      } catch (const bad_result_access<int>&) {
+        threw_expected = true;
+      }
+
+      // Assert
+      REQUIRE(threw_expected);
     }
   }
 }
 
 TEST_CASE("result<T,E>::value() const &", "[observers]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto sut = result<int,std::error_code>{42};
     SECTION("Does not throw exception") {
-      REQUIRE_NOTHROW(suppress_unused(sut.value()));
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        suppress_unused(sut.value());
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
     SECTION("Returns const lvalue reference to internal storage") {
-      STATIC_REQUIRE(std::is_same<decltype(sut.value()),const int&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_same<decltype(sut.value()),const int&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
   SECTION("result contains an error") {
     SECTION("throws bad_result_access") {
+      // Arrange
       const auto sut = result<int,int>{
         fail(42)
       };
 
-      REQUIRE_THROWS_AS(suppress_unused(sut.value()), bad_result_access<int>);
+      // Arrange
+      auto threw_expected = false;
+
+      // Act
+      try {
+        suppress_unused(sut.value());
+      } catch (const bad_result_access<int>&) {
+        threw_expected = true;
+      }
+
+      // Assert
+      REQUIRE(threw_expected);
     }
   }
 }
 
 TEST_CASE("result<T,E>::value() &&", "[observers]") {
   SECTION("result contains a value") {
+    // Arrange
     auto sut = result<int,std::error_code>{42};
     SECTION("Does not throw exception") {
-      REQUIRE_NOTHROW(suppress_unused(std::move(sut).value()));
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        suppress_unused(std::move(sut).value());
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
     SECTION("Returns mutable rvalue reference to internal storage") {
-      STATIC_REQUIRE(std::is_same<decltype(std::move(sut).value()),int&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_same<decltype(std::move(sut).value()),int&&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
   SECTION("result contains an error") {
     SECTION("throws bad_result_access") {
+      // Arrange
       auto sut = result<int,move_only<std::string>>{
         fail("hello world")
       };
 
-      REQUIRE_THROWS_AS(suppress_unused(std::move(sut).value()), bad_result_access<move_only<std::string>>);
+      // Arrange
+      auto threw_expected = false;
+
+      // Act
+      try {
+        suppress_unused(std::move(sut).value());
+      } catch (const bad_result_access<move_only<std::string>>&) {
+        threw_expected = true;
+      }
+
+      // Assert
+      REQUIRE(threw_expected);
     }
   }
 }
 
 TEST_CASE("result<T,E>::value() const &&", "[observers]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto sut = result<int,std::error_code>{42};
     SECTION("Does not throw exception") {
-      REQUIRE_NOTHROW(suppress_unused(std::move(sut).value()));
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        suppress_unused(std::move(sut).value());
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
     SECTION("Returns const rvalue reference to internal storage") {
-      STATIC_REQUIRE(std::is_same<decltype(std::move(sut).value()),const int&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_same<decltype(std::move(sut).value()),const int&&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
   SECTION("result contains an error") {
     SECTION("throws bad_result_access") {
+      // Arrange
       const auto sut = result<int,int>{
         fail(42)
       };
 
-      REQUIRE_THROWS_AS(suppress_unused(std::move(sut).value()), bad_result_access<int>);
+      // Arrange
+      auto threw_expected = false;
+
+      // Act
+      try {
+        suppress_unused(std::move(sut).value());
+      } catch (const bad_result_access<int>&) {
+        threw_expected = true;
+      }
+
+      // Assert
+      REQUIRE(threw_expected);
     }
   }
 }
@@ -2335,20 +3383,26 @@ TEST_CASE("result<T,E>::value() const &&", "[observers]") {
 TEST_CASE("result<T,E>::error() const &", "[observers]") {
   SECTION("result contains a value") {
     SECTION("Returns default-constructed error") {
+      // Arrange
       auto sut = result<int, int>{};
 
+      // Act
       const auto output = sut.error();
 
+      // Assert
       REQUIRE(output == int{});
     }
   }
   SECTION("result contains an error") {
     SECTION("Returns a copy of the exception") {
+      // Arrange
       const auto value = 42;
       auto sut = result<int, int>{fail(value)};
 
+      // Act
       const auto output = sut.error();
 
+      // Assert
       REQUIRE(output == value);
     }
   }
@@ -2357,20 +3411,26 @@ TEST_CASE("result<T,E>::error() const &", "[observers]") {
 TEST_CASE("result<T,E>::error() &&", "[observers]") {
   SECTION("result contains a value") {
     SECTION("Returns default-constructed error") {
+      // Arrange
       auto sut = result<int, move_only<std::error_code>>{};
 
+      // Act
       const auto output = std::move(sut).error();
 
+      // Assert
       REQUIRE(output == std::error_code{});
     }
   }
   SECTION("result contains an error") {
     SECTION("Returns a copy of the exception") {
+      // Arrange
       const auto value = std::io_errc::stream;
       auto sut = result<int, move_only<std::error_code>>{fail(value)};
 
+      // Act
       const auto output = std::move(sut).error();
 
+      // Assert
       REQUIRE(output == value);
     }
   }
@@ -2378,34 +3438,82 @@ TEST_CASE("result<T,E>::error() &&", "[observers]") {
 
 TEST_CASE("result<T,E>::expect(String&&) const &", "[observers]") {
   SECTION("result contains value") {
+    // Arrange
     const auto sut = result<int,int>{42};
 
     SECTION("Does not throw exception") {
-      REQUIRE_NOTHROW(sut.expect("test"));
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        sut.expect("test");
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
   }
   SECTION("result contains error") {
     SECTION("throws exception") {
+      // Arrange
       const auto sut = result<int,int>{fail(42)};
 
-      REQUIRE_THROWS_AS(sut.expect("test"), bad_result_access<int>);
+      // Arrange
+      auto threw_expected = false;
+
+      // Act
+      try {
+        sut.expect("test");
+      } catch (const bad_result_access<int>&) {
+        threw_expected = true;
+      }
+
+      // Assert
+      REQUIRE(threw_expected);
     }
   }
 }
 
 TEST_CASE("result<T,E>::expect(String&&) &&", "[observers]") {
   SECTION("result contains value") {
+    // Arrange
     auto sut = result<int,move_only<std::string>>{42};
 
     SECTION("Does not throw exception") {
-      REQUIRE_NOTHROW(std::move(sut).expect("test"));
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        std::move(sut).expect("test");
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
   }
   SECTION("result contains error") {
     SECTION("throws exception") {
+      // Arrange
       auto sut = result<int,move_only<std::string>>{fail("hello world")};
 
-      REQUIRE_THROWS_AS(std::move(sut).expect("test"), bad_result_access<move_only<std::string>>);
+      // Arrange
+      auto threw_expected = false;
+
+      // Act
+      try {
+        std::move(sut).expect("test");
+      } catch (const bad_result_access<move_only<std::string>>&) {
+        threw_expected = true;
+      }
+
+      // Assert
+      REQUIRE(threw_expected);
     }
   }
 }
@@ -2417,23 +3525,29 @@ TEST_CASE("result<T,E>::expect(String&&) &&", "[observers]") {
 TEST_CASE("result<T,E>::value_or(U&&) const &", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Returns result's value") {
+      // Arrange
       const auto input = 0;
       auto sut = result<int, std::error_code>{42};
 
+      // Act
       const auto output = sut.value_or(input);
 
+      // Assert
       REQUIRE(output == *sut);
     }
   }
   SECTION("result contains an error") {
     SECTION("Returns the input") {
+      // Arrange
       const auto input = 42;
       auto sut = result<int, std::error_code>{
         fail(std::io_errc::stream)
       };
 
+      // Act
       const auto output = sut.value_or(input);
 
+      // Assert
       REQUIRE(output == input);
     }
   }
@@ -2442,23 +3556,29 @@ TEST_CASE("result<T,E>::value_or(U&&) const &", "[monadic]") {
 TEST_CASE("result<T,E>::value_or(U&&) &&", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Returns the input") {
+      // Arrange
       auto input = "Hello world";
       auto sut = result<move_only<std::string>, int>{input};
 
+      // Act
       const auto output = std::move(sut).value_or("other");
 
+      // Assert
       REQUIRE(output == input);
     }
   }
   SECTION("result contains an error") {
     SECTION("Returns the error") {
+      // Arrange
       auto input = "Hello world";
       auto sut = result<move_only<std::string>, int>{
         fail(42)
       };
 
+      // Act
       const auto output = std::move(sut).value_or(input);
 
+      // Assert
       REQUIRE(output == input);
     }
   }
@@ -2467,23 +3587,29 @@ TEST_CASE("result<T,E>::value_or(U&&) &&", "[monadic]") {
 TEST_CASE("result<T,E>::error_or(U&&) const &", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Returns the input") {
+      // Arrange
       const auto input = std::error_code{};
       auto sut = result<int, std::error_code>{42};
 
+      // Act
       const auto output = sut.error_or(input);
 
+      // Assert
       REQUIRE(output == input);
     }
   }
   SECTION("result contains an error") {
     SECTION("Returns the error") {
+      // Arrange
       const auto input = std::error_code{std::io_errc::stream};
       auto sut = result<int, std::error_code>{
         fail(input)
       };
 
+      // Act
       const auto output = sut.error_or(input);
 
+      // Assert
       REQUIRE(output == input);
     }
   }
@@ -2492,25 +3618,31 @@ TEST_CASE("result<T,E>::error_or(U&&) const &", "[monadic]") {
 TEST_CASE("result<T,E>::error_or(U&&) &&", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Returns the input") {
+      // Arrange
       auto input = std::error_code{};
       const auto copy = input;
       auto sut = result<int, move_only<std::error_code>>{42};
 
+      // Act
       const auto output = std::move(sut).error_or(std::move(input));
 
+      // Assert
       REQUIRE(output == copy);
     }
   }
   SECTION("result contains an error") {
     SECTION("Returns the error") {
+      // Arrange
       auto input = std::error_code{std::io_errc::stream};
       const auto copy = input;
       auto sut = result<int, move_only<std::error_code>>{
         fail(input)
       };
 
+      // Act
       const auto output = std::move(sut).error_or(std::move(input));
 
+      // Assert
       REQUIRE(output == copy);
     }
   }
@@ -2521,22 +3653,28 @@ TEST_CASE("result<T,E>::error_or(U&&) &&", "[monadic]") {
 TEST_CASE("result<T,E>::and_then(U&&) const", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Maps the input") {
+      // Arrange
       const auto input = 42;
       auto sut = result<int, std::error_code>{};
 
+      // Act
       const auto output = sut.and_then(input);
 
+      // Assert
       REQUIRE(output == input);
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto input = 42;
       const auto error = fail(std::io_errc::stream);
       auto sut = result<int, std::error_code>{error};
 
+      // Act
       const auto output = sut.and_then(input);
 
+      // Assert
       REQUIRE(output == error);
     }
   }
@@ -2545,25 +3683,31 @@ TEST_CASE("result<T,E>::and_then(U&&) const", "[monadic]") {
 TEST_CASE("result<T,E>::flat_map(Fn&&) const &", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Maps the input") {
+      // Arrange
       const auto value = 42;
       const auto sut = result<int,std::error_code>{value};
 
+      // Act
       const auto output = sut.flat_map([](int x){
         return result<std::string,std::error_code>{std::to_string(x)};
       });
 
+      // Assert
       REQUIRE(output == std::to_string(value));
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto error = fail(std::io_errc::stream);
       const auto sut = result<int,std::error_code>{error};
 
+      // Act
       const auto output = sut.flat_map([](int x){
         return result<std::string,std::error_code>{std::to_string(x)};
       });
 
+      // Assert
       REQUIRE(output == error);
     }
   }
@@ -2572,25 +3716,31 @@ TEST_CASE("result<T,E>::flat_map(Fn&&) const &", "[monadic]") {
 TEST_CASE("result<T,E>::flat_map(Fn&&) &&", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Maps the input") {
+      // Arrange
       const auto value = 42;
       auto sut = result<int,move_only<std::error_code>>{value};
 
+      // Act
       const auto output = std::move(sut).flat_map([](int x){
         return result<std::string,std::error_code>{std::to_string(x)};
       });
 
+      // Assert
       REQUIRE(output == std::to_string(value));
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto error = fail(std::io_errc::stream);
       auto sut = result<int,move_only<std::error_code>>{error};
 
+      // Act
       const auto output = std::move(sut).flat_map([](int x){
         return result<std::string,std::error_code>{std::to_string(x)};
       });
 
+      // Assert
       REQUIRE(output == error);
     }
   }
@@ -2600,28 +3750,39 @@ TEST_CASE("result<T,E>::map(Fn&&) const &", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Function returns non-void") {
       SECTION("Maps the input") {
+        // Arrange
         const auto value = 42;
         auto sut = result<int,std::io_errc>{value};
 
+        // Act
         const auto output = sut.map([](int x){
           return std::to_string(x);
         });
 
+        // Assert
         REQUIRE(output == std::to_string(value));
       }
     }
     SECTION("Function returns void") {
       SECTION("Maps input to void") {
+        // Arrange
         const auto value = 42;
         auto sut = result<int,std::io_errc>{value};
 
+        // Act
         const auto output = sut.map([](int){});
 
+        // Assert
         SECTION("Result has value") {
           REQUIRE(output.has_value());
         }
         SECTION("Result is result<void,E>") {
-          STATIC_REQUIRE(std::is_same<decltype(output),const result<void,std::io_errc>>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_same<decltype(output),const result<void,std::io_errc>>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
       }
     }
@@ -2629,28 +3790,39 @@ TEST_CASE("result<T,E>::map(Fn&&) const &", "[monadic]") {
   SECTION("result contains an error") {
     SECTION("Function returns non-void") {
       SECTION("Maps the error") {
+        // Arrange
         const auto error = fail(std::io_errc::stream);
         auto sut = result<int,std::io_errc>{error};
 
+        // Act
         const auto output = sut.map([](int x){
           return std::to_string(x);
         });
 
+        // Assert
         REQUIRE(output == error);
       }
     }
     SECTION("Function returns void") {
       SECTION("Maps input to void") {
+        // Arrange
         const auto error = fail(std::io_errc::stream);
         auto sut = result<int,std::io_errc>{error};
 
+        // Act
         const auto output = sut.map([](int) -> void{});
 
+        // Assert
         SECTION("Result contains error") {
           REQUIRE(output == error);
         }
         SECTION("Result is result<void,E>") {
-          STATIC_REQUIRE(std::is_same<decltype(output),const result<void,std::io_errc>>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_same<decltype(output),const result<void,std::io_errc>>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
       }
     }
@@ -2661,28 +3833,39 @@ TEST_CASE("result<T,E>::map(Fn&&) &&", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Function returns non-void") {
       SECTION("Maps the input") {
+        // Arrange
         const auto value = 42;
         auto sut = result<int,move_only<std::error_code>>{value};
 
+        // Act
         const auto output = std::move(sut).map([](int x){
           return std::to_string(x);
         });
 
+        // Assert
         REQUIRE(output == std::to_string(value));
       }
     }
     SECTION("Function returns void") {
       SECTION("Maps input to void") {
+        // Arrange
         const auto value = 42;
         auto sut = result<int,move_only<std::error_code>>{value};
 
+        // Act
         const auto output = std::move(sut).map([](int){});
 
+        // Assert
         SECTION("Result has value") {
           REQUIRE(output.has_value());
         }
         SECTION("Result is result<void,E>") {
-          STATIC_REQUIRE(std::is_same<decltype(output),const result<void,move_only<std::error_code>>>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_same<decltype(output),const result<void,move_only<std::error_code>>>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
       }
     }
@@ -2690,28 +3873,39 @@ TEST_CASE("result<T,E>::map(Fn&&) &&", "[monadic]") {
   SECTION("result contains an error") {
     SECTION("Function returns non-void") {
       SECTION("Maps the error") {
+        // Arrange
         const auto error = fail(std::io_errc::stream);
         auto sut = result<int,move_only<std::error_code>>{error};
 
+        // Act
         const auto output = std::move(sut).map([&](int x){
           return std::to_string(x);
         });
 
+        // Assert
         REQUIRE(output == error);
       }
     }
     SECTION("Function returns void") {
       SECTION("Maps input to void") {
+        // Arrange
         const auto error = fail(std::io_errc::stream);
         auto sut = result<int,move_only<std::error_code>>{error};
 
+        // Act
         const auto output = std::move(sut).map([](int) -> void{});
 
+        // Assert
         SECTION("Result contains the error") {
           REQUIRE(output == error);
         }
         SECTION("Result is result<void,E>") {
-          STATIC_REQUIRE(std::is_same<decltype(output),const result<void,move_only<std::error_code>>>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_same<decltype(output),const result<void,move_only<std::error_code>>>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
       }
     }
@@ -2721,25 +3915,31 @@ TEST_CASE("result<T,E>::map(Fn&&) &&", "[monadic]") {
 TEST_CASE("result<T,E>::map_error(Fn&&) const &", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Maps the input") {
+      // Arrange
       const auto value = 42;
       auto sut = result<int,std::io_errc>{value};
 
+      // Act
       const auto output = sut.map_error([](std::io_errc e){
         return std::error_code{e};
       });
 
+      // Assert
       REQUIRE(output == value);
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto error = fail(std::io_errc::stream);
       auto sut = result<int,std::io_errc>{error};
 
+      // Act
       const auto output = sut.map_error([](std::io_errc e){
         return std::error_code{e};
       });
 
+      // Assert
       REQUIRE(output == error);
     }
   }
@@ -2748,25 +3948,31 @@ TEST_CASE("result<T,E>::map_error(Fn&&) const &", "[monadic]") {
 TEST_CASE("result<T,E>::map_error(Fn&&) &&", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Maps the input") {
+      // Arrange
       const auto value = "hello world";
       auto sut = result<move_only<std::string>,std::io_errc>{value};
 
+      // Act
       const auto output = std::move(sut).map_error([](std::io_errc e){
         return std::error_code{e};
       });
 
+      // Assert
       REQUIRE(output == value);
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto error = fail(std::io_errc::stream);
       auto sut = result<move_only<std::string>,std::io_errc>{error};
 
+      // Act
       const auto output = std::move(sut).map_error([](std::io_errc e){
         return std::error_code{e};
       });
 
+      // Assert
       REQUIRE(output == error);
     }
   }
@@ -2775,25 +3981,31 @@ TEST_CASE("result<T,E>::map_error(Fn&&) &&", "[monadic]") {
 TEST_CASE("result<T,E>::flat_map_error(Fn&&) const &", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Forwards underlying value") {
+      // Arrange
       const auto value = 42;
       const auto sut = result<int,int>{value};
 
+      // Act
       const auto output = sut.flat_map_error([&](int x){
         return result<long, int>{x};
       });
 
+      // Assert
       REQUIRE(output == value);
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto error = fail(42);
       const auto sut = result<int, long>{error};
 
+      // Act
       const auto output = sut.flat_map_error([&](long x){
         return result<int, short>{x};
       });
 
+      // Assert
       REQUIRE(output == error.error());
     }
   }
@@ -2802,25 +4014,31 @@ TEST_CASE("result<T,E>::flat_map_error(Fn&&) const &", "[monadic]") {
 TEST_CASE("result<T,E>::flat_map_error(Fn&&) &&", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Default-initializes T") {
+      // Arrange
       const auto value = "hello world";
       auto sut = result<move_only<std::string>,move_only<std::string>>{value};
 
+      // Act
       const auto output = std::move(sut).flat_map_error([](move_only<std::string>&& x){
         return result<std::string, std::string>{in_place_error, std::move(x)};
       });
 
+      // Assert
       REQUIRE(output == value);
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto error = fail("Hello world");
       auto sut = result<long,move_only<std::string>>{error};
 
+      // Act
       const auto output = std::move(sut).flat_map_error([](move_only<std::string>&& x){
         return result<int, std::string>{in_place_error, std::move(x)};
       });
 
+      // Assert
       REQUIRE(output == error);
     }
   }
@@ -2836,25 +4054,39 @@ TEST_CASE("result<T,E>::flat_map_error(Fn&&) &&", "[monadic]") {
 
 TEST_CASE("result<T&,E>::result()", "[ctor]") {
   SECTION("Result containing a reference is not default-constructible") {
+    // Arrange
     using sut_type = result<int&,int>;
 
-    STATIC_REQUIRE_FALSE(std::is_default_constructible<sut_type>::value);
+    // Act
+    constexpr auto property_holds =
+      std::is_default_constructible<sut_type>::value;
+
+    // Assert
+    STATIC_REQUIRE_FALSE(property_holds);
   }
 }
 
 TEST_CASE("result<T&,E>::result(const result&)", "[ctor]") {
+  // Arrange
   using sut_type = result<int&,int>;
 
   SECTION("Result containing a reference is copy-constructible") {
-    STATIC_REQUIRE(std::is_copy_constructible<sut_type>::value);
+    // Act
+    constexpr auto property_holds = std::is_copy_constructible<sut_type>::value;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
 
   SECTION("Constructs an result that references the source value") {
     auto value = int{42};
 
     const auto source = sut_type{value};
+
+    // Act
     const auto sut = source;
 
+    // Assert
     SECTION("Refers to underlying input") {
       REQUIRE(&value == &(*sut));
     }
@@ -2862,18 +4094,26 @@ TEST_CASE("result<T&,E>::result(const result&)", "[ctor]") {
 }
 
 TEST_CASE("result<T&,E>::result(result&&)", "[ctor]") {
+  // Arrange
   using sut_type = result<int&,move_only<std::string>>;
 
   SECTION("Result containing a reference is copy-constructible") {
-    STATIC_REQUIRE(std::is_move_constructible<sut_type>::value);
+    // Act
+    constexpr auto property_holds = std::is_move_constructible<sut_type>::value;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
 
   SECTION("Constructs an result that references the source value") {
     auto value = int{42};
 
     auto source = sut_type{value};
+
+    // Act
     const auto sut = std::move(source);
 
+    // Assert
     SECTION("Refers to underlying input") {
       REQUIRE(&value == &(*sut));
     }
@@ -2883,19 +4123,31 @@ TEST_CASE("result<T&,E>::result(result&&)", "[ctor]") {
 TEST_CASE("result<T&,E>::result(const result<T2,E2>&)", "[ctor]") {
   SECTION("other's type holds T by-value") {
     SECTION("Constructor is disabled") {
+      // Arrange
       using from_type = result<int,std::error_code>;
       using sut_type = result<int&, std::error_code>;
 
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, const from_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, const from_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("other's type holds T by reference") {
+    // Arrange
     using from_type = result<derived&,int>;
     using sut_type = result<base&,int>;
 
     SECTION("Result containing a reference is copy-constructible") {
-      STATIC_REQUIRE(std::is_constructible<sut_type, const from_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, const from_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Constructs an result that references the source value") {
@@ -2903,8 +4155,11 @@ TEST_CASE("result<T&,E>::result(const result<T2,E2>&)", "[ctor]") {
       auto value = derived{input};
 
       const auto source = from_type{value};
+
+      // Act
       const auto sut    = sut_type{source};
 
+      // Assert
       SECTION("Refers to underlying input") {
         REQUIRE(&value == &(*sut));
       }
@@ -2919,18 +4174,30 @@ TEST_CASE("result<T&,E>::result(result<T2,E2>&&)", "[ctor]") {
 
   SECTION("other's type holds T by-value") {
     SECTION("Constructor is disabled") {
+      // Arrange
       using from_type = result<int,move_only<std::string>>;
       using sut_type = result<int&,move_only<std::string>>;
 
-      STATIC_REQUIRE_FALSE(std::is_constructible<sut_type, from_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, from_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("other's type holds T by reference") {
+    // Arrange
     using from_type = result<derived&,move_only<std::string>>;
     using sut_type = result<base&,move_only<std::string>>;
 
     SECTION("Result containing a reference is copy-constructible") {
-      STATIC_REQUIRE(std::is_constructible<sut_type, from_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type, from_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Constructs an result that references the source value") {
@@ -2938,8 +4205,11 @@ TEST_CASE("result<T&,E>::result(result<T2,E2>&&)", "[ctor]") {
       auto value = derived{input};
 
       auto source = from_type{value};
+
+      // Act
       const auto sut = sut_type{std::move(source)};
 
+      // Assert
       SECTION("Refers to underlying input") {
         REQUIRE(&value == &(*sut));
       }
@@ -2951,11 +4221,15 @@ TEST_CASE("result<T&,E>::result(result<T2,E2>&&)", "[ctor]") {
 }
 
 TEST_CASE("result<T&,E>::result(in_place_t, Args&&...)", "[ctor]") {
+  // Arrange
   using sut_type = result<base&,int>;
 
   auto value = derived{42};
+
+  // Act
   const sut_type sut{std::in_place, value};
 
+  // Assert
   SECTION("Contains a value") {
     REQUIRE(sut.has_value());
   }
@@ -2966,11 +4240,14 @@ TEST_CASE("result<T&,E>::result(in_place_t, Args&&...)", "[ctor]") {
 }
 
 TEST_CASE("result<T&,E>::result(const failure<E2>&)", "[ctor]") {
+  // Arrange
   using sut_type = result<int&,std::string>;
   const auto source = fail<std::string>("hello world");
 
+  // Act
   const sut_type sut{source};
 
+  // Assert
   SECTION("Contains an error") {
     REQUIRE(sut.has_error());
   }
@@ -2981,12 +4258,15 @@ TEST_CASE("result<T&,E>::result(const failure<E2>&)", "[ctor]") {
 }
 
 TEST_CASE("result<T&,E>::result(failure<E2>&&)", "[ctor]") {
+  // Arrange
   using sut_type = result<int&,move_only<std::string>>;
   auto source = fail<std::string>("hello world");
   const auto copy = source;
 
+  // Act
   const sut_type sut{std::move(source)};
 
+  // Assert
   SECTION("Contains an error") {
     REQUIRE(sut.has_error());
   }
@@ -2998,11 +4278,15 @@ TEST_CASE("result<T&,E>::result(failure<E2>&&)", "[ctor]") {
 
 TEST_CASE("result<T&,E>::result(U&&)", "[ctor]") {
   SECTION("Input is lvalue") {
+    // Arrange
     using sut_type = result<base&,int>;
 
     auto value = derived{42};
+
+    // Act
     const sut_type sut{value};
 
+    // Assert
     SECTION("Constructor is enabled") {
       REQUIRE(std::is_constructible<sut_type,derived&>::value);
     }
@@ -3016,17 +4300,29 @@ TEST_CASE("result<T&,E>::result(U&&)", "[ctor]") {
     }
   }
   SECTION("Input is rvalue") {
+    // Arrange
     using sut_type = result<base&,int>;
 
     SECTION("Constructor is disabled") {
-      REQUIRE_FALSE(std::is_constructible<sut_type,derived&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type,derived&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("Input is value") {
+    // Arrange
     using sut_type = result<base&,int>;
 
     SECTION("Constructor is disabled") {
-      REQUIRE_FALSE(std::is_constructible<sut_type,derived>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<sut_type,derived>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 }
@@ -3036,14 +4332,17 @@ TEST_CASE("result<T&,E>::result(U&&)", "[ctor]") {
 TEST_CASE("result<T&,E>::operator=(const result&)", "[assign]") {
   SECTION("result contains a value") {
     SECTION("other contains a value") {
+      // Arrange
       auto value = derived{42};
       auto next = derived{0};
 
       const auto source = result<base&,std::error_code>{next};
       auto sut = result<base&,std::error_code>{value};
 
+      // Act
       sut = source;
 
+      // Assert
       SECTION("Underlying reference is rebound") {
         REQUIRE(&next == &(*sut));
       }
@@ -3051,13 +4350,16 @@ TEST_CASE("result<T&,E>::operator=(const result&)", "[assign]") {
   }
   SECTION("result contains an error") {
     SECTION("other contains a value") {
+      // Arrange
       auto next = derived{0};
 
       const auto source = result<base&,int>{next};
       auto sut = result<base&,int>{fail(42)};
 
+      // Act
       sut = source;
 
+      // Assert
       SECTION("Binds the new reference") {
         REQUIRE(&next == &(*sut));
       }
@@ -3068,14 +4370,17 @@ TEST_CASE("result<T&,E>::operator=(const result&)", "[assign]") {
 TEST_CASE("result<T&,E>::operator=(result&&)", "[assign]") {
   SECTION("result contains a value") {
     SECTION("other contains a value") {
+      // Arrange
       auto value = derived{42};
       auto next = derived{0};
 
       auto source = result<base&,move_only<std::string>>{next};
       auto sut = result<base&,move_only<std::string>>{value};
 
+      // Act
       sut = std::move(source);
 
+      // Assert
       SECTION("Underlying reference is rebound") {
         REQUIRE(&next == &(*sut));
       }
@@ -3083,13 +4388,16 @@ TEST_CASE("result<T&,E>::operator=(result&&)", "[assign]") {
   }
   SECTION("result contains an error") {
     SECTION("other contains a value") {
+      // Arrange
       auto next = derived{0};
 
       auto source = result<base&,move_only<std::string>>{next};
       auto sut = result<base&,move_only<std::string>>{fail("foo")};
 
+      // Act
       sut = std::move(source);
 
+      // Assert
       SECTION("Binds the new reference") {
         REQUIRE(&next == &(*sut));
       }
@@ -3100,22 +4408,31 @@ TEST_CASE("result<T&,E>::operator=(result&&)", "[assign]") {
 TEST_CASE("result<T&,E>::operator=(const result<T2,E2>&)", "[assign]") {
   SECTION("other's type holds T by-value") {
     SECTION("Assignment is disabled") {
+      // Arrange
       using source_type = result<int,std::error_code>;
       using sut_type = result<int&,std::error_code>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type, const source_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type, const source_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("result contains a value") {
     SECTION("other contains a value") {
+      // Arrange
       auto value = derived{42};
       auto next = derived{0};
 
       const auto source = result<derived&,std::error_code>{next};
       auto sut = result<base&,std::error_code>{value};
 
+      // Act
       sut = source;
 
+      // Assert
       SECTION("Underlying reference is rebound") {
         REQUIRE(&next == &(*sut));
       }
@@ -3123,13 +4440,16 @@ TEST_CASE("result<T&,E>::operator=(const result<T2,E2>&)", "[assign]") {
   }
   SECTION("result contains an error") {
     SECTION("other contains a value") {
+      // Arrange
       auto next = derived{0};
 
       const auto source = result<derived&,int>{next};
       auto sut = result<base&,int>{fail(42)};
 
+      // Act
       sut = source;
 
+      // Assert
       SECTION("Binds the new reference") {
         REQUIRE(&next == &(*sut));
       }
@@ -3140,22 +4460,31 @@ TEST_CASE("result<T&,E>::operator=(const result<T2,E2>&)", "[assign]") {
 TEST_CASE("result<T&,E>::operator=(result<T2,E2>&&)", "[assign]") {
   SECTION("other's type holds T by-value") {
     SECTION("Assignment is disabled") {
+      // Arrange
       using source_type = result<int,move_only<std::string>>;
       using sut_type = result<int&,move_only<std::string>>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type, source_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type, source_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("result contains a value") {
     SECTION("other contains a value") {
+      // Arrange
       auto value = derived{42};
       auto next = derived{0};
 
       auto source = result<derived&,move_only<std::string>>{next};
       auto sut = result<base&,move_only<std::string>>{value};
 
+      // Act
       sut = std::move(source);
 
+      // Assert
       SECTION("Underlying reference is rebound") {
         REQUIRE(&next == &(*sut));
       }
@@ -3163,13 +4492,16 @@ TEST_CASE("result<T&,E>::operator=(result<T2,E2>&&)", "[assign]") {
   }
   SECTION("result contains an error") {
     SECTION("other contains a value") {
+      // Arrange
       auto next = derived{0};
 
       auto source = result<derived&,move_only<std::string>>{next};
       auto sut = result<base&,move_only<std::string>>{fail("foo")};
 
+      // Act
       sut = std::move(source);
 
+      // Assert
       SECTION("Binds the new reference") {
         REQUIRE(&next == &(*sut));
       }
@@ -3179,26 +4511,32 @@ TEST_CASE("result<T&,E>::operator=(result<T2,E2>&&)", "[assign]") {
 
 TEST_CASE("result<T&,E>::operator=(U&&)", "[assign]") {
   SECTION("Source contains a value") {
+    // Arrange
     auto value = int{42};
     auto next = int{0};
 
     auto sut = result<int&,std::error_code>{value};
 
+    // Act
     sut = next;
 
+    // Assert
     SECTION("Rebinds the referred-to value") {
       REQUIRE(&next == &(*sut));
     }
   }
   SECTION("Source contains an error") {
+    // Arrange
     auto next = int{0};
 
     auto sut = result<int&,int>{
       fail(42)
     };
 
+    // Act
     sut = next;
 
+    // Assert
     SECTION("Result contains a value") {
       REQUIRE(sut.has_value());
     }
@@ -3213,51 +4551,89 @@ TEST_CASE("result<T&,E>::operator=(U&&)", "[assign]") {
 //-----------------------------------------------------------------------------
 
 TEST_CASE("result<T&,E>::operator*() &", "[observers]") {
+  // Arrange
   auto value = int{42};
   auto sut = result<int&,int>{value};
 
   SECTION("Returns mutable lvalue reference") {
-    STATIC_REQUIRE(std::is_same<decltype(*sut),int&>::value);
+    // Act
+    constexpr auto property_holds = std::is_same<decltype(*sut),int&>::value;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
   SECTION("Returns reference to referred value") {
-    REQUIRE(&(*sut) == &value);
+    // Act
+    const auto result = &(*sut);
+
+    // Assert
+    REQUIRE(result == &value);
   }
 }
 
 TEST_CASE("result<T&,E>::operator*() const &", "[observers]") {
+  // Arrange
   auto value = int{42};
   const auto sut = result<int&,int>{value};
 
   SECTION("Returns lvalue reference that does not propagate constness") {
-    STATIC_REQUIRE(std::is_same<decltype(*sut),int&>::value);
+    // Act
+    constexpr auto property_holds = std::is_same<decltype(*sut),int&>::value;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
   SECTION("Returns reference to referred value") {
-    REQUIRE(&(*sut) == &value);
+    // Act
+    const auto result = &(*sut);
+
+    // Assert
+    REQUIRE(result == &value);
   }
 }
 
 TEST_CASE("result<T&,E>::operator*() &&", "[observers]") {
+  // Arrange
   auto value = int{42};
   auto sut = result<int&,int>{value};
 
   SECTION("Returns mutable lvalue reference") {
-    STATIC_REQUIRE(std::is_same<decltype(*std::move(sut)),int&>::value);
+    // Act
+    constexpr auto property_holds =
+      std::is_same<decltype(*std::move(sut)),int&>::value;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
   SECTION("Returns reference to referred value") {
+    // Act
     int& x = (*std::move(sut));
+
+    // Assert
     REQUIRE(&x == &value);
   }
 }
 
 TEST_CASE("result<T&,E>::operator*() const &&", "[observers]") {
+  // Arrange
   auto value = int{42};
   const auto sut = result<int&,int>{value};
 
-  SECTION("Returns mutable Lvalue reference that does not propagate constness") {
-    STATIC_REQUIRE(std::is_same<decltype(*std::move(sut)),int&>::value);
+  SECTION(
+    "Returns mutable Lvalue reference that does not propagate constness"
+  ) {
+    // Act
+    constexpr auto property_holds =
+      std::is_same<decltype(*std::move(sut)),int&>::value;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
   SECTION("Returns reference to referred value") {
+    // Act
     const int& x = (*std::move(sut));
+
+    // Assert
     REQUIRE(&x == &value);
   }
 }
@@ -3266,17 +4642,37 @@ TEST_CASE("result<T&,E>::operator*() const &&", "[observers]") {
 
 TEST_CASE("result<T&,E>::value() &", "[observers]") {
   SECTION("result contains a value") {
+    // Arrange
     auto value = int{42};
     auto sut = result<int&,int>{value};
 
     SECTION("Does not throw exception") {
-      REQUIRE_NOTHROW(suppress_unused(sut.value()));
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        suppress_unused(sut.value());
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
     SECTION("Returns mutable lvalue reference to internal storage") {
-      STATIC_REQUIRE(std::is_same<decltype(sut.value()),int&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_same<decltype(sut.value()),int&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Refers to referenced value") {
+      // Act
       int& x = sut.value();
+
+      // Assert
       REQUIRE(&value == &x);
     }
   }
@@ -3284,17 +4680,37 @@ TEST_CASE("result<T&,E>::value() &", "[observers]") {
 
 TEST_CASE("result<T&,E>::value() const &", "[observers]") {
   SECTION("result contains a value") {
+    // Arrange
     auto value = int{42};
     const auto sut = result<int&,int>{value};
 
     SECTION("Does not throw exception") {
-      REQUIRE_NOTHROW(suppress_unused(sut.value()));
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        suppress_unused(sut.value());
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
     SECTION("Returns mutable lvalue that does not propagate constness") {
-      STATIC_REQUIRE(std::is_same<decltype(sut.value()),int&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_same<decltype(sut.value()),int&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Refers to referenced value") {
+      // Act
       int& x = sut.value();
+
+      // Assert
       REQUIRE(&value == &x);
     }
   }
@@ -3302,22 +4718,42 @@ TEST_CASE("result<T&,E>::value() const &", "[observers]") {
 
 TEST_CASE("result<T&,E>::value() &&", "[observers]") {
   SECTION("result contains a value") {
+    // Arrange
     auto value = int{42};
     auto sut = result<int&,int>{value};
 
     SECTION("Does not throw exception") {
-      REQUIRE_NOTHROW(suppress_unused(std::move(sut).value()));
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        suppress_unused(std::move(sut).value());
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
     SECTION("Returns mutable lvalue") {
-      STATIC_REQUIRE(std::is_same<decltype(std::move(sut).value()),int&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_same<decltype(std::move(sut).value()),int&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Refers to referenced value") {
       // clang-tidy incorrectly deduces this as a use-after-move due to the
       // std::move in the section above. These cases are never invoked together,
       // and thus this use-after-move can never happen.
       //
+      // Act
       // NOLINTNEXTLINE(bugprone-use-after-move)
       int& x = std::move(sut).value();
+
+      // Assert
       REQUIRE(&value == &x);
     }
   }
@@ -3325,22 +4761,42 @@ TEST_CASE("result<T&,E>::value() &&", "[observers]") {
 
 TEST_CASE("result<T&,E>::value() const &&", "[observers]") {
   SECTION("result contains a value") {
+    // Arrange
     auto value = int{42};
     const auto sut = result<int&,int>{value};
 
     SECTION("Does not throw exception") {
-      REQUIRE_NOTHROW(suppress_unused(std::move(sut).value()));
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        suppress_unused(std::move(sut).value());
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
     SECTION("Returns mutable lvalue that does not propagate constness") {
-      STATIC_REQUIRE(std::is_same<decltype(std::move(sut).value()),int&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_same<decltype(std::move(sut).value()),int&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Refers to referenced value") {
       // clang-tidy incorrectly deduces this as a use-after-move due to the
       // std::move in the section above. These cases are never invoked together,
       // and thus this use-after-move can never happen.
       //
+      // Act
       // NOLINTNEXTLINE(bugprone-use-after-move)
       int& x = std::move(sut).value();
+
+      // Assert
       REQUIRE(&value == &x);
     }
   }
@@ -3356,16 +4812,25 @@ TEST_CASE("result<T&,E>::value() const &&", "[observers]") {
 
 TEST_CASE("result<void,E>::result()", "[ctor]") {
   SECTION("Result is default-constructible") {
+    // Arrange
     using sut_type = result<void,int>;
 
-    STATIC_REQUIRE(std::is_default_constructible<sut_type>::value);
+    // Act
+    constexpr auto property_holds =
+      std::is_default_constructible<sut_type>::value;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
 
   SECTION("Constructs an result with a 'value' state") {
+    // Arrange
     using sut_type = result<void,int>;
 
+    // Act
     auto sut = sut_type{};
 
+    // Assert
     REQUIRE(sut.has_value());
   }
 }
@@ -3375,17 +4840,25 @@ TEST_CASE("result<void,E>::result(const result&)", "[ctor]") {
   // Constructible:
 
   SECTION("E is trivially copy-constructible") {
+    // Arrange
     using sut_type = result<void,int>;
 
     SECTION("Result is trivially copy-constructible") {
-      STATIC_REQUIRE(std::is_trivially_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Copy source contained a value") {
       const sut_type source{};
 
+      // Act
       const auto sut = source;
 
+      // Assert
       SECTION("Copy contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -3395,8 +4868,10 @@ TEST_CASE("result<void,E>::result(const result&)", "[ctor]") {
       const auto error = fail(42);
       const sut_type source{error};
 
+      // Act
       const auto sut = source;
 
+      // Assert
       SECTION("Copy contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -3407,21 +4882,34 @@ TEST_CASE("result<void,E>::result(const result&)", "[ctor]") {
   } // T is trivially copy-constructible
 
   SECTION("E is copy-constructible, but not trivial") {
+    // Arrange
     using sut_type = result<void,std::string>;
 
     SECTION("Result is not trivially copy-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_trivially_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
 
     SECTION("Result is copy-constructible") {
-      STATIC_REQUIRE(std::is_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Copy source contained a value") {
       const sut_type source{};
 
+      // Act
       const auto sut = source;
 
+      // Assert
       SECTION("Copy contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -3431,8 +4919,10 @@ TEST_CASE("result<void,E>::result(const result&)", "[ctor]") {
       const auto error = fail("Hello world");
       const sut_type source{error};
 
+      // Act
       const auto sut = source;
 
+      // Assert
       SECTION("Copy contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -3445,10 +4935,16 @@ TEST_CASE("result<void,E>::result(const result&)", "[ctor]") {
   // Not constructible:
 
   SECTION("E is not copy-constructible") {
+    // Arrange
     using sut_type = result<void,not_copy_or_moveable>;
 
     SECTION("Result is not copy-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_copy_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_copy_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 }
@@ -3458,17 +4954,25 @@ TEST_CASE("result<void,E>::result(result&&)", "[ctor]") {
   // Constructible:
 
   SECTION("E is trivially move-constructible") {
+    // Arrange
     using sut_type = result<void,int>;
 
     SECTION("Result is trivially move-constructible") {
-      STATIC_REQUIRE(std::is_trivially_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Move source contained a value") {
       sut_type source{};
 
+      // Act
       const auto sut = std::move(source);
 
+      // Assert
       SECTION("New result contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -3478,8 +4982,10 @@ TEST_CASE("result<void,E>::result(result&&)", "[ctor]") {
       const auto error = fail(42);
       sut_type source{error};
 
+      // Act
       const auto sut = std::move(source);
 
+      // Assert
       SECTION("New result contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -3490,21 +4996,34 @@ TEST_CASE("result<void,E>::result(result&&)", "[ctor]") {
   } // E is trivially move-constructible
 
   SECTION("E is move-constructible, but not trivial") {
+    // Arrange
     using sut_type = result<void,move_only<std::string>>;
 
     SECTION("Result is not trivially move-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_trivially_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
 
     SECTION("Result is move-constructible") {
-      STATIC_REQUIRE(std::is_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
 
     SECTION("Move source contained a value") {
       sut_type source{};
 
+      // Act
       const auto sut = std::move(source);
 
+      // Assert
       SECTION("New result contains a value") {
         REQUIRE(sut.has_value());
       }
@@ -3514,8 +5033,10 @@ TEST_CASE("result<void,E>::result(result&&)", "[ctor]") {
       const auto error = fail("Hello world");
       sut_type source{error};
 
+      // Act
       const auto sut = std::move(source);
 
+      // Assert
       SECTION("New result contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -3528,10 +5049,16 @@ TEST_CASE("result<void,E>::result(result&&)", "[ctor]") {
   // Not constructible:
 
   SECTION("E is not move-constructible") {
+    // Arrange
     using sut_type = result<void,not_copy_or_moveable>;
 
     SECTION("Result is not move-constructible") {
-      STATIC_REQUIRE_FALSE(std::is_move_constructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_move_constructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 }
@@ -3539,22 +5066,36 @@ TEST_CASE("result<void,E>::result(result&&)", "[ctor]") {
 TEST_CASE("result<void,E>::result(const result<U,E2>&)", "[ctor]") {
   SECTION("E2 is convertible to E") {
     SECTION("Constructor is enabled") {
-      STATIC_REQUIRE(std::is_constructible<result<void,int>,const result<void,long>&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<result<void,int>,const result<void,long>&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Other contains value") {
+      // Arrange
       const auto other = result<int,long>{42};
+
+      // Act
       const auto sut = result<void,int>{other};
 
+      // Assert
       SECTION("Constructed result is in a value state") {
         REQUIRE(sut.has_value());
       }
     }
 
     SECTION("Other contains error") {
+      // Arrange
       const auto other = result<int,long>{
         fail(42)
       };
+
+      // Act
       const auto sut = result<void,int>{other};
+
+      // Assert
       SECTION("Constructed result is in an error state") {
         REQUIRE(sut.has_error());
       }
@@ -3566,7 +5107,12 @@ TEST_CASE("result<void,E>::result(const result<U,E2>&)", "[ctor]") {
 
   SECTION("E2 is not convertible to E") {
     SECTION("Constructor is disabled") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<result<void,int>,const result<void,std::string>&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<result<void,int>,const result<void,std::string>&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 }
@@ -3574,24 +5120,37 @@ TEST_CASE("result<void,E>::result(const result<U,E2>&)", "[ctor]") {
 TEST_CASE("result<void,E>::result(result<U,E2>&&)", "[ctor]") {
   SECTION("E2 is convertible to E") {
     SECTION("Constructor is enabled") {
-      STATIC_REQUIRE(std::is_constructible<result<void,int>,result<void,long>&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<result<void,int>,result<void,long>&&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Other contains value") {
+      // Arrange
       auto other = result<int,long>{42};
+
+      // Act
       auto sut = result<void,int>{std::move(other)};
 
+      // Assert
       SECTION("Constructed result is in a value state") {
         REQUIRE(sut.has_value());
       }
     }
 
     SECTION("Other contains error") {
+      // Arrange
       auto error = fail("Hello world");
       auto other = result<int,move_only<std::string>>{error};
+
+      // Act
       auto sut = result<void,std::string>{
         std::move(other)
       };
 
+      // Assert
       SECTION("Constructed result is in an error state") {
         REQUIRE(sut.has_error());
       }
@@ -3603,30 +5162,41 @@ TEST_CASE("result<void,E>::result(result<U,E2>&&)", "[ctor]") {
 
   SECTION("E2 is not convertible to E") {
     SECTION("Constructor is disabled") {
-      STATIC_REQUIRE_FALSE(std::is_constructible<result<void,int>,result<void,std::string>&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible<result<void,int>,result<void,std::string>&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 }
 
 TEST_CASE("result<void,E>::result(in_place_t)", "[ctor]") {
+  // Arrange
   using sut_type = result<void,int>;
 
+  // Act
   const sut_type sut(std::in_place);
 
+  // Assert
   SECTION("Contains a value") {
     REQUIRE(sut.has_value());
   }
 }
 
 TEST_CASE("result<void,E>::result(in_place_error_t, Args&&...)", "[ctor]") {
+  // Arrange
   using sut_type = result<void,std::string>;
 
   const auto input = "hello world";
   const auto size = 5;
   const auto result = std::string{input, size};
 
+  // Act
   const sut_type sut(in_place_error, input, size);
 
+  // Assert
   SECTION("Contains an error") {
     REQUIRE(sut.has_error());
   }
@@ -3637,14 +5207,17 @@ TEST_CASE("result<void,E>::result(in_place_error_t, Args&&...)", "[ctor]") {
 }
 
 TEST_CASE("result<void,E>::result(in_place_error_t, std::initializer_list<U>, Args&&...)", "[ctor]") {
+  // Arrange
   using sut_type = result<void,std::string>;
 
   const auto result = std::string{
     {'h','e','l','l','o'}, std::allocator<char>{}
   };
 
+  // Act
   const sut_type sut(in_place_error, {'h','e','l','l','o'}, std::allocator<char>{});
 
+  // Assert
   SECTION("Contains an error") {
     REQUIRE(sut.has_error());
   }
@@ -3655,11 +5228,14 @@ TEST_CASE("result<void,E>::result(in_place_error_t, std::initializer_list<U>, Ar
 }
 
 TEST_CASE("result<void,E>::result(const failure<E2>&)", "[ctor]") {
+  // Arrange
   using sut_type = result<void,std::string>;
   const auto source = fail<std::string>("hello world");
 
+  // Act
   const sut_type sut{source};
 
+  // Assert
   SECTION("Contains an error") {
     REQUIRE(sut.has_error());
   }
@@ -3670,12 +5246,15 @@ TEST_CASE("result<void,E>::result(const failure<E2>&)", "[ctor]") {
 }
 
 TEST_CASE("result<void,E>::result(failure<E2>&&)", "[ctor]") {
+  // Arrange
   using sut_type = result<void,move_only<std::string>>;
   auto source = fail<std::string>("hello world");
   const auto copy = source;
 
+  // Act
   const sut_type sut{std::move(source)};
 
+  // Assert
   SECTION("Contains an error") {
     REQUIRE(sut.has_error());
   }
@@ -3689,26 +5268,41 @@ TEST_CASE("result<void,E>::result(failure<E2>&&)", "[ctor]") {
 
 TEST_CASE("result<void,E>::~result()", "[dtor]") {
   SECTION("E is trivially destructible") {
+    // Arrange
     using sut_type = result<void, int>;
 
     SECTION("result's destructor is trivial") {
-      STATIC_REQUIRE(std::is_trivially_destructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_destructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 
   SECTION("E is not trivially destructible") {
+    // Arrange
     using sut_type = result<void, report_destructor>;
 
     auto invoked = false;
+
+    // Act
     {
       sut_type sut{in_place_error, &invoked};
       (void) sut;
     }
 
     SECTION("result's destructor is not trivial") {
-      STATIC_REQUIRE_FALSE(std::is_trivially_destructible<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_destructible<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
 
+    // Assert
     SECTION("Invokes E's underlying destructor") {
       REQUIRE(invoked);
     }
@@ -3720,25 +5314,40 @@ TEST_CASE("result<void,E>::~result()", "[dtor]") {
 TEST_CASE("result<void,E>::operator=(const result& other)", "[assign]") {
   SECTION("E is not nothrow copy constructible") {
     SECTION("Result is not copy-assignable") {
+      // Arrange
       using sut_type = result<void,std::string>;
 
-      STATIC_REQUIRE_FALSE(std::is_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is not copy-assignable") {
     SECTION("Result is not copy-assignable") {
+      // Arrange
       using sut_type = result<void,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is nothrow copy-constructible") {
+    // Arrange
     using sut_type = result<void,std::error_code>;
 
     SECTION("Result is copy-assignable") {
-      STATIC_REQUIRE(std::is_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Copies the state of 'other'") {
       SECTION("Original contains value") {
@@ -3746,8 +5355,10 @@ TEST_CASE("result<void,E>::operator=(const result& other)", "[assign]") {
         const sut_type copy{output};
         sut_type sut{};
 
+        // Act
         sut = copy;
 
+        // Assert
         SECTION("Result changes to error type") {
           REQUIRE(sut.has_error());
         }
@@ -3764,8 +5375,10 @@ TEST_CASE("result<void,E>::operator=(const result& other)", "[assign]") {
         // NOLINTNEXTLINE(bugprone-invalid-enum-default-initialization)
         sut_type sut{fail(std::io_errc{})};
 
+        // Act
         sut = copy;
 
+        // Assert
         SECTION("Result has error type") {
           REQUIRE(sut.has_error());
         }
@@ -3777,13 +5390,23 @@ TEST_CASE("result<void,E>::operator=(const result& other)", "[assign]") {
   }
 
   SECTION("E is trivial copy-constructible and copy-assignable") {
+    // Arrange
     using sut_type = result<void, int>;
 
     SECTION("Result is copy-assignable") {
-      STATIC_REQUIRE(std::is_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Result is trivial copy-assignable") {
-      STATIC_REQUIRE(std::is_trivially_copy_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_copy_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 }
@@ -3791,25 +5414,40 @@ TEST_CASE("result<void,E>::operator=(const result& other)", "[assign]") {
 TEST_CASE("result<void,E>::operator=(result&& other)", "[assign]") {
   SECTION("E is not nothrow move constructible") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using sut_type = result<void,throwing<std::string>>;
 
-      STATIC_REQUIRE_FALSE(std::is_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is not move-assignable") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using sut_type = result<void,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is nothrow move-constructible") {
+    // Arrange
     using sut_type = result<void,move_only<std::error_code>>;
 
     SECTION("Result is move-assignable") {
-      STATIC_REQUIRE(std::is_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Copies the state of 'other'") {
       SECTION("Original contains value") {
@@ -3817,8 +5455,10 @@ TEST_CASE("result<void,E>::operator=(result&& other)", "[assign]") {
         sut_type other{output};
         sut_type sut{};
 
+        // Act
         sut = std::move(other);
 
+        // Assert
         SECTION("Result changes to error type") {
           REQUIRE(sut.has_error());
         }
@@ -3835,8 +5475,10 @@ TEST_CASE("result<void,E>::operator=(result&& other)", "[assign]") {
         // NOLINTNEXTLINE(bugprone-invalid-enum-default-initialization)
         sut_type sut{fail(std::io_errc{})};
 
+        // Act
         sut = std::move(other);
 
+        // Assert
         SECTION("Result has error type") {
           REQUIRE(sut.has_error());
         }
@@ -3848,13 +5490,23 @@ TEST_CASE("result<void,E>::operator=(result&& other)", "[assign]") {
   }
 
   SECTION("E is trivial move-constructible and move-assignable") {
+    // Arrange
     using sut_type = result<void, int>;
 
     SECTION("Result is move-assignable") {
-      STATIC_REQUIRE(std::is_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds = std::is_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Result is trivial move-assignable") {
-      STATIC_REQUIRE(std::is_trivially_move_assignable<sut_type>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_trivially_move_assignable<sut_type>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 }
@@ -3862,36 +5514,56 @@ TEST_CASE("result<void,E>::operator=(result&& other)", "[assign]") {
 TEST_CASE("result<void,E>::operator=(const result<void,E2>&)", "[assign]") {
   SECTION("E is not nothrow copy constructible") {
     SECTION("Result is not copy-assignable") {
+      // Arrange
       using copy_type = result<void,const char*>;
       using sut_type = result<void,std::string>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type,const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is not copy-assignable") {
     SECTION("Result is not copy-assignable") {
+      // Arrange
       using copy_type = result<void,const char*>;
       using sut_type = result<void,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type,const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is nothrow copy-constructible") {
+    // Arrange
     using copy_type = result<void,std::io_errc>;
     using sut_type = result<void,std::error_code>;
 
     SECTION("Result is copy-assignable") {
-      STATIC_REQUIRE(std::is_assignable<sut_type,const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Other contains value") {
       SECTION("Sut contains value") {
         const copy_type other{};
         sut_type sut{};
 
+        // Act
         sut = other;
 
+        // Assert
         SECTION("Result contains value") {
           REQUIRE(sut.has_value());
         }
@@ -3902,8 +5574,10 @@ TEST_CASE("result<void,E>::operator=(const result<void,E2>&)", "[assign]") {
           fail(std::io_errc::stream)
         };
 
+        // Act
         sut = other;
 
+        // Assert
         SECTION("Result contains value") {
           REQUIRE(sut.has_value());
         }
@@ -3915,8 +5589,10 @@ TEST_CASE("result<void,E>::operator=(const result<void,E2>&)", "[assign]") {
         const copy_type other{output};
         sut_type sut{};
 
+        // Act
         sut = other;
 
+        // Assert
         SECTION("Result changes to error type") {
           REQUIRE(sut.has_error());
         }
@@ -3933,8 +5609,10 @@ TEST_CASE("result<void,E>::operator=(const result<void,E2>&)", "[assign]") {
         // NOLINTNEXTLINE(bugprone-invalid-enum-default-initialization)
         sut_type sut{fail(std::io_errc{})};
 
+        // Act
         sut = other;
 
+        // Assert
         SECTION("Result has error type") {
           REQUIRE(sut.has_error());
         }
@@ -3949,28 +5627,46 @@ TEST_CASE("result<void,E>::operator=(const result<void,E2>&)", "[assign]") {
 TEST_CASE("result<void,E>::operator=(result<void,E2>&&)", "[assign]") {
   SECTION("E is not nothrow move constructible") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using copy_type = result<void,const char*>;
       using sut_type = result<void,std::string>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type,copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is not move-assignable") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using copy_type = result<void,const char*>;
       using sut_type = result<void,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type,copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
   SECTION("E is nothrow move-constructible") {
+    // Arrange
     using copy_type = result<void,std::io_errc>;
     using sut_type = result<void,move_only<std::error_code>>;
 
     SECTION("Result is move-assignable") {
-      STATIC_REQUIRE(std::is_assignable<sut_type,copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
     SECTION("Copies the state of 'other'") {
       SECTION("Original contains value") {
@@ -3978,8 +5674,10 @@ TEST_CASE("result<void,E>::operator=(result<void,E2>&&)", "[assign]") {
         copy_type other{output};
         sut_type sut{};
 
+        // Act
         sut = std::move(other);
 
+        // Assert
         SECTION("Result changes to error type") {
           REQUIRE(sut.has_error());
         }
@@ -3996,8 +5694,10 @@ TEST_CASE("result<void,E>::operator=(result<void,E2>&&)", "[assign]") {
         // NOLINTNEXTLINE(bugprone-invalid-enum-default-initialization)
         sut_type sut{fail(std::io_errc{})};
 
+        // Act
         sut = std::move(other);
 
+        // Assert
         SECTION("Result has error type") {
           REQUIRE(sut.has_error());
         }
@@ -4012,34 +5712,56 @@ TEST_CASE("result<void,E>::operator=(result<void,E2>&&)", "[assign]") {
 TEST_CASE("result<void,E>::operator=(const failure<E2>&)", "[assign]") {
   SECTION("E cant be constructed or assigned from E2") {
     SECTION("Result cannot be assigned from E2") {
+      // Arrange
       using copy_type = failure<not_copy_or_moveable>;
       using sut_type  = result<void,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type,const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("E is not nothrow copy constructible from E2") {
     SECTION("Result is not copy-assignable") {
+      // Arrange
       using copy_type = failure<const char*>;
       using sut_type = result<void,throwing<std::string>>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type,const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
-  SECTION("E is not nothrow copy constructible from E2, but is nothrow-move constructible") {
+  SECTION(
+    "E is not nothrow copy constructible from E2, but is nothrow-move "
+    "constructible"
+  ) {
     SECTION("Result is copy-assignable") {
+      // Arrange
       using copy_type = failure<const char*>;
       using sut_type = result<void,std::string>;
 
       // This works because it generates an intermediate 'result<void, E>' in
       // between. The result is then move-assigned instead
 
-      STATIC_REQUIRE(std::is_assignable<sut_type,const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 
   SECTION("E can be constructed and assigned from E2") {
+    // Arrange
     using copy_type = failure<long>;
     using sut_type = result<void, int>;
 
@@ -4047,8 +5769,10 @@ TEST_CASE("result<void,E>::operator=(const failure<E2>&)", "[assign]") {
       const auto original = copy_type{42};
       sut_type sut{};
 
+      // Act
       sut = original;
 
+      // Assert
       SECTION("Contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -4060,8 +5784,10 @@ TEST_CASE("result<void,E>::operator=(const failure<E2>&)", "[assign]") {
       const auto original = copy_type{42};
       sut_type sut{fail(0)};
 
+      // Act
       sut = original;
 
+      // Assert
       SECTION("Contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -4070,7 +5796,12 @@ TEST_CASE("result<void,E>::operator=(const failure<E2>&)", "[assign]") {
       }
     }
     SECTION("Result can be assigned") {
-      STATIC_REQUIRE(std::is_assignable<sut_type,const copy_type&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,const copy_type&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 }
@@ -4078,34 +5809,56 @@ TEST_CASE("result<void,E>::operator=(const failure<E2>&)", "[assign]") {
 TEST_CASE("result<void,E>::operator=(failure<E2>&&)", "[assign]") {
   SECTION("E cant be constructed or assigned from E2") {
     SECTION("Result cannot be assigned from E2") {
+      // Arrange
       using copy_type = failure<not_copy_or_moveable>;
       using sut_type  = result<void,not_copy_or_moveable>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type,copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
   SECTION("E is not nothrow move constructible from E2") {
     SECTION("Result is not move-assignable") {
+      // Arrange
       using copy_type = failure<const char*>;
       using sut_type = result<void,throwing<std::string>>;
 
-      STATIC_REQUIRE_FALSE(std::is_assignable<sut_type,copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
     }
   }
 
-  SECTION("E is not nothrow move constructible from E2, but is nothrow-move constructible") {
+  SECTION(
+    "E is not nothrow move constructible from E2, but is nothrow-move "
+    "constructible"
+  ) {
     SECTION("Result is move-assignable") {
+      // Arrange
       using copy_type = failure<const char*>;
       using sut_type = result<void,std::string>;
 
       // This works because it generates an intermediate 'result<void, E>' in
       // between. The result is then move-assigned instead
 
-      STATIC_REQUIRE(std::is_assignable<sut_type,copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 
   SECTION("E can be constructed and assigned from E2") {
+    // Arrange
     using copy_type = failure<std::string>;
     using sut_type = result<void, move_only<std::string>>;
 
@@ -4114,8 +5867,10 @@ TEST_CASE("result<void,E>::operator=(failure<E2>&&)", "[assign]") {
       const auto original = other;
       sut_type sut{};
 
+      // Act
       sut = std::move(other);
 
+      // Assert
       SECTION("Contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -4129,8 +5884,10 @@ TEST_CASE("result<void,E>::operator=(failure<E2>&&)", "[assign]") {
       const auto original = other;
       sut_type sut{fail("")};
 
+      // Act
       sut = std::move(other);
 
+      // Assert
       SECTION("Contains an error") {
         REQUIRE(sut.has_error());
       }
@@ -4140,7 +5897,12 @@ TEST_CASE("result<void,E>::operator=(failure<E2>&&)", "[assign]") {
     }
 
     SECTION("Result can be assigned") {
-      STATIC_REQUIRE(std::is_assignable<sut_type,copy_type&&>::value);
+      // Act
+      constexpr auto property_holds =
+        std::is_assignable<sut_type,copy_type&&>::value;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 }
@@ -4152,16 +5914,26 @@ TEST_CASE("result<void,E>::operator=(failure<E2>&&)", "[assign]") {
 TEST_CASE("result<void,E>::operator bool()", "[observers]") {
   SECTION("result contains a value") {
     SECTION("Returns true") {
+      // Arrange
       auto sut = result<void, int>{};
 
-      REQUIRE(static_cast<bool>(sut));
+      // Act
+      const auto actual = static_cast<bool>(sut);
+
+      // Assert
+      REQUIRE(actual);
     }
   }
   SECTION("result does not contain a value") {
     SECTION("Returns false") {
+      // Arrange
       auto sut = result<void, int>{fail(42)};
 
-      REQUIRE_FALSE(static_cast<bool>(sut));
+      // Act
+      const auto actual = static_cast<bool>(sut);
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
 }
@@ -4169,16 +5941,26 @@ TEST_CASE("result<void,E>::operator bool()", "[observers]") {
 TEST_CASE("result<void,E>::has_value()", "[observers]") {
   SECTION("result contains a value") {
     SECTION("Returns true") {
+      // Arrange
       auto sut = result<void, int>{};
 
-      REQUIRE(sut.has_value());
+      // Act
+      const auto actual = sut.has_value();
+
+      // Assert
+      REQUIRE(actual);
     }
   }
   SECTION("result does not contain a value") {
     SECTION("Returns false") {
+      // Arrange
       auto sut = result<void, int>{fail(42)};
 
-      REQUIRE_FALSE(sut.has_value());
+      // Act
+      const auto actual = sut.has_value();
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
 }
@@ -4186,16 +5968,26 @@ TEST_CASE("result<void,E>::has_value()", "[observers]") {
 TEST_CASE("result<void,E>::has_error()", "[observers]") {
   SECTION("result contains a value") {
     SECTION("Returns false") {
+      // Arrange
       auto sut = result<void, int>{};
 
-      REQUIRE_FALSE(sut.has_error());
+      // Act
+      const auto actual = sut.has_error();
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
   SECTION("result does not contain a value") {
     SECTION("Returns true") {
+      // Arrange
       auto sut = result<void, int>{fail(42)};
 
-      REQUIRE(sut.has_error());
+      // Act
+      const auto actual = sut.has_error();
+
+      // Assert
+      REQUIRE(actual);
     }
   }
 }
@@ -4205,16 +5997,40 @@ TEST_CASE("result<void,E>::has_error()", "[observers]") {
 TEST_CASE("result<void,E>::value() const &", "[observers]") {
   SECTION("result contains a value") {
     SECTION("Does nothing") {
+      // Arrange
       auto sut = result<void, int>{};
 
-      REQUIRE_NOTHROW(sut.value());
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        sut.value();
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
   }
   SECTION("result contains an error") {
     SECTION("Throws bad_result_access") {
+      // Arrange
       auto sut = result<void, int>{fail(42)};
 
-      REQUIRE_THROWS_AS(sut.value(), bad_result_access<int>);
+      // Arrange
+      auto threw_expected = false;
+
+      // Act
+      try {
+        sut.value();
+      } catch (const bad_result_access<int>&) {
+        threw_expected = true;
+      }
+
+      // Assert
+      REQUIRE(threw_expected);
     }
   }
 }
@@ -4222,16 +6038,40 @@ TEST_CASE("result<void,E>::value() const &", "[observers]") {
 TEST_CASE("result<void,E>::value() &&", "[observers]") {
   SECTION("result contains a value") {
     SECTION("Does nothing") {
+      // Arrange
       auto sut = result<void, move_only<std::string>>{};
 
-      REQUIRE_NOTHROW(std::move(sut).value());
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        std::move(sut).value();
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
   }
   SECTION("result contains an error") {
     SECTION("Throws bad_result_access") {
+      // Arrange
       auto sut = result<void, move_only<std::string>>{fail("Hello world")};
 
-      REQUIRE_THROWS_AS(std::move(sut).value(), bad_result_access<move_only<std::string>>);
+      // Arrange
+      auto threw_expected = false;
+
+      // Act
+      try {
+        std::move(sut).value();
+      } catch (const bad_result_access<move_only<std::string>>&) {
+        threw_expected = true;
+      }
+
+      // Assert
+      REQUIRE(threw_expected);
     }
   }
 }
@@ -4241,20 +6081,26 @@ TEST_CASE("result<void,E>::value() &&", "[observers]") {
 TEST_CASE("result<void,E>::error() const &", "[observers]") {
   SECTION("result contains a value") {
     SECTION("Returns default-constructed error") {
+      // Arrange
       auto sut = result<void, int>{};
 
+      // Act
       const auto output = sut.error();
 
+      // Assert
       REQUIRE(output == int{});
     }
   }
   SECTION("result contains an error") {
     SECTION("Returns a copy of the exception") {
+      // Arrange
       const auto value = 42;
       auto sut = result<void, int>{fail(value)};
 
+      // Act
       const auto output = sut.error();
 
+      // Assert
       REQUIRE(output == value);
     }
   }
@@ -4263,20 +6109,26 @@ TEST_CASE("result<void,E>::error() const &", "[observers]") {
 TEST_CASE("result<void,E>::error() &&", "[observers]") {
   SECTION("result contains a value") {
     SECTION("Returns default-constructed error") {
+      // Arrange
       auto sut = result<void, move_only<std::error_code>>{};
 
+      // Act
       const auto output = std::move(sut).error();
 
+      // Assert
       REQUIRE(output == std::error_code{});
     }
   }
   SECTION("result contains an error") {
     SECTION("Returns a copy of the exception") {
+      // Arrange
       const auto value = std::io_errc::stream;
       auto sut = result<void, move_only<std::error_code>>{fail(value)};
 
+      // Act
       const auto output = std::move(sut).error();
 
+      // Assert
       REQUIRE(output == value);
     }
   }
@@ -4284,34 +6136,82 @@ TEST_CASE("result<void,E>::error() &&", "[observers]") {
 
 TEST_CASE("result<void,E>::expect(String&&) const &", "[observers]") {
   SECTION("result contains value") {
+    // Arrange
     const auto sut = result<void,int>{};
 
     SECTION("Does not throw exception") {
-      REQUIRE_NOTHROW(sut.expect("test"));
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        sut.expect("test");
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
   }
   SECTION("result contains error") {
     SECTION("throws exception") {
+      // Arrange
       const auto sut = result<void,int>{fail(42)};
 
-      REQUIRE_THROWS_AS(sut.expect("test"), bad_result_access<int>);
+      // Arrange
+      auto threw_expected = false;
+
+      // Act
+      try {
+        sut.expect("test");
+      } catch (const bad_result_access<int>&) {
+        threw_expected = true;
+      }
+
+      // Assert
+      REQUIRE(threw_expected);
     }
   }
 }
 
 TEST_CASE("result<void,E>::expect(String&&) &&", "[observers]") {
   SECTION("result contains value") {
+    // Arrange
     auto sut = result<void,move_only<std::string>>{};
 
     SECTION("Does not throw exception") {
-      REQUIRE_NOTHROW(std::move(sut).expect("test"));
+      // Arrange
+      auto exception = std::exception_ptr{};
+
+      // Act
+      try {
+        std::move(sut).expect("test");
+      } catch (...) {
+        exception = std::current_exception();
+      }
+
+      // Assert
+      REQUIRE(exception == nullptr);
     }
   }
   SECTION("result contains error") {
     SECTION("throws exception") {
+      // Arrange
       auto sut = result<void,move_only<std::string>>{fail("hello world")};
 
-      REQUIRE_THROWS_AS(std::move(sut).expect("test"), bad_result_access<move_only<std::string>>);
+      // Arrange
+      auto threw_expected = false;
+
+      // Act
+      try {
+        std::move(sut).expect("test");
+      } catch (const bad_result_access<move_only<std::string>>&) {
+        threw_expected = true;
+      }
+
+      // Assert
+      REQUIRE(threw_expected);
     }
   }
 }
@@ -4323,23 +6223,29 @@ TEST_CASE("result<void,E>::expect(String&&) &&", "[observers]") {
 TEST_CASE("result<void,E>::error_or(U&&) const &", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Returns the input") {
+      // Arrange
       const auto input = std::error_code{};
       auto sut = result<void, std::error_code>{};
 
+      // Act
       const auto output = sut.error_or(input);
 
+      // Assert
       REQUIRE(output == input);
     }
   }
   SECTION("result contains an error") {
     SECTION("Returns the error") {
+      // Arrange
       const auto input = std::error_code{std::io_errc::stream};
       auto sut = result<void, std::error_code>{
         fail(input)
       };
 
+      // Act
       const auto output = sut.error_or(input);
 
+      // Assert
       REQUIRE(output == input);
     }
   }
@@ -4348,25 +6254,31 @@ TEST_CASE("result<void,E>::error_or(U&&) const &", "[monadic]") {
 TEST_CASE("result<void,E>::error_or(U&&) &&", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Returns the input") {
+      // Arrange
       auto input = std::error_code{};
       const auto copy = input;
       auto sut = result<void, move_only<std::error_code>>{};
 
+      // Act
       const auto output = std::move(sut).error_or(std::move(input));
 
+      // Assert
       REQUIRE(output == copy);
     }
   }
   SECTION("result contains an error") {
     SECTION("Returns the error") {
+      // Arrange
       auto input = std::error_code{std::io_errc::stream};
       const auto copy = input;
       auto sut = result<void, move_only<std::error_code>>{
         fail(input)
       };
 
+      // Act
       const auto output = std::move(sut).error_or(std::move(input));
 
+      // Assert
       REQUIRE(output == copy);
     }
   }
@@ -4377,22 +6289,28 @@ TEST_CASE("result<void,E>::error_or(U&&) &&", "[monadic]") {
 TEST_CASE("result<void,E>::and_then(U&&) const", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Maps the input") {
+      // Arrange
       const auto input = 42;
       auto sut = result<void, std::error_code>{};
 
+      // Act
       const auto output = sut.and_then(input);
 
+      // Assert
       REQUIRE(output == input);
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto input = 42;
       const auto error = fail(std::io_errc::stream);
       auto sut = result<void, std::error_code>{error};
 
+      // Act
       const auto output = sut.and_then(input);
 
+      // Assert
       REQUIRE(output == error);
     }
   }
@@ -4401,26 +6319,32 @@ TEST_CASE("result<void,E>::and_then(U&&) const", "[monadic]") {
 TEST_CASE("result<void,E>::flat_map(Fn&&) const &", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Maps the input") {
+      // Arrange
       const auto value = 42;
       const auto sut = result<void,std::error_code>{};
 
+      // Act
       const auto output = sut.flat_map([&]{
         return result<int,std::error_code>{value};
       });
 
+      // Assert
       REQUIRE(output == value);
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto error = fail(std::io_errc::stream);
       const auto value = 42;
       const auto sut = result<void,std::error_code>{error};
 
+      // Act
       const auto output = sut.flat_map([&]{
         return result<int,std::error_code>{value};
       });
 
+      // Assert
       REQUIRE(output == error);
     }
   }
@@ -4429,26 +6353,32 @@ TEST_CASE("result<void,E>::flat_map(Fn&&) const &", "[monadic]") {
 TEST_CASE("result<void,E>::flat_map(Fn&&) &&", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Maps the input") {
+      // Arrange
       const auto value = 42;
       auto sut = result<void,move_only<std::error_code>>{};
 
+      // Act
       const auto output = std::move(sut).flat_map([&]{
         return result<int,std::error_code>{value};
       });
 
+      // Assert
       REQUIRE(output == value);
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto error = fail(std::io_errc::stream);
       const auto value = 42;
       auto sut = result<void,move_only<std::error_code>>{error};
 
+      // Act
       const auto output = std::move(sut).flat_map([&]{
         return result<int,std::error_code>{value};
       });
 
+      // Assert
       REQUIRE(output == error);
     }
   }
@@ -4458,27 +6388,38 @@ TEST_CASE("result<void,E>::map(Fn&&) const &", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Function returns non-void") {
       SECTION("Maps the input") {
+        // Arrange
         const auto value = 42;
         auto sut = result<void,std::io_errc>{};
 
+        // Act
         const auto output = sut.map([&]{
           return value;
         });
 
+        // Assert
         REQUIRE(output == value);
       }
     }
     SECTION("Function returns void") {
       SECTION("Maps input to void") {
+        // Arrange
         auto sut = result<void,std::io_errc>{};
 
+        // Act
         const auto output = sut.map([]{});
 
+        // Assert
         SECTION("Result has value") {
           REQUIRE(output.has_value());
         }
         SECTION("Result is result<void,E>") {
-          STATIC_REQUIRE(std::is_same<decltype(output),const result<void,std::io_errc>>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_same<decltype(output),const result<void,std::io_errc>>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
       }
     }
@@ -4486,29 +6427,40 @@ TEST_CASE("result<void,E>::map(Fn&&) const &", "[monadic]") {
   SECTION("result contains an error") {
     SECTION("Function returns non-void") {
       SECTION("Maps the error") {
+        // Arrange
         const auto value = 42;
         const auto error = fail(std::io_errc::stream);
         auto sut = result<void,std::io_errc>{error};
 
+        // Act
         const auto output = sut.map([&]{
           return value;
         });
 
+        // Assert
         REQUIRE(output == error);
       }
     }
     SECTION("Function returns void") {
       SECTION("Maps input to void") {
+        // Arrange
         const auto error = fail(std::io_errc::stream);
         auto sut = result<void,std::io_errc>{error};
 
+        // Act
         const auto output = sut.map([]{});
 
+        // Assert
         SECTION("Result contains the error") {
           REQUIRE(output == error);
         }
         SECTION("Result is result<void,E>") {
-          STATIC_REQUIRE(std::is_same<decltype(output),const result<void,std::io_errc>>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_same<decltype(output),const result<void,std::io_errc>>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
       }
     }
@@ -4519,27 +6471,38 @@ TEST_CASE("result<void,E>::map(Fn&&) &&", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Function returns non-void") {
       SECTION("Maps the input") {
+        // Arrange
         const auto value = 42;
         auto sut = result<void,move_only<std::error_code>>{};
 
+        // Act
         const auto output = std::move(sut).map([&]{
           return value;
         });
 
+        // Assert
         REQUIRE(output == value);
       }
     }
     SECTION("Function returns void") {
       SECTION("Maps input to void") {
+        // Arrange
         auto sut = result<void,move_only<std::error_code>>{};
 
+        // Act
         const auto output = std::move(sut).map([]{});
 
+        // Assert
         SECTION("Result has value") {
           REQUIRE(output.has_value());
         }
         SECTION("Result is result<void,E>") {
-          STATIC_REQUIRE(std::is_same<decltype(output),const result<void,move_only<std::error_code>>>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_same<decltype(output),const result<void,move_only<std::error_code>>>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
       }
     }
@@ -4547,29 +6510,40 @@ TEST_CASE("result<void,E>::map(Fn&&) &&", "[monadic]") {
   SECTION("result contains an error") {
     SECTION("Function returns non-void") {
       SECTION("Maps the error") {
+        // Arrange
         const auto value = 42;
         const auto error = fail(std::io_errc::stream);
         auto sut = result<void,move_only<std::error_code>>{error};
 
+        // Act
         const auto output = std::move(sut).map([&]{
           return value;
         });
 
+        // Assert
         REQUIRE(output == error);
       }
     }
     SECTION("Function returns void") {
       SECTION("Maps input to void") {
+        // Arrange
         const auto error = fail(std::io_errc::stream);
         auto sut = result<void,move_only<std::error_code>>{error};
 
+        // Act
         const auto output = std::move(sut).map([]{});
 
+        // Assert
         SECTION("Result contains the error") {
           REQUIRE(output == error);
         }
         SECTION("Result is result<void,E>") {
-          STATIC_REQUIRE(std::is_same<decltype(output),const result<void,move_only<std::error_code>>>::value);
+          // Act
+          constexpr auto property_holds =
+            std::is_same<decltype(output),const result<void,move_only<std::error_code>>>::value;
+
+          // Assert
+          STATIC_REQUIRE(property_holds);
         }
       }
     }
@@ -4579,24 +6553,30 @@ TEST_CASE("result<void,E>::map(Fn&&) &&", "[monadic]") {
 TEST_CASE("result<void,E>::map_error(Fn&&) const &", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Maps the input") {
+      // Arrange
       auto sut = result<void,std::io_errc>{};
 
+      // Act
       const auto output = sut.map_error([](std::io_errc e){
         return std::error_code{e};
       });
 
+      // Assert
       REQUIRE(output.has_value());
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto error = fail(std::io_errc::stream);
       auto sut = result<void,std::io_errc>{error};
 
+      // Act
       const auto output = sut.map_error([](std::io_errc e){
         return std::error_code{e};
       });
 
+      // Assert
       REQUIRE(output == error);
     }
   }
@@ -4605,24 +6585,30 @@ TEST_CASE("result<void,E>::map_error(Fn&&) const &", "[monadic]") {
 TEST_CASE("result<void,E>::map_error(Fn&&) &&", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Maps the input") {
+      // Arrange
       auto sut = result<void,move_only<std::error_code>>{};
 
+      // Act
       const auto output = std::move(sut).map_error([](move_only<std::error_code> e){
         return std::error_code{e};
       });
 
+      // Assert
       REQUIRE(output.has_value());
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto error = fail(std::io_errc::stream);
       auto sut = result<void,move_only<std::error_code>>{error};
 
+      // Act
       const auto output = std::move(sut).map_error([](move_only<std::error_code> e){
         return std::error_code{e};
       });
 
+      // Assert
       REQUIRE(output == error);
     }
   }
@@ -4631,24 +6617,30 @@ TEST_CASE("result<void,E>::map_error(Fn&&) &&", "[monadic]") {
 TEST_CASE("result<void,E>::flat_map_error(Fn&&) const &", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Default-initializes T") {
+      // Arrange
       const auto sut = result<void,int>{};
 
+      // Act
       const auto output = sut.flat_map_error([&](int x){
         return result<long, int>{x};
       });
 
+      // Assert
       REQUIRE(output == long{});
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto error = fail(42);
       const auto sut = result<void, long>{error};
 
+      // Act
       const auto output = sut.flat_map_error([&](long x){
         return result<int, short>{x};
       });
 
+      // Assert
       REQUIRE(output == error.error());
     }
   }
@@ -4657,24 +6649,30 @@ TEST_CASE("result<void,E>::flat_map_error(Fn&&) const &", "[monadic]") {
 TEST_CASE("result<void,E>::flat_map_error(Fn&&) &&", "[monadic]") {
   SECTION("result contains a value") {
     SECTION("Default-initializes T") {
+      // Arrange
       auto sut = result<void,move_only<std::string>>{};
 
+      // Act
       const auto output = std::move(sut).flat_map_error([](move_only<std::string>&& x){
         return result<int, std::string>{in_place_error, std::move(x)};
       });
 
+      // Assert
       REQUIRE(output == int{});
     }
   }
   SECTION("result contains an error") {
     SECTION("Maps the error") {
+      // Arrange
       const auto error = fail("Hello world");
       auto sut = result<void,move_only<std::string>>{error};
 
+      // Act
       const auto output = std::move(sut).flat_map_error([](move_only<std::string>&& x){
         return result<int, std::string>{in_place_error, std::move(x)};
       });
 
+      // Assert
       REQUIRE(output == error);
     }
   }
@@ -4691,24 +6689,35 @@ TEST_CASE("result<void,E>::flat_map_error(Fn&&) &&", "[monadic]") {
 TEST_CASE("operator==(const result<T1,E1>&, const result<T2,E2>&)", "[compare]") {
   SECTION("Both left and right contain value") {
     SECTION("Left equal to right") {
+      // Arrange
       const auto lhs = result<int,int>{42};
       const auto rhs = result<long,long>{42};
 
       SECTION("returns true") {
-        REQUIRE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("Left not equal to right") {
+      // Arrange
       const auto lhs = result<int,int>{42};
       const auto rhs = result<long,long>{0};
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Left and right contain errors") {
     SECTION("Left equal to right") {
+      // Arrange
       const auto lhs = result<int,int>{
         fail(42)
       };
@@ -4716,10 +6725,15 @@ TEST_CASE("operator==(const result<T1,E1>&, const result<T2,E2>&)", "[compare]")
         fail(42)
       };
       SECTION("returns true") {
-        REQUIRE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("Left not equal to right") {
+      // Arrange
       const auto lhs = result<int,int>{
         fail(42)
       };
@@ -4727,26 +6741,40 @@ TEST_CASE("operator==(const result<T1,E1>&, const result<T2,E2>&)", "[compare]")
         fail(0)
       };
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Left contains a value, right contains an error") {
+    // Arrange
     const auto lhs = result<int,int>{};
     const auto rhs = result<long,long>{
       fail(42)
     };
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs == rhs);
+      // Act
+      const auto result = lhs == rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
   SECTION("Left contains an error, right contains a value") {
+    // Arrange
     const auto lhs = result<int,int>{
       fail(42)
     };
     const auto rhs = result<long,long>{};
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs == rhs);
+      // Act
+      const auto result = lhs == rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
 }
@@ -4754,24 +6782,35 @@ TEST_CASE("operator==(const result<T1,E1>&, const result<T2,E2>&)", "[compare]")
 TEST_CASE("operator!=(const result<T1,E1>&, const result<T2,E2>&)", "[compare]") {
   SECTION("Both left and right contain value") {
     SECTION("Left equal to right") {
+      // Arrange
       const auto lhs = result<int,int>{42};
       const auto rhs = result<long,long>{42};
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("Left not equal to right") {
+      // Arrange
       const auto lhs = result<int,int>{42};
       const auto rhs = result<long,long>{0};
 
       SECTION("returns true") {
-        REQUIRE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
   SECTION("Left and right contain errors") {
     SECTION("Left equal to right") {
+      // Arrange
       const auto lhs = result<int,int>{
         fail(42)
       };
@@ -4779,10 +6818,15 @@ TEST_CASE("operator!=(const result<T1,E1>&, const result<T2,E2>&)", "[compare]")
         fail(42)
       };
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("Left not equal to right") {
+      // Arrange
       const auto lhs = result<int,int>{
         fail(42)
       };
@@ -4790,26 +6834,40 @@ TEST_CASE("operator!=(const result<T1,E1>&, const result<T2,E2>&)", "[compare]")
         fail(0)
       };
       SECTION("returns true") {
-        REQUIRE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
   SECTION("Left contains a value, right contains an error") {
+    // Arrange
     const auto lhs = result<int,int>{};
     const auto rhs = result<long,long>{
       fail(42)
     };
     SECTION("returns true") {
-      REQUIRE(lhs != rhs);
+      // Act
+      const auto result = lhs != rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
   SECTION("Left contains an error, right contains a value") {
+    // Arrange
     const auto lhs = result<int,int>{
       fail(42)
     };
     const auto rhs = result<long,long>{};
     SECTION("returns true") {
-      REQUIRE(lhs != rhs);
+      // Act
+      const auto result = lhs != rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
 }
@@ -4817,24 +6875,35 @@ TEST_CASE("operator!=(const result<T1,E1>&, const result<T2,E2>&)", "[compare]")
 TEST_CASE("operator>=(const result<T1,E1>&, const result<T2,E2>&)", "[compare]") {
   SECTION("Both left and right contain value") {
     SECTION("Left greater than right") {
+      // Arrange
       const auto lhs = result<int,int>{100};
       const auto rhs = result<long,long>{42};
 
       SECTION("returns true") {
-        REQUIRE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("Left less than right") {
+      // Arrange
       const auto lhs = result<int,int>{0};
       const auto rhs = result<long,long>{42};
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Left and right contain errors") {
     SECTION("Left greater than right") {
+      // Arrange
       const auto lhs = result<int,int>{
         fail(100)
       };
@@ -4843,10 +6912,15 @@ TEST_CASE("operator>=(const result<T1,E1>&, const result<T2,E2>&)", "[compare]")
       };
 
       SECTION("returns true") {
-        REQUIRE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("Left less than right") {
+      // Arrange
       const auto lhs = result<int,int>{
         fail(0)
       };
@@ -4855,28 +6929,42 @@ TEST_CASE("operator>=(const result<T1,E1>&, const result<T2,E2>&)", "[compare]")
       };
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Left contains a value, right contains an error") {
+    // Arrange
     const auto lhs = result<int,int>{0};
     const auto rhs = result<long,long>{
       fail(42)
     };
 
     SECTION("returns true") {
-      REQUIRE(lhs >= rhs);
+      // Act
+      const auto result = lhs >= rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
   SECTION("Left contains an error, right contains a value") {
+    // Arrange
     const auto lhs = result<int,int>{
       fail(42)
     };
     const auto rhs = result<long,long>{0};
 
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs >= rhs);
+      // Act
+      const auto result = lhs >= rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
 }
@@ -4884,24 +6972,35 @@ TEST_CASE("operator>=(const result<T1,E1>&, const result<T2,E2>&)", "[compare]")
 TEST_CASE("operator<=(const result<T1,E1>&, const result<T2,E2>&)", "[compare]") {
   SECTION("Both left and right contain value") {
     SECTION("Left greater than right") {
+      // Arrange
       const auto lhs = result<int,int>{100};
       const auto rhs = result<long,long>{42};
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("Left less than right") {
+      // Arrange
       const auto lhs = result<int,int>{0};
       const auto rhs = result<long,long>{42};
 
       SECTION("returns true") {
-        REQUIRE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
   SECTION("Left and right contain errors") {
     SECTION("Left greater than right") {
+      // Arrange
       const auto lhs = result<int,int>{
         fail(100)
       };
@@ -4910,10 +7009,15 @@ TEST_CASE("operator<=(const result<T1,E1>&, const result<T2,E2>&)", "[compare]")
       };
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("Left less than right") {
+      // Arrange
       const auto lhs = result<int,int>{
         fail(0)
       };
@@ -4922,28 +7026,42 @@ TEST_CASE("operator<=(const result<T1,E1>&, const result<T2,E2>&)", "[compare]")
       };
 
       SECTION("returns true") {
-        REQUIRE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
   SECTION("Left contains a value, right contains an error") {
+    // Arrange
     const auto lhs = result<int,int>{0};
     const auto rhs = result<long,long>{
       fail(42)
     };
 
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs <= rhs);
+      // Act
+      const auto result = lhs <= rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
   SECTION("Left contains an error, right contains a value") {
+    // Arrange
     const auto lhs = result<int,int>{
       fail(42)
     };
     const auto rhs = result<long,long>{0};
 
     SECTION("returns true") {
-      REQUIRE(lhs <= rhs);
+      // Act
+      const auto result = lhs <= rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
 }
@@ -4951,24 +7069,35 @@ TEST_CASE("operator<=(const result<T1,E1>&, const result<T2,E2>&)", "[compare]")
 TEST_CASE("operator>(const result<T1,E1>&, const result<T2,E2>&)", "[compare]") {
   SECTION("Both left and right contain value") {
     SECTION("Left greater than right") {
+      // Arrange
       const auto lhs = result<int,int>{100};
       const auto rhs = result<long,long>{42};
 
       SECTION("returns true") {
-        REQUIRE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("Left less than right") {
+      // Arrange
       const auto lhs = result<int,int>{0};
       const auto rhs = result<long,long>{42};
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Left and right contain errors") {
     SECTION("Left greater than right") {
+      // Arrange
       const auto lhs = result<int,int>{
         fail(100)
       };
@@ -4977,10 +7106,15 @@ TEST_CASE("operator>(const result<T1,E1>&, const result<T2,E2>&)", "[compare]") 
       };
 
       SECTION("returns true") {
-        REQUIRE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("Left less than right") {
+      // Arrange
       const auto lhs = result<int,int>{
         fail(0)
       };
@@ -4989,28 +7123,42 @@ TEST_CASE("operator>(const result<T1,E1>&, const result<T2,E2>&)", "[compare]") 
       };
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Left contains a value, right contains an error") {
+    // Arrange
     const auto lhs = result<int,int>{0};
     const auto rhs = result<long,long>{
       fail(42)
     };
 
     SECTION("returns true") {
-      REQUIRE(lhs > rhs);
+      // Act
+      const auto result = lhs > rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
   SECTION("Left contains an error, right contains a value") {
+    // Arrange
     const auto lhs = result<int,int>{
       fail(42)
     };
     const auto rhs = result<long,long>{0};
 
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs > rhs);
+      // Act
+      const auto result = lhs > rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
 }
@@ -5018,24 +7166,35 @@ TEST_CASE("operator>(const result<T1,E1>&, const result<T2,E2>&)", "[compare]") 
 TEST_CASE("operator<(const result<T1,E1>&, const result<T2,E2>&)", "[compare]") {
   SECTION("Both left and right contain value") {
     SECTION("Left greater than right") {
+      // Arrange
       const auto lhs = result<int,int>{100};
       const auto rhs = result<long,long>{42};
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("Left less than right") {
+      // Arrange
       const auto lhs = result<int,int>{0};
       const auto rhs = result<long,long>{42};
 
       SECTION("returns true") {
-        REQUIRE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
   SECTION("Left and right contain errors") {
     SECTION("Left greater than right") {
+      // Arrange
       const auto lhs = result<int,int>{
         fail(100)
       };
@@ -5044,10 +7203,15 @@ TEST_CASE("operator<(const result<T1,E1>&, const result<T2,E2>&)", "[compare]") 
       };
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("Left less than right") {
+      // Arrange
       const auto lhs = result<int,int>{
         fail(0)
       };
@@ -5056,28 +7220,42 @@ TEST_CASE("operator<(const result<T1,E1>&, const result<T2,E2>&)", "[compare]") 
       };
 
       SECTION("returns true") {
-        REQUIRE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
   SECTION("Left contains a value, right contains an error") {
+    // Arrange
     const auto lhs = result<int,int>{0};
     const auto rhs = result<long,long>{
       fail(42)
     };
 
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs < rhs);
+      // Act
+      const auto result = lhs < rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
   SECTION("Left contains an error, right contains a value") {
+    // Arrange
     const auto lhs = result<int,int>{
       fail(42)
     };
     const auto rhs = result<long,long>{0};
 
     SECTION("returns true") {
-      REQUIRE(lhs < rhs);
+      // Act
+      const auto result = lhs < rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
 }
@@ -5086,15 +7264,21 @@ TEST_CASE("operator<(const result<T1,E1>&, const result<T2,E2>&)", "[compare]") 
 
 TEST_CASE("operator==(const result<void,E1>&, const result<void,E2>&)", "[compare]") {
   SECTION("Both left and right contain value") {
+    // Arrange
     const auto lhs = result<void,int>{};
     const auto rhs = result<void,long>{};
 
     SECTION("returns true") {
-      REQUIRE(lhs == rhs);
+      // Act
+      const auto result = lhs == rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
   SECTION("Left and right contain errors") {
     SECTION("Left equal to right") {
+      // Arrange
       const auto lhs = result<void,int>{
         fail(42)
       };
@@ -5102,10 +7286,15 @@ TEST_CASE("operator==(const result<void,E1>&, const result<void,E2>&)", "[compar
         fail(42)
       };
       SECTION("returns true") {
-        REQUIRE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("Left not equal to right") {
+      // Arrange
       const auto lhs = result<void,int>{
         fail(42)
       };
@@ -5113,41 +7302,61 @@ TEST_CASE("operator==(const result<void,E1>&, const result<void,E2>&)", "[compar
         fail(0)
       };
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Left contains a value, right contains an error") {
+    // Arrange
     const auto lhs = result<void,int>{};
     const auto rhs = result<void,long>{
       fail(42)
     };
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs == rhs);
+      // Act
+      const auto result = lhs == rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
   SECTION("Left contains an error, right contains a value") {
+    // Arrange
     const auto lhs = result<void,int>{
       fail(42)
     };
     const auto rhs = result<void,long>{};
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs == rhs);
+      // Act
+      const auto result = lhs == rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
 }
 
 TEST_CASE("operator!=(const result<void,E1>&, const result<void,E2>&)", "[compare]") {
   SECTION("Both left and right contain value") {
+    // Arrange
     const auto lhs = result<void,int>{};
     const auto rhs = result<void,long>{};
 
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs != rhs);
+      // Act
+      const auto result = lhs != rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
   SECTION("Left and right contain errors") {
     SECTION("Left equal to right") {
+      // Arrange
       const auto lhs = result<void,int>{
         fail(42)
       };
@@ -5155,10 +7364,15 @@ TEST_CASE("operator!=(const result<void,E1>&, const result<void,E2>&)", "[compar
         fail(42)
       };
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("Left not equal to right") {
+      // Arrange
       const auto lhs = result<void,int>{
         fail(42)
       };
@@ -5166,41 +7380,61 @@ TEST_CASE("operator!=(const result<void,E1>&, const result<void,E2>&)", "[compar
         fail(0)
       };
       SECTION("returns true") {
-        REQUIRE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
   SECTION("Left contains a value, right contains an error") {
+    // Arrange
     const auto lhs = result<void,int>{};
     const auto rhs = result<void,long>{
       fail(42)
     };
     SECTION("returns true") {
-      REQUIRE(lhs != rhs);
+      // Act
+      const auto result = lhs != rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
   SECTION("Left contains an error, right contains a value") {
+    // Arrange
     const auto lhs = result<void,int>{
       fail(42)
     };
     const auto rhs = result<void,long>{};
     SECTION("returns true") {
-      REQUIRE(lhs != rhs);
+      // Act
+      const auto result = lhs != rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
 }
 
 TEST_CASE("operator>=(const result<void,E1>&, const result<void,E2>&)", "[compare]") {
   SECTION("Both left and right contain value") {
+    // Arrange
     const auto lhs = result<void,int>{};
     const auto rhs = result<void,long>{};
 
     SECTION("returns true") {
-      REQUIRE(lhs >= rhs);
+      // Act
+      const auto result = lhs >= rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
   SECTION("Left and right contain errors") {
     SECTION("Left greater than right") {
+      // Arrange
       const auto lhs = result<void,int>{
         fail(100)
       };
@@ -5208,10 +7442,15 @@ TEST_CASE("operator>=(const result<void,E1>&, const result<void,E2>&)", "[compar
         fail(42)
       };
       SECTION("returns true") {
-        REQUIRE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("Left less than right") {
+      // Arrange
       const auto lhs = result<void,int>{
         fail(0)
       };
@@ -5219,41 +7458,61 @@ TEST_CASE("operator>=(const result<void,E1>&, const result<void,E2>&)", "[compar
         fail(42)
       };
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Left contains a value, right contains an error") {
+    // Arrange
     const auto lhs = result<void,int>{};
     const auto rhs = result<void,long>{
       fail(42)
     };
     SECTION("returns true") {
-      REQUIRE(lhs >= rhs);
+      // Act
+      const auto result = lhs >= rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
   SECTION("Left contains an error, right contains a value") {
+    // Arrange
     const auto lhs = result<void,int>{
       fail(42)
     };
     const auto rhs = result<void,long>{};
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs >= rhs);
+      // Act
+      const auto result = lhs >= rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
 }
 
 TEST_CASE("operator<=(const result<void,E1>&, const result<void,E2>&)", "[compare]") {
   SECTION("Both left and right contain value") {
+    // Arrange
     const auto lhs = result<void,int>{};
     const auto rhs = result<void,long>{};
 
     SECTION("returns true") {
-      REQUIRE(lhs <= rhs);
+      // Act
+      const auto result = lhs <= rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
   SECTION("Left and right contain errors") {
     SECTION("Left greater than right") {
+      // Arrange
       const auto lhs = result<void,int>{
         fail(100)
       };
@@ -5261,10 +7520,15 @@ TEST_CASE("operator<=(const result<void,E1>&, const result<void,E2>&)", "[compar
         fail(42)
       };
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("Left less than right") {
+      // Arrange
       const auto lhs = result<void,int>{
         fail(0)
       };
@@ -5272,41 +7536,61 @@ TEST_CASE("operator<=(const result<void,E1>&, const result<void,E2>&)", "[compar
         fail(42)
       };
       SECTION("returns true") {
-        REQUIRE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
   SECTION("Left contains a value, right contains an error") {
+    // Arrange
     const auto lhs = result<void,int>{};
     const auto rhs = result<void,long>{
       fail(42)
     };
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs <= rhs);
+      // Act
+      const auto result = lhs <= rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
   SECTION("Left contains an error, right contains a value") {
+    // Arrange
     const auto lhs = result<void,int>{
       fail(42)
     };
     const auto rhs = result<void,long>{};
     SECTION("returns true") {
-      REQUIRE(lhs <= rhs);
+      // Act
+      const auto result = lhs <= rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
 }
 
 TEST_CASE("operator>(const result<void,E1>&, const result<void,E2>&)", "[compare]") {
   SECTION("Both left and right contain value") {
+    // Arrange
     const auto lhs = result<void,int>{};
     const auto rhs = result<void,long>{};
 
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs > rhs);
+      // Act
+      const auto result = lhs > rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
   SECTION("Left and right contain errors") {
     SECTION("Left greater than right") {
+      // Arrange
       const auto lhs = result<void,int>{
         fail(100)
       };
@@ -5314,10 +7598,15 @@ TEST_CASE("operator>(const result<void,E1>&, const result<void,E2>&)", "[compare
         fail(42)
       };
       SECTION("returns true") {
-        REQUIRE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("Left less than right") {
+      // Arrange
       const auto lhs = result<void,int>{
         fail(0)
       };
@@ -5325,41 +7614,61 @@ TEST_CASE("operator>(const result<void,E1>&, const result<void,E2>&)", "[compare
         fail(42)
       };
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Left contains a value, right contains an error") {
+    // Arrange
     const auto lhs = result<void,int>{};
     const auto rhs = result<void,long>{
       fail(42)
     };
     SECTION("returns true") {
-      REQUIRE(lhs > rhs);
+      // Act
+      const auto result = lhs > rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
   SECTION("Left contains an error, right contains a value") {
+    // Arrange
     const auto lhs = result<void,int>{
       fail(42)
     };
     const auto rhs = result<void,long>{};
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs > rhs);
+      // Act
+      const auto result = lhs > rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
 }
 
 TEST_CASE("operator<(const result<void,E1>&, const result<void,E2>&)", "[compare]") {
   SECTION("Both left and right contain value") {
+    // Arrange
     const auto lhs = result<void,int>{};
     const auto rhs = result<void,long>{};
 
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs < rhs);
+      // Act
+      const auto result = lhs < rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
   SECTION("Left and right contain errors") {
     SECTION("Left greater than right") {
+      // Arrange
       const auto lhs = result<void,int>{
         fail(100)
       };
@@ -5367,10 +7676,15 @@ TEST_CASE("operator<(const result<void,E1>&, const result<void,E2>&)", "[compare
         fail(42)
       };
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("Left less than right") {
+      // Arrange
       const auto lhs = result<void,int>{
         fail(0)
       };
@@ -5378,26 +7692,40 @@ TEST_CASE("operator<(const result<void,E1>&, const result<void,E2>&)", "[compare
         fail(42)
       };
       SECTION("returns true") {
-        REQUIRE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
   SECTION("Left contains a value, right contains an error") {
+    // Arrange
     const auto lhs = result<void,int>{};
     const auto rhs = result<void,long>{
       fail(42)
     };
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs < rhs);
+      // Act
+      const auto result = lhs < rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
   SECTION("Left contains an error, right contains a value") {
+    // Arrange
     const auto lhs = result<void,int>{
       fail(42)
     };
     const auto rhs = result<void,long>{};
     SECTION("returns true") {
-      REQUIRE(lhs < rhs);
+      // Act
+      const auto result = lhs < rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
 }
@@ -5406,348 +7734,516 @@ TEST_CASE("operator<(const result<void,E1>&, const result<void,E2>&)", "[compare
 
 TEST_CASE("operator==(const result<T1,E1>&, const U&)", "[compare]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto lhs = result<int,std::string>{0};
 
     SECTION("value compares equal") {
       const auto rhs = 0l;
 
       SECTION("returns true") {
-        REQUIRE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("value compares unequal") {
       const auto rhs = 42l;
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("result contains an error") {
+    // Arrange
     const auto lhs = result<int,std::string>{
       fail("0")
     };
     const auto rhs = 0l;
 
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs == rhs);
+      // Act
+      const auto result = lhs == rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
 }
 
 TEST_CASE("operator==(const U&, const result<T1,E1>&)", "[compare]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto rhs = result<int,std::string>{0};
 
     SECTION("value compares equal") {
       const auto lhs = 0l;
 
       SECTION("returns true") {
-        REQUIRE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("value compares unequal") {
       const auto lhs = 42l;
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("result contains an error") {
+    // Arrange
     const auto rhs = result<int,std::string>{
       fail("0")
     };
     const auto lhs = 0l;
 
     SECTION("returns false") {
-      REQUIRE_FALSE(lhs == rhs);
+      // Act
+      const auto result = lhs == rhs;
+
+      // Assert
+      REQUIRE_FALSE(result);
     }
   }
 }
 
 TEST_CASE("operator!=(const result<T1,E1>&, const U&)", "[compare]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto lhs = result<int,std::string>{0};
 
     SECTION("value compares equal") {
       const auto rhs = 0l;
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("value compares unequal") {
       const auto rhs = 42l;
 
       SECTION("returns true") {
-        REQUIRE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
   SECTION("result contains an error") {
+    // Arrange
     const auto lhs = result<int,std::string>{
       fail("0")
     };
     const auto rhs = 0l;
 
     SECTION("returns true") {
-      REQUIRE(lhs != rhs);
+      // Act
+      const auto result = lhs != rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
 }
 
 TEST_CASE("operator!=(const U&, const result<T1,E1>&)", "[compare]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto rhs = result<int,std::string>{0};
 
     SECTION("value compares equal") {
       const auto lhs = 0l;
 
       SECTION("returns false") {
-        REQUIRE_FALSE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("value compares unequal") {
       const auto lhs = 42l;
 
       SECTION("returns true") {
-        REQUIRE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
   SECTION("result contains an error") {
+    // Arrange
     const auto rhs = result<int,std::string>{
       fail("0")
     };
     const auto lhs = 0l;
 
     SECTION("returns true") {
-      REQUIRE(lhs != rhs);
+      // Act
+      const auto result = lhs != rhs;
+
+      // Assert
+      REQUIRE(result);
     }
   }
 }
 
 TEST_CASE("operator>=(const result<T1,E1>&, const U&)", "[compare]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto lhs = result<int,std::string>{5};
     SECTION("value is greater or equal to result") {
       SECTION("returns true") {
         const auto rhs = 0l;
 
-        REQUIRE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("value is not greater or equal to result") {
       SECTION("returns false") {
         const auto rhs = 9l;
 
-        REQUIRE_FALSE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Result contains an error") {
     SECTION("returns true") {
+      // Arrange
       const auto lhs = result<int,std::string>{fail("hello world")};
       const auto rhs = 0l;
 
-      REQUIRE(lhs >= rhs);
+      // Act
+      const auto actual = lhs >= rhs;
+
+      // Assert
+      REQUIRE(actual);
     }
   }
 }
 
 TEST_CASE("operator>=(const U&, const result<T1,E1>&)", "[compare]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto rhs = result<int,std::string>{5};
     SECTION("value is greater or equal to result") {
       SECTION("returns true") {
         const auto lhs = 0l;
 
-        REQUIRE_FALSE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("value is not greater or equal to result") {
       SECTION("returns false") {
         const auto lhs = 9l;
 
-        REQUIRE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
   SECTION("Result contains an error") {
     SECTION("returns true") {
+      // Arrange
       const auto rhs = result<int,std::string>{fail("hello world")};
       const auto lhs = 0l;
 
-      REQUIRE_FALSE(lhs >= rhs);
+      // Act
+      const auto actual = lhs >= rhs;
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
 }
 
 TEST_CASE("operator<=(const result<T1,E1>&, const U&)", "[compare]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto lhs = result<int,std::string>{5};
     SECTION("value is less or equal to result") {
       SECTION("returns true") {
         const auto rhs = 9l;
 
-        REQUIRE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("value is not less or equal to result") {
       SECTION("returns false") {
         const auto rhs = 0l;
 
-        REQUIRE_FALSE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Result contains an error") {
     SECTION("returns false") {
+      // Arrange
       const auto lhs = result<int,std::string>{fail("hello world")};
       const auto rhs = 9l;
 
-      REQUIRE_FALSE(lhs <= rhs);
+      // Act
+      const auto actual = lhs <= rhs;
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
 }
 
 TEST_CASE("operator<=(const U&, const result<T1,E1>&)", "[compare]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto rhs = result<int,std::string>{5};
     SECTION("value is less or equal to result") {
       SECTION("returns true") {
         const auto lhs = 0l;
 
-        REQUIRE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("value is not less or equal to result") {
       SECTION("returns false") {
         const auto lhs = 9l;
 
-        REQUIRE_FALSE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Result contains an error") {
     SECTION("returns true") {
+      // Arrange
       const auto rhs = result<int,std::string>{fail("hello world")};
       const auto lhs = 9l;
 
-      REQUIRE(lhs <= rhs);
+      // Act
+      const auto actual = lhs <= rhs;
+
+      // Assert
+      REQUIRE(actual);
     }
   }
 }
 
 TEST_CASE("operator>(const result<T1,E1>&, const U&)", "[compare]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto lhs = result<int,std::string>{5};
     SECTION("value is greater or equal to result") {
       SECTION("returns true") {
         const auto rhs = 0l;
 
-        REQUIRE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("value is not greater or equal to result") {
       SECTION("returns false") {
         const auto rhs = 9l;
 
-        REQUIRE_FALSE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Result contains an error") {
     SECTION("returns false") {
+      // Arrange
       const auto lhs = result<int,std::string>{fail("hello world")};
       const auto rhs = 0l;
 
-      REQUIRE_FALSE(lhs > rhs);
+      // Act
+      const auto actual = lhs > rhs;
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
 }
 
 TEST_CASE("operator>(const U&, const result<T1,E1>&)", "[compare]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto rhs = result<int,std::string>{5};
     SECTION("value is greater or equal to result") {
       SECTION("returns false") {
         const auto lhs = 0l;
 
-        REQUIRE_FALSE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("value is not greater or equal to result") {
       SECTION("returns false") {
         const auto lhs = 9l;
 
-        REQUIRE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
   SECTION("Result contains an error") {
     SECTION("returns true") {
+      // Arrange
       const auto rhs = result<int,std::string>{fail("hello world")};
       const auto lhs = 0l;
 
-      REQUIRE(lhs > rhs);
+      // Act
+      const auto actual = lhs > rhs;
+
+      // Assert
+      REQUIRE(actual);
     }
   }
 }
 
 TEST_CASE("operator<(const result<T1,E1>&, const U&)", "[compare]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto lhs = result<int,std::string>{5};
     SECTION("value is less or equal to result") {
       SECTION("returns true") {
         const auto rhs = 9l;
 
-        REQUIRE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("value is not less or equal to result") {
       SECTION("returns false") {
         const auto rhs = 0l;
 
-        REQUIRE_FALSE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Result contains an error") {
     SECTION("returns false") {
+      // Arrange
       const auto lhs = result<int,std::string>{fail("hello world")};
       const auto rhs = 9l;
 
-      REQUIRE_FALSE(lhs < rhs);
+      // Act
+      const auto actual = lhs < rhs;
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
 }
 
 TEST_CASE("operator<(const U&, const result<T1,E1>&)", "[compare]") {
   SECTION("result contains a value") {
+    // Arrange
     const auto rhs = result<int,std::string>{5};
     SECTION("value is less or equal to result") {
       SECTION("returns true") {
         const auto lhs = 0l;
 
-        REQUIRE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("value is not less or equal to result") {
       SECTION("returns false") {
         const auto lhs = 9l;
 
-        REQUIRE_FALSE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
   SECTION("Result contains an error") {
     SECTION("returns false") {
+      // Arrange
       const auto rhs = result<int,std::string>{fail("hello world")};
       const auto lhs = 9l;
 
-      REQUIRE(lhs < rhs);
+      // Act
+      const auto actual = lhs < rhs;
+
+      // Assert
+      REQUIRE(actual);
     }
   }
 }
@@ -5757,13 +8253,19 @@ TEST_CASE("operator<(const U&, const result<T1,E1>&)", "[compare]") {
 TEST_CASE("operator==(const result<T1,E1>&, const failure<E>&)", "[compare]") {
   SECTION("result contains value") {
     SECTION("Returns false") {
+      // Arrange
       const auto lhs = result<int,std::string>{0};
       const auto rhs = fail("hello world");
 
-      REQUIRE_FALSE(lhs == rhs);
+      // Act
+      const auto actual = lhs == rhs;
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
   SECTION("result contains error") {
+    // Arrange
     const auto lhs = result<int,std::string>{
       fail("0")
     };
@@ -5771,14 +8273,22 @@ TEST_CASE("operator==(const result<T1,E1>&, const failure<E>&)", "[compare]") {
       SECTION("Returns true") {
         const auto rhs = fail("0");
 
-        REQUIRE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("failure compares unequal") {
       SECTION("Returns false") {
         const auto rhs = fail("hello");
 
-        REQUIRE_FALSE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
@@ -5787,13 +8297,19 @@ TEST_CASE("operator==(const result<T1,E1>&, const failure<E>&)", "[compare]") {
 TEST_CASE("operator==(const failure<E>&, const result<T1,E1>&)", "[compare]") {
   SECTION("result contains value") {
     SECTION("Returns false") {
+      // Arrange
       const auto rhs = result<int,std::string>{0};
       const auto lhs = fail("hello world");
 
-      REQUIRE_FALSE(lhs == rhs);
+      // Act
+      const auto actual = lhs == rhs;
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
   SECTION("result contains error") {
+    // Arrange
     const auto rhs = result<int,std::string>{
       fail("0")
     };
@@ -5801,14 +8317,22 @@ TEST_CASE("operator==(const failure<E>&, const result<T1,E1>&)", "[compare]") {
       SECTION("Returns true") {
         const auto lhs = fail("0");
 
-        REQUIRE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("failure compares unequal") {
       SECTION("Returns false") {
         const auto lhs = fail("hello");
 
-        REQUIRE_FALSE(lhs == rhs);
+        // Act
+        const auto result = lhs == rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
@@ -5817,13 +8341,19 @@ TEST_CASE("operator==(const failure<E>&, const result<T1,E1>&)", "[compare]") {
 TEST_CASE("operator!=(const result<T1,E1>&, const failure<E>&)", "[compare]") {
   SECTION("result contains value") {
     SECTION("Returns true") {
+      // Arrange
       const auto lhs = result<int,std::string>{0};
       const auto rhs = fail("hello world");
 
-      REQUIRE(lhs != rhs);
+      // Act
+      const auto actual = lhs != rhs;
+
+      // Assert
+      REQUIRE(actual);
     }
   }
   SECTION("result contains error") {
+    // Arrange
     const auto lhs = result<int,std::string>{
       fail("0")
     };
@@ -5831,14 +8361,22 @@ TEST_CASE("operator!=(const result<T1,E1>&, const failure<E>&)", "[compare]") {
       SECTION("Returns false") {
         const auto rhs = fail("0");
 
-        REQUIRE_FALSE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("failure compares unequal") {
       SECTION("Returns true") {
         const auto rhs = fail("hello");
 
-        REQUIRE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
@@ -5847,13 +8385,19 @@ TEST_CASE("operator!=(const result<T1,E1>&, const failure<E>&)", "[compare]") {
 TEST_CASE("operator!=(const failure<E>&, const result<T1,E1>&)", "[compare]") {
   SECTION("result contains value") {
     SECTION("Returns true") {
+      // Arrange
       const auto rhs = result<int,std::string>{0};
       const auto lhs = fail("hello world");
 
-      REQUIRE(lhs != rhs);
+      // Act
+      const auto actual = lhs != rhs;
+
+      // Assert
+      REQUIRE(actual);
     }
   }
   SECTION("result contains error") {
+    // Arrange
     const auto rhs = result<int,std::string>{
       fail("0")
     };
@@ -5861,14 +8405,22 @@ TEST_CASE("operator!=(const failure<E>&, const result<T1,E1>&)", "[compare]") {
       SECTION("Returns false") {
         const auto lhs = fail("0");
 
-        REQUIRE_FALSE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
     SECTION("failure compares unequal") {
       SECTION("Returns true") {
         const auto lhs = fail("hello");
 
-        REQUIRE(lhs != rhs);
+        // Act
+        const auto result = lhs != rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
   }
@@ -5877,13 +8429,19 @@ TEST_CASE("operator!=(const failure<E>&, const result<T1,E1>&)", "[compare]") {
 TEST_CASE("operator>=(const result<T1,E1>&, const failure<E>&)", "[compare]") {
   SECTION("result contains value") {
     SECTION("Returns false") {
+      // Arrange
       const auto lhs = result<int,std::string>{0};
       const auto rhs = fail("hello world");
 
-      REQUIRE_FALSE(lhs >= rhs);
+      // Act
+      const auto actual = lhs >= rhs;
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
   SECTION("result contains error") {
+    // Arrange
     const auto lhs = result<int,std::string>{
       fail("5")
     };
@@ -5891,14 +8449,22 @@ TEST_CASE("operator>=(const result<T1,E1>&, const failure<E>&)", "[compare]") {
       SECTION("Returns true") {
         const auto rhs = fail("0");
 
-        REQUIRE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("result is not greater or equal to failure") {
       SECTION("Returns false") {
         const auto rhs = fail("9");
 
-        REQUIRE_FALSE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
@@ -5907,13 +8473,19 @@ TEST_CASE("operator>=(const result<T1,E1>&, const failure<E>&)", "[compare]") {
 TEST_CASE("operator>=(const failure<E>&, const result<T1,E1>&)", "[compare]") {
   SECTION("result contains value") {
     SECTION("Returns false") {
+      // Arrange
       const auto lhs = fail("hello world");
       const auto rhs = result<int,std::string>{0};
 
-      REQUIRE(lhs >= rhs);
+      // Act
+      const auto actual = lhs >= rhs;
+
+      // Assert
+      REQUIRE(actual);
     }
   }
   SECTION("result contains error") {
+    // Arrange
     const auto rhs = result<int,std::string>{
       fail("3")
     };
@@ -5921,14 +8493,22 @@ TEST_CASE("operator>=(const failure<E>&, const result<T1,E1>&)", "[compare]") {
       SECTION("Returns true") {
         const auto lhs = fail("5");
 
-        REQUIRE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("failure is not greater or equal to result") {
       SECTION("Returns false") {
         const auto lhs = fail("0");
 
-        REQUIRE_FALSE(lhs >= rhs);
+        // Act
+        const auto result = lhs >= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
@@ -5937,13 +8517,19 @@ TEST_CASE("operator>=(const failure<E>&, const result<T1,E1>&)", "[compare]") {
 TEST_CASE("operator<=(const result<T1,E1>&, const failure<E>&)", "[compare]") {
   SECTION("result contains value") {
     SECTION("Returns true") {
+      // Arrange
       const auto lhs = result<int,std::string>{0};
       const auto rhs = fail("hello world");
 
-      REQUIRE(lhs <= rhs);
+      // Act
+      const auto actual = lhs <= rhs;
+
+      // Assert
+      REQUIRE(actual);
     }
   }
   SECTION("result contains error") {
+    // Arrange
     const auto lhs = result<int,std::string>{
       fail("5")
     };
@@ -5951,14 +8537,22 @@ TEST_CASE("operator<=(const result<T1,E1>&, const failure<E>&)", "[compare]") {
       SECTION("Returns true") {
         const auto rhs = fail("9");
 
-        REQUIRE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("result is not less or equal to failure") {
       SECTION("Returns false") {
         const auto rhs = fail("0");
 
-        REQUIRE_FALSE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
@@ -5967,13 +8561,19 @@ TEST_CASE("operator<=(const result<T1,E1>&, const failure<E>&)", "[compare]") {
 TEST_CASE("operator<=(const failure<E>&, const result<T1,E1>&)", "[compare]") {
   SECTION("result contains value") {
     SECTION("Returns true") {
+      // Arrange
       const auto lhs = fail("hello world");
       const auto rhs = result<int,std::string>{0};
 
-      REQUIRE_FALSE(lhs <= rhs);
+      // Act
+      const auto actual = lhs <= rhs;
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
   SECTION("result contains error") {
+    // Arrange
     const auto rhs = result<int,std::string>{
       fail("5")
     };
@@ -5981,14 +8581,22 @@ TEST_CASE("operator<=(const failure<E>&, const result<T1,E1>&)", "[compare]") {
       SECTION("Returns true") {
         const auto lhs = fail("0");
 
-        REQUIRE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("result is not less or equal to failure") {
       SECTION("Returns false") {
         const auto lhs = fail("9");
 
-        REQUIRE_FALSE(lhs <= rhs);
+        // Act
+        const auto result = lhs <= rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
@@ -5997,13 +8605,19 @@ TEST_CASE("operator<=(const failure<E>&, const result<T1,E1>&)", "[compare]") {
 TEST_CASE("operator>(const result<T1,E1>&, const failure<E>&)", "[compare]") {
   SECTION("result contains value") {
     SECTION("Returns false") {
+      // Arrange
       const auto lhs = result<int,std::string>{0};
       const auto rhs = fail("hello world");
 
-      REQUIRE_FALSE(lhs > rhs);
+      // Act
+      const auto actual = lhs > rhs;
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
   SECTION("result contains error") {
+    // Arrange
     const auto lhs = result<int,std::string>{
       fail("5")
     };
@@ -6011,14 +8625,22 @@ TEST_CASE("operator>(const result<T1,E1>&, const failure<E>&)", "[compare]") {
       SECTION("Returns true") {
         const auto rhs = fail("0");
 
-        REQUIRE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("result is not greater or equal to failure") {
       SECTION("Returns false") {
         const auto rhs = fail("9");
 
-        REQUIRE_FALSE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
@@ -6027,13 +8649,19 @@ TEST_CASE("operator>(const result<T1,E1>&, const failure<E>&)", "[compare]") {
 TEST_CASE("operator>(const failure<E>&, const result<T1,E1>&)", "[compare]") {
   SECTION("result contains value") {
     SECTION("Returns false") {
+      // Arrange
       const auto lhs = fail("hello world");
       const auto rhs = result<int,std::string>{0};
 
-      REQUIRE(lhs > rhs);
+      // Act
+      const auto actual = lhs > rhs;
+
+      // Assert
+      REQUIRE(actual);
     }
   }
   SECTION("result contains error") {
+    // Arrange
     const auto rhs = result<int,std::string>{
       fail("3")
     };
@@ -6041,14 +8669,22 @@ TEST_CASE("operator>(const failure<E>&, const result<T1,E1>&)", "[compare]") {
       SECTION("Returns true") {
         const auto lhs = fail("5");
 
-        REQUIRE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("failure is not greater or equal to result") {
       SECTION("Returns false") {
         const auto lhs = fail("0");
 
-        REQUIRE_FALSE(lhs > rhs);
+        // Act
+        const auto result = lhs > rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
@@ -6057,13 +8693,19 @@ TEST_CASE("operator>(const failure<E>&, const result<T1,E1>&)", "[compare]") {
 TEST_CASE("operator<(const result<T1,E1>&, const failure<E>&)", "[compare]") {
   SECTION("result contains value") {
     SECTION("Returns true") {
+      // Arrange
       const auto lhs = result<int,std::string>{0};
       const auto rhs = fail("hello world");
 
-      REQUIRE(lhs < rhs);
+      // Act
+      const auto actual = lhs < rhs;
+
+      // Assert
+      REQUIRE(actual);
     }
   }
   SECTION("result contains error") {
+    // Arrange
     const auto lhs = result<int,std::string>{
       fail("5")
     };
@@ -6071,14 +8713,22 @@ TEST_CASE("operator<(const result<T1,E1>&, const failure<E>&)", "[compare]") {
       SECTION("Returns true") {
         const auto rhs = fail("9");
 
-        REQUIRE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("result is not less or equal to failure") {
       SECTION("Returns false") {
         const auto rhs = fail("0");
 
-        REQUIRE_FALSE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
@@ -6087,13 +8737,19 @@ TEST_CASE("operator<(const result<T1,E1>&, const failure<E>&)", "[compare]") {
 TEST_CASE("operator<(const failure<E>&, const result<T1,E1>&)", "[compare]") {
   SECTION("result contains value") {
     SECTION("Returns true") {
+      // Arrange
       const auto lhs = fail("hello world");
       const auto rhs = result<int,std::string>{0};
 
-      REQUIRE_FALSE(lhs < rhs);
+      // Act
+      const auto actual = lhs < rhs;
+
+      // Assert
+      REQUIRE_FALSE(actual);
     }
   }
   SECTION("result contains error") {
+    // Arrange
     const auto rhs = result<int,std::string>{
       fail("5")
     };
@@ -6101,14 +8757,22 @@ TEST_CASE("operator<(const failure<E>&, const result<T1,E1>&)", "[compare]") {
       SECTION("Returns true") {
         const auto lhs = fail("0");
 
-        REQUIRE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE(result);
       }
     }
     SECTION("result is not less or equal to failure") {
       SECTION("Returns false") {
         const auto lhs = fail("9");
 
-        REQUIRE_FALSE(lhs < rhs);
+        // Act
+        const auto result = lhs < rhs;
+
+        // Assert
+        REQUIRE_FALSE(result);
       }
     }
   }
@@ -6120,13 +8784,16 @@ TEST_CASE("operator<(const failure<E>&, const result<T1,E1>&)", "[compare]") {
 
 TEST_CASE("swap(result<T,E>&, result<T,E>&)", "[utility]") {
   SECTION("lhs and rhs contain a value") {
+    // Arrange
     auto lhs_sut = result<int, int>{42};
     auto rhs_sut = result<int, int>{100};
     const auto lhs_old = lhs_sut;
     const auto rhs_old = rhs_sut;
 
+    // Act
     swap(lhs_sut, rhs_sut);
 
+    // Assert
     SECTION("lhs contains value") {
       REQUIRE(lhs_sut.has_value());
     }
@@ -6141,13 +8808,16 @@ TEST_CASE("swap(result<T,E>&, result<T,E>&)", "[utility]") {
     }
   }
   SECTION("lhs and rhs contain an error") {
+    // Arrange
     auto lhs_sut = result<int, int>{fail(42)};
     auto rhs_sut = result<int, int>{fail(100)};
     const auto lhs_old = lhs_sut;
     const auto rhs_old = rhs_sut;
 
+    // Act
     swap(lhs_sut, rhs_sut);
 
+    // Assert
     SECTION("lhs contains error") {
       REQUIRE(lhs_sut.has_error());
     }
@@ -6162,13 +8832,16 @@ TEST_CASE("swap(result<T,E>&, result<T,E>&)", "[utility]") {
     }
   }
   SECTION("lhs contains a value, rhs contains an error") {
+    // Arrange
     auto lhs_sut = result<int, int>{42};
     auto rhs_sut = result<int, int>{fail(42)};
     const auto lhs_old = lhs_sut;
     const auto rhs_old = rhs_sut;
 
+    // Act
     swap(lhs_sut, rhs_sut);
 
+    // Assert
     SECTION("lhs contains error") {
       REQUIRE(lhs_sut.has_error());
     }
@@ -6183,13 +8856,16 @@ TEST_CASE("swap(result<T,E>&, result<T,E>&)", "[utility]") {
     }
   }
   SECTION("lhs contains an error, rhs contains a value") {
+    // Arrange
     auto lhs_sut = result<int, int>{fail(42)};
     auto rhs_sut = result<int, int>{};
     const auto lhs_old = lhs_sut;
     const auto rhs_old = rhs_sut;
 
+    // Act
     swap(lhs_sut, rhs_sut);
 
+    // Assert
     SECTION("lhs contains value") {
       REQUIRE(lhs_sut.has_value());
     }
@@ -6207,13 +8883,16 @@ TEST_CASE("swap(result<T,E>&, result<T,E>&)", "[utility]") {
 
 TEST_CASE("swap(result<void,E>&, result<void,E>&)", "[utility]") {
   SECTION("lhs and rhs contain a value") {
+    // Arrange
     auto lhs_sut = result<void, int>{};
     auto rhs_sut = result<void, int>{};
     const auto lhs_old = lhs_sut;
     const auto rhs_old = rhs_sut;
 
+    // Act
     swap(lhs_sut, rhs_sut);
 
+    // Assert
     SECTION("lhs contains value") {
       REQUIRE(lhs_sut.has_value());
     }
@@ -6228,13 +8907,16 @@ TEST_CASE("swap(result<void,E>&, result<void,E>&)", "[utility]") {
     }
   }
   SECTION("lhs and rhs contain an error") {
+    // Arrange
     auto lhs_sut = result<void, int>{fail(42)};
     auto rhs_sut = result<void, int>{fail(100)};
     const auto lhs_old = lhs_sut;
     const auto rhs_old = rhs_sut;
 
+    // Act
     swap(lhs_sut, rhs_sut);
 
+    // Assert
     SECTION("lhs contains error") {
       REQUIRE(lhs_sut.has_error());
     }
@@ -6249,13 +8931,16 @@ TEST_CASE("swap(result<void,E>&, result<void,E>&)", "[utility]") {
     }
   }
   SECTION("lhs contains a value, rhs contains an error") {
+    // Arrange
     auto lhs_sut = result<void, int>{};
     auto rhs_sut = result<void, int>{fail(42)};
     const auto lhs_old = lhs_sut;
     const auto rhs_old = rhs_sut;
 
+    // Act
     swap(lhs_sut, rhs_sut);
 
+    // Assert
     SECTION("lhs contains error") {
       REQUIRE(lhs_sut.has_error());
     }
@@ -6270,13 +8955,16 @@ TEST_CASE("swap(result<void,E>&, result<void,E>&)", "[utility]") {
     }
   }
   SECTION("lhs contains an error, rhs contains a value") {
+    // Arrange
     auto lhs_sut = result<void, int>{fail(42)};
     auto rhs_sut = result<void, int>{};
     const auto lhs_old = lhs_sut;
     const auto rhs_old = rhs_sut;
 
+    // Act
     swap(lhs_sut, rhs_sut);
 
+    // Assert
     SECTION("lhs contains value") {
       REQUIRE(lhs_sut.has_value());
     }
@@ -6297,30 +8985,39 @@ TEST_CASE("swap(result<void,E>&, result<void,E>&)", "[utility]") {
 TEST_CASE("std::hash<result<T,E>>::operator()", "[utility]") {
   SECTION("Value is active") {
     SECTION("Hashes value") {
+      // Arrange
       const auto sut = result<int,int>{42};
 
+      // Act
       const auto output = std::hash<result<int,int>>{}(sut);
 
+      // Assert
       SUCCEED("Hash is " << output);
     }
   }
   SECTION("Error is active") {
     SECTION("Hashes error") {
+      // Arrange
       const auto sut = result<int,int>{fail(42)};
 
+      // Act
       const auto output = std::hash<result<int,int>>{}(sut);
 
+      // Assert
       SUCCEED("Hash is " << output);
     }
   }
 
   SECTION("Hash of T and E are different for the same values for T and E") {
+    // Arrange
     const auto value_sut = result<int,int>{42};
     const auto error_sut = result<int,int>{fail(42)};
 
+    // Act
     const auto value_hash = std::hash<result<int,int>>{}(value_sut);
     const auto error_hash = std::hash<result<int,int>>{}(error_sut);
 
+    // Assert
     REQUIRE(value_hash != error_hash);
   }
 }
@@ -6328,20 +9025,26 @@ TEST_CASE("std::hash<result<T,E>>::operator()", "[utility]") {
 TEST_CASE("std::hash<result<void,E>>::operator()", "[utility]") {
   SECTION("Value is active") {
     SECTION("Produces '0' hash") {
+      // Arrange
       const auto sut = result<void,int>{};
 
+      // Act
       const auto output = std::hash<result<void,int>>{}(sut);
 
+      // Assert
       REQUIRE(output == 0u);
     }
   }
 
   SECTION("Error is active") {
     SECTION("Hashes error") {
+      // Arrange
       const auto sut = result<void,int>{fail(42)};
 
+      // Act
       const auto output = std::hash<result<void,int>>{}(sut);
 
+      // Assert
       SUCCEED("Hash is " << output);
     }
   }

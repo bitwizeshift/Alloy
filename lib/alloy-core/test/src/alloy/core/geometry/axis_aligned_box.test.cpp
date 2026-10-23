@@ -16,6 +16,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 
+#include <algorithm> // std::ranges::all_of
+#include <array>     // std::array
+
 namespace alloy::core::test {
 
 TEST_CASE("axis_aligned_box::from_point_and_size(const point3&, const vector3&)", "[factory][static]") {
@@ -66,13 +69,14 @@ TEST_CASE("axis_aligned_box::from_sphere(const sphere&)", "[factory][static]") {
   // Arrange
   const auto s = sphere{point3{1, 2, 3}, real{2}};
 
+  const auto expected = axis_aligned_box{point3{-1, 0, 1}, point3{3, 4, 5}};
+
   // Act
   const auto sut = axis_aligned_box::from_sphere(s);
 
   // Assert
   SECTION("Extends by the radius in every direction") {
-    REQUIRE(almost_equal(sut.bottom_left_point(), point3{-1, 0, 1}));
-    REQUIRE(almost_equal(sut.top_right_point(), point3{3, 4, 5}));
+    REQUIRE(almost_equal(sut, expected, default_tolerance));
   }
 }
 
@@ -81,13 +85,18 @@ TEST_CASE("axis_aligned_box::enclosing(const axis_aligned_box&, const axis_align
   const auto box = axis_aligned_box{point3{0, 0, 0}, point3{1, 1, 1}};
   const auto other = axis_aligned_box{point3{-1, 0.5f, 0}, point3{0.5f, 2, 1}};
 
+  const auto inputs = std::array{box, other};
+
   // Act
   const auto sut = axis_aligned_box::enclosing(box, other);
 
+  const auto encloses_inputs = std::ranges::all_of(
+    inputs, [&sut](const axis_aligned_box& input) { return sut.encloses(input); }
+  );
+
   // Assert
   SECTION("Encloses both boxes") {
-    REQUIRE(sut.encloses(box));
-    REQUIRE(sut.encloses(other));
+    REQUIRE(encloses_inputs);
   }
   SECTION("Is the smallest enclosing box") {
     REQUIRE(sut == axis_aligned_box{point3{-1, 0, 0}, point3{1, 2, 1}});
@@ -115,10 +124,12 @@ TEST_CASE("axis_aligned_box::enclosing(const axis_aligned_box&, const point3&)",
 }
 
 TEST_CASE("axis_aligned_box::axis_aligned_box()", "[ctor]") {
-  // Arrange / Act
+  // Act
   const auto sut = axis_aligned_box{};
 
   // Asserts
+
+  // Assert
   SECTION("Bottom left point is zero") {
     REQUIRE(sut.bottom_left_point() == point3{0, 0, 0});
   }
@@ -609,57 +620,86 @@ TEST_CASE("axis_aligned_box::planes()", "[observers]") {
     const auto result = sut.top_plane();
 
     // Assert
-    REQUIRE(result.contains(top_right));
-    REQUIRE(almost_equal(result.normal(), vector3_constants::unit_y));
+    SECTION("Passes through the maximum corner") {
+      REQUIRE(result.contains(top_right));
+    }
+    SECTION("Faces outwards along positive y") {
+      REQUIRE(almost_equal(result.normal(), vector3_constants::unit_y));
+    }
   }
   SECTION("Bottom plane") {
     // Act
     const auto result = sut.bottom_plane();
 
     // Assert
-    REQUIRE(result.contains(bottom_left));
-    REQUIRE(almost_equal(result.normal(), vector3_constants::neg_unit_y));
+    SECTION("Passes through the minimum corner") {
+      REQUIRE(result.contains(bottom_left));
+    }
+    SECTION("Faces outwards along negative y") {
+      REQUIRE(almost_equal(result.normal(), vector3_constants::neg_unit_y));
+    }
   }
   SECTION("Front plane") {
     // Act
     const auto result = sut.front_plane();
 
     // Assert
-    REQUIRE(result.contains(top_right));
-    REQUIRE(almost_equal(result.normal(), vector3_constants::unit_z));
+    SECTION("Passes through the maximum corner") {
+      REQUIRE(result.contains(top_right));
+    }
+    SECTION("Faces outwards along positive z") {
+      REQUIRE(almost_equal(result.normal(), vector3_constants::unit_z));
+    }
   }
   SECTION("Back plane") {
     // Act
     const auto result = sut.back_plane();
 
     // Assert
-    REQUIRE(result.contains(bottom_left));
-    REQUIRE(almost_equal(result.normal(), vector3_constants::neg_unit_z));
+    SECTION("Passes through the minimum corner") {
+      REQUIRE(result.contains(bottom_left));
+    }
+    SECTION("Faces outwards along negative z") {
+      REQUIRE(almost_equal(result.normal(), vector3_constants::neg_unit_z));
+    }
   }
   SECTION("Left plane") {
     // Act
     const auto result = sut.left_plane();
 
     // Assert
-    REQUIRE(result.contains(bottom_left));
-    REQUIRE(almost_equal(result.normal(), vector3_constants::neg_unit_x));
+    SECTION("Passes through the minimum corner") {
+      REQUIRE(result.contains(bottom_left));
+    }
+    SECTION("Faces outwards along negative x") {
+      REQUIRE(almost_equal(result.normal(), vector3_constants::neg_unit_x));
+    }
   }
   SECTION("Right plane") {
     // Act
     const auto result = sut.right_plane();
 
     // Assert
-    REQUIRE(result.contains(top_right));
-    REQUIRE(almost_equal(result.normal(), vector3_constants::unit_x));
+    SECTION("Passes through the maximum corner") {
+      REQUIRE(result.contains(top_right));
+    }
+    SECTION("Faces outwards along positive x") {
+      REQUIRE(almost_equal(result.normal(), vector3_constants::unit_x));
+    }
   }
   SECTION("Box center is under every plane") {
     // Act
     const auto result = sut.planes();
 
+    const auto center_is_under_every_plane = std::ranges::all_of(
+      result,
+      [](const plane& value) {
+        return is_point_under_plane(point3{2.5f, 4, 5.5f}, value);
+      }
+    );
+
     // Assert
-    for (const auto& p : result) {
-      REQUIRE(is_point_under_plane(point3{2.5f, 4, 5.5f}, p));
-    }
+    REQUIRE(center_is_under_every_plane);
   }
 }
 

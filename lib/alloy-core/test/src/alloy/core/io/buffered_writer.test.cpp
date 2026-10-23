@@ -8,6 +8,7 @@
 #include <alloy/core/io/writer.hpp>
 #include "test_doubles.hpp"
 
+#include <alloy/core/intrinsics.hpp>
 #include <alloy/core/memory/allocator.hpp>
 #include <alloy/core/utilities/result.hpp>
 
@@ -107,6 +108,7 @@ private:
 TEST_CASE("buffered_writer::buffered_writer(U&&, std::size_t, allocator)",
           "[ctor]")
 {
+  // Arrange
   auto storage = std::array<std::byte,16>{};
 
   SECTION("Capacity is not specified")
@@ -185,8 +187,16 @@ TEST_CASE("buffered_writer::buffered_writer(U&&, std::size_t, allocator)",
     {
       const auto input = sequence_bytes(8u);
 
-      REQUIRE( sut.write(input).has_value() );
-      REQUIRE( destination.write_count() == 0u );
+      // Act
+      const auto result = sut.write(input);
+
+      // Assert
+      SECTION("Accepts bytes into the owned buffer") {
+        REQUIRE( result.has_value() );
+      }
+      SECTION("Leaves the original destination unused") {
+        REQUIRE( destination.write_count() == 0u );
+      }
     }
   }
 }
@@ -246,16 +256,28 @@ TEST_CASE("buffered_writer::buffered_writer(std::allocator_arg_t, allocator, "
   {
     REQUIRE( sut.destination().written().data() == storage.data() );
   }
-  SECTION("Allocates the buffer from the allocator once it is needed")
+  SECTION("Does not allocate before the first use")
   {
     REQUIRE( resource.allocations() == 0u );
-    REQUIRE( sut.write(input).has_value() );
-    REQUIRE( resource.allocations() == 1u );
+  }
+  SECTION("Allocates the buffer when it is first used")
+  {
+    // Act
+    const auto result = sut.write(input);
+
+    // Assert
+    SECTION("The operation succeeds") {
+      REQUIRE( result.has_value() );
+    }
+    SECTION("The buffer is allocated once") {
+      REQUIRE( resource.allocations() == 1u );
+    }
   }
 }
 
 TEST_CASE("buffered_writer deduction guides", "[ctor]")
 {
+  // Arrange
   auto storage = std::array<std::byte,16>{};
 
   SECTION("Destination is an lvalue")
@@ -266,12 +288,14 @@ TEST_CASE("buffered_writer deduction guides", "[ctor]")
     // Act
     auto sut = buffered_writer{destination};
 
-    // Assert
     SECTION("Deduces the type of the destination")
     {
-      STATIC_REQUIRE(
-        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>
-      );
+      // Act
+      constexpr auto property_holds =
+        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 
@@ -283,12 +307,14 @@ TEST_CASE("buffered_writer deduction guides", "[ctor]")
     // Act
     auto sut = buffered_writer{destination};
 
-    // Assert
     SECTION("Deduces the type of the destination without const")
     {
-      STATIC_REQUIRE(
-        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>
-      );
+      // Act
+      constexpr auto property_holds =
+        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 
@@ -297,12 +323,14 @@ TEST_CASE("buffered_writer deduction guides", "[ctor]")
     // Act
     auto sut = buffered_writer{fake_writer{storage}};
 
-    // Assert
     SECTION("Deduces the type of the destination")
     {
-      STATIC_REQUIRE(
-        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>
-      );
+      // Act
+      constexpr auto property_holds =
+        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 
@@ -314,12 +342,14 @@ TEST_CASE("buffered_writer deduction guides", "[ctor]")
     // Act
     auto sut = buffered_writer{destination, 8u};
 
-    // Assert
     SECTION("Deduces the type of the destination")
     {
-      STATIC_REQUIRE(
-        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>
-      );
+      // Act
+      constexpr auto property_holds =
+        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 
@@ -331,12 +361,14 @@ TEST_CASE("buffered_writer deduction guides", "[ctor]")
     // Act
     auto sut = buffered_writer{destination, 8u, allocator{}};
 
-    // Assert
     SECTION("Deduces the type of the destination")
     {
-      STATIC_REQUIRE(
-        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>
-      );
+      // Act
+      constexpr auto property_holds =
+        std::is_same_v<decltype(sut), buffered_writer<fake_writer>>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 }
@@ -354,7 +386,7 @@ TEST_CASE("buffered_writer::buffered_writer(buffered_writer&&)", "[ctor]")
       8u,
       allocator{&resource}
     };
-    REQUIRE( other.write(input).has_value() );
+    compiler::unused(other.write(input));
     const auto expected = other.buffer();
 
     // Act
@@ -367,8 +399,12 @@ TEST_CASE("buffered_writer::buffered_writer(buffered_writer&&)", "[ctor]")
     }
     SECTION("Takes the buffered bytes of the other writer")
     {
-      REQUIRE( sut.buffer().data() == expected.data() );
-      REQUIRE( sut.buffer().size() == expected.size() );
+      SECTION("Retains the original buffer allocation") {
+        REQUIRE( sut.buffer().data() == expected.data() );
+      }
+      SECTION("Retains the number of pending bytes") {
+        REQUIRE( sut.buffer().size() == expected.size() );
+      }
     }
     SECTION("Takes the destination of the other writer")
     {
@@ -376,9 +412,15 @@ TEST_CASE("buffered_writer::buffered_writer(buffered_writer&&)", "[ctor]")
     }
     SECTION("Leaves the other writer without a buffer")
     {
-      // NOLINTNEXTLINE(bugprone-use-after-move)
-      REQUIRE( other.capacity() == 0u );
-      REQUIRE( other.buffer().empty() );
+      SECTION("Releases ownership of the moved-from allocation") {
+        // NOLINTNEXTLINE(bugprone-use-after-move)
+        REQUIRE( other.capacity() == 0u );
+      }
+      SECTION("Leaves no pending bytes in the moved-from object") {
+        // Moved-from buffers remain valid and empty.
+        // NOLINTNEXTLINE(bugprone-use-after-move)
+        REQUIRE( other.buffer().empty() );
+      }
     }
     SECTION("Does not allocate another buffer")
     {
@@ -392,14 +434,18 @@ TEST_CASE("buffered_writer::buffered_writer(buffered_writer&&)", "[ctor]")
 
   SECTION("Destination is not move constructible")
   {
-    STATIC_REQUIRE_FALSE(
-      std::is_move_constructible_v<buffered_writer<immovable_writer>>
-    );
+    // Act
+    constexpr auto property_holds =
+      std::is_move_constructible_v<buffered_writer<immovable_writer>>;
+
+    // Assert
+    STATIC_REQUIRE_FALSE(property_holds);
   }
 }
 
 TEST_CASE("buffered_writer::~buffered_writer()", "[dtor]")
 {
+  // Arrange
   const auto input = sequence_bytes(3u);
   auto storage = std::array<std::byte,16>{};
   auto destination = fake_writer{storage};
@@ -414,6 +460,8 @@ TEST_CASE("buffered_writer::~buffered_writer()", "[dtor]")
         8u,
         allocator{&resource}
       };
+
+      // Assert
       REQUIRE( sut.write(input).has_value() );
     }
 
@@ -463,6 +511,8 @@ TEST_CASE("buffered_writer::~buffered_writer()", "[dtor]")
         8u,
         allocator{&resource}
       };
+
+      // Assert
       REQUIRE( sut.write(input).has_value() );
       auto other = std::move(sut);
     }
@@ -474,8 +524,12 @@ TEST_CASE("buffered_writer::~buffered_writer()", "[dtor]")
     }
     SECTION("Flushes the buffered bytes only once")
     {
-      REQUIRE( destination.write_count() == 1u );
-      REQUIRE( destination.written().size() == input.size() );
+      SECTION("Flushes the old destination once before assignment") {
+        REQUIRE( destination.write_count() == 1u );
+      }
+      SECTION("Flushes every byte pending in the old destination") {
+        REQUIRE( destination.written().size() == input.size() );
+      }
     }
   }
 }
@@ -501,8 +555,8 @@ TEST_CASE("buffered_writer::operator=(buffered_writer&&)", "[assignment]")
       8u,
       allocator{&resource}
     };
-    REQUIRE( sut.write(std::span{input}.first(2u)).has_value() );
-    REQUIRE( other.write(input).has_value() );
+    compiler::unused(sut.write(std::span{input}.first(2u)));
+    compiler::unused(other.write(input));
     const auto expected = other.buffer();
 
     // Act
@@ -513,8 +567,9 @@ TEST_CASE("buffered_writer::operator=(buffered_writer&&)", "[assignment]")
     {
       const auto written = destination.written();
 
-      REQUIRE( written.size() == 2u );
-      REQUIRE( std::equal(written.begin(), written.end(), input.begin()) );
+      REQUIRE( std::ranges::equal(
+        written, std::span{input}.subspan(0u, 2u)
+      ) );
     }
     SECTION("Releases the previous buffer")
     {
@@ -526,8 +581,12 @@ TEST_CASE("buffered_writer::operator=(buffered_writer&&)", "[assignment]")
     }
     SECTION("Takes the buffered bytes of the other writer")
     {
-      REQUIRE( sut.buffer().data() == expected.data() );
-      REQUIRE( sut.buffer().size() == expected.size() );
+      SECTION("Retains the original buffer allocation") {
+        REQUIRE( sut.buffer().data() == expected.data() );
+      }
+      SECTION("Retains the number of pending bytes") {
+        REQUIRE( sut.buffer().size() == expected.size() );
+      }
     }
     SECTION("Takes the destination of the other writer")
     {
@@ -539,20 +598,36 @@ TEST_CASE("buffered_writer::operator=(buffered_writer&&)", "[assignment]")
     }
     SECTION("Leaves the other writer without a buffer")
     {
-      // NOLINTNEXTLINE(bugprone-use-after-move)
-      REQUIRE( other.capacity() == 0u );
-      REQUIRE( other.buffer().empty() );
+      SECTION("Releases ownership of the moved-from allocation") {
+        // NOLINTNEXTLINE(bugprone-use-after-move)
+        REQUIRE( other.capacity() == 0u );
+      }
+      SECTION("Leaves no pending bytes in the moved-from object") {
+        // Moved-from buffers remain valid and empty.
+        // NOLINTNEXTLINE(bugprone-use-after-move)
+        REQUIRE( other.buffer().empty() );
+      }
     }
   }
 
   SECTION("Destination is not move assignable")
   {
-    STATIC_REQUIRE(
-      std::is_move_constructible_v<buffered_writer<unassignable_writer>>
-    );
-    STATIC_REQUIRE_FALSE(
-      std::is_move_assignable_v<buffered_writer<unassignable_writer>>
-    );
+    SECTION("Move construction does not require destination assignment") {
+      // Act
+      constexpr auto property_holds =
+        std::is_move_constructible_v<buffered_writer<unassignable_writer>>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
+    }
+    SECTION("Move assignment requires an assignable destination") {
+      // Act
+      constexpr auto property_holds =
+        std::is_move_assignable_v<buffered_writer<unassignable_writer>>;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
+    }
   }
 }
 
@@ -562,6 +637,7 @@ TEST_CASE("buffered_writer::operator=(buffered_writer&&)", "[assignment]")
 
 TEST_CASE("buffered_writer::flush()", "[buffering]")
 {
+  // Arrange
   static constexpr auto capacity = std::size_t{16};
   const auto input = sequence_bytes(10u);
 
@@ -575,7 +651,7 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     auto destination = fake_writer{storage};
     destination.set_chunk_size(chunk_size);
     auto sut = buffered_writer{std::move(destination), capacity};
-    REQUIRE( sut.write(input).has_value() );
+    compiler::unused(sut.write(input));
 
     // Act
     const auto result = sut.flush();
@@ -626,7 +702,7 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     auto storage = std::array<std::byte,4>{};
     auto destination = fake_writer{storage};
     auto sut = buffered_writer{std::move(destination), capacity};
-    REQUIRE( sut.write(input).has_value() );
+    compiler::unused(sut.write(input));
 
     // Act
     const auto result = sut.flush();
@@ -634,8 +710,7 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     // Assert
     SECTION("Fails with write zero")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == io_error::write_zero );
+      REQUIRE( result == fail(io_error::write_zero) );
     }
     SECTION("Keeps the bytes that were not written")
     {
@@ -655,7 +730,7 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     auto destination = fake_writer{storage};
     destination.fail_when_full(expected);
     auto sut = buffered_writer{std::move(destination), capacity};
-    REQUIRE( sut.write(input).has_value() );
+    compiler::unused(sut.write(input));
 
     // Act
     const auto result = sut.flush();
@@ -663,8 +738,7 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     // Assert
     SECTION("Returns the error of the destination")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
     SECTION("Keeps the bytes that were not written")
     {
@@ -683,8 +757,8 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
     auto destination = fake_writer{storage};
     destination.set_chunk_size(0u);
     auto sut = buffered_writer{std::move(destination), capacity};
-    REQUIRE( sut.write(input).has_value() );
-    REQUIRE( sut.flush().has_error() );
+    compiler::unused(sut.write(input));
+    compiler::unused(sut.flush());
     sut.destination().set_chunk_size(3u);
 
     // Act
@@ -696,9 +770,11 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
       const auto written = sut.destination().written();
 
       REQUIRE( result.has_value() );
-      REQUIRE(
-        std::equal(written.begin(), written.end(), input.begin(), input.end())
-      );
+      SECTION("Preserves the order of all written bytes") {
+        REQUIRE(
+          std::equal(written.begin(), written.end(), input.begin(), input.end())
+        );
+      }
     }
   }
 }
@@ -709,6 +785,7 @@ TEST_CASE("buffered_writer::flush()", "[buffering]")
 
 TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
 {
+  // Arrange
   static constexpr auto capacity = std::size_t{16};
   const auto input = sequence_bytes(300u);
 
@@ -737,9 +814,11 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
       const auto written = sut.destination().written();
 
       REQUIRE( result.has_value() );
-      REQUIRE(
-        std::equal(written.begin(), written.end(), input.begin(), input.end())
-      );
+      SECTION("Preserves the order of all written bytes") {
+        REQUIRE(
+          std::equal(written.begin(), written.end(), input.begin(), input.end())
+        );
+      }
     }
   }
 
@@ -757,8 +836,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     // Assert
     SECTION("Returns the number of bytes given")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == bytes.size() );
+      REQUIRE( result == bytes.size() );
     }
     SECTION("Holds the bytes in the buffer")
     {
@@ -780,7 +858,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     auto storage = std::vector<std::byte>(input.size());
     auto destination = fake_writer{storage};
     auto sut = buffered_writer{std::move(destination), capacity};
-    REQUIRE( sut.write(std::span{input}.first(10u)).has_value() );
+    compiler::unused(sut.write(std::span{input}.first(10u)));
     const auto bytes = std::span{input}.subspan(10u, 6u);
 
     // Act
@@ -789,15 +867,15 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     // Assert
     SECTION("Returns the number of bytes given")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == bytes.size() );
+      REQUIRE( result == bytes.size() );
     }
     SECTION("Writes the previously buffered bytes to the destination")
     {
       const auto written = sut.destination().written();
 
-      REQUIRE( written.size() == 10u );
-      REQUIRE( std::equal(written.begin(), written.end(), input.begin()) );
+      REQUIRE( std::ranges::equal(
+        written, std::span{input}.subspan(0u, 10u)
+      ) );
     }
     SECTION("Holds the new bytes in the buffer")
     {
@@ -824,13 +902,16 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     // Assert
     SECTION("Writes directly from the buffer of the caller")
     {
-      REQUIRE( sut.destination().write_count() == 1u );
-      REQUIRE( sut.destination().last_request_size() == request );
+      SECTION("Satisfies the request with one destination write") {
+        REQUIRE( sut.destination().write_count() == 1u );
+      }
+      SECTION("Writes the request directly to the destination") {
+        REQUIRE( sut.destination().last_request_size() == request );
+      }
     }
     SECTION("Returns the number of bytes written")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == request );
+      REQUIRE( result == request );
     }
     SECTION("Leaves the buffer empty")
     {
@@ -844,7 +925,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     auto storage = std::vector<std::byte>(input.size());
     auto destination = fake_writer{storage};
     auto sut = buffered_writer{std::move(destination), capacity};
-    REQUIRE( sut.write(std::span{input}.first(4u)).has_value() );
+    compiler::unused(sut.write(std::span{input}.first(4u)));
     const auto bytes = std::span{input}.subspan(4u, capacity);
 
     // Act
@@ -853,15 +934,15 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     // Assert
     SECTION("Returns the number of bytes written")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == bytes.size() );
+      REQUIRE( result == bytes.size() );
     }
     SECTION("Writes the buffered bytes before the new bytes")
     {
       const auto written = sut.destination().written();
 
-      REQUIRE( written.size() == 4u + capacity );
-      REQUIRE( std::equal(written.begin(), written.end(), input.begin()) );
+      REQUIRE( std::ranges::equal(
+        written, std::span{input}.subspan(0u, 4u + capacity)
+      ) );
     }
     SECTION("Leaves the buffer empty")
     {
@@ -877,7 +958,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     auto destination = fake_writer{storage};
     destination.fail_when_full(expected);
     auto sut = buffered_writer{std::move(destination), capacity};
-    REQUIRE( sut.write(std::span{input}.first(10u)).has_value() );
+    compiler::unused(sut.write(std::span{input}.first(10u)));
 
     // Act
     const auto result = sut.write(std::span{input}.subspan(10u, 6u));
@@ -885,8 +966,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     // Assert
     SECTION("Returns the error of the destination")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
     SECTION("Keeps the bytes that were not written")
     {
@@ -914,8 +994,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     // Assert
     SECTION("Returns the error of the destination")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 
@@ -937,8 +1016,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     // Assert
     SECTION("Fails with not enough memory")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == std::errc::not_enough_memory );
+      REQUIRE( result == fail(std::errc::not_enough_memory) );
     }
     SECTION("Does not write to the destination")
     {
@@ -968,10 +1046,14 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
       const auto written = sut.destination().written();
 
       REQUIRE( result.has_value() );
-      REQUIRE( *result == capacity );
-      REQUIRE(
-        std::equal(written.begin(), written.end(), bytes.begin(), bytes.end())
-      );
+      SECTION("Reports the bytes accepted before the write failure") {
+        REQUIRE( *result == capacity );
+      }
+      SECTION("Writes the accepted bytes in their original order") {
+        REQUIRE(
+          std::equal(written.begin(), written.end(), bytes.begin(), bytes.end())
+        );
+      }
     }
   }
 
@@ -985,7 +1067,7 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
       capacity,
       allocator{&resource}
     };
-    REQUIRE( sut.write(std::span{input}.first(10u)).has_value() );
+    compiler::unused(sut.write(std::span{input}.first(10u)));
 
     // Act
     const auto result = sut.write(std::span{input}.subspan(10u, 10u));
@@ -994,7 +1076,9 @@ TEST_CASE("buffered_writer::write(std::span<const std::byte>)", "[writing]")
     SECTION("Reuses the buffer")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( resource.allocations() == 1u );
+      SECTION("Reuses the allocation for subsequent I/O") {
+        REQUIRE( resource.allocations() == 1u );
+      }
     }
   }
 }
@@ -1012,7 +1096,7 @@ TEST_CASE("indirect_buffered_writer::write(std::span<const std::byte>)",
   auto storage = std::vector<std::byte>(input.size());
   auto destination = fake_writer{storage};
   auto sut = indirect_buffered_writer{&destination, capacity};
-  REQUIRE( sut.write(std::span{input}.first(4u)).has_value() );
+  compiler::unused(sut.write(std::span{input}.first(4u)));
 
   // Act
   const auto result = sut.write(std::span{input}.subspan(4u));
@@ -1027,9 +1111,11 @@ TEST_CASE("indirect_buffered_writer::write(std::span<const std::byte>)",
     const auto written = destination.written();
 
     REQUIRE( result.has_value() );
-    REQUIRE(
-      std::equal(written.begin(), written.end(), input.begin(), input.end())
-    );
+    SECTION("Preserves the order of all written bytes") {
+      REQUIRE(
+        std::equal(written.begin(), written.end(), input.begin(), input.end())
+      );
+    }
   }
 }
 

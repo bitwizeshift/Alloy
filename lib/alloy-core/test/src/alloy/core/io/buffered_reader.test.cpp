@@ -8,6 +8,7 @@
 #include "test_doubles.hpp"
 
 #include <alloy/core/containers/vector.hpp>
+#include <alloy/core/intrinsics.hpp>
 #include <alloy/core/memory/allocator.hpp>
 #include <alloy/core/utilities/result.hpp>
 
@@ -108,6 +109,7 @@ private:
 TEST_CASE("buffered_reader::buffered_reader(U&&, std::size_t, allocator)",
           "[ctor]")
 {
+  // Arrange
   const auto input = sequence_bytes(16u);
 
   SECTION("Capacity is not specified")
@@ -185,8 +187,16 @@ TEST_CASE("buffered_reader::buffered_reader(U&&, std::size_t, allocator)",
     }
     SECTION("Does not read from the original source")
     {
-      REQUIRE( sut.fill_buffer().has_value() );
-      REQUIRE( source.read_count() == 0u );
+      // Act
+      const auto result = sut.fill_buffer();
+
+      // Assert
+      SECTION("Fills the owned buffer successfully") {
+        REQUIRE( result.has_value() );
+      }
+      SECTION("Leaves the original source unused") {
+        REQUIRE( source.read_count() == 0u );
+      }
     }
   }
 }
@@ -243,16 +253,28 @@ TEST_CASE("buffered_reader::buffered_reader(std::allocator_arg_t, allocator, "
   {
     REQUIRE( sut.source().remaining() == input.size() );
   }
-  SECTION("Allocates the buffer from the allocator once it is needed")
+  SECTION("Does not allocate before the first use")
   {
     REQUIRE( resource.allocations() == 0u );
-    REQUIRE( sut.fill_buffer().has_value() );
-    REQUIRE( resource.allocations() == 1u );
+  }
+  SECTION("Allocates the buffer when it is first used")
+  {
+    // Act
+    const auto result = sut.fill_buffer();
+
+    // Assert
+    SECTION("The operation succeeds") {
+      REQUIRE( result.has_value() );
+    }
+    SECTION("The buffer is allocated once") {
+      REQUIRE( resource.allocations() == 1u );
+    }
   }
 }
 
 TEST_CASE("buffered_reader deduction guides", "[ctor]")
 {
+  // Arrange
   const auto input = sequence_bytes(16u);
 
   SECTION("Source is an lvalue")
@@ -263,12 +285,14 @@ TEST_CASE("buffered_reader deduction guides", "[ctor]")
     // Act
     auto sut = buffered_reader{source};
 
-    // Assert
     SECTION("Deduces the type of the source")
     {
-      STATIC_REQUIRE(
-        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>
-      );
+      // Act
+      constexpr auto property_holds =
+        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 
@@ -280,12 +304,14 @@ TEST_CASE("buffered_reader deduction guides", "[ctor]")
     // Act
     auto sut = buffered_reader{source};
 
-    // Assert
     SECTION("Deduces the type of the source without const")
     {
-      STATIC_REQUIRE(
-        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>
-      );
+      // Act
+      constexpr auto property_holds =
+        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 
@@ -294,12 +320,14 @@ TEST_CASE("buffered_reader deduction guides", "[ctor]")
     // Act
     auto sut = buffered_reader{fake_reader{input}};
 
-    // Assert
     SECTION("Deduces the type of the source")
     {
-      STATIC_REQUIRE(
-        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>
-      );
+      // Act
+      constexpr auto property_holds =
+        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 
@@ -311,12 +339,14 @@ TEST_CASE("buffered_reader deduction guides", "[ctor]")
     // Act
     auto sut = buffered_reader{source, 8u};
 
-    // Assert
     SECTION("Deduces the type of the source")
     {
-      STATIC_REQUIRE(
-        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>
-      );
+      // Act
+      constexpr auto property_holds =
+        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 
@@ -328,12 +358,14 @@ TEST_CASE("buffered_reader deduction guides", "[ctor]")
     // Act
     auto sut = buffered_reader{source, 8u, allocator{}};
 
-    // Assert
     SECTION("Deduces the type of the source")
     {
-      STATIC_REQUIRE(
-        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>
-      );
+      // Act
+      constexpr auto property_holds =
+        std::is_same_v<decltype(sut), buffered_reader<fake_reader>>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
     }
   }
 }
@@ -346,7 +378,7 @@ TEST_CASE("buffered_reader::buffered_reader(buffered_reader&&)", "[ctor]")
     const auto input = sequence_bytes(16u);
     auto resource = counting_resource{};
     auto other = buffered_reader{fake_reader{input}, 8u, allocator{&resource}};
-    REQUIRE( other.fill_buffer().has_value() );
+    compiler::unused(other.fill_buffer());
     other.consume(3u);
     const auto expected = other.buffer();
 
@@ -360,8 +392,12 @@ TEST_CASE("buffered_reader::buffered_reader(buffered_reader&&)", "[ctor]")
     }
     SECTION("Takes the buffered bytes of the other reader")
     {
-      REQUIRE( sut.buffer().data() == expected.data() );
-      REQUIRE( sut.buffer().size() == expected.size() );
+      SECTION("Retains the original buffer allocation") {
+        REQUIRE( sut.buffer().data() == expected.data() );
+      }
+      SECTION("Retains the number of pending bytes") {
+        REQUIRE( sut.buffer().size() == expected.size() );
+      }
     }
     SECTION("Takes the source of the other reader")
     {
@@ -369,9 +405,15 @@ TEST_CASE("buffered_reader::buffered_reader(buffered_reader&&)", "[ctor]")
     }
     SECTION("Leaves the other reader without a buffer")
     {
-      // NOLINTNEXTLINE(bugprone-use-after-move)
-      REQUIRE( other.capacity() == 0u );
-      REQUIRE( other.buffer().empty() );
+      SECTION("Releases ownership of the moved-from allocation") {
+        // NOLINTNEXTLINE(bugprone-use-after-move)
+        REQUIRE( other.capacity() == 0u );
+      }
+      SECTION("Leaves no pending bytes in the moved-from object") {
+        // Moved-from buffers remain valid and empty.
+        // NOLINTNEXTLINE(bugprone-use-after-move)
+        REQUIRE( other.buffer().empty() );
+      }
     }
     SECTION("Does not allocate another buffer")
     {
@@ -381,14 +423,18 @@ TEST_CASE("buffered_reader::buffered_reader(buffered_reader&&)", "[ctor]")
 
   SECTION("Source is not move constructible")
   {
-    STATIC_REQUIRE_FALSE(
-      std::is_move_constructible_v<buffered_reader<immovable_reader>>
-    );
+    // Act
+    constexpr auto property_holds =
+      std::is_move_constructible_v<buffered_reader<immovable_reader>>;
+
+    // Assert
+    STATIC_REQUIRE_FALSE(property_holds);
   }
 }
 
 TEST_CASE("buffered_reader::~buffered_reader()", "[dtor]")
 {
+  // Arrange
   const auto input = sequence_bytes(16u);
   auto resource = counting_resource{};
 
@@ -396,7 +442,7 @@ TEST_CASE("buffered_reader::~buffered_reader()", "[dtor]")
   {
     // Arrange
     auto sut = buffered_reader{fake_reader{input}, 8u, allocator{&resource}};
-    REQUIRE( sut.fill_buffer().has_value() );
+    compiler::unused(sut.fill_buffer());
 
     // Act
     {
@@ -428,7 +474,7 @@ TEST_CASE("buffered_reader::~buffered_reader()", "[dtor]")
   {
     // Arrange
     auto sut = buffered_reader{fake_reader{input}, 8u, allocator{&resource}};
-    REQUIRE( sut.fill_buffer().has_value() );
+    compiler::unused(sut.fill_buffer());
 
     // Act
     {
@@ -458,8 +504,8 @@ TEST_CASE("buffered_reader::operator=(buffered_reader&&)", "[assignment]")
       8u,
       allocator{&resource}
     };
-    REQUIRE( sut.fill_buffer().has_value() );
-    REQUIRE( other.fill_buffer().has_value() );
+    compiler::unused(sut.fill_buffer());
+    compiler::unused(other.fill_buffer());
     const auto expected = other.buffer();
 
     // Act
@@ -476,8 +522,12 @@ TEST_CASE("buffered_reader::operator=(buffered_reader&&)", "[assignment]")
     }
     SECTION("Takes the buffered bytes of the other reader")
     {
-      REQUIRE( sut.buffer().data() == expected.data() );
-      REQUIRE( sut.buffer().size() == expected.size() );
+      SECTION("Retains the original buffer allocation") {
+        REQUIRE( sut.buffer().data() == expected.data() );
+      }
+      SECTION("Retains the number of pending bytes") {
+        REQUIRE( sut.buffer().size() == expected.size() );
+      }
     }
     SECTION("Takes the source of the other reader")
     {
@@ -485,20 +535,36 @@ TEST_CASE("buffered_reader::operator=(buffered_reader&&)", "[assignment]")
     }
     SECTION("Leaves the other reader without a buffer")
     {
-      // NOLINTNEXTLINE(bugprone-use-after-move)
-      REQUIRE( other.capacity() == 0u );
-      REQUIRE( other.buffer().empty() );
+      SECTION("Releases ownership of the moved-from allocation") {
+        // NOLINTNEXTLINE(bugprone-use-after-move)
+        REQUIRE( other.capacity() == 0u );
+      }
+      SECTION("Leaves no pending bytes in the moved-from object") {
+        // Moved-from buffers remain valid and empty.
+        // NOLINTNEXTLINE(bugprone-use-after-move)
+        REQUIRE( other.buffer().empty() );
+      }
     }
   }
 
   SECTION("Source is not move assignable")
   {
-    STATIC_REQUIRE(
-      std::is_move_constructible_v<buffered_reader<unassignable_reader>>
-    );
-    STATIC_REQUIRE_FALSE(
-      std::is_move_assignable_v<buffered_reader<unassignable_reader>>
-    );
+    SECTION("Move construction does not require source assignment") {
+      // Act
+      constexpr auto property_holds =
+        std::is_move_constructible_v<buffered_reader<unassignable_reader>>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
+    }
+    SECTION("Move assignment requires an assignable source") {
+      // Act
+      constexpr auto property_holds =
+        std::is_move_assignable_v<buffered_reader<unassignable_reader>>;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
+    }
   }
 }
 
@@ -508,6 +574,7 @@ TEST_CASE("buffered_reader::operator=(buffered_reader&&)", "[assignment]")
 
 TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
 {
+  // Arrange
   static constexpr auto capacity = std::size_t{16};
   const auto input = sequence_bytes(40u);
 
@@ -534,14 +601,22 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     SECTION("Returns the bytes that were read")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( result->size() == std::min(chunk_size, capacity) );
-      REQUIRE( std::equal(result->begin(), result->end(), input.begin()) );
+      SECTION("Exposes the bytes returned by the source") {
+        REQUIRE( result->size() == std::min(chunk_size, capacity) );
+      }
+      SECTION("Preserves the leading source bytes in order") {
+        REQUIRE( std::equal(result->begin(), result->end(), input.begin()) );
+      }
     }
     SECTION("Returns the buffered bytes")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( result->data() == sut.buffer().data() );
-      REQUIRE( result->size() == sut.buffer().size() );
+      SECTION("Returns a view into the owned buffer") {
+        REQUIRE( result->data() == sut.buffer().data() );
+      }
+      SECTION("Returns a view covering every buffered byte") {
+        REQUIRE( result->size() == sut.buffer().size() );
+      }
     }
   }
 
@@ -550,7 +625,7 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     // Arrange
     auto source = fake_reader{input};
     auto sut = buffered_reader{std::move(source), capacity};
-    REQUIRE( sut.fill_buffer().has_value() );
+    compiler::unused(sut.fill_buffer());
     sut.consume(3u);
 
     // Act
@@ -564,8 +639,12 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     SECTION("Returns the bytes that are still buffered")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( result->size() == capacity - 3u );
-      REQUIRE( std::equal(result->begin(), result->end(), input.begin() + 3) );
+      SECTION("Excludes consumed bytes from the returned range") {
+        REQUIRE( result->size() == capacity - 3u );
+      }
+      SECTION("Begins with the first unconsumed source byte") {
+        REQUIRE( std::equal(result->begin(), result->end(), input.begin() + 3) );
+      }
     }
   }
 
@@ -574,7 +653,7 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     // Arrange
     auto source = fake_reader{input};
     auto sut = buffered_reader{std::move(source), capacity};
-    REQUIRE( sut.fill_buffer().has_value() );
+    compiler::unused(sut.fill_buffer());
     sut.consume(capacity);
 
     // Act
@@ -588,10 +667,14 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     SECTION("Returns the next bytes of the source")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( result->size() == capacity );
-      REQUIRE(
-        std::equal(result->begin(), result->end(), input.begin() + capacity)
-      );
+      SECTION("Fills the buffer to its capacity") {
+        REQUIRE( result->size() == capacity );
+      }
+      SECTION("Continues after the previously consumed buffer") {
+        REQUIRE(
+          std::equal(result->begin(), result->end(), input.begin() + capacity)
+        );
+      }
     }
   }
 
@@ -608,7 +691,9 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     SECTION("Returns no bytes")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( result->empty() );
+      SECTION("Reports no buffered bytes at end of stream") {
+        REQUIRE( result->empty() );
+      }
     }
   }
 
@@ -626,8 +711,7 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     // Assert
     SECTION("Returns the error of the source")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 
@@ -648,8 +732,7 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     // Assert
     SECTION("Fails with not enough memory")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == std::errc::not_enough_memory );
+      REQUIRE( result == fail(std::errc::not_enough_memory) );
     }
     SECTION("Does not read from the source")
     {
@@ -666,7 +749,7 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
       capacity,
       allocator{&resource}
     };
-    REQUIRE( sut.fill_buffer().has_value() );
+    compiler::unused(sut.fill_buffer());
     sut.consume(capacity);
 
     // Act
@@ -676,7 +759,9 @@ TEST_CASE("buffered_reader::fill_buffer()", "[buffering]")
     SECTION("Reuses the buffer")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( resource.allocations() == 1u );
+      SECTION("Reuses the allocation for subsequent I/O") {
+        REQUIRE( resource.allocations() == 1u );
+      }
     }
   }
 }
@@ -689,7 +774,7 @@ TEST_CASE("buffered_reader::consume(std::size_t)", "[buffering]")
   const auto n = GENERATE(std::size_t{0}, std::size_t{1}, capacity);
   auto source = fake_reader{input};
   auto sut = buffered_reader{std::move(source), capacity};
-  REQUIRE( sut.fill_buffer().has_value() );
+  compiler::unused(sut.fill_buffer());
 
   // Act
   sut.consume(n);
@@ -699,8 +784,9 @@ TEST_CASE("buffered_reader::consume(std::size_t)", "[buffering]")
   {
     const auto buffer = sut.buffer();
 
-    REQUIRE( buffer.size() == capacity - n );
-    REQUIRE( std::equal(buffer.begin(), buffer.end(), input.begin() + n) );
+    REQUIRE( std::ranges::equal(
+      buffer, std::span{input}.subspan(n, capacity - n)
+    ) );
   }
   SECTION("Does not read from the source")
   {
@@ -715,7 +801,7 @@ TEST_CASE("buffered_reader::discard_buffer()", "[buffering]")
   const auto input = sequence_bytes(40u);
   auto source = fake_reader{input};
   auto sut = buffered_reader{std::move(source), capacity};
-  REQUIRE( sut.fill_buffer().has_value() );
+  compiler::unused(sut.fill_buffer());
 
   // Act
   sut.discard_buffer();
@@ -731,7 +817,9 @@ TEST_CASE("buffered_reader::discard_buffer()", "[buffering]")
     const auto result = sut.read(storage);
 
     REQUIRE( result.has_value() );
-    REQUIRE( storage[0] == input[capacity] );
+    SECTION("Continues reading after the consumed buffer") {
+      REQUIRE( storage[0] == input[capacity] );
+    }
   }
 }
 
@@ -741,6 +829,7 @@ TEST_CASE("buffered_reader::discard_buffer()", "[buffering]")
 
 TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
 {
+  // Arrange
   static constexpr auto capacity = std::size_t{16};
   const auto input = sequence_bytes(300u);
 
@@ -783,8 +872,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     // Assert
     SECTION("Returns the number of bytes requested")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == storage.size() );
+      REQUIRE( result == storage.size() );
     }
     SECTION("Writes the first bytes of the source")
     {
@@ -792,8 +880,12 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     }
     SECTION("Fills the whole buffer with one read")
     {
-      REQUIRE( sut.source().read_count() == 1u );
-      REQUIRE( sut.source().last_request_size() == capacity );
+      SECTION("Satisfies the request with one source read") {
+        REQUIRE( sut.source().read_count() == 1u );
+      }
+      SECTION("Requests a full buffer from the source") {
+        REQUIRE( sut.source().last_request_size() == capacity );
+      }
     }
     SECTION("Keeps the rest of the read in the buffer")
     {
@@ -807,7 +899,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     auto source = fake_reader{input};
     auto sut = buffered_reader{std::move(source), capacity};
     auto storage = std::array<std::byte,4>{};
-    REQUIRE( sut.read(storage).has_value() );
+    compiler::unused(sut.read(storage));
 
     // Act
     const auto result = sut.read(storage);
@@ -815,8 +907,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     // Assert
     SECTION("Returns the number of bytes requested")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == storage.size() );
+      REQUIRE( result == storage.size() );
     }
     SECTION("Writes the next bytes of the source")
     {
@@ -834,7 +925,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     auto source = fake_reader{input};
     auto sut = buffered_reader{std::move(source), capacity};
     auto storage = std::array<std::byte,64>{};
-    REQUIRE( sut.fill_buffer().has_value() );
+    compiler::unused(sut.fill_buffer());
     sut.consume(10u);
 
     // Act
@@ -843,8 +934,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     // Assert
     SECTION("Returns only the buffered bytes")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == capacity - 10u );
+      REQUIRE( result == capacity - 10u );
     }
     SECTION("Writes the buffered bytes")
     {
@@ -876,13 +966,16 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     // Assert
     SECTION("Reads directly into the buffer of the caller")
     {
-      REQUIRE( sut.source().read_count() == 1u );
-      REQUIRE( sut.source().last_request_size() == request );
+      SECTION("Satisfies the request with one source read") {
+        REQUIRE( sut.source().read_count() == 1u );
+      }
+      SECTION("Requests the bytes directly from the source") {
+        REQUIRE( sut.source().last_request_size() == request );
+      }
     }
     SECTION("Returns the number of bytes read")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == request );
+      REQUIRE( result == request );
     }
     SECTION("Writes the first bytes of the source")
     {
@@ -899,7 +992,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     // Arrange
     auto source = fake_reader{input};
     auto sut = buffered_reader{std::move(source), capacity};
-    REQUIRE( sut.fill_buffer().has_value() );
+    compiler::unused(sut.fill_buffer());
 
     // Act
     const auto result = sut.read(std::span<std::byte>{});
@@ -907,8 +1000,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     // Assert
     SECTION("Returns zero bytes read")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == 0u );
+      REQUIRE( result == 0u );
     }
     SECTION("Does not read from the source again")
     {
@@ -934,8 +1026,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     // Assert
     SECTION("Returns zero bytes read")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == 0u );
+      REQUIRE( result == 0u );
     }
   }
 
@@ -955,8 +1046,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     // Assert
     SECTION("Returns the error of the source")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
     SECTION("Leaves the buffer empty")
     {
@@ -982,8 +1072,7 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     // Assert
     SECTION("Fails with not enough memory")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == std::errc::not_enough_memory );
+      REQUIRE( result == fail(std::errc::not_enough_memory) );
     }
     SECTION("Does not read from the source")
     {
@@ -1010,8 +1099,12 @@ TEST_CASE("buffered_reader::read(std::span<std::byte>)", "[reading]")
     SECTION("Reads directly into the buffer of the caller")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( *result == capacity );
-      REQUIRE( std::equal(storage.begin(), storage.end(), input.begin()) );
+      SECTION("Reports the number of bytes copied before the failure") {
+        REQUIRE( *result == capacity );
+      }
+      SECTION("Copies the source prefix without changing its order") {
+        REQUIRE( std::equal(storage.begin(), storage.end(), input.begin()) );
+      }
     }
   }
 }
@@ -1020,6 +1113,7 @@ TEST_CASE("buffered_reader::read_until(std::byte, "
           "not_null<vector<std::byte>*>)",
           "[reading]")
 {
+  // Arrange
   static constexpr auto delimiter = std::byte{10};
   const auto input = sequence_bytes(40u);
 
@@ -1039,13 +1133,13 @@ TEST_CASE("buffered_reader::read_until(std::byte, "
     // Assert
     SECTION("Returns the number of bytes up to and including the delimiter")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == 11u );
+      REQUIRE( result == 11u );
     }
     SECTION("Appends the bytes up to and including the delimiter")
     {
-      REQUIRE( out.size() == 11u );
-      REQUIRE( std::equal(out.begin(), out.end(), input.begin()) );
+      REQUIRE( std::ranges::equal(
+        out, std::span{input}.subspan(0u, 11u)
+      ) );
     }
     SECTION("Continues reading after the delimiter")
     {
@@ -1053,7 +1147,9 @@ TEST_CASE("buffered_reader::read_until(std::byte, "
       const auto next = sut.read(storage);
 
       REQUIRE( next.has_value() );
-      REQUIRE( storage[0] == input[11] );
+      SECTION("Leaves the next byte available after the delimiter") {
+        REQUIRE( storage[0] == input[11] );
+      }
     }
   }
 
@@ -1071,9 +1167,15 @@ TEST_CASE("buffered_reader::read_until(std::byte, "
     SECTION("Appends only the delimiter")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( *result == 1u );
-      REQUIRE( out.size() == 1u );
-      REQUIRE( out[0] == delimiter );
+      SECTION("Counts the delimiter as a copied byte") {
+        REQUIRE( *result == 1u );
+      }
+      SECTION("Copies only the delimiter when it is the first byte") {
+        REQUIRE( out.size() == 1u );
+      }
+      SECTION("Includes the delimiter in the copied output") {
+        REQUIRE( out[0] == delimiter );
+      }
     }
   }
 
@@ -1092,10 +1194,14 @@ TEST_CASE("buffered_reader::read_until(std::byte, "
     SECTION("Appends every byte of the source")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( *result == 10u );
-      REQUIRE(
-        std::equal(out.begin(), out.end(), input.begin(), input.begin() + 10)
-      );
+      SECTION("Reports the bytes copied before end of stream") {
+        REQUIRE( *result == 10u );
+      }
+      SECTION("Copies all available bytes before end of stream") {
+        REQUIRE(
+          std::equal(out.begin(), out.end(), input.begin(), input.begin() + 10)
+        );
+      }
     }
   }
 
@@ -1113,8 +1219,7 @@ TEST_CASE("buffered_reader::read_until(std::byte, "
     // Assert
     SECTION("Returns only the number of bytes read")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == 11u );
+      REQUIRE( result == 11u );
     }
     SECTION("Keeps the existing contents")
     {
@@ -1141,8 +1246,7 @@ TEST_CASE("buffered_reader::read_until(std::byte, "
     // Assert
     SECTION("Returns the error of the source")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
     SECTION("Keeps the bytes read before the failure")
     {
@@ -1155,6 +1259,7 @@ TEST_CASE("buffered_reader::read_until(std::byte, "
 
 TEST_CASE("buffered_reader::skip_until(std::byte)", "[reading]")
 {
+  // Arrange
   static constexpr auto delimiter = std::byte{10};
   const auto input = sequence_bytes(40u);
 
@@ -1173,8 +1278,7 @@ TEST_CASE("buffered_reader::skip_until(std::byte)", "[reading]")
     // Assert
     SECTION("Returns the number of bytes up to and including the delimiter")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == 11u );
+      REQUIRE( result == 11u );
     }
     SECTION("Continues reading after the delimiter")
     {
@@ -1182,7 +1286,9 @@ TEST_CASE("buffered_reader::skip_until(std::byte)", "[reading]")
       const auto next = sut.read(storage);
 
       REQUIRE( next.has_value() );
-      REQUIRE( storage[0] == input[11] );
+      SECTION("Leaves the next byte available after the delimiter") {
+        REQUIRE( storage[0] == input[11] );
+      }
     }
   }
 
@@ -1202,8 +1308,12 @@ TEST_CASE("buffered_reader::skip_until(std::byte)", "[reading]")
     SECTION("Skips only the first delimiter")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( *result == 1u );
-      REQUIRE( sut.buffer().size() == 2u );
+      SECTION("Counts the delimiter as a copied byte") {
+        REQUIRE( *result == 1u );
+      }
+      SECTION("Keeps bytes following the delimiter buffered") {
+        REQUIRE( sut.buffer().size() == 2u );
+      }
     }
   }
 
@@ -1220,8 +1330,12 @@ TEST_CASE("buffered_reader::skip_until(std::byte)", "[reading]")
     SECTION("Skips every byte of the source")
     {
       REQUIRE( result.has_value() );
-      REQUIRE( *result == 10u );
-      REQUIRE( sut.source().remaining() == 0u );
+      SECTION("Reports the bytes copied before end of stream") {
+        REQUIRE( *result == 10u );
+      }
+      SECTION("Consumes the source when no delimiter is found") {
+        REQUIRE( sut.source().remaining() == 0u );
+      }
     }
   }
 
@@ -1239,8 +1353,7 @@ TEST_CASE("buffered_reader::skip_until(std::byte)", "[reading]")
     // Assert
     SECTION("Returns the error of the source")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 }
@@ -1264,19 +1377,31 @@ TEST_CASE("indirect_buffered_reader::read(std::span<std::byte>)", "[reading]")
   // Assert
   SECTION("Reads from the source that it refers to")
   {
-    REQUIRE( &sut.source().source() == &source );
-    REQUIRE( source.read_count() == 1u );
+    SECTION("Refers to the supplied source") {
+      REQUIRE( &sut.source().source() == &source );
+    }
+    SECTION("Reads through the supplied source once") {
+      REQUIRE( source.read_count() == 1u );
+    }
   }
   SECTION("Fills the whole buffer with one read")
   {
-    REQUIRE( source.last_request_size() == capacity );
-    REQUIRE( sut.buffer().size() == capacity - storage.size() );
+    SECTION("Fills the buffer through the supplied source") {
+      REQUIRE( source.last_request_size() == capacity );
+    }
+    SECTION("Buffers the bytes beyond the requested output") {
+      REQUIRE( sut.buffer().size() == capacity - storage.size() );
+    }
   }
   SECTION("Writes the first bytes of the source")
   {
     REQUIRE( result.has_value() );
-    REQUIRE( *result == storage.size() );
-    REQUIRE( std::equal(storage.begin(), storage.end(), input.begin()) );
+    SECTION("Reports a completely filled output buffer") {
+      REQUIRE( *result == storage.size() );
+    }
+    SECTION("Copies the source prefix without changing its order") {
+      REQUIRE( std::equal(storage.begin(), storage.end(), input.begin()) );
+    }
   }
 }
 

@@ -14,15 +14,18 @@ namespace alloy::core::test {
 
 TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
   SECTION("Input is empty") {
+    // Arrange
     const auto input = std::array<char8,0>{};
     const auto bad_output = char32{};
 
+    // Act
     const auto [value,iter] = utf8_encoding::decode(
       input.begin(),
       input.end(),
       bad_output
     );
 
+    // Assert
     SECTION("Does not advance iterator") {
       REQUIRE(iter == input.end());
     }
@@ -32,15 +35,18 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
   }
   SECTION("Input is one-byte codepoint") {
     SECTION("Input is invalid byte") {
+      // Arrange
       const auto input = std::array<char8,1u>{{static_cast<char8>(255)}};
       const auto bad_output = char32{};
 
+      // Act
       const auto [value,iter] = utf8_encoding::decode(
         input.begin(),
         input.end(),
         bad_output
       );
 
+      // Assert
       SECTION("Advances iterator") {
         REQUIRE(iter == input.end());
       }
@@ -49,14 +55,17 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
       }
     }
     SECTION("Input is valid") {
+      // Arrange
       const auto input = std::array<char8,1u>{{'a'}};
       constexpr auto expected = char32{'a'};
 
+      // Act
       const auto [value, iter] = utf8_encoding::decode(
         input.begin(),
         input.end()
       );
 
+      // Assert
       SECTION("Decodes successfully") {
         REQUIRE(value == expected);
       }
@@ -67,24 +76,28 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
   }
   SECTION("Input is two-byte codepoint") {
     SECTION("Input is incomplete") {
+      // Arrange
       const auto input = std::array<char8,1u>{{
         static_cast<char8>(0xc2),
       }};
       const auto bad_output = U'_';
 
+      // Act
       const auto [value, iter] = utf8_encoding::decode(
         input.begin(),
         input.end(),
         bad_output
       );
 
+      // Assert
       SECTION("Advances iterator") {
         REQUIRE(iter == input.end());
       }
       SECTION("Output is replacement value") {
         REQUIRE(value == bad_output);
       }
-    };
+    }// Arrange
+     ;
     SECTION("Input is invalid") {
       const auto input = std::array<char8,2u>{{
         static_cast<char8>(0xff),
@@ -92,12 +105,14 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
       }};
       const auto bad_output = U'_';
 
+      // Act
       const auto [value, iter] = utf8_encoding::decode(
         input.begin(),
         input.end(),
         bad_output
       );
 
+      // Assert
       SECTION("Advances iterator") {
         REQUIRE(iter == input.end());
       }
@@ -112,11 +127,13 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
       }};
       constexpr auto expected = char32{U'£'};
 
+      // Act
       const auto [value,iter] = utf8_encoding::decode(
         input.begin(),
         input.end()
       );
 
+      // Assert
       SECTION("Decodes successfully") {
         REQUIRE(value == expected);
       }
@@ -127,24 +144,28 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
   }
   SECTION("Input is three-byte codepoint") {
     SECTION("Input is incomplete") {
+      // Arrange
       const auto input = std::array<char8,1u>{{
         static_cast<char8>(0xe0),
       }};
       const auto bad_output = U'_';
 
+      // Act
       const auto [value, iter] = utf8_encoding::decode(
         input.begin(),
         input.end(),
         bad_output
       );
 
+      // Assert
       SECTION("Advances iterator") {
         REQUIRE(iter == input.end());
       }
       SECTION("Output is replacement value") {
         REQUIRE(value == bad_output);
       }
-    };
+    }// Arrange
+     ;
     SECTION("Input is invalid") {
       const auto input = std::array<char8,3u>{{
         static_cast<char8>(0xff),
@@ -153,12 +174,14 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
       }};
       const auto bad_output = U'_';
 
+      // Act
       const auto [value, iter] = utf8_encoding::decode(
         input.begin(),
         input.end(),
         bad_output
       );
 
+      // Assert
       SECTION("Advances iterator") {
         REQUIRE(iter == input.end());
       }
@@ -174,11 +197,13 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
       }};
       constexpr auto expected = char32{U'આ'};
 
+      // Act
       const auto [value,iter] = utf8_encoding::decode(
         input.begin(),
         input.end()
       );
 
+      // Assert
       SECTION("Decodes successfully") {
         REQUIRE(value == expected);
       }
@@ -189,24 +214,28 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
   }
   SECTION("Input is four-byte codepoint") {
     SECTION("Input is incomplete") {
+      // Arrange
       const auto input = std::array<char8,1u>{{
         static_cast<char8>(0xf0),
       }};
       const auto bad_output = U'_';
 
+      // Act
       const auto [value, iter] = utf8_encoding::decode(
         input.begin(),
         input.end(),
         bad_output
       );
 
+      // Assert
       SECTION("Advances iterator") {
         REQUIRE(iter == input.end());
       }
       SECTION("Output is replacement value") {
         REQUIRE(value == bad_output);
       }
-    };
+    }// Arrange
+     ;
     SECTION("Input is invalid") {
       const auto input = std::array<char8,4u>{{
         static_cast<char8>(0xff),
@@ -216,12 +245,14 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
       }};
       const auto bad_output = U'_';
 
+      // Act
       const auto [value, iter] = utf8_encoding::decode(
         input.begin(),
         input.end(),
         bad_output
       );
 
+      // Assert
       SECTION("Advances iterator") {
         REQUIRE(iter == input.end());
       }
@@ -238,11 +269,13 @@ TEST_CASE("utf8_encoding::decode(InputIt, InputIt, char32") {
       }};
       constexpr auto expected = char32{U'𒁉'};
 
+      // Act
       const auto [value,iter] = utf8_encoding::decode(
         input.begin(),
         input.end()
       );
 
+      // Assert
       SECTION("Decodes successfully") {
         REQUIRE(value == expected);
       }

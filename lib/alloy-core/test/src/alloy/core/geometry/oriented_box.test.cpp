@@ -14,6 +14,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <algorithm> // std::ranges::all_of
+
 namespace alloy::core::test {
 namespace {
 
@@ -56,13 +58,31 @@ TEST_CASE("oriented_box::corners()", "[observer]") {
   // Act
   const auto result = sut.corners();
 
-  // Assert
-  SECTION("Every corner is on the surface of the box") {
-    for (const auto& corner : result) {
-      REQUIRE(sut.contains(corner));
-      REQUIRE(almost_equal(sut.nearest_point(corner), corner));
-      REQUIRE(almost_equal((corner - sut.center()).magnitude(), sqrt(real{3})));
+  const auto all_contained = std::ranges::all_of(
+    result, [&sut](const point3& corner) { return sut.contains(corner); }
+  );
+  const auto all_nearest = std::ranges::all_of(
+    result,
+    [&sut](const point3& corner) {
+      return almost_equal(sut.nearest_point(corner), corner);
     }
+  );
+  const auto all_at_radius = std::ranges::all_of(
+    result,
+    [&sut](const point3& corner) {
+      return almost_equal((corner - sut.center()).magnitude(), sqrt(real{3}));
+    }
+  );
+
+  // Assert
+  SECTION("Every corner is contained in the box") {
+    REQUIRE(all_contained);
+  }
+  SECTION("Every corner is its own nearest surface point") {
+    REQUIRE(all_nearest);
+  }
+  SECTION("Every corner is at the cube's radius") {
+    REQUIRE(all_at_radius);
   }
 }
 

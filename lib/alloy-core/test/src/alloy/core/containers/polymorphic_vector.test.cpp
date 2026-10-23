@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <utility>
 
-namespace alloy::core {
+namespace alloy::core::test {
 namespace {
 
   struct interface {
@@ -48,85 +48,120 @@ namespace {
 //------------------------------------------------------------------------------
 
 TEST_CASE("polymorphic_vector::polymorphic_vector()", "[ctor]") {
+  // Act
   const auto sut = polymorphic_vector<interface>{};
 
+  // Assert
   SECTION("Has zero capacity") {
     REQUIRE(sut.capacity() == 0u);
   }
   SECTION("Has zero size") {
     REQUIRE(sut.size() == 0u);
+  }
+  SECTION("Reports an empty container") {
     REQUIRE(sut.empty());
   }
 }
 
 TEST_CASE("polymorphic_vector::polymorphic_vector(size_type, const Derived&)", "[ctor]") {
+  // Arrange
   const auto copy = object{5};
   const auto size = 5u;
 
+  // Act
   const auto sut = polymorphic_vector<interface>{size, copy};
 
+  // Assert
   SECTION("Has specified size") {
     REQUIRE(sut.size() == size);
+  }
+  SECTION("Reports a nonempty container") {
     REQUIRE_FALSE(sut.empty());
   }
   SECTION("Contains N copies") {
-    for (const auto& v : sut) {
-      REQUIRE(v.get() == copy.get());
-    }
+    const auto contents_match = std::all_of(
+      sut.begin(), sut.end(),
+      [&copy](const auto& value) { return value.get() == copy.get(); }
+    );
+
+    REQUIRE(contents_match);
   }
 }
 
 TEST_CASE("polymorphic_vector::polymorphic_vector(polymorphic_vector&&)", "[ctor]") {
+  // Arrange
   const auto copy = object{5};
   const auto size = 5u;
 
   auto original = polymorphic_vector<interface>{size, copy};
+
+  // Act
   const auto sut = std::move(original);
 
+  // Assert
   SECTION("Has specified size") {
     REQUIRE(sut.size() == size);
+  }
+  SECTION("Reports a nonempty container") {
     REQUIRE_FALSE(sut.empty());
   }
   SECTION("Contains N copies") {
-    for (const auto& v : sut) {
-      REQUIRE(v.get() == copy.get());
-    }
+    const auto contents_match = std::all_of(
+      sut.begin(), sut.end(),
+      [&copy](const auto& value) { return value.get() == copy.get(); }
+    );
+
+    REQUIRE(contents_match);
   }
 }
 
 //------------------------------------------------------------------------------
 
 TEST_CASE("polymorphic_vector::operator=(polymorphic_vector&&)", "[assignment]") {
+  // Arrange
   const auto copy = object{5};
   const auto size = 5u;
 
   auto original = polymorphic_vector<interface>{size, copy};
   auto sut = polymorphic_vector<interface>{};
 
+  // Act
   sut = std::move(original);
 
+  // Assert
   SECTION("Has specified size") {
     REQUIRE(sut.size() == size);
+  }
+  SECTION("Reports a nonempty container") {
     REQUIRE_FALSE(sut.empty());
   }
   SECTION("Contains N copies") {
-    for (const auto& v : sut) {
-      REQUIRE(v.get() == copy.get());
-    }
+    const auto contents_match = std::all_of(
+      sut.begin(), sut.end(),
+      [&copy](const auto& value) { return value.get() == copy.get(); }
+    );
+
+    REQUIRE(contents_match);
   }
 }
 
 //------------------------------------------------------------------------------
 
 TEST_CASE("polymorphic_vector::copy()", "[copying]") {
+  // Arrange
   const auto copy = object{5};
   const auto size = 5u;
 
   const auto original = polymorphic_vector<interface>{size, copy};
+
+  // Act
   const auto sut = original.copy();
 
+  // Assert
   SECTION("Has specified size") {
     REQUIRE(sut.size() == size);
+  }
+  SECTION("Reports a nonempty container") {
     REQUIRE_FALSE(sut.empty());
   }
   SECTION("Contains N copies") {
@@ -144,12 +179,15 @@ TEST_CASE("polymorphic_vector::copy()", "[copying]") {
 //------------------------------------------------------------------------------
 
 TEST_CASE("polymorphic_vector::reserve(size_type)", "[capacity]") {
+  // Arrange
   const auto size = 5u;
 
   auto sut = polymorphic_vector<interface>{};
 
+  // Act
   sut.reserve(size);
 
+  // Assert
   SECTION("Changes capacity") {
     REQUIRE(sut.capacity() >= size);
   }
@@ -160,14 +198,17 @@ TEST_CASE("polymorphic_vector::reserve(size_type)", "[capacity]") {
 //------------------------------------------------------------------------------
 
 TEST_CASE("polymorphic_vector::clear()", "[modifiers]") {
-  bool destructor_called = false;
+  // Arrange
+  auto destructor_called = false;
 
   auto sut = polymorphic_vector<interface>{};
   sut.emplace_back<destructible>(&destructor_called);
   const auto capacity_before = sut.capacity();
 
+  // Act
   sut.clear();
 
+  // Assert
   SECTION("Does not change capacity") {
     REQUIRE(sut.capacity() == capacity_before);
   }
@@ -183,44 +224,53 @@ TEST_CASE("polymorphic_vector::clear()", "[modifiers]") {
 }
 
 TEST_CASE("polymorphic_vector::emplace_back<Derived>(args...)", "[modifiers]") {
+  // Arrange
   auto sut = polymorphic_vector<interface>{};
   const auto size_before = sut.size();
 
   const auto expected = object{13};
 
-  sut.emplace_back<object>(expected);
+  // Act
+  const auto& result = sut.emplace_back<object>(expected);
+
+  // Assert
 
   SECTION("Increases size by 1") {
     const auto expected_size = size_before + 1u;
 
+    // Assert
     REQUIRE(expected_size == sut.size());
   }
   SECTION("Inserts object at the end") {
+    // Assert
     REQUIRE(expected.get() == sut.back().get());
   }
   SECTION("Returns reference to constructed object") {
-    const auto& ref = sut.emplace_back<object>(0xdead);
-
-    REQUIRE(&ref == &sut.back());
+    REQUIRE(&result == &sut.back());
   }
 }
 
 TEST_CASE("polymorphic_vector::pop_back()", "[modifiers]") {
+  // Arrange
   const auto size = 5u;
-  bool destructor_called = false;
+  auto destructor_called = false;
   auto sut = polymorphic_vector<interface>{size, object{42}};
 
   sut.emplace_back<destructible>(&destructor_called);
   const auto size_before = sut.size();
   const auto* back_before = &sut.back();
 
+  // Act
   sut.pop_back();
 
   SECTION("Decrements size by 1") {
     const auto expected = size_before - 1u;
 
+    // Assert
     REQUIRE(expected == sut.size());
   }
+
+  // Assert
   SECTION("Calls destructor") {
     REQUIRE(destructor_called);
   }
@@ -228,4 +278,4 @@ TEST_CASE("polymorphic_vector::pop_back()", "[modifiers]") {
     REQUIRE(back_before != &sut.back());
   }
 }
-} // namespace alloy::core
+} // namespace alloy::core::test

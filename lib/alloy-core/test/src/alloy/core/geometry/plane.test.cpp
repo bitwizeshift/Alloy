@@ -12,6 +12,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <algorithm> // std::ranges::all_of
+#include <array>     // std::array
+
 namespace alloy::core::test {
 
 TEST_CASE("plane::from_point_and_normal(const point3&, const vector3&)", "[factory][static]") {
@@ -37,14 +40,18 @@ TEST_CASE("plane::from_points_counter_clockwise(const point3&, const point3&, co
   const auto p1 = point3{1, 0, 5};
   const auto p2 = point3{0, 1, 5};
 
+  const auto points = std::array{p0, p1, p2};
+
   // Act
   const auto sut = plane::from_points_counter_clockwise(p0, p1, p2);
 
+  const auto contains_inputs = std::ranges::all_of(
+    points, [&sut](const point3& point) { return sut.contains(point); }
+  );
+
   // Assert
   SECTION("Contains all points") {
-    REQUIRE(sut.contains(p0));
-    REQUIRE(sut.contains(p1));
-    REQUIRE(sut.contains(p2));
+    REQUIRE(contains_inputs);
   }
   SECTION("Normal faces positive z") {
     REQUIRE(almost_equal(sut.normal(), vector3{0, 0, 1}));
@@ -57,14 +64,18 @@ TEST_CASE("plane::from_points_clockwise(const point3&, const point3&, const poin
   const auto p1 = point3{1, 0, 5};
   const auto p2 = point3{0, 1, 5};
 
+  const auto points = std::array{p0, p1, p2};
+
   // Act
   const auto sut = plane::from_points_clockwise(p0, p1, p2);
 
+  const auto contains_inputs = std::ranges::all_of(
+    points, [&sut](const point3& point) { return sut.contains(point); }
+  );
+
   // Assert
   SECTION("Contains all points") {
-    REQUIRE(sut.contains(p0));
-    REQUIRE(sut.contains(p1));
-    REQUIRE(sut.contains(p2));
+    REQUIRE(contains_inputs);
   }
   SECTION("Normal faces negative z") {
     REQUIRE(almost_equal(sut.normal(), vector3{0, 0, -1}));

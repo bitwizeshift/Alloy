@@ -40,10 +40,18 @@ namespace {
 
 TEST_CASE("raycastable<Shape>", "[raycast]") {
   SECTION("Traits are specialized for the shape") {
-    STATIC_REQUIRE(raycastable<sphere>);
+    // Act
+    constexpr auto property_holds = raycastable<sphere>;
+
+    // Assert
+    STATIC_REQUIRE(property_holds);
   }
   SECTION("Traits are not specialized for the shape") {
-    STATIC_REQUIRE_FALSE(raycastable<line>);
+    // Act
+    constexpr auto property_holds = raycastable<line>;
+
+    // Assert
+    STATIC_REQUIRE_FALSE(property_holds);
   }
 }
 
@@ -60,8 +68,10 @@ TEST_CASE("raycast(const ray&, const plane&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{4}));
+    SECTION("Measures the distance to the plane crossing") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{4}));
+    }
   }
   SECTION("Ray faces the plane from the side opposite its normal") {
     // Arrange
@@ -72,8 +82,10 @@ TEST_CASE("raycast(const ray&, const plane&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{2}));
+    SECTION("Measures the distance to the plane crossing") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{2}));
+    }
   }
   SECTION("Ray starts on the plane") {
     // Arrange
@@ -84,8 +96,10 @@ TEST_CASE("raycast(const ray&, const plane&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{0}));
+    SECTION("Reports an immediate hit at the ray origin") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{0}));
+    }
   }
   SECTION("Ray faces away from the plane") {
     // Arrange
@@ -122,8 +136,10 @@ TEST_CASE("raycast(const ray&, const triangle&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{5}));
+    SECTION("Measures the distance to the triangle face") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{5}));
+    }
   }
   SECTION("Ray faces the back of the triangle") {
     // Arrange
@@ -134,8 +150,10 @@ TEST_CASE("raycast(const ray&, const triangle&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{2}));
+    SECTION("Measures the distance to the triangle face") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{2}));
+    }
   }
   SECTION("Ray passes beside the triangle") {
     // Arrange
@@ -182,8 +200,10 @@ TEST_CASE("raycast(const ray&, const sphere&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{4}));
+    SECTION("Measures the distance to the nearest sphere surface") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{4}));
+    }
   }
   SECTION("Ray grazes the sphere") {
     // Arrange
@@ -194,8 +214,10 @@ TEST_CASE("raycast(const ray&, const sphere&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{5}));
+    SECTION("Measures the distance to the tangent point") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{5}));
+    }
   }
   SECTION("Ray starts inside the sphere") {
     // Arrange
@@ -206,8 +228,10 @@ TEST_CASE("raycast(const ray&, const sphere&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{0}));
+    SECTION("Reports an immediate hit at the ray origin") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{0}));
+    }
   }
   SECTION("Ray passes beside the sphere") {
     // Arrange
@@ -247,8 +271,10 @@ TEST_CASE("raycast(const ray&, const capsule&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{4}));
+    SECTION("Measures the distance to the cylindrical side") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{4}));
+    }
   }
   SECTION("Ray faces a cap along the axis") {
     // Arrange
@@ -259,8 +285,10 @@ TEST_CASE("raycast(const ray&, const capsule&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{5}));
+    SECTION("Measures the distance to the nearest capsule cap") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{5}));
+    }
   }
   SECTION("Ray faces a cap from below") {
     // Arrange
@@ -271,8 +299,10 @@ TEST_CASE("raycast(const ray&, const capsule&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{4}));
+    SECTION("Measures the distance to the nearest capsule cap") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{4}));
+    }
   }
   SECTION("Ray starts inside the capsule") {
     // Arrange
@@ -283,8 +313,10 @@ TEST_CASE("raycast(const ray&, const capsule&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{0}));
+    SECTION("Reports an immediate hit at the ray origin") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{0}));
+    }
   }
   SECTION("Ray passes beside the capsule") {
     // Arrange
@@ -321,8 +353,10 @@ TEST_CASE("raycast(const ray&, const axis_aligned_box&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{4}));
+    SECTION("Measures the distance to the box entry") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{4}));
+    }
   }
   SECTION("Ray starts inside the box") {
     // Arrange
@@ -333,8 +367,10 @@ TEST_CASE("raycast(const ray&, const axis_aligned_box&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{0}));
+    SECTION("Reports an immediate hit at the ray origin") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{0}));
+    }
   }
   SECTION("Ray passes beside the box") {
     // Arrange
@@ -371,8 +407,10 @@ TEST_CASE("raycast(const ray&, const oriented_box&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, 5 - sqrt(real{2})));
+    SECTION("Measures the distance to the rotated corner") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, 5 - sqrt(real{2})));
+    }
   }
   SECTION("Ray starts inside the box") {
     // Arrange
@@ -383,8 +421,10 @@ TEST_CASE("raycast(const ray&, const oriented_box&)", "[raycast]") {
 
     // Assert
     REQUIRE(result.has_value());
-    // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-    REQUIRE(almost_equal(*result, real{0}));
+    SECTION("Reports an immediate hit at the ray origin") {
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
+      REQUIRE(almost_equal(*result, real{0}));
+    }
   }
   SECTION("Ray passes beside the box") {
     // Arrange

@@ -19,13 +19,14 @@ TEST_CASE("rectangle::from_point_and_size(const point2&, const vector2&)", "[fac
   const auto point = point2{2, -10};
   const auto size = vector2{-4, 2};
 
+  const auto expected = rectangle{point2{-2, -10}, point2{2, -8}};
+
   // Act
   const auto sut = rectangle::from_point_and_size(point, size);
 
   // Assert
   SECTION("Corners are ordered") {
-    REQUIRE(sut.bottom_left_point() == point2{-2, -10});
-    REQUIRE(sut.top_right_point() == point2{2, -8});
+    REQUIRE(sut == expected);
   }
 }
 
@@ -34,13 +35,14 @@ TEST_CASE("rectangle::from_points(const point2&, const point2&)", "[factory][sta
   const auto p0 = point2{2, -10};
   const auto p1 = point2{-4, 2};
 
+  const auto expected = rectangle{point2{-4, -10}, point2{2, 2}};
+
   // Act
   const auto sut = rectangle::from_points(p0, p1);
 
   // Assert
   SECTION("Corners are ordered") {
-    REQUIRE(sut.bottom_left_point() == point2{-4, -10});
-    REQUIRE(sut.top_right_point() == point2{2, 2});
+    REQUIRE(sut == expected);
   }
 }
 

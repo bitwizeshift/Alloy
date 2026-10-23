@@ -217,16 +217,13 @@ TEMPLATE_TEST_CASE("simd<T>::store(std::span<T,4>)", "[storing]", f32, u32, s32)
   const auto sut = simd<TestType>::set(1, 2, 3, 4);
   auto out = simd_aligned_array<TestType, 4>{};
 
+  const auto expected = std::array<TestType,4>{1, 2, 3, 4};
+
   // Act
   sut.store(out);
 
   // Assert
-  SECTION("Stores the lanes in order") {
-    REQUIRE(out[0] == TestType(1));
-    REQUIRE(out[1] == TestType(2));
-    REQUIRE(out[2] == TestType(3));
-    REQUIRE(out[3] == TestType(4));
-  }
+  REQUIRE(std::ranges::equal(out, expected));
 }
 
 TEMPLATE_TEST_CASE("simd<T>::store_unaligned(std::span<T,4>)", "[storing]", f32, u32, s32) {
@@ -235,16 +232,13 @@ TEMPLATE_TEST_CASE("simd<T>::store_unaligned(std::span<T,4>)", "[storing]", f32,
   auto storage = simd_aligned_array<TestType, 5>{};
   const auto out = std::span<TestType, 4>{storage.data() + 1, 4u};
 
+  const auto expected = std::array<TestType,5>{0, 1, 2, 3, 4};
+
   // Act
   sut.store_unaligned(out);
 
   // Assert
-  SECTION("Stores the lanes in order at an unaligned address") {
-    REQUIRE(storage[1] == TestType(1));
-    REQUIRE(storage[2] == TestType(2));
-    REQUIRE(storage[3] == TestType(3));
-    REQUIRE(storage[4] == TestType(4));
-  }
+  REQUIRE(std::ranges::equal(storage, expected));
 }
 
 //-----------------------------------------------------------------------------
@@ -266,25 +260,43 @@ TEST_CASE("simd_cast<To>(simd<From>)", "[casting]") {
     // Arrange
     const auto sut = simd<s32>::set(-1, 0, 1, -2);
 
+    const auto expected = std::array<u32,4>{
+      0xffffffffu, 0u, 1u, 0xfffffffeu
+    };
+
     // Act
     const auto result = simd_cast<u32>(sut);
 
+    const auto lanes = std::array{
+      result.lane<0>(),
+      result.lane<1>(),
+      result.lane<2>(),
+      result.lane<3>()
+    };
+
     // Assert
-    REQUIRE(result.lane<0>() == u32{0xffffffff});
-    REQUIRE(result.lane<3>() == u32{0xfffffffe});
+    REQUIRE(lanes == expected);
   }
   SECTION("Round-trips through another type") {
     // Arrange
     const auto sut = simd<f32>::set(1.5f, -2.0f, 0.25f, 8.0f);
 
+    const auto expected = std::array<f32,4>{
+      1.5f, -2.0f, 0.25f, 8.0f
+    };
+
     // Act
     const auto result = simd_cast<f32>(simd_cast<s32>(sut));
 
+    const auto lanes = std::array{
+      result.lane<0>(),
+      result.lane<1>(),
+      result.lane<2>(),
+      result.lane<3>()
+    };
+
     // Assert
-    REQUIRE(result.lane<0>() == 1.5f);
-    REQUIRE(result.lane<1>() == -2.0f);
-    REQUIRE(result.lane<2>() == 0.25f);
-    REQUIRE(result.lane<3>() == 8.0f);
+    REQUIRE(lanes == expected);
   }
 }
 
@@ -450,16 +462,22 @@ TEST_CASE("simd_multiply(simd<s32>,simd<s32>) with signs and overflow", "[arithm
   const auto lhs = simd<s32>::set(-2, 3, -4, 0x10000);
   const auto rhs = simd<s32>::set(3, -5, -6, 0x10000);
 
+  const auto expected = std::array<s32,4>{
+    -6, -15, 24, 0
+  };
+
   // Act
   const auto result = simd_multiply(lhs, rhs);
 
+  const auto lanes = std::array{
+    result.lane<0>(),
+    result.lane<1>(),
+    result.lane<2>(),
+    result.lane<3>()
+  };
+
   // Assert
-  SECTION("Every lane is the low 32 bits of its product") {
-    REQUIRE(result.lane<0>() == -6);
-    REQUIRE(result.lane<1>() == -15);
-    REQUIRE(result.lane<2>() == 24);
-    REQUIRE(result.lane<3>() == 0);
-  }
+  REQUIRE(lanes == expected);
 }
 
 TEST_CASE("simd_multiply(simd<u32>,simd<u32>) with large values", "[arithmetic]") {
@@ -467,16 +485,22 @@ TEST_CASE("simd_multiply(simd<u32>,simd<u32>) with large values", "[arithmetic]"
   const auto lhs = simd<u32>::set(0xffffffffu, 2u, 0x80000000u, 70000u);
   const auto rhs = simd<u32>::set(2u, 0x7fffffffu, 3u, 70000u);
 
+  const auto expected = std::array<u32,4>{
+    0xfffffffeu, 0xfffffffeu, 0x80000000u, 0x24101100u
+  };
+
   // Act
   const auto result = simd_multiply(lhs, rhs);
 
+  const auto lanes = std::array{
+    result.lane<0>(),
+    result.lane<1>(),
+    result.lane<2>(),
+    result.lane<3>()
+  };
+
   // Assert
-  SECTION("Every lane is the low 32 bits of its product") {
-    REQUIRE(result.lane<0>() == 0xfffffffeu);
-    REQUIRE(result.lane<1>() == 0xfffffffeu);
-    REQUIRE(result.lane<2>() == 0x80000000u);
-    REQUIRE(result.lane<3>() == 0x24101100u);
-  }
+  REQUIRE(lanes == expected);
 }
 
 TEST_CASE("simd_multiply_scalar(simd<f32>,f32)", "[arithmetic]") {
@@ -557,16 +581,26 @@ TEST_CASE("simd_abs_difference(simd<f32>,simd<f32>)", "[arithmetic]") {
 
   // Assert
   SECTION("Result is the absolute difference of the SIMD elements") {
-    SECTION("First lane is the absolute difference of lhs.lane<0>() and rhs.lane<0>()") {
+    SECTION(
+      "First lane is the absolute difference of lhs.lane<0>() and rhs.lane<0>()"
+    ) {
       REQUIRE(almost_equal(result.lane<0>(),expected.lane<0>()));
     }
-    SECTION("Second lane is the absolute difference of lhs.lane<1>() and rhs.lane<1>()") {
+    SECTION(
+      "Second lane is the absolute difference of lhs.lane<1>() and "
+      "rhs.lane<1>()"
+    ) {
       REQUIRE(almost_equal(result.lane<1>(),expected.lane<1>()));
     }
-    SECTION("Third lane is the absolute difference of lhs.lane<2>() and rhs.lane<2>()") {
+    SECTION(
+      "Third lane is the absolute difference of lhs.lane<2>() and rhs.lane<2>()"
+    ) {
       REQUIRE(almost_equal(result.lane<2>(),expected.lane<2>()));
     }
-    SECTION("Fourth lane is the absolute difference of lhs.lane<3>() and rhs.lane<3>()") {
+    SECTION(
+      "Fourth lane is the absolute difference of lhs.lane<3>() and "
+      "rhs.lane<3>()"
+    ) {
       REQUIRE(almost_equal(result.lane<3>(),expected.lane<3>()));
     }
   }
@@ -582,16 +616,22 @@ TEST_CASE("simd_fuse_add_multiply(simd<f32>,simd<f32>,simd<f32>)", "[arithmetic]
   const auto lhs = simd<f32>::set(2, 3, 4, 5);
   const auto rhs = simd<f32>::set(-1, 0.5f, 2, 10);
 
+  const auto expected = std::array<f32,4>{
+    -1.0f, 3.5f, 11.0f, 54.0f
+  };
+
   // Act
   const auto result = simd_fuse_add_multiply(add, lhs, rhs);
 
+  const auto lanes = std::array{
+    result.lane<0>(),
+    result.lane<1>(),
+    result.lane<2>(),
+    result.lane<3>()
+  };
+
   // Assert
-  SECTION("Adds the product to the first argument") {
-    REQUIRE(result.lane<0>() == -1.0f);
-    REQUIRE(result.lane<1>() == 3.5f);
-    REQUIRE(result.lane<2>() == 11.0f);
-    REQUIRE(result.lane<3>() == 54.0f);
-  }
+  REQUIRE(lanes == expected);
 }
 
 TEST_CASE("simd_fuse_add_multiply_scalar(simd<f32>,simd<f32>,f32)", "[arithmetic]") {
@@ -599,14 +639,22 @@ TEST_CASE("simd_fuse_add_multiply_scalar(simd<f32>,simd<f32>,f32)", "[arithmetic
   const auto add = simd<f32>::set(1, 2, 3, 4);
   const auto lhs = simd<f32>::set(2, 3, 4, 5);
 
+  const auto expected = std::array<f32,4>{
+    5.0f, 8.0f, 11.0f, 14.0f
+  };
+
   // Act
   const auto result = simd_fuse_add_multiply_scalar(add, lhs, 2.0f);
 
+  const auto lanes = std::array{
+    result.lane<0>(),
+    result.lane<1>(),
+    result.lane<2>(),
+    result.lane<3>()
+  };
+
   // Assert
-  SECTION("Adds the scaled vector to the first argument") {
-    REQUIRE(result.lane<0>() == 5.0f);
-    REQUIRE(result.lane<3>() == 14.0f);
-  }
+  REQUIRE(lanes == expected);
 }
 
 //-----------------------------------------------------------------------------
@@ -782,18 +830,22 @@ TEST_CASE("simd_almost_equal(simd<f32>,simd<f32>,f32)", "[comparison]") {
   const auto lhs = simd<f32>::set(1.0f, 1.0f, -1.0f, 2.0f);
   const auto rhs = simd<f32>::set(1.05f, 1.5f, -1.05f, -2.0f);
 
+  const auto expected = std::array<u32,4>{
+    mask(true), mask(false), mask(true), mask(false)
+  };
+
   // Act
   const auto result = simd_almost_equal(lhs, rhs, 0.1f);
 
+  const auto lanes = std::array{
+    result.lane<0>(),
+    result.lane<1>(),
+    result.lane<2>(),
+    result.lane<3>()
+  };
+
   // Assert
-  SECTION("Lanes within tolerance are equal") {
-    REQUIRE(result.lane<0>() == mask(true));
-    REQUIRE(result.lane<2>() == mask(true));
-  }
-  SECTION("Lanes outside tolerance are not equal") {
-    REQUIRE(result.lane<1>() == mask(false));
-    REQUIRE(result.lane<3>() == mask(false));
-  }
+  REQUIRE(lanes == expected);
 }
 
 //-----------------------------------------------------------------------------

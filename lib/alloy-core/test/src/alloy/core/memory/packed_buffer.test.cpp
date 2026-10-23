@@ -30,8 +30,10 @@ namespace {
 
 TEST_CASE("packed_buffer::packed_buffer()", "[ctor]")
 {
+  // Act
   auto sut = packed_buffer{};
 
+  // Assert
   SECTION("Constructs an empty buffer")
   {
     REQUIRE(sut.size() == bytes{0});
@@ -40,13 +42,16 @@ TEST_CASE("packed_buffer::packed_buffer()", "[ctor]")
 
 TEST_CASE("packed_buffer::packed_buffer(vector<std::byte>)", "[ctor]")
 {
+  // Arrange
   auto vec = vector<std::byte>{ std::byte{1}, std::byte{2}, std::byte{3} };
 
   const auto expected_size = vec.size();
   const auto expected_data = vec.data();
 
+  // Act
   auto sut = packed_buffer{std::move(vec)};
 
+  // Assert
   SECTION("Constructs a packed_buffer using the underlying vector")
   {
     SECTION("Contains same size")
@@ -62,13 +67,16 @@ TEST_CASE("packed_buffer::packed_buffer(vector<std::byte>)", "[ctor]")
 
 TEST_CASE("packed_buffer::copy()", "[copy]")
 {
+  // Arrange
   auto sut = packed_buffer{};
   sut.push_byte(std::byte{1});
   sut.push_byte(std::byte{2});
   sut.push_byte(std::byte{3});
 
+  // Act
   auto copy = sut.copy();
 
+  // Assert
   SECTION("Copies the underlying packed_buffer")
   {
     SECTION("Contains same same data")
@@ -84,13 +92,18 @@ TEST_CASE("packed_buffer::copy()", "[copy]")
 
 TEST_CASE("packed_buffer::operator[](std::ptrdiff_t)", "[element access]")
 {
+  // Arrange
   const auto expected = std::byte{2};
   auto vec = vector<std::byte>{ std::byte{1}, expected, std::byte{3} };
   auto sut = packed_buffer{std::move(vec)};
 
   SECTION("Gets the Nth element")
   {
-    REQUIRE(sut[1] == expected);
+    // Act
+    const auto result = sut[1];
+
+    // Assert
+    REQUIRE(result == expected);
   }
 }
 
@@ -100,10 +113,14 @@ TEST_CASE("packed_buffer::operator[](std::ptrdiff_t)", "[element access]")
 
 TEST_CASE("packed_buffer::reserve(bytes)", "[capacity]")
 {
+  // Arrange
   const auto requested = bytes{64};
   auto sut = packed_buffer{};
+
+  // Act
   sut.reserve(requested);
 
+  // Assert
   SECTION("Changes capacity to at least the requested value")
   {
     REQUIRE(sut.capacity() >= requested);
@@ -116,6 +133,7 @@ TEST_CASE("packed_buffer::reserve(bytes)", "[capacity]")
 
 TEST_CASE("packed_buffer::push_byte(std::byte)", "[modifiers]")
 {
+  // Arrange
   auto sut = packed_buffer{};
 
   sut.push_byte(std::byte{1});
@@ -125,8 +143,10 @@ TEST_CASE("packed_buffer::push_byte(std::byte)", "[modifiers]")
   const auto expected = std::byte{42};
   const auto old_size = sut.size();
 
+  // Act
   sut.push_byte(expected);
 
+  // Assert
   SECTION("Increases the size of the buffer")
   {
     REQUIRE(old_size < sut.size());
@@ -140,6 +160,7 @@ TEST_CASE("packed_buffer::push_byte(std::byte)", "[modifiers]")
 
 TEST_CASE("packed_buffer::push_bytes(std::span<const std::byte>)", "[modifiers]")
 {
+  // Arrange
   const auto array = std::array<std::byte, 4>{
     std::byte{1}, std::byte{2}, std::byte{3}, std::byte{4},
   };
@@ -147,8 +168,10 @@ TEST_CASE("packed_buffer::push_bytes(std::span<const std::byte>)", "[modifiers]"
 
   const auto old_size = sut.size();
 
+  // Act
   sut.push_bytes(array);
 
+  // Assert
   SECTION("Increases the size of the buffer")
   {
     REQUIRE(old_size < sut.size());
@@ -211,13 +234,16 @@ struct uint32_test_packer
 
 TEST_CASE("packed_buffer_writer::pack_object(const T&)", "[writer]")
 {
+  // Arrange
   auto buffer = packed_buffer{};
   auto sut = packed_buffer_writer{&buffer};
 
   const auto expected = std::uint32_t{0xdeadbeef};
 
+  // Act
   sut.pack_object(expected);
 
+  // Assert
   SECTION("Inserts N bytes for the object")
   {
     REQUIRE(buffer.size() == size_of(expected));
@@ -226,6 +252,7 @@ TEST_CASE("packed_buffer_writer::pack_object(const T&)", "[writer]")
 
 TEST_CASE("packed_buffer_writer::pack_object(const T&, Packer&&)", "[writer]")
 {
+  // Arrange
   auto buffer = packed_buffer{};
   auto sut = packed_buffer_writer{&buffer};
 
@@ -234,8 +261,10 @@ TEST_CASE("packed_buffer_writer::pack_object(const T&, Packer&&)", "[writer]")
     std::byte{0xef}, std::byte{0xbe}, std::byte{0xad}, std::byte{0xde},
   };
 
+  // Act
   sut.pack_object(input, uint32_test_packer{});
 
+  // Assert
   SECTION("Inserts N bytes for the object")
   {
     REQUIRE(buffer.size() == size_of(expected));
@@ -246,11 +275,6 @@ TEST_CASE("packed_buffer_writer::pack_object(const T&, Packer&&)", "[writer]")
     const auto begin = buffer.data();
     const auto end   = begin + buffer.size();
 
-    auto it = begin;
-    for (auto x : expected) {
-      REQUIRE(x == *it);
-      ++it;
-    }
     REQUIRE(std::equal(begin, end, expected.begin(), expected.end()));
   }
 }
@@ -262,6 +286,7 @@ TEST_CASE("packed_buffer_writer::pack_object(const T&, Packer&&)", "[writer]")
 
 TEST_CASE("packed_buffer_reader::unpack_object()", "[reader]")
 {
+  // Arrange
   auto buffer = packed_buffer{};
   auto sut = packed_buffer_reader{&buffer};
 
@@ -269,8 +294,11 @@ TEST_CASE("packed_buffer_reader::unpack_object()", "[reader]")
     std::byte{0xef}, std::byte{0xbe}, std::byte{0xad}, std::byte{0xde},
   };
   buffer.push_bytes(input);
+
+  // Act
   const auto result = sut.unpack_object<std::uint32_t>();
 
+  // Assert
   SECTION("Reads N bytes for the object")
   {
     REQUIRE(buffer.size().count() == sizeof(*result));
@@ -279,6 +307,7 @@ TEST_CASE("packed_buffer_reader::unpack_object()", "[reader]")
 
 TEST_CASE("packed_buffer_reader::unpack_object(Packer&&)", "[writer]")
 {
+  // Arrange
   auto buffer = packed_buffer{};
   auto sut = packed_buffer_reader{&buffer};
 
@@ -287,8 +316,11 @@ TEST_CASE("packed_buffer_reader::unpack_object(Packer&&)", "[writer]")
   };
   const auto expected = std::uint32_t{0xdeadbeef};
   buffer.push_bytes(input);
+
+  // Act
   const auto output = sut.unpack_object<std::uint32_t>(uint32_test_packer{});
 
+  // Assert
   SECTION("Reads the stored value from the packed_buffer")
   {
     REQUIRE(output.value() == expected);
@@ -301,6 +333,7 @@ TEST_CASE("packed_buffer_reader::unpack_object(Packer&&)", "[writer]")
 
 TEST_CASE("trivial_object_packer round-trip test", "[acceptance]")
 {
+  // Arrange
   auto buffer = packed_buffer{};
 
   auto writer = packed_buffer_writer{&buffer};
@@ -309,14 +342,22 @@ TEST_CASE("trivial_object_packer round-trip test", "[acceptance]")
   const auto expected0 = std::uint32_t{0x12345678};
   const auto expected1 = float{3.14f};
 
+  // Act
   writer.pack_object(expected0);
   writer.pack_object(expected1);
 
   const auto result0 = reader.unpack_object<std::uint32_t>();
   const auto result1 = reader.unpack_object<float>();
 
-  REQUIRE(expected0 == result0);
-  REQUIRE(expected1 == result1);
+  // Assert
+  SECTION("Integer survives serialization") {
+    // Assert
+    REQUIRE(expected0 == result0);
+  }
+  SECTION("Float survives serialization") {
+    // Assert
+    REQUIRE(expected1 == result1);
+  }
 }
 
 } // namespace <anonymous>

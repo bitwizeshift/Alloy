@@ -35,8 +35,12 @@ TEST_CASE("quaternion::angle_axis()", "[observers]")
     const auto [result_angle, result_axis] = sut.angle_axis();
 
     // Assert
-    REQUIRE( almost_equal(result_angle, angle) );
-    REQUIRE( almost_equal(result_axis, axis) );
+    SECTION("Recovers the original rotation angle") {
+      REQUIRE( almost_equal(result_angle, angle) );
+    }
+    SECTION("Recovers the original rotation axis") {
+      REQUIRE( almost_equal(result_axis, axis) );
+    }
   }
 
   SECTION("Identity extracts an angle of 0")
@@ -111,21 +115,26 @@ TEST_CASE("quaternion::extract_axes( ... )", "[observers]")
   auto y_axis = vector3{};
   auto z_axis = vector3{};
 
+  const auto expected = matrix3{
+    vector3{0, 1, 0},
+    vector3{-1, 0, 0},
+    vector3{0, 0, 1}
+  };
+
   // Act
   sut.extract_axes(&x_axis, &y_axis, &z_axis);
+
+  const auto axes = matrix3{x_axis, y_axis, z_axis};
+  const auto observed_axes = matrix3{sut.x_axis(), sut.y_axis(), sut.z_axis()};
 
   // Assert
   SECTION("Axes are where the rotation maps the unit vectors")
   {
-    REQUIRE( almost_equal(x_axis, vector3{0, 1, 0}) );
-    REQUIRE( almost_equal(y_axis, vector3{-1, 0, 0}) );
-    REQUIRE( almost_equal(z_axis, vector3{0, 0, 1}) );
+    REQUIRE( almost_equal(axes, expected) );
   }
   SECTION("Axes agree with x_axis(), y_axis(), and z_axis()")
   {
-    REQUIRE( almost_equal(x_axis, sut.x_axis()) );
-    REQUIRE( almost_equal(y_axis, sut.y_axis()) );
-    REQUIRE( almost_equal(z_axis, sut.z_axis()) );
+    REQUIRE( almost_equal(axes, observed_axes) );
   }
 }
 

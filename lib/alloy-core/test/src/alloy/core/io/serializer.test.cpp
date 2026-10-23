@@ -7,6 +7,8 @@
 #include <alloy/core/io/error.hpp>
 #include "test_doubles.hpp"
 
+#include <alloy/core/utilities/result.hpp>
+
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 
@@ -54,6 +56,7 @@ auto equals(
 
 TEST_CASE("serializer<T>::serialize( writer&, const T& )", "[serialization]")
 {
+  // Arrange
   auto storage = std::array<std::byte,16>{};
 
   SECTION("T is an enum")
@@ -68,9 +71,10 @@ TEST_CASE("serializer<T>::serialize( writer&, const T& )", "[serialization]")
     );
 
     // Assert
-    SECTION("Writes the underlying value in big-endian order")
-    {
+    SECTION("Serialization succeeds") {
       REQUIRE( result.has_value() );
+    }
+    SECTION("Writes the underlying value in big-endian order") {
       REQUIRE( equals(destination.written(), make_bytes(0x01, 0x02)) );
     }
   }
@@ -95,8 +99,11 @@ TEST_CASE("serializer<T>::serialize( writer&, const T& )", "[serialization]")
       const auto written = destination.written();
 
       REQUIRE( result.has_value() );
-      REQUIRE( written.size() == sizeof(value) );
-      REQUIRE( std::memcmp(written.data(), &value, sizeof(value)) == 0 );
+      SECTION("Writes the complete object representation") {
+        const auto expected = std::as_bytes(std::span{&value, 1u});
+
+        REQUIRE( std::ranges::equal(written, expected) );
+      }
     }
   }
 
@@ -114,8 +121,7 @@ TEST_CASE("serializer<T>::serialize( writer&, const T& )", "[serialization]")
     // Assert
     SECTION("Fails with write zero")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == io_error::write_zero );
+      REQUIRE( result == fail(io_error::write_zero) );
     }
   }
 
@@ -135,8 +141,7 @@ TEST_CASE("serializer<T>::serialize( writer&, const T& )", "[serialization]")
     // Assert
     SECTION("Returns the error of the destination")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 }
@@ -151,6 +156,7 @@ TEST_CASE("serializer<T>::serialize( writer&, const T& )", "[serialization]")
 
 TEST_CASE("serializer<bool>::serialize( writer&, bool )", "[serialization]")
 {
+  // Arrange
   using sut_type = serializer<bool>;
 
   auto storage = std::array<std::byte,1>{};
@@ -164,9 +170,10 @@ TEST_CASE("serializer<bool>::serialize( writer&, bool )", "[serialization]")
     const auto result = sut_type::serialize(destination, true);
 
     // Assert
-    SECTION("Writes a byte of 1")
-    {
+    SECTION("Serialization succeeds") {
       REQUIRE( result.has_value() );
+    }
+    SECTION("Writes a byte of 1") {
       REQUIRE( equals(destination.written(), make_bytes(0x01)) );
     }
   }
@@ -180,9 +187,10 @@ TEST_CASE("serializer<bool>::serialize( writer&, bool )", "[serialization]")
     const auto result = sut_type::serialize(destination, false);
 
     // Assert
-    SECTION("Writes a byte of 0")
-    {
+    SECTION("Serialization succeeds") {
       REQUIRE( result.has_value() );
+    }
+    SECTION("Writes a byte of 0") {
       REQUIRE( equals(destination.written(), make_bytes(0x00)) );
     }
   }
@@ -198,8 +206,7 @@ TEST_CASE("serializer<bool>::serialize( writer&, bool )", "[serialization]")
     // Assert
     SECTION("Fails with write zero")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == io_error::write_zero );
+      REQUIRE( result == fail(io_error::write_zero) );
     }
   }
 }
@@ -211,6 +218,7 @@ TEST_CASE("serializer<bool>::serialize( writer&, bool )", "[serialization]")
 TEST_CASE("serializer<std::uint8_t>::serialize( writer&, std::uint8_t )",
           "[serialization]")
 {
+  // Arrange
   using sut_type = serializer<std::uint8_t>;
 
   auto storage = std::array<std::byte,1>{};
@@ -224,9 +232,10 @@ TEST_CASE("serializer<std::uint8_t>::serialize( writer&, std::uint8_t )",
     const auto result = sut_type::serialize(destination, std::uint8_t{0xab});
 
     // Assert
-    SECTION("Writes the byte")
-    {
+    SECTION("Serialization succeeds") {
       REQUIRE( result.has_value() );
+    }
+    SECTION("Writes the byte") {
       REQUIRE( equals(destination.written(), make_bytes(0xab)) );
     }
   }
@@ -242,8 +251,7 @@ TEST_CASE("serializer<std::uint8_t>::serialize( writer&, std::uint8_t )",
     // Assert
     SECTION("Fails with write zero")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == io_error::write_zero );
+      REQUIRE( result == fail(io_error::write_zero) );
     }
   }
 }
@@ -255,6 +263,7 @@ TEST_CASE("serializer<std::uint8_t>::serialize( writer&, std::uint8_t )",
 TEST_CASE("serializer<std::int8_t>::serialize( writer&, std::int8_t )",
           "[serialization]")
 {
+  // Arrange
   using sut_type = serializer<std::int8_t>;
 
   auto storage = std::array<std::byte,1>{};
@@ -268,9 +277,10 @@ TEST_CASE("serializer<std::int8_t>::serialize( writer&, std::int8_t )",
     const auto result = sut_type::serialize(destination, std::int8_t{-2});
 
     // Assert
-    SECTION("Writes the two's complement byte")
-    {
+    SECTION("Serialization succeeds") {
       REQUIRE( result.has_value() );
+    }
+    SECTION("Writes the two's complement byte") {
       REQUIRE( equals(destination.written(), make_bytes(0xfe)) );
     }
   }
@@ -286,8 +296,7 @@ TEST_CASE("serializer<std::int8_t>::serialize( writer&, std::int8_t )",
     // Assert
     SECTION("Fails with write zero")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == io_error::write_zero );
+      REQUIRE( result == fail(io_error::write_zero) );
     }
   }
 }
@@ -299,6 +308,7 @@ TEST_CASE("serializer<std::int8_t>::serialize( writer&, std::int8_t )",
 TEST_CASE("serializer<std::uint16_t>::serialize( writer&, std::uint16_t )",
           "[serialization]")
 {
+  // Arrange
   using sut_type = serializer<std::uint16_t>;
 
   auto storage = std::array<std::byte,2>{};
@@ -314,9 +324,10 @@ TEST_CASE("serializer<std::uint16_t>::serialize( writer&, std::uint16_t )",
     const auto result = sut_type::serialize(destination, std::uint16_t{0x0102});
 
     // Assert
-    SECTION("Writes every byte of the value in big-endian order")
-    {
+    SECTION("Serialization succeeds") {
       REQUIRE( result.has_value() );
+    }
+    SECTION("Writes every byte of the value in big-endian order") {
       REQUIRE( equals(destination.written(), make_bytes(0x01, 0x02)) );
     }
   }
@@ -332,8 +343,7 @@ TEST_CASE("serializer<std::uint16_t>::serialize( writer&, std::uint16_t )",
     // Assert
     SECTION("Fails with write zero")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == io_error::write_zero );
+      REQUIRE( result == fail(io_error::write_zero) );
     }
   }
 }
@@ -345,6 +355,7 @@ TEST_CASE("serializer<std::uint16_t>::serialize( writer&, std::uint16_t )",
 TEST_CASE("serializer<std::int16_t>::serialize( writer&, std::int16_t )",
           "[serialization]")
 {
+  // Arrange
   using sut_type = serializer<std::int16_t>;
 
   // Arrange
@@ -355,9 +366,10 @@ TEST_CASE("serializer<std::int16_t>::serialize( writer&, std::int16_t )",
   const auto result = sut_type::serialize(destination, std::int16_t{-292});
 
   // Assert
-  SECTION("Writes every byte of the value in big-endian order")
-  {
+  SECTION("Serialization succeeds") {
     REQUIRE( result.has_value() );
+  }
+  SECTION("Writes every byte of the value in big-endian order") {
     REQUIRE( equals(destination.written(), make_bytes(0xfe, 0xdc)) );
   }
 }
@@ -369,6 +381,7 @@ TEST_CASE("serializer<std::int16_t>::serialize( writer&, std::int16_t )",
 TEST_CASE("serializer<std::uint32_t>::serialize( writer&, std::uint32_t )",
           "[serialization]")
 {
+  // Arrange
   using sut_type = serializer<std::uint32_t>;
 
   auto storage = std::array<std::byte,4>{};
@@ -389,12 +402,13 @@ TEST_CASE("serializer<std::uint32_t>::serialize( writer&, std::uint32_t )",
     );
 
     // Assert
-    SECTION("Writes every byte of the value in big-endian order")
-    {
+    SECTION("Serialization succeeds") {
       REQUIRE( result.has_value() );
+    }
+    SECTION("Writes every byte of the value in big-endian order") {
       REQUIRE(
-        equals(destination.written(), make_bytes(0x01, 0x02, 0x03, 0x04))
-      );
+          equals(destination.written(), make_bytes(0x01, 0x02, 0x03, 0x04))
+        );
     }
   }
 
@@ -412,8 +426,7 @@ TEST_CASE("serializer<std::uint32_t>::serialize( writer&, std::uint32_t )",
     // Assert
     SECTION("Fails with write zero")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == io_error::write_zero );
+      REQUIRE( result == fail(io_error::write_zero) );
     }
   }
 }
@@ -425,6 +438,7 @@ TEST_CASE("serializer<std::uint32_t>::serialize( writer&, std::uint32_t )",
 TEST_CASE("serializer<std::int32_t>::serialize( writer&, std::int32_t )",
           "[serialization]")
 {
+  // Arrange
   using sut_type = serializer<std::int32_t>;
 
   // Arrange
@@ -438,12 +452,13 @@ TEST_CASE("serializer<std::int32_t>::serialize( writer&, std::int32_t )",
   );
 
   // Assert
-  SECTION("Writes every byte of the value in big-endian order")
-  {
+  SECTION("Serialization succeeds") {
     REQUIRE( result.has_value() );
+  }
+  SECTION("Writes every byte of the value in big-endian order") {
     REQUIRE(
-      equals(destination.written(), make_bytes(0xfe, 0xdc, 0xba, 0x98))
-    );
+        equals(destination.written(), make_bytes(0xfe, 0xdc, 0xba, 0x98))
+      );
   }
 }
 
@@ -454,6 +469,7 @@ TEST_CASE("serializer<std::int32_t>::serialize( writer&, std::int32_t )",
 TEST_CASE("serializer<std::uint64_t>::serialize( writer&, std::uint64_t )",
           "[serialization]")
 {
+  // Arrange
   using sut_type = serializer<std::uint64_t>;
 
   auto storage = std::array<std::byte,8>{};
@@ -477,9 +493,10 @@ TEST_CASE("serializer<std::uint64_t>::serialize( writer&, std::uint64_t )",
     );
 
     // Assert
-    SECTION("Writes every byte of the value in big-endian order")
-    {
+    SECTION("Serialization succeeds") {
       REQUIRE( result.has_value() );
+    }
+    SECTION("Writes every byte of the value in big-endian order") {
       REQUIRE( equals(destination.written(), expected) );
     }
   }
@@ -498,8 +515,7 @@ TEST_CASE("serializer<std::uint64_t>::serialize( writer&, std::uint64_t )",
     // Assert
     SECTION("Fails with write zero")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == io_error::write_zero );
+      REQUIRE( result == fail(io_error::write_zero) );
     }
   }
 }
@@ -511,6 +527,7 @@ TEST_CASE("serializer<std::uint64_t>::serialize( writer&, std::uint64_t )",
 TEST_CASE("serializer<std::int64_t>::serialize( writer&, std::int64_t )",
           "[serialization]")
 {
+  // Arrange
   using sut_type = serializer<std::int64_t>;
 
   // Arrange
@@ -527,9 +544,10 @@ TEST_CASE("serializer<std::int64_t>::serialize( writer&, std::int64_t )",
   );
 
   // Assert
-  SECTION("Writes every byte of the value in big-endian order")
-  {
+  SECTION("Serialization succeeds") {
     REQUIRE( result.has_value() );
+  }
+  SECTION("Writes every byte of the value in big-endian order") {
     REQUIRE( equals(destination.written(), expected) );
   }
 }
@@ -544,6 +562,7 @@ TEST_CASE("serializer<std::int64_t>::serialize( writer&, std::int64_t )",
 
 TEST_CASE("serialize( writer&, const T& )", "[serialization]")
 {
+  // Arrange
   auto storage = std::array<std::byte,4>{};
 
   SECTION("Destination has space for the value")
@@ -555,12 +574,13 @@ TEST_CASE("serialize( writer&, const T& )", "[serialization]")
     const auto result = serialize(destination, std::uint32_t{0x01020304});
 
     // Assert
-    SECTION("Writes the value with the serializer of T")
-    {
+    SECTION("Serialization succeeds") {
       REQUIRE( result.has_value() );
+    }
+    SECTION("Writes the value with the serializer of T") {
       REQUIRE(
-        equals(destination.written(), make_bytes(0x01, 0x02, 0x03, 0x04))
-      );
+          equals(destination.written(), make_bytes(0x01, 0x02, 0x03, 0x04))
+        );
     }
   }
 
@@ -577,8 +597,7 @@ TEST_CASE("serialize( writer&, const T& )", "[serialization]")
     // Assert
     SECTION("Returns the error of the destination")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 }

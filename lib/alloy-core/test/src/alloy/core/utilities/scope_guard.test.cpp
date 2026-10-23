@@ -13,43 +13,61 @@ namespace alloy::core::test {
 
 TEST_CASE("scope_exit( Fn&& fn )", "[raii]")
 {
-  bool flag = false;
+  // Arrange
+  auto flag = false;
 
   SECTION("Executes on clean scope exit")
   {
+    // Act
     {
-      auto scope = scope_exit{[&]()
+      auto sut = scope_exit{[&]()
       {
         flag = true;
       }};
     }
 
+    // Assert
     REQUIRE( flag == true );
   }
 
   SECTION("Executes on exception scope exit")
   {
+    // Arrange
+    auto exception_caught = false;
     const auto throw_in_scope = [&]()
     {
-      auto scope = scope_exit{[&]()
+      auto sut = scope_exit{[&]()
       {
         flag = true;
       }};
       throw std::exception{};
     };
 
-    REQUIRE_THROWS( throw_in_scope() );
+    // Act
+    try {
+      throw_in_scope();
+    } catch (const std::exception&) {
+      exception_caught = true;
+    }
 
-    REQUIRE( flag == true );
+    // Assert
+    SECTION("The injected exception unwinds the scope") {
+      REQUIRE(exception_caught);
+    }
+    SECTION("The guard executes during unwinding") {
+      REQUIRE( flag == true );
+    }
   }
 }
 
 TEST_CASE("ALLOY_ON_SCOPE_EXIT(x)", "[raii]")
 {
-  bool flag = false;
+  // Arrange
+  auto flag = false;
 
   SECTION("Executes on clean scope exit")
   {
+    // Act
     {
       ALLOY_ON_SCOPE_EXIT([&]()
       {
@@ -57,11 +75,14 @@ TEST_CASE("ALLOY_ON_SCOPE_EXIT(x)", "[raii]")
       });
     }
 
+    // Assert
     REQUIRE( flag == true );
   }
 
   SECTION("Executes on exception scope exit")
   {
+    // Arrange
+    auto exception_caught = false;
     const auto throw_in_scope = [&]()
     {
       ALLOY_ON_SCOPE_EXIT([&]()
@@ -71,26 +92,37 @@ TEST_CASE("ALLOY_ON_SCOPE_EXIT(x)", "[raii]")
       throw std::exception{};
     };
 
-    REQUIRE_THROWS( throw_in_scope() );
+    // Act
+    try {
+      throw_in_scope();
+    } catch (const std::exception&) {
+      exception_caught = true;
+    }
 
-    REQUIRE( flag == true );
+    // Assert
+    SECTION("The injected exception unwinds the scope") {
+      REQUIRE(exception_caught);
+    }
+    SECTION("The guard executes during unwinding") {
+      REQUIRE( flag == true );
+    }
   }
 }
 
 TEST_CASE("scope_exit( scope_exit&& )", "[raii]")
 {
+  // Arrange
   auto count = 0;
 
   SECTION("Executes the function once when both guards exit scope")
   {
+    // Act
     {
-      // Arrange
       auto source = scope_exit{[&count]()
       {
         ++count;
       }};
 
-      // Act
       auto sut = std::move(source);
     }
 
@@ -123,15 +155,14 @@ TEST_CASE("scope_exit( scope_exit&& )", "[raii]")
 
   SECTION("Releasing the constructed guard prevents execution")
   {
+    // Act
     {
-      // Arrange
       auto source = scope_exit{[&count]()
       {
         ++count;
       }};
       auto sut = std::move(source);
 
-      // Act
       sut.release();
     }
 
@@ -142,18 +173,18 @@ TEST_CASE("scope_exit( scope_exit&& )", "[raii]")
 
 TEST_CASE("scope_success( scope_success&& )", "[raii]")
 {
+  // Arrange
   auto count = 0;
 
   SECTION("Executes the function once on clean scope exit")
   {
+    // Act
     {
-      // Arrange
       auto source = scope_success{[&count]()
       {
         ++count;
       }};
 
-      // Act
       auto sut = std::move(source);
     }
 
@@ -164,11 +195,13 @@ TEST_CASE("scope_success( scope_success&& )", "[raii]")
 
 TEST_CASE("scope_fail( scope_fail&& )", "[raii]")
 {
+  // Arrange
   auto count = 0;
 
   SECTION("Executes the function once on exception scope exit")
   {
     // Arrange
+    auto exception_caught = false;
     const auto throw_in_scope = [&count]()
     {
       auto source = scope_fail{[&count]()
@@ -176,15 +209,24 @@ TEST_CASE("scope_fail( scope_fail&& )", "[raii]")
         ++count;
       }};
 
-      // Act
       auto sut = std::move(source);
       throw std::exception{};
     };
 
-    REQUIRE_THROWS( throw_in_scope() );
+    // Act
+    try {
+      throw_in_scope();
+    } catch (const std::exception&) {
+      exception_caught = true;
+    }
 
     // Assert
-    REQUIRE( count == 1 );
+    SECTION("The injected exception unwinds the scope") {
+      REQUIRE(exception_caught);
+    }
+    SECTION("The guard executes during unwinding") {
+      REQUIRE( count == 1 );
+    }
   }
 }
 

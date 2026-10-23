@@ -8,9 +8,11 @@
 
 #include <alloy/platform/buffers/mutable_buffer.hpp>
 
+#include <alloy/core/intrinsics.hpp>
 #include <alloy/core/io/error.hpp>
 #include <alloy/core/io/reader.hpp>
 #include <alloy/core/io/writer.hpp>
+#include <alloy/core/utilities/result.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -26,9 +28,12 @@ namespace alloy::platform::test {
 
 TEST_CASE("file::read( std::span<std::byte> )", "[reading]")
 {
+  // Arrange
   auto storage = std::array<std::uint8_t,2>{0x01, 0x02};
   auto filesystem = memory_filesystem{};
   auto buffer = std::array<std::byte,4>{};
+
+  const auto expected = std::array<std::byte,4>{std::byte{0x01}, std::byte{0x02}};
 
   SECTION("File contains bytes")
   {
@@ -42,13 +47,11 @@ TEST_CASE("file::read( std::span<std::byte> )", "[reading]")
     // Assert
     SECTION("Returns the number of bytes read")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == storage.size() );
+      REQUIRE( result == storage.size() );
     }
     SECTION("Reads the bytes of the file")
     {
-      REQUIRE( buffer[0] == std::byte{0x01} );
-      REQUIRE( buffer[1] == std::byte{0x02} );
+      REQUIRE( buffer == expected );
     }
   }
 
@@ -56,7 +59,7 @@ TEST_CASE("file::read( std::span<std::byte> )", "[reading]")
   {
     // Arrange
     auto f = filesystem.open(mutable_buffer::from_container(storage));
-    REQUIRE( f.skip(2).has_value() );
+    core::compiler::unused(f.skip(2));
     auto& sut = static_cast<core::reader&>(f);
 
     // Act
@@ -65,8 +68,7 @@ TEST_CASE("file::read( std::span<std::byte> )", "[reading]")
     // Assert
     SECTION("Reads no bytes")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == 0u );
+      REQUIRE( result == 0u );
     }
   }
 
@@ -82,17 +84,19 @@ TEST_CASE("file::read( std::span<std::byte> )", "[reading]")
     // Assert
     SECTION("Fails with closed")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == file::error_code::closed );
+      REQUIRE( result == core::fail(file::error_code::closed) );
     }
   }
 }
 
 TEST_CASE("file::write( std::span<const std::byte> )", "[writing]")
 {
+  // Arrange
   auto storage = std::array<std::uint8_t,2>{};
   auto filesystem = memory_filesystem{};
   const auto buffer = std::array<std::byte,2>{std::byte{0x01}, std::byte{0x02}};
+
+  const auto expected = std::array<std::uint8_t,2>{0x01, 0x02};
 
   SECTION("File has space for the bytes")
   {
@@ -106,13 +110,11 @@ TEST_CASE("file::write( std::span<const std::byte> )", "[writing]")
     // Assert
     SECTION("Returns the number of bytes written")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == buffer.size() );
+      REQUIRE( result == buffer.size() );
     }
     SECTION("Writes the bytes to the file")
     {
-      REQUIRE( storage[0] == std::uint8_t{0x01} );
-      REQUIRE( storage[1] == std::uint8_t{0x02} );
+      REQUIRE( storage == expected );
     }
   }
 
@@ -120,7 +122,7 @@ TEST_CASE("file::write( std::span<const std::byte> )", "[writing]")
   {
     // Arrange
     auto f = filesystem.open(mutable_buffer::from_container(storage));
-    REQUIRE( f.skip(2).has_value() );
+    core::compiler::unused(f.skip(2));
     auto& sut = static_cast<core::writer&>(f);
 
     // Act
@@ -129,8 +131,7 @@ TEST_CASE("file::write( std::span<const std::byte> )", "[writing]")
     // Assert
     SECTION("Writes no bytes")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == 0u );
+      REQUIRE( result == 0u );
     }
   }
 
@@ -146,8 +147,7 @@ TEST_CASE("file::write( std::span<const std::byte> )", "[writing]")
     // Assert
     SECTION("Fails with closed")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == file::error_code::closed );
+      REQUIRE( result == core::fail(file::error_code::closed) );
     }
   }
 }
@@ -165,8 +165,7 @@ TEST_CASE("file::read_object<T>()", "[serialization]")
   // Assert
   SECTION("Fails with unexpected eof when the file ends before the value")
   {
-    REQUIRE( result.has_error() );
-    REQUIRE( result.error() == core::io_error::unexpected_eof );
+    REQUIRE( result == core::fail(core::io_error::unexpected_eof) );
   }
 }
 
@@ -183,8 +182,7 @@ TEST_CASE("file::write_object<T>( const T& )", "[serialization]")
   // Assert
   SECTION("Fails with write zero when the file ends before the value")
   {
-    REQUIRE( result.has_error() );
-    REQUIRE( result.error() == core::io_error::write_zero );
+    REQUIRE( result == core::fail(core::io_error::write_zero) );
   }
 }
 
@@ -196,8 +194,8 @@ TEST_CASE("file::read_object<std::int8_t>()", "[serialization]")
   auto sut = filesystem.open(mutable_buffer::from_container(storage));
   const auto value = std::int8_t{-128};
 
-  REQUIRE( sut.write_object(value).has_value() );
-  REQUIRE( sut.reset().has_value() );
+  core::compiler::unused(sut.write_object(value));
+  core::compiler::unused(sut.reset());
 
   // Act
   const auto result = sut.read_object<std::int8_t>();
@@ -205,8 +203,7 @@ TEST_CASE("file::read_object<std::int8_t>()", "[serialization]")
   // Assert
   SECTION("Reads back the value that was written")
   {
-    REQUIRE( result.has_value() );
-    REQUIRE( *result == value );
+    REQUIRE( result == value );
   }
 }
 
@@ -218,8 +215,8 @@ TEST_CASE("file::read_object<std::uint16_t>()", "[serialization]")
   auto sut = filesystem.open(mutable_buffer::from_container(storage));
   const auto value = std::uint16_t{0xfedc};
 
-  REQUIRE( sut.write_object(value).has_value() );
-  REQUIRE( sut.reset().has_value() );
+  core::compiler::unused(sut.write_object(value));
+  core::compiler::unused(sut.reset());
 
   // Act
   const auto result = sut.read_object<std::uint16_t>();
@@ -227,8 +224,7 @@ TEST_CASE("file::read_object<std::uint16_t>()", "[serialization]")
   // Assert
   SECTION("Reads back the value that was written")
   {
-    REQUIRE( result.has_value() );
-    REQUIRE( *result == value );
+    REQUIRE( result == value );
   }
 }
 
@@ -240,8 +236,8 @@ TEST_CASE("file::read_object<std::uint32_t>()", "[serialization]")
   auto sut = filesystem.open(mutable_buffer::from_container(storage));
   const auto value = std::uint32_t{0xfedcba98};
 
-  REQUIRE( sut.write_object(value).has_value() );
-  REQUIRE( sut.reset().has_value() );
+  core::compiler::unused(sut.write_object(value));
+  core::compiler::unused(sut.reset());
 
   // Act
   const auto result = sut.read_object<std::uint32_t>();
@@ -249,8 +245,7 @@ TEST_CASE("file::read_object<std::uint32_t>()", "[serialization]")
   // Assert
   SECTION("Reads back the value that was written")
   {
-    REQUIRE( result.has_value() );
-    REQUIRE( *result == value );
+    REQUIRE( result == value );
   }
 }
 
@@ -262,8 +257,8 @@ TEST_CASE("file::read_object<std::uint64_t>()", "[serialization]")
   auto sut = filesystem.open(mutable_buffer::from_container(storage));
   const auto value = std::uint64_t{0xfedcba9876543210};
 
-  REQUIRE( sut.write_object(value).has_value() );
-  REQUIRE( sut.reset().has_value() );
+  core::compiler::unused(sut.write_object(value));
+  core::compiler::unused(sut.reset());
 
   // Act
   const auto result = sut.read_object<std::uint64_t>();
@@ -271,8 +266,7 @@ TEST_CASE("file::read_object<std::uint64_t>()", "[serialization]")
   // Assert
   SECTION("Reads back the value that was written")
   {
-    REQUIRE( result.has_value() );
-    REQUIRE( *result == value );
+    REQUIRE( result == value );
   }
 }
 
@@ -284,8 +278,8 @@ TEST_CASE("file::read_object<std::int32_t>()", "[serialization]")
   auto sut = filesystem.open(mutable_buffer::from_container(storage));
   const auto value = std::int32_t{-19088744};
 
-  REQUIRE( sut.write_object(value).has_value() );
-  REQUIRE( sut.reset().has_value() );
+  core::compiler::unused(sut.write_object(value));
+  core::compiler::unused(sut.reset());
 
   // Act
   const auto result = sut.read_object<std::int32_t>();
@@ -293,8 +287,7 @@ TEST_CASE("file::read_object<std::int32_t>()", "[serialization]")
   // Assert
   SECTION("Reads back the value that was written")
   {
-    REQUIRE( result.has_value() );
-    REQUIRE( *result == value );
+    REQUIRE( result == value );
   }
 }
 
@@ -306,8 +299,8 @@ TEST_CASE("file::read_object<std::int64_t>()", "[serialization]")
   auto sut = filesystem.open(mutable_buffer::from_container(storage));
   const auto value = std::int64_t{-81985529216486896};
 
-  REQUIRE( sut.write_object(value).has_value() );
-  REQUIRE( sut.reset().has_value() );
+  core::compiler::unused(sut.write_object(value));
+  core::compiler::unused(sut.reset());
 
   // Act
   const auto result = sut.read_object<std::int64_t>();
@@ -315,8 +308,7 @@ TEST_CASE("file::read_object<std::int64_t>()", "[serialization]")
   // Assert
   SECTION("Reads back the value that was written")
   {
-    REQUIRE( result.has_value() );
-    REQUIRE( *result == value );
+    REQUIRE( result == value );
   }
 }
 

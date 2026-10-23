@@ -8,6 +8,8 @@
 #include <alloy/core/io/writer.hpp>
 #include "test_doubles.hpp"
 
+#include <alloy/core/intrinsics.hpp>
+
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 
@@ -53,41 +55,80 @@ TEST_CASE("back_insert_writer::back_insert_writer(Container&)", "[ctor]")
 {
   SECTION("Container holds single bytes")
   {
-    STATIC_REQUIRE(
-      std::is_constructible_v<back_insert_writer, std::vector<std::byte>&>
-    );
-    STATIC_REQUIRE(
-      std::is_constructible_v<back_insert_writer, std::vector<std::uint8_t>&>
-    );
-    STATIC_REQUIRE(
-      std::is_constructible_v<back_insert_writer, std::deque<std::int8_t>&>
-    );
-    STATIC_REQUIRE(
-      std::is_constructible_v<back_insert_writer, std::string&>
-    );
+    SECTION("Accepts a vector of bytes") {
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible_v<back_insert_writer, std::vector<std::byte>&>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
+    }
+    SECTION("Accepts a vector of unsigned byte values") {
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible_v<back_insert_writer, std::vector<std::uint8_t>&>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
+    }
+    SECTION("Accepts a deque of signed byte values") {
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible_v<back_insert_writer, std::deque<std::int8_t>&>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
+    }
+    SECTION("Accepts a string of characters") {
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible_v<back_insert_writer, std::string&>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
+    }
   }
 
   SECTION("Container holds values that are not single bytes")
   {
-    STATIC_REQUIRE_FALSE(
-      std::is_constructible_v<back_insert_writer, std::vector<std::uint16_t>&>
-    );
-    STATIC_REQUIRE_FALSE(
-      std::is_constructible_v<back_insert_writer, std::vector<bool>&>
-    );
+    SECTION("Rejects elements wider than one byte") {
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible_v<back_insert_writer, std::vector<std::uint16_t>&>;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
+    }
+    SECTION("Rejects packed bits with proxy references") {
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible_v<back_insert_writer, std::vector<bool>&>;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
+    }
   }
 
   SECTION("Container is not a modifiable lvalue")
   {
-    STATIC_REQUIRE_FALSE(
-      std::is_constructible_v<back_insert_writer, std::vector<std::byte>&&>
-    );
-    STATIC_REQUIRE_FALSE(
-      std::is_constructible_v<
-        back_insert_writer,
-        const std::vector<std::byte>&
-      >
-    );
+    SECTION("Rejects a temporary container") {
+      // Act
+      constexpr auto property_holds =
+        std::is_constructible_v<back_insert_writer, std::vector<std::byte>&&>;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
+    }
+    SECTION("Rejects a const container") {
+      // Act
+      constexpr auto property_holds = std::is_constructible_v<
+          back_insert_writer,
+          const std::vector<std::byte>&
+        >;
+
+      // Assert
+      STATIC_REQUIRE_FALSE(property_holds);
+    }
   }
 
   SECTION("Container is not modified")
@@ -114,6 +155,7 @@ TEMPLATE_TEST_CASE("back_insert_writer::write(std::span<const std::byte>)",
                    std::deque<std::int8_t>,
                    std::string)
 {
+  // Arrange
   using value_type = typename TestType::value_type;
 
   const auto input = sequence_bytes(256u);
@@ -130,8 +172,7 @@ TEMPLATE_TEST_CASE("back_insert_writer::write(std::span<const std::byte>)",
     // Assert
     SECTION("Writes every byte")
     {
-      REQUIRE( bytes_written.has_value() );
-      REQUIRE( *bytes_written == input.size() );
+      REQUIRE( bytes_written == input.size() );
     }
     SECTION("Appends the bytes to the container")
     {
@@ -160,7 +201,9 @@ TEMPLATE_TEST_CASE("back_insert_writer::write(std::span<const std::byte>)",
     SECTION("Keeps the existing contents before the appended bytes")
     {
       REQUIRE( bytes_written.has_value() );
-      REQUIRE( std::ranges::equal(container, expected) );
+      SECTION("Appends bytes after the existing contents") {
+        REQUIRE( std::ranges::equal(container, expected) );
+      }
     }
   }
 
@@ -176,8 +219,7 @@ TEMPLATE_TEST_CASE("back_insert_writer::write(std::span<const std::byte>)",
     // Assert
     SECTION("Writes no bytes")
     {
-      REQUIRE( bytes_written.has_value() );
-      REQUIRE( *bytes_written == 0u );
+      REQUIRE( bytes_written == 0u );
     }
     SECTION("Leaves the container unchanged")
     {
@@ -194,7 +236,7 @@ TEST_CASE("back_insert_writer::write(std::span<const std::byte>) "
   const auto bytes = std::span<const std::byte>{input};
   auto container = std::vector<std::byte>{};
   auto sut = back_insert_writer{container};
-  REQUIRE( sut.write(bytes.first(3u)).has_value() );
+  compiler::unused(sut.write(bytes.first(3u)));
 
   // Act
   const auto bytes_written = sut.write(bytes.subspan(3u));
@@ -203,7 +245,9 @@ TEST_CASE("back_insert_writer::write(std::span<const std::byte>) "
   SECTION("Appends each write after the last")
   {
     REQUIRE( bytes_written.has_value() );
-    REQUIRE( std::ranges::equal(container, input) );
+    SECTION("Preserves every input byte in order") {
+      REQUIRE( std::ranges::equal(container, input) );
+    }
   }
 }
 
@@ -223,7 +267,9 @@ TEST_CASE("back_insert_writer::back_insert_writer(const back_insert_writer&)",
   SECTION("Appends to the same container")
   {
     REQUIRE( bytes_written.has_value() );
-    REQUIRE( std::ranges::equal(container, input) );
+    SECTION("Preserves every input byte in order") {
+      REQUIRE( std::ranges::equal(container, input) );
+    }
   }
 }
 
@@ -246,8 +292,12 @@ TEST_CASE("copy(reader&, writer&) into a back_insert_writer", "[write]")
   SECTION("Copies every byte into the container")
   {
     REQUIRE( bytes_copied.has_value() );
-    REQUIRE( *bytes_copied == input.size() );
-    REQUIRE( std::ranges::equal(container, input) );
+    SECTION("Reports the full number of copied bytes") {
+      REQUIRE( *bytes_copied == input.size() );
+    }
+    SECTION("Preserves every input byte in order") {
+      REQUIRE( std::ranges::equal(container, input) );
+    }
   }
 }
 

@@ -12,6 +12,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <array>     // std::array
 #include <stdexcept>
 
 namespace alloy::core::test {
@@ -68,13 +69,33 @@ TEST_CASE("vector4::at( index_type )", "[observers]")
 
   SECTION("Index < 0 throws")
   {
-    // Act / Assert
-    REQUIRE_THROWS_AS(sut.at(-1), std::out_of_range);
+    // Arrange
+    auto threw_expected = false;
+
+    // Act
+    try {
+      sut.at(-1);
+    } catch (const std::out_of_range&) {
+      threw_expected = true;
+    }
+
+    // Assert
+    REQUIRE(threw_expected);
   }
   SECTION("Index >= size() throws")
   {
-    // Act / Assert
-    REQUIRE_THROWS_AS(sut.at(sut.size()), std::out_of_range);
+    // Arrange
+    auto threw_expected = false;
+
+    // Act
+    try {
+      sut.at(sut.size());
+    } catch (const std::out_of_range&) {
+      threw_expected = true;
+    }
+
+    // Assert
+    REQUIRE(threw_expected);
   }
   SECTION("Index 3 retrieves w()")
   {
@@ -92,17 +113,15 @@ TEST_CASE("get<N>( vector4 )", "[observers]")
   // Arrange
   const auto sut = vector4{1,2,3,4};
 
+  const auto expected = std::array{real{1}, real{2}, real{3}, real{4}};
+
   // Act
   const auto [x, y, z, w] = sut;
 
+  const auto result = std::array{x, y, z, w};
+
   // Assert
-  SECTION("Binds the components in order")
-  {
-    REQUIRE( x == sut.x() );
-    REQUIRE( y == sut.y() );
-    REQUIRE( z == sut.z() );
-    REQUIRE( w == sut.w() );
-  }
+  REQUIRE( result == expected );
 }
 
 //-----------------------------------------------------------------------------
@@ -344,10 +363,14 @@ TEST_CASE("operator-( vector4, vector4 )", "[arithmetic]")
   // Act
   const auto result = lhs - rhs;
 
-  // Assert
   SECTION("Subtracts each pair of components")
   {
-    REQUIRE( result == vector4{-3,-1,1,3} );
+    // Act
+    const auto actual = result;
+    const auto equivalent = vector4{-3,-1,1,3};
+
+    // Assert
+    REQUIRE(actual == equivalent);
   }
 }
 

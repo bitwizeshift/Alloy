@@ -22,15 +22,35 @@ TEST_CASE("is_vector<T>", "[traits]")
 {
   SECTION("Vector types are vectors")
   {
-    // Assert
-    STATIC_REQUIRE( is_vector_v<vector2> );
-    STATIC_REQUIRE( is_vector_v<vector3> );
-    STATIC_REQUIRE( is_vector_v<vector4> );
+    SECTION("Recognizes two-dimensional vectors") {
+      // Act
+      constexpr auto property_holds = is_vector_v<vector2>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
+    }
+    SECTION("Recognizes three-dimensional vectors") {
+      // Act
+      constexpr auto property_holds = is_vector_v<vector3>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
+    }
+    SECTION("Recognizes four-dimensional vectors") {
+      // Act
+      constexpr auto property_holds = is_vector_v<vector4>;
+
+      // Assert
+      STATIC_REQUIRE(property_holds);
+    }
   }
   SECTION("Scalar types are not vectors")
   {
+    // Act
+    constexpr auto property_holds = is_vector_v<real>;
+
     // Assert
-    STATIC_REQUIRE_FALSE( is_vector_v<real> );
+    STATIC_REQUIRE_FALSE(property_holds);
   }
 }
 
@@ -58,8 +78,12 @@ TEST_CASE("vector_traits<T>", "[traits]")
     const auto w = vector_traits<vector2>::w(vec);
 
     // Assert
-    REQUIRE( z == real{0} );
-    REQUIRE( w == real{0} );
+    SECTION("Supplies zero for the missing third dimension") {
+      REQUIRE( z == real{0} );
+    }
+    SECTION("Supplies zero for the missing fourth dimension") {
+      REQUIRE( w == real{0} );
+    }
   }
 }
 

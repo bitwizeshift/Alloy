@@ -12,6 +12,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <algorithm> // std::ranges::all_of
+#include <array>     // std::array
+
 namespace alloy::core::test {
 
 TEST_CASE("triangle::normal()", "[observer]") {
@@ -31,14 +34,18 @@ TEST_CASE("triangle::supporting_plane()", "[observer]") {
   // Arrange
   const auto sut = triangle{point3{0, 0, 2}, point3{2, 0, 2}, point3{0, 2, 2}};
 
+  const auto vertices = std::array{sut.a(), sut.b(), sut.c()};
+
   // Act
   const auto result = sut.supporting_plane();
 
+  const auto contains_vertices = std::ranges::all_of(
+    vertices, [&result](const point3& point) { return result.contains(point); }
+  );
+
   // Assert
   SECTION("Contains every point") {
-    REQUIRE(result.contains(sut.a()));
-    REQUIRE(result.contains(sut.b()));
-    REQUIRE(result.contains(sut.c()));
+    REQUIRE(contains_vertices);
   }
   SECTION("Faces the same way as the triangle") {
     REQUIRE(almost_equal(result.normal(), sut.normal()));
@@ -62,14 +69,18 @@ TEST_CASE("triangle::barycentric_of(const point3&)", "[quantifier]") {
   // Arrange
   const auto sut = triangle{point3{0, 0, 2}, point3{3, 0, 2}, point3{0, 3, 2}};
 
+  const auto expected = vector3{
+    real{1} / real{3}, real{1} / real{3}, real{1} / real{3}
+  };
+
   // Act
   const auto result = sut.barycentric_of(point3{1, 1, 5});
 
+  const auto weights = vector3{result.u(), result.v(), result.w()};
+
   // Assert
   SECTION("Is the coordinate of the point projected onto the triangle") {
-    REQUIRE(almost_equal(result.u(), real{1} / real{3}));
-    REQUIRE(almost_equal(result.v(), real{1} / real{3}));
-    REQUIRE(almost_equal(result.w(), real{1} / real{3}));
+    REQUIRE(almost_equal(weights, expected));
   }
 }
 

@@ -6,6 +6,8 @@
 
 #include "test_doubles.hpp"
 
+#include <alloy/core/utilities/result.hpp>
+
 #include <catch2/catch_test_macros.hpp>
 
 #include <algorithm>    // std::equal
@@ -69,6 +71,7 @@ TEST_CASE("indirect_writer::indirect_writer(const indirect_writer&)",
 
 TEST_CASE("indirect_writer::write(std::span<const std::byte>)", "[writing]")
 {
+  // Arrange
   const auto input = sequence_bytes(8u);
 
   SECTION("Destination accepts bytes")
@@ -93,8 +96,7 @@ TEST_CASE("indirect_writer::write(std::span<const std::byte>)", "[writing]")
     }
     SECTION("Returns the result of the destination")
     {
-      REQUIRE( result.has_value() );
-      REQUIRE( *result == 3u );
+      REQUIRE( result == 3u );
     }
     SECTION("Writes the bytes to the destination")
     {
@@ -121,8 +123,7 @@ TEST_CASE("indirect_writer::write(std::span<const std::byte>)", "[writing]")
     // Assert
     SECTION("Returns the error of the destination")
     {
-      REQUIRE( result.has_error() );
-      REQUIRE( result.error() == expected );
+      REQUIRE( result == fail(expected) );
     }
   }
 }
