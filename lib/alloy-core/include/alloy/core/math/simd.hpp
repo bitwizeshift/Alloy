@@ -395,22 +395,22 @@ namespace alloy::core {
   //---------------------------------------------------------------------------
 
   /// \brief Performs a fast, and possibly imprecise, calculation for the
-  ///        reciprocol of \p v
+  ///        reciprocal of \p v
   ///
   /// \note This is the hardware estimate of the reciprocal, which is accurate
   ///       to about 12 bits on SSE, and 8 bits on NEON.
   ///
-  /// \param v the simd object to compute the reciprocol of
-  /// \return the compted reciprocols in a simd object
-  auto simd_fast_reciprocol(simd<f32> v) noexcept -> simd<f32>;
+  /// \param v the simd object to compute the reciprocal of
+  /// \return the compted reciprocals in a simd object
+  auto simd_fast_reciprocal(simd<f32> v) noexcept -> simd<f32>;
 
-  /// \brief Performs a computation for the reciprocol of \p v
+  /// \brief Performs a computation for the reciprocal of \p v
   ///
   /// This is computed with a full-precision division.
   ///
-  /// \param v the simd object to compute the reciprocol of
-  /// \return the compted reciprocols in a simd object
-  auto simd_reciprocol(simd<f32> v) noexcept -> simd<f32>;
+  /// \param v the simd object to compute the reciprocal of
+  /// \return the compted reciprocals in a simd object
+  auto simd_reciprocal(simd<f32> v) noexcept -> simd<f32>;
 
   //---------------------------------------------------------------------------
 
@@ -431,24 +431,24 @@ namespace alloy::core {
 
   //---------------------------------------------------------------------------
 
-  /// \brief Computes the reciprocol sqrt value of \p v using a fast, but
+  /// \brief Computes the reciprocal sqrt value of \p v using a fast, but
   ///        potentially imprecise, method.
   ///
   /// \note This is the hardware estimate of the reciprocal square root, which
   ///       is accurate to about 12 bits on SSE, and 8 bits on NEON.
   ///
-  /// \param v the values to compute the reciprocol sqrt for
+  /// \param v the values to compute the reciprocal sqrt for
   /// \return the computed result in a simd object
-  auto simd_fast_reciprocol_sqrt(simd<f32> v) noexcept -> simd<f32>;
+  auto simd_fast_reciprocal_sqrt(simd<f32> v) noexcept -> simd<f32>;
 
-  /// \brief Computes the reciprocol sqrt value of \p v using a more precies
+  /// \brief Computes the reciprocal sqrt value of \p v using a more precies
   ///        method, potentially at a performance impact
   ///
-  /// \note This is a composition of `simd_sqrt` and `simd_reciprocol`.
+  /// \note This is a composition of `simd_sqrt` and `simd_reciprocal`.
   ///
-  /// \param v the values to compute the reciprocol sqrt for
+  /// \param v the values to compute the reciprocal sqrt for
   /// \return the computed result in a simd object
-  auto simd_reciprocol_sqrt(simd<f32> f) noexcept -> simd<f32>;
+  auto simd_reciprocal_sqrt(simd<f32> f) noexcept -> simd<f32>;
 
   //---------------------------------------------------------------------------
 
@@ -1298,7 +1298,7 @@ auto alloy::core::simd_almost_equal(
 //-----------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_fast_reciprocol(simd<f32> v) noexcept -> simd<f32>
+auto alloy::core::simd_fast_reciprocal(simd<f32> v) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
   return simd<f32>{vrecpeq_f32(v.value)};
@@ -1315,7 +1315,7 @@ auto alloy::core::simd_fast_reciprocol(simd<f32> v) noexcept -> simd<f32>
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_reciprocol(simd<f32> v) noexcept -> simd<f32>
+auto alloy::core::simd_reciprocal(simd<f32> v) noexcept -> simd<f32>
 {
   return simd_divide(simd<f32>::spread_scalar(1.0f), v);
 }
@@ -1344,21 +1344,21 @@ auto alloy::core::simd_sqrt(simd<f32> v) noexcept -> simd<f32>
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_fast_reciprocol_sqrt(simd<f32> v) noexcept -> simd<f32>
+auto alloy::core::simd_fast_reciprocal_sqrt(simd<f32> v) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
   return simd<f32>{vrsqrteq_f32(v.value)};
 #elif defined(ALLOY_SIMD_SSE)
   return simd<f32>{_mm_rsqrt_ps(v.value)};
 #else
-  return simd_reciprocol_sqrt(v);
+  return simd_reciprocal_sqrt(v);
 #endif
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_reciprocol_sqrt(simd<f32> v) noexcept -> simd<f32>
+auto alloy::core::simd_reciprocal_sqrt(simd<f32> v) noexcept -> simd<f32>
 {
-  return simd_reciprocol(simd_sqrt(v));
+  return simd_reciprocal(simd_sqrt(v));
 }
 
 ALLOY_FORCE_INLINE

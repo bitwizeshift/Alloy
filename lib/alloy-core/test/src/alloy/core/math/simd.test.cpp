@@ -698,7 +698,7 @@ TEST_CASE("simd_almost_equal(simd<f32>,simd<f32>,f32)", "[comparison]") {
 // Math and Algorithms
 //-----------------------------------------------------------------------------
 
-TEST_CASE("simd_fast_reciprocol(simd<f32>)", "[algorithm][math]") {
+TEST_CASE("simd_fast_reciprocal(simd<f32>)", "[algorithm][math]") {
   // Arrange
   const auto sut = simd<f32>::set(1,2,3,4);
   const auto tolerance = f32{1e-2};
@@ -710,10 +710,10 @@ TEST_CASE("simd_fast_reciprocol(simd<f32>)", "[algorithm][math]") {
   );
 
   // Act
-  const auto result = simd_fast_reciprocol(sut);
+  const auto result = simd_fast_reciprocal(sut);
 
   // Assert
-  SECTION("Result is an approximation of the reciprocol") {
+  SECTION("Result is an approximation of the reciprocal") {
     SECTION("First lane is accurate to within 2 decimal places") {
       REQUIRE(almost_equal(result.lane<0>(),expected.lane<0>(),tolerance));
     }
@@ -729,7 +729,7 @@ TEST_CASE("simd_fast_reciprocol(simd<f32>)", "[algorithm][math]") {
   }
 }
 
-TEST_CASE("simd_reciprocol(simd<f32>)", "[algorithm][math]") {
+TEST_CASE("simd_reciprocal(simd<f32>)", "[algorithm][math]") {
   // Arrange
   const auto sut = simd<f32>::set(1,2,3,4);
   const auto tolerance = f32{1e-5};
@@ -741,10 +741,10 @@ TEST_CASE("simd_reciprocol(simd<f32>)", "[algorithm][math]") {
   );
 
   // Act
-  const auto result = simd_reciprocol(sut);
+  const auto result = simd_reciprocal(sut);
 
   // Assert
-  SECTION("Result is an approximation of the reciprocol") {
+  SECTION("Result is an approximation of the reciprocal") {
     SECTION("First lane is accurate to within at least 5 decimal places") {
       REQUIRE(almost_equal(result.lane<0>(),expected.lane<0>(),tolerance));
     }
@@ -777,7 +777,7 @@ TEST_CASE("simd_fast_sqrt(simd<f32>)", "[algorithm][math]") {
   const auto result = simd_fast_sqrt(sut);
 
   // Assert
-  SECTION("Result is an approximation of the reciprocol") {
+  SECTION("Result is an approximation of the reciprocal") {
     SECTION("First lane is accurate to within at least 2 decimal places") {
       REQUIRE(almost_equal(result.lane<0>(),expected.lane<0>(),tolerance));
     }
@@ -808,7 +808,7 @@ TEST_CASE("simd_sqrt(simd<f32>)", "[algorithm][math]") {
   const auto result = simd_sqrt(sut);
 
   // Assert
-  SECTION("Result is an approximation of the reciprocol") {
+  SECTION("Result is an approximation of the reciprocal") {
     SECTION("First lane is accurate to within at least 5 decimal places") {
       REQUIRE(almost_equal(result.lane<0>(),expected.lane<0>(),tolerance));
     }
@@ -872,7 +872,7 @@ TEST_CASE("simd_fuse_add_multiply_scalar(simd<f32>,simd<f32>,f32)", "[arithmetic
   }
 }
 
-TEST_CASE("simd_fast_reciprocol_sqrt(simd<f32>)", "[algorithm][math]") {
+TEST_CASE("simd_fast_reciprocal_sqrt(simd<f32>)", "[algorithm][math]") {
   // Arrange
   const auto sut = simd<f32>::set(1,3,5,7);
   const auto tolerance = f32{1e-2};
@@ -884,10 +884,10 @@ TEST_CASE("simd_fast_reciprocol_sqrt(simd<f32>)", "[algorithm][math]") {
   );
 
   // Act
-  const auto result = simd_fast_reciprocol_sqrt(sut);
+  const auto result = simd_fast_reciprocal_sqrt(sut);
 
   // Assert
-  SECTION("Result is an approximation of the reciprocol") {
+  SECTION("Result is an approximation of the reciprocal") {
     SECTION("First lane is accurate to within at least 2 decimal places") {
       REQUIRE(almost_equal(result.lane<0>(),expected.lane<0>(),tolerance));
     }
@@ -903,7 +903,7 @@ TEST_CASE("simd_fast_reciprocol_sqrt(simd<f32>)", "[algorithm][math]") {
   }
 }
 
-TEST_CASE("simd_reciprocol_sqrt(simd<f32>)", "[algorithm][math]") {
+TEST_CASE("simd_reciprocal_sqrt(simd<f32>)", "[algorithm][math]") {
   // Arrange
   const auto sut = simd<f32>::set(1,3,5,7);
   const auto tolerance = f32{1e-5};
@@ -915,10 +915,10 @@ TEST_CASE("simd_reciprocol_sqrt(simd<f32>)", "[algorithm][math]") {
   );
 
   // Act
-  const auto result = simd_reciprocol_sqrt(sut);
+  const auto result = simd_reciprocal_sqrt(sut);
 
   // Assert
-  SECTION("Result is an approximation of the reciprocol") {
+  SECTION("Result is an approximation of the reciprocal") {
     SECTION("First lane is accurate to within at least 5 decimal places") {
       REQUIRE(almost_equal(result.lane<0>(),expected.lane<0>(),tolerance));
     }
