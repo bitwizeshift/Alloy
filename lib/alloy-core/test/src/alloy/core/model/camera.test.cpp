@@ -45,7 +45,7 @@ TEST_CASE("camera::translate_local_x( real )", "[translation]")
     sut.translate_local_x(1);
 
     // Assert
-    REQUIRE( almost_equal(sut.translation(), vector3{0, 0, 1}) );
+    REQUIRE( almost_equal(sut.translation(), vector3{0, 0, -1}) );
   }
 }
 
@@ -62,7 +62,7 @@ TEST_CASE("camera::translate_local_y( real )", "[translation]")
   // Assert
   SECTION("Rotated camera moves along its rotated y-axis")
   {
-    REQUIRE( almost_equal(sut.translation(), vector3{0, 0, -1}) );
+    REQUIRE( almost_equal(sut.translation(), vector3{1, 0, 0}) );
   }
 }
 
@@ -93,7 +93,7 @@ TEST_CASE("camera::translate_local_z( real )", "[translation]")
     sut.translate_local_z(1);
 
     // Assert
-    REQUIRE( almost_equal(sut.translation(), vector3{-1, 0, 0}) );
+    REQUIRE( almost_equal(sut.translation(), vector3{0, -1, 0}) );
   }
 }
 
@@ -134,7 +134,7 @@ TEST_CASE("camera::rotate_yaw( radian )", "[rotation]")
   // Assert
   SECTION("View matrix rotates the world by the yaw")
   {
-    REQUIRE( almost_equal(result * vector4{0, 0, 1, 1}, vector4{1, 0, 0, 1}) );
+    REQUIRE( almost_equal(result * vector4{0, 0, 1, 1}, vector4{-1, 0, 0, 1}) );
   }
 }
 

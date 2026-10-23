@@ -156,6 +156,8 @@ namespace alloy::core {
 
     /// \brief Rotates this camera by the specified \p orientation
     ///
+    /// The rotation is about the camera's own axes.
+    ///
     /// \param orientation the orientation
     auto rotate(const quaternion& orientation) noexcept -> void;
 
@@ -237,6 +239,9 @@ namespace alloy::core {
 
     /// \brief Sets the orientation of this camera from a quaternion
     ///
+    /// The orientation rotates from camera space into world space, so it
+    /// takes the unit axes to the camera's right, up, and backward directions.
+    ///
     /// \param orientation the orientation
     auto set_orientation(const quaternion& orientation) noexcept -> void;
 
@@ -280,6 +285,8 @@ namespace alloy::core {
 
     /// \brief Retrieves the orientation of this camera as a quaternion
     ///
+    /// The orientation rotates from camera space into world space.
+    ///
     /// \return the rotation orientation of this camera
     [[nodiscard]]
     auto orientation() const noexcept -> quaternion;
@@ -310,6 +317,10 @@ namespace alloy::core {
     // Private Members
     //-------------------------------------------------------------------------
   private:
+
+    /// \brief Updates the right, up, and forward directions from the
+    ///        orientation of this camera
+    auto update_axes() noexcept -> void;
 
     vector3 m_translation;
     quaternion m_orientation;

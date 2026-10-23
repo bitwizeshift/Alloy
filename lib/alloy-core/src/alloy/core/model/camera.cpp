@@ -7,6 +7,7 @@
 #include "alloy/core/math/angle/radian.hpp"
 #include "alloy/core/math/euler_angles.hpp"
 #include "alloy/core/math/interpolation.hpp"
+#include "alloy/core/math/matrix/matrix3.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"
 #include "alloy/core/math/quaternion.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
@@ -78,7 +79,7 @@ auto alloy::core::camera::translate_local(const vector3& delta) noexcept -> void
 auto alloy::core::camera::rotate(const quaternion& orientation) noexcept -> void
 {
   m_orientation *= orientation;
-  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
+  update_axes();
 }
 
 auto alloy::core::camera::rotate(const euler_angles& angles) noexcept -> void
@@ -143,33 +144,33 @@ auto alloy::core::camera::set_z_translation(real z) noexcept -> void
 auto alloy::core::camera::set_roll(radian angle) noexcept -> void
 {
   m_orientation *= quaternion::from_angles(radian{0}, radian{0}, angle);
-  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
+  update_axes();
 }
 
 auto alloy::core::camera::set_pitch(radian angle) noexcept -> void
 {
   m_orientation *= quaternion::from_angles(radian{0}, angle, radian{0});
-  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
+  update_axes();
 }
 
 auto alloy::core::camera::set_yaw(radian angle) noexcept -> void
 {
   m_orientation *= quaternion::from_angles(angle, radian{0}, radian{0});
-  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
+  update_axes();
 }
 
 auto alloy::core::camera::set_orientation(const quaternion& orientation)
   noexcept -> void
 {
   m_orientation = orientation;
-  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
+  update_axes();
 }
 
 auto alloy::core::camera::set_orientation(const euler_angles& angles)
   noexcept -> void
 {
   m_orientation = quaternion::from_angles(angles);
-  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
+  update_axes();
 }
 
 auto alloy::core::camera::look_at(const vector3& subject, const vector3& up)
@@ -180,8 +181,15 @@ auto alloy::core::camera::look_at(const vector3& subject, const vector3& up)
   const auto x_axis = up.cross(z_axis).normalized();
   const auto y_axis = z_axis.cross(x_axis);
 
-  m_orientation = quaternion::from_rotation_axes(x_axis, y_axis, z_axis);
-  m_orientation.extract_axes(&m_right, &m_up, &m_forward);
+  // The camera's axes are the columns of its orientation.
+  m_orientation = quaternion::from_rotation_matrix(matrix3{
+    x_axis.x(), y_axis.x(), z_axis.x(),
+    x_axis.y(), y_axis.y(), z_axis.y(),
+    x_axis.z(), y_axis.z(), z_axis.z()
+  });
+  m_right   = x_axis;
+  m_up      = y_axis;
+  m_forward = z_axis;
 }
 
 auto alloy::core::camera::look_at(real x, real y, real z, const vector3& up)
@@ -220,7 +228,10 @@ auto alloy::core::camera::angles() const noexcept -> euler_angles
 auto alloy::core::camera::extract_matrix(not_null<matrix4*> out)
   const noexcept -> void
 {
+  // The view rotates from world space into camera space, which is the inverse
+  // of the orientation, and the inverse of a rotation is its transpose.
   m_orientation.extract_rotation_matrix(out);
+  out->transpose();
 
   auto& result = *out;
 
@@ -244,6 +255,22 @@ auto alloy::core::camera::to_matrix4() const noexcept -> matrix4
 
   return result;
 }
+
+//-----------------------------------------------------------------------------
+// Private Members
+//-----------------------------------------------------------------------------
+
+auto alloy::core::camera::update_axes() noexcept -> void
+{
+  auto rotation = matrix3{};
+  m_orientation.extract_rotation_matrix(&rotation);
+
+  m_right   = rotation.column(0);
+  m_up      = rotation.column(1);
+  m_forward = rotation.column(2);
+}
+
+//-----------------------------------------------------------------------------
 
 auto alloy::core::interpolator<alloy::core::camera>::operator()(
   const camera& v0,
