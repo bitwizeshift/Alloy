@@ -6,6 +6,7 @@
 
 #include <alloy/render/mesh/index_format.hpp>
 #include <alloy/render/mesh/mesh.hpp>
+#include "mesh_test_utilities.hpp"
 
 #include <alloy/core/geometry/point/point2.hpp>
 #include <alloy/core/geometry/point/point3.hpp>
@@ -20,6 +21,7 @@
 #include <cstring> // std::memcpy
 #include <span>    // std::span
 #include <utility> // std::move
+#include <vector>  // std::vector
 
 namespace alloy::render::test {
 namespace {
@@ -123,6 +125,61 @@ TEST_CASE("unsafe_mesh_builder::add_joints(const std::array<std::uint8_t,4>&)", 
 
   // Assert
   REQUIRE(read_joints(sut) == expected);
+}
+
+TEST_CASE("unsafe_mesh_builder::begin_submesh()", "[modifier]") {
+  // Arrange
+  const auto add_triangle = [](unsafe_mesh_builder& builder) {
+    builder.add_position(core::point2{});
+    builder.add_position(core::point2{});
+    builder.add_position(core::point2{});
+  };
+
+  SECTION("Indexed submeshes are measured in indices") {
+    // Arrange
+    using range = std::array<std::uint32_t,2>;
+    const auto expected = std::vector<range>{range{0u, 3u}, range{3u, 6u}};
+    auto builder = unsafe_mesh_builder{vertex_components{.position = 2u}};
+    builder.begin_submesh();
+    add_triangle(builder);
+    builder.add_face(0u, 1u, 2u);
+    builder.begin_submesh();
+    add_triangle(builder);
+    builder.add_face(3u, 4u, 5u);
+    builder.add_face(5u, 4u, 3u);
+
+    // Act
+    const auto sut = std::move(builder).release();
+
+    // Assert
+    REQUIRE(submesh_ranges(sut) == expected);
+  }
+  SECTION("Non-indexed submeshes are measured in vertices") {
+    // Arrange
+    using range = std::array<std::uint32_t,2>;
+    const auto expected = std::vector<range>{range{0u, 3u}, range{3u, 3u}};
+    auto builder = unsafe_mesh_builder{vertex_components{.position = 2u}};
+    add_triangle(builder);
+    builder.begin_submesh();
+    add_triangle(builder);
+
+    // Act
+    const auto sut = std::move(builder).release();
+
+    // Assert
+    REQUIRE(submesh_ranges(sut) == expected);
+  }
+  SECTION("No submeshes unless one is started") {
+    // Arrange
+    auto builder = unsafe_mesh_builder{vertex_components{.position = 2u}};
+    add_triangle(builder);
+
+    // Act
+    const auto sut = std::move(builder).release();
+
+    // Assert
+    REQUIRE(sut.submeshes().empty());
+  }
 }
 
 TEST_CASE("unsafe_mesh_builder::release()", "[build]") {

@@ -61,6 +61,7 @@ alloy::render::polygon_3d_builder::polygon_3d_builder(
     m_weights{core::stl_allocator_adapter<core::vector4>{alloc}},
     m_joints{core::stl_allocator_adapter<std::array<std::uint8_t,4>>{alloc}},
     m_indices{core::stl_allocator_adapter<index_type>{alloc}},
+    m_submesh_starts{core::stl_allocator_adapter<submesh_start>{alloc}},
     m_topology{topology}
 {
 
@@ -272,6 +273,14 @@ auto alloy::render::polygon_3d_builder::add_face(
   add_face(v2, v3, v0);
 }
 
+auto alloy::render::polygon_3d_builder::begin_submesh() -> void
+{
+  m_submesh_starts.push_back(submesh_start{
+    .vertex = m_positions.size(),
+    .index  = m_indices.size(),
+  });
+}
+
 //------------------------------------------------------------------------------
 // Building
 //------------------------------------------------------------------------------
@@ -307,35 +316,48 @@ auto alloy::render::polygon_3d_builder::build_with(core::allocator alloc)
   auto bounds = m_positions.empty()
     ? core::axis_aligned_box{}
     : core::axis_aligned_box::from_points(m_positions[0], m_positions[0]);
-  for (auto i = 0u; i < positions; ++i) {
-    bounds = core::axis_aligned_box::enclosing(bounds, m_positions[i]);
 
-    builder.add_position(m_positions[i]);
-    if (!m_uvs.empty()) {
-      builder.add_uv(m_uvs[i]);
+  // Each submesh is replayed as its vertices followed by its indices, since
+  // the builder tracks the two independently.
+  auto vertex = std::size_t{0};
+  auto index = std::size_t{0};
+  const auto add_until = [&](std::size_t last_vertex, std::size_t last_index) {
+    for (; vertex < last_vertex; ++vertex) {
+      bounds = core::axis_aligned_box::enclosing(bounds, m_positions[vertex]);
+
+      builder.add_position(m_positions[vertex]);
+      if (!m_uvs.empty()) {
+        builder.add_uv(m_uvs[vertex]);
+      }
+      if (!m_uv2s.empty()) {
+        builder.add_uv2(m_uv2s[vertex]);
+      }
+      if (!m_normals.empty()) {
+        builder.add_normal(m_normals[vertex]);
+      }
+      if (!m_tangents.empty()) {
+        builder.add_tangent(m_tangents[vertex]);
+      }
+      if (!m_weights.empty()) {
+        builder.add_weights(m_weights[vertex]);
+      }
+      if (!m_colors.empty()) {
+        builder.add_color(m_colors[vertex]);
+      }
+      if (!m_joints.empty()) {
+        builder.add_joints(m_joints[vertex]);
+      }
     }
-    if (!m_uv2s.empty()) {
-      builder.add_uv2(m_uv2s[i]);
+    for (; index < last_index; ++index) {
+      builder.add_index(m_indices[index]);
     }
-    if (!m_normals.empty()) {
-      builder.add_normal(m_normals[i]);
-    }
-    if (!m_tangents.empty()) {
-      builder.add_tangent(m_tangents[i]);
-    }
-    if (!m_weights.empty()) {
-      builder.add_weights(m_weights[i]);
-    }
-    if (!m_colors.empty()) {
-      builder.add_color(m_colors[i]);
-    }
-    if (!m_joints.empty()) {
-      builder.add_joints(m_joints[i]);
-    }
+  };
+  for (const auto& start : m_submesh_starts) {
+    add_until(start.vertex, start.index);
+    builder.begin_submesh();
   }
-  for (const auto index : m_indices) {
-    builder.add_index(index);
-  }
+  add_until(positions, m_indices.size());
+
   builder.set_bounding_box(bounds);
 
   return std::move(builder).release();

@@ -11,9 +11,10 @@
 #include "alloy/render/mesh/index_format.hpp"
 #include "alloy/render/mesh/mesh.hpp"
 
-#include <array>
-#include <cstddef>
-#include <utility>
+#include <array>   // std::array
+#include <cstddef> // std::size_t
+#include <cstdint> // std::uint16_t, std::uint32_t, std::uintptr_t
+#include <utility> // std::exchange
 
 namespace alloy::render::gl {
 namespace {
@@ -253,5 +254,29 @@ auto alloy::render::gl::mesh::draw() -> void
     static_cast<::GLsizei>(m_count),
     m_index_type,
     nullptr
+  );
+}
+
+auto alloy::render::gl::mesh::draw(const render::submesh& s) -> void
+{
+  ::glBindVertexArray(m_vao);
+  if (m_ebo == 0) {
+    ::glDrawArrays(
+      m_topology,
+      static_cast<::GLint>(s.first),
+      static_cast<::GLsizei>(s.count)
+    );
+    return;
+  }
+
+  const auto index_size = (m_index_type == GL_UNSIGNED_INT)
+    ? sizeof(std::uint32_t)
+    : sizeof(std::uint16_t);
+  const auto offset = std::uintptr_t{s.first} * index_size;
+  ::glDrawElements(
+    m_topology,
+    static_cast<::GLsizei>(s.count),
+    m_index_type,
+    reinterpret_cast<const void*>(offset)
   );
 }

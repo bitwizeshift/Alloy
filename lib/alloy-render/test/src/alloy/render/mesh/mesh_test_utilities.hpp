@@ -19,6 +19,7 @@
 #include <cstddef>   // std::size_t
 #include <cstdint>   // std::int16_t, std::uint32_t
 #include <cstring>   // std::memcpy
+#include <vector>    // std::vector
 
 namespace alloy::render::test {
 
@@ -76,6 +77,17 @@ auto count_inward_triangles(const mesh& m) -> std::size_t
   return count;
 }
 
+/// \brief Gets the first and count of each submesh of \p m
+inline
+auto submesh_ranges(const mesh& m)
+  -> std::vector<std::array<std::uint32_t,2>>
+{
+  auto result = std::vector<std::array<std::uint32_t,2>>{};
+  for (const auto& s : m.submeshes()) {
+    result.push_back({s.first, s.count});
+  }
+  return result;
+}
 
 /// \brief Gets the largest index in \p m
 inline

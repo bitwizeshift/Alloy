@@ -58,8 +58,13 @@ namespace alloy::render::gl {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Draws elements from this mesh
+    /// \brief Draws the whole mesh
     auto draw() -> void;
+
+    /// \brief Draws only the range of the mesh described by \p s
+    ///
+    /// \param s the submesh to draw
+    auto draw(const render::submesh& s) -> void;
 
     //--------------------------------------------------------------------------
     // Private Members

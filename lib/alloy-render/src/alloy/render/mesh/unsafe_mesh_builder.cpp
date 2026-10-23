@@ -10,6 +10,7 @@
 #include "attribute_packer.hpp"
 
 #include "alloy/core/assert.hpp"
+#include "alloy/core/containers/vector.hpp"
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/intrinsics.hpp"
@@ -88,6 +89,7 @@ alloy::render::unsafe_mesh_builder::unsafe_mesh_builder(
     m_writer{&m_buffer},
     m_index_data{alloc},
     m_index_writer{&m_index_data},
+    m_submesh_starts{core::stl_allocator_adapter<submesh_start>{alloc}},
     m_topology{topology},
     m_bound{},
     m_components{components},
@@ -266,6 +268,14 @@ auto alloy::render::unsafe_mesh_builder::add_face(
   add_face(i2, i3, i0);
 }
 
+auto alloy::render::unsafe_mesh_builder::begin_submesh() -> void
+{
+  m_submesh_starts.push_back(submesh_start{
+    .index  = static_cast<std::uint32_t>(count_indices(m_index_data)),
+    .vertex = static_cast<std::uint32_t>(vertex_count()),
+  });
+}
+
 //------------------------------------------------------------------------------
 // Building
 //------------------------------------------------------------------------------
@@ -275,6 +285,7 @@ auto alloy::render::unsafe_mesh_builder::release() && -> mesh
   check_complete();
 
   const auto format = index_format_for(vertex_count());
+  auto submeshes = make_submeshes(m_allocator);
 
   auto config = mesh_config{};
   config.vertex_data = std::move(m_buffer);
@@ -284,6 +295,7 @@ auto alloy::render::unsafe_mesh_builder::release() && -> mesh
   config.index_format = format;
   config.topology = m_topology;
   config.components = m_components;
+  config.submeshes = std::move(submeshes);
   config.bounding_volume = m_bound;
 
   return mesh::from_config_unchecked(std::move(config));
@@ -304,6 +316,7 @@ auto alloy::render::unsafe_mesh_builder::build_with(core::allocator alloc)
   config.index_format = format;
   config.topology = m_topology;
   config.components = m_components;
+  config.submeshes = make_submeshes(alloc);
   config.bounding_volume = m_bound;
 
   return mesh::from_config_unchecked(std::move(config));
@@ -404,6 +417,39 @@ auto alloy::render::unsafe_mesh_builder::vertex_count()
     return 0u;
   }
   return static_cast<std::size_t>(m_buffer.size().count() / stride);
+}
+
+auto alloy::render::unsafe_mesh_builder::make_submeshes(core::allocator alloc)
+  const -> core::vector<submesh>
+{
+  auto result = core::vector<submesh>{
+    core::stl_allocator_adapter<submesh>{alloc}
+  };
+  if (m_submesh_starts.empty()) {
+    return result;
+  }
+
+  const auto indexed = count_indices(m_index_data) != 0u;
+  const auto first_of = [indexed](const submesh_start& start) {
+    return indexed ? start.index : start.vertex;
+  };
+  const auto end = static_cast<std::uint32_t>(
+    indexed ? count_indices(m_index_data) : vertex_count()
+  );
+
+  result.reserve(m_submesh_starts.size() + 1u);
+  const auto initial = first_of(m_submesh_starts.front());
+  if (initial != 0u) {
+    result.push_back(submesh{.first = 0u, .count = initial});
+  }
+  for (auto i = std::size_t{0}; i < m_submesh_starts.size(); ++i) {
+    const auto first = first_of(m_submesh_starts[i]);
+    const auto last = (i + 1u < m_submesh_starts.size())
+      ? first_of(m_submesh_starts[i + 1u])
+      : end;
+    result.push_back(submesh{.first = first, .count = last - first});
+  }
+  return result;
 }
 
 //------------------------------------------------------------------------------

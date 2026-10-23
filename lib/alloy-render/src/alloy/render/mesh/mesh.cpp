@@ -129,6 +129,13 @@ auto alloy::render::mesh::from_config(mesh_config config)
     }
   }
 
+  for (const auto& s : result.submeshes()) {
+    const auto end = std::size_t{s.first} + std::size_t{s.count};
+    if (ALLOY_UNLIKELY(end > elements || (s.count % divisor) != 0u)) {
+      return core::fail(construct_error::invalid_submeshes);
+    }
+  }
+
   return result;
 }
 
@@ -159,6 +166,7 @@ alloy::render::mesh::mesh(const mesh& other)
   : m_compressed_data{other.m_compressed_data.copy()},
     m_index_data{other.m_index_data.copy()},
     m_index_format{other.m_index_format},
+    m_submeshes{other.m_submeshes.copy()},
     m_bounding_volume{other.m_bounding_volume},
     m_topology{other.m_topology},
     m_components{other.m_components}
@@ -170,6 +178,9 @@ alloy::render::mesh::mesh(const mesh& other, core::allocator alloc)
   : m_compressed_data{other.m_compressed_data.copy_with(alloc)},
     m_index_data{other.m_index_data.copy_with(alloc)},
     m_index_format{other.m_index_format},
+    m_submeshes{other.m_submeshes.copy_with(
+      core::stl_allocator_adapter<submesh>{alloc}
+    )},
     m_bounding_volume{other.m_bounding_volume},
     m_topology{other.m_topology},
     m_components{other.m_components}
@@ -181,6 +192,7 @@ alloy::render::mesh::mesh(alloy::render::mesh_config config)
   : m_compressed_data{std::move(config.vertex_data)},
     m_index_data{std::move(config.index_data)},
     m_index_format{config.index_format},
+    m_submeshes{std::move(config.submeshes)},
     m_bounding_volume{config.bounding_volume},
     m_topology{config.topology},
     m_components{config.components}
@@ -209,6 +221,11 @@ auto alloy::render::error_message(mesh::construct_error e)
       return "The vertex data provided is invalid. This may occur if the number of "
              "bytes is not divisible by `stride()`, or if vertex data is "
              "supplied without any vertex components.";
+    }
+    case mesh::construct_error::invalid_submeshes: {
+      return "The specified submeshes are invalid. This can occur if a "
+             "submesh extends past the end of the mesh, or does not contain a "
+             "whole number of primitives for the topology.";
     }
     case mesh::construct_error::invalid_position_component: {
       return "The specified number of position components is invalid. This can "

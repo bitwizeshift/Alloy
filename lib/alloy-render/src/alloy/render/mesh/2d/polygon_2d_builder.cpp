@@ -57,6 +57,7 @@ alloy::render::polygon_2d_builder::polygon_2d_builder(
     m_uvs{core::stl_allocator_adapter<core::point2>{alloc}},
     m_normals{core::stl_allocator_adapter<core::vector3>{alloc}},
     m_indices{core::stl_allocator_adapter<index_type>{alloc}},
+    m_submesh_starts{core::stl_allocator_adapter<submesh_start>{alloc}},
     m_topology{topology}
 {
 
@@ -195,6 +196,14 @@ auto alloy::render::polygon_2d_builder::add_face(
   add_face(v2, v3, v0);
 }
 
+auto alloy::render::polygon_2d_builder::begin_submesh() -> void
+{
+  m_submesh_starts.push_back(submesh_start{
+    .vertex = m_positions.size(),
+    .index  = m_indices.size(),
+  });
+}
+
 //------------------------------------------------------------------------------
 // Building
 //------------------------------------------------------------------------------
@@ -225,24 +234,37 @@ auto alloy::render::polygon_2d_builder::build_with(core::allocator alloc)
         to_point3(m_positions[0]),
         to_point3(m_positions[0])
       );
-  for (auto i = 0u; i < positions; ++i) {
-    const auto position = to_point3(m_positions[i]);
-    bounds = core::axis_aligned_box::enclosing(bounds, position);
 
-    builder.add_position(m_positions[i]);
-    if (!m_uvs.empty()) {
-      builder.add_uv(m_uvs[i]);
+  // Each submesh is replayed as its vertices followed by its indices, since
+  // the builder tracks the two independently.
+  auto vertex = std::size_t{0};
+  auto index = std::size_t{0};
+  const auto add_until = [&](std::size_t last_vertex, std::size_t last_index) {
+    for (; vertex < last_vertex; ++vertex) {
+      const auto position = to_point3(m_positions[vertex]);
+      bounds = core::axis_aligned_box::enclosing(bounds, position);
+
+      builder.add_position(m_positions[vertex]);
+      if (!m_uvs.empty()) {
+        builder.add_uv(m_uvs[vertex]);
+      }
+      if (!m_normals.empty()) {
+        builder.add_normal(m_normals[vertex]);
+      }
+      if (!m_colors.empty()) {
+        builder.add_color(m_colors[vertex]);
+      }
     }
-    if (!m_normals.empty()) {
-      builder.add_normal(m_normals[i]);
+    for (; index < last_index; ++index) {
+      builder.add_index(m_indices[index]);
     }
-    if (!m_colors.empty()) {
-      builder.add_color(m_colors[i]);
-    }
+  };
+  for (const auto& start : m_submesh_starts) {
+    add_until(start.vertex, start.index);
+    builder.begin_submesh();
   }
-  for (const auto index : m_indices) {
-    builder.add_index(index);
-  }
+  add_until(positions, m_indices.size());
+
   builder.set_bounding_box(bounds);
 
   return std::move(builder).release();

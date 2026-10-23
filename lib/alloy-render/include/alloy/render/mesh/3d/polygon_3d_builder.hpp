@@ -229,6 +229,17 @@ namespace alloy::render {
     auto add_face(index_type v0, index_type v1, index_type v2, index_type v3)
       -> void;
 
+    /// \brief Starts a new submesh at the current position
+    ///
+    /// Every vertex and index added after this call, up until the next call,
+    /// belongs to the new submesh. Anything added before the first call forms
+    /// an initial submesh of its own, if there is any. If this is never
+    /// called, the mesh has no submeshes.
+    ///
+    /// Submeshes are only meaningful when attributes are added incrementally,
+    /// since the `set_*` functions replace every entry.
+    auto begin_submesh() -> void;
+
     //--------------------------------------------------------------------------
     // Building
     //--------------------------------------------------------------------------
@@ -240,6 +251,18 @@ namespace alloy::render {
     /// \param alloc the allocator to use
     /// \return the mesh object
     auto build_with(core::allocator alloc) const -> mesh override;
+
+    //--------------------------------------------------------------------------
+    // Private Member Types
+    //--------------------------------------------------------------------------
+  private:
+
+    /// The number of vertices and indices preceding a submesh
+    struct submesh_start
+    {
+      std::size_t vertex;
+      std::size_t index;
+    };
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -255,6 +278,7 @@ namespace alloy::render {
     core::vector<core::vector4> m_weights;
     core::vector<std::array<std::uint8_t,4>> m_joints;
     core::vector<index_type> m_indices;
+    core::vector<submesh_start> m_submesh_starts;
     primitive_topology m_topology;
   };
 

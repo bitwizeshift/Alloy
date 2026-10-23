@@ -158,6 +158,30 @@ TEST_CASE("mesh::from_config(mesh_config)", "[factory][static]") {
     // Assert
     REQUIRE(sut.has_value());
   }
+  SECTION("Submesh that extends past the end of the mesh") {
+    // Arrange
+    auto config = make_position_config(3u);
+    config.index_data = make_u16_indices({0u, 1u, 2u});
+    config.submeshes = core::vector<submesh>{submesh{.first = 3u, .count = 3u}};
+
+    // Act
+    const auto sut = mesh::from_config(std::move(config));
+
+    // Assert
+    REQUIRE(sut.error() == mesh::construct_error::invalid_submeshes);
+  }
+  SECTION("Submesh that does not contain whole primitives") {
+    // Arrange
+    auto config = make_position_config(3u);
+    config.index_data = make_u16_indices({0u, 1u, 2u});
+    config.submeshes = core::vector<submesh>{submesh{.first = 0u, .count = 2u}};
+
+    // Act
+    const auto sut = mesh::from_config(std::move(config));
+
+    // Assert
+    REQUIRE(sut.error() == mesh::construct_error::invalid_submeshes);
+  }
   SECTION("Valid configuration") {
     // Arrange
     auto config = make_position_config(3u);

@@ -15,6 +15,10 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <array>   // std::array
+#include <cstdint> // std::uint32_t
+#include <vector>  // std::vector
+
 namespace alloy::render::test {
 
 TEST_CASE("polygon_3d_builder::build()", "[build]") {
@@ -76,6 +80,25 @@ TEST_CASE("polygon_3d_builder::build()", "[build]") {
 
     // Assert
     REQUIRE(result.uv2_components() == 2u);
+  }
+  SECTION("Submeshes follow the indices added between them") {
+    // Arrange
+    using range = std::array<std::uint32_t,2>;
+    const auto expected = std::vector<range>{range{0u, 3u}, range{3u, 3u}};
+    auto sut = polygon_3d_builder{};
+    for (auto i = 0; i < 4; ++i) {
+      sut.add_position(core::point3{});
+    }
+    sut.begin_submesh();
+    sut.add_face(0u, 1u, 2u);
+    sut.begin_submesh();
+    sut.add_face(1u, 2u, 3u);
+
+    // Act
+    const auto result = sut.build();
+
+    // Assert
+    REQUIRE(submesh_ranges(result) == expected);
   }
   SECTION("Tangent handedness is preserved") {
     // Arrange

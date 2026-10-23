@@ -19,6 +19,7 @@
 #include "alloy/render/mesh/primitive_topology.hpp"
 
 #include "alloy/core/assert.hpp"
+#include "alloy/core/containers/vector.hpp"
 #include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/memory/allocator.hpp"
@@ -89,6 +90,22 @@ namespace alloy::render {
   };
 
   //////////////////////////////////////////////////////////////////////////////
+  /// \brief A contiguous range of a mesh that is drawn as a unit, such as the
+  ///        part of a mesh that uses a single material
+  ///
+  /// The range is measured in indices for meshes that have indices, and in
+  /// vertices for meshes that do not.
+  //////////////////////////////////////////////////////////////////////////////
+  struct submesh
+  {
+    /// The first index (or vertex) of the range
+    std::uint32_t first;
+
+    /// The number of indices (or vertices) in the range
+    std::uint32_t count;
+  };
+
+  //////////////////////////////////////////////////////////////////////////////
   /// \brief Configuration data to use for constructing mesh objects.
   //////////////////////////////////////////////////////////////////////////////
   struct mesh_config
@@ -103,6 +120,7 @@ namespace alloy::render {
     render::index_format index_format;
     primitive_topology topology;
     vertex_components components;
+    core::vector<submesh> submeshes;
     core::axis_aligned_box bounding_volume;
   };
 
@@ -154,6 +172,11 @@ namespace alloy::render {
       /// without any vertex components, or if a mesh without indices does
       /// not contain a whole number of primitives for its topology.
       invalid_vertex_data,
+
+      /// The specified submeshes are invalid. This can occur if a submesh
+      /// extends past the end of the mesh, or does not contain a whole number
+      /// of primitives for the topology.
+      invalid_submeshes,
 
       /// The specified number of position components is invalid. This can
       /// occur if `position_components` is not between `0` and `4` (inclusive)
@@ -356,6 +379,13 @@ namespace alloy::render {
     /// \return the index data as a span
     auto index_data() const noexcept -> std::span<const std::byte>;
 
+    /// \brief Gets the ranges of this mesh that are drawn separately
+    ///
+    /// An empty list means that the mesh is drawn as a single range.
+    ///
+    /// \return the submeshes
+    auto submeshes() const noexcept -> std::span<const submesh>;
+
     /// \brief Gets an axis-aligned box that encloses every position in this
     ///        mesh
     ///
@@ -375,6 +405,9 @@ namespace alloy::render {
 
     /// The format of each index in `m_index_data`
     render::index_format m_index_format;
+
+    /// The ranges of this mesh that are drawn separately
+    core::vector<submesh> m_submeshes;
 
     /// An axis-aligned box that contains this volume. This is used for
     /// scene-culling estimates to avoid sending models to the renderer that are
@@ -742,6 +775,13 @@ auto alloy::render::mesh::index_data()
     m_index_data.data(),
     m_index_data.size().count(),
   };
+}
+
+inline
+auto alloy::render::mesh::submeshes()
+  const noexcept -> std::span<const submesh>
+{
+  return std::span<const submesh>{m_submeshes.data(), m_submeshes.size()};
 }
 
 inline

@@ -19,6 +19,7 @@
 #include "alloy/render/mesh/mesh_builder.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
 
+#include "alloy/core/containers/vector.hpp"
 #include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
@@ -140,6 +141,14 @@ namespace alloy::render {
     auto add_face(index_type i0, index_type i1, index_type i2, index_type i3)
       -> void;
 
+    /// \brief Starts a new submesh at the current position
+    ///
+    /// Every index (or vertex, if the mesh has no indices) added after this
+    /// call, up until the next call, belongs to the new submesh. Anything
+    /// added before the first call forms an initial submesh of its own, if
+    /// there is any. If this is never called, the mesh has no submeshes.
+    auto begin_submesh() -> void;
+
     //--------------------------------------------------------------------------
     // Building
     //--------------------------------------------------------------------------
@@ -166,6 +175,15 @@ namespace alloy::render {
       joints,
     };
 
+    /// The position at which a submesh begins in both the index and vertex
+    /// streams, since which of them it is measured in is only known once the
+    /// mesh is built
+    struct submesh_start
+    {
+      std::uint32_t index;
+      std::uint32_t vertex;
+    };
+
     //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------
@@ -176,6 +194,7 @@ namespace alloy::render {
     core::packed_buffer_writer m_writer;
     core::packed_buffer m_index_data;
     core::packed_buffer_writer m_index_writer;
+    core::vector<submesh_start> m_submesh_starts;
     primitive_topology m_topology;
     core::axis_aligned_box m_bound;
     vertex_components m_components;
@@ -225,6 +244,13 @@ namespace alloy::render {
     ///
     /// \return the number of vertices
     auto vertex_count() const noexcept -> std::size_t;
+
+    /// \brief Resolves the started submeshes into ranges, allocated from
+    ///        \p alloc
+    ///
+    /// \param alloc the allocator to use
+    /// \return the submeshes
+    auto make_submeshes(core::allocator alloc) const -> core::vector<submesh>;
 
     //--------------------------------------------------------------------------
     // Private Modifiers
