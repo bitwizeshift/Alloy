@@ -5,6 +5,7 @@
 set(source_files
   # Mesh
   src/alloy/render/mesh/mesh.test.cpp
+  src/alloy/render/mesh/unsafe_mesh_builder.test.cpp
 )
 
 add_alloy_test(${PROJECT_NAME}RenderTest

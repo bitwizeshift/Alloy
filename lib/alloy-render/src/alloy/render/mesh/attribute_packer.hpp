@@ -21,6 +21,8 @@
 #include "alloy/core/memory/packed_buffer.hpp"
 #include "alloy/core/model/color.hpp"
 
+#include <algorithm> // std::clamp
+#include <cmath>     // std::lround
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -117,7 +119,8 @@ auto alloy::render::vector_packer::compress(float x) noexcept -> std::int16_t
 {
   static constexpr auto max = std::numeric_limits<std::int16_t>::max();
 
-  return static_cast<std::int16_t>(x * max);
+  const auto clamped = std::clamp(x, -1.0f, 1.0f);
+  return static_cast<std::int16_t>(std::lround(clamped * max));
 }
 
 //==============================================================================
