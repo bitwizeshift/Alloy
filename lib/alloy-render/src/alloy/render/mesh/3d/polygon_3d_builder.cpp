@@ -9,6 +9,7 @@
 #include "alloy/render/mesh/primitive_topology.hpp"
 
 #include "alloy/core/assert.hpp"
+#include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
@@ -46,8 +47,6 @@ alloy::render::polygon_3d_builder::polygon_3d_builder(
     m_tangents{core::stl_allocator_adapter<core::vector3>{alloc}},
     m_bitangents{core::stl_allocator_adapter<core::vector3>{alloc}},
     m_indices{core::stl_allocator_adapter<index_type>{alloc}},
-    m_lower_left{0,0,0},
-    m_upper_right{0,0,0},
     m_topology{topology}
 {
 
@@ -163,12 +162,6 @@ auto alloy::render::polygon_3d_builder::add_position(const core::point3& p)
   -> void
 {
   m_positions.push_back(p);
-
-  if (core::piecewise_compare<core::point3>{}(m_lower_left, p)) {
-    m_lower_left = p;
-  } else if (core::piecewise_compare<core::point3>{}(p, m_upper_right)) {
-    m_upper_right = p;
-  }
 }
 
 auto alloy::render::polygon_3d_builder::add_color(const core::color& c) -> void
@@ -237,22 +230,22 @@ auto alloy::render::polygon_3d_builder::build_with(core::allocator alloc)
 {
   auto config = mesh_config{};
   config.topology             = m_topology;
+  config.position_components  = ::entries_per_position;
   config.normal_components    = m_normals.empty() ? 0u : ::entries_per_normal;
   config.color_components     = m_colors.empty() ? 0u : ::entries_per_color;
   config.uv_components        = m_uvs.empty() ? 0u : ::entries_per_uv;
   config.tangent_components   = m_tangents.empty() ? 0u : ::entries_per_tangent;
-  config.bitangent_components = m_normals.empty() ? 0u : ::entries_per_bitangent;
+  config.bitangent_components = m_bitangents.empty() ? 0u : ::entries_per_bitangent;
   config.indices              = m_indices.copy_with(core::stl_allocator_adapter<index_type>{alloc});
   config.vertex_data          = core::packed_buffer{alloc};
-  config.bounding_volume      = core::axis_aligned_box::from_points(m_lower_left, m_upper_right);
-  construct_data(config.vertex_data);
+  config.bounding_volume      = construct_data(config.vertex_data);
 
   return mesh::from_config_unchecked(std::move(config));
 }
 
 auto alloy::render::polygon_3d_builder::construct_data(
   core::packed_buffer& buffer
-) const -> void
+) const -> core::axis_aligned_box
 {
   // Compute size. This also accounts for padding on the normals, since 16-bit
   // integers will leave unaligned vertex buffers.
@@ -269,41 +262,43 @@ auto alloy::render::polygon_3d_builder::construct_data(
 
   // Pack each entry by [position][uv][normal][tangent][bitangent]
   const auto positions = m_positions.size();
+  ALLOY_ASSERT(m_colors.empty() || m_colors.size() == positions);
+  ALLOY_ASSERT(m_uvs.empty() || m_uvs.size() == positions);
+  ALLOY_ASSERT(m_normals.empty() || m_normals.size() == positions);
+  ALLOY_ASSERT(m_tangents.empty() || m_tangents.size() == positions);
+  ALLOY_ASSERT(m_bitangents.empty() || m_bitangents.size() == positions);
+
+  auto bounds = m_positions.empty()
+    ? core::axis_aligned_box{}
+    : core::axis_aligned_box::from_points(m_positions[0], m_positions[0]);
   for (auto i = 0u; i < positions; ++i) {
+    bounds = core::axis_aligned_box::enclosing(bounds, m_positions[i]);
 
     writer.pack_object(m_positions[i], point_packer{});
 
     if (!m_colors.empty()) {
-      ALLOY_ASSERT(i < m_colors.size());
-
       writer.pack_object(m_colors[i], color_packer{});
     }
 
     if (!m_uvs.empty()) {
-      ALLOY_ASSERT(i < m_uvs.size());
-
       writer.pack_object(m_uvs[i], point_packer{});
     }
 
     if (!m_normals.empty()) {
-      ALLOY_ASSERT(i < m_normals.size());
-
       writer.pack_object(m_normals[i], vector_packer{});
     }
 
     if (!m_tangents.empty()) {
-      ALLOY_ASSERT(i < m_tangents.size());
-
       writer.pack_object(m_tangents[i], vector_packer{});
     }
 
     if (!m_bitangents.empty()) {
-      ALLOY_ASSERT(i < m_bitangents.size());
-
       writer.pack_object(m_bitangents[i], vector_packer{});
     }
   }
 
   // This should hold provided that the input data was correct.
   ALLOY_ASSERT(buffer.size() == buffer_size);
+
+  return bounds;
 }

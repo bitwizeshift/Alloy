@@ -1,0 +1,80 @@
+// SPDX-License-Identifier: CC0-1.0
+// Any copyright for this file is dedicated to the Public Domain.
+// See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
+
+#include <alloy/render/mesh/3d/polygon_3d_builder.hpp>
+
+#include <alloy/render/mesh/mesh.hpp>
+
+#include <alloy/core/containers/vector.hpp>
+#include <alloy/core/geometry/axis_aligned_box.hpp>
+#include <alloy/core/geometry/point/point3.hpp>
+#include <alloy/core/math/vector/vector3.hpp>
+
+#include <catch2/catch_test_macros.hpp>
+
+namespace alloy::render::test {
+
+TEST_CASE("polygon_3d_builder::build()", "[build]") {
+  SECTION("Positions are 3-component") {
+    // Arrange
+    auto sut = polygon_3d_builder{};
+    sut.add_position(core::point3{1, 2, 3});
+
+    // Act
+    const auto result = sut.build();
+
+    // Assert
+    REQUIRE(result.position_components() == 3u);
+  }
+  SECTION("Bounding volume encloses positions in every octant") {
+    // Arrange
+    auto sut = polygon_3d_builder{};
+    sut.add_position(core::point3{1, -2, 3});
+    sut.add_position(core::point3{-4, 5, -6});
+    sut.add_position(core::point3{7, 8, 9});
+    sut.add_position(core::point3{-1, -1, -1});
+    const auto expected = core::axis_aligned_box{
+      core::point3{-4, -2, -6},
+      core::point3{7, 8, 9}
+    };
+
+    // Act
+    const auto result = sut.build();
+
+    // Assert
+    REQUIRE(result.bounding_volume() == expected);
+  }
+  SECTION("Bounding volume encloses positions from set_positions") {
+    // Arrange
+    auto sut = polygon_3d_builder{};
+    sut.set_positions(core::vector<core::point3>{
+      core::point3{2, 3, 4},
+      core::point3{5, 6, 7},
+    });
+    const auto expected = core::axis_aligned_box{
+      core::point3{2, 3, 4},
+      core::point3{5, 6, 7}
+    };
+
+    // Act
+    const auto result = sut.build();
+
+    // Assert
+    REQUIRE(result.bounding_volume() == expected);
+  }
+  SECTION("Bitangents are absent when only normals are supplied") {
+    // Arrange
+    auto sut = polygon_3d_builder{};
+    sut.add_position(core::point3{1, 2, 3});
+    sut.add_normal(core::vector3{0, 1, 0});
+
+    // Act
+    const auto result = sut.build();
+
+    // Assert
+    REQUIRE_FALSE(result.has_bitangents());
+  }
+}
+
+} // namespace alloy::render::test

@@ -20,8 +20,8 @@
 #include "alloy/render/mesh/primitive_topology.hpp"
 
 #include "alloy/core/containers/vector.hpp"
+#include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/geometry/point/point2.hpp"
-#include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/memory/packed_buffer.hpp"
@@ -191,11 +191,14 @@ namespace alloy::render {
     core::vector<core::point2> m_uvs;
     core::vector<core::vector3> m_normals;
     core::vector<std::uint16_t> m_indices;
-    core::point3 m_lower_left;
-    core::point3 m_upper_right;
     primitive_topology m_topology;
 
-    auto construct_data(core::packed_buffer& buffer) const -> void;
+    /// \brief Packs the vertex attributes into \p buffer
+    ///
+    /// \param buffer the buffer to pack into
+    /// \return the bounds of the packed positions
+    auto construct_data(core::packed_buffer& buffer) const
+      -> core::axis_aligned_box;
   };
 
 } // namespace alloy::render

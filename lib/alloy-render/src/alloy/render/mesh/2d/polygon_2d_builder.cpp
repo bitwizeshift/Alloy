@@ -9,7 +9,9 @@
 #include "alloy/render/mesh/primitive_topology.hpp"
 
 #include "alloy/core/assert.hpp"
+#include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/geometry/point/point2.hpp"
+#include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/memory/data_quantity.hpp"
@@ -28,6 +30,11 @@ inline constexpr auto entries_per_uv = 2u;
 inline constexpr auto entries_per_normal = 3u;
 inline constexpr auto entries_per_indices = 3u;
 
+auto to_point3(const alloy::core::point2& p) noexcept -> alloy::core::point3
+{
+  return alloy::core::point3{p.x(), p.y(), alloy::core::real{0}};
+}
+
 } // namespace <anonymous>
 
 //------------------------------------------------------------------------------
@@ -43,8 +50,6 @@ alloy::render::polygon_2d_builder::polygon_2d_builder(
     m_uvs{core::stl_allocator_adapter<core::point2>{alloc}},
     m_normals{core::stl_allocator_adapter<core::vector3>{alloc}},
     m_indices{core::stl_allocator_adapter<index_type>{alloc}},
-    m_lower_left{0,0,0},
-    m_upper_right{0,0,0},
     m_topology{topology}
 {
 
@@ -98,16 +103,6 @@ auto alloy::render::polygon_2d_builder::set_positions(
 ) -> void
 {
   m_positions = std::move(positions);
-
-  for (const auto& p : m_positions) {
-    const auto p3 = core::point3{p.x(), p.y(), core::real{0}};
-
-    if (core::piecewise_compare<core::point3>{}(m_lower_left, p3)) {
-      m_lower_left = p3;
-    } else if (core::piecewise_compare<core::point3>{}(p3, m_upper_right)) {
-      m_upper_right = p3;
-    }
-  }
 }
 
 auto alloy::render::polygon_2d_builder::set_colors(
@@ -146,14 +141,6 @@ auto alloy::render::polygon_2d_builder::add_position(
 ) -> void
 {
   m_positions.push_back(p);
-
-  const auto p3 = core::point3{p.x(), p.y(), core::real{0}};
-
-  if (core::piecewise_compare<core::point3>{}(m_lower_left, p3)) {
-    m_lower_left = p3;
-  } else if (core::piecewise_compare<core::point3>{}(p3, m_upper_right)) {
-    m_upper_right = p3;
-  }
 }
 
 auto alloy::render::polygon_2d_builder::add_color(const core::color& c) -> void
@@ -210,6 +197,7 @@ auto alloy::render::polygon_2d_builder::build_with(core::allocator alloc)
 {
   auto config = mesh_config{};
   config.topology             = m_topology;
+  config.position_components  = ::entries_per_position;
   config.normal_components    = m_normals.empty() ? 0u : ::entries_per_normal;
   config.color_components     = m_colors.empty() ? 0u : ::entries_per_color;
   config.uv_components        = m_uvs.empty() ? 0u : ::entries_per_uv;
@@ -217,8 +205,7 @@ auto alloy::render::polygon_2d_builder::build_with(core::allocator alloc)
   config.bitangent_components = 0u;
   config.indices              = m_indices.copy_with(core::stl_allocator_adapter<index_type>{alloc});
   config.vertex_data          = core::packed_buffer{alloc};
-  config.bounding_volume      = core::axis_aligned_box::from_points(m_lower_left, m_upper_right);
-  construct_data(config.vertex_data);
+  config.bounding_volume      = construct_data(config.vertex_data);
 
   return mesh::from_config_unchecked(std::move(config));
 }
@@ -227,7 +214,7 @@ auto alloy::render::polygon_2d_builder::build_with(core::allocator alloc)
 
 auto alloy::render::polygon_2d_builder::construct_data(
   core::packed_buffer& buffer
-) const -> void
+) const -> core::axis_aligned_box
 {
   // Compute size. This also accounts for padding on the normals, since 16-bit
   // integers will leave unaligned vertex buffers.
@@ -242,31 +229,39 @@ auto alloy::render::polygon_2d_builder::construct_data(
 
   // Pack each entry by [position][uv][normal]
   const auto positions = m_positions.size();
+  ALLOY_ASSERT(m_colors.empty() || m_colors.size() == positions);
+  ALLOY_ASSERT(m_uvs.empty() || m_uvs.size() == positions);
+  ALLOY_ASSERT(m_normals.empty() || m_normals.size() == positions);
+
+  auto bounds = m_positions.empty()
+    ? core::axis_aligned_box{}
+    : core::axis_aligned_box::from_points(
+        to_point3(m_positions[0]),
+        to_point3(m_positions[0])
+      );
   for (auto i = 0u; i < positions; ++i) {
+    const auto position = to_point3(m_positions[i]);
+    bounds = core::axis_aligned_box::enclosing(bounds, position);
 
     writer.pack_object(m_positions[i], point_packer{});
 
     if (!m_colors.empty()) {
-      ALLOY_ASSERT(i < m_colors.size());
-
       writer.pack_object(m_colors[i], color_packer{});
     }
 
     if (!m_uvs.empty()) {
-      ALLOY_ASSERT(i < m_uvs.size());
-
       writer.pack_object(m_uvs[i], point_packer{});
     }
 
     if (!m_normals.empty()) {
-      ALLOY_ASSERT(i < m_normals.size());
-
       writer.pack_object(m_normals[i], vector_packer{});
     }
   }
 
   // This should hold provided that the input data was correct.
   ALLOY_ASSERT(buffer.size() == buffer_size);
+
+  return bounds;
 }
 
 
