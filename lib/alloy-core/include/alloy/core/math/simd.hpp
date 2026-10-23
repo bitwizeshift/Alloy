@@ -1007,6 +1007,30 @@ auto alloy::core::simd_fuse_add_multiply_scalar(
 #endif
 }
 
+#if defined(ALLOY_SIMD_SSE)
+namespace alloy::core::detail {
+
+  /// \brief Gets the lanes of \p lhs and \p rhs in a form that SSE2's signed
+  ///        integer comparisons order correctly
+  ///
+  /// SSE2 only compares signed integers. Flipping the sign bit of unsigned
+  /// lanes maps them onto the signed range in the same order.
+  template <typename T>
+  ALLOY_FORCE_INLINE
+  auto simd_signed_order(simd<T> lhs, simd<T> rhs)
+    noexcept -> std::array<__m128i, 2>
+  {
+    if constexpr (std::is_same_v<T, u32>) {
+      const auto bias = _mm_set1_epi32(static_cast<int>(0x80000000u));
+      return {{_mm_xor_si128(lhs.value, bias), _mm_xor_si128(rhs.value, bias)}};
+    } else {
+      return {{lhs.value, rhs.value}};
+    }
+  }
+
+} // namespace alloy::core::detail
+#endif
+
 //-----------------------------------------------------------------------------
 // Comparisons
 //-----------------------------------------------------------------------------
@@ -1027,7 +1051,7 @@ auto alloy::core::simd_equal(simd<T> lhs, simd<T> rhs) noexcept -> simd<u32>
   if constexpr (std::is_same_v<T,f32>) {
     return simd<u32>{_mm_castps_si128(_mm_cmpeq_ps(lhs.value, rhs.value))};
   } else {
-    return simd<u32>{_mm_castps_si128(_mm_cmpeq_epi32(lhs.value, rhs.value))};
+    return simd<u32>{_mm_cmpeq_epi32(lhs.value, rhs.value)};
   }
 #else
   return simd<u32>::set(
@@ -1047,13 +1071,14 @@ auto alloy::core::simd_not_equal(simd<T> lhs, simd<T> rhs) noexcept -> simd<u32>
   // NEON for some reason does not have a `not_equal`, so this is done as a
   // composition of the negation of an equal comparison.
   return simd<u32>{
-    vmvnq_u32(simd_equal(lhs.value, rhs.value))
+    vmvnq_u32(simd_equal(lhs, rhs).value)
   };
 #elif defined(ALLOY_SIMD_SSE)
   if constexpr (std::is_same_v<T,f32>) {
     return simd<u32>{_mm_castps_si128(_mm_cmpneq_ps(lhs.value, rhs.value))};
   } else {
-    return simd<u32>{_mm_castps_si128(_mm_cmpneq_epi128(lhs.value, rhs.value))};
+    const auto equal = _mm_cmpeq_epi32(lhs.value, rhs.value);
+    return simd<u32>{_mm_xor_si128(equal, _mm_set1_epi32(-1))};
   }
 #else
   return simd<u32>::set(
@@ -1081,7 +1106,8 @@ auto alloy::core::simd_less(simd<T> lhs, simd<T> rhs) noexcept -> simd<u32>
   if constexpr (std::is_same_v<T,f32>) {
     return simd<u32>{_mm_castps_si128(_mm_cmplt_ps(lhs.value, rhs.value))};
   } else {
-    return simd<u32>{_mm_castps_si128(_mm_cmplt_epi32(lhs.value, rhs.value))};
+    const auto [l, r] = detail::simd_signed_order(lhs, rhs);
+    return simd<u32>{_mm_cmplt_epi32(l, r)};
   }
 #else
   return simd<u32>::set(
@@ -1109,7 +1135,8 @@ auto alloy::core::simd_greater(simd<T> lhs, simd<T> rhs) noexcept -> simd<u32>
   if constexpr (std::is_same_v<T,f32>) {
     return simd<u32>{_mm_castps_si128(_mm_cmpgt_ps(lhs.value, rhs.value))};
   } else {
-    return simd<u32>{_mm_castps_si128(_mm_cmpgt_epi32(lhs.value, rhs.value))};
+    const auto [l, r] = detail::simd_signed_order(lhs, rhs);
+    return simd<u32>{_mm_cmpgt_epi32(l, r)};
   }
 #else
   return simd<u32>::set(
@@ -1138,7 +1165,10 @@ auto alloy::core::simd_less_equal(simd<T> lhs, simd<T> rhs)
   if constexpr (std::is_same_v<T,f32>) {
     return simd<u32>{_mm_castps_si128(_mm_cmple_ps(lhs.value, rhs.value))};
   } else {
-    return simd<u32>{_mm_castps_si128(_mm_cmple_epi32(lhs.value, rhs.value))};
+    // SSE2 has no integer <=, so this is the complement of >
+    const auto [l, r] = detail::simd_signed_order(lhs, rhs);
+    const auto greater = _mm_cmpgt_epi32(l, r);
+    return simd<u32>{_mm_xor_si128(greater, _mm_set1_epi32(-1))};
   }
 #else
   return simd<u32>::set(
@@ -1167,7 +1197,10 @@ auto alloy::core::simd_greater_equal(simd<T> lhs, simd<T> rhs)
   if constexpr (std::is_same_v<T,f32>) {
     return simd<u32>{_mm_castps_si128(_mm_cmpge_ps(lhs.value, rhs.value))};
   } else {
-    return simd<u32>{_mm_castps_si128(_mm_cmpge_epi32(lhs.value, rhs.value))};
+    // SSE2 has no integer >=, so this is the complement of <
+    const auto [l, r] = detail::simd_signed_order(lhs, rhs);
+    const auto less = _mm_cmplt_epi32(l, r);
+    return simd<u32>{_mm_xor_si128(less, _mm_set1_epi32(-1))};
   }
 #else
   return simd<u32>::set(

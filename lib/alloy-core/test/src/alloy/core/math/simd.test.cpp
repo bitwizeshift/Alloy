@@ -15,6 +15,7 @@
 #include <array>
 #include <cstddef>
 #include <span>
+#include <type_traits>
 
 namespace alloy::core::test {
 
@@ -505,6 +506,193 @@ TEST_CASE("simd_abs_difference(simd<f32>,simd<f32>)", "[arithmetic]") {
 //-----------------------------------------------------------------------------
 // Comparisons
 //-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Comparisons
+//-----------------------------------------------------------------------------
+
+namespace {
+  // The lanes compare as equal, less, greater, and less, using values that
+  // differ in sign for signed types, and in the high bit for unsigned types.
+  template <typename T>
+  auto comparison_lhs() -> simd<T> {
+    if constexpr (std::is_same_v<T, u32>) {
+      return simd<T>::set(5u, 1u, 0x80000000u, 7u);
+    } else {
+      return simd<T>::set(T(5), T(-3), T(2), T(-8));
+    }
+  }
+
+  template <typename T>
+  auto comparison_rhs() -> simd<T> {
+    if constexpr (std::is_same_v<T, u32>) {
+      return simd<T>::set(5u, 0x80000000u, 1u, 0xffffffffu);
+    } else {
+      return simd<T>::set(T(5), T(2), T(-3), T(-1));
+    }
+  }
+
+  auto mask(bool value) -> u32 {
+    return value ? u32{0xffffffff} : u32{0};
+  }
+} // namespace
+
+TEMPLATE_TEST_CASE("simd_equal(simd<T>,simd<T>)", "[comparison]", f32, s32, u32) {
+  // Arrange
+  const auto lhs = comparison_lhs<TestType>();
+  const auto rhs = comparison_rhs<TestType>();
+
+  // Act
+  const auto result = simd_equal(lhs, rhs);
+
+  // Assert
+  SECTION("First lane is the comparison of equal values") {
+    REQUIRE(result.template lane<0>() == mask(true));
+  }
+  SECTION("Second lane is the comparison of a lesser value") {
+    REQUIRE(result.template lane<1>() == mask(false));
+  }
+  SECTION("Third lane is the comparison of a greater value") {
+    REQUIRE(result.template lane<2>() == mask(false));
+  }
+  SECTION("Fourth lane is the comparison of a lesser value") {
+    REQUIRE(result.template lane<3>() == mask(false));
+  }
+}
+
+TEMPLATE_TEST_CASE("simd_not_equal(simd<T>,simd<T>)", "[comparison]", f32, s32, u32) {
+  // Arrange
+  const auto lhs = comparison_lhs<TestType>();
+  const auto rhs = comparison_rhs<TestType>();
+
+  // Act
+  const auto result = simd_not_equal(lhs, rhs);
+
+  // Assert
+  SECTION("First lane is the comparison of equal values") {
+    REQUIRE(result.template lane<0>() == mask(false));
+  }
+  SECTION("Second lane is the comparison of a lesser value") {
+    REQUIRE(result.template lane<1>() == mask(true));
+  }
+  SECTION("Third lane is the comparison of a greater value") {
+    REQUIRE(result.template lane<2>() == mask(true));
+  }
+  SECTION("Fourth lane is the comparison of a lesser value") {
+    REQUIRE(result.template lane<3>() == mask(true));
+  }
+}
+
+TEMPLATE_TEST_CASE("simd_less(simd<T>,simd<T>)", "[comparison]", f32, s32, u32) {
+  // Arrange
+  const auto lhs = comparison_lhs<TestType>();
+  const auto rhs = comparison_rhs<TestType>();
+
+  // Act
+  const auto result = simd_less(lhs, rhs);
+
+  // Assert
+  SECTION("First lane is the comparison of equal values") {
+    REQUIRE(result.template lane<0>() == mask(false));
+  }
+  SECTION("Second lane is the comparison of a lesser value") {
+    REQUIRE(result.template lane<1>() == mask(true));
+  }
+  SECTION("Third lane is the comparison of a greater value") {
+    REQUIRE(result.template lane<2>() == mask(false));
+  }
+  SECTION("Fourth lane is the comparison of a lesser value") {
+    REQUIRE(result.template lane<3>() == mask(true));
+  }
+}
+
+TEMPLATE_TEST_CASE("simd_greater(simd<T>,simd<T>)", "[comparison]", f32, s32, u32) {
+  // Arrange
+  const auto lhs = comparison_lhs<TestType>();
+  const auto rhs = comparison_rhs<TestType>();
+
+  // Act
+  const auto result = simd_greater(lhs, rhs);
+
+  // Assert
+  SECTION("First lane is the comparison of equal values") {
+    REQUIRE(result.template lane<0>() == mask(false));
+  }
+  SECTION("Second lane is the comparison of a lesser value") {
+    REQUIRE(result.template lane<1>() == mask(false));
+  }
+  SECTION("Third lane is the comparison of a greater value") {
+    REQUIRE(result.template lane<2>() == mask(true));
+  }
+  SECTION("Fourth lane is the comparison of a lesser value") {
+    REQUIRE(result.template lane<3>() == mask(false));
+  }
+}
+
+TEMPLATE_TEST_CASE("simd_less_equal(simd<T>,simd<T>)", "[comparison]", f32, s32, u32) {
+  // Arrange
+  const auto lhs = comparison_lhs<TestType>();
+  const auto rhs = comparison_rhs<TestType>();
+
+  // Act
+  const auto result = simd_less_equal(lhs, rhs);
+
+  // Assert
+  SECTION("First lane is the comparison of equal values") {
+    REQUIRE(result.template lane<0>() == mask(true));
+  }
+  SECTION("Second lane is the comparison of a lesser value") {
+    REQUIRE(result.template lane<1>() == mask(true));
+  }
+  SECTION("Third lane is the comparison of a greater value") {
+    REQUIRE(result.template lane<2>() == mask(false));
+  }
+  SECTION("Fourth lane is the comparison of a lesser value") {
+    REQUIRE(result.template lane<3>() == mask(true));
+  }
+}
+
+TEMPLATE_TEST_CASE("simd_greater_equal(simd<T>,simd<T>)", "[comparison]", f32, s32, u32) {
+  // Arrange
+  const auto lhs = comparison_lhs<TestType>();
+  const auto rhs = comparison_rhs<TestType>();
+
+  // Act
+  const auto result = simd_greater_equal(lhs, rhs);
+
+  // Assert
+  SECTION("First lane is the comparison of equal values") {
+    REQUIRE(result.template lane<0>() == mask(true));
+  }
+  SECTION("Second lane is the comparison of a lesser value") {
+    REQUIRE(result.template lane<1>() == mask(false));
+  }
+  SECTION("Third lane is the comparison of a greater value") {
+    REQUIRE(result.template lane<2>() == mask(true));
+  }
+  SECTION("Fourth lane is the comparison of a lesser value") {
+    REQUIRE(result.template lane<3>() == mask(false));
+  }
+}
+
+TEST_CASE("simd_almost_equal(simd<f32>,simd<f32>,f32)", "[comparison]") {
+  // Arrange
+  const auto lhs = simd<f32>::set(1.0f, 1.0f, -1.0f, 2.0f);
+  const auto rhs = simd<f32>::set(1.05f, 1.5f, -1.05f, -2.0f);
+
+  // Act
+  const auto result = simd_almost_equal(lhs, rhs, 0.1f);
+
+  // Assert
+  SECTION("Lanes within tolerance are equal") {
+    REQUIRE(result.lane<0>() == mask(true));
+    REQUIRE(result.lane<2>() == mask(true));
+  }
+  SECTION("Lanes outside tolerance are not equal") {
+    REQUIRE(result.lane<1>() == mask(false));
+    REQUIRE(result.lane<3>() == mask(false));
+  }
+}
 
 //-----------------------------------------------------------------------------
 // Math and Algorithms
