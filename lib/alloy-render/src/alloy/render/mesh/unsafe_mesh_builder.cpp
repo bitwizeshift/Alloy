@@ -169,12 +169,29 @@ auto alloy::render::unsafe_mesh_builder::add_tangent(const core::vector4& v)
   complete_attribute(attribute::tangent);
 }
 
+auto alloy::render::unsafe_mesh_builder::add_weights(const core::vector4& v)
+  -> void
+{
+  check_attribute(attribute::weights, 4u);
+  m_writer.pack_object(v, weight_packer{m_components.weights});
+  complete_attribute(attribute::weights);
+}
+
 auto alloy::render::unsafe_mesh_builder::add_color(const core::color& c)
   -> void
 {
   check_attribute(attribute::color, 4u);
   m_writer.pack_object(c, color_packer{m_components.color});
   complete_attribute(attribute::color);
+}
+
+auto alloy::render::unsafe_mesh_builder::add_joints(
+  const std::array<std::uint8_t,4>& joints
+) -> void
+{
+  check_attribute(attribute::joints, 4u);
+  m_writer.pack_object(joints, joint_packer{m_components.joints});
+  complete_attribute(attribute::joints);
 }
 
 auto alloy::render::unsafe_mesh_builder::add_index(index_type i) -> void
@@ -262,8 +279,14 @@ auto alloy::render::unsafe_mesh_builder::component_count(attribute a)
     case attribute::tangent: {
       return m_components.tangent;
     }
+    case attribute::weights: {
+      return m_components.weights;
+    }
     case attribute::color: {
       return m_components.color;
+    }
+    case attribute::joints: {
+      return m_components.joints;
     }
   }
   core::compiler::unreachable();
@@ -273,7 +296,7 @@ auto alloy::render::unsafe_mesh_builder::next_attribute_after(attribute a)
   const noexcept -> attribute
 {
   static constexpr auto attributes = static_cast<std::uint8_t>(
-    static_cast<std::uint8_t>(attribute::color) + 1u
+    static_cast<std::uint8_t>(attribute::joints) + 1u
   );
 
   const auto index = static_cast<std::uint8_t>(a);
@@ -328,8 +351,14 @@ auto alloy::render::unsafe_mesh_builder::last_attribute_of(
   const vertex_components& components
 ) noexcept -> attribute
 {
+  if (components.joints != 0u) {
+    return attribute::joints;
+  }
   if (components.color != 0u) {
     return attribute::color;
+  }
+  if (components.weights != 0u) {
+    return attribute::weights;
   }
   if (components.tangent != 0u) {
     return attribute::tangent;

@@ -132,6 +132,37 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     );
   }
 
+  // weights
+
+  if (m.has_weights()) {
+    const auto components = m.weight_components();
+    const auto offset = reinterpret_cast<void*>(m.offset_to_weights().count());
+    ::glEnableVertexAttribArray(render::attribute_locations::weights);
+    ::glVertexAttribPointer(
+      render::attribute_locations::weights,
+      static_cast<::GLint>(components),
+      GL_UNSIGNED_SHORT,
+      GL_TRUE,
+      static_cast<::GLsizei>(stride),
+      offset
+    );
+  }
+
+  // joints
+
+  if (m.has_joints()) {
+    const auto components = m.joint_components();
+    const auto offset = reinterpret_cast<void*>(m.offset_to_joints().count());
+    ::glEnableVertexAttribArray(render::attribute_locations::joints);
+    ::glVertexAttribIPointer(
+      render::attribute_locations::joints,
+      static_cast<::GLint>(components),
+      GL_UNSIGNED_BYTE,
+      static_cast<::GLsizei>(stride),
+      offset
+    );
+  }
+
   const auto indices = m.indices();
   const auto index_count = m.indices().size();
   ::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);

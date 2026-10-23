@@ -30,6 +30,7 @@
 #include "alloy/core/memory/packed_buffer.hpp"
 #include "alloy/core/model/color.hpp"
 
+#include <array>   // std::array
 #include <cstddef> // std::size_t
 #include <cstdint> // std::uint8_t, std::uint16_t
 
@@ -48,7 +49,9 @@ namespace alloy::render {
   /// * uv2,
   /// * normal,
   /// * tangent,
-  /// * color
+  /// * weights,
+  /// * color,
+  /// * joints
   ///
   /// \warning
   /// This type has a strict requirement on the order of attributes being
@@ -125,7 +128,11 @@ namespace alloy::render {
     auto add_tangent(const core::vector3& v) -> void;
     auto add_tangent(const core::vector4& v) -> void;
 
+    auto add_weights(const core::vector4& v) -> void;
+
     auto add_color(const core::color& c) -> void;
+
+    auto add_joints(const std::array<std::uint8_t,4>& joints) -> void;
 
     auto add_index(index_type i) -> void;
     auto add_face(index_type i0, index_type i1, index_type i2) -> void;
@@ -153,7 +160,9 @@ namespace alloy::render {
       uv2,
       normal,
       tangent,
+      weights,
       color,
+      joints,
     };
 
     //--------------------------------------------------------------------------

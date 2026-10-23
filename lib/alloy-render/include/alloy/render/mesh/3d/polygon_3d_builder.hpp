@@ -27,6 +27,7 @@
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/model/color.hpp"
 
+#include <array>   // std::array
 #include <cstddef> // std::size_t
 #include <cstdint> // std::uint16_t
 
@@ -93,6 +94,8 @@ namespace alloy::render {
     auto reserve_uv2s(std::size_t n) -> void;
     auto reserve_normals(std::size_t n) -> void;
     auto reserve_tangents(std::size_t n) -> void;
+    auto reserve_weights(std::size_t n) -> void;
+    auto reserve_joints(std::size_t n) -> void;
     /// \}
 
     /// \brief Reserves space for the indices of \p n triangle faces
@@ -140,6 +143,19 @@ namespace alloy::render {
     /// \param tangents the tangents for this mesh
     auto set_tangents(core::vector<core::vector4> tangents) -> void;
 
+    /// \brief Sets the skinning weights for this mesh
+    ///
+    /// Each weight corresponds to the joint at the same position in the
+    /// vertex's joint indices.
+    ///
+    /// \param weights the skinning weights for this mesh
+    auto set_weights(core::vector<core::vector4> weights) -> void;
+
+    /// \brief Sets the skinning joint indices for this mesh
+    ///
+    /// \param joints the skinning joint indices for this mesh
+    auto set_joints(core::vector<std::array<std::uint8_t,4>> joints) -> void;
+
     /// \brief Sets the indices for this mesh
     ///
     /// \param indices the indices for this mesh
@@ -184,6 +200,16 @@ namespace alloy::render {
     /// \param v the tangent
     auto add_tangent(const core::vector4& v) -> void;
 
+    /// \brief Adds the skinning weights of a vertex to the mesh
+    ///
+    /// \param v the weights
+    auto add_weights(const core::vector4& v) -> void;
+
+    /// \brief Adds the skinning joint indices of a vertex to the mesh
+    ///
+    /// \param joints the joint indices
+    auto add_joints(const std::array<std::uint8_t,4>& joints) -> void;
+
     /// \brief Adds a
     auto add_index(index_type v0) -> void;
 
@@ -226,6 +252,8 @@ namespace alloy::render {
     core::vector<core::point2> m_uv2s;
     core::vector<core::vector3> m_normals;
     core::vector<core::vector4> m_tangents;
+    core::vector<core::vector4> m_weights;
+    core::vector<std::array<std::uint8_t,4>> m_joints;
     core::vector<std::uint16_t> m_indices;
     primitive_topology m_topology;
   };

@@ -51,6 +51,8 @@ inline constexpr auto max_uv_components = 3u;
 inline constexpr auto max_uv2_components = 3u;
 inline constexpr auto max_normal_components = 4u;
 inline constexpr auto max_tangent_components = 4u;
+inline constexpr auto max_weight_components = 4u;
+inline constexpr auto max_joint_components = 4u;
 
 } // namespace <anonymous>
 } // namespace alloy::render
@@ -84,6 +86,12 @@ auto alloy::render::mesh::from_config(mesh_config config)
   }
   if (ALLOY_UNLIKELY(components.tangent > max_tangent_components)) {
     return core::fail(construct_error::invalid_tangent_component);
+  }
+  if (ALLOY_UNLIKELY(components.weights > max_weight_components)) {
+    return core::fail(construct_error::invalid_weight_component);
+  }
+  if (ALLOY_UNLIKELY(components.joints > max_joint_components)) {
+    return core::fail(construct_error::invalid_joint_component);
   }
 
   const auto bytes = config.vertex_data.size().count();
@@ -214,6 +222,14 @@ auto alloy::render::error_message(mesh::construct_error e)
     case mesh::construct_error::invalid_tangent_component: {
       return "The specified tangent components is invalid. This can occur if "
              "`tangent_components` is not between `0` and `4` (inclusive)";
+    }
+    case mesh::construct_error::invalid_weight_component: {
+      return "The specified weight components is invalid. This can occur if "
+             "`weight_components` is not between `0` and `4` (inclusive)";
+    }
+    case mesh::construct_error::invalid_joint_component: {
+      return "The specified joint components is invalid. This can occur if "
+             "`joint_components` is not between `0` and `4` (inclusive)";
     }
   }
   core::compiler::unreachable();

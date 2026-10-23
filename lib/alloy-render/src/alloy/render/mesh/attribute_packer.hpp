@@ -26,7 +26,7 @@
 #include <algorithm> // std::clamp
 #include <array>     // std::array
 #include <cmath>     // std::lround
-#include <cstdint>   // std::uint8_t, std::int16_t
+#include <cstdint>   // std::uint8_t, std::int16_t, std::uint16_t
 #include <limits>    // std::numeric_limits
 
 namespace alloy::render {
@@ -67,6 +67,42 @@ namespace alloy::render {
       -> void;
 
     static auto compress(float x) noexcept -> std::int16_t;
+  };
+
+  //============================================================================
+  // struct : weight_packer
+  //============================================================================
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief Packs the leading `components` skinning weights into a packed
+  ///        buffer as unorm16 values
+  //////////////////////////////////////////////////////////////////////////////
+  struct weight_packer final
+  {
+    std::uint8_t components;
+
+    auto pack(core::packed_buffer_writer& writer, const core::vector4& v)
+      -> void;
+
+    static auto compress(float x) noexcept -> std::uint16_t;
+  };
+
+  //============================================================================
+  // struct : joint_packer
+  //============================================================================
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief Packs the leading `components` skinning joint indices into a
+  ///        packed buffer as 8-bit unsigned integers
+  //////////////////////////////////////////////////////////////////////////////
+  struct joint_packer final
+  {
+    std::uint8_t components;
+
+    auto pack(
+      core::packed_buffer_writer& writer,
+      const std::array<std::uint8_t,4>& joints
+    ) -> void;
   };
 
   //============================================================================
@@ -158,6 +194,51 @@ auto alloy::render::vector_packer::compress(float x) noexcept -> std::int16_t
 
   const auto clamped = std::clamp(x, -1.0f, 1.0f);
   return static_cast<std::int16_t>(std::lround(clamped * max));
+}
+
+//==============================================================================
+// struct : weight_packer
+//==============================================================================
+
+inline
+auto alloy::render::weight_packer::pack(
+  core::packed_buffer_writer& writer,
+  const core::vector4& v
+) -> void
+{
+  ALLOY_ASSERT(components <= 4u);
+
+  const auto values = std::array{
+    compress(v.x()),
+    compress(v.y()),
+    compress(v.z()),
+    compress(v.w()),
+  };
+  writer.pack_objects(values.begin(), values.begin() + components);
+}
+
+inline
+auto alloy::render::weight_packer::compress(float x) noexcept -> std::uint16_t
+{
+  static constexpr auto max = std::numeric_limits<std::uint16_t>::max();
+
+  const auto clamped = std::clamp(x, 0.0f, 1.0f);
+  return static_cast<std::uint16_t>(std::lround(clamped * max));
+}
+
+//==============================================================================
+// struct : joint_packer
+//==============================================================================
+
+inline
+auto alloy::render::joint_packer::pack(
+  core::packed_buffer_writer& writer,
+  const std::array<std::uint8_t,4>& joints
+) -> void
+{
+  ALLOY_ASSERT(components <= 4u);
+
+  writer.pack_objects(joints.begin(), joints.begin() + components);
 }
 
 //==============================================================================

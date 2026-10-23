@@ -18,6 +18,7 @@
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/model/color.hpp"
 
+#include <array>   // std::array
 #include <cstddef> // std::size_t
 #include <cstdint> // std::uint8_t
 #include <utility> // std::move
@@ -30,6 +31,8 @@ inline constexpr auto entries_per_uv        = std::uint8_t{2};
 inline constexpr auto entries_per_uv2       = std::uint8_t{2};
 inline constexpr auto entries_per_normal    = std::uint8_t{3};
 inline constexpr auto entries_per_tangent   = std::uint8_t{4};
+inline constexpr auto entries_per_weight    = std::uint8_t{4};
+inline constexpr auto entries_per_joint     = std::uint8_t{4};
 inline constexpr auto entries_per_indices   = 3u;
 
 template <typename T>
@@ -55,6 +58,8 @@ alloy::render::polygon_3d_builder::polygon_3d_builder(
     m_uv2s{core::stl_allocator_adapter<core::point2>{alloc}},
     m_normals{core::stl_allocator_adapter<core::vector3>{alloc}},
     m_tangents{core::stl_allocator_adapter<core::vector4>{alloc}},
+    m_weights{core::stl_allocator_adapter<core::vector4>{alloc}},
+    m_joints{core::stl_allocator_adapter<std::array<std::uint8_t,4>>{alloc}},
     m_indices{core::stl_allocator_adapter<index_type>{alloc}},
     m_topology{topology}
 {
@@ -73,6 +78,8 @@ auto alloy::render::polygon_3d_builder::reserve(std::size_t n) -> void
   reserve_uv2s(n);
   reserve_normals(n);
   reserve_tangents(n);
+  reserve_weights(n);
+  reserve_joints(n);
 }
 
 auto alloy::render::polygon_3d_builder::reserve_positions(std::size_t n) -> void
@@ -103,6 +110,16 @@ auto alloy::render::polygon_3d_builder::reserve_normals(std::size_t n) -> void
 auto alloy::render::polygon_3d_builder::reserve_tangents(std::size_t n) -> void
 {
   m_tangents.reserve(n);
+}
+
+auto alloy::render::polygon_3d_builder::reserve_weights(std::size_t n) -> void
+{
+  m_weights.reserve(n);
+}
+
+auto alloy::render::polygon_3d_builder::reserve_joints(std::size_t n) -> void
+{
+  m_joints.reserve(n);
 }
 
 auto alloy::render::polygon_3d_builder::reserve_indices(std::size_t n) -> void
@@ -155,6 +172,20 @@ auto alloy::render::polygon_3d_builder::set_tangents(
   m_tangents = std::move(tangents);
 }
 
+auto alloy::render::polygon_3d_builder::set_weights(
+  core::vector<core::vector4> weights
+) -> void
+{
+  m_weights = std::move(weights);
+}
+
+auto alloy::render::polygon_3d_builder::set_joints(
+  core::vector<std::array<std::uint8_t,4>> joints
+) -> void
+{
+  m_joints = std::move(joints);
+}
+
 auto alloy::render::polygon_3d_builder::set_indices(
   core::vector<uint16_t> indices
 ) -> void
@@ -199,6 +230,19 @@ auto alloy::render::polygon_3d_builder::add_tangent(const core::vector4& v)
   m_tangents.push_back(v);
 }
 
+auto alloy::render::polygon_3d_builder::add_weights(const core::vector4& v)
+  -> void
+{
+  m_weights.push_back(v);
+}
+
+auto alloy::render::polygon_3d_builder::add_joints(
+  const std::array<std::uint8_t,4>& joints
+) -> void
+{
+  m_joints.push_back(joints);
+}
+
 //------------------------------------------------------------------------------
 
 auto alloy::render::polygon_3d_builder::add_index(index_type v0) -> void
@@ -241,14 +285,18 @@ auto alloy::render::polygon_3d_builder::build_with(core::allocator alloc)
     .uv2       = components_of(m_uv2s, ::entries_per_uv2),
     .normal    = components_of(m_normals, ::entries_per_normal),
     .tangent   = components_of(m_tangents, ::entries_per_tangent),
+    .weights   = components_of(m_weights, ::entries_per_weight),
     .color     = components_of(m_colors, ::entries_per_color),
+    .joints    = components_of(m_joints, ::entries_per_joint),
   };
   const auto positions = m_positions.size();
   ALLOY_ASSERT(m_uvs.empty() || m_uvs.size() == positions);
   ALLOY_ASSERT(m_uv2s.empty() || m_uv2s.size() == positions);
   ALLOY_ASSERT(m_normals.empty() || m_normals.size() == positions);
   ALLOY_ASSERT(m_tangents.empty() || m_tangents.size() == positions);
+  ALLOY_ASSERT(m_weights.empty() || m_weights.size() == positions);
   ALLOY_ASSERT(m_colors.empty() || m_colors.size() == positions);
+  ALLOY_ASSERT(m_joints.empty() || m_joints.size() == positions);
 
   auto builder = unsafe_mesh_builder{components, m_topology, alloc};
   builder.reserve_vertices(positions);
@@ -275,8 +323,14 @@ auto alloy::render::polygon_3d_builder::build_with(core::allocator alloc)
     if (!m_tangents.empty()) {
       builder.add_tangent(m_tangents[i]);
     }
+    if (!m_weights.empty()) {
+      builder.add_weights(m_weights[i]);
+    }
     if (!m_colors.empty()) {
       builder.add_color(m_colors[i]);
+    }
+    if (!m_joints.empty()) {
+      builder.add_joints(m_joints[i]);
     }
   }
   for (const auto index : m_indices) {

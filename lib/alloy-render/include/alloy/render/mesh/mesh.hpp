@@ -59,8 +59,15 @@ namespace alloy::render {
     /// `cross(normal, tangent.xyz) * tangent.w`.
     std::uint8_t tangent = 0u;
 
+    /// The number of unorm16 skinning weights per vertex, in `[0, 4]`
+    std::uint8_t weights = 0u;
+
     /// The number of unorm8 components per color, in `[0, 4]`
     std::uint8_t color = 0u;
+
+    /// The number of 8-bit unsigned integer skinning joint indices per
+    /// vertex, in `[0, 4]`
+    std::uint8_t joints = 0u;
 
     /// \brief Computes the number of bytes occupied by the attributes of a
     ///        single vertex, excluding any padding
@@ -118,8 +125,9 @@ namespace alloy::render {
   ///
   /// Additionally, this interlaced mesh also *compresses* the underlying data
   /// into an ideal format to minimize GPU memory overhead. Positions and UVs
-  /// are 32-bit floats, normals and tangents are snorm16, and colors are
-  /// unorm8. Attributes are ordered from most to least aligned, so
+  /// are 32-bit floats, normals and tangents are snorm16, skinning weights
+  /// are unorm16, colors are unorm8, and skinning joints are 8-bit unsigned
+  /// integers. Attributes are ordered from most to least aligned, so
   /// that no padding is needed between them; see `vertex_components::stride`.
   //////////////////////////////////////////////////////////////////////////////
   class mesh
@@ -169,6 +177,14 @@ namespace alloy::render {
       /// The specified tangent components is invalid. This can occur if
       /// `tangent_components` is not between `0` and `4` (inclusive)
       invalid_tangent_component,
+
+      /// The specified weight components is invalid. This can occur if
+      /// `weight_components` is not between `0` and `4` (inclusive)
+      invalid_weight_component,
+
+      /// The specified joint components is invalid. This can occur if
+      /// `joint_components` is not between `0` and `4` (inclusive)
+      invalid_joint_component,
     };
 
     //--------------------------------------------------------------------------
@@ -240,6 +256,8 @@ namespace alloy::render {
     auto has_uv2() const noexcept -> bool;
     auto has_normals() const noexcept -> bool;
     auto has_tangents() const noexcept -> bool;
+    auto has_weights() const noexcept -> bool;
+    auto has_joints() const noexcept -> bool;
     auto has_indices() const noexcept -> bool;
     /// \}
 
@@ -253,6 +271,8 @@ namespace alloy::render {
     auto offset_to_uv2() const noexcept -> core::bytes;
     auto offset_to_normals() const noexcept -> core::bytes;
     auto offset_to_tangents() const noexcept -> core::bytes;
+    auto offset_to_weights() const noexcept -> core::bytes;
+    auto offset_to_joints() const noexcept -> core::bytes;
     /// \}
 
     /// \{
@@ -265,6 +285,8 @@ namespace alloy::render {
     auto bytes_per_uv2() const noexcept -> core::bytes;
     auto bytes_per_normals() const noexcept -> core::bytes;
     auto bytes_per_tangents() const noexcept -> core::bytes;
+    auto bytes_per_weights() const noexcept -> core::bytes;
+    auto bytes_per_joints() const noexcept -> core::bytes;
     /// \}
 
     /// \{
@@ -277,6 +299,8 @@ namespace alloy::render {
     auto uv2_components() const noexcept -> std::size_t;
     auto normal_components() const noexcept -> std::size_t;
     auto tangent_components() const noexcept -> std::size_t;
+    auto weight_components() const noexcept -> std::size_t;
+    auto joint_components() const noexcept -> std::size_t;
     /// \}
 
     /// \brief Gets the number of components of every vertex attribute
@@ -374,7 +398,9 @@ auto alloy::render::vertex_components::unpadded_size()
     (uv2 * sizeof(float)) +
     (normal * sizeof(std::int16_t)) +
     (tangent * sizeof(std::int16_t)) +
-    (color * sizeof(std::uint8_t))
+    (weights * sizeof(std::uint16_t)) +
+    (color * sizeof(std::uint8_t)) +
+    (joints * sizeof(std::uint8_t))
   };
 }
 
@@ -382,7 +408,9 @@ inline constexpr
 auto alloy::render::vertex_components::stride() const noexcept -> core::bytes
 {
   const auto has_32_bit = (position != 0u) || (uv != 0u) || (uv2 != 0u);
-  const auto has_16_bit = (normal != 0u) || (tangent != 0u);
+  const auto has_16_bit = (
+    (normal != 0u) || (tangent != 0u) || (weights != 0u)
+  );
   const auto alignment = has_32_bit ? 4u : (has_16_bit ? 2u : 1u);
   const auto bytes = unpadded_size().count();
 
@@ -434,6 +462,18 @@ auto alloy::render::mesh::has_tangents() const noexcept -> bool
 }
 
 inline
+auto alloy::render::mesh::has_weights() const noexcept -> bool
+{
+  return m_components.weights != 0u;
+}
+
+inline
+auto alloy::render::mesh::has_joints() const noexcept -> bool
+{
+  return m_components.joints != 0u;
+}
+
+inline
 auto alloy::render::mesh::has_indices() const noexcept -> bool
 {
   return !m_indices.empty();
@@ -450,7 +490,7 @@ auto alloy::render::mesh::offset_to_positions() const noexcept -> core::bytes
 inline
 auto alloy::render::mesh::offset_to_colors() const noexcept -> core::bytes
 {
-  return offset_to_tangents() + bytes_per_tangents();
+  return offset_to_weights() + bytes_per_weights();
 }
 
 inline
@@ -475,6 +515,18 @@ inline
 auto alloy::render::mesh::offset_to_tangents() const noexcept -> core::bytes
 {
   return offset_to_normals() + bytes_per_normals();
+}
+
+inline
+auto alloy::render::mesh::offset_to_weights() const noexcept -> core::bytes
+{
+  return offset_to_tangents() + bytes_per_tangents();
+}
+
+inline
+auto alloy::render::mesh::offset_to_joints() const noexcept -> core::bytes
+{
+  return offset_to_colors() + bytes_per_colors();
 }
 
 //------------------------------------------------------------------------------
@@ -515,6 +567,18 @@ auto alloy::render::mesh::bytes_per_tangents() const noexcept -> core::bytes
   return core::bytes{m_components.tangent * sizeof(std::int16_t)};
 }
 
+inline
+auto alloy::render::mesh::bytes_per_weights() const noexcept -> core::bytes
+{
+  return core::bytes{m_components.weights * sizeof(std::uint16_t)};
+}
+
+inline
+auto alloy::render::mesh::bytes_per_joints() const noexcept -> core::bytes
+{
+  return core::bytes{m_components.joints * sizeof(std::uint8_t)};
+}
+
 //------------------------------------------------------------------------------
 
 inline
@@ -551,6 +615,18 @@ inline
 auto alloy::render::mesh::tangent_components() const noexcept -> std::size_t
 {
   return m_components.tangent;
+}
+
+inline
+auto alloy::render::mesh::weight_components() const noexcept -> std::size_t
+{
+  return m_components.weights;
+}
+
+inline
+auto alloy::render::mesh::joint_components() const noexcept -> std::size_t
+{
+  return m_components.joints;
 }
 
 //------------------------------------------------------------------------------

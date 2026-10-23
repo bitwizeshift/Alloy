@@ -8,12 +8,13 @@
 
 #include <alloy/core/geometry/point/point3.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
+#include <alloy/core/math/vector/vector4.hpp>
 #include <alloy/core/model/color.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
 #include <array>   // std::array
-#include <cstdint> // std::int16_t
+#include <cstdint> // std::int16_t, std::uint8_t, std::uint16_t
 #include <cstring> // std::memcpy
 #include <span>    // std::span
 #include <utility> // std::move
@@ -36,6 +37,24 @@ auto build_normal_mesh(const core::vector3& v) -> mesh
   auto builder = unsafe_mesh_builder{vertex_components{.normal = 3u}};
   builder.add_normal(v);
   return std::move(builder).release();
+}
+
+/// \brief Reads the 4 unorm16 skinning weights out of \p m
+auto read_weights(const mesh& m) -> std::array<std::uint16_t,4>
+{
+  auto result = std::array<std::uint16_t,4>{};
+  const auto data = m.data().subspan(m.offset_to_weights().count());
+  std::memcpy(result.data(), data.data(), sizeof(result));
+  return result;
+}
+
+/// \brief Reads the first 3 skinning joint indices out of \p m
+auto read_joints(const mesh& m) -> std::array<std::uint8_t,3>
+{
+  auto result = std::array<std::uint8_t,3>{};
+  const auto data = m.data().subspan(m.offset_to_joints().count());
+  std::memcpy(result.data(), data.data(), sizeof(result));
+  return result;
 }
 
 } // namespace <anonymous>
@@ -74,6 +93,34 @@ TEST_CASE("unsafe_mesh_builder::add_normal(const vector3&)", "[modifier]") {
     // Assert
     REQUIRE(read_normal(sut) == expected);
   }
+}
+
+TEST_CASE("unsafe_mesh_builder::add_weights(const vector4&)", "[modifier]") {
+  // Arrange
+  const auto v = core::vector4{1.0f, 0.5f, 0.0f, -1.0f};
+  const auto expected = std::array<std::uint16_t,4>{65535u, 32768u, 0u, 0u};
+  auto builder = unsafe_mesh_builder{vertex_components{.weights = 4u}};
+  builder.add_weights(v);
+
+  // Act
+  const auto sut = std::move(builder).release();
+
+  // Assert
+  REQUIRE(read_weights(sut) == expected);
+}
+
+TEST_CASE("unsafe_mesh_builder::add_joints(const std::array<std::uint8_t,4>&)", "[modifier]") {
+  // Arrange
+  const auto joints = std::array<std::uint8_t,4>{3u, 1u, 4u, 1u};
+  const auto expected = std::array<std::uint8_t,3>{3u, 1u, 4u};
+  auto builder = unsafe_mesh_builder{vertex_components{.joints = 3u}};
+  builder.add_joints(joints);
+
+  // Act
+  const auto sut = std::move(builder).release();
+
+  // Assert
+  REQUIRE(read_joints(sut) == expected);
 }
 
 TEST_CASE("unsafe_mesh_builder::release()", "[build]") {

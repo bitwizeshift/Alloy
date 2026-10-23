@@ -188,7 +188,9 @@ TEST_CASE("mesh::offset_to_*()", "[observer]") {
     .uv2       = 2u,
     .normal    = 3u,
     .tangent   = 4u,
+    .weights   = 4u,
     .color     = 4u,
+    .joints    = 4u,
   };
   const auto sut = mesh::from_config_unchecked(std::move(config));
 
@@ -227,19 +229,33 @@ TEST_CASE("mesh::offset_to_*()", "[observer]") {
     // Assert
     REQUIRE(result == core::bytes{34u});
   }
-  SECTION("Colors follow tangents") {
+  SECTION("Weights follow tangents") {
+    // Act
+    const auto result = sut.offset_to_weights();
+
+    // Assert
+    REQUIRE(result == core::bytes{42u});
+  }
+  SECTION("Colors follow weights") {
     // Act
     const auto result = sut.offset_to_colors();
 
     // Assert
-    REQUIRE(result == core::bytes{42u});
+    REQUIRE(result == core::bytes{50u});
+  }
+  SECTION("Joints follow colors") {
+    // Act
+    const auto result = sut.offset_to_joints();
+
+    // Assert
+    REQUIRE(result == core::bytes{54u});
   }
   SECTION("Stride pads the end of the vertex") {
     // Act
     const auto result = sut.stride();
 
     // Assert
-    REQUIRE(result == core::bytes{48u});
+    REQUIRE(result == core::bytes{60u});
   }
 }
 
