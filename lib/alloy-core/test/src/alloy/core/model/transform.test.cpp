@@ -5,6 +5,7 @@
 #include <alloy/core/model/transform.hpp>
 
 #include <alloy/core/math/angle/radian.hpp>
+#include <alloy/core/math/euler_angles.hpp>
 #include <alloy/core/math/interpolation.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
@@ -15,6 +16,27 @@
 #include <catch2/catch_test_macros.hpp>
 
 namespace alloy::core::test {
+
+//------------------------------------------------------------------------------
+// Observers
+//------------------------------------------------------------------------------
+
+TEST_CASE("transform::angles()", "[observers]")
+{
+  // Arrange
+  const auto expected = euler_angles{radian{0.3f}, radian{-0.5f}, radian{2.5f}};
+  auto sut = transform{};
+  sut.set_orientation(expected);
+
+  // Act
+  const auto result = sut.angles();
+
+  // Assert
+  SECTION("Recovers the angles that the orientation was set from")
+  {
+    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+  }
+}
 
 //------------------------------------------------------------------------------
 // Conversion

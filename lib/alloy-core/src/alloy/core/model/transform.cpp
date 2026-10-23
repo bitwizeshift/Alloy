@@ -239,11 +239,7 @@ auto alloy::core::transform::orientation() const noexcept -> quaternion
 
 auto alloy::core::transform::angles() const noexcept -> euler_angles
 {
-  return euler_angles{
-    m_rotation.yaw(),
-    m_rotation.pitch(),
-    m_rotation.roll()
-  };
+  return m_rotation.to_euler_angles();
 }
 
 auto alloy::core::transform::scale() const noexcept -> vector3

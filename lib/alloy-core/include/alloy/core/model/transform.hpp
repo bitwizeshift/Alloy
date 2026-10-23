@@ -265,6 +265,9 @@ namespace alloy::core {
 
     /// \brief Retrieves the orientation of this transform as euler_angles
     ///
+    /// These are the angles that `set_orientation` composes the orientation
+    /// from, so setting the angles and reading them back is a round trip.
+    ///
     /// \return retrieves the rotation orientation of this transform
     [[nodiscard]]
     auto angles() const noexcept -> euler_angles;

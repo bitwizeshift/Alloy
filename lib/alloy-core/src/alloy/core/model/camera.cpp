@@ -214,11 +214,7 @@ auto alloy::core::camera::orientation() const noexcept -> quaternion
 
 auto alloy::core::camera::angles() const noexcept -> euler_angles
 {
-  return euler_angles{
-    m_orientation.yaw(),
-    m_orientation.pitch(),
-    m_orientation.roll(),
-  };
+  return m_orientation.to_euler_angles();
 }
 
 //-----------------------------------------------------------------------------

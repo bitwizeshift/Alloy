@@ -293,6 +293,9 @@ namespace alloy::core {
 
     /// \brief Retrieves the orientation of this camera as euler_angles
     ///
+    /// These are the angles that `set_orientation` composes the orientation
+    /// from, so setting the angles and reading them back is a round trip.
+    ///
     /// \return the euler angles of the orientation of this camera
     [[nodiscard]]
     auto angles() const noexcept -> euler_angles;
