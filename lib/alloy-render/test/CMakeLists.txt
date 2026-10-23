@@ -1,0 +1,15 @@
+##############################################################################
+# Target
+##############################################################################
+
+set(source_files
+  # Mesh
+  src/alloy/render/mesh/mesh.test.cpp
+)
+
+add_alloy_test(${PROJECT_NAME}RenderTest
+  ALIAS       ${PROJECT_NAME}::Render::Test
+  OUTPUT_NAME alloy-render-test
+  SOURCES     ${source_files}
+  LIBRARIES   ${PROJECT_NAME}::Render
+)

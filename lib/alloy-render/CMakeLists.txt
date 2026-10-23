@@ -47,9 +47,9 @@ add_alloy_library(${PROJECT_NAME}Render
 
 # Unit Tests
 
-#if (ALLOY_COMPILE_TESTS)
-#  add_subdirectory("test")
-#endif ()
+if (ALLOY_COMPILE_TESTS)
+  add_subdirectory("test")
+endif ()
 
 ##############################################################################
 # Installation

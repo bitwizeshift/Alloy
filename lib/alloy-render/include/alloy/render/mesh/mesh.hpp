@@ -99,11 +99,13 @@ namespace alloy::render {
     enum class construct_error {
       /// Supplied indices are invalid for the topology. This may occur if a
       /// mesh contains triangle topology and the number of indices supplied
-      /// are not divisible by 3.
+      /// are not divisible by 3, or if an index refers to a vertex that does
+      /// not exist.
       invalid_indices,
 
       /// The vertex data provided is invalid. This may occur if the number of
-      /// bytes is not divisible by `stride()`
+      /// bytes is not divisible by `stride()`, or if vertex data is supplied
+      /// without any vertex components.
       invalid_vertex_data,
 
       /// The specified number of position components is invalid. This can

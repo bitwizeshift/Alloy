@@ -11,9 +11,10 @@
 #include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/utilities/result.hpp"
 
-#include <cstddef>
-#include <cstdint>
-#include <utility>
+#include <algorithm> // std::ranges::any_of
+#include <cstddef>   // std::size_t, std::byte
+#include <cstdint>   // std::uint16_t
+#include <utility>   // std::move
 
 namespace alloy::render {
 namespace {
@@ -21,19 +22,27 @@ namespace {
 auto indices_per_topology(primitive_topology topology) noexcept -> std::size_t
 {
   switch (topology) {
+    case primitive_topology::lines: {
+      return 2u;
+    }
+    case primitive_topology::lines_adjacency: {
+      return 4u;
+    }
     case primitive_topology::triangles: {
       return 3u;
     }
-    case primitive_topology::lines_adjacency: {
-      return 2u;
+    case primitive_topology::triangles_adjacency: {
+      return 6u;
     }
-    // TODO(bitwizeshift): Not currently sure if other topologies have any
-    //                     specific expected number of indices
-    default: {
-      break;
+    case primitive_topology::points:
+    case primitive_topology::line_strip:
+    case primitive_topology::line_strip_adjacency:
+    case primitive_topology::triangle_strip:
+    case primitive_topology::triangle_strip_adjacency: {
+      return 1u;
     }
   }
-  return 1u;
+  core::compiler::unreachable();
 }
 
 inline constexpr auto max_vertex_components = 4u;
@@ -76,7 +85,7 @@ auto alloy::render::mesh::from_config(mesh_config config)
     return core::fail(construct_error::invalid_bitangent_component);
   }
 
-  const auto vertices = config.vertex_data.size();
+  const auto bytes = config.vertex_data.size().count();
   const auto stride = (
     (config.position_components * sizeof(float)) +
     (round_up_power_two(config.color_components) * sizeof(std::byte)) +
@@ -85,13 +94,23 @@ auto alloy::render::mesh::from_config(mesh_config config)
     (round_up_power_two(config.tangent_components) * sizeof(std::uint16_t)) +
     (round_up_power_two(config.bitangent_components) * sizeof(std::uint16_t))
   );
-  if (ALLOY_UNLIKELY((vertices % stride).count() != 0u)) {
+  if (ALLOY_UNLIKELY(stride == 0u && bytes != 0u)) {
+    return core::fail(construct_error::invalid_vertex_data);
+  }
+  if (ALLOY_UNLIKELY(stride != 0u && (bytes % stride) != 0u)) {
     return core::fail(construct_error::invalid_vertex_data);
   }
 
-  const auto indices = config.indices.size();
   const auto index_divisor = indices_per_topology(config.topology);
-  if (ALLOY_UNLIKELY((indices % index_divisor) != 0u)) {
+  if (ALLOY_UNLIKELY((config.indices.size() % index_divisor) != 0u)) {
+    return core::fail(construct_error::invalid_indices);
+  }
+
+  const auto vertices = (stride == 0u) ? 0u : (bytes / stride);
+  const auto is_out_of_range = [vertices](index_type i) {
+    return i >= vertices;
+  };
+  if (ALLOY_UNLIKELY(std::ranges::any_of(config.indices, is_out_of_range))) {
     return core::fail(construct_error::invalid_indices);
   }
 
@@ -199,11 +218,13 @@ auto alloy::render::error_message(mesh::construct_error e)
     case mesh::construct_error::invalid_indices: {
       return "Supplied indices are invalid for the topology. This may occur if a "
              "mesh contains triangle topology and the number of indices supplied "
-             "are not divisible by 3.";
+             "are not divisible by 3, or if an index refers to a vertex that "
+             "does not exist.";
     }
     case mesh::construct_error::invalid_vertex_data: {
       return "The vertex data provided is invalid. This may occur if the number of "
-             "bytes is not divisible by `stride()`";
+             "bytes is not divisible by `stride()`, or if vertex data is "
+             "supplied without any vertex components.";
     }
     case mesh::construct_error::invalid_position_component: {
       return "The specified number of position components is invalid. This can "
