@@ -468,26 +468,66 @@ namespace alloy::core {
 
   //---------------------------------------------------------------------------
 
+  // The dot products below operate on 4-component vectors in a
+  // structure-of-arrays layout: a group of 4 `simd<f32>` holds the x, y, z,
+  // and w components of 4 vectors, one vector per lane. Lane i of a result
+  // is the dot product of the i-th vectors of the two groups. A group of 16
+  // `f32` is the same layout, unpacked into the four components in order.
+
+  /// \brief Computes the dot products of the 4 vectors in \p lhs and \p rhs
+  ///
+  /// \param lhs the components of the left vectors
+  /// \param rhs the components of the right vectors
+  /// \return the dot product of each pair of vectors, one per lane
   auto simd_dot4(std::span<const simd<f32>,4> lhs, std::span<const simd<f32>,4> rhs)
     noexcept -> simd<f32>;
 
+  /// \brief Computes the dot products of the 4 vectors in \p lhs and \p rhs
+  ///
+  /// \pre \p lhs and \p rhs are aligned to a 16-byte boundary
+  ///
+  /// \param lhs the components of the left vectors
+  /// \param rhs the components of the right vectors
+  /// \return the dot product of each pair of vectors, one per lane
   auto simd_dot4(std::span<const f32,16> lhs, std::span<const f32,16> rhs)
     noexcept -> simd<f32>;
 
   //---------------------------------------------------------------------------
 
+  /// \brief Computes the dot products of each group of 4 vectors in \p lhs
+  ///        and \p rhs
+  ///
+  /// \param lhs the groups of left vectors
+  /// \param rhs the groups of right vectors
+  /// \return the dot products of each group
   template <std::size_t N>
     requires ((N % 4) == 0)
   auto simd_dot(std::span<const simd<f32>, N> lhs, std::span<const simd<f32>, N> rhs)
     noexcept -> std::array<simd<f32>, (N / 4)>;
 
+  /// \brief Computes the dot products of each group of 4 vectors in \p lhs
+  ///        and \p rhs
+  ///
+  /// \pre \p lhs and \p rhs are aligned to a 16-byte boundary
+  ///
+  /// \param lhs the groups of left vectors
+  /// \param rhs the groups of right vectors
+  /// \return the dot products of each group
   template <std::size_t N>
-    requires ((N % 4) == 0)
+    requires ((N % 16) == 0)
   auto simd_dot(std::span<const f32, N> lhs, std::span<const f32, N> rhs)
     noexcept -> std::array<simd<f32>, (N / 16)>;
 
   //---------------------------------------------------------------------------
 
+  /// \brief Computes the dot products of each group of 4 vectors in \p lhs
+  ///        and \p rhs into \p out
+  ///
+  /// \pre \p lhs, \p rhs, and \p out are aligned to a 16-byte boundary
+  ///
+  /// \param lhs the groups of left vectors
+  /// \param rhs the groups of right vectors
+  /// \param out the dot products, 4 for each group
   template <std::size_t N>
     requires (N % 16 == 0)
   auto simd_dot4_to(
@@ -496,6 +536,14 @@ namespace alloy::core {
     std::span<f32,(N / 4)> out
   ) noexcept -> void;
 
+  /// \brief Computes the dot products of each group of 4 vectors in \p lhs
+  ///        and \p rhs into \p out
+  ///
+  /// \pre \p lhs and \p rhs are aligned to a 16-byte boundary
+  ///
+  /// \param lhs the groups of left vectors
+  /// \param rhs the groups of right vectors
+  /// \param out the dot products of each group
   template <std::size_t N>
     requires (N % 16 == 0)
   auto simd_dot4_to(
@@ -504,12 +552,18 @@ namespace alloy::core {
     std::span<simd<f32>,(N/16)> out
   ) noexcept -> void;
 
+  /// \brief Computes the dot products of each group of 4 vectors in \p lhs
+  ///        and \p rhs into \p out
+  ///
+  /// \param lhs the groups of left vectors
+  /// \param rhs the groups of right vectors
+  /// \param out the dot products of each group
   template <std::size_t N>
     requires ((N % 4) == 0)
   auto simd_dot4_to(
-    std::span<simd<f32>,N> lhs,
-    std::span<simd<f32>,N> rhs,
-    std::span<simd<f32>,N> out
+    std::span<const simd<f32>,N> lhs,
+    std::span<const simd<f32>,N> rhs,
+    std::span<simd<f32>,(N/4)> out
   ) noexcept -> void;
 
 } // namespace alloy::core
@@ -1401,38 +1455,37 @@ auto alloy::core::simd_dot(
   //
   // This is unravelled here to help ensure parallelism between the
   // multiplications and to minimize stalls when waiting on addition
-  std::array<simd<f32>, N> intermediate;
+  auto intermediate = std::array<simd<f32>, N>{};
   for (auto i = 0u; i < N; ++i) {
     intermediate[i] = simd_multiply(lhs[i], rhs[i]);
   }
 
-  std::array<simd<f32>, (N/4)> dot_result;
-  for (auto i = 0u; i < (N/4); ++i) {
+  auto dot_result = std::array<simd<f32>, (N / 4)>{};
+  for (auto i = 0u; i < (N / 4); ++i) {
+    const auto group = 4u * i;
     dot_result[i] = simd_add(
-      simd_add(intermediate[i], intermediate[i+1]),
-      simd_add(intermediate[i+2], intermediate[i+3])
+      simd_add(intermediate[group], intermediate[group + 1]),
+      simd_add(intermediate[group + 2], intermediate[group + 3])
     );
   }
   return dot_result;
 }
 
 template <std::size_t N>
-  requires ((N % 4) == 0)
+  requires ((N % 16) == 0)
 inline
 auto alloy::core::simd_dot(
   std::span<const f32, N> lhs,
   std::span<const f32, N> rhs
 ) noexcept -> std::array<simd<f32>, (N / 16)>
 {
-  std::array<simd<f32>, (N/16)> dot_result;
+  auto dot_result = std::array<simd<f32>, (N / 16)>{};
 
-  for (auto i = 0u; i < (N/16); ++i) {
+  for (auto i = 0u; i < (N / 16); ++i) {
     dot_result[i] = simd_dot4(
-      lhs.template first<16>(),
-      rhs.template first<16>()
+      std::span<const f32, 16>{lhs.data() + (16u * i), 16u},
+      std::span<const f32, 16>{rhs.data() + (16u * i), 16u}
     );
-    lhs = lhs.template subspan<16>();
-    rhs = rhs.template subspan<16>();
   }
 
   return dot_result;
@@ -1448,20 +1501,13 @@ auto alloy::core::simd_dot4_to(
   std::span<f32,(N/4)> out
 ) noexcept -> void
 {
-  constexpr auto n = (N / 4);
-
-  for (auto i = 0u; i < n; i++) {
+  for (auto i = 0u; i < (N / 16); ++i) {
     const auto result = simd_dot4(
-      lhs.template first<16>(),
-      rhs.template first<16>()
+      std::span<const f32, 16>{lhs.data() + (16u * i), 16u},
+      std::span<const f32, 16>{rhs.data() + (16u * i), 16u}
     );
 
-    result.store(out.template first<4>());
-
-    // Increment
-    lhs = lhs.template subsban<16>();
-    rhs = rhs.template subsban<16>();
-    out = out.template subspan<4>();
+    result.store(std::span<f32, 4>{out.data() + (4u * i), 4u});
   }
 }
 
@@ -1475,14 +1521,11 @@ auto alloy::core::simd_dot4_to(
   std::span<simd<f32>,(N/16)> out
 ) noexcept -> void
 {
-  constexpr auto n = (N / 4);
-
-  for (auto i = 0u; i < n; i++) {
-    out[i] = simd_dot4(lhs.template first<16>(), rhs.template first<16>());
-
-    // Increment span by 16
-    lhs = lhs.template subsban<16>();
-    rhs = rhs.template subsban<16>();
+  for (auto i = 0u; i < (N / 16); ++i) {
+    out[i] = simd_dot4(
+      std::span<const f32, 16>{lhs.data() + (16u * i), 16u},
+      std::span<const f32, 16>{rhs.data() + (16u * i), 16u}
+    );
   }
 }
 
@@ -1490,13 +1533,16 @@ template <std::size_t N>
   requires ((N % 4) == 0)
 inline
 auto alloy::core::simd_dot4_to(
-  std::span<simd<f32>,N> lhs,
-  std::span<simd<f32>,N> rhs,
-  std::span<simd<f32>,N> out
+  std::span<const simd<f32>,N> lhs,
+  std::span<const simd<f32>,N> rhs,
+  std::span<simd<f32>,(N/4)> out
 ) noexcept -> void
 {
-  for (auto i = 0u; i < N; i++) {
-    out[i] = simd_dot4(lhs[i], rhs[i]);
+  for (auto i = 0u; i < (N / 4); ++i) {
+    out[i] = simd_dot4(
+      std::span<const simd<f32>, 4>{lhs.data() + (4u * i), 4u},
+      std::span<const simd<f32>, 4>{rhs.data() + (4u * i), 4u}
+    );
   }
 }
 

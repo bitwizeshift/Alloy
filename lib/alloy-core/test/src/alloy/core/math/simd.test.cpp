@@ -1112,4 +1112,179 @@ TEST_CASE("simd_dot4(std::span<f32,16>,std::span<f32,16>)", "[algorithm][math]")
     }
   }
 }
+//-----------------------------------------------------------------------------
+// Batched Dot Products
+//-----------------------------------------------------------------------------
+
+namespace {
+  // Builds 'N' floats of 4-component vectors in groups of 4, laid out as
+  // [x0 x1 x2 x3 y0 y1 y2 y3 z0 z1 z2 z3 w0 w1 w2 w3] per group.
+  template <std::size_t N>
+  auto soa_values(f32 seed) -> simd_aligned_array<f32, N> {
+    auto result = simd_aligned_array<f32, N>{};
+    for (auto i = 0u; i < N; ++i) {
+      result[i] = seed + static_cast<f32>(i % 7) - static_cast<f32>(i % 3);
+    }
+    return result;
+  }
+
+  // Computes the dot product of vector 'lane' of group 'group'
+  template <std::size_t N>
+  auto soa_dot(
+    const simd_aligned_array<f32, N>& lhs,
+    const simd_aligned_array<f32, N>& rhs,
+    std::size_t group,
+    std::size_t lane
+  ) -> f32 {
+    auto sum = f32{0};
+    for (auto component = std::size_t{0}; component < 4u; ++component) {
+      const auto index = (16u * group) + (4u * component) + lane;
+      sum += lhs[index] * rhs[index];
+    }
+    return sum;
+  }
+
+  template <std::size_t N>
+  auto to_simd(const simd_aligned_array<f32, N>& values)
+    -> std::array<simd<f32>, (N / 4)> {
+    auto result = std::array<simd<f32>, (N / 4)>{};
+    for (auto i = 0u; i < (N / 4); ++i) {
+      result[i] = simd<f32>::load(
+        std::span<const f32, 4>{values.data() + (4u * i), 4u}
+      );
+    }
+    return result;
+  }
+
+  // Computes the dot product of every vector, in the order that the batched
+  // dot products produce them: group by group, and lane by lane in a group.
+  template <std::size_t N>
+  auto soa_dots(
+    const simd_aligned_array<f32, N>& lhs,
+    const simd_aligned_array<f32, N>& rhs
+  ) -> std::array<f32, (N / 4)> {
+    auto result = std::array<f32, (N / 4)>{};
+    for (auto group = std::size_t{0}; group < (N / 16); ++group) {
+      for (auto lane = std::size_t{0}; lane < 4u; ++lane) {
+        result[(4u * group) + lane] = soa_dot(lhs, rhs, group, lane);
+      }
+    }
+    return result;
+  }
+
+  // Reads the lanes of every simd value, in order
+  template <std::size_t M>
+  auto to_lanes(const std::array<simd<f32>, M>& values)
+    -> std::array<f32, (M * 4)> {
+    auto result = std::array<f32, (M * 4)>{};
+    for (auto i = std::size_t{0}; i < M; ++i) {
+      result[(4u * i) + 0u] = values[i].template lane<0>();
+      result[(4u * i) + 1u] = values[i].template lane<1>();
+      result[(4u * i) + 2u] = values[i].template lane<2>();
+      result[(4u * i) + 3u] = values[i].template lane<3>();
+    }
+    return result;
+  }
+} // namespace
+
+TEMPLATE_TEST_CASE_SIG("simd_dot<N>(std::span<const f32,N>,std::span<const f32,N>)", "[algorithm][math]", ((std::size_t N), N), 16, 32) {
+  // Arrange
+  const auto lhs = soa_values<N>(1.0f);
+  const auto rhs = soa_values<N>(-2.0f);
+  const auto expected = soa_dots(lhs, rhs);
+
+  // Act
+  const auto result = simd_dot<N>(
+    std::span<const f32, N>{lhs},
+    std::span<const f32, N>{rhs}
+  );
+
+  // Assert
+  SECTION("Each group holds the dot product of its vectors") {
+    REQUIRE(std::ranges::equal(to_lanes(result), expected));
+  }
+}
+
+TEMPLATE_TEST_CASE_SIG("simd_dot<N>(std::span<const simd<f32>,N>,std::span<const simd<f32>,N>)", "[algorithm][math]", ((std::size_t N), N), 4, 8) {
+  // Arrange
+  const auto lhs_values = soa_values<N * 4>(1.0f);
+  const auto rhs_values = soa_values<N * 4>(-2.0f);
+  const auto lhs = to_simd(lhs_values);
+  const auto rhs = to_simd(rhs_values);
+  const auto expected = soa_dots(lhs_values, rhs_values);
+
+  // Act
+  const auto result = simd_dot<N>(
+    std::span<const simd<f32>, N>{lhs},
+    std::span<const simd<f32>, N>{rhs}
+  );
+
+  // Assert
+  SECTION("Each group holds the dot product of its vectors") {
+    REQUIRE(std::ranges::equal(to_lanes(result), expected));
+  }
+}
+
+TEMPLATE_TEST_CASE_SIG("simd_dot4_to<N>(std::span<const f32,N>,std::span<const f32,N>,std::span<f32,N/4>)", "[algorithm][math]", ((std::size_t N), N), 16, 32) {
+  // Arrange
+  const auto lhs = soa_values<N>(1.0f);
+  const auto rhs = soa_values<N>(-2.0f);
+  const auto expected = soa_dots(lhs, rhs);
+  auto out = simd_aligned_array<f32, (N / 4)>{};
+
+  // Act
+  simd_dot4_to<N>(
+    std::span<const f32, N>{lhs},
+    std::span<const f32, N>{rhs},
+    std::span<f32, (N / 4)>{out}
+  );
+
+  // Assert
+  SECTION("Each group stores the dot products of its vectors in order") {
+    REQUIRE(std::ranges::equal(out, expected));
+  }
+}
+
+TEMPLATE_TEST_CASE_SIG("simd_dot4_to<N>(std::span<const f32,N>,std::span<const f32,N>,std::span<simd<f32>,N/16>)", "[algorithm][math]", ((std::size_t N), N), 16, 32) {
+  // Arrange
+  const auto lhs = soa_values<N>(1.0f);
+  const auto rhs = soa_values<N>(-2.0f);
+  const auto expected = soa_dots(lhs, rhs);
+  auto out = std::array<simd<f32>, (N / 16)>{};
+
+  // Act
+  simd_dot4_to<N>(
+    std::span<const f32, N>{lhs},
+    std::span<const f32, N>{rhs},
+    std::span<simd<f32>, (N / 16)>{out}
+  );
+
+  // Assert
+  SECTION("Each group holds the dot product of its vectors") {
+    REQUIRE(std::ranges::equal(to_lanes(out), expected));
+  }
+}
+
+TEMPLATE_TEST_CASE_SIG("simd_dot4_to<N>(std::span<const simd<f32>,N>,std::span<const simd<f32>,N>,std::span<simd<f32>,N/4>)", "[algorithm][math]", ((std::size_t N), N), 4, 8) {
+  // Arrange
+  const auto lhs_values = soa_values<N * 4>(1.0f);
+  const auto rhs_values = soa_values<N * 4>(-2.0f);
+  const auto lhs = to_simd(lhs_values);
+  const auto rhs = to_simd(rhs_values);
+  const auto expected = soa_dots(lhs_values, rhs_values);
+  auto out = std::array<simd<f32>, (N / 4)>{};
+
+  // Act
+  simd_dot4_to<N>(
+    std::span<const simd<f32>, N>{lhs},
+    std::span<const simd<f32>, N>{rhs},
+    std::span<simd<f32>, (N / 4)>{out}
+  );
+
+  // Assert
+  SECTION("Each group holds the dot product of its vectors") {
+    REQUIRE(std::ranges::equal(to_lanes(out), expected));
+  }
+}
+
 } // namespace alloy::core::test
