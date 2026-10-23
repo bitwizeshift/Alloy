@@ -47,6 +47,35 @@ TEST_CASE("quaternion::angle_axis()", "[observers]")
   }
 }
 
+TEST_CASE("quaternion::extract_axes( ... )", "[observers]")
+{
+  // Arrange
+  const auto sut = quaternion::from_angle_axis(
+    radian_constants::quarter_revolution,
+    vector3{0, 0, 1}
+  );
+  auto x_axis = vector3{};
+  auto y_axis = vector3{};
+  auto z_axis = vector3{};
+
+  // Act
+  sut.extract_axes(&x_axis, &y_axis, &z_axis);
+
+  // Assert
+  SECTION("Axes are where the rotation maps the unit vectors")
+  {
+    REQUIRE( almost_equal(x_axis, vector3{0, 1, 0}) );
+    REQUIRE( almost_equal(y_axis, vector3{-1, 0, 0}) );
+    REQUIRE( almost_equal(z_axis, vector3{0, 0, 1}) );
+  }
+  SECTION("Axes agree with x_axis(), y_axis(), and z_axis()")
+  {
+    REQUIRE( almost_equal(x_axis, sut.x_axis()) );
+    REQUIRE( almost_equal(y_axis, sut.y_axis()) );
+    REQUIRE( almost_equal(z_axis, sut.z_axis()) );
+  }
+}
+
 //------------------------------------------------------------------------------
 // Quantifiers
 //------------------------------------------------------------------------------
@@ -230,6 +259,32 @@ TEST_CASE("quaternion::normalize()", "[modifiers]")
 
     // Assert
     REQUIRE( sut == quaternion_constants::zero );
+  }
+}
+
+//------------------------------------------------------------------------------
+// Static Factories
+//------------------------------------------------------------------------------
+
+TEST_CASE("quaternion::from_rotation_axes( ... )", "[factory]")
+{
+  // Arrange
+  const auto expected = quaternion::from_angle_axis(
+    radian_constants::quarter_revolution,
+    vector3{0, 0, 1}
+  );
+
+  // Act
+  const auto result = quaternion::from_rotation_axes(
+    expected.x_axis(),
+    expected.y_axis(),
+    expected.z_axis()
+  );
+
+  // Assert
+  SECTION("Round-trips the axes of a quaternion")
+  {
+    REQUIRE( almost_equal(result, expected) );
   }
 }
 

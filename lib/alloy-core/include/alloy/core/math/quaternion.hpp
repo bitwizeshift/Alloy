@@ -130,6 +130,12 @@ namespace alloy::core {
     /// \brief Constructs a quaternion from 3 axes forming a 3x3 rotation
     ///        matrix
     ///
+    /// The axes are the columns of the rotation matrix, which are the
+    /// directions that the rotation maps the unit x, y, and z vectors to.
+    /// This is the inverse of `extract_axes`.
+    ///
+    /// \pre the axes are orthonormal and form a right-handed basis
+    ///
     /// \param x_axis the vector representing the x-axis
     /// \param y_axis the vector representing the y-axis
     /// \param z_axis the vector representing the z-axis
@@ -257,15 +263,24 @@ namespace alloy::core {
 
     /// \brief Retrieves the x-axis from this quaternion
     ///
+    /// The x-axis is the direction that this rotation maps the unit x vector
+    /// to, which is the first column of its rotation matrix.
+    ///
     /// \return the x-axis
     auto x_axis() const noexcept -> vector3;
 
     /// \brief Retrieves the y-axis from this quaternion
     ///
+    /// The y-axis is the direction that this rotation maps the unit y vector
+    /// to, which is the second column of its rotation matrix.
+    ///
     /// \return the y-axis
     auto y_axis() const noexcept -> vector3;
 
     /// \brief Retrieves the z-axis from this quaternion
+    ///
+    /// The z-axis is the direction that this rotation maps the unit z vector
+    /// to, which is the third column of its rotation matrix.
     ///
     /// \return the z-axis
     auto z_axis() const noexcept -> vector3;
@@ -282,7 +297,7 @@ namespace alloy::core {
     /// \return a tuple containing the angle and the axis
     auto angle_axis() const noexcept -> std::tuple<radian,vector3>;
 
-    /// \brief Calculates and returns the x, y, and z axss as vectors
+    /// \brief Calculates and returns the x, y, and z axes as vectors
     ///
     /// \return a tuple containing the x, y, and z vector axes
     auto axes() const noexcept -> std::tuple<vector3,vector3,vector3>;
@@ -342,6 +357,8 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
 
     /// \brief Extracts the x, y, and z axes
+    ///
+    /// The axes are the same as those of `x_axis`, `y_axis`, and `z_axis`.
     ///
     /// \param x_axis pointer to the x-axis vector
     /// \param y_axis pointer to the y-axis vector

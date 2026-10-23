@@ -160,7 +160,11 @@ auto alloy::core::quaternion::from_rotation_axes(
   const vector3& z_axis
 ) noexcept -> quaternion
 {
-  return from_rotation_matrix(matrix3{x_axis,y_axis,z_axis});
+  return from_rotation_matrix(matrix3{
+    x_axis.x(), y_axis.x(), z_axis.x(),
+    x_axis.y(), y_axis.y(), z_axis.y(),
+    x_axis.z(), y_axis.z(), z_axis.z()
+  });
 }
 
 //----------------------------------------------------------------------------
@@ -354,9 +358,9 @@ auto alloy::core::quaternion::extract_axes(
   auto mat = matrix3{};
   extract_rotation_matrix(&mat);
 
-  (*x_axis) = mat.row(0);
-  (*y_axis) = mat.row(1);
-  (*z_axis) = mat.row(2);
+  (*x_axis) = mat.column(0);
+  (*y_axis) = mat.column(1);
+  (*z_axis) = mat.column(2);
 
 }
 
