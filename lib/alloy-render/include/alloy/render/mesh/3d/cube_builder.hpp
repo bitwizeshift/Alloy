@@ -39,7 +39,7 @@ namespace alloy::render {
     //--------------------------------------------------------------------------
   public:
 
-    auto build_with(core::allocator alloc) const -> mesh;
+    auto build_with(core::allocator alloc) const -> mesh override;
   };
 
 } // namespace alloy::render

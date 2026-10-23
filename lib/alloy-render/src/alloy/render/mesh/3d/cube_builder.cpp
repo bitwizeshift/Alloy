@@ -27,8 +27,8 @@ auto alloy::render::cube_builder::build_with(core::allocator alloc)
   builder.set_components_per_uv(2u);
   builder.set_components_per_normal(3u);
 
-  // 32 vertex points on a cube, comprised of 36 indices
-  builder.reserve_vertices(32u);
+  // 24 vertex points on a cube (4 per face), comprised of 36 indices
+  builder.reserve_vertices(24u);
   builder.reserve_indices(core::quantity<unsafe_mesh_builder::index_type>{36});
 
   { // Bottom-face
@@ -88,7 +88,7 @@ auto alloy::render::cube_builder::build_with(core::allocator alloc)
     builder.add_uv({0.0f,two_thirds});
     builder.add_normal({0,1,0});
 
-    builder.add_face(8u, 9u, 10u, 11u);
+    builder.add_face(8u, 11u, 10u, 9u);
   }
 
   { // Front-face
@@ -105,10 +105,10 @@ auto alloy::render::cube_builder::build_with(core::allocator alloc)
     builder.add_normal({0,0,1});
 
     builder.add_position({1.0,1.0,1.0});
-    builder.add_uv({0.6f,two_thirds});
+    builder.add_uv({0.5f,two_thirds});
     builder.add_normal({0,0,1});
 
-    builder.add_face(12u, 13u, 14u, 15u);
+    builder.add_face(12u, 15u, 14u, 13u);
   }
   //-------------------------------------------------------------------------
 
@@ -129,7 +129,7 @@ auto alloy::render::cube_builder::build_with(core::allocator alloc)
     builder.add_uv({0.0f,1.0f});
     builder.add_normal({-1,0,0});
 
-    builder.add_face(16u, 17u, 18u, 19u);
+    builder.add_face(16u, 19u, 18u, 17u);
   }
 
   { // Right-face
