@@ -12,8 +12,6 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <algorithm> // std::ranges::max
-
 namespace alloy::render::test {
 
 TEST_CASE("sphere_builder::build()", "[build]") {
@@ -28,12 +26,10 @@ TEST_CASE("sphere_builder::build()", "[build]") {
     REQUIRE(result.vertex_count() == 45u);
   }
   SECTION("Omits the collapsed triangle of each quad touching a pole") {
-    REQUIRE(result.indices().size() == 144u);
+    REQUIRE(result.index_count() == 144u);
   }
   SECTION("Every index refers to an existing vertex") {
-    const auto largest = std::ranges::max(result.indices());
-
-    REQUIRE(largest < result.vertex_count());
+    REQUIRE(max_index(result) < result.vertex_count());
   }
   SECTION("Bounding volume encloses the unit sphere") {
     const auto expected = core::axis_aligned_box{

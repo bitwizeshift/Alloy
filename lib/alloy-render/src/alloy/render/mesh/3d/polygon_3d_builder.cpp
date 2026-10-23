@@ -187,7 +187,7 @@ auto alloy::render::polygon_3d_builder::set_joints(
 }
 
 auto alloy::render::polygon_3d_builder::set_indices(
-  core::vector<uint16_t> indices
+  core::vector<index_type> indices
 ) -> void
 {
   m_indices = std::move(indices);

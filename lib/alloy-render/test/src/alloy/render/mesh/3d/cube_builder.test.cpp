@@ -23,7 +23,7 @@ TEST_CASE("cube_builder::build()", "[build]") {
     REQUIRE(result.vertex_count() == 24u);
   }
   SECTION("Contains 2 triangles per face") {
-    REQUIRE(result.indices().size() == 36u);
+    REQUIRE(result.index_count() == 36u);
   }
   SECTION("Every triangle winds counter-clockwise around its normal") {
     REQUIRE(count_inward_triangles(result) == 0u);

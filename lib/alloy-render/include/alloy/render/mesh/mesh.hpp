@@ -15,10 +15,12 @@
 # pragma once
 #endif
 
+#include "alloy/render/mesh/index_format.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
 
-#include "alloy/core/containers/vector.hpp"
+#include "alloy/core/assert.hpp"
 #include "alloy/core/geometry/axis_aligned_box.hpp"
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/memory/data_quantity.hpp"
 #include "alloy/core/memory/packed_buffer.hpp"
@@ -26,7 +28,8 @@
 #include "alloy/core/utilities/result.hpp"
 
 #include <cstddef> // std::byte, std::size_t
-#include <cstdint> // std::uint8_t, std::uint16_t
+#include <cstdint> // std::uint8_t, std::uint16_t, std::uint32_t
+#include <cstring> // std::memcpy
 #include <span>    // std::span
 
 namespace alloy::render {
@@ -95,10 +98,9 @@ namespace alloy::render {
     //   objects should be -- not the material. But the material needs this
     //   information to render.
 
-    using index_type = std::uint16_t;
-
     core::packed_buffer vertex_data;
-    core::vector<index_type> indices;
+    core::packed_buffer index_data;
+    render::index_format index_format;
     primitive_topology topology;
     vertex_components components;
     core::axis_aligned_box bounding_volume;
@@ -137,16 +139,14 @@ namespace alloy::render {
     //--------------------------------------------------------------------------
   public:
 
-    using index_type = std::uint16_t;
-
     ////////////////////////////////////////////////////////////////////////////
     /// \brief Represents a possible construction error state
     ////////////////////////////////////////////////////////////////////////////
     enum class construct_error {
       /// Supplied indices are invalid for the topology. This may occur if a
       /// mesh contains triangle topology and the number of indices supplied
-      /// are not divisible by 3, or if an index refers to a vertex that does
-      /// not exist.
+      /// are not divisible by 3, if the index data is not a whole number of
+      /// indices, or if an index refers to a vertex that does not exist.
       invalid_indices,
 
       /// The vertex data provided is invalid. This may occur if the number of
@@ -333,10 +333,27 @@ namespace alloy::render {
     /// \return the data as a span
     auto data() const noexcept -> std::span<const std::byte>;
 
-    /// \brief Gets the mesh indices
+    /// \brief Gets the format of the indices of this mesh
     ///
-    /// \return the mesh indices
-    auto indices() const noexcept -> std::span<const index_type>;
+    /// \return the index format
+    auto index_format() const noexcept -> render::index_format;
+
+    /// \brief Gets the number of indices in this mesh
+    ///
+    /// \return the number of indices
+    auto index_count() const noexcept -> std::size_t;
+
+    /// \brief Gets the index at position \p i
+    ///
+    /// \pre `i < index_count()`
+    /// \param i the position of the index
+    /// \return the index, widened to 32 bits
+    auto index_at(std::size_t i) const noexcept -> std::uint32_t;
+
+    /// \brief Gets the raw index data of this mesh, in `index_format()`
+    ///
+    /// \return the index data as a span
+    auto index_data() const noexcept -> std::span<const std::byte>;
 
     /// \brief Gets an axis-aligned box that encloses every position in this
     ///        mesh
@@ -352,8 +369,11 @@ namespace alloy::render {
     /// The compressed vertex data stream
     core::packed_buffer m_compressed_data;
 
-    /// The indices for this mesh
-    core::vector<index_type> m_indices;
+    /// The indices for this mesh, in `m_index_format`
+    core::packed_buffer m_index_data;
+
+    /// The format of each index in `m_index_data`
+    render::index_format m_index_format;
 
     /// An axis-aligned box that contains this volume. This is used for
     /// scene-culling estimates to avoid sending models to the renderer that are
@@ -476,7 +496,7 @@ auto alloy::render::mesh::has_joints() const noexcept -> bool
 inline
 auto alloy::render::mesh::has_indices() const noexcept -> bool
 {
-  return !m_indices.empty();
+  return m_index_data.size().count() != 0u;
 }
 
 //------------------------------------------------------------------------------
@@ -676,12 +696,50 @@ auto alloy::render::mesh::data() const noexcept -> std::span<const std::byte>
 }
 
 inline
-auto alloy::render::mesh::indices()
-  const noexcept -> std::span<const index_type>
+auto alloy::render::mesh::index_format()
+  const noexcept -> render::index_format
 {
-  return std::span<const index_type>{
-    m_indices.data(),
-    m_indices.size(),
+  return m_index_format;
+}
+
+inline
+auto alloy::render::mesh::index_count() const noexcept -> std::size_t
+{
+  return static_cast<std::size_t>(
+    m_index_data.size().count() / bytes_per_index(m_index_format).count()
+  );
+}
+
+inline
+auto alloy::render::mesh::index_at(std::size_t i)
+  const noexcept -> std::uint32_t
+{
+  ALLOY_ASSERT(i < index_count());
+
+  const auto* const p = m_index_data.data()
+                      + (i * bytes_per_index(m_index_format).count());
+  switch (m_index_format) {
+    case render::index_format::u16: {
+      auto result = std::uint16_t{};
+      std::memcpy(&result, p, sizeof(result));
+      return result;
+    }
+    case render::index_format::u32: {
+      auto result = std::uint32_t{};
+      std::memcpy(&result, p, sizeof(result));
+      return result;
+    }
+  }
+  core::compiler::unreachable();
+}
+
+inline
+auto alloy::render::mesh::index_data()
+  const noexcept -> std::span<const std::byte>
+{
+  return std::span<const std::byte>{
+    m_index_data.data(),
+    m_index_data.size().count(),
   };
 }
 

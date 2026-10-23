@@ -6,12 +6,33 @@
 
 #include "alloy/render/gl/mesh/primitive_topology.hpp"
 
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/render/mesh/attribute_locations.hpp"
+#include "alloy/render/mesh/index_format.hpp"
 #include "alloy/render/mesh/mesh.hpp"
 
 #include <array>
 #include <cstddef>
 #include <utility>
+
+namespace alloy::render::gl {
+namespace {
+
+auto to_opengl_type(index_format f) noexcept -> ::GLenum
+{
+  switch (f) {
+    case index_format::u16: {
+      return GL_UNSIGNED_SHORT;
+    }
+    case index_format::u32: {
+      return GL_UNSIGNED_INT;
+    }
+  }
+  core::compiler::unreachable();
+}
+
+} // namespace <anonymous>
+} // namespace alloy::render::gl
 
 auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
 {
@@ -163,8 +184,7 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     );
   }
 
-  const auto indices = m.indices();
-  const auto index_count = m.indices().size();
+  const auto indices = m.index_data();
   ::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
   ::glBufferData(GL_ELEMENT_ARRAY_BUFFER,
     static_cast<::GLsizeiptr>(indices.size_bytes()),
@@ -173,8 +193,9 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
   );
 
   const auto topology = to_opengl_type(m.topology());
+  const auto index_type = to_opengl_type(m.index_format());
 
-  return mesh{vao, vbo, ebo, topology, index_count};
+  return mesh{vao, vbo, ebo, topology, index_type, m.index_count()};
 }
 
 alloy::render::gl::mesh::mesh(
@@ -182,12 +203,14 @@ alloy::render::gl::mesh::mesh(
   ::GLuint vbo,
   ::GLuint ebo,
   ::GLenum topology,
+  ::GLenum index_type,
   std::size_t indices
 )
   : m_vao{vao},
     m_vbo{vbo},
     m_ebo{ebo},
     m_topology{topology},
+    m_index_type{index_type},
     m_indices{indices}
 {
 
@@ -198,6 +221,7 @@ alloy::render::gl::mesh::mesh(alloy::render::gl::mesh&& other)
     m_vbo{std::exchange(other.m_vbo, 0)},
     m_ebo{std::exchange(other.m_ebo, 0)},
     m_topology{other.m_topology},
+    m_index_type{other.m_index_type},
     m_indices{other.m_indices}
 {
 
@@ -219,7 +243,7 @@ auto alloy::render::gl::mesh::draw() -> void
   ::glDrawElements(
     m_topology,
     static_cast<::GLsizei>(m_indices),
-    GL_UNSIGNED_SHORT,
+    m_index_type,
     nullptr
   );
 }

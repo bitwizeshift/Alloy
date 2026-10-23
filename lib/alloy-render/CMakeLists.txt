@@ -13,6 +13,7 @@ set(header_files
   include/alloy/render/material/depth_compare.hpp
   include/alloy/render/material/cull_face.hpp
   include/alloy/render/mesh/fill_mode.hpp
+  include/alloy/render/mesh/index_format.hpp
   include/alloy/render/mesh/primitive_topology.hpp
   include/alloy/render/mesh/mesh.hpp
   include/alloy/render/mesh/mesh_builder.hpp

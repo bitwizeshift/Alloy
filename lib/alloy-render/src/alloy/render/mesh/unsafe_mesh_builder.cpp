@@ -4,6 +4,7 @@
 
 #include "alloy/render/mesh/unsafe_mesh_builder.hpp"
 
+#include "alloy/render/mesh/index_format.hpp"
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
 #include "attribute_packer.hpp"
@@ -16,19 +17,59 @@
 #include "alloy/core/math/vector/vector4.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/memory/data_quantity.hpp"
+#include "alloy/core/memory/packed_buffer.hpp"
 #include "alloy/core/model/color.hpp"
 
-#include <algorithm> // std::ranges::none_of
-#include <array>     // std::array
-#include <cstddef>   // std::size_t, std::byte
-#include <cstdint>   // std::uint8_t
-#include <span>      // std::span
-#include <utility>   // std::move
+#include <array>   // std::array
+#include <cstddef> // std::size_t, std::byte
+#include <cstdint> // std::uint8_t, std::uint16_t, std::uint32_t
+#include <cstring> // std::memcpy
+#include <span>    // std::span
+#include <utility> // std::move
 
 namespace alloy::render {
 namespace {
 
 inline constexpr auto indices_per_face = 3u;
+
+/// The largest number of vertices that 16-bit indices can address
+inline constexpr auto max_u16_vertices = std::size_t{1u} << 16u;
+
+auto index_format_for(std::size_t vertices) noexcept -> index_format
+{
+  return (vertices <= max_u16_vertices) ? index_format::u16 : index_format::u32;
+}
+
+auto read_index(const core::packed_buffer& indices, std::size_t i)
+  noexcept -> std::uint32_t
+{
+  auto result = std::uint32_t{};
+  std::memcpy(&result, indices.data() + (i * sizeof(result)), sizeof(result));
+  return result;
+}
+
+auto count_indices(const core::packed_buffer& indices) noexcept -> std::size_t
+{
+  return static_cast<std::size_t>(
+    indices.size().count() / sizeof(std::uint32_t)
+  );
+}
+
+/// \brief Narrows the 32-bit \p indices into a buffer of 16-bit indices
+///        allocated from \p alloc
+auto narrow_indices(const core::packed_buffer& indices, core::allocator alloc)
+  -> core::packed_buffer
+{
+  const auto count = count_indices(indices);
+
+  auto result = core::packed_buffer{alloc};
+  result.reserve(core::bytes{count * sizeof(std::uint16_t)});
+  auto writer = core::packed_buffer_writer{&result};
+  for (auto i = std::size_t{0}; i < count; ++i) {
+    writer.pack_object(static_cast<std::uint16_t>(read_index(indices, i)));
+  }
+  return result;
+}
 
 } // namespace <anonymous>
 } // namespace alloy::render
@@ -42,9 +83,11 @@ alloy::render::unsafe_mesh_builder::unsafe_mesh_builder(
   primitive_topology topology,
   core::allocator alloc
 ) noexcept
-  : m_buffer{alloc},
+  : m_allocator{alloc},
+    m_buffer{alloc},
     m_writer{&m_buffer},
-    m_indices{core::stl_allocator_adapter<index_type>{alloc}},
+    m_index_data{alloc},
+    m_index_writer{&m_index_data},
     m_topology{topology},
     m_bound{},
     m_components{components},
@@ -73,7 +116,9 @@ auto alloy::render::unsafe_mesh_builder::reserve_bytes(core::bytes b) -> void
 
 auto alloy::render::unsafe_mesh_builder::reserve_indices(std::size_t n) -> void
 {
-  m_indices.reserve(n * indices_per_face);
+  m_index_data.reserve(
+    core::bytes{n * indices_per_face * sizeof(index_type)}
+  );
 }
 
 //------------------------------------------------------------------------------
@@ -196,7 +241,7 @@ auto alloy::render::unsafe_mesh_builder::add_joints(
 
 auto alloy::render::unsafe_mesh_builder::add_index(index_type i) -> void
 {
-  m_indices.push_back(i);
+  m_index_writer.pack_object(i);
 }
 
 auto alloy::render::unsafe_mesh_builder::add_face(
@@ -229,9 +274,14 @@ auto alloy::render::unsafe_mesh_builder::release() && -> mesh
 {
   check_complete();
 
+  const auto format = index_format_for(vertex_count());
+
   auto config = mesh_config{};
   config.vertex_data = std::move(m_buffer);
-  config.indices = std::move(m_indices);
+  config.index_data = (format == index_format::u16)
+    ? narrow_indices(m_index_data, m_allocator)
+    : std::move(m_index_data);
+  config.index_format = format;
   config.topology = m_topology;
   config.components = m_components;
   config.bounding_volume = m_bound;
@@ -244,11 +294,14 @@ auto alloy::render::unsafe_mesh_builder::build_with(core::allocator alloc)
 {
   check_complete();
 
+  const auto format = index_format_for(vertex_count());
+
   auto config = mesh_config{};
   config.vertex_data = m_buffer.copy_with(alloc);
-  config.indices = m_indices.copy_with(
-    core::stl_allocator_adapter<index_type>{alloc}
-  );
+  config.index_data = (format == index_format::u16)
+    ? narrow_indices(m_index_data, alloc)
+    : m_index_data.copy_with(alloc);
+  config.index_format = format;
   config.topology = m_topology;
   config.components = m_components;
   config.bounding_volume = m_bound;
@@ -327,20 +380,30 @@ auto alloy::render::unsafe_mesh_builder::check_complete() const noexcept -> void
 #if !defined(NDEBUG)
   const auto stride = m_components.stride().count();
   const auto bytes = m_buffer.size().count();
-  const auto vertices = (stride == 0u) ? 0u : (bytes / stride);
-  const auto is_out_of_range = [vertices](index_type i) {
-    return i >= vertices;
-  };
-
   ALLOY_ASSERT(
     stride == 0u || (bytes % stride) == 0u,
     "a vertex is missing attributes"
   );
-  ALLOY_ASSERT(
-    std::ranges::none_of(m_indices, is_out_of_range),
-    "an index refers to a vertex that does not exist"
-  );
+
+  const auto vertices = vertex_count();
+  const auto indices = count_indices(m_index_data);
+  for (auto i = std::size_t{0}; i < indices; ++i) {
+    ALLOY_ASSERT(
+      read_index(m_index_data, i) < vertices,
+      "an index refers to a vertex that does not exist"
+    );
+  }
 #endif
+}
+
+auto alloy::render::unsafe_mesh_builder::vertex_count()
+  const noexcept -> std::size_t
+{
+  const auto stride = m_components.stride().count();
+  if (stride == 0u) {
+    return 0u;
+  }
+  return static_cast<std::size_t>(m_buffer.size().count() / stride);
 }
 
 //------------------------------------------------------------------------------

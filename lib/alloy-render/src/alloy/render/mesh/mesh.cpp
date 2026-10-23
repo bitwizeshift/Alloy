@@ -4,6 +4,7 @@
 
 #include "alloy/render/mesh/mesh.hpp"
 
+#include "alloy/render/mesh/index_format.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
 
 #include "alloy/core/intrinsics.hpp"
@@ -11,10 +12,8 @@
 #include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/utilities/result.hpp"
 
-#include <algorithm> // std::ranges::any_of
-#include <cstddef>   // std::size_t, std::byte
-#include <cstdint>   // std::uint16_t
-#include <utility>   // std::move
+#include <cstddef> // std::size_t
+#include <utility> // std::move
 
 namespace alloy::render {
 namespace {
@@ -103,20 +102,26 @@ auto alloy::render::mesh::from_config(mesh_config config)
     return core::fail(construct_error::invalid_vertex_data);
   }
 
+  const auto index_bytes = config.index_data.size().count();
+  const auto index_size = bytes_per_index(config.index_format).count();
+  if (ALLOY_UNLIKELY((index_bytes % index_size) != 0u)) {
+    return core::fail(construct_error::invalid_indices);
+  }
+
   const auto index_divisor = indices_per_topology(config.topology);
-  if (ALLOY_UNLIKELY((config.indices.size() % index_divisor) != 0u)) {
+  if (ALLOY_UNLIKELY(((index_bytes / index_size) % index_divisor) != 0u)) {
     return core::fail(construct_error::invalid_indices);
   }
 
-  const auto vertices = (stride == 0u) ? 0u : (bytes / stride);
-  const auto is_out_of_range = [vertices](index_type i) {
-    return i >= vertices;
-  };
-  if (ALLOY_UNLIKELY(std::ranges::any_of(config.indices, is_out_of_range))) {
-    return core::fail(construct_error::invalid_indices);
+  auto result = mesh{std::move(config)};
+  const auto vertices = result.vertex_count();
+  for (auto i = std::size_t{0}; i < result.index_count(); ++i) {
+    if (ALLOY_UNLIKELY(result.index_at(i) >= vertices)) {
+      return core::fail(construct_error::invalid_indices);
+    }
   }
 
-  return from_config_unchecked(std::move(config));
+  return result;
 }
 
 auto alloy::render::mesh::from_config_unchecked(mesh_config config) -> mesh
@@ -144,7 +149,8 @@ auto alloy::render::mesh::copy_with(core::allocator alloc) const -> mesh
 
 alloy::render::mesh::mesh(const mesh& other)
   : m_compressed_data{other.m_compressed_data.copy()},
-    m_indices{other.m_indices.copy()},
+    m_index_data{other.m_index_data.copy()},
+    m_index_format{other.m_index_format},
     m_bounding_volume{other.m_bounding_volume},
     m_topology{other.m_topology},
     m_components{other.m_components}
@@ -154,9 +160,8 @@ alloy::render::mesh::mesh(const mesh& other)
 
 alloy::render::mesh::mesh(const mesh& other, core::allocator alloc)
   : m_compressed_data{other.m_compressed_data.copy_with(alloc)},
-    m_indices{other.m_indices.copy_with(
-      core::stl_allocator_adapter<std::uint16_t>{alloc}
-    )},
+    m_index_data{other.m_index_data.copy_with(alloc)},
+    m_index_format{other.m_index_format},
     m_bounding_volume{other.m_bounding_volume},
     m_topology{other.m_topology},
     m_components{other.m_components}
@@ -166,7 +171,8 @@ alloy::render::mesh::mesh(const mesh& other, core::allocator alloc)
 
 alloy::render::mesh::mesh(alloy::render::mesh_config config)
   : m_compressed_data{std::move(config.vertex_data)},
-    m_indices{std::move(config.indices)},
+    m_index_data{std::move(config.index_data)},
+    m_index_format{config.index_format},
     m_bounding_volume{config.bounding_volume},
     m_topology{config.topology},
     m_components{config.components}

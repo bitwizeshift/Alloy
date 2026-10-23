@@ -19,7 +19,6 @@
 #include "alloy/render/mesh/mesh_builder.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
 
-#include "alloy/core/containers/vector.hpp"
 #include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
@@ -32,7 +31,7 @@
 
 #include <array>   // std::array
 #include <cstddef> // std::size_t
-#include <cstdint> // std::uint8_t, std::uint16_t
+#include <cstdint> // std::uint8_t, std::uint32_t
 
 namespace alloy::render {
 
@@ -68,7 +67,9 @@ namespace alloy::render {
     //--------------------------------------------------------------------------
   public:
 
-    using index_type = std::uint16_t;
+    /// Indices are accepted as 32-bit values, and narrowed to 16 bits when
+    /// the built mesh has few enough vertices for them to fit
+    using index_type = std::uint32_t;
 
     //--------------------------------------------------------------------------
     // Constructors
@@ -170,9 +171,11 @@ namespace alloy::render {
     //--------------------------------------------------------------------------
   private:
 
+    core::allocator m_allocator;
     core::packed_buffer m_buffer;
     core::packed_buffer_writer m_writer;
-    core::vector<index_type> m_indices;
+    core::packed_buffer m_index_data;
+    core::packed_buffer_writer m_index_writer;
     primitive_topology m_topology;
     core::axis_aligned_box m_bound;
     vertex_components m_components;
@@ -217,6 +220,11 @@ namespace alloy::render {
     /// \brief Asserts that only whole vertices have been added, and that
     ///        every index refers to one of them
     auto check_complete() const noexcept -> void;
+
+    /// \brief Gets the number of whole vertices that have been added
+    ///
+    /// \return the number of vertices
+    auto vertex_count() const noexcept -> std::size_t;
 
     //--------------------------------------------------------------------------
     // Private Modifiers

@@ -26,7 +26,7 @@
 #include "alloy/core/model/color.hpp"
 
 #include <cstddef> // std::size_t
-#include <cstdint> // std::uint16_t
+#include <cstdint> // std::uint32_t
 
 namespace alloy::render {
 
@@ -48,7 +48,7 @@ namespace alloy::render {
     //--------------------------------------------------------------------------
   public:
 
-    using index_type = std::uint16_t;
+    using index_type = std::uint32_t;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -125,7 +125,7 @@ namespace alloy::render {
     /// \brief Sets the indices for this mesh
     ///
     /// \param indices the indices for this mesh
-    auto set_indices(core::vector<std::uint16_t> indices) -> void;
+    auto set_indices(core::vector<index_type> indices) -> void;
 
     //--------------------------------------------------------------------------
     // Incremental Building
@@ -192,7 +192,7 @@ namespace alloy::render {
     core::vector<core::color> m_colors;
     core::vector<core::point2> m_uvs;
     core::vector<core::vector3> m_normals;
-    core::vector<std::uint16_t> m_indices;
+    core::vector<index_type> m_indices;
     primitive_topology m_topology;
   };
 

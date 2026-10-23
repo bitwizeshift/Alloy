@@ -133,7 +133,7 @@ auto alloy::render::polygon_2d_builder::set_normals(
 }
 
 auto alloy::render::polygon_2d_builder::set_indices(
-  core::vector<std::uint16_t> indices
+  core::vector<index_type> indices
 ) -> void
 {
   m_indices = std::move(indices);

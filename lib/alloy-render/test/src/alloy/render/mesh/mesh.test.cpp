@@ -4,6 +4,7 @@
 
 #include <alloy/render/mesh/mesh.hpp>
 
+#include <alloy/render/mesh/index_format.hpp>
 #include <alloy/render/mesh/primitive_topology.hpp>
 
 #include <alloy/core/containers/vector.hpp>
@@ -14,8 +15,11 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <cstddef> // std::size_t, std::byte
-#include <utility> // std::move
+#include <array>            // std::array
+#include <cstddef>          // std::size_t, std::byte
+#include <cstdint>          // std::uint16_t, std::uint32_t
+#include <initializer_list> // std::initializer_list
+#include <utility>          // std::move
 
 namespace alloy::render::test {
 namespace {
@@ -25,12 +29,22 @@ auto make_vertex_data(std::size_t bytes) -> core::packed_buffer
   return core::packed_buffer{core::vector<std::byte>(bytes)};
 }
 
+auto make_u16_indices(std::initializer_list<std::uint16_t> indices)
+  -> core::packed_buffer
+{
+  auto result = core::packed_buffer{};
+  auto writer = core::packed_buffer_writer{&result};
+  writer.pack_objects(indices.begin(), indices.end());
+  return result;
+}
+
 /// \brief Makes a config of 3-component positions with \p vertices vertices
 auto make_position_config(std::size_t vertices) -> mesh_config
 {
   auto config = mesh_config{};
   config.vertex_data = make_vertex_data(vertices * 3u * sizeof(float));
   config.topology = primitive_topology::triangles;
+  config.index_format = index_format::u16;
   config.components = vertex_components{.position = 3u};
   return config;
 }
@@ -64,7 +78,7 @@ TEST_CASE("mesh::from_config(mesh_config)", "[factory][static]") {
   SECTION("Triangle indices that are not a multiple of 3") {
     // Arrange
     auto config = make_position_config(4u);
-    config.indices = core::vector<mesh::index_type>{0u, 1u, 2u, 3u};
+    config.index_data = make_u16_indices({0u, 1u, 2u, 3u});
 
     // Act
     const auto sut = mesh::from_config(std::move(config));
@@ -76,7 +90,7 @@ TEST_CASE("mesh::from_config(mesh_config)", "[factory][static]") {
     // Arrange
     auto config = make_position_config(3u);
     config.topology = primitive_topology::lines;
-    config.indices = core::vector<mesh::index_type>{0u, 1u, 2u};
+    config.index_data = make_u16_indices({0u, 1u, 2u});
 
     // Act
     const auto sut = mesh::from_config(std::move(config));
@@ -88,7 +102,7 @@ TEST_CASE("mesh::from_config(mesh_config)", "[factory][static]") {
     // Arrange
     auto config = make_position_config(4u);
     config.topology = primitive_topology::lines_adjacency;
-    config.indices = core::vector<mesh::index_type>{0u, 1u};
+    config.index_data = make_u16_indices({0u, 1u});
 
     // Act
     const auto sut = mesh::from_config(std::move(config));
@@ -100,7 +114,7 @@ TEST_CASE("mesh::from_config(mesh_config)", "[factory][static]") {
     // Arrange
     auto config = make_position_config(6u);
     config.topology = primitive_topology::triangles_adjacency;
-    config.indices = core::vector<mesh::index_type>{0u, 1u, 2u};
+    config.index_data = make_u16_indices({0u, 1u, 2u});
 
     // Act
     const auto sut = mesh::from_config(std::move(config));
@@ -111,7 +125,18 @@ TEST_CASE("mesh::from_config(mesh_config)", "[factory][static]") {
   SECTION("Index that refers to a vertex that does not exist") {
     // Arrange
     auto config = make_position_config(3u);
-    config.indices = core::vector<mesh::index_type>{0u, 1u, 3u};
+    config.index_data = make_u16_indices({0u, 1u, 3u});
+
+    // Act
+    const auto sut = mesh::from_config(std::move(config));
+
+    // Assert
+    REQUIRE(sut.error() == mesh::construct_error::invalid_indices);
+  }
+  SECTION("Index data that is not a whole number of indices") {
+    // Arrange
+    auto config = make_position_config(3u);
+    config.index_data = make_vertex_data(3u);
 
     // Act
     const auto sut = mesh::from_config(std::move(config));
@@ -122,7 +147,7 @@ TEST_CASE("mesh::from_config(mesh_config)", "[factory][static]") {
   SECTION("Valid configuration") {
     // Arrange
     auto config = make_position_config(3u);
-    config.indices = core::vector<mesh::index_type>{0u, 1u, 2u};
+    config.index_data = make_u16_indices({0u, 1u, 2u});
 
     // Act
     const auto sut = mesh::from_config(std::move(config));
@@ -279,6 +304,37 @@ TEST_CASE("mesh::vertex_count()", "[observer]") {
 
     // Assert
     REQUIRE(result == 5u);
+  }
+}
+
+TEST_CASE("mesh::index_at(std::size_t)", "[element access]") {
+  SECTION("16-bit indices") {
+    // Arrange
+    auto config = make_position_config(3u);
+    config.index_data = make_u16_indices({2u, 0u, 1u});
+    const auto sut = mesh::from_config_unchecked(std::move(config));
+
+    // Act
+    const auto result = sut.index_at(0u);
+
+    // Assert
+    REQUIRE(result == 2u);
+  }
+  SECTION("32-bit indices") {
+    // Arrange
+    const auto indices = std::array<std::uint32_t,3>{70000u, 0u, 1u};
+    auto config = make_position_config(3u);
+    config.index_format = index_format::u32;
+    config.index_data = core::packed_buffer{};
+    auto writer = core::packed_buffer_writer{&config.index_data};
+    writer.pack_objects(indices.begin(), indices.end());
+    const auto sut = mesh::from_config_unchecked(std::move(config));
+
+    // Act
+    const auto result = sut.index_at(0u);
+
+    // Assert
+    REQUIRE(result == 70000u);
   }
 }
 

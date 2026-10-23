@@ -70,6 +70,7 @@ namespace alloy::render::gl {
     ::GLuint m_vbo;
     ::GLuint m_ebo;
     ::GLenum m_topology;
+    ::GLenum m_index_type;
     std::size_t m_indices;
 
     //--------------------------------------------------------------------------
@@ -82,6 +83,7 @@ namespace alloy::render::gl {
       ::GLuint vbo,
       ::GLuint ebo,
       ::GLenum topology,
+      ::GLenum index_type,
       std::size_t indices
     );
 

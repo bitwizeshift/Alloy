@@ -4,8 +4,10 @@
 
 #include <alloy/render/mesh/unsafe_mesh_builder.hpp>
 
+#include <alloy/render/mesh/index_format.hpp>
 #include <alloy/render/mesh/mesh.hpp>
 
+#include <alloy/core/geometry/point/point2.hpp>
 #include <alloy/core/geometry/point/point3.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
@@ -124,6 +126,34 @@ TEST_CASE("unsafe_mesh_builder::add_joints(const std::array<std::uint8_t,4>&)", 
 }
 
 TEST_CASE("unsafe_mesh_builder::release()", "[build]") {
+  SECTION("Indices are 16-bit when every vertex is addressable by them") {
+    // Arrange
+    auto builder = unsafe_mesh_builder{vertex_components{.position = 1u}};
+    for (auto i = 0; i < 65536; ++i) {
+      builder.add_position(core::point2{});
+    }
+    builder.add_face(0u, 1u, 65535u);
+
+    // Act
+    const auto sut = std::move(builder).release();
+
+    // Assert
+    REQUIRE(sut.index_format() == index_format::u16);
+  }
+  SECTION("Indices are 32-bit when there are too many vertices for 16-bit") {
+    // Arrange
+    auto builder = unsafe_mesh_builder{vertex_components{.position = 1u}};
+    for (auto i = 0; i < 65537; ++i) {
+      builder.add_position(core::point2{});
+    }
+    builder.add_face(0u, 1u, 65536u);
+
+    // Act
+    const auto sut = std::move(builder).release();
+
+    // Assert
+    REQUIRE(sut.index_at(2u) == 65536u);
+  }
   SECTION("Each vertex is padded to the stride") {
     // Arrange
     const auto components = vertex_components{
