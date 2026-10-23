@@ -7,6 +7,8 @@
 #include <alloy/render/mesh/primitive_topology.hpp>
 
 #include <alloy/core/containers/vector.hpp>
+#include <alloy/core/geometry/axis_aligned_box.hpp>
+#include <alloy/core/geometry/point/point3.hpp>
 #include <alloy/core/memory/packed_buffer.hpp>
 
 #include <catch2/catch_test_macros.hpp>
@@ -127,6 +129,46 @@ TEST_CASE("mesh::from_config(mesh_config)", "[factory][static]") {
     // Assert
     REQUIRE(sut.has_value());
   }
+}
+
+TEST_CASE("mesh::vertex_count()", "[observer]") {
+  SECTION("Mesh without vertex data") {
+    // Arrange
+    const auto sut = mesh::from_config_unchecked(mesh_config{});
+
+    // Act
+    const auto result = sut.vertex_count();
+
+    // Assert
+    REQUIRE(result == 0u);
+  }
+  SECTION("Mesh with vertex data") {
+    // Arrange
+    const auto sut = mesh::from_config_unchecked(make_position_config(5u));
+
+    // Act
+    const auto result = sut.vertex_count();
+
+    // Assert
+    REQUIRE(result == 5u);
+  }
+}
+
+TEST_CASE("mesh::bounding_volume()", "[observer]") {
+  // Arrange
+  const auto expected = core::axis_aligned_box{
+    core::point3{-1, -2, -3},
+    core::point3{4, 5, 6}
+  };
+  auto config = make_position_config(1u);
+  config.bounding_volume = expected;
+  const auto sut = mesh::from_config_unchecked(std::move(config));
+
+  // Act
+  const auto& result = sut.bounding_volume();
+
+  // Assert
+  REQUIRE(result == expected);
 }
 
 } // namespace alloy::render::test

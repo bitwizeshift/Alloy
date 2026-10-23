@@ -247,6 +247,11 @@ namespace alloy::render {
     /// \return the stride
     auto stride() const noexcept -> core::bytes;
 
+    /// \brief Gets the number of vertices in this mesh
+    ///
+    /// \return the number of vertices
+    auto vertex_count() const noexcept -> std::size_t;
+
     //--------------------------------------------------------------------------
     // Element Access
     //--------------------------------------------------------------------------
@@ -266,6 +271,12 @@ namespace alloy::render {
     ///
     /// \return the mesh indices
     auto indices() const noexcept -> std::span<const index_type>;
+
+    /// \brief Gets an axis-aligned box that encloses every position in this
+    ///        mesh
+    ///
+    /// \return the bounding volume
+    auto bounding_volume() const noexcept -> const core::axis_aligned_box&;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -522,6 +533,18 @@ auto alloy::render::mesh::stride() const noexcept -> core::bytes
 }
 
 inline
+auto alloy::render::mesh::vertex_count() const noexcept -> std::size_t
+{
+  const auto bytes_per_vertex = stride().count();
+  if (bytes_per_vertex == 0u) {
+    return 0u;
+  }
+  return static_cast<std::size_t>(
+    m_compressed_data.size().count() / bytes_per_vertex
+  );
+}
+
+inline
 auto alloy::render::mesh::topology() const noexcept -> primitive_topology
 {
   return m_topology;
@@ -544,6 +567,13 @@ auto alloy::render::mesh::indices()
     m_indices.data(),
     m_indices.size(),
   };
+}
+
+inline
+auto alloy::render::mesh::bounding_volume()
+  const noexcept -> const core::axis_aligned_box&
+{
+  return m_bounding_volume;
 }
 
 inline
