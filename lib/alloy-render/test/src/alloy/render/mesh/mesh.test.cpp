@@ -144,6 +144,20 @@ TEST_CASE("mesh::from_config(mesh_config)", "[factory][static]") {
     // Assert
     REQUIRE(sut.error() == mesh::construct_error::invalid_indices);
   }
+  SECTION("Vertices without indices that do not form whole triangles") {
+    // Act
+    const auto sut = mesh::from_config(make_position_config(4u));
+
+    // Assert
+    REQUIRE(sut.error() == mesh::construct_error::invalid_vertex_data);
+  }
+  SECTION("Vertices without indices that form whole triangles") {
+    // Act
+    const auto sut = mesh::from_config(make_position_config(6u));
+
+    // Assert
+    REQUIRE(sut.has_value());
+  }
   SECTION("Valid configuration") {
     // Arrange
     auto config = make_position_config(3u);

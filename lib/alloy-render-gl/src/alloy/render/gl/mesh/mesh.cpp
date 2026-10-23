@@ -36,16 +36,14 @@ auto to_opengl_type(index_format f) noexcept -> ::GLenum
 
 auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
 {
-  auto buffers = std::array<::GLuint,2>{};
-
   auto vao = ::GLuint{};
-  const auto& vbo = buffers[0];
-  const auto& ebo = buffers[1];
+  auto vbo = ::GLuint{};
+  auto ebo = ::GLuint{};
 
   ::glGenVertexArrays(1, &vao);
   ::glBindVertexArray(vao);
 
-  ::glGenBuffers(2, buffers.data());
+  ::glGenBuffers(1, &vbo);
 
   // Vertices
   const auto data = m.data();
@@ -184,7 +182,14 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     );
   }
 
+  const auto topology = to_opengl_type(m.topology());
+
+  if (!m.has_indices()) {
+    return mesh{vao, vbo, ebo, topology, GL_NONE, m.vertex_count()};
+  }
+
   const auto indices = m.index_data();
+  ::glGenBuffers(1, &ebo);
   ::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
   ::glBufferData(GL_ELEMENT_ARRAY_BUFFER,
     static_cast<::GLsizeiptr>(indices.size_bytes()),
@@ -192,7 +197,6 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     GL_STATIC_DRAW
   );
 
-  const auto topology = to_opengl_type(m.topology());
   const auto index_type = to_opengl_type(m.index_format());
 
   return mesh{vao, vbo, ebo, topology, index_type, m.index_count()};
@@ -204,14 +208,14 @@ alloy::render::gl::mesh::mesh(
   ::GLuint ebo,
   ::GLenum topology,
   ::GLenum index_type,
-  std::size_t indices
+  std::size_t count
 )
   : m_vao{vao},
     m_vbo{vbo},
     m_ebo{ebo},
     m_topology{topology},
     m_index_type{index_type},
-    m_indices{indices}
+    m_count{count}
 {
 
 }
@@ -222,7 +226,7 @@ alloy::render::gl::mesh::mesh(alloy::render::gl::mesh&& other)
     m_ebo{std::exchange(other.m_ebo, 0)},
     m_topology{other.m_topology},
     m_index_type{other.m_index_type},
-    m_indices{other.m_indices}
+    m_count{other.m_count}
 {
 
 }
@@ -240,9 +244,13 @@ alloy::render::gl::mesh::~mesh()
 auto alloy::render::gl::mesh::draw() -> void
 {
   ::glBindVertexArray(m_vao);
+  if (m_ebo == 0) {
+    ::glDrawArrays(m_topology, 0, static_cast<::GLsizei>(m_count));
+    return;
+  }
   ::glDrawElements(
     m_topology,
-    static_cast<::GLsizei>(m_indices),
+    static_cast<::GLsizei>(m_count),
     m_index_type,
     nullptr
   );

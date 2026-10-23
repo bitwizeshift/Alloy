@@ -150,8 +150,9 @@ namespace alloy::render {
       invalid_indices,
 
       /// The vertex data provided is invalid. This may occur if the number of
-      /// bytes is not divisible by `stride()`, or if vertex data is supplied
-      /// without any vertex components.
+      /// bytes is not divisible by `stride()`, if vertex data is supplied
+      /// without any vertex components, or if a mesh without indices does
+      /// not contain a whole number of primitives for its topology.
       invalid_vertex_data,
 
       /// The specified number of position components is invalid. This can

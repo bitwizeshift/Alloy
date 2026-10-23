@@ -71,7 +71,10 @@ namespace alloy::render::gl {
     ::GLuint m_ebo;
     ::GLenum m_topology;
     ::GLenum m_index_type;
-    std::size_t m_indices;
+
+    /// The number of indices to draw, or of vertices for meshes without
+    /// indices
+    std::size_t m_count;
 
     //--------------------------------------------------------------------------
     // Private Constructors
@@ -84,7 +87,7 @@ namespace alloy::render::gl {
       ::GLuint ebo,
       ::GLenum topology,
       ::GLenum index_type,
-      std::size_t indices
+      std::size_t count
     );
 
   };

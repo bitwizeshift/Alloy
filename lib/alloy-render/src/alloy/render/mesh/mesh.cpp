@@ -108,13 +108,21 @@ auto alloy::render::mesh::from_config(mesh_config config)
     return core::fail(construct_error::invalid_indices);
   }
 
-  const auto index_divisor = indices_per_topology(config.topology);
-  if (ALLOY_UNLIKELY(((index_bytes / index_size) % index_divisor) != 0u)) {
-    return core::fail(construct_error::invalid_indices);
-  }
-
   auto result = mesh{std::move(config)};
   const auto vertices = result.vertex_count();
+
+  // Non-indexed meshes draw their vertices directly, so it is the vertices
+  // that must form whole primitives.
+  const auto elements = result.has_indices() ? result.index_count() : vertices;
+  const auto divisor = indices_per_topology(result.topology());
+  if (ALLOY_UNLIKELY((elements % divisor) != 0u)) {
+    return core::fail(
+      result.has_indices()
+        ? construct_error::invalid_indices
+        : construct_error::invalid_vertex_data
+    );
+  }
+
   for (auto i = std::size_t{0}; i < result.index_count(); ++i) {
     if (ALLOY_UNLIKELY(result.index_at(i) >= vertices)) {
       return core::fail(construct_error::invalid_indices);
