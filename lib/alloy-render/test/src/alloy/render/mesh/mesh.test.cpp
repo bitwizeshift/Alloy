@@ -7,6 +7,7 @@
 #include <alloy/render/mesh/index_format.hpp>
 #include <alloy/render/mesh/primitive_topology.hpp>
 #include <alloy/render/mesh/winding_order.hpp>
+#include "mesh_test_utilities.hpp"
 
 #include <alloy/core/containers/vector.hpp>
 #include <alloy/core/geometry/axis_aligned_box.hpp>
@@ -21,6 +22,7 @@
 #include <cstdint>          // std::uint16_t, std::uint32_t
 #include <initializer_list> // std::initializer_list
 #include <utility>          // std::move
+#include <vector>           // std::vector
 
 namespace alloy::render::test {
 namespace {
@@ -374,6 +376,52 @@ TEST_CASE("mesh::index_at(std::size_t)", "[element access]") {
 
     // Assert
     REQUIRE(result == 70000u);
+  }
+}
+
+TEST_CASE("mesh::submeshes()", "[element access]") {
+  // Arrange
+  using range = std::array<std::uint32_t,2>;
+
+  SECTION("Unsplit indexed mesh is covered by its indices") {
+    // Arrange
+    const auto expected = std::vector<range>{range{0u, 3u}};
+    auto config = make_position_config(4u);
+    config.index_data = make_u16_indices({0u, 1u, 2u});
+    const auto sut = mesh::from_config_unchecked(std::move(config));
+
+    // Act
+    const auto result = submesh_ranges(sut);
+
+    // Assert
+    REQUIRE(result == expected);
+  }
+  SECTION("Unsplit non-indexed mesh is covered by its vertices") {
+    // Arrange
+    const auto expected = std::vector<range>{range{0u, 6u}};
+    const auto sut = mesh::from_config_unchecked(make_position_config(6u));
+
+    // Act
+    const auto result = submesh_ranges(sut);
+
+    // Assert
+    REQUIRE(result == expected);
+  }
+  SECTION("Split mesh keeps its submeshes") {
+    // Arrange
+    const auto expected = std::vector<range>{range{0u, 3u}, range{3u, 3u}};
+    auto config = make_position_config(6u);
+    config.submeshes = core::vector<submesh>{
+      submesh{.first = 0u, .count = 3u},
+      submesh{.first = 3u, .count = 3u},
+    };
+    const auto sut = mesh::from_config_unchecked(std::move(config));
+
+    // Act
+    const auto result = submesh_ranges(sut);
+
+    // Assert
+    REQUIRE(result == expected);
   }
 }
 

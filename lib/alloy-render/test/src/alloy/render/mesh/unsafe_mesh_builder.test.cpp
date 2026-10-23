@@ -169,8 +169,10 @@ TEST_CASE("unsafe_mesh_builder::begin_submesh()", "[modifier]") {
     // Assert
     REQUIRE(submesh_ranges(sut) == expected);
   }
-  SECTION("No submeshes unless one is started") {
+  SECTION("A single submesh covers the mesh unless one is started") {
     // Arrange
+    using range = std::array<std::uint32_t,2>;
+    const auto expected = std::vector<range>{range{0u, 3u}};
     auto builder = unsafe_mesh_builder{vertex_components{.position = 2u}};
     add_triangle(builder);
 
@@ -178,7 +180,7 @@ TEST_CASE("unsafe_mesh_builder::begin_submesh()", "[modifier]") {
     const auto sut = std::move(builder).release();
 
     // Assert
-    REQUIRE(sut.submeshes().empty());
+    REQUIRE(submesh_ranges(sut) == expected);
   }
 }
 

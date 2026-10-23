@@ -15,6 +15,7 @@
 # pragma once
 #endif
 
+#include "alloy/core/containers/vector.hpp"
 #include "alloy/render/mesh/mesh.hpp"
 
 #include <GL/glew.h>
@@ -58,13 +59,18 @@ namespace alloy::render::gl {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Draws the whole mesh
-    auto draw() -> void;
-
-    /// \brief Draws only the range of the mesh described by \p s
+    /// \brief Gets the number of submeshes of this mesh
     ///
-    /// \param s the submesh to draw
-    auto draw(const render::submesh& s) -> void;
+    /// This is always at least one.
+    ///
+    /// \return the number of submeshes
+    auto submesh_count() const noexcept -> std::size_t;
+
+    /// \brief Draws the submesh at \p index
+    ///
+    /// \pre `index < submesh_count()`
+    /// \param index the index of the submesh to draw
+    auto draw(std::size_t index) -> void;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -78,9 +84,9 @@ namespace alloy::render::gl {
     ::GLenum m_front_face;
     ::GLenum m_index_type;
 
-    /// The number of indices to draw, or of vertices for meshes without
-    /// indices
-    std::size_t m_count;
+    /// The ranges of the mesh to draw, in indices, or in vertices for meshes
+    /// without indices
+    core::vector<render::submesh> m_submeshes;
 
     //--------------------------------------------------------------------------
     // Private Constructors
@@ -94,7 +100,7 @@ namespace alloy::render::gl {
       ::GLenum topology,
       ::GLenum front_face,
       ::GLenum index_type,
-      std::size_t count
+      core::vector<render::submesh> submeshes
     );
 
   };

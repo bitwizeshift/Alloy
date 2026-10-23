@@ -6,6 +6,8 @@
 
 #include "alloy/render/gl/mesh/primitive_topology.hpp"
 
+#include "alloy/core/assert.hpp"
+#include "alloy/core/containers/vector.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/render/mesh/attribute_locations.hpp"
 #include "alloy/render/mesh/index_format.hpp"
@@ -15,7 +17,7 @@
 #include <array>   // std::array
 #include <cstddef> // std::size_t
 #include <cstdint> // std::uint16_t, std::uint32_t, std::uintptr_t
-#include <utility> // std::exchange
+#include <utility> // std::exchange, std::move
 
 namespace alloy::render::gl {
 namespace {
@@ -200,6 +202,10 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
   const auto topology = to_opengl_type(m.topology());
   const auto front_face = to_opengl_type(m.winding());
 
+  const auto ranges = m.submeshes();
+  auto submeshes = core::vector<render::submesh>{};
+  submeshes.assign(ranges.begin(), ranges.end());
+
   if (!m.has_indices()) {
     return mesh{
       vao,
@@ -208,7 +214,7 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
       topology,
       front_face,
       GL_NONE,
-      m.vertex_count()
+      std::move(submeshes)
     };
   }
 
@@ -230,7 +236,7 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     topology,
     front_face,
     index_type,
-    m.index_count()
+    std::move(submeshes)
   };
 }
 
@@ -241,7 +247,7 @@ alloy::render::gl::mesh::mesh(
   ::GLenum topology,
   ::GLenum front_face,
   ::GLenum index_type,
-  std::size_t count
+  core::vector<render::submesh> submeshes
 )
   : m_vao{vao},
     m_vbo{vbo},
@@ -249,7 +255,7 @@ alloy::render::gl::mesh::mesh(
     m_topology{topology},
     m_front_face{front_face},
     m_index_type{index_type},
-    m_count{count}
+    m_submeshes{std::move(submeshes)}
 {
 
 }
@@ -261,7 +267,7 @@ alloy::render::gl::mesh::mesh(alloy::render::gl::mesh&& other)
     m_topology{other.m_topology},
     m_front_face{other.m_front_face},
     m_index_type{other.m_index_type},
-    m_count{other.m_count}
+    m_submeshes{std::move(other.m_submeshes)}
 {
 
 }
@@ -276,24 +282,16 @@ alloy::render::gl::mesh::~mesh()
 }
 
 
-auto alloy::render::gl::mesh::draw() -> void
+auto alloy::render::gl::mesh::submesh_count() const noexcept -> std::size_t
 {
-  ::glBindVertexArray(m_vao);
-  ::glFrontFace(m_front_face);
-  if (m_ebo == 0) {
-    ::glDrawArrays(m_topology, 0, static_cast<::GLsizei>(m_count));
-    return;
-  }
-  ::glDrawElements(
-    m_topology,
-    static_cast<::GLsizei>(m_count),
-    m_index_type,
-    nullptr
-  );
+  return m_submeshes.size();
 }
 
-auto alloy::render::gl::mesh::draw(const render::submesh& s) -> void
+auto alloy::render::gl::mesh::draw(std::size_t index) -> void
 {
+  ALLOY_ASSERT(index < m_submeshes.size());
+
+  const auto& s = m_submeshes[index];
   ::glBindVertexArray(m_vao);
   ::glFrontFace(m_front_face);
   if (m_ebo == 0) {

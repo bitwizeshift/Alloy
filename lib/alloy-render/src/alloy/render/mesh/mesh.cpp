@@ -13,6 +13,7 @@
 #include "alloy/core/utilities/result.hpp"
 
 #include <cstddef> // std::size_t
+#include <cstdint> // std::uint32_t
 #include <utility> // std::move
 
 namespace alloy::render {
@@ -200,7 +201,13 @@ alloy::render::mesh::mesh(alloy::render::mesh_config config)
     m_winding{config.winding},
     m_components{config.components}
 {
-
+  if (m_submeshes.empty()) {
+    const auto count = has_indices() ? index_count() : vertex_count();
+    m_submeshes.push_back(submesh{
+      .first = 0u,
+      .count = static_cast<std::uint32_t>(count),
+    });
+  }
 }
 //==============================================================================
 // non-member functions : class : mesh

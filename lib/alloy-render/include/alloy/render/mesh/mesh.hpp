@@ -137,8 +137,8 @@ namespace alloy::render {
     /// The number of components of each attribute in `vertex_data`
     vertex_components components;
 
-    /// The ranges of the mesh that are drawn separately, or empty if the mesh
-    /// is drawn as a whole
+    /// The ranges of the mesh that are drawn separately. If this is empty,
+    /// the mesh is given a single submesh that covers all of it.
     core::vector<submesh> submeshes;
 
     /// A box that encloses every position in `vertex_data`
@@ -190,8 +190,8 @@ namespace alloy::render {
   ///
   /// Indices are stored as either 16 or 32-bit values (see `index_format()`).
   /// A mesh without indices draws its vertices directly. Either way, the mesh
-  /// may be split into `submeshes()` that are drawn separately, such as for
-  /// using a different material for each.
+  /// is drawn as one or more `submeshes()`, which allows each part of the mesh
+  /// to be drawn with a different material.
   //////////////////////////////////////////////////////////////////////////////
   class mesh
   {
@@ -429,7 +429,8 @@ namespace alloy::render {
 
     /// \brief Gets the ranges of this mesh that are drawn separately
     ///
-    /// An empty list means that the mesh is drawn as a single range.
+    /// There is always at least one submesh. A mesh that was not split into
+    /// submeshes has a single submesh that covers all of it.
     ///
     /// \return the submeshes
     auto submeshes() const noexcept -> std::span<const submesh>;

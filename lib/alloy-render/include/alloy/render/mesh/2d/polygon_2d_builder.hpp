@@ -185,7 +185,7 @@ namespace alloy::render {
     /// Every vertex and index added after this call, up until the next call,
     /// belongs to the new submesh. Anything added before the first call forms
     /// an initial submesh of its own, if there is any. If this is never
-    /// called, the mesh has no submeshes.
+    /// called, the mesh has a single submesh that covers all of it.
     ///
     /// Submeshes are only meaningful when attributes are added incrementally,
     /// since the `set_*` functions replace every entry.
