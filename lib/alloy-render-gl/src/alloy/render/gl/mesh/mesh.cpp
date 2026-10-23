@@ -84,6 +84,22 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     );
   }
 
+  // secondary UVs
+
+  if (m.has_uv2()) {
+    const auto components = m.uv2_components();
+    const auto offset = reinterpret_cast<void*>(m.offset_to_uv2().count());
+    ::glEnableVertexAttribArray(render::attribute_locations::uv2);
+    ::glVertexAttribPointer(
+      render::attribute_locations::uv2,
+      static_cast<::GLint>(components),
+      GL_FLOAT,
+      GL_FALSE,
+      static_cast<::GLsizei>(stride),
+      offset
+    );
+  }
+
   // normals
 
   if (m.has_normals()) {

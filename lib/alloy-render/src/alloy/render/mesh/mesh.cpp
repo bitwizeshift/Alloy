@@ -48,6 +48,7 @@ auto indices_per_topology(primitive_topology topology) noexcept -> std::size_t
 inline constexpr auto max_vertex_components = 4u;
 inline constexpr auto max_color_components = 4u;
 inline constexpr auto max_uv_components = 3u;
+inline constexpr auto max_uv2_components = 3u;
 inline constexpr auto max_normal_components = 4u;
 inline constexpr auto max_tangent_components = 4u;
 
@@ -74,6 +75,9 @@ auto alloy::render::mesh::from_config(mesh_config config)
   }
   if (ALLOY_UNLIKELY(components.uv > max_uv_components)) {
     return core::fail(construct_error::invalid_uv_component);
+  }
+  if (ALLOY_UNLIKELY(components.uv2 > max_uv2_components)) {
+    return core::fail(construct_error::invalid_uv2_component);
   }
   if (ALLOY_UNLIKELY(components.normal > max_normal_components)) {
     return core::fail(construct_error::invalid_normal_component);
@@ -197,6 +201,11 @@ auto alloy::render::error_message(mesh::construct_error e)
     case mesh::construct_error::invalid_uv_component: {
       return "The specified UV components is invalid. This can occur if "
              "`uv_components` is not between `0` and `3` (inclusive)";
+    }
+    case mesh::construct_error::invalid_uv2_component: {
+      return "The specified secondary UV components is invalid. This can "
+             "occur if `uv2_components` is not between `0` and `3` "
+             "(inclusive)";
     }
     case mesh::construct_error::invalid_normal_component: {
       return "The specified normal components is invalid. This can occur if "

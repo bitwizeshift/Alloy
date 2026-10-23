@@ -90,6 +90,7 @@ namespace alloy::render {
     auto reserve_positions(std::size_t n) -> void;
     auto reserve_colors(std::size_t n) -> void;
     auto reserve_uvs(std::size_t n) -> void;
+    auto reserve_uv2s(std::size_t n) -> void;
     auto reserve_normals(std::size_t n) -> void;
     auto reserve_tangents(std::size_t n) -> void;
     /// \}
@@ -118,6 +119,12 @@ namespace alloy::render {
     ///
     /// \param uvs the uv coordinates
     auto set_uvs(core::vector<core::point2> uvs) -> void;
+
+    /// \brief Sets the secondary UV coordinates for this mesh, such as for
+    ///        lightmaps
+    ///
+    /// \param uv2s the secondary uv coordinates
+    auto set_uv2s(core::vector<core::point2> uv2s) -> void;
 
     /// \brief Sets the normals for this mesh
     ///
@@ -157,6 +164,12 @@ namespace alloy::render {
     ///
     /// \param p the position
     auto add_uv(const core::point2& p) -> void;
+
+    /// \brief Adds a secondary UV coordinate to the mesh, such as for
+    ///        lightmaps
+    ///
+    /// \param p the secondary uv coordinate
+    auto add_uv2(const core::point2& p) -> void;
 
     /// \brief Adds a normal vector to the mesh
     ///
@@ -210,6 +223,7 @@ namespace alloy::render {
     core::vector<core::point3> m_positions;
     core::vector<core::color> m_colors;
     core::vector<core::point2> m_uvs;
+    core::vector<core::point2> m_uv2s;
     core::vector<core::vector3> m_normals;
     core::vector<core::vector4> m_tangents;
     core::vector<std::uint16_t> m_indices;

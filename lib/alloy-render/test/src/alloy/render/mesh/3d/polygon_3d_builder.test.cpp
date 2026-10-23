@@ -9,6 +9,7 @@
 
 #include <alloy/core/containers/vector.hpp>
 #include <alloy/core/geometry/axis_aligned_box.hpp>
+#include <alloy/core/geometry/point/point2.hpp>
 #include <alloy/core/geometry/point/point3.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
 
@@ -63,6 +64,18 @@ TEST_CASE("polygon_3d_builder::build()", "[build]") {
 
     // Assert
     REQUIRE(result.bounding_volume() == expected);
+  }
+  SECTION("Secondary UVs are 2-component") {
+    // Arrange
+    auto sut = polygon_3d_builder{};
+    sut.add_position(core::point3{1, 2, 3});
+    sut.add_uv2(core::point2{0, 1});
+
+    // Act
+    const auto result = sut.build();
+
+    // Assert
+    REQUIRE(result.uv2_components() == 2u);
   }
   SECTION("Tangent handedness is preserved") {
     // Arrange

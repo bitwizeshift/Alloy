@@ -27,6 +27,7 @@ namespace {
 inline constexpr auto entries_per_position  = std::uint8_t{3};
 inline constexpr auto entries_per_color     = std::uint8_t{4};
 inline constexpr auto entries_per_uv        = std::uint8_t{2};
+inline constexpr auto entries_per_uv2       = std::uint8_t{2};
 inline constexpr auto entries_per_normal    = std::uint8_t{3};
 inline constexpr auto entries_per_tangent   = std::uint8_t{4};
 inline constexpr auto entries_per_indices   = 3u;
@@ -51,6 +52,7 @@ alloy::render::polygon_3d_builder::polygon_3d_builder(
   : m_positions{core::stl_allocator_adapter<core::point3>{alloc}},
     m_colors{core::stl_allocator_adapter<core::color>{alloc}},
     m_uvs{core::stl_allocator_adapter<core::point2>{alloc}},
+    m_uv2s{core::stl_allocator_adapter<core::point2>{alloc}},
     m_normals{core::stl_allocator_adapter<core::vector3>{alloc}},
     m_tangents{core::stl_allocator_adapter<core::vector4>{alloc}},
     m_indices{core::stl_allocator_adapter<index_type>{alloc}},
@@ -68,6 +70,7 @@ auto alloy::render::polygon_3d_builder::reserve(std::size_t n) -> void
   reserve_positions(n);
   reserve_colors(n);
   reserve_uvs(n);
+  reserve_uv2s(n);
   reserve_normals(n);
   reserve_tangents(n);
 }
@@ -85,6 +88,11 @@ auto alloy::render::polygon_3d_builder::reserve_colors(std::size_t n) -> void
 auto alloy::render::polygon_3d_builder::reserve_uvs(std::size_t n) -> void
 {
   m_uvs.reserve(n);
+}
+
+auto alloy::render::polygon_3d_builder::reserve_uv2s(std::size_t n) -> void
+{
+  m_uv2s.reserve(n);
 }
 
 auto alloy::render::polygon_3d_builder::reserve_normals(std::size_t n) -> void
@@ -126,6 +134,13 @@ auto alloy::render::polygon_3d_builder::set_uvs(core::vector<core::point2> uvs)
   m_uvs = std::move(uvs);
 }
 
+auto alloy::render::polygon_3d_builder::set_uv2s(
+  core::vector<core::point2> uv2s
+) -> void
+{
+  m_uv2s = std::move(uv2s);
+}
+
 auto alloy::render::polygon_3d_builder::set_normals(
   core::vector<core::vector3> normals
 ) -> void
@@ -165,6 +180,11 @@ auto alloy::render::polygon_3d_builder::add_color(const core::color& c) -> void
 auto alloy::render::polygon_3d_builder::add_uv(const core::point2& p) -> void
 {
   m_uvs.push_back(p);
+}
+
+auto alloy::render::polygon_3d_builder::add_uv2(const core::point2& p) -> void
+{
+  m_uv2s.push_back(p);
 }
 
 auto alloy::render::polygon_3d_builder::add_normal(const core::vector3& v)
@@ -218,12 +238,14 @@ auto alloy::render::polygon_3d_builder::build_with(core::allocator alloc)
   const auto components = vertex_components{
     .position  = ::entries_per_position,
     .uv        = components_of(m_uvs, ::entries_per_uv),
+    .uv2       = components_of(m_uv2s, ::entries_per_uv2),
     .normal    = components_of(m_normals, ::entries_per_normal),
     .tangent   = components_of(m_tangents, ::entries_per_tangent),
     .color     = components_of(m_colors, ::entries_per_color),
   };
   const auto positions = m_positions.size();
   ALLOY_ASSERT(m_uvs.empty() || m_uvs.size() == positions);
+  ALLOY_ASSERT(m_uv2s.empty() || m_uv2s.size() == positions);
   ALLOY_ASSERT(m_normals.empty() || m_normals.size() == positions);
   ALLOY_ASSERT(m_tangents.empty() || m_tangents.size() == positions);
   ALLOY_ASSERT(m_colors.empty() || m_colors.size() == positions);
@@ -243,6 +265,9 @@ auto alloy::render::polygon_3d_builder::build_with(core::allocator alloc)
     builder.add_position(m_positions[i]);
     if (!m_uvs.empty()) {
       builder.add_uv(m_uvs[i]);
+    }
+    if (!m_uv2s.empty()) {
+      builder.add_uv2(m_uv2s[i]);
     }
     if (!m_normals.empty()) {
       builder.add_normal(m_normals[i]);

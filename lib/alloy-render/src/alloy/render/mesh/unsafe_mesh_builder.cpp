@@ -124,6 +124,27 @@ auto alloy::render::unsafe_mesh_builder::add_uv(const core::point3& p) -> void
   complete_attribute(attribute::uv);
 }
 
+auto alloy::render::unsafe_mesh_builder::add_uv2(float p) -> void
+{
+  check_attribute(attribute::uv2, 1u);
+  m_writer.pack_object(p);
+  complete_attribute(attribute::uv2);
+}
+
+auto alloy::render::unsafe_mesh_builder::add_uv2(const core::point2& p) -> void
+{
+  check_attribute(attribute::uv2, 2u);
+  m_writer.pack_object(p, point_packer{m_components.uv2});
+  complete_attribute(attribute::uv2);
+}
+
+auto alloy::render::unsafe_mesh_builder::add_uv2(const core::point3& p) -> void
+{
+  check_attribute(attribute::uv2, 3u);
+  m_writer.pack_object(p, point_packer{m_components.uv2});
+  complete_attribute(attribute::uv2);
+}
+
 auto alloy::render::unsafe_mesh_builder::add_normal(const core::vector3& v)
   -> void
 {
@@ -232,6 +253,9 @@ auto alloy::render::unsafe_mesh_builder::component_count(attribute a)
     case attribute::uv: {
       return m_components.uv;
     }
+    case attribute::uv2: {
+      return m_components.uv2;
+    }
     case attribute::normal: {
       return m_components.normal;
     }
@@ -312,6 +336,9 @@ auto alloy::render::unsafe_mesh_builder::last_attribute_of(
   }
   if (components.normal != 0u) {
     return attribute::normal;
+  }
+  if (components.uv2 != 0u) {
+    return attribute::uv2;
   }
   if (components.uv != 0u) {
     return attribute::uv;

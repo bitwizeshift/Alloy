@@ -46,6 +46,10 @@ namespace alloy::render {
     /// The number of 32-bit float components per UV, in `[0, 3]`
     std::uint8_t uv = 0u;
 
+    /// The number of 32-bit float components per secondary UV, such as for
+    /// lightmaps, in `[0, 3]`
+    std::uint8_t uv2 = 0u;
+
     /// The number of snorm16 components per normal, in `[0, 4]`
     std::uint8_t normal = 0u;
 
@@ -154,6 +158,10 @@ namespace alloy::render {
       /// `uv_components` is not between `0` and `3` (inclusive)
       invalid_uv_component,
 
+      /// The specified secondary UV components is invalid. This can occur if
+      /// `uv2_components` is not between `0` and `3` (inclusive)
+      invalid_uv2_component,
+
       /// The specified normal components is invalid. This can occur if
       /// `normal_components` is not between `0` and `4` (inclusive)
       invalid_normal_component,
@@ -229,6 +237,7 @@ namespace alloy::render {
     auto has_positions() const noexcept -> bool;
     auto has_color() const noexcept -> bool;
     auto has_uvs() const noexcept -> bool;
+    auto has_uv2() const noexcept -> bool;
     auto has_normals() const noexcept -> bool;
     auto has_tangents() const noexcept -> bool;
     auto has_indices() const noexcept -> bool;
@@ -241,6 +250,7 @@ namespace alloy::render {
     auto offset_to_positions() const noexcept -> core::bytes;
     auto offset_to_colors() const noexcept -> core::bytes;
     auto offset_to_uvs() const noexcept -> core::bytes;
+    auto offset_to_uv2() const noexcept -> core::bytes;
     auto offset_to_normals() const noexcept -> core::bytes;
     auto offset_to_tangents() const noexcept -> core::bytes;
     /// \}
@@ -252,6 +262,7 @@ namespace alloy::render {
     auto bytes_per_position() const noexcept -> core::bytes;
     auto bytes_per_colors() const noexcept -> core::bytes;
     auto bytes_per_uvs() const noexcept -> core::bytes;
+    auto bytes_per_uv2() const noexcept -> core::bytes;
     auto bytes_per_normals() const noexcept -> core::bytes;
     auto bytes_per_tangents() const noexcept -> core::bytes;
     /// \}
@@ -263,6 +274,7 @@ namespace alloy::render {
     auto position_components() const noexcept -> std::size_t;
     auto color_components() const noexcept -> std::size_t;
     auto uv_components() const noexcept -> std::size_t;
+    auto uv2_components() const noexcept -> std::size_t;
     auto normal_components() const noexcept -> std::size_t;
     auto tangent_components() const noexcept -> std::size_t;
     /// \}
@@ -359,6 +371,7 @@ auto alloy::render::vertex_components::unpadded_size()
   return core::bytes{
     (position * sizeof(float)) +
     (uv * sizeof(float)) +
+    (uv2 * sizeof(float)) +
     (normal * sizeof(std::int16_t)) +
     (tangent * sizeof(std::int16_t)) +
     (color * sizeof(std::uint8_t))
@@ -368,7 +381,7 @@ auto alloy::render::vertex_components::unpadded_size()
 inline constexpr
 auto alloy::render::vertex_components::stride() const noexcept -> core::bytes
 {
-  const auto has_32_bit = (position != 0u) || (uv != 0u);
+  const auto has_32_bit = (position != 0u) || (uv != 0u) || (uv2 != 0u);
   const auto has_16_bit = (normal != 0u) || (tangent != 0u);
   const auto alignment = has_32_bit ? 4u : (has_16_bit ? 2u : 1u);
   const auto bytes = unpadded_size().count();
@@ -400,6 +413,12 @@ inline
 auto alloy::render::mesh::has_uvs() const noexcept -> bool
 {
   return m_components.uv != 0u;
+}
+
+inline
+auto alloy::render::mesh::has_uv2() const noexcept -> bool
+{
+  return m_components.uv2 != 0u;
 }
 
 inline
@@ -441,9 +460,15 @@ auto alloy::render::mesh::offset_to_uvs() const noexcept -> core::bytes
 }
 
 inline
-auto alloy::render::mesh::offset_to_normals() const noexcept -> core::bytes
+auto alloy::render::mesh::offset_to_uv2() const noexcept -> core::bytes
 {
   return offset_to_uvs() + bytes_per_uvs();
+}
+
+inline
+auto alloy::render::mesh::offset_to_normals() const noexcept -> core::bytes
+{
+  return offset_to_uv2() + bytes_per_uv2();
 }
 
 inline
@@ -470,6 +495,12 @@ inline
 auto alloy::render::mesh::bytes_per_uvs() const noexcept -> core::bytes
 {
   return core::bytes{m_components.uv * sizeof(float)};
+}
+
+inline
+auto alloy::render::mesh::bytes_per_uv2() const noexcept -> core::bytes
+{
+  return core::bytes{m_components.uv2 * sizeof(float)};
 }
 
 inline
@@ -502,6 +533,12 @@ inline
 auto alloy::render::mesh::uv_components() const noexcept -> std::size_t
 {
   return m_components.uv;
+}
+
+inline
+auto alloy::render::mesh::uv2_components() const noexcept -> std::size_t
+{
+  return m_components.uv2;
 }
 
 inline

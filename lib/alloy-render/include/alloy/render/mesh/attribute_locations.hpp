@@ -39,6 +39,7 @@ namespace alloy::render {
     inline static constexpr auto uvs        = 2u;
     inline static constexpr auto normals    = 3u;
     inline static constexpr auto tangents   = 4u;
+    inline static constexpr auto uv2        = 5u;
   };
 
 } // namespace alloy::render

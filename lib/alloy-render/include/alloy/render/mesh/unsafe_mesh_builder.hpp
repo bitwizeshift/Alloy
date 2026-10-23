@@ -45,6 +45,7 @@ namespace alloy::render {
   ///
   /// * position,
   /// * uv,
+  /// * uv2,
   /// * normal,
   /// * tangent,
   /// * color
@@ -116,6 +117,10 @@ namespace alloy::render {
     auto add_uv(const core::point2& p) -> void;
     auto add_uv(const core::point3& p) -> void;
 
+    auto add_uv2(float p) -> void;
+    auto add_uv2(const core::point2& p) -> void;
+    auto add_uv2(const core::point3& p) -> void;
+
     auto add_normal(const core::vector3& v) -> void;
     auto add_tangent(const core::vector3& v) -> void;
     auto add_tangent(const core::vector4& v) -> void;
@@ -145,6 +150,7 @@ namespace alloy::render {
     enum class attribute : std::uint8_t {
       position,
       uv,
+      uv2,
       normal,
       tangent,
       color,

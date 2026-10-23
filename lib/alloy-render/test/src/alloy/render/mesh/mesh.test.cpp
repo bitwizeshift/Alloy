@@ -185,6 +185,7 @@ TEST_CASE("mesh::offset_to_*()", "[observer]") {
   config.components = vertex_components{
     .position  = 3u,
     .uv        = 2u,
+    .uv2       = 2u,
     .normal    = 3u,
     .tangent   = 4u,
     .color     = 4u,
@@ -205,33 +206,40 @@ TEST_CASE("mesh::offset_to_*()", "[observer]") {
     // Assert
     REQUIRE(result == core::bytes{12u});
   }
-  SECTION("Normals follow UVs") {
+  SECTION("Secondary UVs follow UVs") {
+    // Act
+    const auto result = sut.offset_to_uv2();
+
+    // Assert
+    REQUIRE(result == core::bytes{20u});
+  }
+  SECTION("Normals follow secondary UVs") {
     // Act
     const auto result = sut.offset_to_normals();
 
     // Assert
-    REQUIRE(result == core::bytes{20u});
+    REQUIRE(result == core::bytes{28u});
   }
   SECTION("Tangents follow normals without padding") {
     // Act
     const auto result = sut.offset_to_tangents();
 
     // Assert
-    REQUIRE(result == core::bytes{26u});
+    REQUIRE(result == core::bytes{34u});
   }
   SECTION("Colors follow tangents") {
     // Act
     const auto result = sut.offset_to_colors();
 
     // Assert
-    REQUIRE(result == core::bytes{34u});
+    REQUIRE(result == core::bytes{42u});
   }
   SECTION("Stride pads the end of the vertex") {
     // Act
     const auto result = sut.stride();
 
     // Assert
-    REQUIRE(result == core::bytes{40u});
+    REQUIRE(result == core::bytes{48u});
   }
 }
 
