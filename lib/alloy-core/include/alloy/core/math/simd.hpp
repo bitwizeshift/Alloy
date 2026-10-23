@@ -911,7 +911,23 @@ auto alloy::core::simd_multiply(simd<T> lhs, simd<T> rhs) noexcept -> simd<T>
   if constexpr (std::is_same_v<T, f32>) {
     return simd<f32>{_mm_mul_ps(lhs.value, rhs.value)};
   } else {
-    return simd<T>{_mm_mul_epu32(lhs.value, rhs.value)};
+#if defined(__SSE4_1__)
+    return simd<T>{_mm_mullo_epi32(lhs.value, rhs.value)};
+#else
+    // SSE2 can only multiply the even lanes, into 64-bit products. The odd
+    // lanes are shifted into the even positions to be multiplied separately,
+    // and the low 32 bits of every product, which are the same for signed
+    // and unsigned lanes, are interleaved back together.
+    const auto even = _mm_mul_epu32(lhs.value, rhs.value);
+    const auto odd = _mm_mul_epu32(
+      _mm_srli_epi64(lhs.value, 32),
+      _mm_srli_epi64(rhs.value, 32)
+    );
+    return simd<T>{_mm_unpacklo_epi32(
+      _mm_shuffle_epi32(even, _MM_SHUFFLE(0, 0, 2, 0)),
+      _mm_shuffle_epi32(odd, _MM_SHUFFLE(0, 0, 2, 0))
+    )};
+#endif
   }
 #else
   return simd<T>::set(
