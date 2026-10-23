@@ -69,7 +69,7 @@ namespace alloy::core {
     /// \brief Creates a saturated object with the given \p value with checking
     ///
     /// If \p value is below 0, it saturates to 0. If \p value is above 1, it
-    /// saturates to 1.
+    /// saturates to 1. If \p value is NaN, it saturates to 0.
     ///
     /// ### Examples
     ///
@@ -464,6 +464,10 @@ ALLOY_FORCE_INLINE constexpr
 auto alloy::core::saturated<Float>::make(element_type value)
   noexcept -> saturated
 {
+  // NaN is the only value that compares unequal to itself
+  if (value != value) {
+    return make_unchecked(element_type{0});
+  }
   return make_unchecked(saturate(value));
 }
 

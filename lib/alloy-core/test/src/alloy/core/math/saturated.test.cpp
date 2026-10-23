@@ -9,6 +9,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <functional> // std::hash
+#include <limits>     // std::numeric_limits
 #include <type_traits>
 
 namespace alloy::core::test {
@@ -44,6 +45,19 @@ TEST_CASE("saturated<Float>::make(Float)", "[factory]") {
 
     SECTION("Value is passed through") {
       REQUIRE(sut.value() == value);
+    }
+  }
+
+  SECTION("Input is NaN") {
+    // Arrange
+    const auto value = std::numeric_limits<float>::quiet_NaN();
+
+    // Act
+    const auto sut = saturated<float>::make(value);
+
+    // Assert
+    SECTION("Value saturates to 0.0") {
+      REQUIRE(sut.value() == 0.0f);
     }
   }
 }
