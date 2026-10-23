@@ -310,7 +310,7 @@ namespace alloy::core {
   /// \param alpha the state between t0 and t1
   /// \return the interpolated transform
   template <>
-  struct interpolator<transform>
+  struct ALLOY_CORE_API interpolator<transform>
   {
     auto operator()(const transform& v0, const transform& v1, real alpha)
       noexcept -> transform;

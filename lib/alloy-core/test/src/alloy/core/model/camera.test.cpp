@@ -5,11 +5,13 @@
 #include <alloy/core/model/camera.hpp>
 
 #include <alloy/core/math/angle/radian.hpp>
+#include <alloy/core/math/interpolation.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix4.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector3_constants.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
+#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -162,6 +164,27 @@ TEST_CASE("camera::to_matrix4()", "[conversion]")
   SECTION("Rotates into camera space after translating the camera to the origin")
   {
     REQUIRE( almost_equal(result, expected) );
+  }
+}
+
+//------------------------------------------------------------------------------
+// Interpolation
+//------------------------------------------------------------------------------
+
+TEST_CASE("interpolator<camera>", "[interpolation]")
+{
+  // Arrange
+  const auto start = camera{};
+  auto end = camera{};
+  end.set_origin(2, 4, 6);
+
+  // Act
+  const auto result = interpolation::linear(start, end, real{0.5});
+
+  // Assert
+  SECTION("Interpolates the translation")
+  {
+    REQUIRE( almost_equal(result.translation(), vector3{1, 2, 3}) );
   }
 }
 

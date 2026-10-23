@@ -340,7 +340,7 @@ namespace alloy::core {
   //============================================================================
 
   template <>
-  struct interpolator<camera>
+  struct ALLOY_CORE_API interpolator<camera>
   {
     auto operator()(const camera& v0, const camera& v1, real alpha)
       noexcept -> camera;

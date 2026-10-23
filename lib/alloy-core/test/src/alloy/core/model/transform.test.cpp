@@ -5,6 +5,9 @@
 #include <alloy/core/model/transform.hpp>
 
 #include <alloy/core/math/angle/radian.hpp>
+#include <alloy/core/math/interpolation.hpp>
+#include <alloy/core/math/math.hpp>
+#include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector3_constants.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
 #include <alloy/core/precision/real.hpp>
@@ -36,6 +39,27 @@ TEST_CASE("transform::to_matrix4()", "[conversion]")
   SECTION("Scales, then rotates, then translates")
   {
     REQUIRE( almost_equal(result, vector4{10, 2, 0, 1}, real{1e-5}) );
+  }
+}
+
+//------------------------------------------------------------------------------
+// Interpolation
+//------------------------------------------------------------------------------
+
+TEST_CASE("interpolator<transform>", "[interpolation]")
+{
+  // Arrange
+  const auto start = transform{};
+  auto end = transform{};
+  end.set_origin(2, 4, 6);
+
+  // Act
+  const auto result = interpolation::linear(start, end, real{0.5});
+
+  // Assert
+  SECTION("Interpolates the translation")
+  {
+    REQUIRE( almost_equal(result.translation(), vector3{1, 2, 3}) );
   }
 }
 
