@@ -3,9 +3,10 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \file mesh.hpp
+/// \file polygon_2d_builder.hpp
 ///
-/// \brief TODO(Bitwize): Add description
+/// \brief This header defines a builder for meshes with 2-dimensional
+///        positions
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef ALLOY_RENDER_MESH_2D_POLYGON_2D_BUILDER_HPP
@@ -35,12 +36,14 @@ namespace alloy::render {
   /// \brief A builder for 2-dimensional meshes (e.g. a system with 2-component
   ///        positions).
   ///
-  /// Normals still exist as a possibility in 3-dimensions.
+  /// Each vertex attribute is collected into its own list, either all at once
+  /// with the `set_*` functions or one vertex at a time with the `add_*`
+  /// functions. Every attribute that is supplied at all must have exactly one
+  /// entry per position; attributes that are never supplied are omitted from
+  /// the mesh. The attributes are only interleaved and compressed into the
+  /// mesh when it is built.
   ///
-  /// Currently this only works for 2d textures, and simply pretends that 3d and
-  /// 1d textures don't exist.
-  /// This may be slated for a future release if ever this is deemed a useful
-  /// feature
+  /// UVs are always 2-dimensional, while normals remain 3-dimensional.
   //////////////////////////////////////////////////////////////////////////////
   class polygon_2d_builder : public mesh_builder
   {
@@ -79,9 +82,9 @@ namespace alloy::render {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Reserves space for `n` vertices for all 2-dimensional attributes
+    /// \brief Reserves space for `n` vertices in every attribute
     ///
-    /// \param n the size
+    /// \param n the number of vertices
     auto reserve(std::size_t n) -> void;
 
     /// \{
@@ -110,10 +113,10 @@ namespace alloy::render {
     /// \param positions the positions
     auto set_positions(core::vector<core::point2> positions) -> void;
 
-    /// \brief Sets the color coordinates for this mesh
+    /// \brief Sets the colors for this mesh
     ///
-    /// \param uvs the color coordinates
-    auto set_colors(core::vector<core::color> uvs) -> void;
+    /// \param colors the colors
+    auto set_colors(core::vector<core::color> colors) -> void;
 
     /// \brief Sets the UV coordinates for this mesh
     ///
@@ -147,7 +150,7 @@ namespace alloy::render {
 
     /// \brief Adds a UV coordinate to the mesh
     ///
-    /// \param p the position
+    /// \param p the uv coordinate
     auto add_uv(const core::point2& p) -> void;
 
     /// \brief Adds a normal vector to the mesh
@@ -155,7 +158,9 @@ namespace alloy::render {
     /// \param v the vector
     auto add_normal(const core::vector3& v) -> void;
 
-    /// \brief Adds a
+    /// \brief Adds a single index to the mesh
+    ///
+    /// \param v0 the index of the vertex
     auto add_index(index_type v0) -> void;
 
     /// \brief Adds a triangle face for the mesh from 3 indices
@@ -165,7 +170,8 @@ namespace alloy::render {
     /// \param v2 the third index
     auto add_face(index_type v0, index_type v1, index_type v2) -> void;
 
-    /// \brief Adds a quad face for the mesh from 4 indices
+    /// \brief Adds a quad face for the mesh from 4 indices, as the two
+    ///        triangles `(v0, v1, v2)` and `(v2, v3, v0)`
     ///
     /// \param v0 the first index
     /// \param v1 the second index

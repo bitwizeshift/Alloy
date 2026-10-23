@@ -5,7 +5,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// \file unsafe_mesh_builder.hpp
 ///
-/// \brief TODO(Bitwize): Add description
+/// \brief This header defines the low-level builder that packs vertex
+///        attributes directly into a mesh buffer
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef ALLOY_RENDER_MESH_UNSAFE_MESH_BUILDER_HPP
@@ -38,11 +39,13 @@
 namespace alloy::render {
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief A builder for meshes that performs no safety / accuracy checks.
+  /// \brief A builder for meshes that performs no safety / accuracy checks
+  ///        in release builds.
   ///
   /// This builder is essentially a wrapper around the packed_buffer writer
-  /// that produces the buffers used in meshes. This has a very weak guarantee
-  /// that, for each vertex, every attribute present in the
+  /// that produces the buffers used in meshes, converting each attribute to
+  /// its packed format and padding the end of each vertex. This has a very
+  /// weak guarantee that, for each vertex, every attribute present in the
   /// `vertex_components` must be added exactly once, in the following order:
   ///
   /// * position,
@@ -116,31 +119,108 @@ namespace alloy::render {
     //--------------------------------------------------------------------------
   public:
 
+    /// \brief Sets the bounding volume of the built mesh
+    ///
+    /// The builder does not compute this itself, since the caller generally
+    /// knows it without inspecting every position.
+    ///
+    /// \param box a box that encloses every position
     auto set_bounding_box(const core::axis_aligned_box& box) -> void;
 
+    /// \{
+    /// \brief Adds the position of the next vertex
+    ///
+    /// Only the leading `components.position` coordinates are stored.
+    ///
+    /// \param p the position
     auto add_position(const core::point2& p) -> void;
     auto add_position(const core::point3& p) -> void;
+    /// \}
 
+    /// \{
+    /// \brief Adds the UV coordinate of the current vertex
+    ///
+    /// Only the leading `components.uv` coordinates are stored.
+    ///
+    /// \param p the UV coordinate
     auto add_uv(float p) -> void;
     auto add_uv(const core::point2& p) -> void;
     auto add_uv(const core::point3& p) -> void;
+    /// \}
 
+    /// \{
+    /// \brief Adds the secondary UV coordinate of the current vertex
+    ///
+    /// Only the leading `components.uv2` coordinates are stored.
+    ///
+    /// \param p the secondary UV coordinate
     auto add_uv2(float p) -> void;
     auto add_uv2(const core::point2& p) -> void;
     auto add_uv2(const core::point3& p) -> void;
+    /// \}
 
+    /// \brief Adds the normal of the current vertex
+    ///
+    /// Only the leading `components.normal` components are stored, and each
+    /// is clamped to `[-1, 1]`.
+    ///
+    /// \param v the normal
     auto add_normal(const core::vector3& v) -> void;
+
+    /// \{
+    /// \brief Adds the tangent of the current vertex
+    ///
+    /// Only the leading `components.tangent` components are stored, and each
+    /// is clamped to `[-1, 1]`. A 4-component tangent holds the handedness
+    /// of the tangent basis in `w`, as `1` or `-1`.
+    ///
+    /// \param v the tangent
     auto add_tangent(const core::vector3& v) -> void;
     auto add_tangent(const core::vector4& v) -> void;
+    /// \}
 
+    /// \brief Adds the skinning weights of the current vertex
+    ///
+    /// Only the leading `components.weights` weights are stored, and each is
+    /// clamped to `[0, 1]`.
+    ///
+    /// \param v the weights
     auto add_weights(const core::vector4& v) -> void;
 
+    /// \brief Adds the color of the current vertex
+    ///
+    /// Only the leading `components.color` channels are stored, in RGBA
+    /// order.
+    ///
+    /// \param c the color
     auto add_color(const core::color& c) -> void;
 
+    /// \brief Adds the skinning joint indices of the current vertex
+    ///
+    /// Only the leading `components.joints` indices are stored.
+    ///
+    /// \param joints the joint indices
     auto add_joints(const std::array<std::uint8_t,4>& joints) -> void;
 
+    /// \brief Adds a single index
+    ///
+    /// \param i the index of the vertex
     auto add_index(index_type i) -> void;
+
+    /// \brief Adds the indices of a triangle face
+    ///
+    /// \param i0 the index of the first vertex
+    /// \param i1 the index of the second vertex
+    /// \param i2 the index of the third vertex
     auto add_face(index_type i0, index_type i1, index_type i2) -> void;
+
+    /// \brief Adds the indices of a quad face, as the two triangles
+    ///        `(i0, i1, i2)` and `(i2, i3, i0)`
+    ///
+    /// \param i0 the index of the first vertex
+    /// \param i1 the index of the second vertex
+    /// \param i2 the index of the third vertex
+    /// \param i3 the index of the fourth vertex
     auto add_face(index_type i0, index_type i1, index_type i2, index_type i3)
       -> void;
 
@@ -157,8 +237,16 @@ namespace alloy::render {
     //--------------------------------------------------------------------------
   public:
 
+    /// \brief Builds the mesh by consuming this builder, without copying the
+    ///        vertex data
+    ///
+    /// \return the mesh object
     auto release() && -> mesh;
 
+    /// \brief Builds a copy of the mesh using memory from \p alloc
+    ///
+    /// \param alloc the allocator to use
+    /// \return the mesh object
     auto build_with(core::allocator alloc) const -> mesh override;
 
     //--------------------------------------------------------------------------

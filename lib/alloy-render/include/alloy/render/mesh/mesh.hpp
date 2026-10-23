@@ -5,7 +5,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// \file mesh.hpp
 ///
-/// \brief TODO(Bitwize): Add description
+/// \brief This header defines the interleaved, compressed vertex and index
+///        data that is uploaded to the GPU to draw geometry
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef ALLOY_RENDER_MESH_MESH_HPP
@@ -108,16 +109,39 @@ namespace alloy::render {
 
   //////////////////////////////////////////////////////////////////////////////
   /// \brief Configuration data to use for constructing mesh objects.
+  ///
+  /// This is the raw data of a mesh, as it is laid out in GPU memory. It is
+  /// validated by `mesh::from_config`, and taken as-is by
+  /// `mesh::from_config_unchecked`.
   //////////////////////////////////////////////////////////////////////////////
   struct mesh_config
   {
+    /// The interleaved vertex attributes, laid out as described by
+    /// `components`
     core::packed_buffer vertex_data;
+
+    /// The indices of the vertices of each primitive, each stored in
+    /// `index_format`. This is empty for meshes that draw their vertices
+    /// directly.
     core::packed_buffer index_data;
+
+    /// The format of each index in `index_data`
     render::index_format index_format;
+
+    /// How the vertices (or indices) are assembled into primitives
     primitive_topology topology;
+
+    /// The order in which the vertices of front faces appear
     winding_order winding;
+
+    /// The number of components of each attribute in `vertex_data`
     vertex_components components;
+
+    /// The ranges of the mesh that are drawn separately, or empty if the mesh
+    /// is drawn as a whole
     core::vector<submesh> submeshes;
+
+    /// A box that encloses every position in `vertex_data`
     core::axis_aligned_box bounding_volume;
   };
 
@@ -141,11 +165,33 @@ namespace alloy::render {
   /// requiring several.
   ///
   /// Additionally, this interlaced mesh also *compresses* the underlying data
-  /// into an ideal format to minimize GPU memory overhead. Positions and UVs
-  /// are 32-bit floats, normals and tangents are snorm16, skinning weights
-  /// are unorm16, colors are unorm8, and skinning joints are 8-bit unsigned
-  /// integers. Attributes are ordered from most to least aligned, so
-  /// that no padding is needed between them; see `vertex_components::stride`.
+  /// into compact formats to minimize GPU memory and bandwidth. Each vertex
+  /// is laid out as the following attributes, in order, omitting any that are
+  /// absent:
+  ///
+  /// | Attribute | Format          | Components |
+  /// |-----------|-----------------|------------|
+  /// | position  | 32-bit float    | 0 - 4      |
+  /// | uv        | 32-bit float    | 0 - 3      |
+  /// | uv2       | 32-bit float    | 0 - 3      |
+  /// | normal    | snorm16         | 0 - 4      |
+  /// | tangent   | snorm16         | 0 - 4      |
+  /// | weights   | unorm16         | 0 - 4      |
+  /// | color     | unorm8          | 0 - 4      |
+  /// | joints    | 8-bit unsigned  | 0 - 4      |
+  ///
+  /// Attributes are ordered from most to least aligned, so that no padding is
+  /// needed between them; the end of each vertex is only padded as far as is
+  /// needed to keep the next vertex aligned (see `vertex_components::stride`).
+  ///
+  /// A 4-component tangent stores the handedness of the tangent basis in its
+  /// `w` component, from which the bitangent is reconstructed as
+  /// `cross(normal, tangent.xyz) * tangent.w`.
+  ///
+  /// Indices are stored as either 16 or 32-bit values (see `index_format()`).
+  /// A mesh without indices draws its vertices directly. Either way, the mesh
+  /// may be split into `submeshes()` that are drawn separately, such as for
+  /// using a different material for each.
   //////////////////////////////////////////////////////////////////////////////
   class mesh
   {
