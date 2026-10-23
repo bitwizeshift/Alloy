@@ -826,6 +826,52 @@ TEST_CASE("simd_sqrt(simd<f32>)", "[algorithm][math]") {
 
 //-----------------------------------------------------------------------------
 
+TEST_CASE("simd_sqrt(simd<f32>) of zero", "[algorithm][math]") {
+  // Arrange
+  const auto sut = simd<f32>::spread_scalar(0.0f);
+
+  // Act
+  const auto result = simd_sqrt(sut);
+
+  // Assert
+  SECTION("Square root of 0 is 0") {
+    REQUIRE(result.lane<0>() == 0.0f);
+  }
+}
+
+TEST_CASE("simd_fuse_add_multiply(simd<f32>,simd<f32>,simd<f32>)", "[arithmetic]") {
+  // Arrange
+  const auto add = simd<f32>::set(1, 2, 3, 4);
+  const auto lhs = simd<f32>::set(2, 3, 4, 5);
+  const auto rhs = simd<f32>::set(-1, 0.5f, 2, 10);
+
+  // Act
+  const auto result = simd_fuse_add_multiply(add, lhs, rhs);
+
+  // Assert
+  SECTION("Adds the product to the first argument") {
+    REQUIRE(result.lane<0>() == -1.0f);
+    REQUIRE(result.lane<1>() == 3.5f);
+    REQUIRE(result.lane<2>() == 11.0f);
+    REQUIRE(result.lane<3>() == 54.0f);
+  }
+}
+
+TEST_CASE("simd_fuse_add_multiply_scalar(simd<f32>,simd<f32>,f32)", "[arithmetic]") {
+  // Arrange
+  const auto add = simd<f32>::set(1, 2, 3, 4);
+  const auto lhs = simd<f32>::set(2, 3, 4, 5);
+
+  // Act
+  const auto result = simd_fuse_add_multiply_scalar(add, lhs, 2.0f);
+
+  // Assert
+  SECTION("Adds the scaled vector to the first argument") {
+    REQUIRE(result.lane<0>() == 5.0f);
+    REQUIRE(result.lane<3>() == 14.0f);
+  }
+}
+
 TEST_CASE("simd_fast_reciprocol_sqrt(simd<f32>)", "[algorithm][math]") {
   // Arrange
   const auto sut = simd<f32>::set(1,3,5,7);

@@ -397,8 +397,8 @@ namespace alloy::core {
   /// \brief Performs a fast, and possibly imprecise, calculation for the
   ///        reciprocol of \p v
   ///
-  /// \note For SSE, this operation is the same as `simd_reciprocol`. For
-  ///       ARM NEON, this expands into an approximation of `1 / v`
+  /// \note This is the hardware estimate of the reciprocal, which is accurate
+  ///       to about 12 bits on SSE, and 8 bits on NEON.
   ///
   /// \param v the simd object to compute the reciprocol of
   /// \return the compted reciprocols in a simd object
@@ -406,9 +406,7 @@ namespace alloy::core {
 
   /// \brief Performs a computation for the reciprocol of \p v
   ///
-  /// \note For ARM NEON, the precision of this function is increased by adding
-  ///       an additional Newton-Raphson iteration to the approximation
-  ///       returned from `simd_fast_reciprocol`.
+  /// This is computed with a full-precision division.
   ///
   /// \param v the simd object to compute the reciprocol of
   /// \return the compted reciprocols in a simd object
@@ -418,18 +416,14 @@ namespace alloy::core {
 
   /// \brief Computes a fast, and possibly imprecise, sqrt
   ///
-  /// \note For SSE, this operation is the same as `simd_sqrt`. For ARM NEON,
-  ///       this expands into an approximation of `sqrt`.
+  /// \note Both NEON and SSE have a full-precision square root instruction,
+  ///       so this is currently the same as `simd_sqrt`.
   ///
   /// \param v the values to square-root
   /// \return the square-root result in a simd object
   auto simd_fast_sqrt(simd<f32> v) noexcept -> simd<f32>;
 
   /// \brief Computes a precise sqrt, at a possible performance cost
-  ///
-  /// \note For ARM NEON, the precision of this function is increased by adding
-  ///       an additional Newton-Raphson iteration to the approximation
-  ///       returned from `simd_fast_sqrt`.
   ///
   /// \param v the values to square-root
   /// \return the square-root result in a simd object
@@ -440,9 +434,8 @@ namespace alloy::core {
   /// \brief Computes the reciprocol sqrt value of \p v using a fast, but
   ///        potentially imprecise, method.
   ///
-  /// \note For SSE, this is the same as `simd_reciprocol_sqrt`. For ARM, this
-  ///       is a composition of `simd_fast_sqrt` and `simd_fast_reciprocol`,
-  ///       which will have an accumulated error.
+  /// \note This is the hardware estimate of the reciprocal square root, which
+  ///       is accurate to about 12 bits on SSE, and 8 bits on NEON.
   ///
   /// \param v the values to compute the reciprocol sqrt for
   /// \return the computed result in a simd object
@@ -451,8 +444,7 @@ namespace alloy::core {
   /// \brief Computes the reciprocol sqrt value of \p v using a more precies
   ///        method, potentially at a performance impact
   ///
-  /// \note For non-SSE architectures, this is a composition of `simd_sqrt` and
-  ///       `simd_reciprocol`.
+  /// \note This is a composition of `simd_sqrt` and `simd_reciprocol`.
   ///
   /// \param v the values to compute the reciprocol sqrt for
   /// \return the computed result in a simd object
@@ -994,7 +986,7 @@ auto alloy::core::simd_fuse_add_multiply(
 ) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
-  return simd<f32>{vmlaq_f32(add.value, lhs.value, rhs.value)};
+  return simd<f32>{vfmaq_f32(add.value, lhs.value, rhs.value)};
 #elif defined(__FMA__)
   return simd<f32>{_mm_fmadd_ps(lhs.value, rhs.value, add.value)};
 #elif defined(ALLOY_SIMD_SSE)
@@ -1017,7 +1009,7 @@ auto alloy::core::simd_fuse_add_multiply_scalar(
 ) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
-  return simd<f32>{vmlaq_n_f32(add.value, lhs.value, rhs)};
+  return simd<f32>{vfmaq_n_f32(add.value, lhs.value, rhs)};
 #else
   return simd_fuse_add_multiply(add, lhs, simd<f32>::spread_scalar(rhs));
 #endif
@@ -1271,18 +1263,17 @@ auto alloy::core::simd_fast_reciprocol(simd<f32> v) noexcept -> simd<f32>
 ALLOY_FORCE_INLINE
 auto alloy::core::simd_reciprocol(simd<f32> v) noexcept -> simd<f32>
 {
-#if defined(ALLOY_SIMD_NEON)
-  // Use a Newton-Raphson iteration to refine the estimated value
-  // http://en.wikipedia.org/wiki/Division_algorithm#Newton.E2.80.93Raphson_division
-  const auto reciprocal = vrecpeq_f32(v.value);
-  return simd<f32>{vmulq_f32(vrecpsq_f32(v.value, reciprocal), reciprocal)};
-#else
-  return simd_fast_reciprocol(v);
-#endif
+  return simd_divide(simd<f32>::spread_scalar(1.0f), v);
 }
 
 ALLOY_FORCE_INLINE
 auto alloy::core::simd_fast_sqrt(simd<f32> v) noexcept -> simd<f32>
+{
+  return simd_sqrt(v);
+}
+
+ALLOY_FORCE_INLINE
+auto alloy::core::simd_sqrt(simd<f32> v) noexcept -> simd<f32>
 {
 #if defined(ALLOY_SIMD_NEON)
   return simd<f32>{vsqrtq_f32(v.value)};
@@ -1299,37 +1290,21 @@ auto alloy::core::simd_fast_sqrt(simd<f32> v) noexcept -> simd<f32>
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::simd_sqrt(simd<f32> v) noexcept -> simd<f32>
-{
-#if defined(ALLOY_SIMD_NEON)
-  // Approximate a more accurate SQRT
-  const auto estimate0 = vrsqrteq_f32(v.value);
-  const auto estimate1 = vmulq_f32(vrsqrtsq_f32(v.value, vmulq_f32(estimate0, estimate0)), estimate0);
-  const auto estimate2 = vmulq_f32(vrsqrtsq_f32(v.value, vmulq_f32(estimate1, estimate1)), estimate1);
-  return simd<f32>{vmulq_f32(v.value, estimate2)};
-#else
-  return simd_fast_sqrt(v);
-#endif
-}
-
-ALLOY_FORCE_INLINE
 auto alloy::core::simd_fast_reciprocol_sqrt(simd<f32> v) noexcept -> simd<f32>
 {
-#if defined(ALLOY_SIMD_SSE)
+#if defined(ALLOY_SIMD_NEON)
+  return simd<f32>{vrsqrteq_f32(v.value)};
+#elif defined(ALLOY_SIMD_SSE)
   return simd<f32>{_mm_rsqrt_ps(v.value)};
 #else
-  return simd_fast_reciprocol(simd_fast_sqrt(v));
+  return simd_reciprocol_sqrt(v);
 #endif
 }
 
 ALLOY_FORCE_INLINE
 auto alloy::core::simd_reciprocol_sqrt(simd<f32> v) noexcept -> simd<f32>
 {
-#if defined(ALLOY_SIMD_SSE)
-  return simd<f32>{_mm_rsqrt_ps(v.value)};
-#else
   return simd_reciprocol(simd_sqrt(v));
-#endif
 }
 
 ALLOY_FORCE_INLINE
