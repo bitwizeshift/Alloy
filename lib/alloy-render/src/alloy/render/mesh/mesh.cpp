@@ -50,7 +50,6 @@ inline constexpr auto max_color_components = 4u;
 inline constexpr auto max_uv_components = 3u;
 inline constexpr auto max_normal_components = 4u;
 inline constexpr auto max_tangent_components = 4u;
-inline constexpr auto max_bitangent_components = 4u;
 
 } // namespace <anonymous>
 } // namespace alloy::render
@@ -81,9 +80,6 @@ auto alloy::render::mesh::from_config(mesh_config config)
   }
   if (ALLOY_UNLIKELY(components.tangent > max_tangent_components)) {
     return core::fail(construct_error::invalid_tangent_component);
-  }
-  if (ALLOY_UNLIKELY(components.bitangent > max_bitangent_components)) {
-    return core::fail(construct_error::invalid_bitangent_component);
   }
 
   const auto bytes = config.vertex_data.size().count();
@@ -209,10 +205,6 @@ auto alloy::render::error_message(mesh::construct_error e)
     case mesh::construct_error::invalid_tangent_component: {
       return "The specified tangent components is invalid. This can occur if "
              "`tangent_components` is not between `0` and `4` (inclusive)";
-    }
-    case mesh::construct_error::invalid_bitangent_component: {
-      return "The specified bitangent components is invalid. This can occur if "
-             "`bitangent_components` is not between `0` and `4` (inclusive)";
     }
   }
   core::compiler::unreachable();

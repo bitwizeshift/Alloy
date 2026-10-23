@@ -116,22 +116,6 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     );
   }
 
-  // bitangents
-
-  if (m.has_bitangents()) {
-    const auto components = m.bitangent_components();
-    const auto offset = reinterpret_cast<void*>(m.offset_to_bitangents().count());
-    ::glEnableVertexAttribArray(render::attribute_locations::bitangents);
-    ::glVertexAttribPointer(
-      render::attribute_locations::bitangents,
-      static_cast<::GLint>(components),
-      GL_SHORT,
-      GL_TRUE,
-      static_cast<::GLsizei>(stride),
-      offset
-    );
-  }
-
   const auto indices = m.indices();
   const auto index_count = m.indices().size();
   ::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);

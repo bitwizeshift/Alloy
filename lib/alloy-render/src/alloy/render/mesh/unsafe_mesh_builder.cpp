@@ -13,6 +13,7 @@
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
+#include "alloy/core/math/vector/vector4.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/memory/data_quantity.hpp"
 #include "alloy/core/model/color.hpp"
@@ -139,12 +140,12 @@ auto alloy::render::unsafe_mesh_builder::add_tangent(const core::vector3& v)
   complete_attribute(attribute::tangent);
 }
 
-auto alloy::render::unsafe_mesh_builder::add_bitangent(const core::vector3& v)
+auto alloy::render::unsafe_mesh_builder::add_tangent(const core::vector4& v)
   -> void
 {
-  check_attribute(attribute::bitangent, 3u);
-  m_writer.pack_object(v, vector_packer{m_components.bitangent});
-  complete_attribute(attribute::bitangent);
+  check_attribute(attribute::tangent, 4u);
+  m_writer.pack_object(v, vector_packer{m_components.tangent});
+  complete_attribute(attribute::tangent);
 }
 
 auto alloy::render::unsafe_mesh_builder::add_color(const core::color& c)
@@ -237,9 +238,6 @@ auto alloy::render::unsafe_mesh_builder::component_count(attribute a)
     case attribute::tangent: {
       return m_components.tangent;
     }
-    case attribute::bitangent: {
-      return m_components.bitangent;
-    }
     case attribute::color: {
       return m_components.color;
     }
@@ -308,9 +306,6 @@ auto alloy::render::unsafe_mesh_builder::last_attribute_of(
 {
   if (components.color != 0u) {
     return attribute::color;
-  }
-  if (components.bitangent != 0u) {
-    return attribute::bitangent;
   }
   if (components.tangent != 0u) {
     return attribute::tangent;

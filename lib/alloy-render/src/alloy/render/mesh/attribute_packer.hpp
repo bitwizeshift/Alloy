@@ -19,6 +19,7 @@
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
+#include "alloy/core/math/vector/vector4.hpp"
 #include "alloy/core/memory/packed_buffer.hpp"
 #include "alloy/core/model/color.hpp"
 
@@ -61,6 +62,8 @@ namespace alloy::render {
     std::uint8_t components;
 
     auto pack(core::packed_buffer_writer& writer, const core::vector3& v)
+      -> void;
+    auto pack(core::packed_buffer_writer& writer, const core::vector4& v)
       -> void;
 
     static auto compress(float x) noexcept -> std::int16_t;
@@ -127,6 +130,23 @@ auto alloy::render::vector_packer::pack(
     compress(v.x()),
     compress(v.y()),
     compress(v.z()),
+  };
+  writer.pack_objects(values.begin(), values.begin() + components);
+}
+
+inline
+auto alloy::render::vector_packer::pack(
+  core::packed_buffer_writer& writer,
+  const core::vector4& v
+) -> void
+{
+  ALLOY_ASSERT(components <= 4u);
+
+  const auto values = std::array{
+    compress(v.x()),
+    compress(v.y()),
+    compress(v.z()),
+    compress(v.w()),
   };
   writer.pack_objects(values.begin(), values.begin() + components);
 }

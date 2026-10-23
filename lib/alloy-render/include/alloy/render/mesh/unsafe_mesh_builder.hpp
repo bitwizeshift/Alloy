@@ -24,6 +24,7 @@
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
+#include "alloy/core/math/vector/vector4.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/memory/data_quantity.hpp"
 #include "alloy/core/memory/packed_buffer.hpp"
@@ -46,7 +47,6 @@ namespace alloy::render {
   /// * uv,
   /// * normal,
   /// * tangent,
-  /// * bitangent,
   /// * color
   ///
   /// \warning
@@ -118,7 +118,7 @@ namespace alloy::render {
 
     auto add_normal(const core::vector3& v) -> void;
     auto add_tangent(const core::vector3& v) -> void;
-    auto add_bitangent(const core::vector3& v) -> void;
+    auto add_tangent(const core::vector4& v) -> void;
 
     auto add_color(const core::color& c) -> void;
 
@@ -147,7 +147,6 @@ namespace alloy::render {
       uv,
       normal,
       tangent,
-      bitangent,
       color,
     };
 

@@ -49,11 +49,11 @@ namespace alloy::render {
     /// The number of snorm16 components per normal, in `[0, 4]`
     std::uint8_t normal = 0u;
 
-    /// The number of snorm16 components per tangent, in `[0, 4]`
+    /// The number of snorm16 components per tangent, in `[0, 4]`. A fourth
+    /// component holds the handedness of the tangent basis, as `1` or `-1`,
+    /// from which the bitangent is reconstructed as
+    /// `cross(normal, tangent.xyz) * tangent.w`.
     std::uint8_t tangent = 0u;
-
-    /// The number of snorm16 components per bitangent, in `[0, 4]`
-    std::uint8_t bitangent = 0u;
 
     /// The number of unorm8 components per color, in `[0, 4]`
     std::uint8_t color = 0u;
@@ -114,8 +114,8 @@ namespace alloy::render {
   ///
   /// Additionally, this interlaced mesh also *compresses* the underlying data
   /// into an ideal format to minimize GPU memory overhead. Positions and UVs
-  /// are 32-bit floats, normals, tangents, and bitangents are snorm16, and
-  /// colors are unorm8. Attributes are ordered from most to least aligned, so
+  /// are 32-bit floats, normals and tangents are snorm16, and colors are
+  /// unorm8. Attributes are ordered from most to least aligned, so
   /// that no padding is needed between them; see `vertex_components::stride`.
   //////////////////////////////////////////////////////////////////////////////
   class mesh
@@ -161,10 +161,6 @@ namespace alloy::render {
       /// The specified tangent components is invalid. This can occur if
       /// `tangent_components` is not between `0` and `4` (inclusive)
       invalid_tangent_component,
-
-      /// The specified bitangent components is invalid. This can occur if
-      /// `bitangent_components` is not between `0` and `4` (inclusive)
-      invalid_bitangent_component,
     };
 
     //--------------------------------------------------------------------------
@@ -235,7 +231,6 @@ namespace alloy::render {
     auto has_uvs() const noexcept -> bool;
     auto has_normals() const noexcept -> bool;
     auto has_tangents() const noexcept -> bool;
-    auto has_bitangents() const noexcept -> bool;
     auto has_indices() const noexcept -> bool;
     /// \}
 
@@ -248,7 +243,6 @@ namespace alloy::render {
     auto offset_to_uvs() const noexcept -> core::bytes;
     auto offset_to_normals() const noexcept -> core::bytes;
     auto offset_to_tangents() const noexcept -> core::bytes;
-    auto offset_to_bitangents() const noexcept -> core::bytes;
     /// \}
 
     /// \{
@@ -260,7 +254,6 @@ namespace alloy::render {
     auto bytes_per_uvs() const noexcept -> core::bytes;
     auto bytes_per_normals() const noexcept -> core::bytes;
     auto bytes_per_tangents() const noexcept -> core::bytes;
-    auto bytes_per_bitangents() const noexcept -> core::bytes;
     /// \}
 
     /// \{
@@ -272,7 +265,6 @@ namespace alloy::render {
     auto uv_components() const noexcept -> std::size_t;
     auto normal_components() const noexcept -> std::size_t;
     auto tangent_components() const noexcept -> std::size_t;
-    auto bitangent_components() const noexcept -> std::size_t;
     /// \}
 
     /// \brief Gets the number of components of every vertex attribute
@@ -369,7 +361,6 @@ auto alloy::render::vertex_components::unpadded_size()
     (uv * sizeof(float)) +
     (normal * sizeof(std::int16_t)) +
     (tangent * sizeof(std::int16_t)) +
-    (bitangent * sizeof(std::int16_t)) +
     (color * sizeof(std::uint8_t))
   };
 }
@@ -378,9 +369,7 @@ inline constexpr
 auto alloy::render::vertex_components::stride() const noexcept -> core::bytes
 {
   const auto has_32_bit = (position != 0u) || (uv != 0u);
-  const auto has_16_bit = (
-    (normal != 0u) || (tangent != 0u) || (bitangent != 0u)
-  );
+  const auto has_16_bit = (normal != 0u) || (tangent != 0u);
   const auto alignment = has_32_bit ? 4u : (has_16_bit ? 2u : 1u);
   const auto bytes = unpadded_size().count();
 
@@ -426,12 +415,6 @@ auto alloy::render::mesh::has_tangents() const noexcept -> bool
 }
 
 inline
-auto alloy::render::mesh::has_bitangents() const noexcept -> bool
-{
-  return m_components.bitangent != 0u;
-}
-
-inline
 auto alloy::render::mesh::has_indices() const noexcept -> bool
 {
   return !m_indices.empty();
@@ -448,7 +431,7 @@ auto alloy::render::mesh::offset_to_positions() const noexcept -> core::bytes
 inline
 auto alloy::render::mesh::offset_to_colors() const noexcept -> core::bytes
 {
-  return offset_to_bitangents() + bytes_per_bitangents();
+  return offset_to_tangents() + bytes_per_tangents();
 }
 
 inline
@@ -467,12 +450,6 @@ inline
 auto alloy::render::mesh::offset_to_tangents() const noexcept -> core::bytes
 {
   return offset_to_normals() + bytes_per_normals();
-}
-
-inline
-auto alloy::render::mesh::offset_to_bitangents() const noexcept -> core::bytes
-{
-  return offset_to_tangents() + bytes_per_tangents();
 }
 
 //------------------------------------------------------------------------------
@@ -507,12 +484,6 @@ auto alloy::render::mesh::bytes_per_tangents() const noexcept -> core::bytes
   return core::bytes{m_components.tangent * sizeof(std::int16_t)};
 }
 
-inline
-auto alloy::render::mesh::bytes_per_bitangents() const noexcept -> core::bytes
-{
-  return core::bytes{m_components.bitangent * sizeof(std::int16_t)};
-}
-
 //------------------------------------------------------------------------------
 
 inline
@@ -543,12 +514,6 @@ inline
 auto alloy::render::mesh::tangent_components() const noexcept -> std::size_t
 {
   return m_components.tangent;
-}
-
-inline
-auto alloy::render::mesh::bitangent_components() const noexcept -> std::size_t
-{
-  return m_components.bitangent;
 }
 
 //------------------------------------------------------------------------------

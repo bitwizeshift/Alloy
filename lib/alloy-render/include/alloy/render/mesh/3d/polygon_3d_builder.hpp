@@ -23,6 +23,7 @@
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
+#include "alloy/core/math/vector/vector4.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/model/color.hpp"
 
@@ -91,7 +92,6 @@ namespace alloy::render {
     auto reserve_uvs(std::size_t n) -> void;
     auto reserve_normals(std::size_t n) -> void;
     auto reserve_tangents(std::size_t n) -> void;
-    auto reserve_bitangents(std::size_t n) -> void;
     /// \}
 
     /// \brief Reserves space for the indices of \p n triangle faces
@@ -127,15 +127,11 @@ namespace alloy::render {
 
     /// \brief Sets the tangents for this mesh
     ///
-    /// \pre `tangents % 3 == 0`
-    /// \param tangents the tangents for this mesh
-    auto set_tangents(core::vector<core::vector3> normals) -> void;
-
-    /// \brief Sets the bitangents for this mesh
+    /// The `w` component of each tangent holds the handedness of the tangent
+    /// basis, as `1` or `-1`.
     ///
-    /// \pre `bitangents % 3 == 0`
-    /// \param bitangents the bitangents for this mesh
-    auto set_bitangents(core::vector<core::vector3> bitangents) -> void;
+    /// \param tangents the tangents for this mesh
+    auto set_tangents(core::vector<core::vector4> tangents) -> void;
 
     /// \brief Sets the indices for this mesh
     ///
@@ -169,13 +165,11 @@ namespace alloy::render {
 
     /// \brief Adds a tangent to the mesh
     ///
-    /// \param v the vector
-    auto add_tangent(const core::vector3& v) -> void;
-
-    /// \brief Adds a bitangent to the mesh
+    /// The `w` component of the tangent holds the handedness of the tangent
+    /// basis, as `1` or `-1`.
     ///
-    /// \param v the vector
-    auto add_bitangent(const core::vector3& v) -> void;
+    /// \param v the tangent
+    auto add_tangent(const core::vector4& v) -> void;
 
     /// \brief Adds a
     auto add_index(index_type v0) -> void;
@@ -217,8 +211,7 @@ namespace alloy::render {
     core::vector<core::color> m_colors;
     core::vector<core::point2> m_uvs;
     core::vector<core::vector3> m_normals;
-    core::vector<core::vector3> m_tangents;
-    core::vector<core::vector3> m_bitangents;
+    core::vector<core::vector4> m_tangents;
     core::vector<std::uint16_t> m_indices;
     primitive_topology m_topology;
   };

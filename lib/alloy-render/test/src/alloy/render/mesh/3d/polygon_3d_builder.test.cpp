@@ -4,12 +4,13 @@
 
 #include <alloy/render/mesh/3d/polygon_3d_builder.hpp>
 
+#include "../mesh_test_utilities.hpp"
 #include <alloy/render/mesh/mesh.hpp>
 
 #include <alloy/core/containers/vector.hpp>
 #include <alloy/core/geometry/axis_aligned_box.hpp>
 #include <alloy/core/geometry/point/point3.hpp>
-#include <alloy/core/math/vector/vector3.hpp>
+#include <alloy/core/math/vector/vector4.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -63,17 +64,17 @@ TEST_CASE("polygon_3d_builder::build()", "[build]") {
     // Assert
     REQUIRE(result.bounding_volume() == expected);
   }
-  SECTION("Bitangents are absent when only normals are supplied") {
+  SECTION("Tangent handedness is preserved") {
     // Arrange
     auto sut = polygon_3d_builder{};
     sut.add_position(core::point3{1, 2, 3});
-    sut.add_normal(core::vector3{0, 1, 0});
+    sut.add_tangent(core::vector4{1, 0, 0, -1});
 
     // Act
     const auto result = sut.build();
 
     // Assert
-    REQUIRE_FALSE(result.has_bitangents());
+    REQUIRE(read_tangent_handedness(result, 0u) == -32767);
   }
 }
 

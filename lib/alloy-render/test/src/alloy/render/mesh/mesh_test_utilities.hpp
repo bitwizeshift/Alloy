@@ -45,6 +45,18 @@ auto read_normal(const mesh& m, std::size_t vertex) -> core::vector3
   };
 }
 
+/// \brief Reads the packed snorm16 `w` component of the tangent at \p vertex
+inline
+auto read_tangent_handedness(const mesh& m, std::size_t vertex) -> std::int16_t
+{
+  auto result = std::int16_t{};
+  const auto offset = (vertex * m.stride().count())
+                    + m.offset_to_tangents().count()
+                    + (3u * sizeof(std::int16_t));
+  std::memcpy(&result, m.data().data() + offset, sizeof(result));
+  return result;
+}
+
 /// \brief Counts the triangles whose counter-clockwise face normal points
 ///        away from the stored normal of its first vertex
 inline

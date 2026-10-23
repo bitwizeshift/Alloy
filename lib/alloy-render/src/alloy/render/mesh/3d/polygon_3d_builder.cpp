@@ -14,6 +14,7 @@
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
+#include "alloy/core/math/vector/vector4.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/model/color.hpp"
 
@@ -27,8 +28,7 @@ inline constexpr auto entries_per_position  = std::uint8_t{3};
 inline constexpr auto entries_per_color     = std::uint8_t{4};
 inline constexpr auto entries_per_uv        = std::uint8_t{2};
 inline constexpr auto entries_per_normal    = std::uint8_t{3};
-inline constexpr auto entries_per_tangent   = std::uint8_t{3};
-inline constexpr auto entries_per_bitangent = std::uint8_t{3};
+inline constexpr auto entries_per_tangent   = std::uint8_t{4};
 inline constexpr auto entries_per_indices   = 3u;
 
 template <typename T>
@@ -52,8 +52,7 @@ alloy::render::polygon_3d_builder::polygon_3d_builder(
     m_colors{core::stl_allocator_adapter<core::color>{alloc}},
     m_uvs{core::stl_allocator_adapter<core::point2>{alloc}},
     m_normals{core::stl_allocator_adapter<core::vector3>{alloc}},
-    m_tangents{core::stl_allocator_adapter<core::vector3>{alloc}},
-    m_bitangents{core::stl_allocator_adapter<core::vector3>{alloc}},
+    m_tangents{core::stl_allocator_adapter<core::vector4>{alloc}},
     m_indices{core::stl_allocator_adapter<index_type>{alloc}},
     m_topology{topology}
 {
@@ -71,7 +70,6 @@ auto alloy::render::polygon_3d_builder::reserve(std::size_t n) -> void
   reserve_uvs(n);
   reserve_normals(n);
   reserve_tangents(n);
-  reserve_bitangents(n);
 }
 
 auto alloy::render::polygon_3d_builder::reserve_positions(std::size_t n) -> void
@@ -97,12 +95,6 @@ auto alloy::render::polygon_3d_builder::reserve_normals(std::size_t n) -> void
 auto alloy::render::polygon_3d_builder::reserve_tangents(std::size_t n) -> void
 {
   m_tangents.reserve(n);
-}
-
-auto alloy::render::polygon_3d_builder::reserve_bitangents(std::size_t n)
-  -> void
-{
-  m_bitangents.reserve(n);
 }
 
 auto alloy::render::polygon_3d_builder::reserve_indices(std::size_t n) -> void
@@ -142,17 +134,10 @@ auto alloy::render::polygon_3d_builder::set_normals(
 }
 
 auto alloy::render::polygon_3d_builder::set_tangents(
-  core::vector<core::vector3> tangents
+  core::vector<core::vector4> tangents
 ) -> void
 {
   m_tangents = std::move(tangents);
-}
-
-auto alloy::render::polygon_3d_builder::set_bitangents(
-  core::vector<core::vector3> bitangents
-) -> void
-{
-  m_bitangents = std::move(bitangents);
 }
 
 auto alloy::render::polygon_3d_builder::set_indices(
@@ -188,16 +173,10 @@ auto alloy::render::polygon_3d_builder::add_normal(const core::vector3& v)
   m_normals.push_back(v);
 }
 
-auto alloy::render::polygon_3d_builder::add_tangent(const core::vector3& v)
+auto alloy::render::polygon_3d_builder::add_tangent(const core::vector4& v)
   -> void
 {
   m_tangents.push_back(v);
-}
-
-auto alloy::render::polygon_3d_builder::add_bitangent(const core::vector3& v)
-  -> void
-{
-  m_bitangents.push_back(v);
 }
 
 //------------------------------------------------------------------------------
@@ -241,14 +220,12 @@ auto alloy::render::polygon_3d_builder::build_with(core::allocator alloc)
     .uv        = components_of(m_uvs, ::entries_per_uv),
     .normal    = components_of(m_normals, ::entries_per_normal),
     .tangent   = components_of(m_tangents, ::entries_per_tangent),
-    .bitangent = components_of(m_bitangents, ::entries_per_bitangent),
     .color     = components_of(m_colors, ::entries_per_color),
   };
   const auto positions = m_positions.size();
   ALLOY_ASSERT(m_uvs.empty() || m_uvs.size() == positions);
   ALLOY_ASSERT(m_normals.empty() || m_normals.size() == positions);
   ALLOY_ASSERT(m_tangents.empty() || m_tangents.size() == positions);
-  ALLOY_ASSERT(m_bitangents.empty() || m_bitangents.size() == positions);
   ALLOY_ASSERT(m_colors.empty() || m_colors.size() == positions);
 
   auto builder = unsafe_mesh_builder{components, m_topology, alloc};
@@ -272,9 +249,6 @@ auto alloy::render::polygon_3d_builder::build_with(core::allocator alloc)
     }
     if (!m_tangents.empty()) {
       builder.add_tangent(m_tangents[i]);
-    }
-    if (!m_bitangents.empty()) {
-      builder.add_bitangent(m_bitangents[i]);
     }
     if (!m_colors.empty()) {
       builder.add_color(m_colors[i]);

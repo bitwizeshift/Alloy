@@ -186,8 +186,7 @@ TEST_CASE("mesh::offset_to_*()", "[observer]") {
     .position  = 3u,
     .uv        = 2u,
     .normal    = 3u,
-    .tangent   = 3u,
-    .bitangent = 3u,
+    .tangent   = 4u,
     .color     = 4u,
   };
   const auto sut = mesh::from_config_unchecked(std::move(config));
@@ -220,26 +219,19 @@ TEST_CASE("mesh::offset_to_*()", "[observer]") {
     // Assert
     REQUIRE(result == core::bytes{26u});
   }
-  SECTION("Bitangents follow tangents") {
-    // Act
-    const auto result = sut.offset_to_bitangents();
-
-    // Assert
-    REQUIRE(result == core::bytes{32u});
-  }
-  SECTION("Colors follow bitangents") {
+  SECTION("Colors follow tangents") {
     // Act
     const auto result = sut.offset_to_colors();
 
     // Assert
-    REQUIRE(result == core::bytes{38u});
+    REQUIRE(result == core::bytes{34u});
   }
   SECTION("Stride pads the end of the vertex") {
     // Act
     const auto result = sut.stride();
 
     // Assert
-    REQUIRE(result == core::bytes{44u});
+    REQUIRE(result == core::bytes{40u});
   }
 }
 
