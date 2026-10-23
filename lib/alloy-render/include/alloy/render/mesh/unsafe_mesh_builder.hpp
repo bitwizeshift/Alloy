@@ -3,7 +3,7 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \file unsafe_mesh_builder.hpp .hpp
+/// \file unsafe_mesh_builder.hpp
 ///
 /// \brief TODO(Bitwize): Add description
 ////////////////////////////////////////////////////////////////////////////////
@@ -28,10 +28,9 @@
 #include "alloy/core/memory/data_quantity.hpp"
 #include "alloy/core/memory/packed_buffer.hpp"
 #include "alloy/core/model/color.hpp"
-#include "alloy/core/utilities/quantity.hpp"
 
-#include <cstddef>
-#include <cstdint>
+#include <cstddef> // std::size_t
+#include <cstdint> // std::uint8_t, std::uint16_t
 
 namespace alloy::render {
 
@@ -40,13 +39,15 @@ namespace alloy::render {
   ///
   /// This builder is essentially a wrapper around the packed_buffer writer
   /// that produces the buffers used in meshes. This has a very weak guarantee
-  /// that all entries must be performed in the following interlaced order:
+  /// that, for each vertex, every attribute present in the
+  /// `vertex_components` must be added exactly once, in the following order:
   ///
   /// * position,
   /// * uv,
   /// * normal,
   /// * tangent,
-  /// * bitangent
+  /// * bitangent,
+  /// * color
   ///
   /// \warning
   /// This type has a strict requirement on the order of attributes being
@@ -70,7 +71,13 @@ namespace alloy::render {
     //--------------------------------------------------------------------------
   public:
 
-    unsafe_mesh_builder(
+    /// \brief Constructs a builder for vertices made of \p components
+    ///
+    /// \param components the number of components of each vertex attribute
+    /// \param topology the topology of the built mesh
+    /// \param alloc the allocator to build the mesh with
+    explicit unsafe_mesh_builder(
+      vertex_components components,
       primitive_topology topology = primitive_topology::triangles,
       core::allocator alloc = core::allocator{}
     ) noexcept;
@@ -80,16 +87,20 @@ namespace alloy::render {
     //--------------------------------------------------------------------------
   public:
 
-    auto set_components_per_position(std::uint8_t n) noexcept-> void;
-    auto set_components_per_color(std::uint8_t n) noexcept -> void;
-    auto set_components_per_uv(std::uint8_t n) noexcept-> void;
-    auto set_components_per_normal(std::uint8_t n) noexcept-> void;
-    auto set_components_per_tangent(std::uint8_t n) noexcept-> void;
-    auto set_components_per_bitangent(std::uint8_t n) noexcept-> void;
-
+    /// \brief Reserves space for \p n vertices
+    ///
+    /// \param n the number of vertices
     auto reserve_vertices(std::size_t n) -> void;
+
+    /// \brief Reserves space for \p b bytes of vertex data
+    ///
+    /// \param b the number of bytes
     auto reserve_bytes(core::bytes b) -> void;
-    auto reserve_indices(core::quantity<index_type> indices) -> void;
+
+    /// \brief Reserves space for the indices of \p n triangle faces
+    ///
+    /// \param n the number of faces
+    auto reserve_indices(std::size_t n) -> void;
 
     //--------------------------------------------------------------------------
     // Modifiers
@@ -101,8 +112,6 @@ namespace alloy::render {
     auto add_position(const core::point2& p) -> void;
     auto add_position(const core::point3& p) -> void;
 
-    auto add_color(const core::color& c) -> void;
-
     auto add_uv(float p) -> void;
     auto add_uv(const core::point2& p) -> void;
     auto add_uv(const core::point3& p) -> void;
@@ -110,6 +119,8 @@ namespace alloy::render {
     auto add_normal(const core::vector3& v) -> void;
     auto add_tangent(const core::vector3& v) -> void;
     auto add_bitangent(const core::vector3& v) -> void;
+
+    auto add_color(const core::color& c) -> void;
 
     auto add_index(index_type i) -> void;
     auto add_face(index_type i0, index_type i1, index_type i2) -> void;
@@ -126,6 +137,21 @@ namespace alloy::render {
     auto build_with(core::allocator alloc) const -> mesh override;
 
     //--------------------------------------------------------------------------
+    // Private Member Types
+    //--------------------------------------------------------------------------
+  private:
+
+    /// The vertex attributes, in the order they are interleaved
+    enum class attribute : std::uint8_t {
+      position,
+      uv,
+      normal,
+      tangent,
+      bitangent,
+      color,
+    };
+
+    //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------
   private:
@@ -135,12 +161,31 @@ namespace alloy::render {
     core::vector<index_type> m_indices;
     primitive_topology m_topology;
     core::axis_aligned_box m_bound;
-    std::uint8_t m_components_per_position;
-    std::uint8_t m_components_per_color;
-    std::uint8_t m_components_per_uv;
-    std::uint8_t m_components_per_normal;
-    std::uint8_t m_components_per_tangent;
-    std::uint8_t m_components_per_bitangent;
+    vertex_components m_components;
+
+    /// The last attribute present in each vertex
+    attribute m_last_attribute;
+
+    /// The number of bytes of padding following the last attribute
+    std::uint8_t m_vertex_padding;
+
+    //--------------------------------------------------------------------------
+    // Private Modifiers
+    //--------------------------------------------------------------------------
+  private:
+
+    /// \brief Determines the last attribute present in a vertex made of
+    ///        \p components
+    ///
+    /// \param components the vertex components
+    /// \return the last attribute
+    static auto last_attribute_of(const vertex_components& components)
+      noexcept -> attribute;
+
+    /// \brief Pads the end of the vertex if \p a is its last attribute
+    ///
+    /// \param a the attribute that was just added
+    auto complete_attribute(attribute a) -> void;
   };
 
 } // namespace alloy::render

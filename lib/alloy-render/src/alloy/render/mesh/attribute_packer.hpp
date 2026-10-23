@@ -15,6 +15,7 @@
 # pragma once
 #endif
 
+#include "alloy/core/assert.hpp"
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
@@ -22,10 +23,10 @@
 #include "alloy/core/model/color.hpp"
 
 #include <algorithm> // std::clamp
+#include <array>     // std::array
 #include <cmath>     // std::lround
-#include <cstddef>
-#include <cstdint>
-#include <limits>
+#include <cstdint>   // std::uint8_t, std::int16_t
+#include <limits>    // std::numeric_limits
 
 namespace alloy::render {
 
@@ -34,10 +35,13 @@ namespace alloy::render {
   //============================================================================
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief Packs points into a packed buffer
+  /// \brief Packs the leading `components` coordinates of points into a
+  ///        packed buffer as 32-bit floats
   //////////////////////////////////////////////////////////////////////////////
   struct point_packer
   {
+    std::uint8_t components;
+
     auto pack(core::packed_buffer_writer& writer, const core::point2& p)
       -> void;
     auto pack(core::packed_buffer_writer& writer, const core::point3& p)
@@ -49,10 +53,13 @@ namespace alloy::render {
   //============================================================================
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief Packs vectors into compressed objects
+  /// \brief Packs the leading `components` components of vectors into a
+  ///        packed buffer as snorm16 values
   //////////////////////////////////////////////////////////////////////////////
   struct vector_packer final
   {
+    std::uint8_t components;
+
     auto pack(core::packed_buffer_writer& writer, const core::vector3& v)
       -> void;
 
@@ -64,10 +71,13 @@ namespace alloy::render {
   //============================================================================
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief Packs a color object into a 4-component rgba byte object
+  /// \brief Packs the leading `components` channels of colors into a packed
+  ///        buffer as unorm8 values, in RGBA order
   //////////////////////////////////////////////////////////////////////////////
   struct color_packer final
   {
+    std::uint8_t components;
+
     auto pack(core::packed_buffer_writer& writer, const core::color& c) -> void;
   };
 
@@ -83,8 +93,10 @@ auto alloy::render::point_packer::pack(
   const core::point2& p
 ) -> void
 {
-  writer.pack_object(p.x());
-  writer.pack_object(p.y());
+  ALLOY_ASSERT(components <= 2u);
+
+  const auto values = std::array{p.x(), p.y()};
+  writer.pack_objects(values.begin(), values.begin() + components);
 }
 
 inline
@@ -93,9 +105,10 @@ auto alloy::render::point_packer::pack(
   const core::point3& p
 ) -> void
 {
-  writer.pack_object(p.x());
-  writer.pack_object(p.y());
-  writer.pack_object(p.z());
+  ALLOY_ASSERT(components <= 3u);
+
+  const auto values = std::array{p.x(), p.y(), p.z()};
+  writer.pack_objects(values.begin(), values.begin() + components);
 }
 
 //==============================================================================
@@ -108,10 +121,14 @@ auto alloy::render::vector_packer::pack(
   const core::vector3& v
 ) -> void
 {
-  writer.pack_object(compress(v.x()));
-  writer.pack_object(compress(v.y()));
-  writer.pack_object(compress(v.z()));
-  writer.pack_object(std::uint16_t{});
+  ALLOY_ASSERT(components <= 3u);
+
+  const auto values = std::array{
+    compress(v.x()),
+    compress(v.y()),
+    compress(v.z()),
+  };
+  writer.pack_objects(values.begin(), values.begin() + components);
 }
 
 inline
@@ -133,10 +150,10 @@ auto alloy::render::color_packer::pack(
   const core::color& c
 ) -> void
 {
-  writer.pack_object(c.r8());
-  writer.pack_object(c.g8());
-  writer.pack_object(c.b8());
-  writer.pack_object(c.a8());
+  ALLOY_ASSERT(components <= 4u);
+
+  const auto values = std::array{c.r8(), c.g8(), c.b8(), c.a8()};
+  writer.pack_objects(values.begin(), values.begin() + components);
 }
 
 #endif /* ALLOY_RENDER_MESH_ATTRIBUTE_PACKER_HPP */

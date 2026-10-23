@@ -66,34 +66,28 @@ inline constexpr auto max_bitangent_components = 4u;
 auto alloy::render::mesh::from_config(mesh_config config)
   -> core::result<mesh,construct_error>
 {
-  if (ALLOY_UNLIKELY(config.position_components > max_vertex_components)) {
+  const auto& components = config.components;
+  if (ALLOY_UNLIKELY(components.position > max_vertex_components)) {
     return core::fail(construct_error::invalid_position_component);
   }
-  if (ALLOY_UNLIKELY(config.color_components > max_color_components)) {
+  if (ALLOY_UNLIKELY(components.color > max_color_components)) {
     return core::fail(construct_error::invalid_color_component);
   }
-  if (ALLOY_UNLIKELY(config.uv_components > max_uv_components)) {
+  if (ALLOY_UNLIKELY(components.uv > max_uv_components)) {
     return core::fail(construct_error::invalid_uv_component);
   }
-  if (ALLOY_UNLIKELY(config.normal_components > max_normal_components)) {
+  if (ALLOY_UNLIKELY(components.normal > max_normal_components)) {
     return core::fail(construct_error::invalid_normal_component);
   }
-  if (ALLOY_UNLIKELY(config.tangent_components > max_tangent_components)) {
+  if (ALLOY_UNLIKELY(components.tangent > max_tangent_components)) {
     return core::fail(construct_error::invalid_tangent_component);
   }
-  if (ALLOY_UNLIKELY(config.bitangent_components > max_bitangent_components)) {
+  if (ALLOY_UNLIKELY(components.bitangent > max_bitangent_components)) {
     return core::fail(construct_error::invalid_bitangent_component);
   }
 
   const auto bytes = config.vertex_data.size().count();
-  const auto stride = (
-    (config.position_components * sizeof(float)) +
-    (round_up_power_two(config.color_components) * sizeof(std::byte)) +
-    (config.uv_components * sizeof(float)) +
-    (round_up_power_two(config.normal_components) * sizeof(std::uint16_t)) +
-    (round_up_power_two(config.tangent_components) * sizeof(std::uint16_t)) +
-    (round_up_power_two(config.bitangent_components) * sizeof(std::uint16_t))
-  );
+  const auto stride = components.stride().count();
   if (ALLOY_UNLIKELY(stride == 0u && bytes != 0u)) {
     return core::fail(construct_error::invalid_vertex_data);
   }
@@ -145,12 +139,7 @@ alloy::render::mesh::mesh(const mesh& other)
     m_indices{other.m_indices.copy()},
     m_bounding_volume{other.m_bounding_volume},
     m_topology{other.m_topology},
-    m_position_components{other.m_position_components},
-    m_color_components{other.m_color_components},
-    m_uv_components{other.m_uv_components},
-    m_normal_components{other.m_normal_components},
-    m_tangent_components{other.m_tangent_components},
-    m_bitangent_components{other.m_bitangent_components}
+    m_components{other.m_components}
 {
 
 }
@@ -162,12 +151,7 @@ alloy::render::mesh::mesh(const mesh& other, core::allocator alloc)
     )},
     m_bounding_volume{other.m_bounding_volume},
     m_topology{other.m_topology},
-    m_position_components{other.m_position_components},
-    m_color_components{other.m_color_components},
-    m_uv_components{other.m_uv_components},
-    m_normal_components{other.m_normal_components},
-    m_tangent_components{other.m_tangent_components},
-    m_bitangent_components{other.m_bitangent_components}
+    m_components{other.m_components}
 {
 
 }
@@ -177,32 +161,10 @@ alloy::render::mesh::mesh(alloy::render::mesh_config config)
     m_indices{std::move(config.indices)},
     m_bounding_volume{config.bounding_volume},
     m_topology{config.topology},
-    m_position_components{config.position_components},
-    m_color_components{
-      static_cast<std::uint8_t>(
-        (config.color_components << 4u) | (round_up_power_two(config.color_components))
-      )
-    },
-    m_uv_components{config.uv_components},
-    m_normal_components{
-      static_cast<std::uint8_t>(
-        (config.normal_components << 4u) | (round_up_power_two(config.normal_components))
-      )
-    },
-    m_tangent_components{
-      static_cast<std::uint8_t>(
-        (config.tangent_components << 4u) | (round_up_power_two(config.tangent_components))
-      )
-    },
-    m_bitangent_components{
-      static_cast<std::uint8_t>(
-        (config.bitangent_components << 4u) | (round_up_power_two(config.bitangent_components))
-      )
-    }
+    m_components{config.components}
 {
 
 }
-
 //==============================================================================
 // non-member functions : class : mesh
 //==============================================================================

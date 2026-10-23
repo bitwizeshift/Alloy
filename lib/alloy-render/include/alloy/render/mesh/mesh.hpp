@@ -25,11 +25,54 @@
 #include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/utilities/result.hpp"
 
-#include <cstddef> // std::byte
-#include <cstdint> // std::uint8_t, std::uint16_t, etc
-#include <span>
+#include <cstddef> // std::byte, std::size_t
+#include <cstdint> // std::uint8_t, std::uint16_t
+#include <span>    // std::span
 
 namespace alloy::render {
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief The number of components of each attribute in a mesh vertex
+  ///
+  /// The members are declared in the order in which the attributes are
+  /// interleaved within a vertex. A count of `0` means that the attribute is
+  /// absent.
+  //////////////////////////////////////////////////////////////////////////////
+  struct vertex_components
+  {
+    /// The number of 32-bit float components per position, in `[0, 4]`
+    std::uint8_t position = 0u;
+
+    /// The number of 32-bit float components per UV, in `[0, 3]`
+    std::uint8_t uv = 0u;
+
+    /// The number of snorm16 components per normal, in `[0, 4]`
+    std::uint8_t normal = 0u;
+
+    /// The number of snorm16 components per tangent, in `[0, 4]`
+    std::uint8_t tangent = 0u;
+
+    /// The number of snorm16 components per bitangent, in `[0, 4]`
+    std::uint8_t bitangent = 0u;
+
+    /// The number of unorm8 components per color, in `[0, 4]`
+    std::uint8_t color = 0u;
+
+    /// \brief Computes the number of bytes occupied by the attributes of a
+    ///        single vertex, excluding any padding
+    ///
+    /// \return the unpadded size, in bytes
+    constexpr auto unpadded_size() const noexcept -> core::bytes;
+
+    /// \brief Computes the number of bytes between consecutive vertices
+    ///
+    /// Attributes are packed without any padding between them. The end of
+    /// the vertex is padded only as far as is needed for the next vertex to
+    /// retain the alignment of its most-aligned attribute.
+    ///
+    /// \return the stride, in bytes
+    constexpr auto stride() const noexcept -> core::bytes;
+  };
 
   //////////////////////////////////////////////////////////////////////////////
   /// \brief Configuration data to use for constructing mesh objects.
@@ -46,14 +89,7 @@ namespace alloy::render {
     core::packed_buffer vertex_data;
     core::vector<index_type> indices;
     primitive_topology topology;
-
-    std::uint8_t position_components;
-    std::uint8_t color_components;
-    std::uint8_t uv_components;
-    std::uint8_t normal_components;
-    std::uint8_t tangent_components;
-    std::uint8_t bitangent_components;
-
+    vertex_components components;
     core::axis_aligned_box bounding_volume;
   };
 
@@ -70,19 +106,17 @@ namespace alloy::render {
   /// In an interlaced mesh, the layout of the vertex data is strided instead,
   /// such as:
   ///
-  /// * attributes: [v][n][u][v][n][u] ... [v][n][u]
+  /// * attributes: [v][u][n][v][u][n] ... [v][u][n]
   ///
   /// This is able to be better interpreted by the GPU since it has far better
   /// locality, and can easily fit into a single vertex buffer rather than
   /// requiring several.
   ///
   /// Additionally, this interlaced mesh also *compresses* the underlying data
-  /// into an ideal format to minimize GPU memory overhead, while also taking
-  /// care of appropriate alignment requirements.
-  ///
-  /// In particular, all `normal`, `tangent`, and `bitangent` attributes are
-  /// condensed to `uint16` types, since the exact precision is not necessary.
-  /// Padding is added, as appropriate
+  /// into an ideal format to minimize GPU memory overhead. Positions and UVs
+  /// are 32-bit floats, normals, tangents, and bitangents are snorm16, and
+  /// colors are unorm8. Attributes are ordered from most to least aligned, so
+  /// that no padding is needed between them; see `vertex_components::stride`.
   //////////////////////////////////////////////////////////////////////////////
   class mesh
   {
@@ -220,8 +254,7 @@ namespace alloy::render {
     /// \{
     /// \brief Gets how many bytes exist per vertex attribute in this mesh
     ///
-    /// \return the number of bytes to offset into the buffer for the start of
-    ///         the attribute
+    /// \return the number of bytes the attribute occupies in each vertex
     auto bytes_per_position() const noexcept -> core::bytes;
     auto bytes_per_colors() const noexcept -> core::bytes;
     auto bytes_per_uvs() const noexcept -> core::bytes;
@@ -241,6 +274,11 @@ namespace alloy::render {
     auto tangent_components() const noexcept -> std::size_t;
     auto bitangent_components() const noexcept -> std::size_t;
     /// \}
+
+    /// \brief Gets the number of components of every vertex attribute
+    ///
+    /// \return the vertex components
+    auto components() const noexcept -> const vertex_components&;
 
     /// \brief Gets the stride for this interlaced mesh
     ///
@@ -297,32 +335,8 @@ namespace alloy::render {
     /// The topology required to draw this mesh
     primitive_topology m_topology;
 
-    /// The number of components per position
-    std::uint8_t m_position_components;
-
-    /// The number of components per color
-    std::uint8_t m_color_components;
-
-    /// The number of components per UV
-    std::uint8_t m_uv_components;
-
-    /// The number of components per normal.
-    /// Upper 4 bits store the raw number, (e.g. '3'), the lower 4 bits store
-    /// the padded number of components (e.g. '4'). This is needed to preserve
-    /// data alignment in vertex buffers.
-    std::uint8_t m_normal_components;
-
-    /// The number of components per tangent.
-    /// Upper 4 bits store the raw number, (e.g. '3'), the lower 4 bits store
-    /// the padded number of components (e.g. '4'). This is needed to preserve
-    /// data alignment in vertex buffers.
-    std::uint8_t m_tangent_components;
-
-    /// The number of components per bitangent.
-    /// Upper 4 bits store the raw number, (e.g. '3'), the lower 4 bits store
-    /// the padded number of components (e.g. '4'). This is needed to preserve
-    /// data alignment in vertex buffers.
-    std::uint8_t m_bitangent_components;
+    /// The number of components of each vertex attribute
+    vertex_components m_components;
 
     //--------------------------------------------------------------------------
     // Private Constructors
@@ -332,8 +346,6 @@ namespace alloy::render {
     mesh(const mesh& other);
     mesh(const mesh& other, core::allocator alloc);
     mesh(mesh_config config);
-
-    static auto round_up_power_two(std::size_t n) noexcept -> std::size_t;
   };
 
   /// \brief Gets the error message from the `construct_error`
@@ -344,6 +356,41 @@ namespace alloy::render {
 
 } // namespace alloy::render
 
+//==============================================================================
+// struct : vertex_components
+//==============================================================================
+
+inline constexpr
+auto alloy::render::vertex_components::unpadded_size()
+  const noexcept -> core::bytes
+{
+  return core::bytes{
+    (position * sizeof(float)) +
+    (uv * sizeof(float)) +
+    (normal * sizeof(std::int16_t)) +
+    (tangent * sizeof(std::int16_t)) +
+    (bitangent * sizeof(std::int16_t)) +
+    (color * sizeof(std::uint8_t))
+  };
+}
+
+inline constexpr
+auto alloy::render::vertex_components::stride() const noexcept -> core::bytes
+{
+  const auto has_32_bit = (position != 0u) || (uv != 0u);
+  const auto has_16_bit = (
+    (normal != 0u) || (tangent != 0u) || (bitangent != 0u)
+  );
+  const auto alignment = has_32_bit ? 4u : (has_16_bit ? 2u : 1u);
+  const auto bytes = unpadded_size().count();
+
+  return core::bytes{((bytes + alignment - 1u) / alignment) * alignment};
+}
+
+//==============================================================================
+// class : mesh
+//==============================================================================
+
 //------------------------------------------------------------------------------
 // Queries
 //------------------------------------------------------------------------------
@@ -351,38 +398,37 @@ namespace alloy::render {
 inline
 auto alloy::render::mesh::has_positions() const noexcept -> bool
 {
-  return m_position_components != 0u;
+  return m_components.position != 0u;
 }
-
 
 inline
 auto alloy::render::mesh::has_color() const noexcept -> bool
 {
-  return m_color_components != 0u;
+  return m_components.color != 0u;
 }
 
 inline
 auto alloy::render::mesh::has_uvs() const noexcept -> bool
 {
-  return m_uv_components != 0u;
+  return m_components.uv != 0u;
 }
 
 inline
 auto alloy::render::mesh::has_normals() const noexcept -> bool
 {
-  return m_normal_components != 0u;
+  return m_components.normal != 0u;
 }
 
 inline
 auto alloy::render::mesh::has_tangents() const noexcept -> bool
 {
-  return m_tangent_components != 0u;
+  return m_components.tangent != 0u;
 }
 
 inline
 auto alloy::render::mesh::has_bitangents() const noexcept -> bool
 {
-  return m_bitangent_components != 0u;
+  return m_components.bitangent != 0u;
 }
 
 inline
@@ -402,7 +448,7 @@ auto alloy::render::mesh::offset_to_positions() const noexcept -> core::bytes
 inline
 auto alloy::render::mesh::offset_to_colors() const noexcept -> core::bytes
 {
-  return offset_to_positions() + bytes_per_colors();
+  return offset_to_bitangents() + bytes_per_bitangents();
 }
 
 inline
@@ -434,49 +480,37 @@ auto alloy::render::mesh::offset_to_bitangents() const noexcept -> core::bytes
 inline
 auto alloy::render::mesh::bytes_per_position() const noexcept -> core::bytes
 {
-  return core::bytes{
-    m_position_components * sizeof(float)
-  };
+  return core::bytes{m_components.position * sizeof(float)};
 }
 
 inline
 auto alloy::render::mesh::bytes_per_colors() const noexcept -> core::bytes
 {
-  return core::bytes{
-    (m_color_components & 0x0f)
-  };
+  return core::bytes{m_components.color * sizeof(std::uint8_t)};
 }
 
 inline
 auto alloy::render::mesh::bytes_per_uvs() const noexcept -> core::bytes
 {
-  return core::bytes{
-    m_uv_components * sizeof(float)
-  };
+  return core::bytes{m_components.uv * sizeof(float)};
 }
 
 inline
 auto alloy::render::mesh::bytes_per_normals() const noexcept -> core::bytes
 {
-  return core::bytes{
-    (m_normal_components & 0x0f) * sizeof(std::uint16_t)
-  };
+  return core::bytes{m_components.normal * sizeof(std::int16_t)};
 }
 
 inline
 auto alloy::render::mesh::bytes_per_tangents() const noexcept -> core::bytes
 {
-  return core::bytes{
-    (m_tangent_components & 0x0f) * sizeof(std::uint16_t)
-  };
+  return core::bytes{m_components.tangent * sizeof(std::int16_t)};
 }
 
 inline
 auto alloy::render::mesh::bytes_per_bitangents() const noexcept -> core::bytes
 {
-  return core::bytes{
-    (m_bitangent_components & 0x0f) * sizeof(std::uint16_t)
-  };
+  return core::bytes{m_components.bitangent * sizeof(std::int16_t)};
 }
 
 //------------------------------------------------------------------------------
@@ -484,52 +518,52 @@ auto alloy::render::mesh::bytes_per_bitangents() const noexcept -> core::bytes
 inline
 auto alloy::render::mesh::position_components() const noexcept -> std::size_t
 {
-  return m_position_components;
+  return m_components.position;
 }
 
 inline
 auto alloy::render::mesh::color_components() const noexcept -> std::size_t
 {
-  return (m_color_components >> 4u);
+  return m_components.color;
 }
 
 inline
 auto alloy::render::mesh::uv_components() const noexcept -> std::size_t
 {
-  return m_uv_components;
+  return m_components.uv;
 }
 
 inline
 auto alloy::render::mesh::normal_components() const noexcept -> std::size_t
 {
-  return (m_normal_components >> 4u);
+  return m_components.normal;
 }
 
 inline
 auto alloy::render::mesh::tangent_components() const noexcept -> std::size_t
 {
-  return (m_tangent_components >> 4u);
+  return m_components.tangent;
 }
 
 inline
 auto alloy::render::mesh::bitangent_components() const noexcept -> std::size_t
 {
-  return (m_bitangent_components >> 4u);
+  return m_components.bitangent;
 }
 
 //------------------------------------------------------------------------------
 
 inline
+auto alloy::render::mesh::components()
+  const noexcept -> const vertex_components&
+{
+  return m_components;
+}
+
+inline
 auto alloy::render::mesh::stride() const noexcept -> core::bytes
 {
-  return (
-    bytes_per_position() +
-    bytes_per_colors() +
-    bytes_per_uvs() +
-    bytes_per_normals() +
-    bytes_per_tangents() +
-    bytes_per_bitangents()
-  );
+  return m_components.stride();
 }
 
 inline
@@ -543,6 +577,10 @@ auto alloy::render::mesh::vertex_count() const noexcept -> std::size_t
     m_compressed_data.size().count() / bytes_per_vertex
   );
 }
+
+//------------------------------------------------------------------------------
+// Element Access
+//------------------------------------------------------------------------------
 
 inline
 auto alloy::render::mesh::topology() const noexcept -> primitive_topology
@@ -576,20 +614,4 @@ auto alloy::render::mesh::bounding_volume()
   return m_bounding_volume;
 }
 
-inline
-auto alloy::render::mesh::round_up_power_two(std::size_t v)
-  noexcept -> std::size_t
-{
-  // From bit-twiddling hacks. Rounds up to nearest power-of-two.
-  // This is only done to 2 components, since we only need to round up to
-  // '4' (2^2) in the case that 2-byte (uint16_t) values are either 1 or 3
-  // component.
-  v--;
-  v |= (v >> 1);
-  v |= (v >> 2);
-  v++;
-  return v;
-}
-
 #endif /* ALLOY_RENDER_MESH_MESH_HPP */
-

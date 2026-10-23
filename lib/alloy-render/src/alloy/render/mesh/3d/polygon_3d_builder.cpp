@@ -4,32 +4,39 @@
 
 #include "alloy/render/mesh/3d/polygon_3d_builder.hpp"
 
-#include "../attribute_packer.hpp"
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
+#include "alloy/render/mesh/unsafe_mesh_builder.hpp"
 
 #include "alloy/core/assert.hpp"
+#include "alloy/core/containers/vector.hpp"
 #include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/memory/allocator.hpp"
-#include "alloy/core/memory/data_quantity.hpp"
 #include "alloy/core/model/color.hpp"
 
-#include <cstddef>
-#include <cstdint>
+#include <cstddef> // std::size_t
+#include <cstdint> // std::uint8_t
 #include <utility> // std::move
 
 namespace {
 
-inline constexpr auto entries_per_position  = 3u;
-inline constexpr auto entries_per_color     = 4u;
-inline constexpr auto entries_per_uv        = 2u;
-inline constexpr auto entries_per_normal    = 3u;
-inline constexpr auto entries_per_tangent   = 3u;
-inline constexpr auto entries_per_bitangent = 3u;
+inline constexpr auto entries_per_position  = std::uint8_t{3};
+inline constexpr auto entries_per_color     = std::uint8_t{4};
+inline constexpr auto entries_per_uv        = std::uint8_t{2};
+inline constexpr auto entries_per_normal    = std::uint8_t{3};
+inline constexpr auto entries_per_tangent   = std::uint8_t{3};
+inline constexpr auto entries_per_bitangent = std::uint8_t{3};
 inline constexpr auto entries_per_indices   = 3u;
+
+template <typename T>
+auto components_of(const alloy::core::vector<T>& attribute, std::uint8_t n)
+  noexcept -> std::uint8_t
+{
+  return attribute.empty() ? std::uint8_t{0} : n;
+}
 
 } // namespace <anonymous>
 
@@ -229,45 +236,26 @@ auto alloy::render::polygon_3d_builder::add_face(
 auto alloy::render::polygon_3d_builder::build_with(core::allocator alloc)
   const -> mesh
 {
-  auto config = mesh_config{};
-  config.topology             = m_topology;
-  config.position_components  = ::entries_per_position;
-  config.normal_components    = m_normals.empty() ? 0u : ::entries_per_normal;
-  config.color_components     = m_colors.empty() ? 0u : ::entries_per_color;
-  config.uv_components        = m_uvs.empty() ? 0u : ::entries_per_uv;
-  config.tangent_components   = m_tangents.empty() ? 0u : ::entries_per_tangent;
-  config.bitangent_components = m_bitangents.empty() ? 0u : ::entries_per_bitangent;
-  config.indices              = m_indices.copy_with(core::stl_allocator_adapter<index_type>{alloc});
-  config.vertex_data          = core::packed_buffer{alloc};
-  config.bounding_volume      = construct_data(config.vertex_data);
-
-  return mesh::from_config_unchecked(std::move(config));
-}
-
-auto alloy::render::polygon_3d_builder::construct_data(
-  core::packed_buffer& buffer
-) const -> core::axis_aligned_box
-{
-  // Compute size. This also accounts for padding on the normals, since 16-bit
-  // integers will leave unaligned vertex buffers.
-  const auto buffer_size = (
-    ::entries_per_position * m_positions.size() * core::size_of<float>() +
-    ::entries_per_color * m_colors.size() * core::size_of<std::byte>() +
-    ::entries_per_uv * m_uvs.size() * core::size_of<float>() +
-    (::entries_per_normal + 1u) * m_normals.size() * core::size_of<std::int16_t>() +
-    (::entries_per_tangent + 1u) * m_tangents.size() * core::size_of<std::int16_t>() +
-    (::entries_per_bitangent + 1u) * m_bitangents.size() * core::size_of<std::int16_t>()
-  );
-  buffer.reserve(buffer_size);
-  auto writer = core::packed_buffer_writer{&buffer};
-
-  // Pack each entry by [position][uv][normal][tangent][bitangent]
+  const auto components = vertex_components{
+    .position  = ::entries_per_position,
+    .uv        = components_of(m_uvs, ::entries_per_uv),
+    .normal    = components_of(m_normals, ::entries_per_normal),
+    .tangent   = components_of(m_tangents, ::entries_per_tangent),
+    .bitangent = components_of(m_bitangents, ::entries_per_bitangent),
+    .color     = components_of(m_colors, ::entries_per_color),
+  };
   const auto positions = m_positions.size();
-  ALLOY_ASSERT(m_colors.empty() || m_colors.size() == positions);
   ALLOY_ASSERT(m_uvs.empty() || m_uvs.size() == positions);
   ALLOY_ASSERT(m_normals.empty() || m_normals.size() == positions);
   ALLOY_ASSERT(m_tangents.empty() || m_tangents.size() == positions);
   ALLOY_ASSERT(m_bitangents.empty() || m_bitangents.size() == positions);
+  ALLOY_ASSERT(m_colors.empty() || m_colors.size() == positions);
+
+  auto builder = unsafe_mesh_builder{components, m_topology, alloc};
+  builder.reserve_vertices(positions);
+  builder.reserve_indices(
+    (m_indices.size() + ::entries_per_indices - 1u) / ::entries_per_indices
+  );
 
   auto bounds = m_positions.empty()
     ? core::axis_aligned_box{}
@@ -275,31 +263,27 @@ auto alloy::render::polygon_3d_builder::construct_data(
   for (auto i = 0u; i < positions; ++i) {
     bounds = core::axis_aligned_box::enclosing(bounds, m_positions[i]);
 
-    writer.pack_object(m_positions[i], point_packer{});
-
-    if (!m_colors.empty()) {
-      writer.pack_object(m_colors[i], color_packer{});
-    }
-
+    builder.add_position(m_positions[i]);
     if (!m_uvs.empty()) {
-      writer.pack_object(m_uvs[i], point_packer{});
+      builder.add_uv(m_uvs[i]);
     }
-
     if (!m_normals.empty()) {
-      writer.pack_object(m_normals[i], vector_packer{});
+      builder.add_normal(m_normals[i]);
     }
-
     if (!m_tangents.empty()) {
-      writer.pack_object(m_tangents[i], vector_packer{});
+      builder.add_tangent(m_tangents[i]);
     }
-
     if (!m_bitangents.empty()) {
-      writer.pack_object(m_bitangents[i], vector_packer{});
+      builder.add_bitangent(m_bitangents[i]);
+    }
+    if (!m_colors.empty()) {
+      builder.add_color(m_colors[i]);
     }
   }
+  for (const auto index : m_indices) {
+    builder.add_index(index);
+  }
+  builder.set_bounding_box(bounds);
 
-  // This should hold provided that the input data was correct.
-  ALLOY_ASSERT(buffer.size() == buffer_size);
-
-  return bounds;
+  return std::move(builder).release();
 }

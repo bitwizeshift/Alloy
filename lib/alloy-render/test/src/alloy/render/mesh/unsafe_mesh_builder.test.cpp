@@ -6,7 +6,9 @@
 
 #include <alloy/render/mesh/mesh.hpp>
 
+#include <alloy/core/geometry/point/point3.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
+#include <alloy/core/model/color.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -31,8 +33,7 @@ auto read_normal(const mesh& m) -> std::array<std::int16_t,3>
 /// \brief Builds a mesh containing a single normal \p v
 auto build_normal_mesh(const core::vector3& v) -> mesh
 {
-  auto builder = unsafe_mesh_builder{};
-  builder.set_components_per_normal(3u);
+  auto builder = unsafe_mesh_builder{vertex_components{.normal = 3u}};
   builder.add_normal(v);
   return std::move(builder).release();
 }
@@ -72,6 +73,41 @@ TEST_CASE("unsafe_mesh_builder::add_normal(const vector3&)", "[modifier]") {
 
     // Assert
     REQUIRE(read_normal(sut) == expected);
+  }
+}
+
+TEST_CASE("unsafe_mesh_builder::release()", "[build]") {
+  SECTION("Each vertex is padded to the stride") {
+    // Arrange
+    const auto components = vertex_components{
+      .position = 3u,
+      .normal   = 3u,
+      .color    = 4u,
+    };
+    auto builder = unsafe_mesh_builder{components};
+    for (auto i = 0; i < 2; ++i) {
+      builder.add_position(core::point3{1, 2, 3});
+      builder.add_normal(core::vector3{0, 1, 0});
+      builder.add_color(core::color{});
+    }
+
+    // Act
+    const auto sut = std::move(builder).release();
+
+    // Assert
+    REQUIRE(sut.data().size() == 48u);
+  }
+  SECTION("Only the configured number of components are packed") {
+    // Arrange
+    auto builder = unsafe_mesh_builder{vertex_components{.color = 3u}};
+    builder.add_color(core::color{});
+    builder.add_color(core::color{});
+
+    // Act
+    const auto sut = std::move(builder).release();
+
+    // Assert
+    REQUIRE(sut.data().size() == 6u);
   }
 }
 

@@ -14,7 +14,6 @@
 #include "alloy/core/math/math_constants.hpp"
 #include "alloy/core/math/trigonometry.hpp"
 #include "alloy/core/memory/allocator.hpp"
-#include "alloy/core/utilities/quantity.hpp"
 
 #include <cstddef> // std::size_t
 #include <limits>  // std::numeric_limits
@@ -45,19 +44,22 @@ auto alloy::render::sphere_builder::build_with(core::allocator alloc)
     static_cast<std::size_t>(std::numeric_limits<index_type>::max()) + 1u
   );
 
-  auto builder = unsafe_mesh_builder{primitive_topology::triangles, alloc};
-
-  builder.set_components_per_position(3u);
-  builder.set_components_per_uv(2u);
-  builder.set_components_per_normal(3u);
+  const auto components = vertex_components{
+    .position = 3u,
+    .uv       = 2u,
+    .normal   = 3u,
+  };
+  auto builder = unsafe_mesh_builder{
+    components,
+    primitive_topology::triangles,
+    alloc
+  };
 
   // The first and last rows each lose one triangle per segment, since one
   // edge of every quad touching a pole collapses to a single point.
   const auto triangles = 2u * m_x_segments * (m_y_segments - 1u);
   builder.reserve_vertices(rows * columns);
-  builder.reserve_indices(core::quantity<index_type>{
-    static_cast<long long>(triangles * 3u)
-  });
+  builder.reserve_indices(triangles);
 
   for (auto y = 0u; y < rows; ++y) {
     for (auto x = 0u; x < columns; ++x) {

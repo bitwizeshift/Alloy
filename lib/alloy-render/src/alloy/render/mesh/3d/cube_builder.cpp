@@ -10,7 +10,6 @@
 
 #include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/memory/allocator.hpp"
-#include "alloy/core/utilities/quantity.hpp"
 
 #include <utility>
 
@@ -20,16 +19,21 @@ auto alloy::render::cube_builder::build_with(core::allocator alloc)
   static constexpr auto one_third = static_cast<float>(1) / static_cast<float>(3);
   static constexpr auto two_thirds = static_cast<float>(2) / static_cast<float>(3);
 
-  auto builder = unsafe_mesh_builder{primitive_topology::triangles, alloc};
-
   // We are working in 3D-space, with 2D textures
-  builder.set_components_per_position(3u);
-  builder.set_components_per_uv(2u);
-  builder.set_components_per_normal(3u);
+  const auto components = vertex_components{
+    .position = 3u,
+    .uv       = 2u,
+    .normal   = 3u,
+  };
+  auto builder = unsafe_mesh_builder{
+    components,
+    primitive_topology::triangles,
+    alloc
+  };
 
-  // 24 vertex points on a cube (4 per face), comprised of 36 indices
+  // 24 vertex points on a cube (4 per face), comprised of 12 triangles
   builder.reserve_vertices(24u);
-  builder.reserve_indices(core::quantity<unsafe_mesh_builder::index_type>{36});
+  builder.reserve_indices(12u);
 
   { // Bottom-face
     builder.add_position({-1.0, -1.0, -1.0});

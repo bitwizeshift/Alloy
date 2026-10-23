@@ -9,6 +9,7 @@
 #include <alloy/core/containers/vector.hpp>
 #include <alloy/core/geometry/axis_aligned_box.hpp>
 #include <alloy/core/geometry/point/point3.hpp>
+#include <alloy/core/memory/data_quantity.hpp>
 #include <alloy/core/memory/packed_buffer.hpp>
 
 #include <catch2/catch_test_macros.hpp>
@@ -30,7 +31,7 @@ auto make_position_config(std::size_t vertices) -> mesh_config
   auto config = mesh_config{};
   config.vertex_data = make_vertex_data(vertices * 3u * sizeof(float));
   config.topology = primitive_topology::triangles;
-  config.position_components = 3u;
+  config.components = vertex_components{.position = 3u};
   return config;
 }
 
@@ -128,6 +129,117 @@ TEST_CASE("mesh::from_config(mesh_config)", "[factory][static]") {
 
     // Assert
     REQUIRE(sut.has_value());
+  }
+}
+
+TEST_CASE("vertex_components::stride()", "[observer]") {
+  SECTION("32-bit attributes are packed without padding") {
+    // Arrange
+    const auto sut = vertex_components{.position = 3u, .uv = 2u};
+
+    // Act
+    const auto result = sut.stride();
+
+    // Assert
+    REQUIRE(result == core::bytes{20u});
+  }
+  SECTION("16-bit attributes are padded to 2-byte alignment") {
+    // Arrange
+    const auto sut = vertex_components{.normal = 3u, .color = 1u};
+
+    // Act
+    const auto result = sut.stride();
+
+    // Assert
+    REQUIRE(result == core::bytes{8u});
+  }
+  SECTION("Mixed attributes are padded to 4-byte alignment") {
+    // Arrange
+    const auto sut = vertex_components{
+      .position = 3u,
+      .normal   = 3u,
+      .color    = 4u,
+    };
+
+    // Act
+    const auto result = sut.stride();
+
+    // Assert
+    REQUIRE(result == core::bytes{24u});
+  }
+  SECTION("8-bit attributes are not padded") {
+    // Arrange
+    const auto sut = vertex_components{.color = 3u};
+
+    // Act
+    const auto result = sut.stride();
+
+    // Assert
+    REQUIRE(result == core::bytes{3u});
+  }
+}
+
+TEST_CASE("mesh::offset_to_*()", "[observer]") {
+  // Arrange
+  auto config = mesh_config{};
+  config.components = vertex_components{
+    .position  = 3u,
+    .uv        = 2u,
+    .normal    = 3u,
+    .tangent   = 3u,
+    .bitangent = 3u,
+    .color     = 4u,
+  };
+  const auto sut = mesh::from_config_unchecked(std::move(config));
+
+  SECTION("Positions are first") {
+    // Act
+    const auto result = sut.offset_to_positions();
+
+    // Assert
+    REQUIRE(result == core::bytes{0u});
+  }
+  SECTION("UVs follow positions") {
+    // Act
+    const auto result = sut.offset_to_uvs();
+
+    // Assert
+    REQUIRE(result == core::bytes{12u});
+  }
+  SECTION("Normals follow UVs") {
+    // Act
+    const auto result = sut.offset_to_normals();
+
+    // Assert
+    REQUIRE(result == core::bytes{20u});
+  }
+  SECTION("Tangents follow normals without padding") {
+    // Act
+    const auto result = sut.offset_to_tangents();
+
+    // Assert
+    REQUIRE(result == core::bytes{26u});
+  }
+  SECTION("Bitangents follow tangents") {
+    // Act
+    const auto result = sut.offset_to_bitangents();
+
+    // Assert
+    REQUIRE(result == core::bytes{32u});
+  }
+  SECTION("Colors follow bitangents") {
+    // Act
+    const auto result = sut.offset_to_colors();
+
+    // Assert
+    REQUIRE(result == core::bytes{38u});
+  }
+  SECTION("Stride pads the end of the vertex") {
+    // Act
+    const auto result = sut.stride();
+
+    // Assert
+    REQUIRE(result == core::bytes{44u});
   }
 }
 
