@@ -189,7 +189,7 @@ auto alloy::core::camera::look_at(const vector3& subject, const vector3& up)
   });
   m_right   = x_axis;
   m_up      = y_axis;
-  m_forward = z_axis;
+  m_forward = -z_axis;
 }
 
 auto alloy::core::camera::look_at(real x, real y, real z, const vector3& up)
@@ -267,7 +267,9 @@ auto alloy::core::camera::update_axes() noexcept -> void
 
   m_right   = rotation.column(0);
   m_up      = rotation.column(1);
-  m_forward = rotation.column(2);
+
+  // The camera looks down its negative z-axis.
+  m_forward = -rotation.column(2);
 }
 
 //-----------------------------------------------------------------------------

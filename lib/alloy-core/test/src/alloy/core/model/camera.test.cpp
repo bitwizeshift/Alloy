@@ -70,7 +70,19 @@ TEST_CASE("camera::translate_local_y( real )", "[translation]")
 
 TEST_CASE("camera::translate_local_z( real )", "[translation]")
 {
-  SECTION("Camera that looks at a subject moves away from it")
+  SECTION("Unrotated camera moves down the negative z-axis")
+  {
+    // Arrange
+    auto sut = camera{};
+
+    // Act
+    sut.translate_local_z(1);
+
+    // Assert
+    REQUIRE( almost_equal(sut.translation(), vector3{0, 0, -1}) );
+  }
+
+  SECTION("Camera that looks at a subject moves towards it")
   {
     // Arrange
     auto sut = camera{};
@@ -81,10 +93,10 @@ TEST_CASE("camera::translate_local_z( real )", "[translation]")
     sut.translate_local_z(1);
 
     // Assert
-    REQUIRE( almost_equal(sut.translation(), vector3{6, 0, 0}) );
+    REQUIRE( almost_equal(sut.translation(), vector3{4, 0, 0}) );
   }
 
-  SECTION("Rotated camera moves along its rotated z-axis")
+  SECTION("Rotated camera moves in the direction it faces")
   {
     // Arrange
     auto sut = camera{};
@@ -95,7 +107,7 @@ TEST_CASE("camera::translate_local_z( real )", "[translation]")
     sut.translate_local_z(1);
 
     // Assert
-    REQUIRE( almost_equal(sut.translation(), vector3{0, -1, 0}) );
+    REQUIRE( almost_equal(sut.translation(), vector3{0, 1, 0}) );
   }
 }
 
