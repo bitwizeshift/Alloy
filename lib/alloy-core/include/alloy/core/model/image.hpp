@@ -5,7 +5,7 @@
 /*****************************************************************************
  * \file image.hpp
  *
- * \todo description
+ * \brief This header defines a 2D image of 8-bit color channels
  *****************************************************************************/
 
 #ifndef ALLOY_CORE_MODEL_IMAGE_HPP
@@ -90,8 +90,6 @@ namespace alloy::core {
 
     /// \brief Makes an image with a solid color
     ///
-    /// \pre \p buffer must be of n * d.width * d.height size, where n is the
-    ///         number of bytes specified in the pixel_format
     /// \pre `d.width` must be greater than 0
     /// \pre `d.height` must be greater than 0
     ///
@@ -109,8 +107,6 @@ namespace alloy::core {
 
     /// \brief Makes an image with a solid color
     ///
-    /// \pre \p buffer must be of n * d.width * d.height size, where n is the
-    ///         number of bytes specified in the pixel_format
     /// \pre `d.width` must be greater than 0
     /// \pre `d.height` must be greater than 0
     ///

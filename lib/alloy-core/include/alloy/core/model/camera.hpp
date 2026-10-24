@@ -5,7 +5,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// \file camera.hpp
 ///
-/// \brief TODO(Bitwize): Add description
+/// \brief This header defines the camera, which produces the view
+///        transformation of a scene
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef ALLOY_CORE_MODEL_CAMERA_HPP
@@ -35,7 +36,12 @@ namespace alloy::core {
   /// a model from world coordinates to camera coordinates.
   ///
   /// A camera may only be rotated or translated, but may not be scaled.
-  /// All translations
+  /// Translations are either in world coordinates, with the
+  /// `translate_world` functions, or along the camera's own axes, with the
+  /// `translate_local` functions.
+  ///
+  /// The camera faces down its own negative z-axis, so its forward direction
+  /// is the opposite of its z-axis.
   /////////////////////////////////////////////////////////////////////////////
   class ALLOY_CORE_API camera
   {
@@ -111,7 +117,8 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   public:
 
-    /// \brief Moves the camera forward along the camera's 'z' axis
+    /// \brief Moves the camera forward, which is along the camera's negative
+    ///        z-axis
     ///
     /// \note
     /// This works in terms of the camera's orientation, rather than the
@@ -126,7 +133,7 @@ namespace alloy::core {
     /// This works in terms of the camera's orientation, rather than the
     /// camera's position in world-coordinates
     ///
-    /// \param delta the amount to move left
+    /// \param delta the amount to move right
     auto translate_local_x(real delta) noexcept -> void;
 
     /// \brief Raises the camera along the camera's y-axis
@@ -135,17 +142,21 @@ namespace alloy::core {
     /// This works in terms of the camera's orientation, rather than the
     /// camera's position in world-coordinates
     ///
-    /// \param delta the amount to move right
+    /// \param delta the amount to move up
     auto translate_local_y(real delta) noexcept -> void;
 
-    /// \brief Moves the camera relative to its own axis
+    /// \brief Moves the camera relative to its own axes
+    ///
+    /// The components of \p delta are passed to `translate_local_x`,
+    /// `translate_local_y`, and `translate_local_z` respectively, so a
+    /// positive z component moves the camera forward.
     ///
     /// \note
     /// This works in terms of the camera's orientation, rather than the
     /// camera's position in world-coordinates
     ///
-    /// \param delta the amount to move right
-    auto translate_local(const vector3& local) noexcept -> void;
+    /// \param delta the amount to move right, up, and forward
+    auto translate_local(const vector3& delta) noexcept -> void;
 
     //-------------------------------------------------------------------------
 
