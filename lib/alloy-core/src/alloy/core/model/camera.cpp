@@ -286,9 +286,7 @@ auto alloy::core::interpolator<alloy::core::camera>::operator()(
 
   result.m_translation = interpolation::linear(v0.m_translation, v1.m_translation, alpha);
   result.m_orientation = interpolation::linear(v0.m_orientation, v1.m_orientation, alpha);
-  result.m_forward     = interpolation::linear(v0.m_forward, v1.m_forward, alpha);
-  result.m_up          = interpolation::linear(v0.m_up, v1.m_up, alpha);
-  result.m_right       = interpolation::linear(v0.m_right, v1.m_right, alpha);
+  result.update_axes();
 
   return result;
 }

@@ -9,6 +9,7 @@
 #include <alloy/core/math/interpolation.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix4.hpp>
+#include <alloy/core/math/quaternion.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector3_constants.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
@@ -286,18 +287,35 @@ TEST_CASE("camera::to_matrix4()", "[conversion]")
 
 TEST_CASE("interpolator<camera>", "[interpolation]")
 {
-  // Arrange
-  const auto start = camera{};
-  auto end = camera{};
-  end.set_origin(2, 4, 6);
-
-  // Act
-  const auto result = interpolation::linear(start, end, real{0.5});
-
-  // Assert
   SECTION("Interpolates the translation")
   {
+    // Arrange
+    const auto start = camera{};
+    auto end = camera{};
+    end.set_origin(2, 4, 6);
+
+    // Act
+    const auto result = interpolation::linear(start, end, real{0.5});
+
+    // Assert
     REQUIRE( almost_equal(result.translation(), vector3{1, 2, 3}) );
+  }
+
+  SECTION("Moves along the axes of the interpolated orientation")
+  {
+    // Arrange
+    const auto start = camera{};
+    auto end = camera{};
+    end.rotate_yaw(radian_constants::quarter_revolution);
+    auto sut = interpolation::linear(start, end, real{0.5});
+    const auto expected = sut.orientation() * vector3_constants::unit_x;
+
+    // Act
+    sut.translate_local_x(1);
+    const auto result = sut.translation();
+
+    // Assert
+    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
   }
 }
 
