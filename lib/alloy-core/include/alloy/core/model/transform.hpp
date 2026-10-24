@@ -284,6 +284,58 @@ namespace alloy::core {
     auto scale() const noexcept -> vector3;
 
     //-------------------------------------------------------------------------
+
+    /// \brief Retrieves the direction of this transform's x-axis
+    ///
+    /// \return the unit direction that the orientation maps the x-axis to
+    [[nodiscard]]
+    auto right() const noexcept -> vector3;
+
+    /// \brief Retrieves the direction of this transform's y-axis
+    ///
+    /// \return the unit direction that the orientation maps the y-axis to
+    [[nodiscard]]
+    auto up() const noexcept -> vector3;
+
+    /// \brief Retrieves the direction that this transform faces
+    ///
+    /// Following the convention of `quaternion::look_rotation`, a transform
+    /// faces down its negative z-axis.
+    ///
+    /// \return the unit direction that the orientation maps the negative
+    ///         z-axis to
+    [[nodiscard]]
+    auto forward() const noexcept -> vector3;
+
+    //-------------------------------------------------------------------------
+    // Transformation
+    //-------------------------------------------------------------------------
+  public:
+
+    /// \brief Transforms the point \p point by this transform
+    ///
+    /// The point is scaled, then rotated, then translated, which is the same
+    /// as multiplying it by the matrix of this transform.
+    ///
+    /// \param point the point to transform
+    /// \return the transformed point
+    [[nodiscard]]
+    auto transform_point(const vector3& point) const noexcept -> vector3;
+
+    /// \brief Transforms the vector \p vector by this transform
+    ///
+    /// The vector is scaled, then rotated, but not translated, since a vector
+    /// has no position.
+    ///
+    /// \note Normals are not preserved by a non-uniform scale, and should be
+    ///       transformed by the inverse transpose of the matrix instead.
+    ///
+    /// \param vector the vector to transform
+    /// \return the transformed vector
+    [[nodiscard]]
+    auto transform_vector(const vector3& vector) const noexcept -> vector3;
+
+    //-------------------------------------------------------------------------
     // Conversion
     //-------------------------------------------------------------------------
   public:

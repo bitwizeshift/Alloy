@@ -118,6 +118,94 @@ TEST_CASE("transform::angles()", "[observers]")
   }
 }
 
+TEST_CASE("transform::right()", "[observers]")
+{
+  // Arrange
+  auto sut = transform{};
+  sut.rotate_yaw(radian_constants::quarter_revolution);
+
+  // Act
+  const auto result = sut.right();
+
+  // Assert
+  SECTION("Is the rotated x-axis")
+  {
+    REQUIRE( almost_equal(result, vector3{0, 0, -1}, real{1e-5f}) );
+  }
+}
+
+TEST_CASE("transform::up()", "[observers]")
+{
+  // Arrange
+  auto sut = transform{};
+  sut.rotate_pitch(radian_constants::quarter_revolution);
+
+  // Act
+  const auto result = sut.up();
+
+  // Assert
+  SECTION("Is the rotated y-axis")
+  {
+    REQUIRE( almost_equal(result, vector3{0, 0, 1}, real{1e-5f}) );
+  }
+}
+
+TEST_CASE("transform::forward()", "[observers]")
+{
+  // Arrange
+  auto sut = transform{};
+  sut.rotate_yaw(radian_constants::quarter_revolution);
+
+  // Act
+  const auto result = sut.forward();
+
+  // Assert
+  SECTION("Is the rotated negative z-axis")
+  {
+    REQUIRE( almost_equal(result, vector3{-1, 0, 0}, real{1e-5f}) );
+  }
+}
+
+//------------------------------------------------------------------------------
+// Transformation
+//------------------------------------------------------------------------------
+
+TEST_CASE("transform::transform_point( const vector3& )", "[transformation]")
+{
+  // Arrange
+  auto sut = transform{};
+  sut.scale(vector3{2, 3, 1});
+  sut.rotate(radian_constants::quarter_revolution, vector3_constants::unit_z);
+  sut.translate(10, 0, 0);
+
+  // Act
+  const auto result = sut.transform_point(vector3{0, 1, 0});
+
+  // Assert
+  SECTION("Scales, then rotates, then translates")
+  {
+    REQUIRE( almost_equal(result, vector3{7, 0, 0}, real{1e-5f}) );
+  }
+}
+
+TEST_CASE("transform::transform_vector( const vector3& )", "[transformation]")
+{
+  // Arrange
+  auto sut = transform{};
+  sut.scale(vector3{2, 3, 1});
+  sut.rotate(radian_constants::quarter_revolution, vector3_constants::unit_z);
+  sut.translate(10, 0, 0);
+
+  // Act
+  const auto result = sut.transform_vector(vector3{0, 1, 0});
+
+  // Assert
+  SECTION("Scales, then rotates, without translating")
+  {
+    REQUIRE( almost_equal(result, vector3{-3, 0, 0}, real{1e-5f}) );
+  }
+}
+
 //------------------------------------------------------------------------------
 // Conversion
 //------------------------------------------------------------------------------

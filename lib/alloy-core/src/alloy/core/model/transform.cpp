@@ -240,6 +240,45 @@ auto alloy::core::transform::scale() const noexcept -> vector3
 }
 
 //-----------------------------------------------------------------------------
+
+auto alloy::core::transform::right() const noexcept -> vector3
+{
+  return m_orientation.x_axis();
+}
+
+auto alloy::core::transform::up() const noexcept -> vector3
+{
+  return m_orientation.y_axis();
+}
+
+auto alloy::core::transform::forward() const noexcept -> vector3
+{
+  return -m_orientation.z_axis();
+}
+
+//-----------------------------------------------------------------------------
+// Transformation
+//-----------------------------------------------------------------------------
+
+auto alloy::core::transform::transform_point(const vector3& point)
+  const noexcept -> vector3
+{
+  return transform_vector(point) + m_translation;
+}
+
+auto alloy::core::transform::transform_vector(const vector3& vector)
+  const noexcept -> vector3
+{
+  const auto scaled = vector3{
+    vector.x() * m_scale.x(),
+    vector.y() * m_scale.y(),
+    vector.z() * m_scale.z()
+  };
+
+  return m_orientation * scaled;
+}
+
+//-----------------------------------------------------------------------------
 // Conversion
 //-----------------------------------------------------------------------------
 
