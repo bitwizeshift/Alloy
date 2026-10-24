@@ -97,6 +97,28 @@ TEST_CASE("transform::set_yaw( radian )", "[absolute]")
   }
 }
 
+TEST_CASE("transform::look_at( const vector3&, const vector3& )", "[absolute]")
+{
+  // Arrange
+  auto sut = transform{};
+  sut.set_translation(5, 0, 0);
+
+  // Act
+  sut.look_at(vector3{5, 0, -5}, vector3_constants::unit_x);
+  const auto forward = sut.forward();
+  const auto up = sut.up();
+
+  // Assert
+  SECTION("Faces the target")
+  {
+    REQUIRE( almost_equal(forward, vector3{0, 0, -1}, real{1e-5f}) );
+  }
+  SECTION("Orients up towards the up direction")
+  {
+    REQUIRE( almost_equal(up, vector3{1, 0, 0}, real{1e-5f}) );
+  }
+}
+
 //------------------------------------------------------------------------------
 // Observers
 //------------------------------------------------------------------------------

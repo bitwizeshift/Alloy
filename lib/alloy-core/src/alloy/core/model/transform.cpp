@@ -4,9 +4,11 @@
 
 #include "alloy/core/model/transform.hpp"
 
+#include "alloy/core/assert.hpp"
 #include "alloy/core/math/angle/radian.hpp"
 #include "alloy/core/math/euler_angles.hpp"
 #include "alloy/core/math/interpolation.hpp"
+#include "alloy/core/math/math.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"
 #include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
@@ -186,6 +188,17 @@ auto alloy::core::transform::set_orientation(radian angle, const vector3& axis)
   noexcept -> void
 {
   m_orientation = quaternion::from_angle_axis(angle, axis);
+}
+
+auto alloy::core::transform::look_at(const vector3& target, const vector3& up)
+  noexcept -> void
+{
+  const auto direction = (target - m_translation);
+
+  ALLOY_ASSERT(direction.square_magnitude() > default_tolerance);
+  ALLOY_ASSERT(up.cross(direction).square_magnitude() > default_tolerance);
+
+  m_orientation = quaternion::look_rotation(direction, up);
 }
 
 auto alloy::core::transform::set_scale(real uniform) noexcept -> void

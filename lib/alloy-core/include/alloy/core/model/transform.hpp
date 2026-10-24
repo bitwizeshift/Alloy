@@ -22,6 +22,7 @@
 #include "alloy/core/math/matrix/matrix4.hpp"
 #include "alloy/core/math/quaternion.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
+#include "alloy/core/math/vector/vector3_constants.hpp"
 #include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
@@ -225,6 +226,21 @@ namespace alloy::core {
     /// \param angle the angle to rotate
     /// \param axis the axis to rotate about
     auto set_orientation(radian angle, const vector3& axis) noexcept -> void;
+
+    /// \brief Orients this transform to face \p target
+    ///
+    /// The transform's forward direction points at \p target, with its up
+    /// direction as close to \p up as possible.
+    ///
+    /// \pre \p target is not the translation of this transform
+    /// \pre \p up is not parallel to the direction of \p target
+    ///
+    /// \param target the position to face
+    /// \param up the direction for up
+    auto look_at(
+      const vector3& target,
+      const vector3& up = vector3_constants::unit_y
+    ) noexcept -> void;
 
     //-------------------------------------------------------------------------
 
