@@ -254,6 +254,138 @@ TEST_CASE("color::inverted()", "[modifier]") {
   }
 }
 
+TEST_CASE("color::darken(real)", "[modifier]") {
+  // Arrange
+  auto sut = color{0.5f, 1.0f, 0.0f, 0.25f};
+
+  // Act
+  sut.darken(0.5f);
+
+  // Assert
+  SECTION("Scales each color component towards black") {
+    REQUIRE(almost_equal(sut, color{0.25f, 0.5f, 0.0f, 0.25f}, real{1e-6f}));
+  }
+}
+
+TEST_CASE("color::brighten(real)", "[modifier]") {
+  // Arrange
+  auto sut = color{0.5f, 0.0f, 1.0f, 0.25f};
+
+  // Act
+  sut.brighten(0.5f);
+
+  // Assert
+  SECTION("Moves each color component towards white") {
+    REQUIRE(almost_equal(sut, color{0.75f, 0.5f, 1.0f, 0.25f}, real{1e-6f}));
+  }
+}
+
+TEST_CASE("color::contrast()", "[modifier]") {
+  // Arrange
+  auto sut = color{0.25f, 0.75f, 0.0f, 0.25f};
+
+  // Act
+  sut.contrast();
+
+  // Assert
+  SECTION("Shifts each color component by half, wrapping around") {
+    REQUIRE(almost_equal(sut, color{0.75f, 0.25f, 0.5f, 0.25f}, real{1e-6f}));
+  }
+}
+
+TEST_CASE("color::darkened(real)", "[modifier]") {
+  // Arrange
+  const auto sut = color{0.5f, 1.0f, 0.0f, 0.25f};
+
+  // Act
+  const auto result = sut.darkened(0.5f);
+
+  // Assert
+  SECTION("Is the darkened copy of the color") {
+    REQUIRE(almost_equal(result, color{0.25f, 0.5f, 0.0f, 0.25f}, real{1e-6f}));
+  }
+}
+
+TEST_CASE("color::brightened(real)", "[modifier]") {
+  // Arrange
+  const auto sut = color{0.5f, 0.0f, 1.0f, 0.25f};
+
+  // Act
+  const auto result = sut.brightened(0.5f);
+
+  // Assert
+  SECTION("Is the brightened copy of the color") {
+    REQUIRE(almost_equal(result, color{0.75f, 0.5f, 1.0f, 0.25f}, real{1e-6f}));
+  }
+}
+
+TEST_CASE("color::contrasted()", "[modifier]") {
+  // Arrange
+  const auto sut = color{0.25f, 0.75f, 0.0f, 0.25f};
+
+  // Act
+  const auto result = sut.contrasted();
+
+  // Assert
+  SECTION("Is the contrasted copy of the color") {
+    const auto expected = color{0.75f, 0.25f, 0.5f, 0.25f};
+
+    REQUIRE(almost_equal(result, expected, real{1e-6f}));
+  }
+}
+
+TEST_CASE("blend(const color&, const color&)", "[blend]") {
+  // Arrange
+  const auto background = color{1.0f, 0.0f, 0.0f, 1.0f};
+
+  SECTION("Opaque foreground replaces the background") {
+    // Arrange
+    const auto foreground = color{0.0f, 0.0f, 1.0f, 1.0f};
+
+    // Act
+    const auto result = blend(background, foreground);
+
+    // Assert
+    REQUIRE(almost_equal(result, foreground, real{1e-6f}));
+  }
+  SECTION("Translucent foreground mixes with the background") {
+    // Arrange
+    const auto foreground = color{0.0f, 0.0f, 1.0f, 0.5f};
+
+    // Act
+    const auto result = blend(background, foreground);
+
+    // Assert
+    REQUIRE(almost_equal(result, color{0.5f, 0.0f, 0.5f, 1.0f}, real{1e-6f}));
+  }
+}
+
+TEST_CASE("color::to_argb8()", "[conversion]") {
+  // Arrange
+  const auto sut = color::from_rgba8(0x11u, 0x22u, 0x33u, 0x44u);
+
+  // Act
+  const auto result = sut.to_argb8();
+
+  // Assert
+  SECTION("Packs alpha into the most significant byte") {
+    REQUIRE(result == argb8{0x44112233u});
+  }
+}
+
+TEST_CASE("color::to_abgr8()", "[conversion]") {
+  // Arrange
+  const auto sut = color::from_rgba8(0x11u, 0x22u, 0x33u, 0x44u);
+
+  // Act
+  const auto result = sut.to_abgr8();
+
+  // Assert
+  SECTION("Packs alpha, blue, green, then red") {
+    REQUIRE(result == abgr8{0x44332211u});
+  }
+}
+
 TEST_CASE("color::r8() const", "[observer]") {
   SECTION("Value between two steps rounds to the nearest step") {
     // Arrange
