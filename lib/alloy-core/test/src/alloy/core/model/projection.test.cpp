@@ -217,6 +217,58 @@ TEST_CASE("projection::orthographic( const view_volume& )", "[factory]")
 }
 
 //------------------------------------------------------------------------------
+// Adjustment
+//------------------------------------------------------------------------------
+
+TEST_CASE("projection::with_aspect_ratio( real )", "[adjustment]")
+{
+  SECTION("Perspective projection takes the new aspect ratio")
+  {
+    // Arrange
+    const auto expected = projection::perspective(
+      radian{1.2f},
+      real{1},
+      view_volume::depth_bounds{real{1}, real{10}}
+    ).to_matrix4();
+    const auto sut = projection::perspective(
+      radian{1.2f},
+      real{2},
+      view_volume::depth_bounds{real{1}, real{10}}
+    );
+
+    // Act
+    const auto result = sut.with_aspect_ratio(real{1}).to_matrix4();
+
+    // Assert
+    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+  }
+  SECTION("Orthographic projection resizes its width about its center")
+  {
+    // Arrange
+    const auto expected = projection::orthographic(0, 4, -1, 3, 1, 10)
+      .to_matrix4();
+    const auto sut = projection::orthographic(-2, 6, -1, 3, 1, 10);
+
+    // Act
+    const auto result = sut.with_aspect_ratio(real{1}).to_matrix4();
+
+    // Assert
+    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+  }
+  SECTION("Identity projection is unchanged")
+  {
+    // Arrange
+    const auto sut = projection::identity();
+
+    // Act
+    const auto result = sut.with_aspect_ratio(real{2}).to_matrix4();
+
+    // Assert
+    REQUIRE( result == matrix4_constants::identity );
+  }
+}
+
+//------------------------------------------------------------------------------
 // Conversion
 //------------------------------------------------------------------------------
 

@@ -397,6 +397,27 @@ namespace alloy::core {
     auto operator=(const projection& other) noexcept -> projection& = default;
 
     //--------------------------------------------------------------------------
+    // Adjustment
+    //--------------------------------------------------------------------------
+  public:
+
+    /// \brief Makes a copy of this projection that has the aspect ratio
+    ///        \p aspect_ratio
+    ///
+    /// This adapts the projection to a resized viewport while keeping its
+    /// vertical extent. A perspective projection keeps its vertical field of
+    /// view, and an orthographic projection keeps its vertical bounds and
+    /// resizes its horizontal bounds about their center. The identity
+    /// projection has no aspect ratio, and is returned unchanged.
+    ///
+    /// \pre `aspect_ratio > 0`
+    ///
+    /// \param aspect_ratio the aspect ratio, as the width over the height
+    /// \return the adjusted projection
+    [[nodiscard]]
+    auto with_aspect_ratio(real aspect_ratio) const noexcept -> projection;
+
+    //--------------------------------------------------------------------------
     // Conversion
     //--------------------------------------------------------------------------
   public:
@@ -531,6 +552,30 @@ namespace alloy::core {
       const orthographic_data& data,
       not_null<matrix4*> out
     ) noexcept -> void;
+    /// \}
+
+    /// \{
+    /// \brief Makes the projection described by \p data with the aspect
+    ///        ratio \p aspect_ratio
+    ///
+    /// There is one overload for each alternative of the storage, so that
+    /// visiting the storage fails to compile if an alternative is unhandled.
+    ///
+    /// \param data the projection data
+    /// \param aspect_ratio the aspect ratio, as the width over the height
+    /// \return the adjusted projection
+    static auto with_aspect_ratio_of(
+      const identity_data& data,
+      real aspect_ratio
+    ) noexcept -> projection;
+    static auto with_aspect_ratio_of(
+      const perspective_data& data,
+      real aspect_ratio
+    ) noexcept -> projection;
+    static auto with_aspect_ratio_of(
+      const orthographic_data& data,
+      real aspect_ratio
+    ) noexcept -> projection;
     /// \}
 
   };

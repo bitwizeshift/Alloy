@@ -90,6 +90,26 @@ auto alloy::core::projection::orthographic(
 }
 
 //------------------------------------------------------------------------------
+// Adjustment
+//------------------------------------------------------------------------------
+
+// clang-tidy flags this function for throwing exceptions despite being marked
+// noexcept. The only exceptions that can throw are if std::visit throws, and
+// this is insured by being an internal invariant.
+//
+// NOLINTNEXTLINE(bugprone-exception-escape)
+auto alloy::core::projection::with_aspect_ratio(real aspect_ratio)
+  const noexcept -> projection
+{
+  ALLOY_ASSERT(aspect_ratio > 0);
+  ALLOY_ASSERT_AND_ASSUME(!m_storage.valueless_by_exception());
+
+  return std::visit([aspect_ratio](const auto& data) -> projection {
+    return with_aspect_ratio_of(data, aspect_ratio);
+  }, m_storage);
+}
+
+//------------------------------------------------------------------------------
 // Conversion
 //------------------------------------------------------------------------------
 
@@ -269,4 +289,45 @@ auto alloy::core::projection::extract_inverse_matrix_of(
     0,            0,            real{1} / rz, -tz / rz,
     0,            0,            0,            1,
   };
+}
+
+//------------------------------------------------------------------------------
+
+auto alloy::core::projection::with_aspect_ratio_of(
+  const identity_data&,
+  real
+) noexcept -> projection
+{
+  return projection::identity();
+}
+
+auto alloy::core::projection::with_aspect_ratio_of(
+  const perspective_data& data,
+  real aspect_ratio
+) noexcept -> projection
+{
+  auto result = data;
+  result.aspect_ratio = aspect_ratio;
+
+  return projection{result};
+}
+
+auto alloy::core::projection::with_aspect_ratio_of(
+  const orthographic_data& data,
+  real aspect_ratio
+) noexcept -> projection
+{
+  const auto& horizontal = data.volume.horizontal();
+  const auto& vertical = data.volume.vertical();
+  const auto center = (horizontal.left + horizontal.right) * real{0.5};
+  const auto half_width = (vertical.top - vertical.bottom)
+                        * aspect_ratio
+                        * real{0.5};
+  const auto volume = view_volume::make_unchecked(
+    view_volume::horizontal_bounds{center - half_width, center + half_width},
+    vertical,
+    data.volume.depth()
+  );
+
+  return projection{orthographic_data{volume, data.clip}};
 }
