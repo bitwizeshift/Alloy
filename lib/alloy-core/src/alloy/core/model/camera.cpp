@@ -13,6 +13,7 @@
 #include "alloy/core/math/matrix/matrix4.hpp"
 #include "alloy/core/math/quaternion.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
+#include "alloy/core/math/vector/vector3_constants.hpp"
 #include "alloy/core/math/vector/vector_utilities.hpp"
 #include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
@@ -108,6 +109,26 @@ auto alloy::core::camera::rotate_pitch(radian angle) noexcept -> void
 auto alloy::core::camera::rotate_yaw(radian angle) noexcept -> void
 {
   rotate(quaternion::from_angles(angle, radian{0}, radian{0}));
+}
+
+//-----------------------------------------------------------------------------
+
+auto alloy::core::camera::rotate_world(const quaternion& orientation)
+  noexcept -> void
+{
+  m_orientation = orientation * m_orientation;
+  update_axes();
+}
+
+auto alloy::core::camera::rotate_world(radian angle, const vector3& axis)
+  noexcept -> void
+{
+  rotate_world(quaternion::from_angle_axis(angle, axis));
+}
+
+auto alloy::core::camera::rotate_world_yaw(radian angle) noexcept -> void
+{
+  rotate_world(quaternion::from_angle_axis(angle, vector3_constants::unit_y));
 }
 
 //-----------------------------------------------------------------------------

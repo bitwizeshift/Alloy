@@ -195,6 +195,32 @@ namespace alloy::core {
     auto rotate_yaw(radian angle) noexcept -> void;
 
     //-------------------------------------------------------------------------
+
+    /// \brief Rotates this camera by the specified \p orientation about the
+    ///        world axes
+    ///
+    /// Unlike `rotate`, the rotation is about the axes of world space rather
+    /// than the camera's own axes.
+    ///
+    /// \param orientation the orientation
+    auto rotate_world(const quaternion& orientation) noexcept -> void;
+
+    /// \brief Rotates this camera around the world-space \p axis by the
+    ///        specified \p angle
+    ///
+    /// \param angle the angle to rotate
+    /// \param axis the world-space axis to rotate about
+    auto rotate_world(radian angle, const vector3& axis) noexcept -> void;
+
+    /// \brief Rotates this camera around the world's y-axis by \p angle
+    ///
+    /// Combined with `rotate_pitch`, this keeps the camera's right direction
+    /// level with the ground, as is expected of a first-person camera.
+    ///
+    /// \param angle the angle to rotate
+    auto rotate_world_yaw(radian angle) noexcept -> void;
+
+    //-------------------------------------------------------------------------
     // Absolute Transformations
     //-------------------------------------------------------------------------
   public:

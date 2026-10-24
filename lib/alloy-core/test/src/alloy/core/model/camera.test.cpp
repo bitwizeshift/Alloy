@@ -154,6 +154,43 @@ TEST_CASE("camera::rotate_yaw( radian )", "[rotation]")
   }
 }
 
+TEST_CASE("camera::rotate_world( radian, const vector3& )", "[rotation]")
+{
+  // Arrange
+  auto sut = camera{};
+  sut.rotate_yaw(radian_constants::quarter_revolution);
+
+  // Act
+  sut.rotate_world(
+    radian_constants::quarter_revolution,
+    vector3_constants::unit_x
+  );
+  const auto result = sut.forward();
+
+  // Assert
+  SECTION("Rotates about the world axis")
+  {
+    REQUIRE( almost_equal(result, vector3{-1, 0, 0}, real{1e-5f}) );
+  }
+}
+
+TEST_CASE("camera::rotate_world_yaw( radian )", "[rotation]")
+{
+  // Arrange
+  auto sut = camera{};
+  sut.rotate_pitch(radian{0.5f});
+
+  // Act
+  sut.rotate_world_yaw(radian_constants::quarter_revolution);
+  const auto result = sut.right();
+
+  // Assert
+  SECTION("Keeps the right direction level")
+  {
+    REQUIRE( almost_equal(result, vector3{0, 0, -1}, real{1e-5f}) );
+  }
+}
+
 //------------------------------------------------------------------------------
 // Absolute Transformations
 //------------------------------------------------------------------------------
