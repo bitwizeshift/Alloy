@@ -24,7 +24,8 @@
 #include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
-#include <variant>
+#include <cstdint> // std::uint8_t
+#include <variant> // std::variant
 
 // Some headers like <windows.h>, if included before this header, will cause
 // failures due to them `#define`-ing `near` and `far`. Remove these relics of
@@ -255,6 +256,21 @@ namespace alloy::core {
   };
 
   //===========================================================================
+  // enum class : clip_depth
+  //===========================================================================
+
+  /////////////////////////////////////////////////////////////////////////////
+  /// \brief The range of depths that a projection maps the view volume into
+  ///
+  /// Graphics APIs disagree on the depth range of their clip volume, so a
+  /// projection has to be built for the API that it is used with.
+  /////////////////////////////////////////////////////////////////////////////
+  enum class clip_depth : std::uint8_t {
+    negative_one_to_one, ///< Depths in [-1, 1], as used by OpenGL
+    zero_to_one,         ///< Depths in [0, 1], as used by Vulkan, D3D, Metal
+  };
+
+  //===========================================================================
   // class : projection
   //===========================================================================
 
@@ -291,15 +307,17 @@ namespace alloy::core {
     /// \pre aspect_ratio > 0
     /// \pre `0 < depth.near < depth.far`
     ///
-    /// \param fov the field-of-view in degrees
+    /// \param fov the vertical field-of-view in degrees
     /// \param aspect_ratio the aspect ratio
     /// \param depth the depth bounds of the view volume
+    /// \param clip the depth range to map the view volume into
     /// \return A perspective projection
     [[nodiscard]]
     static auto perspective(
       degree fov,
       real aspect_ratio,
-      view_volume::depth_bounds depth
+      view_volume::depth_bounds depth,
+      clip_depth clip = clip_depth::negative_one_to_one
     ) noexcept -> projection;
 
     /// \brief Projects a perspective with the given information
@@ -308,15 +326,17 @@ namespace alloy::core {
     /// \pre aspect_ratio > 0
     /// \pre `0 < depth.near < depth.far`
     ///
-    /// \param fov the field-of-view in radians
+    /// \param fov the vertical field-of-view in radians
     /// \param aspect_ratio the aspect ratio
     /// \param depth the depth bounds of the view volume
+    /// \param clip the depth range to map the view volume into
     /// \return A perspective projection
     [[nodiscard]]
     static auto perspective(
       radian fov,
       real aspect_ratio,
-      view_volume::depth_bounds depth
+      view_volume::depth_bounds depth,
+      clip_depth clip = clip_depth::negative_one_to_one
     ) noexcept -> projection;
 
     //--------------------------------------------------------------------------
@@ -324,7 +344,9 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Projects an orthographic view from the given clip space
+    /// \brief Projects an orthographic view of the given bounds
+    ///
+    /// \pre `left < right`, `bottom < top`, `near < far`
     ///
     /// \param left the left part of the view
     /// \param right the right part of the view
@@ -332,6 +354,7 @@ namespace alloy::core {
     /// \param top the top part of the view
     /// \param near the near part of the view
     /// \param far the far part of the view
+    /// \param clip the depth range to map the view volume into
     /// \return An orthographic projection
     [[nodiscard]]
     static auto orthographic(
@@ -340,15 +363,20 @@ namespace alloy::core {
       real bottom,
       real top,
       real near,
-      real far
+      real far,
+      clip_depth clip = clip_depth::negative_one_to_one
     ) noexcept -> projection;
 
     /// \brief Projects an orthographic view of the view \p volume
     ///
     /// \param volume the view volume
+    /// \param clip the depth range to map the view volume into
     /// \return An orthographic projection
     [[nodiscard]]
-    static auto orthographic(const view_volume& volume) noexcept -> projection;
+    static auto orthographic(
+      const view_volume& volume,
+      clip_depth clip = clip_depth::negative_one_to_one
+    ) noexcept -> projection;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -395,8 +423,13 @@ namespace alloy::core {
       radian fov;
       real aspect_ratio;
       view_volume::depth_bounds depth;
+      clip_depth clip;
     };
-    using orthographic_data = view_volume;
+    struct orthographic_data
+    {
+      view_volume volume;
+      clip_depth clip;
+    };
 
     using storage_type = std::variant<
       identity_data,     // Default state: performs identity transformation

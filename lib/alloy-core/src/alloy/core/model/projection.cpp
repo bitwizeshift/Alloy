@@ -31,16 +31,18 @@ auto alloy::core::projection::identity() noexcept -> projection
 auto alloy::core::projection::perspective(
   degree fov,
   real aspect_ratio,
-  view_volume::depth_bounds depth
+  view_volume::depth_bounds depth,
+  clip_depth clip
 ) noexcept -> projection
 {
-  return perspective(to_radian(fov), aspect_ratio, depth);
+  return perspective(to_radian(fov), aspect_ratio, depth, clip);
 }
 
 auto alloy::core::projection::perspective(
   radian fov,
   real aspect_ratio,
-  view_volume::depth_bounds depth
+  view_volume::depth_bounds depth,
+  clip_depth clip
 ) noexcept -> projection
 {
   ALLOY_ASSERT(aspect_ratio > 0);
@@ -53,7 +55,8 @@ auto alloy::core::projection::perspective(
     perspective_data{
       fov,
       aspect_ratio,
-      depth
+      depth,
+      clip
     }
   };
 }
@@ -68,16 +71,22 @@ auto alloy::core::projection::orthographic(
   real bottom,
   real top,
   real near,
-  real far
+  real far,
+  clip_depth clip
 ) noexcept -> projection
 {
-  return orthographic(view_volume::make(left, right, bottom, top, near, far));
+  return orthographic(
+    view_volume::make(left, right, bottom, top, near, far),
+    clip
+  );
 }
 
-auto alloy::core::projection::orthographic(const view_volume& volume)
-  noexcept -> projection
+auto alloy::core::projection::orthographic(
+  const view_volume& volume,
+  clip_depth clip
+) noexcept -> projection
 {
-  return projection{orthographic_data{volume}};
+  return projection{orthographic_data{volume, clip}};
 }
 
 //------------------------------------------------------------------------------
@@ -131,8 +140,12 @@ auto alloy::core::projection::extract_matrix_of(
 
   const auto rx = real{1} / (data.aspect_ratio * half_tan_fov);
   const auto ry = real{1} / half_tan_fov;
-  const auto rz = -(depth.far + depth.near) / dz;
-  const auto factor = - (real{2} * depth.far * depth.near) / dz;
+  const auto rz = (data.clip == clip_depth::zero_to_one)
+    ? -depth.far / dz
+    : -(depth.far + depth.near) / dz;
+  const auto factor = (data.clip == clip_depth::zero_to_one)
+    ? -(depth.far * depth.near) / dz
+    : -(real{2} * depth.far * depth.near) / dz;
 
   (*out) = matrix4{
     rx, 0,  0,   0,
@@ -147,12 +160,13 @@ auto alloy::core::projection::extract_matrix_of(
   not_null<matrix4*> out
 ) noexcept -> void
 {
-  const auto& left = data.horizontal().left;
-  const auto& right = data.horizontal().right;
-  const auto& bottom = data.vertical().bottom;
-  const auto& top = data.vertical().top;
-  const auto& near = data.depth().near;
-  const auto& far = data.depth().far;
+  const auto& volume = data.volume;
+  const auto& left = volume.horizontal().left;
+  const auto& right = volume.horizontal().right;
+  const auto& bottom = volume.vertical().bottom;
+  const auto& top = volume.vertical().top;
+  const auto& near = volume.depth().near;
+  const auto& far = volume.depth().far;
 
   const auto dx = (right - left);
   const auto dy = (top - bottom);
@@ -160,11 +174,15 @@ auto alloy::core::projection::extract_matrix_of(
 
   const auto tx = -((right + left) / dx);
   const auto ty = -((top + bottom) / dy);
-  const auto tz = -((far + near) / dz);
+  const auto tz = (data.clip == clip_depth::zero_to_one)
+    ? -(near / dz)
+    : -((far + near) / dz);
 
   const auto rx = real{2} / dx;
   const auto ry = real{2} / dy;
-  const auto rz = -real{2} / dz;
+  const auto rz = (data.clip == clip_depth::zero_to_one)
+    ? -real{1} / dz
+    : -real{2} / dz;
 
   (*out) = matrix4{
     rx, 0,  0,  tx,

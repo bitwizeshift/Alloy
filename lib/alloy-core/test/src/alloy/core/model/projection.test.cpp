@@ -89,6 +89,35 @@ TEST_CASE("projection::perspective( radian, real, view_volume::depth_bounds )",
   }
 }
 
+TEST_CASE("projection::perspective( radian, real, view_volume::depth_bounds, "
+          "clip_depth )", "[factory]")
+{
+  // Arrange
+  const auto sut = projection::perspective(
+    radian_constants::quarter_revolution,
+    real{2},
+    view_volume::depth_bounds{real{1}, real{10}},
+    clip_depth::zero_to_one
+  );
+
+  SECTION("Maps the center of the near plane to a depth of zero")
+  {
+    // Act
+    const auto result = project(sut, 0, 0, -1);
+
+    // Assert
+    REQUIRE( almost_equal(result, vector4{0, 0, 0, 1}, real{1e-5f}) );
+  }
+  SECTION("Maps the center of the far plane to a depth of one")
+  {
+    // Act
+    const auto result = project(sut, 0, 0, -10);
+
+    // Assert
+    REQUIRE( almost_equal(result, vector4{0, 0, 1, 1}, real{1e-5f}) );
+  }
+}
+
 TEST_CASE("projection::perspective( degree, real, view_volume::depth_bounds )",
           "[factory]")
 {
@@ -133,6 +162,33 @@ TEST_CASE("projection::orthographic( real, real, real, real, real, real )",
     REQUIRE( almost_equal(result, vector4{-1, -1, -1, 1}, real{1e-5f}) );
   }
   SECTION("Maps the far top-right corner to the far top-right face")
+  {
+    // Act
+    const auto result = project(sut, 6, 3, -10);
+
+    // Assert
+    REQUIRE( almost_equal(result, vector4{1, 1, 1, 1}, real{1e-5f}) );
+  }
+}
+
+TEST_CASE("projection::orthographic( real, real, real, real, real, real, "
+          "clip_depth )", "[factory]")
+{
+  // Arrange
+  const auto sut = projection::orthographic(
+    -2, 6, -1, 3, 1, 10,
+    clip_depth::zero_to_one
+  );
+
+  SECTION("Maps the near bottom-left corner to a depth of zero")
+  {
+    // Act
+    const auto result = project(sut, -2, -1, -1);
+
+    // Assert
+    REQUIRE( almost_equal(result, vector4{-1, -1, 0, 1}, real{1e-5f}) );
+  }
+  SECTION("Maps the far top-right corner to a depth of one")
   {
     // Act
     const auto result = project(sut, 6, 3, -10);
