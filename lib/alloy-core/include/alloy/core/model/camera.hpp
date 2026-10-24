@@ -36,11 +36,6 @@ namespace alloy::core {
   ///
   /// A camera may only be rotated or translated, but may not be scaled.
   /// All translations
-  ///
-  /// TODO(bitwize): Optimize redundant computations by storing the rotated
-  ///                axes. Currently the axes is computed as part of look_at,
-  ///                which then gets compressed into a quaternion, but
-  ///                extracted again later when converted to a matrix.
   /////////////////////////////////////////////////////////////////////////////
   class ALLOY_CORE_API camera
   {
@@ -334,12 +329,12 @@ namespace alloy::core {
     ///        orientation of this camera
     auto update_axes() noexcept -> void;
 
-    vector3 m_translation;
+    // The orientation is over-aligned, so it comes first to avoid padding
+    // between it and the vectors.
     quaternion m_orientation;
+    vector3 m_translation;
 
-    // TODO: We can precompute this and cache these values per camera movement,
-    //       as this becomes the 4x4 transform matrix
-    // Vector basis (effectively the transform)
+    // The axes of the orientation, cached for the local translations.
     vector3 m_forward = vector3_constants::neg_unit_z;
     vector3 m_up      = vector3_constants::unit_y;
     vector3 m_right   = vector3_constants::unit_x;
