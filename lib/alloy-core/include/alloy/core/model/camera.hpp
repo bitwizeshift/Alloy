@@ -377,6 +377,20 @@ namespace alloy::core {
     [[nodiscard]]
     auto to_matrix4() const noexcept -> matrix4;
 
+    /// \brief Extracts the inverse of the camera matrix from this camera
+    ///
+    /// The inverse maps camera space back into world space, which is needed
+    /// to turn positions on the screen into rays in the world.
+    ///
+    /// \param out the matrix to output
+    auto extract_inverse_matrix(not_null<matrix4*> out) const noexcept -> void;
+
+    /// \brief Converts the inverse of this camera to a matrix4
+    ///
+    /// \return the inverse matrix4
+    [[nodiscard]]
+    auto to_inverse_matrix4() const noexcept -> matrix4;
+
     //-------------------------------------------------------------------------
     // Private Members
     //-------------------------------------------------------------------------

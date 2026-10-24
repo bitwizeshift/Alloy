@@ -291,6 +291,28 @@ auto alloy::core::camera::to_matrix4() const noexcept -> matrix4
   return result;
 }
 
+auto alloy::core::camera::extract_inverse_matrix(not_null<matrix4*> out)
+  const noexcept -> void
+{
+  // The camera's own transform rotates by the orientation, and then
+  // translates to the camera's position.
+  m_orientation.extract_rotation_matrix(out);
+
+  auto& result = *out;
+
+  result[3][0] = m_translation.x();
+  result[3][1] = m_translation.y();
+  result[3][2] = m_translation.z();
+}
+
+auto alloy::core::camera::to_inverse_matrix4() const noexcept -> matrix4
+{
+  auto result = matrix4{};
+  extract_inverse_matrix(&result);
+
+  return result;
+}
+
 //-----------------------------------------------------------------------------
 // Private Members
 //-----------------------------------------------------------------------------

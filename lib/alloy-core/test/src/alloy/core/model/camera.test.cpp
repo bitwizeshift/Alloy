@@ -9,6 +9,7 @@
 #include <alloy/core/math/interpolation.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix4.hpp>
+#include <alloy/core/math/matrix/matrix4_constants.hpp>
 #include <alloy/core/math/quaternion.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector3_constants.hpp>
@@ -363,6 +364,24 @@ TEST_CASE("camera::to_matrix4()", "[conversion]")
   SECTION("Rotates into camera space after translating the camera to the origin")
   {
     REQUIRE( almost_equal(result, expected) );
+  }
+}
+
+TEST_CASE("camera::to_inverse_matrix4()", "[conversion]")
+{
+  // Arrange
+  auto sut = camera{};
+  sut.set_translation(4, -2, 7);
+  sut.set_orientation(euler_angles{radian{0.3f}, radian{-0.5f}, radian{2.5f}});
+  const auto matrix = sut.to_matrix4();
+
+  // Act
+  const auto result = sut.to_inverse_matrix4() * matrix;
+
+  // Assert
+  SECTION("Undoes the view transformation")
+  {
+    REQUIRE( almost_equal(result, matrix4_constants::identity, real{1e-5f}) );
   }
 }
 
