@@ -27,6 +27,75 @@ namespace {
 } // namespace
 
 //------------------------------------------------------------------------------
+// view_volume : Static Factories
+//------------------------------------------------------------------------------
+
+TEST_CASE("view_volume::make( real, real, real, real, real, real )",
+          "[factory]")
+{
+  // Act
+  const auto sut = view_volume::make(-2, 6, -1, 3, 1, 10);
+
+  // Assert
+  SECTION("Left is the first bound")
+  {
+    REQUIRE( sut.horizontal().left == real{-2} );
+  }
+  SECTION("Right is the second bound")
+  {
+    REQUIRE( sut.horizontal().right == real{6} );
+  }
+  SECTION("Bottom is the third bound")
+  {
+    REQUIRE( sut.vertical().bottom == real{-1} );
+  }
+  SECTION("Top is the fourth bound")
+  {
+    REQUIRE( sut.vertical().top == real{3} );
+  }
+  SECTION("Near is the fifth bound")
+  {
+    REQUIRE( sut.depth().near == real{1} );
+  }
+  SECTION("Far is the sixth bound")
+  {
+    REQUIRE( sut.depth().far == real{10} );
+  }
+}
+
+TEST_CASE("view_volume::make_symmetric( real, real, real )", "[factory]")
+{
+  // Act
+  const auto sut = view_volume::make_symmetric(2, 3, 4);
+
+  // Assert
+  SECTION("Left is the negated half width")
+  {
+    REQUIRE( sut.horizontal().left == real{-2} );
+  }
+  SECTION("Right is the half width")
+  {
+    REQUIRE( sut.horizontal().right == real{2} );
+  }
+  SECTION("Bottom is the negated half height")
+  {
+    REQUIRE( sut.vertical().bottom == real{-3} );
+  }
+  SECTION("Top is the half height")
+  {
+    REQUIRE( sut.vertical().top == real{3} );
+  }
+  SECTION("Near is the negated distance")
+  {
+    REQUIRE( sut.depth().near == real{-4} );
+  }
+  SECTION("Far is the distance")
+  {
+    REQUIRE( sut.depth().far == real{4} );
+  }
+}
+
+//------------------------------------------------------------------------------
 // Static Factories : Identity
 //------------------------------------------------------------------------------
 
