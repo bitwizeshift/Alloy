@@ -21,8 +21,47 @@
 namespace alloy::core::test {
 
 //------------------------------------------------------------------------------
+// World Translations
+//------------------------------------------------------------------------------
+
+TEST_CASE("camera::translate_world( real, real, real )", "[translation]")
+{
+  // Arrange
+  auto sut = camera{};
+  sut.set_translation(1, 2, 3);
+  sut.rotate_yaw(radian_constants::quarter_revolution);
+
+  // Act
+  sut.translate_world(4, 5, 6);
+  const auto result = sut.translation();
+
+  // Assert
+  SECTION("Moves along the world axes regardless of orientation")
+  {
+    REQUIRE( almost_equal(result, vector3{5, 7, 9}) );
+  }
+}
+
+//------------------------------------------------------------------------------
 // Local Translations
 //------------------------------------------------------------------------------
+
+TEST_CASE("camera::translate_local( const vector3& )", "[translation]")
+{
+  // Arrange
+  auto sut = camera{};
+  sut.rotate_yaw(radian_constants::quarter_revolution);
+
+  // Act
+  sut.translate_local(vector3{1, 2, 3});
+  const auto result = sut.translation();
+
+  // Assert
+  SECTION("Moves right, up, and forward along the camera's axes")
+  {
+    REQUIRE( almost_equal(result, vector3{-3, 2, -1}, real{1e-5f}) );
+  }
+}
 
 TEST_CASE("camera::translate_local_x( real )", "[translation]")
 {
@@ -117,6 +156,28 @@ TEST_CASE("camera::translate_local_z( real )", "[translation]")
 //------------------------------------------------------------------------------
 // Rotations
 //------------------------------------------------------------------------------
+
+TEST_CASE("camera::look_at( real, real, real, const vector3& )", "[rotation]")
+{
+  // Arrange
+  auto sut = camera{};
+  sut.set_translation(5, 0, 0);
+
+  // Act
+  sut.look_at(5, 0, -5, vector3_constants::unit_x);
+  const auto forward = sut.forward();
+  const auto up = sut.up();
+
+  // Assert
+  SECTION("Faces the subject")
+  {
+    REQUIRE( almost_equal(forward, vector3{0, 0, -1}, real{1e-5f}) );
+  }
+  SECTION("Orients up towards the up direction")
+  {
+    REQUIRE( almost_equal(up, vector3{1, 0, 0}, real{1e-5f}) );
+  }
+}
 
 TEST_CASE("camera::look_at( const vector3&, const vector3& )", "[rotation]")
 {
