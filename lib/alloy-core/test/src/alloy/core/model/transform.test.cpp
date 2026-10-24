@@ -127,7 +127,7 @@ TEST_CASE("transform::to_matrix4()", "[conversion]")
   // Arrange
   auto sut = transform{};
   sut.scale(2);
-  sut.rotate_around_axis(
+  sut.rotate(
     radian_constants::quarter_revolution,
     vector3_constants::unit_z
   );
@@ -149,7 +149,7 @@ TEST_CASE("transform::extract_matrix( not_null<matrix4*> )", "[conversion]")
   // Arrange
   auto sut = transform{};
   sut.scale(vector3{2, 3, 1});
-  sut.rotate_around_axis(
+  sut.rotate(
     radian_constants::quarter_revolution,
     vector3_constants::unit_z
   );
@@ -177,7 +177,7 @@ TEST_CASE("interpolator<transform>", "[interpolation]")
   // Arrange
   const auto start = transform{};
   auto end = transform{};
-  end.set_origin(2, 4, 6);
+  end.set_translation(2, 4, 6);
 
   // Act
   const auto result = interpolation::linear(start, end, real{0.5});

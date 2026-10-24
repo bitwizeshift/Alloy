@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 
 alloy::core::transform::transform() noexcept
-  : m_rotation{},
+  : m_orientation{},
     m_translation{},
     m_scale{real{1}, real{1}, real{1}}
 {
@@ -60,7 +60,7 @@ auto alloy::core::transform::translate_z(real delta) noexcept -> void
 auto alloy::core::transform::rotate(const quaternion& orientation)
   noexcept -> void
 {
-  m_rotation *= orientation;
+  m_orientation *= orientation;
 }
 
 auto alloy::core::transform::rotate(const euler_angles& angles) noexcept -> void
@@ -68,14 +68,10 @@ auto alloy::core::transform::rotate(const euler_angles& angles) noexcept -> void
   rotate(quaternion::from_angles(angles));
 }
 
-auto alloy::core::transform::rotate_around_axis(
-  radian angle,
-  const vector3& axis
-) noexcept -> void
+auto alloy::core::transform::rotate(radian angle, const vector3& axis)
+  noexcept -> void
 {
-  const auto orientation = quaternion::from_angle_axis(angle, axis);
-
-  rotate(orientation);
+  rotate(quaternion::from_angle_axis(angle, axis));
 }
 
 auto alloy::core::transform::rotate_roll(radian angle) noexcept -> void
@@ -126,68 +122,70 @@ auto alloy::core::transform::scale_z(real scale) noexcept -> void
 // Absolute Transformations
 //-----------------------------------------------------------------------------
 
-auto alloy::core::transform::set_origin(real x, real y, real z) noexcept -> void
+auto alloy::core::transform::set_translation(real x, real y, real z)
+  noexcept -> void
 {
   m_translation = {x,y,z};
 }
 
-auto alloy::core::transform::set_origin(const vector3& offset) noexcept -> void
+auto alloy::core::transform::set_translation(const vector3& translation)
+  noexcept -> void
 {
-  m_translation = offset;
+  m_translation = translation;
 }
 
-auto alloy::core::transform::set_x_translation(real x) noexcept -> void
+auto alloy::core::transform::set_translation_x(real x) noexcept -> void
 {
   m_translation.x() = x;
 }
 
-auto alloy::core::transform::set_y_translation(real y) noexcept -> void
+auto alloy::core::transform::set_translation_y(real y) noexcept -> void
 {
   m_translation.y() = y;
 }
 
-auto alloy::core::transform::set_z_translation(real z) noexcept -> void
+auto alloy::core::transform::set_translation_z(real z) noexcept -> void
 {
   m_translation.z() = z;
 }
 
 auto alloy::core::transform::set_roll(radian angle) noexcept -> void
 {
-  const auto angles = m_rotation.to_euler_angles();
+  const auto angles = m_orientation.to_euler_angles();
 
-  m_rotation = quaternion::from_angles(angles.yaw(), angles.pitch(), angle);
+  m_orientation = quaternion::from_angles(angles.yaw(), angles.pitch(), angle);
 }
 
 auto alloy::core::transform::set_pitch(radian angle) noexcept -> void
 {
-  const auto angles = m_rotation.to_euler_angles();
+  const auto angles = m_orientation.to_euler_angles();
 
-  m_rotation = quaternion::from_angles(angles.yaw(), angle, angles.roll());
+  m_orientation = quaternion::from_angles(angles.yaw(), angle, angles.roll());
 }
 
 auto alloy::core::transform::set_yaw(radian angle) noexcept -> void
 {
-  const auto angles = m_rotation.to_euler_angles();
+  const auto angles = m_orientation.to_euler_angles();
 
-  m_rotation = quaternion::from_angles(angle, angles.pitch(), angles.roll());
+  m_orientation = quaternion::from_angles(angle, angles.pitch(), angles.roll());
 }
 
 auto alloy::core::transform::set_orientation(const quaternion& q)
   noexcept -> void
 {
-  m_rotation = q;
+  m_orientation = q;
 }
 
 auto alloy::core::transform::set_orientation(const euler_angles& angles)
   noexcept -> void
 {
-  m_rotation = quaternion::from_angles(angles);
+  m_orientation = quaternion::from_angles(angles);
 }
 
-auto alloy::core::transform::set_angle_axis(radian angle, const vector3& axis)
+auto alloy::core::transform::set_orientation(radian angle, const vector3& axis)
   noexcept -> void
 {
-  m_rotation = quaternion::from_angle_axis(angle, axis);
+  m_orientation = quaternion::from_angle_axis(angle, axis);
 }
 
 auto alloy::core::transform::set_scale(real uniform) noexcept -> void
@@ -202,17 +200,17 @@ auto alloy::core::transform::set_scale(const vector3& scale) noexcept -> void
   m_scale = scale;
 }
 
-auto alloy::core::transform::set_x_scale(real scale) noexcept -> void
+auto alloy::core::transform::set_scale_x(real scale) noexcept -> void
 {
   m_scale.x() = scale;
 }
 
-auto alloy::core::transform::set_y_scale(real scale) noexcept -> void
+auto alloy::core::transform::set_scale_y(real scale) noexcept -> void
 {
   m_scale.y() = scale;
 }
 
-auto alloy::core::transform::set_z_scale(real scale) noexcept -> void
+auto alloy::core::transform::set_scale_z(real scale) noexcept -> void
 {
   m_scale.z() = scale;
 }
@@ -228,12 +226,12 @@ auto alloy::core::transform::translation() const noexcept -> vector3
 
 auto alloy::core::transform::orientation() const noexcept -> quaternion
 {
-  return m_rotation;
+  return m_orientation;
 }
 
 auto alloy::core::transform::angles() const noexcept -> euler_angles
 {
-  return m_rotation.to_euler_angles();
+  return m_orientation.to_euler_angles();
 }
 
 auto alloy::core::transform::scale() const noexcept -> vector3
@@ -248,7 +246,7 @@ auto alloy::core::transform::scale() const noexcept -> vector3
 auto alloy::core::transform::extract_matrix(not_null<matrix4*> out)
   const noexcept -> void
 {
-  m_rotation.extract_rotation_matrix(out);
+  m_orientation.extract_rotation_matrix(out);
 
   auto& result = *out;
 
@@ -278,7 +276,7 @@ auto alloy::core::interpolator<alloy::core::transform>::operator()(
 {
   auto result = transform{};
 
-  result.m_rotation    = interpolation::linear(v0.m_rotation, v1.m_rotation, alpha);
+  result.m_orientation    = interpolation::linear(v0.m_orientation, v1.m_orientation, alpha);
   result.m_translation = interpolation::linear(v0.m_translation, v1.m_translation, alpha);
   result.m_scale       = interpolation::linear(v0.m_scale, v1.m_scale, alpha);
 

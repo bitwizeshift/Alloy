@@ -99,6 +99,9 @@ namespace alloy::core {
 
     /// \brief Rotates this transformation by the specified \p orientation
     ///
+    /// The rotation is applied before the current orientation, so it rotates
+    /// about the transform's own axes.
+    ///
     /// \param orientation the orientation
     auto rotate(const quaternion& orientation) noexcept -> void;
 
@@ -112,7 +115,7 @@ namespace alloy::core {
     ///
     /// \param angle the angle to rotate
     /// \param axis the axis to rotate about
-    auto rotate_around_axis(radian angle, const vector3& axis) noexcept -> void;
+    auto rotate(radian angle, const vector3& axis) noexcept -> void;
 
     /// \brief Rotates the roll angle of this transform by \p angle
     ///
@@ -161,32 +164,33 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   public:
 
-    /// \brief Sets the origin of the transformation to \p x, \p y, \p z
+    /// \brief Sets the translation of this transformation to \p x, \p y,
+    ///        \p z
     ///
     /// \param x the x position
     /// \param y the y position
     /// \param z the z position
-    auto set_origin(real x, real y, real z) noexcept -> void;
+    auto set_translation(real x, real y, real z) noexcept -> void;
 
-    /// \brief Sets the origin of this transform from \p offset
+    /// \brief Sets the translation of this transform to \p translation
     ///
-    /// \param offset the amount to offset from the proper origin (0,0,0)
-    auto set_origin(const vector3& offset) noexcept -> void;
+    /// \param translation the offset from the origin (0,0,0)
+    auto set_translation(const vector3& translation) noexcept -> void;
 
     /// \brief Sets the \p x translation of this transformation
     ///
     /// \param x the x position
-    auto set_x_translation(real x) noexcept -> void;
+    auto set_translation_x(real x) noexcept -> void;
 
     /// \brief Sets the \p y translation of this transformation
     ///
     /// \param y the y position
-    auto set_y_translation(real y) noexcept -> void;
+    auto set_translation_y(real y) noexcept -> void;
 
     /// \brief Sets the \p z translation of this transformation
     ///
     /// \param z the z position
-    auto set_z_translation(real z) noexcept -> void;
+    auto set_translation_z(real z) noexcept -> void;
 
     //-------------------------------------------------------------------------
 
@@ -215,11 +219,12 @@ namespace alloy::core {
     /// \param angles the angles
     auto set_orientation(const euler_angles& angles) noexcept -> void;
 
-    /// \brief Sets the orientation of this transform by the angle axis
+    /// \brief Sets the orientation of this transform to a rotation of
+    ///        \p angle about \p axis
     ///
     /// \param angle the angle to rotate
     /// \param axis the axis to rotate about
-    auto set_angle_axis(radian angle, const vector3& axis) noexcept -> void;
+    auto set_orientation(radian angle, const vector3& axis) noexcept -> void;
 
     //-------------------------------------------------------------------------
 
@@ -236,17 +241,17 @@ namespace alloy::core {
     /// \brief Sets the x scale
     ///
     /// \param scale the x-scale
-    auto set_x_scale(real scale) noexcept -> void;
+    auto set_scale_x(real scale) noexcept -> void;
 
     /// \brief Sets the y scale
     ///
     /// \param scale the y-scale
-    auto set_y_scale(real scale) noexcept -> void;
+    auto set_scale_y(real scale) noexcept -> void;
 
     /// \brief Sets the z scale
     ///
     /// \param scale the z-scale
-    auto set_z_scale(real scale) noexcept -> void;
+    auto set_scale_z(real scale) noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -299,7 +304,7 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   private:
 
-    quaternion m_rotation;
+    quaternion m_orientation;
     vector3 m_translation;
     vector3 m_scale;
 
