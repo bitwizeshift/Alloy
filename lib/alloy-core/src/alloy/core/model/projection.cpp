@@ -15,74 +15,6 @@
 
 #include <variant>
 
-namespace alloy::core {
-  namespace {
-
-    template <typename Unnamed>
-    auto to_identity(const Unnamed&, not_null<matrix4*> out) noexcept -> void
-    {
-      (*out) = matrix4_constants::identity;
-    }
-
-    auto to_orthographic(const clip_space& space, not_null<matrix4*> out)
-      noexcept -> void
-    {
-      const auto& left = space.get_horizontal().left;
-      const auto& right = space.get_horizontal().right;
-      const auto& bottom = space.get_vertical().bottom;
-      const auto& top = space.get_vertical().top;
-      const auto& near = space.get_depth().near;
-      const auto& far = space.get_depth().far;
-
-      const auto dx = (right - left);
-      const auto dy = (top - bottom);
-      const auto dz = (far - near);
-
-      const auto tx = -((right + left) / dx);
-      const auto ty = -((top + bottom) / dy);
-      const auto tz = -((far + near) / dz);
-
-      const auto rx = real{2} / dx;
-      const auto ry = real{2} / dy;
-      const auto rz = -real{2} / dz;
-
-      (*out) = matrix4{
-        rx, 0,  0,  tx,
-        0,  ry, 0,  ty,
-        0,  0,  rz, tz,
-        0,  0,  0,  1,
-      };
-    }
-
-    template <typename Perspective>
-    auto to_perspective(const Perspective& data, not_null<matrix4*> out)
-      noexcept -> void
-    {
-      const auto& fov = data.fov;
-      const auto& aspect_ratio = data.aspect_ratio;
-      const auto& depth = data.depth;
-
-
-      const auto half_tan_fov = trigonometry::tan(fov * real{0.5});
-
-      const auto dz = (depth.far - depth.near);
-
-      const auto rx = real{1} / (aspect_ratio * half_tan_fov);
-      const auto ry = real{1} / half_tan_fov;
-      const auto rz = -(depth.far + depth.near) / dz;
-      const auto factor = - (real{2} * depth.far * depth.near) / dz;
-
-      (*out) = matrix4{
-        rx, 0,  0,   0,
-        0,  ry, 0,   0,
-        0,  0,  rz,  factor,
-        0,  0,  -1,  0,
-      };
-    }
-
-  } // namespace <anonymous>
-}
-
 //------------------------------------------------------------------------------
 // Static Factories: Identity
 //------------------------------------------------------------------------------
@@ -162,14 +94,8 @@ auto alloy::core::projection::extract_matrix(not_null<matrix4*> out)
 {
   ALLOY_ASSERT_AND_ASSUME(!m_storage.valueless_by_exception());
 
-  std::visit([&out](const auto& data) {
-    if constexpr (std::is_same_v<decltype(data), const identity_data&>) {
-      to_identity(data, out);
-    } else if constexpr (std::is_same_v<decltype(data), const orthographic_data&>) {
-      to_orthographic(data, out);
-    } else if constexpr (std::is_same_v<decltype(data), const perspective_data&>) {
-      to_perspective(data, out);
-    }
+  std::visit([out](const auto& data) {
+    extract_matrix_of(data, out);
   }, m_storage);
 }
 
@@ -180,4 +106,70 @@ auto alloy::core::projection::to_matrix4() const noexcept -> matrix4
   return result;
 }
 
+//------------------------------------------------------------------------------
+// Private Static Functions
+//------------------------------------------------------------------------------
 
+auto alloy::core::projection::extract_matrix_of(
+  const identity_data&,
+  not_null<matrix4*> out
+) noexcept -> void
+{
+  (*out) = matrix4_constants::identity;
+}
+
+auto alloy::core::projection::extract_matrix_of(
+  const perspective_data& data,
+  not_null<matrix4*> out
+) noexcept -> void
+{
+  const auto& depth = data.depth;
+
+  const auto half_tan_fov = trigonometry::tan(data.fov * real{0.5});
+
+  const auto dz = (depth.far - depth.near);
+
+  const auto rx = real{1} / (data.aspect_ratio * half_tan_fov);
+  const auto ry = real{1} / half_tan_fov;
+  const auto rz = -(depth.far + depth.near) / dz;
+  const auto factor = - (real{2} * depth.far * depth.near) / dz;
+
+  (*out) = matrix4{
+    rx, 0,  0,   0,
+    0,  ry, 0,   0,
+    0,  0,  rz,  factor,
+    0,  0,  -1,  0,
+  };
+}
+
+auto alloy::core::projection::extract_matrix_of(
+  const orthographic_data& data,
+  not_null<matrix4*> out
+) noexcept -> void
+{
+  const auto& left = data.get_horizontal().left;
+  const auto& right = data.get_horizontal().right;
+  const auto& bottom = data.get_vertical().bottom;
+  const auto& top = data.get_vertical().top;
+  const auto& near = data.get_depth().near;
+  const auto& far = data.get_depth().far;
+
+  const auto dx = (right - left);
+  const auto dy = (top - bottom);
+  const auto dz = (far - near);
+
+  const auto tx = -((right + left) / dx);
+  const auto ty = -((top + bottom) / dy);
+  const auto tz = -((far + near) / dz);
+
+  const auto rx = real{2} / dx;
+  const auto ry = real{2} / dy;
+  const auto rz = -real{2} / dz;
+
+  (*out) = matrix4{
+    rx, 0,  0,  tx,
+    0,  ry, 0,  ty,
+    0,  0,  rz, tz,
+    0,  0,  0,  1,
+  };
+}

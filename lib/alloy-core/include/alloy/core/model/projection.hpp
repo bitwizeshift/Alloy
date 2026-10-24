@@ -429,6 +429,33 @@ namespace alloy::core {
     /// \param data the orthographic data
     constexpr explicit projection(const orthographic_data& data) noexcept;
 
+    //--------------------------------------------------------------------------
+    // Private Static Functions
+    //--------------------------------------------------------------------------
+  private:
+
+    /// \{
+    /// \brief Extracts the matrix of the projection described by \p data
+    ///
+    /// There is one overload for each alternative of the storage, so that
+    /// visiting the storage fails to compile if an alternative is unhandled.
+    ///
+    /// \param data the projection data
+    /// \param out the matrix to output
+    static auto extract_matrix_of(
+      const identity_data& data,
+      not_null<matrix4*> out
+    ) noexcept -> void;
+    static auto extract_matrix_of(
+      const perspective_data& data,
+      not_null<matrix4*> out
+    ) noexcept -> void;
+    static auto extract_matrix_of(
+      const orthographic_data& data,
+      not_null<matrix4*> out
+    ) noexcept -> void;
+    /// \}
+
   };
 
 } // namespace alloy::core
