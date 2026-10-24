@@ -10,6 +10,7 @@
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix4.hpp>
 #include <alloy/core/math/matrix/matrix4_constants.hpp>
+#include <alloy/core/math/quaternion.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector3_constants.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
@@ -20,8 +21,119 @@
 namespace alloy::core::test {
 
 //------------------------------------------------------------------------------
+// Constructors
+//------------------------------------------------------------------------------
+
+TEST_CASE("transform::transform()", "[ctor]")
+{
+  // Act
+  const auto sut = transform{};
+  const auto result = sut.to_matrix4();
+
+  // Assert
+  SECTION("Is the identity transformation")
+  {
+    REQUIRE( result == matrix4_constants::identity );
+  }
+}
+
+//------------------------------------------------------------------------------
+// Relative Transformations
+//------------------------------------------------------------------------------
+
+TEST_CASE("transform::translate( real, real, real )", "[relative]")
+{
+  // Arrange
+  auto sut = transform{};
+  sut.set_translation(1, 2, 3);
+
+  // Act
+  sut.translate(4, 5, 6);
+  const auto result = sut.translation();
+
+  // Assert
+  SECTION("Adds to the current translation")
+  {
+    REQUIRE( almost_equal(result, vector3{5, 7, 9}) );
+  }
+}
+
+TEST_CASE("transform::rotate( const quaternion& )", "[relative]")
+{
+  // Arrange
+  auto sut = transform{};
+  sut.rotate_yaw(radian_constants::quarter_revolution);
+
+  // Act
+  sut.rotate(
+    quaternion::from_angle_axis(
+      radian_constants::quarter_revolution,
+      vector3_constants::unit_x
+    )
+  );
+  const auto result = sut.forward();
+
+  // Assert
+  SECTION("Rotates about the transform's own axes")
+  {
+    REQUIRE( almost_equal(result, vector3{0, 1, 0}, real{1e-5f}) );
+  }
+}
+
+TEST_CASE("transform::scale( real )", "[relative]")
+{
+  // Arrange
+  auto sut = transform{};
+  sut.set_scale(vector3{1, 2, 3});
+
+  // Act
+  sut.scale(2);
+  const auto result = sut.scale();
+
+  // Assert
+  SECTION("Multiplies every component of the current scale")
+  {
+    REQUIRE( almost_equal(result, vector3{2, 4, 6}) );
+  }
+}
+
+TEST_CASE("transform::scale( const vector3& )", "[relative]")
+{
+  // Arrange
+  auto sut = transform{};
+  sut.set_scale(vector3{1, 2, 3});
+
+  // Act
+  sut.scale(vector3{4, 5, 6});
+  const auto result = sut.scale();
+
+  // Assert
+  SECTION("Multiplies each component of the current scale")
+  {
+    REQUIRE( almost_equal(result, vector3{4, 10, 18}) );
+  }
+}
+
+//------------------------------------------------------------------------------
 // Absolute Transformations
 //------------------------------------------------------------------------------
+
+TEST_CASE("transform::set_scale( real )", "[absolute]")
+{
+  // Arrange
+  auto sut = transform{};
+  sut.set_scale(vector3{1, 2, 3});
+
+  // Act
+  sut.set_scale(4);
+  const auto result = sut.scale();
+
+  // Assert
+  SECTION("Replaces every component of the scale")
+  {
+    REQUIRE( almost_equal(result, vector3{4, 4, 4}) );
+  }
+}
 
 TEST_CASE("transform::set_roll( radian )", "[absolute]")
 {
@@ -308,6 +420,8 @@ TEST_CASE("interpolator<transform>", "[interpolation]")
   const auto start = transform{};
   auto end = transform{};
   end.set_translation(2, 4, 6);
+  end.set_scale(vector3{3, 5, 7});
+  end.set_yaw(radian_constants::quarter_revolution);
 
   // Act
   const auto result = interpolation::linear(start, end, real{0.5});
@@ -316,6 +430,20 @@ TEST_CASE("interpolator<transform>", "[interpolation]")
   SECTION("Interpolates the translation")
   {
     REQUIRE( almost_equal(result.translation(), vector3{1, 2, 3}) );
+  }
+  SECTION("Interpolates the scale")
+  {
+    REQUIRE( almost_equal(result.scale(), vector3{2, 3, 4}) );
+  }
+  SECTION("Interpolates the orientation along the shortest rotation")
+  {
+    const auto expected = euler_angles{
+      radian_constants::quarter_revolution * real{0.5},
+      radian{0},
+      radian{0}
+    };
+
+    REQUIRE( almost_equal(result.angles(), expected, real{1e-5f}) );
   }
 }
 
