@@ -248,28 +248,18 @@ auto alloy::core::transform::scale() const noexcept -> vector3
 auto alloy::core::transform::extract_matrix(not_null<matrix4*> out)
   const noexcept -> void
 {
-  const auto scale = matrix4{
-    m_scale.x(), real{0},     real{0},     real{0},
-    real{0},     m_scale.y(), real{0},     real{0},
-    real{0},     real{0},     m_scale.z(), real{0},
-    real{0},     real{0},     real{0},     real{1},
-  };
-
-  const auto translation = matrix4{
-    real{1}, real{0}, real{0}, m_translation.x(),
-    real{0}, real{1}, real{0}, m_translation.y(),
-    real{0}, real{0}, real{1}, m_translation.z(),
-    real{0}, real{0}, real{0}, real{1},
-  };
-
-  auto rotation = matrix4{};
-  m_rotation.extract_rotation_matrix(&rotation);
+  m_rotation.extract_rotation_matrix(out);
 
   auto& result = *out;
 
-  result = translation;
-  result *= rotation;
-  result *= scale;
+  // Scaling first scales each column of the rotation by the matching
+  // component, and translating last only fills in the final column.
+  for (auto c = 0; c < 3; ++c) {
+    for (auto r = 0; r < 3; ++r) {
+      result[c][r] *= m_scale[c];
+    }
+    result[3][c] = m_translation[c];
+  }
 }
 
 auto alloy::core::transform::to_matrix4() const noexcept -> matrix4

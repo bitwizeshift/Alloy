@@ -8,6 +8,7 @@
 #include <alloy/core/math/euler_angles.hpp>
 #include <alloy/core/math/interpolation.hpp>
 #include <alloy/core/math/math.hpp>
+#include <alloy/core/math/matrix/matrix4.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector3_constants.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
@@ -140,6 +141,30 @@ TEST_CASE("transform::to_matrix4()", "[conversion]")
   SECTION("Scales, then rotates, then translates")
   {
     REQUIRE( almost_equal(result, vector4{10, 2, 0, 1}, real{1e-5}) );
+  }
+}
+
+TEST_CASE("transform::extract_matrix( not_null<matrix4*> )", "[conversion]")
+{
+  // Arrange
+  auto sut = transform{};
+  sut.scale(vector3{2, 3, 1});
+  sut.rotate_around_axis(
+    radian_constants::quarter_revolution,
+    vector3_constants::unit_z
+  );
+  sut.translate(10, 0, 0);
+  const auto point = vector4{0, 1, 0, 1};
+  auto matrix = matrix4{};
+
+  // Act
+  sut.extract_matrix(&matrix);
+  const auto result = matrix * point;
+
+  // Assert
+  SECTION("Scales each axis, then rotates, then translates")
+  {
+    REQUIRE( almost_equal(result, vector4{7, 0, 0, 1}, real{1e-5}) );
   }
 }
 
