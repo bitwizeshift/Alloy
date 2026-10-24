@@ -399,6 +399,31 @@ namespace alloy::core {
     friend interpolator<transform>;
   };
 
+  //===========================================================================
+  // non-member functions : class : transform
+  //===========================================================================
+
+  /// \brief Determines whether \p lhs and \p rhs are almost equal, relative
+  ///        to \p tolerance
+  ///
+  /// The orientations are compared as rotations, so a quaternion and its
+  /// negation, which rotate identically, are considered equal.
+  ///
+  /// \param lhs the left transform
+  /// \param rhs the right transform
+  /// \param tolerance the tolerance for each component
+  /// \return `true` if \p lhs and \p rhs are almost equal
+  ALLOY_CORE_API
+  auto almost_equal(
+    const transform& lhs,
+    const transform& rhs,
+    real tolerance
+  ) noexcept -> bool;
+
+  //===========================================================================
+  // struct : interpolator<transform>
+  //===========================================================================
+
   /// \brief Interpolates the state between \p t0 and \p t1
   ///
   /// \param t0 the start state

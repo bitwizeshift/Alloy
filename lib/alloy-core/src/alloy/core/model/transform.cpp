@@ -10,6 +10,8 @@
 #include "alloy/core/math/interpolation.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"
+#include "alloy/core/math/quaternion.hpp"
+#include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
@@ -364,6 +366,28 @@ auto alloy::core::transform::to_inverse_matrix4() const noexcept -> matrix4
 
   return result;
 }
+
+//-----------------------------------------------------------------------------
+// Non-member Functions
+//-----------------------------------------------------------------------------
+
+auto alloy::core::almost_equal(
+  const transform& lhs,
+  const transform& rhs,
+  real tolerance
+) noexcept -> bool
+{
+  const auto orientation = lhs.orientation();
+  const auto other = rhs.orientation();
+  const auto is_same_rotation = almost_equal(orientation, other, tolerance) ||
+                                almost_equal(orientation, -other, tolerance);
+
+  return is_same_rotation &&
+         almost_equal(lhs.translation(), rhs.translation(), tolerance) &&
+         almost_equal(lhs.scale(), rhs.scale(), tolerance);
+}
+
+//-----------------------------------------------------------------------------
 
 auto alloy::core::interpolator<alloy::core::transform>::operator()(
   const transform& v0,

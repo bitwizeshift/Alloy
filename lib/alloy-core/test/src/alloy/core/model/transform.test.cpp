@@ -319,4 +319,78 @@ TEST_CASE("interpolator<transform>", "[interpolation]")
   }
 }
 
+//------------------------------------------------------------------------------
+// Non-member Functions
+//------------------------------------------------------------------------------
+
+TEST_CASE("almost_equal( const transform&, const transform&, real )",
+          "[comparison]")
+{
+  // Arrange
+  auto lhs = transform{};
+  lhs.scale(vector3{2, 3, 4});
+  lhs.rotate(euler_angles{radian{0.3f}, radian{-0.5f}, radian{2.5f}});
+  lhs.translate(10, -2, 7);
+
+  SECTION("Same transform is almost equal")
+  {
+    // Arrange
+    const auto rhs = lhs;
+
+    // Act
+    const auto result = almost_equal(lhs, rhs, real{1e-5f});
+
+    // Assert
+    REQUIRE( result );
+  }
+  SECTION("Negated orientation is almost equal")
+  {
+    // Arrange
+    auto rhs = lhs;
+    rhs.set_orientation(-lhs.orientation());
+
+    // Act
+    const auto result = almost_equal(lhs, rhs, real{1e-5f});
+
+    // Assert
+    REQUIRE( result );
+  }
+  SECTION("Different translation is not almost equal")
+  {
+    // Arrange
+    auto rhs = lhs;
+    rhs.translate_x(1);
+
+    // Act
+    const auto result = almost_equal(lhs, rhs, real{1e-5f});
+
+    // Assert
+    REQUIRE_FALSE( result );
+  }
+  SECTION("Different scale is not almost equal")
+  {
+    // Arrange
+    auto rhs = lhs;
+    rhs.scale_x(2);
+
+    // Act
+    const auto result = almost_equal(lhs, rhs, real{1e-5f});
+
+    // Assert
+    REQUIRE_FALSE( result );
+  }
+  SECTION("Different orientation is not almost equal")
+  {
+    // Arrange
+    auto rhs = lhs;
+    rhs.rotate_yaw(radian{0.5f});
+
+    // Act
+    const auto result = almost_equal(lhs, rhs, real{1e-5f});
+
+    // Assert
+    REQUIRE_FALSE( result );
+  }
+}
+
 } // namespace alloy::core::test
