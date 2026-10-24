@@ -4,9 +4,11 @@
 
 #include "alloy/core/model/camera.hpp"
 
+#include "alloy/core/assert.hpp"
 #include "alloy/core/math/angle/radian.hpp"
 #include "alloy/core/math/euler_angles.hpp"
 #include "alloy/core/math/interpolation.hpp"
+#include "alloy/core/math/math.hpp"
 #include "alloy/core/math/matrix/matrix3.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"
 #include "alloy/core/math/quaternion.hpp"
@@ -182,20 +184,13 @@ auto alloy::core::camera::set_orientation(const euler_angles& angles)
 auto alloy::core::camera::look_at(const vector3& subject, const vector3& up)
   noexcept -> void
 {
-  const auto diff = (m_translation - subject);
-  const auto z_axis = diff.normalized();
-  const auto x_axis = up.cross(z_axis).normalized();
-  const auto y_axis = z_axis.cross(x_axis);
+  const auto direction = (subject - m_translation);
 
-  // The camera's axes are the columns of its orientation.
-  m_orientation = quaternion::from_rotation_matrix(matrix3{
-    x_axis.x(), y_axis.x(), z_axis.x(),
-    x_axis.y(), y_axis.y(), z_axis.y(),
-    x_axis.z(), y_axis.z(), z_axis.z()
-  });
-  m_right   = x_axis;
-  m_up      = y_axis;
-  m_forward = -z_axis;
+  ALLOY_ASSERT(direction.square_magnitude() > default_tolerance);
+  ALLOY_ASSERT(up.cross(direction).square_magnitude() > default_tolerance);
+
+  m_orientation = quaternion::look_rotation(direction, up);
+  update_axes();
 }
 
 auto alloy::core::camera::look_at(real x, real y, real z, const vector3& up)

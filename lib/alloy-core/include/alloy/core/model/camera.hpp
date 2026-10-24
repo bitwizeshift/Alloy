@@ -252,6 +252,12 @@ namespace alloy::core {
 
     /// \brief Looks at the specified \p subject
     ///
+    /// The camera faces \p subject, with its up axis as close to \p up as
+    /// possible.
+    ///
+    /// \pre \p subject is not the translation of this camera
+    /// \pre \p up is not parallel to the direction of \p subject
+    ///
     /// \param subject the subject to look at
     /// \param up the direction for up
     auto look_at(
@@ -259,7 +265,10 @@ namespace alloy::core {
       const vector3& up = vector3_constants::unit_y
     ) noexcept -> void;
 
-    /// \brief Looks at the specified \p subject
+    /// \brief Looks at the subject at \p x, \p y, \p z
+    ///
+    /// \pre the subject is not the translation of this camera
+    /// \pre \p up is not parallel to the direction of the subject
     ///
     /// \param x the x position
     /// \param y the y position
