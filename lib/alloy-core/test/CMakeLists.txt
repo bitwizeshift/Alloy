@@ -52,6 +52,7 @@ set(source_files
   src/alloy/core/geometry/rectangle.test.cpp
 
   # Model
+  src/alloy/core/model/cached_transform.test.cpp
   src/alloy/core/model/camera.test.cpp
   src/alloy/core/model/color.test.cpp
   src/alloy/core/model/image.test.cpp

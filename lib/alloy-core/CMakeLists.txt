@@ -207,7 +207,7 @@ set(header_files
   include/alloy/core/model/transform.hpp
   include/alloy/core/model/projection.hpp
   include/alloy/core/model/camera.hpp
-  include/alloy/core/model/lazy_transform.hpp
+  include/alloy/core/model/cached_transform.hpp
   include/alloy/core/model/interpolated_transform.hpp
 )
 
