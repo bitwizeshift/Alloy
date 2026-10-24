@@ -143,19 +143,25 @@ auto alloy::core::camera::set_z_translation(real z) noexcept -> void
 
 auto alloy::core::camera::set_roll(radian angle) noexcept -> void
 {
-  m_orientation *= quaternion::from_angles(radian{0}, radian{0}, angle);
+  const auto angles = m_orientation.to_euler_angles();
+
+  m_orientation = quaternion::from_angles(angles.yaw(), angles.pitch(), angle);
   update_axes();
 }
 
 auto alloy::core::camera::set_pitch(radian angle) noexcept -> void
 {
-  m_orientation *= quaternion::from_angles(radian{0}, angle, radian{0});
+  const auto angles = m_orientation.to_euler_angles();
+
+  m_orientation = quaternion::from_angles(angles.yaw(), angle, angles.roll());
   update_axes();
 }
 
 auto alloy::core::camera::set_yaw(radian angle) noexcept -> void
 {
-  m_orientation *= quaternion::from_angles(angle, radian{0}, radian{0});
+  const auto angles = m_orientation.to_euler_angles();
+
+  m_orientation = quaternion::from_angles(angle, angles.pitch(), angles.roll());
   update_axes();
 }
 

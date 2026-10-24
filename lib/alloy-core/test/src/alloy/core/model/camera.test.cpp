@@ -154,6 +154,85 @@ TEST_CASE("camera::rotate_yaw( radian )", "[rotation]")
 }
 
 //------------------------------------------------------------------------------
+// Absolute Transformations
+//------------------------------------------------------------------------------
+
+TEST_CASE("camera::set_roll( radian )", "[absolute]")
+{
+  // Arrange
+  auto sut = camera{};
+  sut.set_orientation(
+    euler_angles{radian{0.3f}, radian{-0.5f}, radian{2.5f}}
+  );
+
+  // Act
+  sut.set_roll(radian{0.2f});
+  const auto result = sut.angles();
+
+  // Assert
+  SECTION("Replaces the roll, and keeps the yaw and pitch")
+  {
+    const auto expected = euler_angles{
+      radian{0.3f},
+      radian{-0.5f},
+      radian{0.2f}
+    };
+
+    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+  }
+}
+
+TEST_CASE("camera::set_pitch( radian )", "[absolute]")
+{
+  // Arrange
+  auto sut = camera{};
+  sut.set_orientation(
+    euler_angles{radian{0.3f}, radian{-0.5f}, radian{2.5f}}
+  );
+
+  // Act
+  sut.set_pitch(radian{0.2f});
+  const auto result = sut.angles();
+
+  // Assert
+  SECTION("Replaces the pitch, and keeps the yaw and roll")
+  {
+    const auto expected = euler_angles{
+      radian{0.3f},
+      radian{0.2f},
+      radian{2.5f}
+    };
+
+    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+  }
+}
+
+TEST_CASE("camera::set_yaw( radian )", "[absolute]")
+{
+  // Arrange
+  auto sut = camera{};
+  sut.set_orientation(
+    euler_angles{radian{0.3f}, radian{-0.5f}, radian{2.5f}}
+  );
+
+  // Act
+  sut.set_yaw(radian{0.2f});
+  const auto result = sut.angles();
+
+  // Assert
+  SECTION("Replaces the yaw, and keeps the pitch and roll")
+  {
+    const auto expected = euler_angles{
+      radian{0.2f},
+      radian{-0.5f},
+      radian{2.5f}
+    };
+
+    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+  }
+}
+
+//------------------------------------------------------------------------------
 // Observers
 //------------------------------------------------------------------------------
 
