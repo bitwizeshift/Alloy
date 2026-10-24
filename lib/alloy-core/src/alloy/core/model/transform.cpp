@@ -13,6 +13,8 @@
 #include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
+#include <array>
+
 //-----------------------------------------------------------------------------
 // Constructors / Assignment
 //-----------------------------------------------------------------------------
@@ -316,6 +318,49 @@ auto alloy::core::transform::to_matrix4() const noexcept -> matrix4
 {
   auto result = matrix4{};
   extract_matrix(&result);
+
+  return result;
+}
+
+auto alloy::core::transform::extract_inverse_matrix(not_null<matrix4*> out)
+  const noexcept -> void
+{
+  ALLOY_ASSERT(m_scale.x() != real{0});
+  ALLOY_ASSERT(m_scale.y() != real{0});
+  ALLOY_ASSERT(m_scale.z() != real{0});
+
+  // The inverse of translate * rotate * scale is
+  // inverse(scale) * transpose(rotate) * inverse(translate). The inverse of
+  // the scale divides each row of the transposed rotation by the matching
+  // scale component.
+  m_orientation.extract_rotation_matrix(out);
+  out->transpose();
+
+  auto& result = *out;
+
+  auto inverse_scales = std::array<real, 3>{};
+
+  for (auto r = 0; r < 3; ++r) {
+    inverse_scales[r] = real{1} / m_scale[r];
+  }
+  for (auto c = 0; c < 3; ++c) {
+    for (auto r = 0; r < 3; ++r) {
+      result[c][r] *= inverse_scales[r];
+    }
+  }
+  for (auto r = 0; r < 3; ++r) {
+    result[3][r] = -(
+      result[0][r] * m_translation.x() +
+      result[1][r] * m_translation.y() +
+      result[2][r] * m_translation.z()
+    );
+  }
+}
+
+auto alloy::core::transform::to_inverse_matrix4() const noexcept -> matrix4
+{
+  auto result = matrix4{};
+  extract_inverse_matrix(&result);
 
   return result;
 }

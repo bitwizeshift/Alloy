@@ -9,6 +9,7 @@
 #include <alloy/core/math/interpolation.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix4.hpp>
+#include <alloy/core/math/matrix/matrix4_constants.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector3_constants.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
@@ -275,6 +276,25 @@ TEST_CASE("transform::extract_matrix( not_null<matrix4*> )", "[conversion]")
   SECTION("Scales each axis, then rotates, then translates")
   {
     REQUIRE( almost_equal(result, vector4{7, 0, 0, 1}, real{1e-5}) );
+  }
+}
+
+TEST_CASE("transform::to_inverse_matrix4()", "[conversion]")
+{
+  // Arrange
+  auto sut = transform{};
+  sut.scale(vector3{2, 3, 4});
+  sut.rotate(euler_angles{radian{0.3f}, radian{-0.5f}, radian{2.5f}});
+  sut.translate(10, -2, 7);
+  const auto matrix = sut.to_matrix4();
+
+  // Act
+  const auto result = sut.to_inverse_matrix4() * matrix;
+
+  // Assert
+  SECTION("Undoes the transformation")
+  {
+    REQUIRE( almost_equal(result, matrix4_constants::identity, real{1e-5f}) );
   }
 }
 

@@ -367,6 +367,26 @@ namespace alloy::core {
     [[nodiscard]]
     auto to_matrix4() const noexcept -> matrix4;
 
+    /// \brief Extracts the inverse of the transformation matrix from this
+    ///        transform
+    ///
+    /// The inverse maps world space back into the local space of this
+    /// transform. It is computed from the scale, orientation, and translation
+    /// directly, which is much cheaper than inverting a general matrix.
+    ///
+    /// \pre no component of the scale is 0
+    ///
+    /// \param out the matrix to output
+    auto extract_inverse_matrix(not_null<matrix4*> out) const noexcept -> void;
+
+    /// \brief Converts the inverse of this transform to a matrix4
+    ///
+    /// \pre no component of the scale is 0
+    ///
+    /// \return the inverse matrix4
+    [[nodiscard]]
+    auto to_inverse_matrix4() const noexcept -> matrix4;
+
     //-------------------------------------------------------------------------
     // Private Members
     //-------------------------------------------------------------------------
