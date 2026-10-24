@@ -254,6 +254,54 @@ TEST_CASE("camera::angles()", "[observers]")
   }
 }
 
+TEST_CASE("camera::right()", "[observers]")
+{
+  // Arrange
+  auto sut = camera{};
+  sut.rotate_yaw(radian_constants::quarter_revolution);
+
+  // Act
+  const auto result = sut.right();
+
+  // Assert
+  SECTION("Is the rotated x-axis")
+  {
+    REQUIRE( almost_equal(result, vector3{0, 0, -1}, real{1e-5f}) );
+  }
+}
+
+TEST_CASE("camera::up()", "[observers]")
+{
+  // Arrange
+  auto sut = camera{};
+  sut.rotate_pitch(radian_constants::quarter_revolution);
+
+  // Act
+  const auto result = sut.up();
+
+  // Assert
+  SECTION("Is the rotated y-axis")
+  {
+    REQUIRE( almost_equal(result, vector3{0, 0, 1}, real{1e-5f}) );
+  }
+}
+
+TEST_CASE("camera::forward()", "[observers]")
+{
+  // Arrange
+  auto sut = camera{};
+  sut.rotate_yaw(radian_constants::quarter_revolution);
+
+  // Act
+  const auto result = sut.forward();
+
+  // Assert
+  SECTION("Is the rotated negative z-axis")
+  {
+    REQUIRE( almost_equal(result, vector3{-1, 0, 0}, real{1e-5f}) );
+  }
+}
+
 //------------------------------------------------------------------------------
 // Conversion
 //------------------------------------------------------------------------------

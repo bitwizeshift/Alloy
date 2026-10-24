@@ -219,6 +219,23 @@ auto alloy::core::camera::angles() const noexcept -> euler_angles
 }
 
 //-----------------------------------------------------------------------------
+
+auto alloy::core::camera::right() const noexcept -> vector3
+{
+  return m_right;
+}
+
+auto alloy::core::camera::up() const noexcept -> vector3
+{
+  return m_up;
+}
+
+auto alloy::core::camera::forward() const noexcept -> vector3
+{
+  return m_forward;
+}
+
+//-----------------------------------------------------------------------------
 // Conversion
 //-----------------------------------------------------------------------------
 

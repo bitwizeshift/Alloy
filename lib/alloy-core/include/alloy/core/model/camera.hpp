@@ -316,6 +316,26 @@ namespace alloy::core {
     auto angles() const noexcept -> euler_angles;
 
     //-------------------------------------------------------------------------
+
+    /// \brief Retrieves the direction to the right of this camera
+    ///
+    /// \return the unit direction of the camera's x-axis
+    [[nodiscard]]
+    auto right() const noexcept -> vector3;
+
+    /// \brief Retrieves the direction above this camera
+    ///
+    /// \return the unit direction of the camera's y-axis
+    [[nodiscard]]
+    auto up() const noexcept -> vector3;
+
+    /// \brief Retrieves the direction that this camera faces
+    ///
+    /// \return the unit direction of the camera's negative z-axis
+    [[nodiscard]]
+    auto forward() const noexcept -> vector3;
+
+    //-------------------------------------------------------------------------
     // Conversion
     //-------------------------------------------------------------------------
   public:
