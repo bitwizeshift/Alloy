@@ -89,7 +89,7 @@ auto alloy::core::camera::rotate(const euler_angles& angles) noexcept -> void
   rotate(quaternion::from_angles(angles));
 }
 
-auto alloy::core::camera::rotate_around_axis(radian angle, const vector3& axis)
+auto alloy::core::camera::rotate(radian angle, const vector3& axis)
   noexcept -> void
 {
   rotate(quaternion::from_angle_axis(angle, axis));
@@ -114,29 +114,29 @@ auto alloy::core::camera::rotate_yaw(radian angle) noexcept -> void
 // Absolute Transformations
 //-----------------------------------------------------------------------------
 
-auto alloy::core::camera::set_origin(real x, real y, real z) noexcept -> void
+auto alloy::core::camera::set_translation(real x, real y, real z)
+  noexcept -> void
+{
+  m_translation = vector3{x, y, z};
+}
+
+auto alloy::core::camera::set_translation(const vector3& translation)
+  noexcept -> void
+{
+  m_translation = translation;
+}
+
+auto alloy::core::camera::set_translation_x(real x) noexcept -> void
 {
   m_translation.x() = x;
-  m_translation.y() = y;
-  m_translation.z() = z;
 }
 
-auto alloy::core::camera::set_origin(const vector3& offset) noexcept -> void
-{
-  m_translation = offset;
-}
-
-auto alloy::core::camera::set_x_translation(real x) noexcept -> void
-{
-  m_translation.x() = x;
-}
-
-auto alloy::core::camera::set_y_translation(real y) noexcept -> void
+auto alloy::core::camera::set_translation_y(real y) noexcept -> void
 {
   m_translation.y() = y;
 }
 
-auto alloy::core::camera::set_z_translation(real z) noexcept -> void
+auto alloy::core::camera::set_translation_z(real z) noexcept -> void
 {
   m_translation.z() = z;
 }

@@ -29,7 +29,7 @@ TEST_CASE("camera::translate_local_x( real )", "[translation]")
   {
     // Arrange
     auto sut = camera{};
-    sut.set_origin(5, 0, 0);
+    sut.set_translation(5, 0, 0);
     sut.look_at(vector3_constants::zero, vector3_constants::unit_y);
 
     // Act
@@ -88,7 +88,7 @@ TEST_CASE("camera::translate_local_z( real )", "[translation]")
   {
     // Arrange
     auto sut = camera{};
-    sut.set_origin(5, 0, 0);
+    sut.set_translation(5, 0, 0);
     sut.look_at(vector3_constants::zero, vector3_constants::unit_y);
 
     // Act
@@ -121,7 +121,7 @@ TEST_CASE("camera::look_at( const vector3&, const vector3& )", "[rotation]")
 {
   // Arrange
   auto sut = camera{};
-  sut.set_origin(5, 0, 0);
+  sut.set_translation(5, 0, 0);
 
   // Act
   sut.look_at(vector3_constants::zero, vector3_constants::unit_y);
@@ -262,7 +262,7 @@ TEST_CASE("camera::to_matrix4()", "[conversion]")
 {
   // Arrange
   auto sut = camera{};
-  sut.set_origin(0, 0, 5);
+  sut.set_translation(0, 0, 5);
   sut.look_at(vector3_constants::zero, vector3_constants::unit_y);
   const auto expected = matrix4{
     1, 0, 0,  0,
@@ -292,7 +292,7 @@ TEST_CASE("interpolator<camera>", "[interpolation]")
     // Arrange
     const auto start = camera{};
     auto end = camera{};
-    end.set_origin(2, 4, 6);
+    end.set_translation(2, 4, 6);
 
     // Act
     const auto result = interpolation::linear(start, end, real{0.5});

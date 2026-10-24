@@ -166,7 +166,7 @@ namespace alloy::core {
     ///
     /// \param angle the angle to rotate
     /// \param axis the axis to rotate about
-    auto rotate_around_axis(radian angle, const vector3& axis) noexcept -> void;
+    auto rotate(radian angle, const vector3& axis) noexcept -> void;
 
     /// \brief Rotates the roll angle of this camera by \p angle
     ///
@@ -188,32 +188,32 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   public:
 
-    /// \brief Sets the origin of the camera to \p x, \p y, \p z
+    /// \brief Sets the translation of the camera to \p x, \p y, \p z
     ///
     /// \param x the x position
     /// \param y the y position
     /// \param z the z position
-    auto set_origin(real x, real y, real z) noexcept -> void;
+    auto set_translation(real x, real y, real z) noexcept -> void;
 
-    /// \brief Sets the origin of this camera from \p offset
+    /// \brief Sets the translation of this camera to \p translation
     ///
-    /// \param offset the amount to offset from the proper origin (0,0,0)
-    auto set_origin(const vector3& offset) noexcept -> void;
+    /// \param translation the offset from the origin (0,0,0)
+    auto set_translation(const vector3& translation) noexcept -> void;
 
     /// \brief Sets the \p x translation of this camera
     ///
     /// \param x the x position
-    auto set_x_translation(real x) noexcept -> void;
+    auto set_translation_x(real x) noexcept -> void;
 
     /// \brief Sets the \p y translation of this camera
     ///
     /// \param y the y position
-    auto set_y_translation(real y) noexcept -> void;
+    auto set_translation_y(real y) noexcept -> void;
 
     /// \brief Sets the \p z translation of this camera
     ///
     /// \param z the z position
-    auto set_z_translation(real z) noexcept -> void;
+    auto set_translation_z(real z) noexcept -> void;
 
     //-------------------------------------------------------------------------
 
