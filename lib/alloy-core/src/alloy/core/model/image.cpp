@@ -370,7 +370,8 @@ auto alloy::core::image::get_pixel(std::size_t x, std::size_t y)
   const auto index = (y * m_width * pixel_size) + x * pixel_size;
   const auto convert = ::get_pixel_index_function(m_format);
 
-  auto result = color{};
+  // Formats without an alpha channel store opaque pixels.
+  auto result = color{real{0}, real{0}, real{0}, real{1}};
 
   for (auto i = 0u; i < pixel_size; ++i) {
     const auto color_component = (*convert)(i);

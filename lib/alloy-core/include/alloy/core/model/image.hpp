@@ -163,6 +163,8 @@ namespace alloy::core {
 
     /// \brief Gets the pixel at the image coordinate (x,y)
     ///
+    /// Pixels of a format without an alpha channel are opaque.
+    ///
     /// \pre \p x must be between [0, width())
     /// \pre \p y must be between [0, height())
     ///

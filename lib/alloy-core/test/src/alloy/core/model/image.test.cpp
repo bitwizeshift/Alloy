@@ -6,6 +6,7 @@
 
 #include <alloy/core/model/color.hpp>
 
+#include <alloy/core/precision/real.hpp>
 #include <alloy/core/types.hpp>
 
 #include <catch2/catch_test_macros.hpp>
@@ -58,6 +59,29 @@ TEST_CASE("image::set_pixel( std::size_t, std::size_t, color )", "[modifier]")
   SECTION("Rounds each channel to the nearest byte")
   {
     REQUIRE( result == u8{255} );
+  }
+}
+
+//------------------------------------------------------------------------------
+// Accessors
+//------------------------------------------------------------------------------
+
+TEST_CASE("image::get_pixel( std::size_t, std::size_t )", "[accessor]")
+{
+  // Arrange
+  const auto sut = *image::make_blank_image(
+    image::dimensions{1u, 1u},
+    image::pixel_format::rgb,
+    color{0.0f, 0.0f, 0.0f, 0.0f}
+  );
+
+  // Act
+  const auto result = sut.get_pixel(0u, 0u).a();
+
+  // Assert
+  SECTION("Pixel of a format without alpha is opaque")
+  {
+    REQUIRE( result == real{1} );
   }
 }
 
