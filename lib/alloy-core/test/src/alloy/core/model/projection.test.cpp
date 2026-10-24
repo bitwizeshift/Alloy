@@ -216,4 +216,68 @@ TEST_CASE("projection::orthographic( const view_volume& )", "[factory]")
   }
 }
 
+//------------------------------------------------------------------------------
+// Conversion
+//------------------------------------------------------------------------------
+
+TEST_CASE("projection::to_inverse_matrix4()", "[conversion]")
+{
+  SECTION("Undoes a perspective projection")
+  {
+    // Arrange
+    const auto sut = projection::perspective(
+      radian{1.2f},
+      real{1.5f},
+      view_volume::depth_bounds{real{0.5f}, real{100}}
+    );
+    const auto matrix = sut.to_matrix4();
+
+    // Act
+    const auto result = sut.to_inverse_matrix4() * matrix;
+
+    // Assert
+    REQUIRE( almost_equal(result, matrix4_constants::identity, real{1e-4f}) );
+  }
+  SECTION("Undoes a zero-to-one perspective projection")
+  {
+    // Arrange
+    const auto sut = projection::perspective(
+      radian{1.2f},
+      real{1.5f},
+      view_volume::depth_bounds{real{0.5f}, real{100}},
+      clip_depth::zero_to_one
+    );
+    const auto matrix = sut.to_matrix4();
+
+    // Act
+    const auto result = sut.to_inverse_matrix4() * matrix;
+
+    // Assert
+    REQUIRE( almost_equal(result, matrix4_constants::identity, real{1e-4f}) );
+  }
+  SECTION("Undoes an orthographic projection")
+  {
+    // Arrange
+    const auto sut = projection::orthographic(-2, 6, -1, 3, 1, 10);
+    const auto matrix = sut.to_matrix4();
+
+    // Act
+    const auto result = sut.to_inverse_matrix4() * matrix;
+
+    // Assert
+    REQUIRE( almost_equal(result, matrix4_constants::identity, real{1e-5f}) );
+  }
+  SECTION("Inverts the identity projection to the identity")
+  {
+    // Arrange
+    const auto sut = projection::identity();
+
+    // Act
+    const auto result = sut.to_inverse_matrix4();
+
+    // Assert
+    REQUIRE( result == matrix4_constants::identity );
+  }
+}
+
 } // namespace alloy::core::test

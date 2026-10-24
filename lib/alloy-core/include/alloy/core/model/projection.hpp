@@ -412,6 +412,23 @@ namespace alloy::core {
     [[nodiscard]]
     auto to_matrix4() const noexcept -> matrix4;
 
+    /// \brief Extracts the inverse of the transformation matrix from this
+    ///        projection
+    ///
+    /// The inverse maps clip space back into view space, which is needed to
+    /// turn positions on the screen into rays in the world. It is computed
+    /// from the structure of the projection, which is much cheaper than
+    /// inverting a general matrix.
+    ///
+    /// \param out the matrix to output
+    auto extract_inverse_matrix(not_null<matrix4*> out) const noexcept -> void;
+
+    /// \brief Converts the inverse of this projection to a matrix4
+    ///
+    /// \return the inverse matrix4
+    [[nodiscard]]
+    auto to_inverse_matrix4() const noexcept -> matrix4;
+
     //--------------------------------------------------------------------------
     // Private Member Types
     //--------------------------------------------------------------------------
@@ -488,6 +505,29 @@ namespace alloy::core {
       not_null<matrix4*> out
     ) noexcept -> void;
     static auto extract_matrix_of(
+      const orthographic_data& data,
+      not_null<matrix4*> out
+    ) noexcept -> void;
+    /// \}
+
+    /// \{
+    /// \brief Extracts the inverse of the matrix of the projection described
+    ///        by \p data
+    ///
+    /// There is one overload for each alternative of the storage, so that
+    /// visiting the storage fails to compile if an alternative is unhandled.
+    ///
+    /// \param data the projection data
+    /// \param out the matrix to output
+    static auto extract_inverse_matrix_of(
+      const identity_data& data,
+      not_null<matrix4*> out
+    ) noexcept -> void;
+    static auto extract_inverse_matrix_of(
+      const perspective_data& data,
+      not_null<matrix4*> out
+    ) noexcept -> void;
+    static auto extract_inverse_matrix_of(
       const orthographic_data& data,
       not_null<matrix4*> out
     ) noexcept -> void;

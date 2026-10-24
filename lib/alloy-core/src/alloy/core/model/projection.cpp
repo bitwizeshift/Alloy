@@ -115,6 +115,28 @@ auto alloy::core::projection::to_matrix4() const noexcept -> matrix4
   return result;
 }
 
+// clang-tidy flags this function for throwing exceptions despite being marked
+// noexcept. The only exceptions that can throw are if std::visit throws, and
+// this is insured by being an internal invariant.
+//
+// NOLINTNEXTLINE(bugprone-exception-escape)
+auto alloy::core::projection::extract_inverse_matrix(not_null<matrix4*> out)
+  const noexcept -> void
+{
+  ALLOY_ASSERT_AND_ASSUME(!m_storage.valueless_by_exception());
+
+  std::visit([out](const auto& data) {
+    extract_inverse_matrix_of(data, out);
+  }, m_storage);
+}
+
+auto alloy::core::projection::to_inverse_matrix4() const noexcept -> matrix4
+{
+  auto result = matrix4{};
+  extract_inverse_matrix(&result);
+  return result;
+}
+
 //------------------------------------------------------------------------------
 // Private Static Functions
 //------------------------------------------------------------------------------
@@ -189,5 +211,62 @@ auto alloy::core::projection::extract_matrix_of(
     0,  ry, 0,  ty,
     0,  0,  rz, tz,
     0,  0,  0,  1,
+  };
+}
+
+//------------------------------------------------------------------------------
+
+auto alloy::core::projection::extract_inverse_matrix_of(
+  const identity_data& data,
+  not_null<matrix4*> out
+) noexcept -> void
+{
+  // The identity projection is its own inverse.
+  extract_matrix_of(data, out);
+}
+
+auto alloy::core::projection::extract_inverse_matrix_of(
+  const perspective_data& data,
+  not_null<matrix4*> out
+) noexcept -> void
+{
+  // The perspective matrix only has entries on its diagonal, and in the final
+  // row and column of the depth, so its inverse is read from those entries.
+  extract_matrix_of(data, out);
+
+  const auto rx = out->get(0, 0);
+  const auto ry = out->get(1, 1);
+  const auto rz = out->get(2, 2);
+  const auto factor = out->get(2, 3);
+
+  (*out) = matrix4{
+    real{1} / rx, 0,            0,                0,
+    0,            real{1} / ry, 0,                0,
+    0,            0,            0,                -1,
+    0,            0,            real{1} / factor, rz / factor,
+  };
+}
+
+auto alloy::core::projection::extract_inverse_matrix_of(
+  const orthographic_data& data,
+  not_null<matrix4*> out
+) noexcept -> void
+{
+  // The orthographic matrix only scales and then translates each axis, so
+  // its inverse is read from those entries.
+  extract_matrix_of(data, out);
+
+  const auto rx = out->get(0, 0);
+  const auto ry = out->get(1, 1);
+  const auto rz = out->get(2, 2);
+  const auto tx = out->get(0, 3);
+  const auto ty = out->get(1, 3);
+  const auto tz = out->get(2, 3);
+
+  (*out) = matrix4{
+    real{1} / rx, 0,            0,            -tx / rx,
+    0,            real{1} / ry, 0,            -ty / ry,
+    0,            0,            real{1} / rz, -tz / rz,
+    0,            0,            0,            1,
   };
 }
