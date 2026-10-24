@@ -516,6 +516,25 @@ namespace alloy::core {
     /// \return the triple
     auto to_hsb() const noexcept -> hsb;
 
+    /// \brief Converts this color from sRGB encoding to linear intensity
+    ///
+    /// Colors are commonly authored, and stored in images, encoded with the
+    /// sRGB transfer function. Lighting and blending are only correct on
+    /// linear intensities, so such colors are converted with this before
+    /// they take part in shading. The alpha channel is already linear, and is
+    /// left unchanged.
+    ///
+    /// \return the linear color
+    auto to_linear() const noexcept -> color;
+
+    /// \brief Converts this color from linear intensity to sRGB encoding
+    ///
+    /// This is the inverse of `to_linear`. The alpha channel is left
+    /// unchanged.
+    ///
+    /// \return the sRGB-encoded color
+    auto to_srgb() const noexcept -> color;
+
     //--------------------------------------------------------------------------
 
     /// \brief Returns a copy of this color inverted

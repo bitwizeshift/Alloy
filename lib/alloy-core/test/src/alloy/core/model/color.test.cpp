@@ -7,6 +7,7 @@
 #include <alloy/core/model/color_constants.hpp>
 
 #include <alloy/core/math/math.hpp>
+#include <alloy/core/precision/real.hpp>
 #include <alloy/core/types.hpp>
 
 #include <catch2/catch_message.hpp>
@@ -319,6 +320,52 @@ TEST_CASE("color::r8()", "[observer]") {
   // Assert
   SECTION("Reference converts to the nearest step") {
     REQUIRE(result == u8{128});
+  }
+}
+
+TEST_CASE("color::to_linear()", "[conversion]") {
+  SECTION("Middle gray decodes to its linear intensity") {
+    // Arrange
+    const auto sut = color{0.5f, 0.5f, 0.5f, 0.25f};
+
+    // Act
+    const auto result = sut.to_linear();
+
+    // Assert
+    REQUIRE(almost_equal(result.r(), real{0.21404f}, real{1e-4f}));
+  }
+  SECTION("Value near black decodes linearly") {
+    // Arrange
+    const auto sut = color{0.02f, 0.0f, 0.0f};
+
+    // Act
+    const auto result = sut.to_linear();
+
+    // Assert
+    REQUIRE(almost_equal(result.r(), real{0.02f / 12.92f}, real{1e-6f}));
+  }
+  SECTION("Alpha is untouched") {
+    // Arrange
+    const auto sut = color{0.5f, 0.5f, 0.5f, 0.25f};
+
+    // Act
+    const auto result = sut.to_linear();
+
+    // Assert
+    REQUIRE(result.a() == sut.a());
+  }
+}
+
+TEST_CASE("color::to_srgb()", "[conversion]") {
+  // Arrange
+  const auto sut = color{0.1f, 0.5f, 0.9f, 0.25f};
+
+  // Act
+  const auto result = sut.to_srgb().to_linear();
+
+  // Assert
+  SECTION("Is undone by to_linear") {
+    REQUIRE(almost_equal(result, sut, real{1e-5f}));
   }
 }
 

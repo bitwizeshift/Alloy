@@ -9,6 +9,34 @@
 #include "alloy/core/precision/real.hpp"
 
 #include <algorithm> // std::min, std::max
+#include <cmath>     // std::pow
+
+namespace {
+
+  // The piecewise sRGB transfer functions from IEC 61966-2-1, which are
+  // linear near black and a power curve elsewhere.
+
+  auto srgb_to_linear(alloy::core::real c) noexcept -> alloy::core::real
+  {
+    using alloy::core::real;
+
+    if (c <= real{0.04045}) {
+      return c / real{12.92};
+    }
+    return std::pow((c + real{0.055}) / real{1.055}, real{2.4});
+  }
+
+  auto linear_to_srgb(alloy::core::real c) noexcept -> alloy::core::real
+  {
+    using alloy::core::real;
+
+    if (c <= real{0.0031308}) {
+      return c * real{12.92};
+    }
+    return real{1.055} * std::pow(c, real{1} / real{2.4}) - real{0.055};
+  }
+
+} // namespace
 
 //==============================================================================
 // class : color
@@ -160,4 +188,24 @@ auto alloy::core::color::to_hsb() const noexcept -> hsb
   }
 
   return hsb{hue, saturation, brightness};
+}
+
+auto alloy::core::color::to_linear() const noexcept -> color
+{
+  return color{
+    srgb_to_linear(r()),
+    srgb_to_linear(g()),
+    srgb_to_linear(b()),
+    a()
+  };
+}
+
+auto alloy::core::color::to_srgb() const noexcept -> color
+{
+  return color{
+    linear_to_srgb(r()),
+    linear_to_srgb(g()),
+    linear_to_srgb(b()),
+    a()
+  };
 }
