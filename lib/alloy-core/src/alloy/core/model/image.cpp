@@ -290,16 +290,16 @@ auto alloy::core::image::make_blank_image(
 
     switch (color_segment) {
     case rgba::r:
-      v = ::to_byte(255u * background.r());
+      v = ::to_byte(background.r8());
       break;
     case rgba::g:
-      v = ::to_byte(255u * background.g());
+      v = ::to_byte(background.g8());
       break;
     case rgba::b:
-      v = ::to_byte(255u * background.b());
+      v = ::to_byte(background.b8());
       break;
     case rgba::a:
-      v = ::to_byte(255u * background.a());
+      v = ::to_byte(background.a8());
       break;
     }
 
@@ -341,16 +341,16 @@ auto alloy::core::image::set_pixel(std::size_t x, std::size_t y, color c)
 
     switch (color_component) {
     case rgba::r:
-      m_bytes[index + i] = ::to_byte(255u * c.r());
+      m_bytes[index + i] = ::to_byte(c.r8());
       break;
     case rgba::g:
-      m_bytes[index + i] = ::to_byte(255u * c.g());
+      m_bytes[index + i] = ::to_byte(c.g8());
       break;
     case rgba::b:
-      m_bytes[index + i] = ::to_byte(255u * c.b());
+      m_bytes[index + i] = ::to_byte(c.b8());
       break;
     case rgba::a:
-      m_bytes[index + i] = ::to_byte(255u * c.a());
+      m_bytes[index + i] = ::to_byte(c.a8());
       break;
     }
   }

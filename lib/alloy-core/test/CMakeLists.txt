@@ -54,6 +54,7 @@ set(source_files
   # Model
   src/alloy/core/model/camera.test.cpp
   src/alloy/core/model/color.test.cpp
+  src/alloy/core/model/image.test.cpp
   src/alloy/core/model/projection.test.cpp
   src/alloy/core/model/transform.test.cpp
 
