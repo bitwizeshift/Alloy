@@ -253,6 +253,75 @@ TEST_CASE("color::inverted()", "[modifier]") {
   }
 }
 
+TEST_CASE("color::r8() const", "[observer]") {
+  SECTION("Value between two steps rounds to the nearest step") {
+    // Arrange
+    const auto sut = color{0.5f, 0.0f, 0.0f};
+
+    // Act
+    const auto result = sut.r8();
+
+    // Assert
+    REQUIRE(result == u8{128});
+  }
+  SECTION("Value just below one rounds to the maximum") {
+    // Arrange
+    const auto sut = color{0.999f, 0.0f, 0.0f};
+
+    // Act
+    const auto result = sut.r8();
+
+    // Assert
+    REQUIRE(result == u8{255});
+  }
+  SECTION("Value above one saturates to the maximum") {
+    // Arrange
+    const auto sut = color{1.2f, 0.0f, 0.0f};
+
+    // Act
+    const auto result = sut.r8();
+
+    // Assert
+    REQUIRE(result == u8{255});
+  }
+  SECTION("Value below zero saturates to zero") {
+    // Arrange
+    const auto sut = color{-0.1f, 0.0f, 0.0f};
+
+    // Act
+    const auto result = sut.r8();
+
+    // Assert
+    REQUIRE(result == u8{0});
+  }
+}
+
+TEST_CASE("color::r16() const", "[observer]") {
+  // Arrange
+  const auto sut = color{0.5f, 0.0f, 0.0f};
+
+  // Act
+  const auto result = sut.r16();
+
+  // Assert
+  SECTION("Value between two steps rounds to the nearest step") {
+    REQUIRE(result == u16{32768});
+  }
+}
+
+TEST_CASE("color::r8()", "[observer]") {
+  // Arrange
+  auto sut = color{0.5f, 0.0f, 0.0f};
+
+  // Act
+  const auto result = static_cast<u8>(sut.r8());
+
+  // Assert
+  SECTION("Reference converts to the nearest step") {
+    REQUIRE(result == u8{128});
+  }
+}
+
 TEST_CASE("color hsb conversion", "[conversion][parametric]") {
   SECTION("Opaque colors survive round trip through hsb conversions") {
 

@@ -30,6 +30,17 @@
 
 namespace alloy::core::detail {
 
+  /// \brief Quantizes the color channel \p channel to the integral type \p T
+  ///
+  /// The channel is clamped to [0, 1] and rounded to the nearest value of
+  /// \p T, so that 0 maps to 0 and 1 maps to the maximum value of \p T.
+  ///
+  /// \tparam T the unsigned integral type to quantize to
+  /// \param channel the color channel
+  /// \return the quantized channel
+  template <typename T>
+  constexpr auto quantize_channel(real channel) noexcept -> T;
+
   //////////////////////////////////////////////////////////////////////////////
   /// \brief An internal type for providing a "reference"-like type for uint8
   ///        representations of colors.
@@ -582,6 +593,21 @@ namespace alloy::core {
 } // namespace alloy::core
 
 //==============================================================================
+// non-member functions : namespace : detail
+//==============================================================================
+
+template <typename T>
+ALLOY_FORCE_INLINE constexpr
+auto alloy::core::detail::quantize_channel(real channel) noexcept -> T
+{
+  constexpr auto max = static_cast<real>(std::numeric_limits<T>::max());
+
+  // The clamped channel is never negative, so adding a half before the
+  // truncating cast rounds to the nearest value.
+  return static_cast<T>(saturate(channel) * max + real{0.5});
+}
+
+//==============================================================================
 // class : color_reference<T>
 //==============================================================================
 
@@ -628,7 +654,7 @@ template <typename T>
 ALLOY_FORCE_INLINE constexpr
 alloy::core::detail::color_reference<T>::operator T() const noexcept
 {
-  return static_cast<T>((*m_color) * std::numeric_limits<T>::max());
+  return quantize_channel<T>(*m_color);
 }
 
 //------------------------------------------------------------------------------
@@ -985,7 +1011,7 @@ auto alloy::core::color::r8() noexcept -> detail::color_reference<u8>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::r8() const noexcept -> u8
 {
-  return static_cast<u8>(r() * 255.0f);
+  return detail::quantize_channel<u8>(r());
 }
 
 ALLOY_FORCE_INLINE constexpr
@@ -997,7 +1023,7 @@ auto alloy::core::color::g8() noexcept -> detail::color_reference<u8>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::g8() const noexcept -> u8
 {
-  return static_cast<u8>(g() * 255.0f);
+  return detail::quantize_channel<u8>(g());
 }
 
 ALLOY_FORCE_INLINE constexpr
@@ -1009,7 +1035,7 @@ auto alloy::core::color::b8() noexcept -> detail::color_reference<u8>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::b8() const noexcept -> u8
 {
-  return static_cast<u8>(b() * 255.0f);
+  return detail::quantize_channel<u8>(b());
 }
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::a8() noexcept -> detail::color_reference<u8>
@@ -1020,7 +1046,7 @@ auto alloy::core::color::a8() noexcept -> detail::color_reference<u8>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::a8() const noexcept -> u8
 {
-  return static_cast<u8>(a() * 255.0f);
+  return detail::quantize_channel<u8>(a());
 }
 
 //------------------------------------------------------------------------------
@@ -1034,7 +1060,7 @@ auto alloy::core::color::r16() noexcept -> detail::color_reference<u16>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::r16() const noexcept -> u16
 {
-  return static_cast<u16>(r() * 65535.0f);
+  return detail::quantize_channel<u16>(r());
 }
 
 ALLOY_FORCE_INLINE constexpr
@@ -1046,7 +1072,7 @@ auto alloy::core::color::g16() noexcept -> detail::color_reference<u16>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::g16() const noexcept -> u16
 {
-  return static_cast<u16>(g() * 65535.0f);
+  return detail::quantize_channel<u16>(g());
 }
 
 ALLOY_FORCE_INLINE constexpr
@@ -1058,7 +1084,7 @@ auto alloy::core::color::b16() noexcept -> detail::color_reference<u16>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::b16() const noexcept -> u16
 {
-  return static_cast<u16>(b() * 65535.0f);
+  return detail::quantize_channel<u16>(b());
 }
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::a16() noexcept -> detail::color_reference<u16>
@@ -1069,7 +1095,7 @@ auto alloy::core::color::a16() noexcept -> detail::color_reference<u16>
 ALLOY_FORCE_INLINE constexpr
 auto alloy::core::color::a16() const noexcept -> u16
 {
-  return static_cast<u16>(a() * 65535.0f);
+  return detail::quantize_channel<u16>(a());
 }
 
 //------------------------------------------------------------------------------
