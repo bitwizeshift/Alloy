@@ -31,7 +31,7 @@ auto alloy::core::projection::identity() noexcept -> projection
 auto alloy::core::projection::perspective(
   degree fov,
   real aspect_ratio,
-  clip_space::depth depth
+  view_volume::depth_bounds depth
 ) noexcept -> projection
 {
   return perspective(to_radian(fov), aspect_ratio, depth);
@@ -40,7 +40,7 @@ auto alloy::core::projection::perspective(
 auto alloy::core::projection::perspective(
   radian fov,
   real aspect_ratio,
-  clip_space::depth depth
+  view_volume::depth_bounds depth
 ) noexcept -> projection
 {
   ALLOY_ASSERT(aspect_ratio > 0);
@@ -71,13 +71,13 @@ auto alloy::core::projection::orthographic(
   real far
 ) noexcept -> projection
 {
-  return orthographic(clip_space::make(left, right, bottom, top, near, far));
+  return orthographic(view_volume::make(left, right, bottom, top, near, far));
 }
 
-auto alloy::core::projection::orthographic(const clip_space& space)
+auto alloy::core::projection::orthographic(const view_volume& volume)
   noexcept -> projection
 {
-  return projection{orthographic_data{space}};
+  return projection{orthographic_data{volume}};
 }
 
 //------------------------------------------------------------------------------
@@ -147,12 +147,12 @@ auto alloy::core::projection::extract_matrix_of(
   not_null<matrix4*> out
 ) noexcept -> void
 {
-  const auto& left = data.get_horizontal().left;
-  const auto& right = data.get_horizontal().right;
-  const auto& bottom = data.get_vertical().bottom;
-  const auto& top = data.get_vertical().top;
-  const auto& near = data.get_depth().near;
-  const auto& far = data.get_depth().far;
+  const auto& left = data.horizontal().left;
+  const auto& right = data.horizontal().right;
+  const auto& bottom = data.vertical().bottom;
+  const auto& top = data.vertical().top;
+  const auto& near = data.depth().near;
+  const auto& far = data.depth().far;
 
   const auto dx = (right - left);
   const auto dy = (top - bottom);

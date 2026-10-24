@@ -53,7 +53,7 @@ TEST_CASE("frustum::from_matrix(const matrix4&)", "[factory][static]") {
     const auto matrix = projection::perspective(
       degree{90},
       real{1},
-      clip_space::depth{real{1}, real{10}}
+      view_volume::depth_bounds{real{1}, real{10}}
     ).to_matrix4();
 
     // Act

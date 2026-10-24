@@ -47,14 +47,14 @@ TEST_CASE("projection::identity()", "[factory]")
 // Static Factories : Perspective
 //------------------------------------------------------------------------------
 
-TEST_CASE("projection::perspective( radian, real, clip_space::depth )",
+TEST_CASE("projection::perspective( radian, real, view_volume::depth_bounds )",
           "[factory]")
 {
   // Arrange
   const auto sut = projection::perspective(
     radian_constants::quarter_revolution,
     real{2},
-    clip_space::depth{real{1}, real{10}}
+    view_volume::depth_bounds{real{1}, real{10}}
   );
 
   SECTION("Maps the center of the near plane to the near face")
@@ -89,21 +89,21 @@ TEST_CASE("projection::perspective( radian, real, clip_space::depth )",
   }
 }
 
-TEST_CASE("projection::perspective( degree, real, clip_space::depth )",
+TEST_CASE("projection::perspective( degree, real, view_volume::depth_bounds )",
           "[factory]")
 {
   // Arrange
   const auto expected = projection::perspective(
     radian_constants::quarter_revolution,
     real{2},
-    clip_space::depth{real{1}, real{10}}
+    view_volume::depth_bounds{real{1}, real{10}}
   ).to_matrix4();
 
   // Act
   const auto sut = projection::perspective(
     degree{90},
     real{2},
-    clip_space::depth{real{1}, real{10}}
+    view_volume::depth_bounds{real{1}, real{10}}
   );
   const auto result = sut.to_matrix4();
 
@@ -142,15 +142,15 @@ TEST_CASE("projection::orthographic( real, real, real, real, real, real )",
   }
 }
 
-TEST_CASE("projection::orthographic( const clip_space& )", "[factory]")
+TEST_CASE("projection::orthographic( const view_volume& )", "[factory]")
 {
   // Arrange
   const auto expected = projection::orthographic(-2, 6, -1, 3, 1, 10)
     .to_matrix4();
-  const auto space = clip_space::make(-2, 6, -1, 3, 1, 10);
+  const auto volume = view_volume::make(-2, 6, -1, 3, 1, 10);
 
   // Act
-  const auto sut = projection::orthographic(space);
+  const auto sut = projection::orthographic(volume);
   const auto result = sut.to_matrix4();
 
   // Assert

@@ -38,38 +38,43 @@
 namespace alloy::core {
 
   //===========================================================================
-  // struct : clipping_space
+  // class : view_volume
   //===========================================================================
 
   /////////////////////////////////////////////////////////////////////////////
-  /// \brief A representation of the clipping-space
+  /// \brief The bounds of the volume that a projection makes visible
   ///
-  /// This is comprised of three pieces:
-  /// * The horizontal distance across,
-  /// * The vertical distance across, and
-  /// * The depth across
+  /// The bounds are measured in view space, where the viewer looks down the
+  /// negative z-axis. The depth bounds are distances in front of the viewer,
+  /// so a depth of `{1, 10}` spans from `z = -1` to `z = -10`. A projection
+  /// maps this volume onto the clip volume.
   ///
-  /// clip_space is immutable to ensure that all preconditions are always
+  /// The volume is comprised of three pieces:
+  /// * The horizontal bounds, from left to right,
+  /// * The vertical bounds, from bottom to top, and
+  /// * The depth bounds, from near to far
+  ///
+  /// view_volume is immutable to ensure that all preconditions are always
   /// upheld after construction
   /////////////////////////////////////////////////////////////////////////////
-  class ALLOY_CORE_API clip_space
+  class ALLOY_CORE_API view_volume
   {
     //-------------------------------------------------------------------------
     // Public Member Types
     //-------------------------------------------------------------------------
   public:
 
-    struct horizontal{
+    struct horizontal_bounds {
       real left;
       real right;
     };
 
-    struct vertical{
+    struct vertical_bounds {
       real bottom;
       real top;
     };
 
-    struct depth{
+    struct depth_bounds {
       real near;
       real far;
     };
@@ -79,7 +84,7 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   public:
 
-    /// \brief Makes the clip_space by checking that all inputs do not violate
+    /// \brief Makes the view_volume by checking that all inputs do not violate
     ///        preconditions
     ///
     /// \pre `h.left < h.right`, `v.bottom < v.top`, `d.near < d.far`
@@ -89,14 +94,14 @@ namespace alloy::core {
     /// \param h the horizontal space
     /// \param v the vertical space
     /// \param d the depth space
-    /// \return the clip_space
+    /// \return the view_volume
     static constexpr auto make(
-      const horizontal& h,
-      const vertical& v,
-      const depth& d
-    ) noexcept -> clip_space;
+      const horizontal_bounds& h,
+      const vertical_bounds& v,
+      const depth_bounds& d
+    ) noexcept -> view_volume;
 
-    /// \brief Makes the clip_space by checking that all inputs do not violate
+    /// \brief Makes the view_volume by checking that all inputs do not violate
     ///        preconditions
     ///
     /// \pre `left < right`, `bottom < top`, `near < far`
@@ -107,9 +112,9 @@ namespace alloy::core {
     /// \param right the rightmost visible area horizontal space
     /// \param bottom the bottom-most visible area in the vertical space
     /// \param top the top-most visible area in the vertical space
-    /// \param near the nearest visible area ib the depth space
+    /// \param near the nearest visible area in the depth space
     /// \param far the furthest visible area in the depth space
-    /// \return the clip_space
+    /// \return the view_volume
     static constexpr auto make(
       real left,
       real right,
@@ -117,33 +122,32 @@ namespace alloy::core {
       real top,
       real near,
       real far
-    ) noexcept -> clip_space;
+    ) noexcept -> view_volume;
 
-    /// \brief Makes a clip_space with symmetric viewing area
+    /// \brief Makes a view_volume with symmetric viewing area
     ///
     /// The symmetric area will be made from:
-    /// * [-horizontal, horizontal],
-    /// * [-vertical, vertical],
+    /// * [-half_width, half_width],
+    /// * [-half_height, half_height],
     /// * [-distance, distance]
     ///
-    /// \pre `horizontal > 0`, `vertical > 0`, `distance > 0`
+    /// \pre `half_width > 0`, `half_height > 0`, `distance > 0`
     ///
     /// On precondition failure, this function asserts -- even in production
     ///
-    /// \param horizontal the horizontal space to make symmetric
-    /// \param vertical the vertical space to make symmetric
+    /// \param half_width the distance from the center to the left and right
+    /// \param half_height the distance from the center to the bottom and top
     /// \param distance the distance
-    /// \return the clip_space
+    /// \return the view_volume
     static constexpr auto make_symmetric(
-      real horizontal,
-      real vertical,
+      real half_width,
+      real half_height,
       real distance
-    ) noexcept -> clip_space;
+    ) noexcept -> view_volume;
 
     //-------------------------------------------------------------------------
 
-    /// \brief Makes the clip_space by checking that all inputs do not violate
-    ///        preconditions
+    /// \brief Makes the view_volume without checking preconditions
     ///
     /// \pre `h.left < h.right`, `v.bottom < v.top`, `d.near < d.far`
     ///
@@ -152,15 +156,14 @@ namespace alloy::core {
     /// \param h the horizontal space
     /// \param v the vertical space
     /// \param d the depth space
-    /// \return the clip_space
+    /// \return the view_volume
     static constexpr auto make_unchecked(
-      const horizontal& h,
-      const vertical& v,
-      const depth& d
-    ) noexcept -> clip_space;
+      const horizontal_bounds& h,
+      const vertical_bounds& v,
+      const depth_bounds& d
+    ) noexcept -> view_volume;
 
-    /// \brief Makes the clip_space by checking that all inputs do not violate
-    ///        preconditions
+    /// \brief Makes the view_volume without checking preconditions
     ///
     /// \pre `left < right`, `bottom < top`, `near < far`
     ///
@@ -170,9 +173,9 @@ namespace alloy::core {
     /// \param right the rightmost visible area horizontal space
     /// \param bottom the bottom-most visible area in the vertical space
     /// \param top the top-most visible area in the vertical space
-    /// \param near the nearest visible area ib the depth space
+    /// \param near the nearest visible area in the depth space
     /// \param far the furthest visible area in the depth space
-    /// \return the clip_space
+    /// \return the view_volume
     static constexpr auto make_unchecked(
       real left,
       real right,
@@ -180,7 +183,7 @@ namespace alloy::core {
       real top,
       real near,
       real far
-    ) noexcept -> clip_space;
+    ) noexcept -> view_volume;
 
     //-------------------------------------------------------------------------
     // Constructors / Assignment
@@ -188,39 +191,39 @@ namespace alloy::core {
   public:
 
     // Deleted default constructor
-    clip_space() = delete;
+    view_volume() = delete;
 
-    /// \brief Copies the clip_space from \p other
+    /// \brief Copies the view_volume from \p other
     ///
-    /// \param other the other clip_space to copy
-    constexpr clip_space(const clip_space& other) noexcept = default;
+    /// \param other the other view_volume to copy
+    constexpr view_volume(const view_volume& other) noexcept = default;
 
-    /// \brief Copies the clip_space from \p other
+    /// \brief Copies the view_volume from \p other
     ///
-    /// \param other the other clip_space to copy
+    /// \param other the other view_volume to copy
     /// \return reference to `(*this)`
-    constexpr auto operator=(const clip_space& other)
-      noexcept -> clip_space& = default;
+    constexpr auto operator=(const view_volume& other)
+      noexcept -> view_volume& = default;
 
     //-------------------------------------------------------------------------
     // Observers
     //-------------------------------------------------------------------------
   public:
 
-    /// \brief gets a reference to the horizontal clipping range
+    /// \brief Gets the horizontal bounds of this volume
     ///
-    /// \return reference to the horizontal
-    constexpr auto get_horizontal() const noexcept -> const horizontal&;
+    /// \return reference to the horizontal bounds
+    constexpr auto horizontal() const noexcept -> const horizontal_bounds&;
 
-    /// \brief gets a reference to the vertical clipping range
+    /// \brief Gets the vertical bounds of this volume
     ///
-    /// \return reference to the vertical
-    constexpr auto get_vertical() const noexcept -> const vertical&;
+    /// \return reference to the vertical bounds
+    constexpr auto vertical() const noexcept -> const vertical_bounds&;
 
-    /// \brief gets a reference to the depth clipping range
+    /// \brief Gets the depth bounds of this volume
     ///
-    /// \return reference to the depth
-    constexpr auto get_depth() const noexcept -> const depth&;
+    /// \return reference to the depth bounds
+    constexpr auto depth() const noexcept -> const depth_bounds&;
 
     //-------------------------------------------------------------------------
     // Private Constructors
@@ -237,7 +240,7 @@ namespace alloy::core {
     /// \param h the horizontal
     /// \param v the vertical
     /// \param d the depth
-    constexpr clip_space(const horizontal& h, const vertical& v, const depth& d)
+    constexpr view_volume(const horizontal_bounds& h, const vertical_bounds& v, const depth_bounds& d)
       noexcept;
 
     //-------------------------------------------------------------------------
@@ -245,9 +248,9 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   private:
 
-    horizontal m_horizontal;
-    vertical m_vertical;
-    depth m_depth;
+    horizontal_bounds m_horizontal;
+    vertical_bounds m_vertical;
+    depth_bounds m_depth;
   };
 
   //===========================================================================
@@ -289,13 +292,13 @@ namespace alloy::core {
     ///
     /// \param fov the field-of-view in degrees
     /// \param aspect_ratio the aspect ratio
-    /// \param depth the depth of the clipping space
+    /// \param depth the depth bounds of the view volume
     /// \return A perspective projection
     [[nodiscard]]
     static auto perspective(
       degree fov,
       real aspect_ratio,
-      clip_space::depth depth
+      view_volume::depth_bounds depth
     ) noexcept -> projection;
 
     /// \brief Projects a perspective with the given information
@@ -306,13 +309,13 @@ namespace alloy::core {
     ///
     /// \param fov the field-of-view in radians
     /// \param aspect_ratio the aspect ratio
-    /// \param depth the depth of the clipping space
+    /// \param depth the depth bounds of the view volume
     /// \return A perspective projection
     [[nodiscard]]
     static auto perspective(
       radian fov,
       real aspect_ratio,
-      clip_space::depth depth
+      view_volume::depth_bounds depth
     ) noexcept -> projection;
 
     //--------------------------------------------------------------------------
@@ -339,12 +342,12 @@ namespace alloy::core {
       real far
     ) noexcept -> projection;
 
-    /// \brief Projects an orthographic view from the given clip \p space
+    /// \brief Projects an orthographic view of the view \p volume
     ///
-    /// \param space the clip space
+    /// \param volume the view volume
     /// \return An orthographic projection
     [[nodiscard]]
-    static auto orthographic(const clip_space& space) noexcept -> projection;
+    static auto orthographic(const view_volume& volume) noexcept -> projection;
 
     //--------------------------------------------------------------------------
     // Constructors / Assignment
@@ -390,9 +393,9 @@ namespace alloy::core {
     {
       radian fov;
       real aspect_ratio;
-      clip_space::depth depth;
+      view_volume::depth_bounds depth;
     };
-    using orthographic_data = clip_space;
+    using orthographic_data = view_volume;
 
     using storage_type = std::variant<
       identity_data,     // Default state: performs identity transformation
@@ -461,7 +464,7 @@ namespace alloy::core {
 } // namespace alloy::core
 
 //=============================================================================
-// class : clip_space
+// class : view_volume
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -469,11 +472,11 @@ namespace alloy::core {
 //-----------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::clip_space::make(
-  const horizontal& h,
-  const vertical& v,
-  const depth& d
-) noexcept -> clip_space
+auto alloy::core::view_volume::make(
+  const horizontal_bounds& h,
+  const vertical_bounds& v,
+  const depth_bounds& d
+) noexcept -> view_volume
 {
   ALLOY_ALWAYS_ASSERT(h.left < h.right);
   ALLOY_ALWAYS_ASSERT(v.bottom < v.top);
@@ -483,14 +486,14 @@ auto alloy::core::clip_space::make(
 }
 
 inline constexpr
-auto alloy::core::clip_space::make(
+auto alloy::core::view_volume::make(
   real left,
   real right,
   real bottom,
   real top,
   real near,
   real far
-) noexcept -> clip_space
+) noexcept -> view_volume
 {
   ALLOY_ALWAYS_ASSERT(left < right);
   ALLOY_ALWAYS_ASSERT(bottom < top);
@@ -500,19 +503,19 @@ auto alloy::core::clip_space::make(
 }
 
 inline constexpr
-auto alloy::core::clip_space::make_symmetric(
-  real horizontal,
-  real vertical,
+auto alloy::core::view_volume::make_symmetric(
+  real half_width,
+  real half_height,
   real distance
-) noexcept -> clip_space
+) noexcept -> view_volume
 {
-  ALLOY_ALWAYS_ASSERT(horizontal > 0);
-  ALLOY_ALWAYS_ASSERT(vertical > 0);
+  ALLOY_ALWAYS_ASSERT(half_width > 0);
+  ALLOY_ALWAYS_ASSERT(half_height > 0);
   ALLOY_ALWAYS_ASSERT(distance > 0);
 
   return make_unchecked(
-    -horizontal, horizontal,
-    -vertical, vertical,
+    -half_width, half_width,
+    -half_height, half_height,
     -distance, distance
   );
 }
@@ -520,29 +523,29 @@ auto alloy::core::clip_space::make_symmetric(
 //-----------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::clip_space::make_unchecked(
-  const horizontal& h,
-  const vertical& v,
-  const depth& d
-) noexcept -> clip_space
+auto alloy::core::view_volume::make_unchecked(
+  const horizontal_bounds& h,
+  const vertical_bounds& v,
+  const depth_bounds& d
+) noexcept -> view_volume
 {
-  return clip_space{h,v,d};
+  return view_volume{h,v,d};
 }
 
 inline constexpr
-auto alloy::core::clip_space::make_unchecked(
+auto alloy::core::view_volume::make_unchecked(
   real left,
   real right,
   real bottom,
   real top,
   real near,
   real far
-) noexcept -> alloy::core::clip_space
+) noexcept -> alloy::core::view_volume
 {
   return make_unchecked(
-    horizontal{left, right},
-    vertical{bottom, top},
-    depth{near, far}
+    horizontal_bounds{left, right},
+    vertical_bounds{bottom, top},
+    depth_bounds{near, far}
   );
 }
 
@@ -551,20 +554,21 @@ auto alloy::core::clip_space::make_unchecked(
 //-----------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::clip_space::get_horizontal()
-  const noexcept -> const horizontal&
+auto alloy::core::view_volume::horizontal()
+  const noexcept -> const horizontal_bounds&
 {
   return m_horizontal;
 }
 
 inline constexpr
-auto alloy::core::clip_space::get_vertical() const noexcept -> const vertical&
+auto alloy::core::view_volume::vertical()
+  const noexcept -> const vertical_bounds&
 {
   return m_vertical;
 }
 
 inline constexpr
-auto alloy::core::clip_space::get_depth() const noexcept -> const depth&
+auto alloy::core::view_volume::depth() const noexcept -> const depth_bounds&
 {
   return m_depth;
 }
@@ -574,10 +578,10 @@ auto alloy::core::clip_space::get_depth() const noexcept -> const depth&
 //-----------------------------------------------------------------------------
 
 inline constexpr
-alloy::core::clip_space::clip_space(
-  const horizontal& h,
-  const vertical& v,
-  const depth& d
+alloy::core::view_volume::view_volume(
+  const horizontal_bounds& h,
+  const vertical_bounds& v,
+  const depth_bounds& d
 ) noexcept
   : m_horizontal{h},
     m_vertical{v},
