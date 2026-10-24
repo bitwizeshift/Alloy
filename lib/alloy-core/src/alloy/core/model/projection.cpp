@@ -112,8 +112,10 @@ auto alloy::core::projection::perspective(
 ) noexcept -> projection
 {
   ALLOY_ASSERT(aspect_ratio > 0);
+  ALLOY_ASSERT(depth.near > 0);
   ALLOY_ASSERT(depth.near < depth.far);
   ALLOY_ASSERT(fov > radian{0});
+  ALLOY_ASSERT(fov < radian_constants::half_revolution);
 
   return projection{
     perspective_data{

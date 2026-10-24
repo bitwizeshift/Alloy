@@ -283,9 +283,9 @@ namespace alloy::core {
 
     /// \brief Projects a perspective with the given information
     ///
-    /// \pre fov > 0
+    /// \pre `0 < fov < 180`
     /// \pre aspect_ratio > 0
-    /// \pre depth.near < depth.far
+    /// \pre `0 < depth.near < depth.far`
     ///
     /// \param fov the field-of-view in degrees
     /// \param aspect_ratio the aspect ratio
@@ -300,9 +300,9 @@ namespace alloy::core {
 
     /// \brief Projects a perspective with the given information
     ///
-    /// \pre fov > 0
+    /// \pre `0 < fov < pi`
     /// \pre aspect_ratio > 0
-    /// \pre depth.near < depth.far
+    /// \pre `0 < depth.near < depth.far`
     ///
     /// \param fov the field-of-view in radians
     /// \param aspect_ratio the aspect ratio
@@ -322,8 +322,8 @@ namespace alloy::core {
 
     /// \brief Projects an orthographic view from the given clip space
     ///
-    /// \param left the right part of the view
-    /// \param right the left part of the view
+    /// \param left the left part of the view
+    /// \param right the right part of the view
     /// \param bottom the bottom part of the view
     /// \param top the top part of the view
     /// \param near the near part of the view
