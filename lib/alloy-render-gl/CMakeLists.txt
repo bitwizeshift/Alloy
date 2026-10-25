@@ -17,6 +17,10 @@ set(header_files
   include/alloy/render/gl/mesh/primitive_topology.hpp
   include/alloy/render/gl/mesh/fill_mode.hpp
   include/alloy/render/gl/mesh/mesh.hpp
+  include/alloy/render/gl/texture/sampler.hpp
+  include/alloy/render/gl/texture/sampler_cache.hpp
+  include/alloy/render/gl/texture/texture.hpp
+  include/alloy/render/gl/texture/texture_format.hpp
   include/alloy/render/gl/capabilities.hpp
   include/alloy/render/gl/error.hpp
   include/alloy/render/gl/state_cache.hpp
@@ -28,6 +32,9 @@ set(source_files
   src/alloy/render/gl/shader/shader_compiler.cpp
   src/alloy/render/gl/shader/program.cpp
   src/alloy/render/gl/mesh/mesh.cpp
+  src/alloy/render/gl/texture/sampler.cpp
+  src/alloy/render/gl/texture/sampler_cache.cpp
+  src/alloy/render/gl/texture/texture.cpp
   src/alloy/render/gl/capabilities.cpp
   src/alloy/render/gl/error.cpp
   src/alloy/render/gl/state_cache.cpp
