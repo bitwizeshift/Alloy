@@ -4,83 +4,163 @@
 
 #include "alloy/render/gl/shader/shader.hpp"
 
-#include "alloy/render/gl/error.hpp"
+#include "alloy/render/gl/shader/shader_stage.hpp"
 
-#include "alloy/core/memory/allocator.hpp"
-#include "alloy/core/string/zstring_view.hpp"
+#include "alloy/core/string/string.hpp"
+#include "alloy/core/string/string_view.hpp"
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/core/utilities/scope_guard.hpp"
-#include "alloy/platform/buffers/mutable_buffer.hpp"
-#include "alloy/platform/filesystem/file.hpp"
+#include "alloy/render/error.hpp"
+#include "alloy/render/shader/shader_stage.hpp"
 
-#include <utility>
+#include <GL/glew.h>
 
-//=============================================================================
-// class : shader_base
-//=============================================================================
+#include <cstddef> // std::byte
+#include <span>    // std::span
+#include <utility> // std::exchange, std::move
 
-//-----------------------------------------------------------------------------
-// Static Factories
-//-----------------------------------------------------------------------------
+namespace alloy::render::gl {
+namespace {
 
-auto alloy::render::gl::shader_base::do_compile_from_source(
-  shader_type type,
-  core::zstring_view program
-) -> core::result<::GLuint, gl_error_message>
+auto compile_failure(::GLuint shader_id) -> render_error
 {
-  const auto shader_id = ::glCreateShader(static_cast<::GLenum>(type));
+  auto length = ::GLint{};
+  ::glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &length);
 
+  auto log = core::string{};
+  log.resize(static_cast<std::size_t>(length), '\0');
+  ::glGetShaderInfoLog(shader_id, length, nullptr, log.data());
+
+  return render_error::make(render_errc::shader_compile_failed, std::move(log));
+}
+
+auto is_compiled(::GLuint shader_id) noexcept -> bool
+{
+  auto status = ::GLint{};
+  ::glGetShaderiv(shader_id, GL_COMPILE_STATUS, &status);
+  return status == GL_TRUE;
+}
+
+} // namespace <anonymous>
+} // namespace alloy::render::gl
+
+//==============================================================================
+// class : shader
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Static Factories
+//------------------------------------------------------------------------------
+
+auto alloy::render::gl::shader::compile_glsl(
+  shader_stage stage,
+  core::string_view source
+) -> core::result<shader, render_error>
+{
+  const auto shader_id = ::glCreateShader(to_opengl_type(stage));
   auto delete_shader = core::scope_exit{[&]{
     ::glDeleteShader(shader_id);
   }};
 
-  const auto str = program.c_str();
-  ::glShaderSource(shader_id, 1, &str, nullptr);
+  const auto* const data = source.data();
+  const auto length = static_cast<::GLint>(source.size());
+  ::glShaderSource(shader_id, 1, &data, &length);
   ::glCompileShader(shader_id);
 
-  auto result = ::GLint{};
-  ::glGetShaderiv(shader_id, GL_COMPILE_STATUS, &result);
-
-  // If we compiled successfully, return
-  if (result == GL_TRUE) {
-    delete_shader.release();
-    return shader_id;
+  if (!is_compiled(shader_id)) {
+    return core::fail(compile_failure(shader_id));
   }
 
-  // If we failed to compile, return the error message
-  auto length = ::GLint{};
-  ::glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &length);
-
-  auto message = core::string{};
-  message.resize(length, '\0');
-  ::glGetShaderInfoLog(
-    shader_id,
-    static_cast<::GLsizei>(message.length()),
-    nullptr,
-    message.data()
-  );
-
-  return core::fail(
-    gl_error_message::make(std::move(message))
-  );
+  delete_shader.release();
+  return shader{shader_id, shader_format::glsl};
 }
 
-auto alloy::render::gl::shader_base::do_compile_from_file(
-  shader_type type,
-  platform::file& file,
-  core::allocator alloc
-) -> core::result<::GLuint, gl_error_message>
+auto alloy::render::gl::shader::load_spirv(
+  shader_stage stage,
+  std::span<const std::byte> binary,
+  core::string_view entry_point
+) -> core::result<shader, render_error>
 {
-  const auto size = file.bytes();
+  const auto shader_id = ::glCreateShader(to_opengl_type(stage));
+  auto delete_shader = core::scope_exit{[&]{
+    ::glDeleteShader(shader_id);
+  }};
 
-  if (size.has_error()) {
-    return core::fail(gl_error_message::make("Bad file input"));
+  ::glShaderBinary(
+    1,
+    &shader_id,
+    GL_SHADER_BINARY_FORMAT_SPIR_V,
+    binary.data(),
+    static_cast<::GLsizei>(binary.size())
+  );
+
+  // Contexts that only expose `ARB_gl_spirv` lack the core entry point.
+  auto* const specialize = (glSpecializeShader != nullptr)
+    ? glSpecializeShader
+    : glSpecializeShaderARB;
+
+  const auto entry = core::string{entry_point};
+  specialize(shader_id, entry.c_str(), 0, nullptr, nullptr);
+
+  if (!is_compiled(shader_id)) {
+    return core::fail(compile_failure(shader_id));
   }
 
-  auto source = core::string{core::stl_allocator_adapter<core::string>{alloc}};
-  source.resize(*size);
+  delete_shader.release();
+  return shader{shader_id, shader_format::spirv};
+}
 
-  file.read(platform::mutable_buffer::from_data(source.data(), source.size())).expect("Failed to read shader");
+//------------------------------------------------------------------------------
+// Constructors / Destructor / Assignment
+//------------------------------------------------------------------------------
 
-  return do_compile_from_source(type, source);
+alloy::render::gl::shader::shader(shader&& other) noexcept
+  : m_id{std::exchange(other.m_id, 0u)},
+    m_format{other.m_format}
+{
+
+}
+
+alloy::render::gl::shader::~shader()
+{
+  if (m_id != 0u) {
+    ::glDeleteShader(m_id);
+  }
+}
+
+auto alloy::render::gl::shader::operator=(shader&& other) noexcept -> shader&
+{
+  if (this != &other) {
+    if (m_id != 0u) {
+      ::glDeleteShader(m_id);
+    }
+    m_id = std::exchange(other.m_id, 0u);
+    m_format = other.m_format;
+  }
+  return (*this);
+}
+
+//------------------------------------------------------------------------------
+// Observers
+//------------------------------------------------------------------------------
+
+auto alloy::render::gl::shader::id() const noexcept -> ::GLuint
+{
+  return m_id;
+}
+
+auto alloy::render::gl::shader::format() const noexcept -> shader_format
+{
+  return m_format;
+}
+
+//------------------------------------------------------------------------------
+// Private Constructors
+//------------------------------------------------------------------------------
+
+alloy::render::gl::shader::shader(::GLuint id, shader_format format) noexcept
+  : m_id{id},
+    m_format{format}
+{
+
 }

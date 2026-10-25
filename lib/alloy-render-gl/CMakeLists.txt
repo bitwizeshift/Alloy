@@ -8,9 +8,8 @@ find_package(GLEW REQUIRED)
 
 set(header_files
   include/alloy/render/gl/shader/shader.hpp
+  include/alloy/render/gl/shader/shader_stage.hpp
   include/alloy/render/gl/shader/program.hpp
-  include/alloy/render/gl/shader/program_utilities.hpp
-  include/alloy/render/gl/shader/active_program.hpp
   include/alloy/render/gl/material/blend_equation.hpp
   include/alloy/render/gl/material/blend_factor.hpp
   include/alloy/render/gl/material/cull_face.hpp
@@ -25,8 +24,9 @@ set(header_files
 
 set(source_files
   src/alloy/render/gl/shader/shader.cpp
+  src/alloy/render/gl/shader/shader_compiler.hpp
+  src/alloy/render/gl/shader/shader_compiler.cpp
   src/alloy/render/gl/shader/program.cpp
-  src/alloy/render/gl/shader/program_utilities.cpp
   src/alloy/render/gl/mesh/mesh.cpp
   src/alloy/render/gl/capabilities.cpp
   src/alloy/render/gl/error.cpp
