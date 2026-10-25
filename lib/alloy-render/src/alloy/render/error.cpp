@@ -66,6 +66,9 @@ public:
       case render_errc::parameter_type_mismatch: {
         return "material parameter type mismatch";
       }
+      case render_errc::duplicate_parameter: {
+        return "duplicate material parameter";
+      }
       case render_errc::dimension_mismatch: {
         return "texture dimension mismatch";
       }

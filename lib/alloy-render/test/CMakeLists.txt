@@ -12,6 +12,9 @@ set(source_files
   src/alloy/render/mesh/3d/polygon_3d_builder.test.cpp
   src/alloy/render/mesh/3d/sphere_builder.test.cpp
 
+  # Material
+  src/alloy/render/material/material_layout.test.cpp
+
   # Resource
   src/alloy/render/resource/handle_pool.test.cpp
 

@@ -69,6 +69,9 @@ namespace alloy::render {
     /// A material parameter's value does not match the type it is bound to
     parameter_type_mismatch,
 
+    /// More than one material parameter is bound to the same value
+    duplicate_parameter,
+
     /// A texture's dimension does not match the dimension its program expects
     dimension_mismatch,
   };

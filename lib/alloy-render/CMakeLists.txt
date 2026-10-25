@@ -13,6 +13,8 @@ set(header_files
   include/alloy/render/material/blend_equation.hpp
   include/alloy/render/material/depth_compare.hpp
   include/alloy/render/material/cull_face.hpp
+  include/alloy/render/material/material_layout.hpp
+  include/alloy/render/material/material_spec.hpp
   include/alloy/render/mesh/fill_mode.hpp
   include/alloy/render/mesh/index_format.hpp
   include/alloy/render/mesh/primitive_topology.hpp
@@ -46,6 +48,7 @@ set(source_files
   src/alloy/render/mesh/3d/sphere_builder.cpp
   src/alloy/render/mesh/unsafe_mesh_builder.cpp
   src/alloy/render/mesh/attribute_packer.hpp
+  src/alloy/render/material/material_layout.cpp
   src/alloy/render/shader/program_layout.cpp
   src/alloy/render/texture/texture_spec.cpp
 )
