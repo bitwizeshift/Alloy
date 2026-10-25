@@ -6,6 +6,7 @@
 
 #include "alloy/render/gl/capabilities.hpp"
 
+#include "alloy/render/gl/mesh/mesh.hpp"
 #include "alloy/render/gl/shader/program.hpp"
 #include "alloy/render/gl/shader/shader.hpp"
 #include "alloy/render/gl/texture/texture.hpp"
@@ -19,6 +20,7 @@
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/render/error.hpp"
 #include "alloy/render/material/material_spec.hpp"
+#include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
 #include "alloy/render/shader/resolved_parameters.hpp"
@@ -155,7 +157,8 @@ alloy::render::gl::device::device(const capabilities& caps) noexcept
     m_samplers{caps.max_anisotropy},
     m_programs{},
     m_textures{},
-    m_materials{}
+    m_materials{},
+    m_meshes{}
 {
 
 }
@@ -272,6 +275,12 @@ auto alloy::render::gl::device::do_create_material(const material_spec& spec)
   return m_materials.insert(std::move(entry));
 }
 
+auto alloy::render::gl::device::do_create_mesh(const render::mesh& mesh)
+  -> core::result<mesh_handle, render_error>
+{
+  return m_meshes.insert(gl::mesh::make(mesh));
+}
+
 auto alloy::render::gl::device::do_dispose(program_handle handle)
   noexcept -> void
 {
@@ -288,6 +297,12 @@ auto alloy::render::gl::device::do_dispose(material_handle handle)
   noexcept -> void
 {
   m_materials.erase(handle);
+}
+
+auto alloy::render::gl::device::do_dispose(mesh_handle handle)
+  noexcept -> void
+{
+  m_meshes.erase(handle);
 }
 
 //==============================================================================

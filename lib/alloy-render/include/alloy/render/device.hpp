@@ -19,6 +19,7 @@
 #include "alloy/render/error.hpp"
 
 #include "alloy/render/material/material_spec.hpp"
+#include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/resource/resource_handle.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
@@ -41,6 +42,9 @@ namespace alloy::render {
 
   /// \brief The unique owner of a material created by a device
   using unique_material = unique_resource<material_tag>;
+
+  /// \brief The unique owner of a mesh uploaded by a device
+  using unique_mesh = unique_resource<mesh_tag>;
 
   //////////////////////////////////////////////////////////////////////////////
   /// \brief The interface through which GPU resources are created
@@ -97,6 +101,13 @@ namespace alloy::render {
     auto create_material(const material_spec& spec)
       -> core::result<unique_material, render_error>;
 
+    /// \brief Uploads \p mesh so that it may be drawn
+    ///
+    /// \param mesh the mesh to upload
+    /// \return the uploaded mesh on success
+    auto create_mesh(const mesh& mesh)
+      -> core::result<unique_mesh, render_error>;
+
     //--------------------------------------------------------------------------
     // Protected Constructors
     //--------------------------------------------------------------------------
@@ -133,6 +144,13 @@ namespace alloy::render {
     virtual auto do_create_material(const material_spec& spec)
       -> core::result<material_handle, render_error> = 0;
 
+    /// \brief Uploads \p mesh
+    ///
+    /// \param mesh the mesh to upload
+    /// \return the handle of the mesh on success
+    virtual auto do_create_mesh(const mesh& mesh)
+      -> core::result<mesh_handle, render_error> = 0;
+
     /// \{
     /// \brief Disposes of the resource identified by \p handle
     ///
@@ -141,6 +159,7 @@ namespace alloy::render {
     virtual auto do_dispose(program_handle handle) noexcept -> void = 0;
     virtual auto do_dispose(texture_handle handle) noexcept -> void = 0;
     virtual auto do_dispose(material_handle handle) noexcept -> void = 0;
+    virtual auto do_dispose(mesh_handle handle) noexcept -> void = 0;
     /// \}
 
     template <typename>

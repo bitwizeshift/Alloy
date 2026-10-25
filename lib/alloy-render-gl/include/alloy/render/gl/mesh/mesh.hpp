@@ -5,7 +5,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// \file mesh.hpp
 ///
-/// \brief TODO(Bitwize): Add description
+/// \brief This header defines the owner of a mesh uploaded into OpenGL
+///        buffers
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef ALLOY_RENDER_GL_MESH_MESH_HPP
@@ -20,29 +21,39 @@
 
 #include <GL/glew.h>
 
-#include <cstddef>
-
+#include <cstddef> // std::size_t
+#include <cstdint> // std::uint32_t
+#include <span>    // std::span
 
 namespace alloy::render::gl {
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief A generic mesh written in terms of OpenGL vertex array objects
+  /// \brief The unique owner of a mesh uploaded into OpenGL buffers, along
+  ///        with the vertex array object that reads them
+  ///
+  /// Each vertex attribute of the mesh is read from the location given by
+  /// `attribute_locations`, converted from its packed format to the floats
+  /// (or, for joints, the unsigned integers) that shaders read.
   //////////////////////////////////////////////////////////////////////////////
   class mesh
   {
     //--------------------------------------------------------------------------
-    // Public Members
+    // Static Factories
     //--------------------------------------------------------------------------
   public:
 
+    /// \brief Uploads \p m into new OpenGL buffers
+    ///
+    /// \param m the mesh to upload
+    /// \return the uploaded mesh
     static auto make(const render::mesh& m) -> mesh;
 
     //--------------------------------------------------------------------------
-    // Constructors
+    // Constructors / Destructor / Assignment
     //--------------------------------------------------------------------------
   public:
 
-    mesh(mesh&& other);
+    mesh(mesh&& other) noexcept;
     mesh(const mesh&) = delete;
 
     //--------------------------------------------------------------------------
@@ -51,42 +62,41 @@ namespace alloy::render::gl {
 
     //--------------------------------------------------------------------------
 
-    auto operator=(mesh&&) -> mesh& = delete;
+    auto operator=(mesh&& other) noexcept -> mesh&;
     auto operator=(const mesh&) -> mesh& = delete;
 
     //--------------------------------------------------------------------------
-    // Render
+    // Observers
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Gets the number of submeshes of this mesh
+    /// \brief Gets the number of components of every vertex attribute
     ///
-    /// This is always at least one.
-    ///
-    /// \return the number of submeshes
-    auto submesh_count() const noexcept -> std::size_t;
+    /// \return the components of the mesh's vertices
+    auto components() const noexcept -> const vertex_components&;
 
-    /// \brief Draws the submesh at \p index
+    /// \brief Gets the ranges of this mesh that are drawn separately
     ///
-    /// \pre `index < submesh_count()`
+    /// \return the submeshes, of which there is always at least one
+    auto submeshes() const noexcept -> std::span<const submesh>;
+
+    //--------------------------------------------------------------------------
+    // Drawing
+    //--------------------------------------------------------------------------
+  public:
+
+    /// \brief Binds the vertex array object of this mesh, and the winding of
+    ///        its front faces
+    auto bind() const noexcept -> void;
+
+    /// \brief Draws \p instances instances of the submesh at \p index
+    ///
+    /// \pre this mesh is bound
+    /// \pre `index < submeshes().size()`
     /// \param index the index of the submesh to draw
-    auto draw(std::size_t index) -> void;
-
-    //--------------------------------------------------------------------------
-    // Private Members
-    //--------------------------------------------------------------------------
-  private:
-
-    ::GLuint m_vao;
-    ::GLuint m_vbo;
-    ::GLuint m_ebo;
-    ::GLenum m_topology;
-    ::GLenum m_front_face;
-    ::GLenum m_index_type;
-
-    /// The ranges of the mesh to draw, in indices, or in vertices for meshes
-    /// without indices
-    core::vector<render::submesh> m_submeshes;
+    /// \param instances the number of instances to draw
+    auto draw(std::size_t index, std::uint32_t instances)
+      const noexcept -> void;
 
     //--------------------------------------------------------------------------
     // Private Constructors
@@ -100,12 +110,35 @@ namespace alloy::render::gl {
       ::GLenum topology,
       ::GLenum front_face,
       ::GLenum index_type,
-      core::vector<render::submesh> submeshes
-    );
+      vertex_components components,
+      core::vector<submesh> submeshes
+    ) noexcept;
 
+    //--------------------------------------------------------------------------
+    // Private Modifiers
+    //--------------------------------------------------------------------------
+  private:
+
+    auto destroy() noexcept -> void;
+
+    //--------------------------------------------------------------------------
+    // Private Members
+    //--------------------------------------------------------------------------
+  private:
+
+    ::GLuint m_vao;
+    ::GLuint m_vbo;
+    ::GLuint m_ebo;
+    ::GLenum m_topology;
+    ::GLenum m_front_face;
+    ::GLenum m_index_type;
+    vertex_components m_components;
+
+    /// The ranges of the mesh to draw, in indices, or in vertices for meshes
+    /// without indices
+    core::vector<submesh> m_submeshes;
   };
 
 } // namespace alloy::render::gl
-
 
 #endif /* ALLOY_RENDER_GL_MESH_MESH_HPP */

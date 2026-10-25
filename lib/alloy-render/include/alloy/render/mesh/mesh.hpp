@@ -20,6 +20,8 @@
 #include "alloy/render/mesh/primitive_topology.hpp"
 #include "alloy/render/mesh/winding_order.hpp"
 
+#include "alloy/render/resource/resource_handle.hpp"
+
 #include "alloy/core/assert.hpp"
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/geometry/axis_aligned_box.hpp"
@@ -36,6 +38,11 @@
 #include <span>    // std::span
 
 namespace alloy::render {
+
+  struct mesh_tag;
+
+  /// \brief A non-owning handle to a mesh that a device has uploaded
+  using mesh_handle = resource_handle<mesh_tag>;
 
   //////////////////////////////////////////////////////////////////////////////
   /// \brief The number of components of each attribute in a mesh vertex

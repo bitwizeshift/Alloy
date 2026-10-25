@@ -7,6 +7,8 @@
 #include <alloy/render/error.hpp>
 
 #include <alloy/render/material/material_spec.hpp>
+#include <alloy/render/mesh/3d/cube_builder.hpp>
+#include <alloy/render/mesh/mesh.hpp>
 #include <alloy/render/resource/handle_pool.hpp>
 #include <alloy/render/shader/program_layout.hpp>
 #include <alloy/render/shader/program_spec.hpp>
@@ -40,11 +42,17 @@ public:
     return m_textures.size();
   }
 
+  auto live_meshes() const noexcept -> std::size_t
+  {
+    return m_meshes.size();
+  }
+
 private:
 
   handle_pool<program_tag, int> m_programs;
   handle_pool<texture_tag, int> m_textures;
   handle_pool<material_tag, int> m_materials;
+  handle_pool<mesh_tag, int> m_meshes;
 
   auto do_create_program(const program_spec&, program_layout)
     -> core::result<program_handle, render_error> override
@@ -64,6 +72,12 @@ private:
     return m_materials.insert(0);
   }
 
+  auto do_create_mesh(const mesh&)
+    -> core::result<mesh_handle, render_error> override
+  {
+    return m_meshes.insert(0);
+  }
+
   auto do_dispose(program_handle handle) noexcept -> void override
   {
     m_programs.erase(handle);
@@ -77,6 +91,11 @@ private:
   auto do_dispose(material_handle handle) noexcept -> void override
   {
     m_materials.erase(handle);
+  }
+
+  auto do_dispose(mesh_handle handle) noexcept -> void override
+  {
+    m_meshes.erase(handle);
   }
 };
 
@@ -136,6 +155,30 @@ TEST_CASE("device::create_texture(const texture_spec&)", "[resource creation]") 
 
     // Assert
     REQUIRE(sut.live_textures() == 1u);
+  }
+}
+
+TEST_CASE("device::create_mesh(const mesh&)", "[resource creation]") {
+  // Arrange
+  auto sut = fake_device{};
+  const auto mesh = cube_builder{}.build();
+
+  SECTION("Uploads the mesh") {
+    // Act
+    const auto result = sut.create_mesh(mesh);
+
+    // Assert
+    REQUIRE(sut.live_meshes() == 1u);
+  }
+  SECTION("Owner disposes of the mesh") {
+    // Arrange
+    auto owner = sut.create_mesh(mesh).value();
+
+    // Act
+    owner.reset();
+
+    // Assert
+    REQUIRE(sut.live_meshes() == 0u);
   }
 }
 

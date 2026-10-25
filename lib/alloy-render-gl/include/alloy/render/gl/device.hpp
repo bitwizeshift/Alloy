@@ -17,6 +17,7 @@
 
 #include "alloy/render/gl/capabilities.hpp"
 
+#include "alloy/render/gl/mesh/mesh.hpp"
 #include "alloy/render/gl/shader/program.hpp"
 #include "alloy/render/gl/texture/sampler_cache.hpp"
 #include "alloy/render/gl/texture/texture.hpp"
@@ -26,6 +27,7 @@
 #include "alloy/render/device.hpp"
 #include "alloy/render/error.hpp"
 #include "alloy/render/material/material_spec.hpp"
+#include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/resource/handle_pool.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
@@ -160,10 +162,13 @@ namespace alloy::render::gl {
 
     auto do_create_material(const material_spec& spec)
       -> core::result<material_handle, render_error> override;
+    auto do_create_mesh(const render::mesh& mesh)
+      -> core::result<mesh_handle, render_error> override;
 
     auto do_dispose(program_handle handle) noexcept -> void override;
     auto do_dispose(texture_handle handle) noexcept -> void override;
     auto do_dispose(material_handle handle) noexcept -> void override;
+    auto do_dispose(mesh_handle handle) noexcept -> void override;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -175,6 +180,7 @@ namespace alloy::render::gl {
     handle_pool<program_tag, program_entry> m_programs;
     handle_pool<texture_tag, texture> m_textures;
     handle_pool<material_tag, material_entry> m_materials;
+    handle_pool<mesh_tag, gl::mesh> m_meshes;
   };
 
 } // namespace alloy::render::gl

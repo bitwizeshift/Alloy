@@ -17,6 +17,7 @@
 #include <array>   // std::array
 #include <cstddef> // std::size_t
 #include <cstdint> // std::uint16_t, std::uint32_t, std::uintptr_t
+#include <span>    // std::span
 #include <utility> // std::exchange, std::move
 
 namespace alloy::render::gl {
@@ -51,6 +52,14 @@ auto to_opengl_type(index_format f) noexcept -> ::GLenum
 } // namespace <anonymous>
 } // namespace alloy::render::gl
 
+//==============================================================================
+// class : mesh
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Static Factories
+//------------------------------------------------------------------------------
+
 auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
 {
   auto vao = ::GLuint{};
@@ -67,7 +76,7 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
   const auto stride = m.stride().count();
   ::glBindBuffer(GL_ARRAY_BUFFER, vbo);
   ::glBufferData(GL_ARRAY_BUFFER,
-    static_cast<::GLsizei>(data.size_bytes()),
+    static_cast<::GLsizeiptr>(data.size_bytes()),
     data.data(),
     GL_STATIC_DRAW
   );
@@ -203,31 +212,22 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
   const auto front_face = to_opengl_type(m.winding());
 
   const auto ranges = m.submeshes();
-  auto submeshes = core::vector<render::submesh>{};
+  auto submeshes = core::vector<submesh>{};
   submeshes.assign(ranges.begin(), ranges.end());
 
-  if (!m.has_indices()) {
-    return mesh{
-      vao,
-      vbo,
-      ebo,
-      topology,
-      front_face,
-      GL_NONE,
-      std::move(submeshes)
-    };
+  auto index_type = ::GLenum{GL_NONE};
+  if (m.has_indices()) {
+    const auto indices = m.index_data();
+    ::glGenBuffers(1, &ebo);
+    ::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    ::glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+      static_cast<::GLsizeiptr>(indices.size_bytes()),
+      indices.data(),
+      GL_STATIC_DRAW
+    );
+    index_type = to_opengl_type(m.index_format());
   }
-
-  const auto indices = m.index_data();
-  ::glGenBuffers(1, &ebo);
-  ::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-  ::glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-    static_cast<::GLsizeiptr>(indices.size_bytes()),
-    indices.data(),
-    GL_STATIC_DRAW
-  );
-
-  const auto index_type = to_opengl_type(m.index_format());
+  ::glBindVertexArray(0u);
 
   return mesh{
     vao,
@@ -236,9 +236,111 @@ auto alloy::render::gl::mesh::make(const render::mesh& m) -> mesh
     topology,
     front_face,
     index_type,
+    m.components(),
     std::move(submeshes)
   };
 }
+
+//------------------------------------------------------------------------------
+// Constructors / Destructor / Assignment
+//------------------------------------------------------------------------------
+
+alloy::render::gl::mesh::mesh(mesh&& other) noexcept
+  : m_vao{std::exchange(other.m_vao, 0u)},
+    m_vbo{std::exchange(other.m_vbo, 0u)},
+    m_ebo{std::exchange(other.m_ebo, 0u)},
+    m_topology{other.m_topology},
+    m_front_face{other.m_front_face},
+    m_index_type{other.m_index_type},
+    m_components{other.m_components},
+    m_submeshes{std::move(other.m_submeshes)}
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+alloy::render::gl::mesh::~mesh()
+{
+  destroy();
+}
+
+//------------------------------------------------------------------------------
+
+auto alloy::render::gl::mesh::operator=(mesh&& other) noexcept -> mesh&
+{
+  if (this != &other) {
+    destroy();
+    m_vao = std::exchange(other.m_vao, 0u);
+    m_vbo = std::exchange(other.m_vbo, 0u);
+    m_ebo = std::exchange(other.m_ebo, 0u);
+    m_topology = other.m_topology;
+    m_front_face = other.m_front_face;
+    m_index_type = other.m_index_type;
+    m_components = other.m_components;
+    m_submeshes = std::move(other.m_submeshes);
+  }
+  return (*this);
+}
+
+//------------------------------------------------------------------------------
+// Observers
+//------------------------------------------------------------------------------
+
+auto alloy::render::gl::mesh::components()
+  const noexcept -> const vertex_components&
+{
+  return m_components;
+}
+
+auto alloy::render::gl::mesh::submeshes()
+  const noexcept -> std::span<const submesh>
+{
+  return m_submeshes;
+}
+
+//------------------------------------------------------------------------------
+// Drawing
+//------------------------------------------------------------------------------
+
+auto alloy::render::gl::mesh::bind() const noexcept -> void
+{
+  ::glBindVertexArray(m_vao);
+  ::glFrontFace(m_front_face);
+}
+
+auto alloy::render::gl::mesh::draw(std::size_t index, std::uint32_t instances)
+  const noexcept -> void
+{
+  ALLOY_ASSERT(index < m_submeshes.size());
+
+  const auto& range = m_submeshes[index];
+  if (m_ebo == 0u) {
+    ::glDrawArraysInstanced(
+      m_topology,
+      static_cast<::GLint>(range.first),
+      static_cast<::GLsizei>(range.count),
+      static_cast<::GLsizei>(instances)
+    );
+    return;
+  }
+
+  const auto index_size = (m_index_type == GL_UNSIGNED_INT)
+    ? sizeof(std::uint32_t)
+    : sizeof(std::uint16_t);
+  const auto offset = std::uintptr_t{range.first} * index_size;
+  ::glDrawElementsInstanced(
+    m_topology,
+    static_cast<::GLsizei>(range.count),
+    m_index_type,
+    reinterpret_cast<const void*>(offset),
+    static_cast<::GLsizei>(instances)
+  );
+}
+
+//------------------------------------------------------------------------------
+// Private Constructors
+//------------------------------------------------------------------------------
 
 alloy::render::gl::mesh::mesh(
   ::GLuint vao,
@@ -247,70 +349,32 @@ alloy::render::gl::mesh::mesh(
   ::GLenum topology,
   ::GLenum front_face,
   ::GLenum index_type,
-  core::vector<render::submesh> submeshes
-)
+  vertex_components components,
+  core::vector<submesh> submeshes
+) noexcept
   : m_vao{vao},
     m_vbo{vbo},
     m_ebo{ebo},
     m_topology{topology},
     m_front_face{front_face},
     m_index_type{index_type},
+    m_components{components},
     m_submeshes{std::move(submeshes)}
 {
 
 }
 
-alloy::render::gl::mesh::mesh(alloy::render::gl::mesh&& other)
-  : m_vao{std::exchange(other.m_vao, 0)},
-    m_vbo{std::exchange(other.m_vbo, 0)},
-    m_ebo{std::exchange(other.m_ebo, 0)},
-    m_topology{other.m_topology},
-    m_front_face{other.m_front_face},
-    m_index_type{other.m_index_type},
-    m_submeshes{std::move(other.m_submeshes)}
+//------------------------------------------------------------------------------
+// Private Modifiers
+//------------------------------------------------------------------------------
+
+auto alloy::render::gl::mesh::destroy() noexcept -> void
 {
-
-}
-
-alloy::render::gl::mesh::~mesh()
-{
-  if (m_vao != 0) {
-    auto buffers = std::array<::GLuint,2u>{m_vbo, m_ebo};
-    ::glDeleteBuffers(2u, buffers.data());
-    ::glDeleteVertexArrays(1u, &m_vao);
-  }
-}
-
-
-auto alloy::render::gl::mesh::submesh_count() const noexcept -> std::size_t
-{
-  return m_submeshes.size();
-}
-
-auto alloy::render::gl::mesh::draw(std::size_t index) -> void
-{
-  ALLOY_ASSERT(index < m_submeshes.size());
-
-  const auto& s = m_submeshes[index];
-  ::glBindVertexArray(m_vao);
-  ::glFrontFace(m_front_face);
-  if (m_ebo == 0) {
-    ::glDrawArrays(
-      m_topology,
-      static_cast<::GLint>(s.first),
-      static_cast<::GLsizei>(s.count)
-    );
+  if (m_vao == 0u) {
     return;
   }
-
-  const auto index_size = (m_index_type == GL_UNSIGNED_INT)
-    ? sizeof(std::uint32_t)
-    : sizeof(std::uint16_t);
-  const auto offset = std::uintptr_t{s.first} * index_size;
-  ::glDrawElements(
-    m_topology,
-    static_cast<::GLsizei>(s.count),
-    m_index_type,
-    reinterpret_cast<const void*>(offset)
-  );
+  const auto buffers = std::array<::GLuint, 2u>{m_vbo, m_ebo};
+  ::glDeleteBuffers(2, buffers.data());
+  ::glDeleteVertexArrays(1, &m_vao);
+  m_vao = 0u;
 }
