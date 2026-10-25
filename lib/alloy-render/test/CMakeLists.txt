@@ -14,6 +14,9 @@ set(source_files
 
   # Resource
   src/alloy/render/resource/handle_pool.test.cpp
+
+  # Texture
+  src/alloy/render/texture/texture_spec.test.cpp
 )
 
 add_alloy_test(${PROJECT_NAME}RenderTest

@@ -27,6 +27,10 @@ set(header_files
   include/alloy/render/mesh/unsafe_mesh_builder.hpp
   include/alloy/render/resource/handle_pool.hpp
   include/alloy/render/resource/resource_handle.hpp
+  include/alloy/render/texture/sampler_state.hpp
+  include/alloy/render/texture/texture_dimension.hpp
+  include/alloy/render/texture/texture_format.hpp
+  include/alloy/render/texture/texture_spec.hpp
 )
 
 set(source_files
@@ -38,6 +42,7 @@ set(source_files
   src/alloy/render/mesh/3d/sphere_builder.cpp
   src/alloy/render/mesh/unsafe_mesh_builder.cpp
   src/alloy/render/mesh/attribute_packer.hpp
+  src/alloy/render/texture/texture_spec.cpp
 )
 
 add_alloy_library(${PROJECT_NAME}Render
