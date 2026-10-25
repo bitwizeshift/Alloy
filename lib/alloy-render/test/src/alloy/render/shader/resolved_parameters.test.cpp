@@ -64,7 +64,7 @@ constexpr auto resources = std::array{
 auto make_layout() -> program_layout
 {
   return program_layout::from_spec(
-    program_spec{"test", stages, {}, resources}
+    program_spec{"test", stages, {}, resources, {}}
   ).value();
 }
 

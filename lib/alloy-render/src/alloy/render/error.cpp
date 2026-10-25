@@ -45,6 +45,9 @@ public:
       case render_errc::duplicate_resource: {
         return "program has a duplicate resource";
       }
+      case render_errc::duplicate_input: {
+        return "program has a duplicate input";
+      }
       case render_errc::invalid_uniform_layout: {
         return "invalid uniform buffer layout";
       }

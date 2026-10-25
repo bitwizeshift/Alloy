@@ -54,7 +54,8 @@ namespace alloy::render {
   };
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief A per-vertex input that the vertex stage reads
+  /// \brief An input that the vertex stage reads, which advances once per
+  ///        vertex or once per instance
   //////////////////////////////////////////////////////////////////////////////
   struct vertex_input
   {
@@ -181,11 +182,19 @@ namespace alloy::render {
     /// The code for each stage, with at most one entry per stage
     std::span<const shader_stage_spec> stages;
 
-    /// The inputs that the vertex stage reads
+    /// The inputs that the vertex stage reads, which advance once per vertex
     std::span<const vertex_input> vertex_inputs;
 
     /// The resources that the stages read
     std::span<const program_resource> resources;
+
+    /// The inputs that the vertex stage reads, which advance once per
+    /// instance drawn
+    ///
+    /// The values of every instance are given to a device tightly packed, in
+    /// the order of these inputs, with each occupying
+    /// `bytes_per_value(type)` bytes.
+    std::span<const vertex_input> instance_inputs;
   };
 
 } // namespace alloy::render

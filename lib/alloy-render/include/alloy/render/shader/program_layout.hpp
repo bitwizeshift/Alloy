@@ -24,6 +24,7 @@
 
 #include "alloy/core/containers/hash_map.hpp"
 #include "alloy/core/containers/vector.hpp"
+#include "alloy/core/memory/data_quantity.hpp"
 #include "alloy/core/string/string.hpp"
 #include "alloy/core/string/string_view.hpp"
 #include "alloy/core/utilities/optional.hpp"
@@ -90,8 +91,45 @@ namespace alloy::render {
   };
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief The validated resources of a program, retained by a device so
-  ///        that shader parameters can be resolved against the program
+  /// \brief An input of a program that advances once per vertex, as retained
+  ///        by its layout
+  //////////////////////////////////////////////////////////////////////////////
+  struct vertex_input_layout
+  {
+    /// The name of the input
+    core::string name;
+
+    /// The location that the input is read from
+    std::uint32_t location;
+
+    /// The type of the input
+    shader_data_type type;
+  };
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief An input of a program that advances once per instance, as
+  ///        retained by its layout
+  //////////////////////////////////////////////////////////////////////////////
+  struct instance_input_layout
+  {
+    /// The name of the input
+    core::string name;
+
+    /// The location that the input is read from
+    std::uint32_t location;
+
+    /// The type of the input
+    shader_data_type type;
+
+    /// The offset of the input's value from the start of an instance's
+    /// values
+    core::bytes offset;
+  };
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// \brief The validated inputs and resources of a program, retained by a
+  ///        device so that shader parameters and instances can be resolved
+  ///        against the program
   ///
   /// Only uniform buffers may be supplied by render calls; every texture
   /// belongs to a material.
@@ -133,6 +171,26 @@ namespace alloy::render {
     // Observers
     //--------------------------------------------------------------------------
   public:
+
+    /// \brief Gets every input of the program that advances once per vertex,
+    ///        in the order they were specified
+    ///
+    /// \return the vertex inputs
+    auto vertex_inputs() const noexcept -> std::span<const vertex_input_layout>;
+
+    /// \brief Gets every input of the program that advances once per
+    ///        instance, in the order they were specified
+    ///
+    /// \return the instance inputs
+    auto instance_inputs()
+      const noexcept -> std::span<const instance_input_layout>;
+
+    /// \brief Gets the number of bytes occupied by the values of a single
+    ///        instance
+    ///
+    /// \return the size of an instance, which is zero for a program without
+    ///         instance inputs
+    auto instance_stride() const noexcept -> core::bytes;
 
     /// \brief Gets every resource of the program, in the order they were
     ///        specified
@@ -184,6 +242,9 @@ namespace alloy::render {
   private:
 
     program_layout(
+      core::vector<vertex_input_layout> vertex_inputs,
+      core::vector<instance_input_layout> instance_inputs,
+      core::bytes instance_stride,
       core::vector<resource_layout> resources,
       string_map<std::uint32_t> resource_indices,
       string_map<member_layout> members
@@ -194,6 +255,9 @@ namespace alloy::render {
     //--------------------------------------------------------------------------
   private:
 
+    core::vector<vertex_input_layout> m_vertex_inputs;
+    core::vector<instance_input_layout> m_instance_inputs;
+    core::bytes m_instance_stride;
     core::vector<resource_layout> m_resources;
     string_map<std::uint32_t> m_resource_indices;
     string_map<member_layout> m_members;

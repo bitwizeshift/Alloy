@@ -16,6 +16,11 @@
 # pragma once
 #endif
 
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/memory/data_quantity.hpp"
+
+#include <cstdint> // std::int32_t, std::uint32_t
+
 namespace alloy::render {
 
   //////////////////////////////////////////////////////////////////////////////
@@ -40,6 +45,56 @@ namespace alloy::render {
     float4x4,
   };
 
+  /// \brief Gets the number of bytes occupied by a value of type \p t when
+  ///        values are tightly packed
+  ///
+  /// Each component occupies 32 bits, including the component of a
+  /// `boolean`, and matrices are stored column by column.
+  ///
+  /// \param t the type of the value
+  /// \return the size of a value
+  constexpr auto bytes_per_value(shader_data_type t) noexcept -> core::bytes;
+
 } // namespace alloy::render
+
+inline constexpr
+auto alloy::render::bytes_per_value(shader_data_type t) noexcept -> core::bytes
+{
+  constexpr auto component = sizeof(std::uint32_t);
+  static_assert(sizeof(std::int32_t) == component);
+  static_assert(sizeof(float) == component);
+
+  switch (t) {
+    case shader_data_type::boolean:
+    case shader_data_type::int1:
+    case shader_data_type::uint1:
+    case shader_data_type::float1: {
+      return core::bytes{component};
+    }
+    case shader_data_type::int2:
+    case shader_data_type::uint2:
+    case shader_data_type::float2: {
+      return core::bytes{component * 2u};
+    }
+    case shader_data_type::int3:
+    case shader_data_type::uint3:
+    case shader_data_type::float3: {
+      return core::bytes{component * 3u};
+    }
+    case shader_data_type::int4:
+    case shader_data_type::uint4:
+    case shader_data_type::float4:
+    case shader_data_type::float2x2: {
+      return core::bytes{component * 4u};
+    }
+    case shader_data_type::float3x3: {
+      return core::bytes{component * 9u};
+    }
+    case shader_data_type::float4x4: {
+      return core::bytes{component * 16u};
+    }
+  }
+  core::compiler::unreachable();
+}
 
 #endif /* ALLOY_RENDER_SHADER_SHADER_DATA_TYPE_HPP */

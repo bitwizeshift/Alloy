@@ -5,12 +5,15 @@
 #include "alloy/render/shader/program_layout.hpp"
 
 #include "alloy/render/shader/program_spec.hpp"
+#include "alloy/render/shader/shader_data_type.hpp"
 #include "alloy/render/shader/shader_stage.hpp"
 
 #include "alloy/render/error.hpp"
 
 #include "alloy/core/containers/hash_map.hpp"
+#include "alloy/core/containers/hash_set.hpp"
 #include "alloy/core/containers/vector.hpp"
+#include "alloy/core/memory/data_quantity.hpp"
 #include "alloy/core/string/string.hpp"
 #include "alloy/core/string/string_view.hpp"
 #include "alloy/core/utilities/optional.hpp"
@@ -36,7 +39,9 @@ auto fail_with(render_errc code, core::string_view subject, const char* what)
   return render_error::make(code, std::move(details));
 }
 
+////////////////////////////////////////////////////////////////////////////////
 /// \brief A uniform buffer member awaiting insertion into the layout's lookup
+////////////////////////////////////////////////////////////////////////////////
 struct pending_member
 {
   core::string_view block;
@@ -44,8 +49,10 @@ struct pending_member
   member_layout layout;
 };
 
+////////////////////////////////////////////////////////////////////////////////
 /// \brief Validates the kind of a single resource, converting it into the
 ///        kind that the layout retains
+////////////////////////////////////////////////////////////////////////////////
 struct resource_kind_visitor
 {
   std::uint32_t resource_index;
@@ -127,6 +134,72 @@ auto validate_stages(std::span<const shader_stage_spec> stages)
   return {};
 }
 
+////////////////////////////////////////////////////////////////////////////////
+/// \brief The validated inputs of a program
+////////////////////////////////////////////////////////////////////////////////
+struct validated_inputs
+{
+  core::vector<vertex_input_layout> vertex_inputs;
+  core::vector<instance_input_layout> instance_inputs;
+  core::bytes instance_stride;
+};
+
+auto validate_inputs(const program_spec& spec)
+  -> core::result<validated_inputs, render_error>
+{
+  auto names = core::hash_set<core::string_view>{};
+  const auto claim = [&](core::string_view name)
+    -> core::result<void, render_error>
+  {
+    if (!names.insert(name).second) {
+      return core::fail(
+        fail_with(
+          render_errc::duplicate_input,
+          name,
+          "is declared more than once"
+        )
+      );
+    }
+    return {};
+  };
+
+  auto result = validated_inputs{
+    .vertex_inputs = {},
+    .instance_inputs = {},
+    .instance_stride = core::bytes{0u},
+  };
+  result.vertex_inputs.reserve(spec.vertex_inputs.size());
+  result.instance_inputs.reserve(spec.instance_inputs.size());
+
+  for (const auto& input : spec.vertex_inputs) {
+    if (auto claimed = claim(input.name); !claimed) {
+      return core::fail(std::move(claimed).error());
+    }
+    result.vertex_inputs.push_back(
+      vertex_input_layout{
+        .name = core::string{input.name},
+        .location = input.location,
+        .type = input.type,
+      }
+    );
+  }
+  for (const auto& input : spec.instance_inputs) {
+    if (auto claimed = claim(input.name); !claimed) {
+      return core::fail(std::move(claimed).error());
+    }
+    result.instance_inputs.push_back(
+      instance_input_layout{
+        .name = core::string{input.name},
+        .location = input.location,
+        .type = input.type,
+        .offset = result.instance_stride,
+      }
+    );
+    result.instance_stride += bytes_per_value(input.type);
+  }
+  return result;
+}
+
 } // namespace <anonymous>
 } // namespace alloy::render
 
@@ -143,6 +216,10 @@ auto alloy::render::program_layout::from_spec(const program_spec& spec)
 {
   if (auto result = validate_stages(spec.stages); !result) {
     return core::fail(std::move(result).error());
+  }
+  auto inputs = validate_inputs(spec);
+  if (!inputs) {
+    return core::fail(std::move(inputs).error());
   }
 
   auto resources = core::vector<resource_layout>{};
@@ -204,6 +281,9 @@ auto alloy::render::program_layout::from_spec(const program_spec& spec)
   }
 
   return program_layout{
+    std::move(inputs->vertex_inputs),
+    std::move(inputs->instance_inputs),
+    inputs->instance_stride,
     std::move(resources),
     std::move(resource_indices),
     std::move(members)
@@ -213,6 +293,24 @@ auto alloy::render::program_layout::from_spec(const program_spec& spec)
 //------------------------------------------------------------------------------
 // Observers
 //------------------------------------------------------------------------------
+
+auto alloy::render::program_layout::vertex_inputs()
+  const noexcept -> std::span<const vertex_input_layout>
+{
+  return m_vertex_inputs;
+}
+
+auto alloy::render::program_layout::instance_inputs()
+  const noexcept -> std::span<const instance_input_layout>
+{
+  return m_instance_inputs;
+}
+
+auto alloy::render::program_layout::instance_stride()
+  const noexcept -> core::bytes
+{
+  return m_instance_stride;
+}
 
 auto alloy::render::program_layout::resources()
   const noexcept -> std::span<const resource_layout>
@@ -256,11 +354,17 @@ auto alloy::render::program_layout::string_hash::operator()(
 //------------------------------------------------------------------------------
 
 alloy::render::program_layout::program_layout(
+  core::vector<vertex_input_layout> vertex_inputs,
+  core::vector<instance_input_layout> instance_inputs,
+  core::bytes instance_stride,
   core::vector<resource_layout> resources,
   string_map<std::uint32_t> resource_indices,
   string_map<member_layout> members
 ) noexcept
-  : m_resources{std::move(resources)},
+  : m_vertex_inputs{std::move(vertex_inputs)},
+    m_instance_inputs{std::move(instance_inputs)},
+    m_instance_stride{instance_stride},
+    m_resources{std::move(resources)},
     m_resource_indices{std::move(resource_indices)},
     m_members{std::move(members)}
 {

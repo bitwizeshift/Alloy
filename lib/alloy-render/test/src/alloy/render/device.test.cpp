@@ -84,7 +84,7 @@ constexpr auto vertex_stage = std::array{
   shader_stage_spec{shader_stage::vertex, {}, "main"},
 };
 
-constexpr auto valid_program = program_spec{"test", vertex_stage, {}, {}};
+constexpr auto valid_program = program_spec{"test", vertex_stage, {}, {}, {}};
 
 } // namespace <anonymous>
 
@@ -101,7 +101,7 @@ TEST_CASE("device::create_program(const program_spec&)", "[resource creation]") 
   }
   SECTION("Invalid spec fails") {
     // Arrange
-    const auto spec = program_spec{"test", {}, {}, {}};
+    const auto spec = program_spec{"test", {}, {}, {}, {}};
 
     // Act
     const auto result = sut.create_program(spec);
@@ -111,7 +111,7 @@ TEST_CASE("device::create_program(const program_spec&)", "[resource creation]") 
   }
   SECTION("Invalid spec does not reach the backend") {
     // Arrange
-    const auto spec = program_spec{"test", {}, {}, {}};
+    const auto spec = program_spec{"test", {}, {}, {}, {}};
 
     // Act
     const auto result = sut.create_program(spec);

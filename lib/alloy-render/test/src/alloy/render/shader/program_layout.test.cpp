@@ -11,6 +11,7 @@
 #include <alloy/render/error.hpp>
 #include <alloy/render/texture/texture_dimension.hpp>
 
+#include <alloy/core/memory/data_quantity.hpp>
 #include <alloy/core/string/string_view.hpp>
 
 #include <catch2/catch_test_macros.hpp>
@@ -32,7 +33,7 @@ auto make_program(
   std::span<const program_resource> resources
 ) -> program_spec
 {
-  return program_spec{"test", stages, {}, resources};
+  return program_spec{"test", stages, {}, resources, {}};
 }
 
 constexpr auto vertex_and_fragment = std::array{
@@ -122,6 +123,28 @@ TEST_CASE("program_layout::from_spec(const program_spec&)", "[factory][static]")
     // Assert
     REQUIRE(sut.error().code() == render_errc::invalid_uniform_layout);
   }
+  SECTION("Vertex and instance inputs with the same name") {
+    // Arrange
+    const auto vertex_inputs = std::array{
+      vertex_input{"position", 0u, shader_data_type::float3},
+    };
+    const auto instance_inputs = std::array{
+      vertex_input{"position", 8u, shader_data_type::float3},
+    };
+    const auto spec = program_spec{
+      .name = "test",
+      .stages = vertex_and_fragment,
+      .vertex_inputs = vertex_inputs,
+      .resources = {},
+      .instance_inputs = instance_inputs,
+    };
+
+    // Act
+    const auto sut = program_layout::from_spec(spec);
+
+    // Assert
+    REQUIRE(sut.error().code() == render_errc::duplicate_input);
+  }
   SECTION("Texture supplied by render calls") {
     // Arrange
     auto texture = make_texture("shadow");
@@ -167,6 +190,63 @@ TEST_CASE("program_layout::from_spec(const program_spec&)", "[factory][static]")
 
     // Assert
     REQUIRE(sut->resources().size() == 2u);
+  }
+}
+
+TEST_CASE("program_layout::instance_inputs()", "[observer]") {
+  // Arrange
+  const auto instance_inputs = std::array{
+    vertex_input{"model", 8u, shader_data_type::float4x4},
+    vertex_input{"tint", 12u, shader_data_type::float4},
+  };
+  const auto spec = program_spec{
+    .name = "test",
+    .stages = vertex_and_fragment,
+    .vertex_inputs = {},
+    .resources = {},
+    .instance_inputs = instance_inputs,
+  };
+  const auto sut = program_layout::from_spec(spec).value();
+
+  // Act
+  const auto inputs = sut.instance_inputs();
+
+  // Assert
+  REQUIRE(inputs[1].offset == core::bytes{64u});
+}
+
+TEST_CASE("program_layout::instance_stride()", "[observer]") {
+  SECTION("Program with instance inputs") {
+    // Arrange
+    const auto instance_inputs = std::array{
+      vertex_input{"model", 8u, shader_data_type::float4x4},
+      vertex_input{"tint", 12u, shader_data_type::float4},
+    };
+    const auto spec = program_spec{
+      .name = "test",
+      .stages = vertex_and_fragment,
+      .vertex_inputs = {},
+      .resources = {},
+      .instance_inputs = instance_inputs,
+    };
+    const auto sut = program_layout::from_spec(spec).value();
+
+    // Act
+    const auto stride = sut.instance_stride();
+
+    // Assert
+    REQUIRE(stride == core::bytes{80u});
+  }
+  SECTION("Program without instance inputs") {
+    // Arrange
+    const auto spec = make_program(vertex_and_fragment, {});
+    const auto sut = program_layout::from_spec(spec).value();
+
+    // Act
+    const auto stride = sut.instance_stride();
+
+    // Assert
+    REQUIRE(stride == core::bytes{0u});
   }
 }
 
