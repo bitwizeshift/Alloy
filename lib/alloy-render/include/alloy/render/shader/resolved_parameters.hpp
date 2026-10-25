@@ -3,24 +3,25 @@
 // See the LICENSE file at the root of this repository for the full text.
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \file material_layout.hpp
+/// \file resolved_parameters.hpp
 ///
-/// \brief This header defines the resolution of material parameters against
+/// \brief This header defines the resolution of shader parameters against
 ///        the resources of a program
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ALLOY_RENDER_MATERIAL_MATERIAL_LAYOUT_HPP
-#define ALLOY_RENDER_MATERIAL_MATERIAL_LAYOUT_HPP
+#ifndef ALLOY_RENDER_SHADER_RESOLVED_PARAMETERS_HPP
+#define ALLOY_RENDER_SHADER_RESOLVED_PARAMETERS_HPP
 
 #ifdef _MSC_VER
 # pragma once
 #endif
 
-#include "alloy/render/error.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
 #include "alloy/render/shader/shader_data_type.hpp"
 #include "alloy/render/shader/shader_parameter.hpp"
+
+#include "alloy/render/error.hpp"
 #include "alloy/render/texture/sampler_state.hpp"
 #include "alloy/render/texture/texture_dimension.hpp"
 #include "alloy/render/texture/texture_spec.hpp"
@@ -73,8 +74,8 @@ namespace alloy::render {
   };
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief A uniform buffer that a material owns, along with every value
-  ///        bound to its members
+  /// \brief A uniform buffer that is supplied by a set of parameters, along
+  ///        with every value bound to its members
   //////////////////////////////////////////////////////////////////////////////
   struct uniform_block
   {
@@ -93,7 +94,7 @@ namespace alloy::render {
   };
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief A texture that a material binds to a program
+  /// \brief A texture that a set of parameters binds to a program
   //////////////////////////////////////////////////////////////////////////////
   struct texture_slot
   {
@@ -114,45 +115,48 @@ namespace alloy::render {
   };
 
   //////////////////////////////////////////////////////////////////////////////
-  /// \brief The parameters of a material, resolved against the resources of
-  ///        its program
+  /// \brief Shader parameters, resolved against the resources of a program
+  ///            that have a single scope
   ///
   /// Every name has been resolved and every value checked against the type
   /// it is bound to, so that no lookups remain when drawing.
   //////////////////////////////////////////////////////////////////////////////
-  class resolved_material
+  class resolved_parameters
   {
     //--------------------------------------------------------------------------
     // Static Factories
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Resolves the material \p parameters against the resources of a
-    ///        program described by \p layout
+    /// \brief Resolves \p parameters against the resources of a program
+    ///        described by \p layout that have the scope \p scope
     ///
+    /// A parameter that names a resource of any other scope is not found.
     /// The existence of each texture is not checked, since only the device
     /// that created it can do so.
     ///
     /// \param layout the layout of the program
+    /// \param scope the scope of the resources to resolve against
     /// \param parameters the parameters to resolve
-    /// \return the resolved material on success
+    /// \return the resolved parameters on success
     static auto from_parameters(
       const program_layout& layout,
+      resource_scope scope,
       std::span<const shader_parameter> parameters
-    ) -> core::result<resolved_material, render_error>;
+    ) -> core::result<resolved_parameters, render_error>;
 
     //--------------------------------------------------------------------------
     // Observers
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Gets the uniform buffers that the material owns, in resource
+    /// \brief Gets the uniform buffers that the parameters supply, in resource
     ///        order
     ///
     /// \return the uniform blocks
     auto uniform_blocks() const noexcept -> std::span<const uniform_block>;
 
-    /// \brief Gets the textures that the material binds, in resource order
+    /// \brief Gets the textures that the parameters bind, in resource order
     ///
     /// \return the texture slots
     auto textures() const noexcept -> std::span<const texture_slot>;
@@ -162,7 +166,7 @@ namespace alloy::render {
     //--------------------------------------------------------------------------
   private:
 
-    resolved_material(
+    resolved_parameters(
       core::vector<uniform_block> uniform_blocks,
       core::vector<texture_slot> textures
     ) noexcept;
@@ -178,4 +182,4 @@ namespace alloy::render {
 
 } // namespace alloy::render
 
-#endif /* ALLOY_RENDER_MATERIAL_MATERIAL_LAYOUT_HPP */
+#endif /* ALLOY_RENDER_SHADER_RESOLVED_PARAMETERS_HPP */

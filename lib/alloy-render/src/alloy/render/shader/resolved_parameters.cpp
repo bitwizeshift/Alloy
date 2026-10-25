@@ -2,13 +2,14 @@
 // SPDX-License-Identifier: MIT
 // See the LICENSE file at the root of this repository for the full text.
 
-#include "alloy/render/material/material_layout.hpp"
+#include "alloy/render/shader/resolved_parameters.hpp"
 
-#include "alloy/render/error.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
 #include "alloy/render/shader/shader_data_type.hpp"
 #include "alloy/render/shader/shader_parameter.hpp"
+
+#include "alloy/render/error.hpp"
 #include "alloy/render/texture/texture_dimension.hpp"
 
 #include "alloy/core/containers/vector.hpp"
@@ -91,19 +92,19 @@ auto texture_dimension_visitor::operator()(
   return texture.dimension;
 }
 
-/// \brief The resolved parameters of a material, sorted by resource
-struct resolved_parameters
+/// \brief Parameters that have been resolved, sorted by resource
+struct bound_parameters
 {
   core::vector<uniform_block> uniform_blocks;
   core::vector<texture_slot> textures;
 };
 
-/// \brief Accumulates the resolved parameters of a material
-class material_builder
+/// \brief Accumulates the parameters bound to the resources of one scope
+class parameter_builder
 {
 public:
 
-  explicit material_builder(const program_layout* layout) noexcept;
+  parameter_builder(const program_layout* layout, resource_scope scope) noexcept;
 
   auto bind_uniform(
     core::string_view name,
@@ -114,32 +115,42 @@ public:
   auto bind_texture(core::string_view name, const texture_binding& binding)
     -> core::result<void, render_error>;
 
-  auto finish() && -> resolved_parameters;
+  auto finish() && -> bound_parameters;
 
 private:
 
   const program_layout* m_layout;
-  resolved_parameters m_parameters;
+  resource_scope m_scope;
+  bound_parameters m_parameters;
 
+  auto in_scope(std::uint32_t resource_index) const noexcept -> bool;
   auto block_for(std::uint32_t resource_index) -> uniform_block&;
 };
 
-material_builder::material_builder(const program_layout* layout) noexcept
+parameter_builder::parameter_builder(
+  const program_layout* layout,
+  resource_scope scope
+) noexcept
   : m_layout{layout},
+    m_scope{scope},
     m_parameters{}
 {
 
 }
 
-auto material_builder::bind_uniform(
+auto parameter_builder::bind_uniform(
   core::string_view name,
   shader_data_type type,
   uniform_data data
 ) -> core::result<void, render_error>
 {
-  const auto* const member = m_layout->find_member(name);
+  const auto* member = m_layout->find_member(name);
+  if (member != nullptr && !in_scope(member->resource_index)) {
+    member = nullptr;
+  }
   if (member == nullptr) {
-    const auto code = m_layout->find_resource(name).has_value()
+    const auto resource = m_layout->find_resource(name);
+    const auto code = (resource.has_value() && in_scope(*resource))
       ? render_errc::parameter_type_mismatch
       : render_errc::parameter_not_found;
     return core::fail(
@@ -176,14 +187,18 @@ auto material_builder::bind_uniform(
   return {};
 }
 
-auto material_builder::bind_texture(
+auto parameter_builder::bind_texture(
   core::string_view name,
   const texture_binding& binding
 ) -> core::result<void, render_error>
 {
-  const auto index = m_layout->find_resource(name);
+  auto index = m_layout->find_resource(name);
+  if (index.has_value() && !in_scope(*index)) {
+    index = core::null;
+  }
   if (!index.has_value()) {
-    const auto code = (m_layout->find_member(name) != nullptr)
+    const auto* const member = m_layout->find_member(name);
+    const auto code = (member != nullptr && in_scope(member->resource_index))
       ? render_errc::parameter_type_mismatch
       : render_errc::parameter_not_found;
     return core::fail(
@@ -231,7 +246,7 @@ auto material_builder::bind_texture(
   return {};
 }
 
-auto material_builder::finish() && -> resolved_parameters
+auto parameter_builder::finish() && -> bound_parameters
 {
   const auto by_resource = [](const auto& lhs, const auto& rhs) {
     return lhs.resource_index < rhs.resource_index;
@@ -246,7 +261,13 @@ auto material_builder::finish() && -> resolved_parameters
   return std::move(m_parameters);
 }
 
-auto material_builder::block_for(std::uint32_t resource_index)
+auto parameter_builder::in_scope(std::uint32_t resource_index)
+  const noexcept -> bool
+{
+  return m_layout->resources()[resource_index].scope == m_scope;
+}
+
+auto parameter_builder::block_for(std::uint32_t resource_index)
   -> uniform_block&
 {
   auto& blocks = m_parameters.uniform_blocks;
@@ -273,11 +294,11 @@ auto material_builder::block_for(std::uint32_t resource_index)
   return blocks.back();
 }
 
-/// \brief Resolves a single parameter value into the material being built
+/// \brief Resolves a single parameter value into the parameters being built
 struct parameter_visitor
 {
   core::string_view name;
-  material_builder* builder;
+  parameter_builder* builder;
 
   auto operator()(bool value) const -> core::result<void, render_error>;
   auto operator()(std::int32_t value) const -> core::result<void, render_error>;
@@ -369,19 +390,20 @@ auto parameter_visitor::operator()(const texture_binding& value)
 } // namespace alloy::render
 
 //==============================================================================
-// class : resolved_material
+// class : resolved_parameters
 //==============================================================================
 
 //------------------------------------------------------------------------------
 // Static Factories
 //------------------------------------------------------------------------------
 
-auto alloy::render::resolved_material::from_parameters(
+auto alloy::render::resolved_parameters::from_parameters(
   const program_layout& layout,
+  resource_scope scope,
   std::span<const shader_parameter> parameters
-) -> core::result<resolved_material, render_error>
+) -> core::result<resolved_parameters, render_error>
 {
-  auto builder = material_builder{&layout};
+  auto builder = parameter_builder{&layout, scope};
 
   for (const auto& parameter : parameters) {
     auto result = std::visit(
@@ -394,7 +416,7 @@ auto alloy::render::resolved_material::from_parameters(
   }
 
   auto resolved = std::move(builder).finish();
-  return resolved_material{
+  return resolved_parameters{
     std::move(resolved.uniform_blocks),
     std::move(resolved.textures)
   };
@@ -404,13 +426,13 @@ auto alloy::render::resolved_material::from_parameters(
 // Observers
 //------------------------------------------------------------------------------
 
-auto alloy::render::resolved_material::uniform_blocks()
+auto alloy::render::resolved_parameters::uniform_blocks()
   const noexcept -> std::span<const uniform_block>
 {
   return m_uniform_blocks;
 }
 
-auto alloy::render::resolved_material::textures()
+auto alloy::render::resolved_parameters::textures()
   const noexcept -> std::span<const texture_slot>
 {
   return m_textures;
@@ -420,7 +442,7 @@ auto alloy::render::resolved_material::textures()
 // Private Constructors
 //------------------------------------------------------------------------------
 
-alloy::render::resolved_material::resolved_material(
+alloy::render::resolved_parameters::resolved_parameters(
   core::vector<uniform_block> uniform_blocks,
   core::vector<texture_slot> textures
 ) noexcept

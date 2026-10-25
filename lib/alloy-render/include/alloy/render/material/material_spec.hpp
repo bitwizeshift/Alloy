@@ -32,9 +32,8 @@ namespace alloy::render {
   //////////////////////////////////////////////////////////////////////////////
   /// \brief The complete description of a material to be created by a device
   ///
-  /// Only the uniform buffers and textures named by a parameter belong to the
-  /// material. Any other resource of the program, such as a buffer of
-  /// per-frame camera data, is left to be bound by whoever draws with the
+  /// Parameters may only name resources with the `resource_scope::material`
+  /// scope, and only the uniform buffers and textures they name belong to the
   /// material. Uniform buffer members without a parameter are zeroed.
   ///
   /// The spec only views its parameters, which must outlive the call that

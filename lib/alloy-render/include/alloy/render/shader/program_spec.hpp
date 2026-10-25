@@ -134,6 +134,19 @@ namespace alloy::render {
   >;
 
   //////////////////////////////////////////////////////////////////////////////
+  /// \brief Whatever supplies the value of a resource
+  //////////////////////////////////////////////////////////////////////////////
+  enum class resource_scope {
+    /// The value is supplied by each material that draws with the program,
+    /// and does not change once the material is created
+    material,
+
+    /// The value is supplied by each render call, and is the same for
+    /// everything that the call draws, such as a camera or a set of lights
+    global,
+  };
+
+  //////////////////////////////////////////////////////////////////////////////
   /// \brief A resource that the stages of a program read
   //////////////////////////////////////////////////////////////////////////////
   struct program_resource
@@ -149,6 +162,9 @@ namespace alloy::render {
 
     /// Where the bytecode expects the resource to be bound
     shader_binding binding;
+
+    /// Whatever supplies the value of the resource
+    resource_scope scope = resource_scope::material;
   };
 
   //////////////////////////////////////////////////////////////////////////////

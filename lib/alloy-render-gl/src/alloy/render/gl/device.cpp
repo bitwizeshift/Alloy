@@ -18,10 +18,10 @@
 #include "alloy/core/string/string_view.hpp"
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/render/error.hpp"
-#include "alloy/render/material/material_layout.hpp"
 #include "alloy/render/material/material_spec.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
+#include "alloy/render/shader/resolved_parameters.hpp"
 #include "alloy/render/texture/texture_spec.hpp"
 
 #include <GL/glew.h>
@@ -214,8 +214,9 @@ auto alloy::render::gl::device::do_create_material(const material_spec& spec)
     );
   }
 
-  auto resolved = resolved_material::from_parameters(
+  auto resolved = resolved_parameters::from_parameters(
     program->layout,
+    resource_scope::material,
     spec.parameters
   );
   if (!resolved) {

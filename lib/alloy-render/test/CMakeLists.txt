@@ -14,14 +14,12 @@ set(source_files
   src/alloy/render/mesh/3d/polygon_3d_builder.test.cpp
   src/alloy/render/mesh/3d/sphere_builder.test.cpp
 
-  # Material
-  src/alloy/render/material/material_layout.test.cpp
-
   # Resource
   src/alloy/render/resource/handle_pool.test.cpp
 
   # Shader
   src/alloy/render/shader/program_layout.test.cpp
+  src/alloy/render/shader/resolved_parameters.test.cpp
 
   # Texture
   src/alloy/render/texture/texture_spec.test.cpp

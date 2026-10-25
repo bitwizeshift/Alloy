@@ -51,6 +51,9 @@ public:
       case render_errc::unknown_resource: {
         return "unknown resource";
       }
+      case render_errc::invalid_resource_scope: {
+        return "invalid resource scope";
+      }
       case render_errc::invalid_texture_spec: {
         return "invalid texture specification";
       }

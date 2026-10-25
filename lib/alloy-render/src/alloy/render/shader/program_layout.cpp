@@ -50,6 +50,7 @@ struct resource_kind_visitor
 {
   std::uint32_t resource_index;
   core::string_view resource_name;
+  resource_scope scope;
   core::vector<pending_member>* members;
 
   auto operator()(const uniform_buffer_resource& resource)
@@ -97,6 +98,15 @@ auto resource_kind_visitor::operator()(
   const sampled_texture_resource& resource
 ) const -> core::result<resource_layout_kind, render_error>
 {
+  if (scope != resource_scope::material) {
+    return core::fail(
+      fail_with(
+        render_errc::invalid_resource_scope,
+        resource_name,
+        "is a texture, which only a material can supply"
+      )
+    );
+  }
   return resource_layout_kind{resource};
 }
 
@@ -158,7 +168,7 @@ auto alloy::render::program_layout::from_spec(const program_spec& spec)
     }
 
     auto kind = std::visit(
-      resource_kind_visitor{index, resource.name, &pending},
+      resource_kind_visitor{index, resource.name, resource.scope, &pending},
       resource.kind
     );
     if (!kind) {
@@ -171,6 +181,7 @@ auto alloy::render::program_layout::from_spec(const program_spec& spec)
         .stages = resource.stages,
         .kind = std::move(kind).value(),
         .binding = resource.binding,
+        .scope = resource.scope,
       }
     );
   }

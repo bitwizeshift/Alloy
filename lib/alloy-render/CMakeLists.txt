@@ -14,7 +14,6 @@ set(header_files
   include/alloy/render/material/blend_equation.hpp
   include/alloy/render/material/depth_compare.hpp
   include/alloy/render/material/cull_face.hpp
-  include/alloy/render/material/material_layout.hpp
   include/alloy/render/material/material_spec.hpp
   include/alloy/render/mesh/fill_mode.hpp
   include/alloy/render/mesh/index_format.hpp
@@ -32,6 +31,7 @@ set(header_files
   include/alloy/render/resource/resource_handle.hpp
   include/alloy/render/shader/program_layout.hpp
   include/alloy/render/shader/program_spec.hpp
+  include/alloy/render/shader/resolved_parameters.hpp
   include/alloy/render/shader/shader_data_type.hpp
   include/alloy/render/shader/shader_parameter.hpp
   include/alloy/render/shader/shader_stage.hpp
@@ -51,8 +51,8 @@ set(source_files
   src/alloy/render/mesh/3d/sphere_builder.cpp
   src/alloy/render/mesh/unsafe_mesh_builder.cpp
   src/alloy/render/mesh/attribute_packer.hpp
-  src/alloy/render/material/material_layout.cpp
   src/alloy/render/shader/program_layout.cpp
+  src/alloy/render/shader/resolved_parameters.cpp
   src/alloy/render/texture/texture_spec.cpp
 )
 

@@ -2,16 +2,18 @@
 // Any copyright for this file is dedicated to the Public Domain.
 // See https://creativecommons.org/publicdomain/zero/1.0/ for the full text.
 
-#include <alloy/render/material/material_layout.hpp>
+#include <alloy/render/shader/resolved_parameters.hpp>
 
-#include <alloy/render/error.hpp>
 #include <alloy/render/shader/program_layout.hpp>
 #include <alloy/render/shader/program_spec.hpp>
 #include <alloy/render/shader/shader_data_type.hpp>
 #include <alloy/render/shader/shader_parameter.hpp>
 #include <alloy/render/shader/shader_stage.hpp>
+
+#include <alloy/render/error.hpp>
 #include <alloy/render/texture/texture_dimension.hpp>
 
+#include <alloy/core/math/matrix/matrix4.hpp>
 #include <alloy/core/model/color.hpp>
 #include <alloy/core/utilities/optional.hpp>
 
@@ -43,6 +45,7 @@ constexpr auto resources = std::array{
     shader_stages{shader_stage::vertex},
     uniform_buffer_resource{64u, camera_members},
     shader_binding{0u, 0u, core::null},
+    resource_scope::global,
   },
   program_resource{
     "material",
@@ -67,7 +70,7 @@ auto make_layout() -> program_layout
 
 } // namespace <anonymous>
 
-TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
+TEST_CASE("resolved_parameters::from_parameters(...)", "[factory][static]") {
   // Arrange
   const auto layout = make_layout();
 
@@ -78,7 +81,11 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result->uniform_blocks()[0].values[0].offset == 16u);
@@ -90,7 +97,11 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result->uniform_blocks()[0].values[0].type == shader_data_type::float4);
@@ -102,7 +113,11 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result->uniform_blocks()[0].values[0].data == uniform_data{0.5f});
@@ -114,7 +129,11 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result->uniform_blocks().size() == 1u);
@@ -126,7 +145,11 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result->uniform_blocks()[0].binding.index == 1u);
@@ -138,7 +161,11 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result->uniform_blocks()[0].byte_size == 80u);
@@ -150,7 +177,11 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result->textures()[0].dimension == texture_dimension::d2);
@@ -162,7 +193,11 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result.error().code() == render_errc::parameter_not_found);
@@ -174,7 +209,11 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result.error().code() == render_errc::parameter_type_mismatch);
@@ -186,7 +225,11 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result.error().code() == render_errc::parameter_type_mismatch);
@@ -198,7 +241,11 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result.error().code() == render_errc::parameter_type_mismatch);
@@ -210,7 +257,11 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result.error().code() == render_errc::parameter_type_mismatch);
@@ -223,7 +274,11 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result.error().code() == render_errc::duplicate_parameter);
@@ -236,10 +291,46 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
     };
 
     // Act
-    const auto result = resolved_material::from_parameters(layout, parameters);
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
 
     // Assert
     REQUIRE(result.error().code() == render_errc::duplicate_parameter);
+  }
+  SECTION("Member of a resource with another scope") {
+    // Arrange
+    const auto parameters = std::array{
+      shader_parameter{"view", core::matrix4{}},
+    };
+
+    // Act
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::material,
+      parameters
+    );
+
+    // Assert
+    REQUIRE(result.error().code() == render_errc::parameter_not_found);
+  }
+  SECTION("Binds a member of a resource with the given scope") {
+    // Arrange
+    const auto parameters = std::array{
+      shader_parameter{"view", core::matrix4{}},
+    };
+
+    // Act
+    const auto result = resolved_parameters::from_parameters(
+      layout,
+      resource_scope::global,
+      parameters
+    );
+
+    // Assert
+    REQUIRE(result->uniform_blocks()[0].binding.index == 0u);
   }
 }
 

@@ -122,6 +122,35 @@ TEST_CASE("program_layout::from_spec(const program_spec&)", "[factory][static]")
     // Assert
     REQUIRE(sut.error().code() == render_errc::invalid_uniform_layout);
   }
+  SECTION("Texture supplied by render calls") {
+    // Arrange
+    auto texture = make_texture("shadow");
+    texture.scope = resource_scope::global;
+    const auto resources = std::array{texture};
+    const auto spec = make_program(vertex_and_fragment, resources);
+
+    // Act
+    const auto sut = program_layout::from_spec(spec);
+
+    // Assert
+    REQUIRE(sut.error().code() == render_errc::invalid_resource_scope);
+  }
+  SECTION("Uniform buffer supplied by render calls retains its scope") {
+    // Arrange
+    const auto members = std::array{
+      uniform_member{"view", shader_data_type::float4x4, 0u},
+    };
+    auto buffer = make_uniform_buffer("camera", 64u, members);
+    buffer.scope = resource_scope::global;
+    const auto resources = std::array{buffer};
+    const auto spec = make_program(vertex_and_fragment, resources);
+
+    // Act
+    const auto sut = program_layout::from_spec(spec);
+
+    // Assert
+    REQUIRE(sut->resources()[0].scope == resource_scope::global);
+  }
   SECTION("Valid program retains every resource") {
     // Arrange
     const auto members = std::array{

@@ -54,6 +54,9 @@ namespace alloy::render {
     /// A resource was referred to that the program does not declare
     unknown_resource,
 
+    /// A resource was given a scope that its kind of resource cannot have
+    invalid_resource_scope,
+
     /// A texture was specified with an invalid combination of properties
     invalid_texture_spec,
 

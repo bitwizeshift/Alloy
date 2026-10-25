@@ -69,6 +69,9 @@ namespace alloy::render {
 
     /// Where the program expects the resource to be bound
     shader_binding binding;
+
+    /// Whatever supplies the value of the resource
+    resource_scope scope;
   };
 
   //////////////////////////////////////////////////////////////////////////////
@@ -88,7 +91,10 @@ namespace alloy::render {
 
   //////////////////////////////////////////////////////////////////////////////
   /// \brief The validated resources of a program, retained by a device so
-  ///        that materials can be resolved against the program
+  ///        that shader parameters can be resolved against the program
+  ///
+  /// Only uniform buffers may be supplied by render calls; every texture
+  /// belongs to a material.
   ///
   /// Members of uniform buffers are found by their qualified name, as in
   /// `"block.member"`, or by their name alone when no other uniform buffer
