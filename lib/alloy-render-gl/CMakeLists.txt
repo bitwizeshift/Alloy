@@ -18,6 +18,7 @@ set(header_files
   include/alloy/render/gl/mesh/primitive_topology.hpp
   include/alloy/render/gl/mesh/fill_mode.hpp
   include/alloy/render/gl/mesh/mesh.hpp
+  include/alloy/render/gl/capabilities.hpp
   include/alloy/render/gl/error.hpp
   include/alloy/render/gl/state_cache.hpp
 )
@@ -27,6 +28,7 @@ set(source_files
   src/alloy/render/gl/shader/program.cpp
   src/alloy/render/gl/shader/program_utilities.cpp
   src/alloy/render/gl/mesh/mesh.cpp
+  src/alloy/render/gl/capabilities.cpp
   src/alloy/render/gl/error.cpp
   src/alloy/render/gl/state_cache.cpp
 )
