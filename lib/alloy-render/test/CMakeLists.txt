@@ -3,6 +3,8 @@
 ##############################################################################
 
 set(source_files
+  src/alloy/render/device.test.cpp
+
   # Mesh
   src/alloy/render/mesh/mesh_test_utilities.hpp
   src/alloy/render/mesh/mesh.test.cpp
