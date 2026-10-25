@@ -11,6 +11,9 @@ set(source_files
   src/alloy/render/mesh/3d/cube_builder.test.cpp
   src/alloy/render/mesh/3d/polygon_3d_builder.test.cpp
   src/alloy/render/mesh/3d/sphere_builder.test.cpp
+
+  # Resource
+  src/alloy/render/resource/handle_pool.test.cpp
 )
 
 add_alloy_test(${PROJECT_NAME}RenderTest
