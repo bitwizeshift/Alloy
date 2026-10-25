@@ -14,6 +14,9 @@ set(source_files
   src/alloy/render/mesh/3d/polygon_3d_builder.test.cpp
   src/alloy/render/mesh/3d/sphere_builder.test.cpp
 
+  # Pass
+  src/alloy/render/pass/render_batch.test.cpp
+
   # Resource
   src/alloy/render/resource/handle_pool.test.cpp
 
