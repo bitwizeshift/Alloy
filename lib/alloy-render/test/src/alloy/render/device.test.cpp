@@ -9,6 +9,7 @@
 #include <alloy/render/material/material_spec.hpp>
 #include <alloy/render/mesh/3d/cube_builder.hpp>
 #include <alloy/render/mesh/mesh.hpp>
+#include <alloy/render/model/model_spec.hpp>
 #include <alloy/render/resource/handle_pool.hpp>
 #include <alloy/render/shader/program_layout.hpp>
 #include <alloy/render/shader/program_spec.hpp>
@@ -47,12 +48,18 @@ public:
     return m_meshes.size();
   }
 
+  auto live_models() const noexcept -> std::size_t
+  {
+    return m_models.size();
+  }
+
 private:
 
   handle_pool<program_tag, int> m_programs;
   handle_pool<texture_tag, int> m_textures;
   handle_pool<material_tag, int> m_materials;
   handle_pool<mesh_tag, int> m_meshes;
+  handle_pool<model_tag, int> m_models;
 
   auto do_create_program(const program_spec&, program_layout)
     -> core::result<program_handle, render_error> override
@@ -78,6 +85,12 @@ private:
     return m_meshes.insert(0);
   }
 
+  auto do_create_model(const model_spec&)
+    -> core::result<model_handle, render_error> override
+  {
+    return m_models.insert(0);
+  }
+
   auto do_dispose(program_handle handle) noexcept -> void override
   {
     m_programs.erase(handle);
@@ -96,6 +109,11 @@ private:
   auto do_dispose(mesh_handle handle) noexcept -> void override
   {
     m_meshes.erase(handle);
+  }
+
+  auto do_dispose(model_handle handle) noexcept -> void override
+  {
+    m_models.erase(handle);
   }
 };
 
@@ -179,6 +197,30 @@ TEST_CASE("device::create_mesh(const mesh&)", "[resource creation]") {
 
     // Assert
     REQUIRE(sut.live_meshes() == 0u);
+  }
+}
+
+TEST_CASE("device::create_model(const model_spec&)", "[resource creation]") {
+  // Arrange
+  auto sut = fake_device{};
+  const auto spec = model_spec{mesh_handle{}, {}};
+
+  SECTION("Creates the model") {
+    // Act
+    const auto result = sut.create_model(spec);
+
+    // Assert
+    REQUIRE(sut.live_models() == 1u);
+  }
+  SECTION("Owner disposes of the model") {
+    // Arrange
+    auto owner = sut.create_model(spec).value();
+
+    // Act
+    owner.reset();
+
+    // Assert
+    REQUIRE(sut.live_models() == 0u);
   }
 }
 

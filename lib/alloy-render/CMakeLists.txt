@@ -27,6 +27,7 @@ set(header_files
   include/alloy/render/mesh/3d/sphere_builder.hpp
   include/alloy/render/mesh/attribute_locations.hpp
   include/alloy/render/mesh/unsafe_mesh_builder.hpp
+  include/alloy/render/model/model_spec.hpp
   include/alloy/render/resource/handle_pool.hpp
   include/alloy/render/resource/resource_handle.hpp
   include/alloy/render/shader/program_layout.hpp

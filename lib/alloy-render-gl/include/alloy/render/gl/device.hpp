@@ -28,9 +28,11 @@
 #include "alloy/render/error.hpp"
 #include "alloy/render/material/material_spec.hpp"
 #include "alloy/render/mesh/mesh.hpp"
+#include "alloy/render/model/model_spec.hpp"
 #include "alloy/render/resource/handle_pool.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
+#include "alloy/render/shader/shader_data_type.hpp"
 #include "alloy/render/texture/texture_spec.hpp"
 
 #include <GL/glew.h>
@@ -142,6 +144,39 @@ namespace alloy::render::gl {
       core::vector<bound_texture> textures;
     };
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief A submesh of a model, along with what draws it
+    ///////////////////////////////////////////////////////////////////////////
+    struct model_part
+    {
+      program_handle program;
+      material_handle material;
+      std::uint32_t submesh;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief An instance input of a model, as it is read from the values of
+    ///        each instance
+    ///////////////////////////////////////////////////////////////////////////
+    struct instance_attribute
+    {
+      std::uint32_t location;
+      shader_data_type type;
+      std::uint32_t offset;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief A mesh, along with everything needed to draw each of its
+    ///        submeshes
+    ///////////////////////////////////////////////////////////////////////////
+    struct model_entry
+    {
+      mesh_handle mesh;
+      core::vector<model_part> parts;
+      core::vector<instance_attribute> instance_attributes;
+      std::uint32_t instance_stride;
+    };
+
     //--------------------------------------------------------------------------
     // Private Constructors
     //--------------------------------------------------------------------------
@@ -156,19 +191,20 @@ namespace alloy::render::gl {
 
     auto do_create_program(const program_spec& spec, program_layout layout)
       -> core::result<program_handle, render_error> override;
-
     auto do_create_texture(const texture_spec& spec)
       -> core::result<texture_handle, render_error> override;
-
     auto do_create_material(const material_spec& spec)
       -> core::result<material_handle, render_error> override;
     auto do_create_mesh(const render::mesh& mesh)
       -> core::result<mesh_handle, render_error> override;
+    auto do_create_model(const model_spec& spec)
+      -> core::result<model_handle, render_error> override;
 
     auto do_dispose(program_handle handle) noexcept -> void override;
     auto do_dispose(texture_handle handle) noexcept -> void override;
     auto do_dispose(material_handle handle) noexcept -> void override;
     auto do_dispose(mesh_handle handle) noexcept -> void override;
+    auto do_dispose(model_handle handle) noexcept -> void override;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -181,6 +217,7 @@ namespace alloy::render::gl {
     handle_pool<texture_tag, texture> m_textures;
     handle_pool<material_tag, material_entry> m_materials;
     handle_pool<mesh_tag, gl::mesh> m_meshes;
+    handle_pool<model_tag, model_entry> m_models;
   };
 
 } // namespace alloy::render::gl

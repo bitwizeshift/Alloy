@@ -78,6 +78,15 @@ public:
       case render_errc::dimension_mismatch: {
         return "texture dimension mismatch";
       }
+      case render_errc::submesh_count_mismatch: {
+        return "model submesh count mismatch";
+      }
+      case render_errc::missing_vertex_input: {
+        return "mesh is missing a vertex input";
+      }
+      case render_errc::instance_layout_mismatch: {
+        return "model instance layout mismatch";
+      }
     }
     return "unknown render error " + std::to_string(error);
   }

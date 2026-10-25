@@ -80,6 +80,17 @@ namespace alloy::render {
 
     /// A texture's dimension does not match the dimension its program expects
     dimension_mismatch,
+
+    /// A model does not have exactly one material for each submesh of its
+    /// mesh
+    submesh_count_mismatch,
+
+    /// A program reads a vertex input that a mesh does not provide
+    missing_vertex_input,
+
+    /// The programs of a model do not declare the same instance inputs, or
+    /// declare instance inputs that cannot be read per instance
+    instance_layout_mismatch,
   };
 
   /// \brief Gets the error category for `render_errc` values

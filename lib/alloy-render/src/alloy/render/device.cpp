@@ -8,6 +8,7 @@
 
 #include "alloy/render/material/material_spec.hpp"
 #include "alloy/render/mesh/mesh.hpp"
+#include "alloy/render/model/model_spec.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
 #include "alloy/render/texture/texture_spec.hpp"
@@ -67,4 +68,14 @@ auto alloy::render::device::create_mesh(const mesh& mesh)
     return core::fail(std::move(handle).error());
   }
   return unique_mesh{this, *handle};
+}
+
+auto alloy::render::device::create_model(const model_spec& spec)
+  -> core::result<unique_model, render_error>
+{
+  auto handle = do_create_model(spec);
+  if (!handle) {
+    return core::fail(std::move(handle).error());
+  }
+  return unique_model{this, *handle};
 }

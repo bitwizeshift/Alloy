@@ -20,6 +20,7 @@
 
 #include "alloy/render/material/material_spec.hpp"
 #include "alloy/render/mesh/mesh.hpp"
+#include "alloy/render/model/model_spec.hpp"
 #include "alloy/render/resource/resource_handle.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
@@ -46,13 +47,17 @@ namespace alloy::render {
   /// \brief The unique owner of a mesh uploaded by a device
   using unique_mesh = unique_resource<mesh_tag>;
 
+  /// \brief The unique owner of a model created by a device
+  using unique_model = unique_resource<model_tag>;
+
   //////////////////////////////////////////////////////////////////////////////
   /// \brief The interface through which GPU resources are created
   ///
   /// Each resource is returned in a `unique_resource`, which disposes of the
   /// resource when it is destroyed. Resources refer to one another through
   /// non-owning handles; for example, a material refers to its program and
-  /// textures, which must outlive it.
+  /// textures, and a model refers to its mesh and materials, all of which
+  /// must outlive it.
   ///
   /// A device must outlive every resource it creates.
   //////////////////////////////////////////////////////////////////////////////
@@ -108,6 +113,22 @@ namespace alloy::render {
     auto create_mesh(const mesh& mesh)
       -> core::result<unique_mesh, render_error>;
 
+    /// \brief Creates the model described by \p spec
+    ///
+    /// \param spec the model spec
+    /// \return the model on success, or
+    ///         * `render_errc::stale_handle` if the mesh or a material has been
+    ///           disposed,
+    ///         * `render_errc::submesh_count_mismatch` if there is not exactly
+    ///           one material per submesh,
+    ///         * `render_errc::missing_vertex_input` if a program reads a
+    ///           vertex input that the mesh does not provide, or
+    ///         * `render_errc::instance_layout_mismatch` if the programs do
+    ///           not declare the same instance inputs, or declare instance
+    ///           inputs that the device cannot read per instance
+    auto create_model(const model_spec& spec)
+      -> core::result<unique_model, render_error>;
+
     //--------------------------------------------------------------------------
     // Protected Constructors
     //--------------------------------------------------------------------------
@@ -151,6 +172,13 @@ namespace alloy::render {
     virtual auto do_create_mesh(const mesh& mesh)
       -> core::result<mesh_handle, render_error> = 0;
 
+    /// \brief Creates the model described by \p spec
+    ///
+    /// \param spec the model spec
+    /// \return the handle of the model on success
+    virtual auto do_create_model(const model_spec& spec)
+      -> core::result<model_handle, render_error> = 0;
+
     /// \{
     /// \brief Disposes of the resource identified by \p handle
     ///
@@ -160,6 +188,7 @@ namespace alloy::render {
     virtual auto do_dispose(texture_handle handle) noexcept -> void = 0;
     virtual auto do_dispose(material_handle handle) noexcept -> void = 0;
     virtual auto do_dispose(mesh_handle handle) noexcept -> void = 0;
+    virtual auto do_dispose(model_handle handle) noexcept -> void = 0;
     /// \}
 
     template <typename>
