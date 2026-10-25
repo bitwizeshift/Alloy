@@ -47,8 +47,8 @@ namespace alloy::render {
     /// A program was specified with more than one resource of the same name
     duplicate_resource,
 
-    /// A uniform buffer member does not fit within its buffer, or overlaps
-    /// another member
+    /// A uniform buffer declares the same member more than once, or declares
+    /// members that do not fit the buffer
     invalid_uniform_layout,
 
     /// A resource was referred to that the program does not declare

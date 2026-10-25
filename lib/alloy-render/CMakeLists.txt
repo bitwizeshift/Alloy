@@ -27,6 +27,7 @@ set(header_files
   include/alloy/render/mesh/unsafe_mesh_builder.hpp
   include/alloy/render/resource/handle_pool.hpp
   include/alloy/render/resource/resource_handle.hpp
+  include/alloy/render/shader/program_layout.hpp
   include/alloy/render/shader/program_spec.hpp
   include/alloy/render/shader/shader_data_type.hpp
   include/alloy/render/shader/shader_stage.hpp
@@ -45,6 +46,7 @@ set(source_files
   src/alloy/render/mesh/3d/sphere_builder.cpp
   src/alloy/render/mesh/unsafe_mesh_builder.cpp
   src/alloy/render/mesh/attribute_packer.hpp
+  src/alloy/render/shader/program_layout.cpp
   src/alloy/render/texture/texture_spec.cpp
 )
 

@@ -15,6 +15,9 @@ set(source_files
   # Resource
   src/alloy/render/resource/handle_pool.test.cpp
 
+  # Shader
+  src/alloy/render/shader/program_layout.test.cpp
+
   # Texture
   src/alloy/render/texture/texture_spec.test.cpp
 )
