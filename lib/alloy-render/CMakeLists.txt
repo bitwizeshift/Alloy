@@ -3,6 +3,7 @@
 ##############################################################################
 
 set(header_files
+  include/alloy/render/error.hpp
   include/alloy/render/light/light.hpp
   include/alloy/render/light/direction_light.hpp
   include/alloy/render/light/global_light.hpp
@@ -29,6 +30,7 @@ set(header_files
 )
 
 set(source_files
+  src/alloy/render/error.cpp
   src/alloy/render/mesh/mesh.cpp
   src/alloy/render/mesh/2d/polygon_2d_builder.cpp
   src/alloy/render/mesh/3d/polygon_3d_builder.cpp
