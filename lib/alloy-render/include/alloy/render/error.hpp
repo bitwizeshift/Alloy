@@ -63,13 +63,13 @@ namespace alloy::render {
     /// A handle refers to a resource that has been disposed
     stale_handle,
 
-    /// A material parameter names nothing that the program declares
+    /// A shader parameter names nothing that the program declares
     parameter_not_found,
 
-    /// A material parameter's value does not match the type it is bound to
+    /// A shader parameter's value does not match the type it is bound to
     parameter_type_mismatch,
 
-    /// More than one material parameter is bound to the same value
+    /// More than one shader parameter is bound to the same value
     duplicate_parameter,
 
     /// A texture's dimension does not match the dimension its program expects

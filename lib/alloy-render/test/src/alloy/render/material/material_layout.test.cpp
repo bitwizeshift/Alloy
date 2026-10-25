@@ -4,12 +4,11 @@
 
 #include <alloy/render/material/material_layout.hpp>
 
-#include <alloy/render/material/material_spec.hpp>
-
 #include <alloy/render/error.hpp>
 #include <alloy/render/shader/program_layout.hpp>
 #include <alloy/render/shader/program_spec.hpp>
 #include <alloy/render/shader/shader_data_type.hpp>
+#include <alloy/render/shader/shader_parameter.hpp>
 #include <alloy/render/shader/shader_stage.hpp>
 #include <alloy/render/texture/texture_dimension.hpp>
 
@@ -75,7 +74,7 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Binds a value at the offset of its member") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"shininess", 0.5f},
+      shader_parameter{"shininess", 0.5f},
     };
 
     // Act
@@ -87,7 +86,7 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Binds a value with the type of its member") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"diffuse", core::color{0.25f, 0.5f, 0.75f, 1.0f}},
+      shader_parameter{"diffuse", core::color{0.25f, 0.5f, 0.75f, 1.0f}},
     };
 
     // Act
@@ -99,7 +98,7 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Keeps the data of a value") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"shininess", 0.5f},
+      shader_parameter{"shininess", 0.5f},
     };
 
     // Act
@@ -111,7 +110,7 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Only includes uniform buffers named by a parameter") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"shininess", 0.5f},
+      shader_parameter{"shininess", 0.5f},
     };
 
     // Act
@@ -123,7 +122,7 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Carries the binding of a uniform buffer") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"material.shininess", 0.5f},
+      shader_parameter{"material.shininess", 0.5f},
     };
 
     // Act
@@ -135,7 +134,7 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Carries the size of a uniform buffer") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"shininess", 0.5f},
+      shader_parameter{"shininess", 0.5f},
     };
 
     // Act
@@ -147,7 +146,7 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Binds a texture with the dimension its program samples") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"albedo", texture_binding{}},
+      shader_parameter{"albedo", texture_binding{}},
     };
 
     // Act
@@ -159,7 +158,7 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Undeclared name") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"specular", 0.5f},
+      shader_parameter{"specular", 0.5f},
     };
 
     // Act
@@ -171,7 +170,7 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Value of the wrong type for its member") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"diffuse", 0.5f},
+      shader_parameter{"diffuse", 0.5f},
     };
 
     // Act
@@ -183,7 +182,7 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Uniform value for a texture") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"albedo", 0.5f},
+      shader_parameter{"albedo", 0.5f},
     };
 
     // Act
@@ -195,7 +194,7 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Texture for a uniform member") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"shininess", texture_binding{}},
+      shader_parameter{"shininess", texture_binding{}},
     };
 
     // Act
@@ -207,7 +206,7 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Texture for a uniform buffer") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"material", texture_binding{}},
+      shader_parameter{"material", texture_binding{}},
     };
 
     // Act
@@ -219,8 +218,8 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Qualified and unqualified names of the same member") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"shininess", 0.5f},
-      material_parameter{"material.shininess", 0.25f},
+      shader_parameter{"shininess", 0.5f},
+      shader_parameter{"material.shininess", 0.25f},
     };
 
     // Act
@@ -232,8 +231,8 @@ TEST_CASE("resolved_material::from_parameters(...)", "[factory][static]") {
   SECTION("Same texture bound twice") {
     // Arrange
     const auto parameters = std::array{
-      material_parameter{"albedo", texture_binding{}},
-      material_parameter{"albedo", texture_binding{}},
+      shader_parameter{"albedo", texture_binding{}},
+      shader_parameter{"albedo", texture_binding{}},
     };
 
     // Act

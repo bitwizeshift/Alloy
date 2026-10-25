@@ -61,13 +61,13 @@ public:
         return "stale resource handle";
       }
       case render_errc::parameter_not_found: {
-        return "material parameter not found";
+        return "shader parameter not found";
       }
       case render_errc::parameter_type_mismatch: {
-        return "material parameter type mismatch";
+        return "shader parameter type mismatch";
       }
       case render_errc::duplicate_parameter: {
-        return "duplicate material parameter";
+        return "duplicate shader parameter";
       }
       case render_errc::dimension_mismatch: {
         return "texture dimension mismatch";

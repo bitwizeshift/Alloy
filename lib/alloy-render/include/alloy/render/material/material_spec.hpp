@@ -18,21 +18,9 @@
 
 #include "alloy/render/resource/resource_handle.hpp"
 #include "alloy/render/shader/program_spec.hpp"
-#include "alloy/render/texture/sampler_state.hpp"
-#include "alloy/render/texture/texture_spec.hpp"
+#include "alloy/render/shader/shader_parameter.hpp"
 
-#include "alloy/core/math/matrix/matrix2.hpp"
-#include "alloy/core/math/matrix/matrix3.hpp"
-#include "alloy/core/math/matrix/matrix4.hpp"
-#include "alloy/core/math/vector/vector2.hpp"
-#include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/math/vector/vector4.hpp"
-#include "alloy/core/model/color.hpp"
-#include "alloy/core/string/string_view.hpp"
-
-#include <cstdint> // std::int32_t, std::uint32_t
-#include <span>    // std::span
-#include <variant> // std::variant
+#include <span> // std::span
 
 namespace alloy::render {
 
@@ -40,51 +28,6 @@ namespace alloy::render {
 
   /// \brief A non-owning handle to a material created by a device
   using material_handle = resource_handle<material_tag>;
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief A texture bound to a material, along with how it is sampled
-  //////////////////////////////////////////////////////////////////////////////
-  struct texture_binding
-  {
-    /// The texture to bind, which must outlive the material
-    texture_handle texture;
-
-    /// How the texture is sampled
-    sampler_state sampler;
-  };
-
-  /// \brief The value of a material parameter
-  ///
-  /// Each alternative binds to a uniform buffer member of the corresponding
-  /// `shader_data_type`, except for `texture_binding`, which binds to a
-  /// sampled texture resource.
-  using material_value = std::variant<
-    bool,
-    std::int32_t,
-    std::uint32_t,
-    float,
-    core::vector2,
-    core::vector3,
-    core::vector4,
-    core::color,
-    core::matrix2,
-    core::matrix3,
-    core::matrix4,
-    texture_binding
-  >;
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// \brief A value bound to a named member or resource of a program
-  //////////////////////////////////////////////////////////////////////////////
-  struct material_parameter
-  {
-    /// The name of a sampled texture resource, or the qualified or
-    /// unqualified name of a uniform buffer member
-    core::string_view name;
-
-    /// The value to bind
-    material_value value;
-  };
 
   //////////////////////////////////////////////////////////////////////////////
   /// \brief The complete description of a material to be created by a device
@@ -104,7 +47,7 @@ namespace alloy::render {
     program_handle program;
 
     /// The values bound to the program
-    std::span<const material_parameter> parameters;
+    std::span<const shader_parameter> parameters;
   };
 
 } // namespace alloy::render

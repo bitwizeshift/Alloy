@@ -16,12 +16,11 @@
 # pragma once
 #endif
 
-#include "alloy/render/material/material_spec.hpp"
-
 #include "alloy/render/error.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
 #include "alloy/render/shader/shader_data_type.hpp"
+#include "alloy/render/shader/shader_parameter.hpp"
 #include "alloy/render/texture/sampler_state.hpp"
 #include "alloy/render/texture/texture_dimension.hpp"
 #include "alloy/render/texture/texture_spec.hpp"
@@ -42,7 +41,7 @@
 
 namespace alloy::render {
 
-  /// \brief The data of a material parameter that is bound to a uniform
+  /// \brief The data of a shader parameter that is bound to a uniform
   ///        buffer member
   using uniform_data = std::variant<
     bool,
@@ -139,7 +138,7 @@ namespace alloy::render {
     /// \return the resolved material on success
     static auto from_parameters(
       const program_layout& layout,
-      std::span<const material_parameter> parameters
+      std::span<const shader_parameter> parameters
     ) -> core::result<resolved_material, render_error>;
 
     //--------------------------------------------------------------------------
