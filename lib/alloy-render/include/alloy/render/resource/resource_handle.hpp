@@ -37,6 +37,10 @@ namespace alloy::render {
   /// by the device that created it, even if the underlying storage has been
   /// reused by a newer resource.
   ///
+  /// Handles are ordered so that they may be sorted, such as to group draws
+  /// that use the same resource. The order is consistent with equality, but
+  /// has no other meaning.
+  ///
   /// \tparam Tag a type that distinguishes each family of resource
   //////////////////////////////////////////////////////////////////////////////
   template <typename Tag>
@@ -83,6 +87,12 @@ namespace alloy::render {
       const resource_handle<T>& rhs
     ) noexcept -> bool;
 
+    template <typename T>
+    friend constexpr auto operator<(
+      const resource_handle<T>& lhs,
+      const resource_handle<T>& rhs
+    ) noexcept -> bool;
+
     friend struct std::hash<resource_handle>;
   };
 
@@ -102,6 +112,34 @@ namespace alloy::render {
 
   template <typename Tag>
   constexpr auto operator!=(
+    const resource_handle<Tag>& lhs,
+    const resource_handle<Tag>& rhs
+  ) noexcept -> bool;
+
+  //----------------------------------------------------------------------------
+  // Comparison
+  //----------------------------------------------------------------------------
+
+  template <typename Tag>
+  constexpr auto operator<(
+    const resource_handle<Tag>& lhs,
+    const resource_handle<Tag>& rhs
+  ) noexcept -> bool;
+
+  template <typename Tag>
+  constexpr auto operator>(
+    const resource_handle<Tag>& lhs,
+    const resource_handle<Tag>& rhs
+  ) noexcept -> bool;
+
+  template <typename Tag>
+  constexpr auto operator<=(
+    const resource_handle<Tag>& lhs,
+    const resource_handle<Tag>& rhs
+  ) noexcept -> bool;
+
+  template <typename Tag>
+  constexpr auto operator>=(
     const resource_handle<Tag>& lhs,
     const resource_handle<Tag>& rhs
   ) noexcept -> bool;
@@ -172,6 +210,50 @@ auto alloy::render::operator!=(
 ) noexcept -> bool
 {
   return !(lhs == rhs);
+}
+
+//------------------------------------------------------------------------------
+// Comparison
+//------------------------------------------------------------------------------
+
+template <typename Tag>
+inline constexpr
+auto alloy::render::operator<(
+  const resource_handle<Tag>& lhs,
+  const resource_handle<Tag>& rhs
+) noexcept -> bool
+{
+  return lhs.m_value < rhs.m_value;
+}
+
+template <typename Tag>
+inline constexpr
+auto alloy::render::operator>(
+  const resource_handle<Tag>& lhs,
+  const resource_handle<Tag>& rhs
+) noexcept -> bool
+{
+  return rhs < lhs;
+}
+
+template <typename Tag>
+inline constexpr
+auto alloy::render::operator<=(
+  const resource_handle<Tag>& lhs,
+  const resource_handle<Tag>& rhs
+) noexcept -> bool
+{
+  return !(rhs < lhs);
+}
+
+template <typename Tag>
+inline constexpr
+auto alloy::render::operator>=(
+  const resource_handle<Tag>& lhs,
+  const resource_handle<Tag>& rhs
+) noexcept -> bool
+{
+  return !(lhs < rhs);
 }
 
 #endif /* ALLOY_RENDER_RESOURCE_RESOURCE_HANDLE_HPP */

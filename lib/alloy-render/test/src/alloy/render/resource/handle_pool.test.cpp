@@ -189,4 +189,27 @@ TEST_CASE("resource_handle::is_null()", "[observer]") {
   }
 }
 
+TEST_CASE("operator<(const resource_handle&, const resource_handle&)", "[comparison]") {
+  // Arrange
+  auto pool = test_pool{};
+  const auto first = pool.insert(1);
+  const auto second = pool.insert(2);
+
+  SECTION("Equal handles") {
+    // Act
+    const auto result = first < first;
+
+    // Assert
+    REQUIRE_FALSE(result);
+  }
+  SECTION("Distinct handles are ordered one way") {
+    // Act
+    const auto forward = first < second;
+    const auto backward = second < first;
+
+    // Assert
+    REQUIRE(forward != backward);
+  }
+}
+
 } // namespace alloy::render::test
