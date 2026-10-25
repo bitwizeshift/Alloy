@@ -22,6 +22,7 @@ set(header_files
   include/alloy/render/gl/texture/texture.hpp
   include/alloy/render/gl/texture/texture_format.hpp
   include/alloy/render/gl/capabilities.hpp
+  include/alloy/render/gl/device.hpp
   include/alloy/render/gl/error.hpp
   include/alloy/render/gl/state_cache.hpp
 )
@@ -30,12 +31,15 @@ set(source_files
   src/alloy/render/gl/shader/shader.cpp
   src/alloy/render/gl/shader/shader_compiler.hpp
   src/alloy/render/gl/shader/shader_compiler.cpp
+  src/alloy/render/gl/shader/uniform_layout.hpp
+  src/alloy/render/gl/shader/uniform_layout.cpp
   src/alloy/render/gl/shader/program.cpp
   src/alloy/render/gl/mesh/mesh.cpp
   src/alloy/render/gl/texture/sampler.cpp
   src/alloy/render/gl/texture/sampler_cache.cpp
   src/alloy/render/gl/texture/texture.cpp
   src/alloy/render/gl/capabilities.cpp
+  src/alloy/render/gl/device.cpp
   src/alloy/render/gl/error.cpp
   src/alloy/render/gl/state_cache.cpp
 )
