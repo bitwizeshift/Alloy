@@ -14,6 +14,7 @@
 #include <alloy/render/shader/program_layout.hpp>
 #include <alloy/render/shader/program_spec.hpp>
 #include <alloy/render/shader/shader_stage.hpp>
+#include <alloy/render/surface/surface_spec.hpp>
 #include <alloy/render/texture/texture_format.hpp>
 #include <alloy/render/texture/texture_spec.hpp>
 
@@ -53,6 +54,16 @@ public:
     return m_models.size();
   }
 
+  auto live_surfaces() const noexcept -> std::size_t
+  {
+    return m_surfaces.size();
+  }
+
+  auto create_window_surface() -> unique_surface
+  {
+    return adopt(m_surfaces.insert(0));
+  }
+
 private:
 
   handle_pool<program_tag, int> m_programs;
@@ -60,6 +71,7 @@ private:
   handle_pool<material_tag, int> m_materials;
   handle_pool<mesh_tag, int> m_meshes;
   handle_pool<model_tag, int> m_models;
+  handle_pool<surface_tag, int> m_surfaces;
 
   auto do_create_program(const program_spec&, program_layout)
     -> core::result<program_handle, render_error> override
@@ -91,6 +103,12 @@ private:
     return m_models.insert(0);
   }
 
+  auto do_create_surface(const surface_spec&)
+    -> core::result<surface_handle, render_error> override
+  {
+    return m_surfaces.insert(0);
+  }
+
   auto do_dispose(program_handle handle) noexcept -> void override
   {
     m_programs.erase(handle);
@@ -114,6 +132,11 @@ private:
   auto do_dispose(model_handle handle) noexcept -> void override
   {
     m_models.erase(handle);
+  }
+
+  auto do_dispose(surface_handle handle) noexcept -> void override
+  {
+    m_surfaces.erase(handle);
   }
 };
 
@@ -221,6 +244,46 @@ TEST_CASE("device::create_model(const model_spec&)", "[resource creation]") {
 
     // Assert
     REQUIRE(sut.live_models() == 0u);
+  }
+}
+
+TEST_CASE("device::create_surface(const surface_spec&)", "[resource creation]") {
+  // Arrange
+  auto sut = fake_device{};
+  const auto spec = surface_spec{texture_handle{}, texture_handle{}};
+
+  SECTION("Creates the surface") {
+    // Act
+    const auto result = sut.create_surface(spec);
+
+    // Assert
+    REQUIRE(sut.live_surfaces() == 1u);
+  }
+  SECTION("Owner disposes of the surface") {
+    // Arrange
+    auto owner = sut.create_surface(spec).value();
+
+    // Act
+    owner.reset();
+
+    // Assert
+    REQUIRE(sut.live_surfaces() == 0u);
+  }
+}
+
+TEST_CASE("device::adopt(resource_handle)", "[resource ownership]") {
+  // Arrange
+  auto device = fake_device{};
+
+  SECTION("Owner disposes of the adopted resource") {
+    // Arrange
+    auto sut = device.create_window_surface();
+
+    // Act
+    sut.reset();
+
+    // Assert
+    REQUIRE(device.live_surfaces() == 0u);
   }
 }
 

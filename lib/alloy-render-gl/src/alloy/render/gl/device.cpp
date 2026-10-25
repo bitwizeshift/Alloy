@@ -9,6 +9,8 @@
 #include "alloy/render/gl/mesh/mesh.hpp"
 #include "alloy/render/gl/shader/program.hpp"
 #include "alloy/render/gl/shader/shader.hpp"
+#include "alloy/render/gl/surface/framebuffer.hpp"
+#include "alloy/render/gl/surface/presentation_target.hpp"
 #include "alloy/render/gl/texture/texture.hpp"
 #include "shader/shader_compiler.hpp"
 #include "shader/uniform_layout.hpp"
@@ -19,6 +21,7 @@
 #include "alloy/core/string/string.hpp"
 #include "alloy/core/string/string_view.hpp"
 #include "alloy/core/utilities/result.hpp"
+#include "alloy/render/device.hpp"
 #include "alloy/render/error.hpp"
 #include "alloy/render/material/material_spec.hpp"
 #include "alloy/render/mesh/attribute_locations.hpp"
@@ -28,6 +31,7 @@
 #include "alloy/render/shader/program_spec.hpp"
 #include "alloy/render/shader/resolved_parameters.hpp"
 #include "alloy/render/shader/shader_data_type.hpp"
+#include "alloy/render/surface/surface_spec.hpp"
 #include "alloy/render/texture/texture_spec.hpp"
 
 #include <GL/glew.h>
@@ -296,6 +300,18 @@ auto alloy::render::gl::device::from_current_context() noexcept -> device
 }
 
 //------------------------------------------------------------------------------
+// Resource Creation
+//------------------------------------------------------------------------------
+
+auto alloy::render::gl::device::create_surface(presentation_target& target)
+  -> unique_surface
+{
+  return adopt(
+    m_surfaces.insert(surface_entry{window_surface{&target}})
+  );
+}
+
+//------------------------------------------------------------------------------
 // Drawing
 //------------------------------------------------------------------------------
 
@@ -334,7 +350,8 @@ alloy::render::gl::device::device(const capabilities& caps) noexcept
     m_textures{},
     m_materials{},
     m_meshes{},
-    m_models{}
+    m_models{},
+    m_surfaces{}
 {
 
 }
@@ -537,6 +554,38 @@ auto alloy::render::gl::device::do_create_model(const model_spec& spec)
   return m_models.insert(std::move(entry));
 }
 
+auto alloy::render::gl::device::do_create_surface(const surface_spec& spec)
+  -> core::result<surface_handle, render_error>
+{
+  const auto* const color = m_textures.find(spec.color);
+  if (color == nullptr) {
+    return core::fail(stale("color texture has been disposed"));
+  }
+  const auto* depth = static_cast<const texture*>(nullptr);
+  if (!spec.depth.is_null()) {
+    depth = m_textures.find(spec.depth);
+    if (depth == nullptr) {
+      return core::fail(stale("depth texture has been disposed"));
+    }
+  }
+
+  auto created = gl::framebuffer::make(*color, depth);
+  if (!created) {
+    return core::fail(std::move(created).error());
+  }
+
+  const auto extent = color->extent();
+  return m_surfaces.insert(
+    surface_entry{
+      texture_surface{
+        .framebuffer = std::move(created).value(),
+        .extent = surface_extent{extent.width, extent.height},
+        .has_depth = depth != nullptr,
+      }
+    }
+  );
+}
+
 auto alloy::render::gl::device::do_dispose(program_handle handle)
   noexcept -> void
 {
@@ -565,6 +614,12 @@ auto alloy::render::gl::device::do_dispose(model_handle handle)
   noexcept -> void
 {
   m_models.erase(handle);
+}
+
+auto alloy::render::gl::device::do_dispose(surface_handle handle)
+  noexcept -> void
+{
+  m_surfaces.erase(handle);
 }
 
 //==============================================================================

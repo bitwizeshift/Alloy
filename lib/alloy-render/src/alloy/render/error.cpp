@@ -87,6 +87,9 @@ public:
       case render_errc::instance_layout_mismatch: {
         return "model instance layout mismatch";
       }
+      case render_errc::incompatible_surface: {
+        return "incompatible surface textures";
+      }
     }
     return "unknown render error " + std::to_string(error);
   }

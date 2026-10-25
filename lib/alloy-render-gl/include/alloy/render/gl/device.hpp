@@ -19,10 +19,13 @@
 
 #include "alloy/render/gl/mesh/mesh.hpp"
 #include "alloy/render/gl/shader/program.hpp"
+#include "alloy/render/gl/surface/framebuffer.hpp"
+#include "alloy/render/gl/surface/presentation_target.hpp"
 #include "alloy/render/gl/texture/sampler_cache.hpp"
 #include "alloy/render/gl/texture/texture.hpp"
 
 #include "alloy/core/containers/vector.hpp"
+#include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/render/device.hpp"
 #include "alloy/render/error.hpp"
@@ -33,11 +36,13 @@
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
 #include "alloy/render/shader/shader_data_type.hpp"
+#include "alloy/render/surface/surface_spec.hpp"
 #include "alloy/render/texture/texture_spec.hpp"
 
 #include <GL/glew.h>
 
 #include <cstdint> // std::uint32_t
+#include <variant> // std::variant
 
 namespace alloy::render::gl {
 
@@ -69,6 +74,21 @@ namespace alloy::render::gl {
   public:
 
     ~device() override = default;
+
+    //--------------------------------------------------------------------------
+    // Resource Creation
+    //--------------------------------------------------------------------------
+  public:
+
+    using render::device::create_surface;
+
+    /// \brief Creates a surface that draws into the default framebuffer of
+    ///        this device's context, which \p target presents
+    ///
+    /// \param target the target that presents the default framebuffer, which
+    ///        must outlive the surface
+    /// \return the surface
+    auto create_surface(presentation_target& target) -> unique_surface;
 
     //--------------------------------------------------------------------------
     // Drawing
@@ -177,6 +197,27 @@ namespace alloy::render::gl {
       std::uint32_t instance_stride;
     };
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief A surface that draws into the default framebuffer
+    ///////////////////////////////////////////////////////////////////////////
+    struct window_surface
+    {
+      core::not_null<presentation_target*> target;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief A surface that draws into textures
+    ///////////////////////////////////////////////////////////////////////////
+    struct texture_surface
+    {
+      gl::framebuffer framebuffer;
+      surface_extent extent;
+      bool has_depth;
+    };
+
+    /// \brief Either kind of surface
+    using surface_entry = std::variant<window_surface, texture_surface>;
+
     //--------------------------------------------------------------------------
     // Private Constructors
     //--------------------------------------------------------------------------
@@ -199,12 +240,15 @@ namespace alloy::render::gl {
       -> core::result<mesh_handle, render_error> override;
     auto do_create_model(const model_spec& spec)
       -> core::result<model_handle, render_error> override;
+    auto do_create_surface(const surface_spec& spec)
+      -> core::result<surface_handle, render_error> override;
 
     auto do_dispose(program_handle handle) noexcept -> void override;
     auto do_dispose(texture_handle handle) noexcept -> void override;
     auto do_dispose(material_handle handle) noexcept -> void override;
     auto do_dispose(mesh_handle handle) noexcept -> void override;
     auto do_dispose(model_handle handle) noexcept -> void override;
+    auto do_dispose(surface_handle handle) noexcept -> void override;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -218,6 +262,7 @@ namespace alloy::render::gl {
     handle_pool<material_tag, material_entry> m_materials;
     handle_pool<mesh_tag, gl::mesh> m_meshes;
     handle_pool<model_tag, model_entry> m_models;
+    handle_pool<surface_tag, surface_entry> m_surfaces;
   };
 
 } // namespace alloy::render::gl

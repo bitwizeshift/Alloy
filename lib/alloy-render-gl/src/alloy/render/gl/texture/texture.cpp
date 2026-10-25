@@ -11,6 +11,7 @@
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/render/error.hpp"
 #include "alloy/render/texture/texture_dimension.hpp"
+#include "alloy/render/texture/texture_format.hpp"
 #include "alloy/render/texture/texture_spec.hpp"
 
 #include <GL/glew.h>
@@ -157,7 +158,7 @@ auto alloy::render::gl::texture::make(
   ::glBindTexture(target, id);
 
   // Constructed immediately, so that the texture is deleted on any failure
-  auto result = texture{id, target, spec.dimension()};
+  auto result = texture{id, target, spec};
 
   if (multisampled) {
     allocate_multisampled(spec, target);
@@ -196,7 +197,11 @@ auto alloy::render::gl::texture::make(
 alloy::render::gl::texture::texture(texture&& other) noexcept
   : m_id{std::exchange(other.m_id, 0u)},
     m_target{other.m_target},
-    m_dimension{other.m_dimension}
+    m_dimension{other.m_dimension},
+    m_format{other.m_format},
+    m_extent{other.m_extent},
+    m_samples{other.m_samples},
+    m_usage{other.m_usage}
 {
 
 }
@@ -218,6 +223,10 @@ auto alloy::render::gl::texture::operator=(texture&& other)
     m_id = std::exchange(other.m_id, 0u);
     m_target = other.m_target;
     m_dimension = other.m_dimension;
+    m_format = other.m_format;
+    m_extent = other.m_extent;
+    m_samples = other.m_samples;
+    m_usage = other.m_usage;
   }
   return (*this);
 }
@@ -241,6 +250,26 @@ auto alloy::render::gl::texture::dimension() const noexcept -> texture_dimension
   return m_dimension;
 }
 
+auto alloy::render::gl::texture::format() const noexcept -> texture_format
+{
+  return m_format;
+}
+
+auto alloy::render::gl::texture::extent() const noexcept -> texture_extent
+{
+  return m_extent;
+}
+
+auto alloy::render::gl::texture::samples() const noexcept -> sample_count
+{
+  return m_samples;
+}
+
+auto alloy::render::gl::texture::usage() const noexcept -> texture_usages
+{
+  return m_usage;
+}
+
 //------------------------------------------------------------------------------
 // Private Constructors
 //------------------------------------------------------------------------------
@@ -248,11 +277,15 @@ auto alloy::render::gl::texture::dimension() const noexcept -> texture_dimension
 alloy::render::gl::texture::texture(
   ::GLuint id,
   ::GLenum target,
-  texture_dimension dimension
+  const texture_spec& spec
 ) noexcept
   : m_id{id},
     m_target{target},
-    m_dimension{dimension}
+    m_dimension{spec.dimension()},
+    m_format{spec.format()},
+    m_extent{spec.extent()},
+    m_samples{spec.samples()},
+    m_usage{spec.usage()}
 {
 
 }

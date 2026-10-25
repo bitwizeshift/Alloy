@@ -91,6 +91,9 @@ namespace alloy::render {
     /// The programs of a model do not declare the same instance inputs, or
     /// declare instance inputs that cannot be read per instance
     instance_layout_mismatch,
+
+    /// The textures of a surface cannot be drawn into together
+    incompatible_surface,
   };
 
   /// \brief Gets the error category for `render_errc` values

@@ -20,6 +20,7 @@
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/render/error.hpp"
 #include "alloy/render/texture/texture_dimension.hpp"
+#include "alloy/render/texture/texture_format.hpp"
 #include "alloy/render/texture/texture_spec.hpp"
 
 #include <GL/glew.h>
@@ -85,16 +86,32 @@ namespace alloy::render::gl {
     /// \return the dimension of the texture
     auto dimension() const noexcept -> texture_dimension;
 
+    /// \brief Gets the format of this texture
+    ///
+    /// \return the format of the texture
+    auto format() const noexcept -> texture_format;
+
+    /// \brief Gets the extent of the base level of this texture
+    ///
+    /// \return the extent of the texture
+    auto extent() const noexcept -> texture_extent;
+
+    /// \brief Gets the number of samples per texel of this texture
+    ///
+    /// \return the sample count of the texture
+    auto samples() const noexcept -> sample_count;
+
+    /// \brief Gets the ways in which this texture may be used
+    ///
+    /// \return the usages of the texture
+    auto usage() const noexcept -> texture_usages;
+
     //--------------------------------------------------------------------------
     // Private Constructors
     //--------------------------------------------------------------------------
   private:
 
-    texture(
-      ::GLuint id,
-      ::GLenum target,
-      texture_dimension dimension
-    ) noexcept;
+    texture(::GLuint id, ::GLenum target, const texture_spec& spec) noexcept;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -104,6 +121,10 @@ namespace alloy::render::gl {
     ::GLuint m_id;
     ::GLenum m_target;
     texture_dimension m_dimension;
+    texture_format m_format;
+    texture_extent m_extent;
+    sample_count m_samples;
+    texture_usages m_usage;
   };
 
 } // namespace alloy::render::gl

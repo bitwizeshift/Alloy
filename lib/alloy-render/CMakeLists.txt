@@ -36,6 +36,7 @@ set(header_files
   include/alloy/render/shader/shader_data_type.hpp
   include/alloy/render/shader/shader_parameter.hpp
   include/alloy/render/shader/shader_stage.hpp
+  include/alloy/render/surface/surface_spec.hpp
   include/alloy/render/texture/sampler_state.hpp
   include/alloy/render/texture/texture_dimension.hpp
   include/alloy/render/texture/texture_format.hpp

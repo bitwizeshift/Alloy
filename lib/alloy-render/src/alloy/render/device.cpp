@@ -11,6 +11,7 @@
 #include "alloy/render/model/model_spec.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
+#include "alloy/render/surface/surface_spec.hpp"
 #include "alloy/render/texture/texture_spec.hpp"
 
 #include "alloy/core/utilities/result.hpp"
@@ -78,4 +79,14 @@ auto alloy::render::device::create_model(const model_spec& spec)
     return core::fail(std::move(handle).error());
   }
   return unique_model{this, *handle};
+}
+
+auto alloy::render::device::create_surface(const surface_spec& spec)
+  -> core::result<unique_surface, render_error>
+{
+  auto handle = do_create_surface(spec);
+  if (!handle) {
+    return core::fail(std::move(handle).error());
+  }
+  return unique_surface{this, *handle};
 }

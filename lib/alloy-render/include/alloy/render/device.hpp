@@ -24,6 +24,7 @@
 #include "alloy/render/resource/resource_handle.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
+#include "alloy/render/surface/surface_spec.hpp"
 #include "alloy/render/texture/texture_spec.hpp"
 
 #include "alloy/core/utilities/result.hpp"
@@ -49,6 +50,9 @@ namespace alloy::render {
 
   /// \brief The unique owner of a model created by a device
   using unique_model = unique_resource<model_tag>;
+
+  /// \brief The unique owner of a surface that a device draws into
+  using unique_surface = unique_resource<surface_tag>;
 
   //////////////////////////////////////////////////////////////////////////////
   /// \brief The interface through which GPU resources are created
@@ -129,12 +133,38 @@ namespace alloy::render {
     auto create_model(const model_spec& spec)
       -> core::result<unique_model, render_error>;
 
+    /// \brief Creates the surface described by \p spec, which draws into
+    ///        textures
+    ///
+    /// \param spec the surface spec
+    /// \return the surface on success, or
+    ///         * `render_errc::stale_handle` if a texture has been disposed, or
+    ///         * `render_errc::incompatible_surface` if the textures cannot be
+    ///           drawn into together
+    auto create_surface(const surface_spec& spec)
+      -> core::result<unique_surface, render_error>;
+
     //--------------------------------------------------------------------------
     // Protected Constructors
     //--------------------------------------------------------------------------
   protected:
 
     device() noexcept = default;
+
+    //--------------------------------------------------------------------------
+    // Protected Resource Ownership
+    //--------------------------------------------------------------------------
+  protected:
+
+    /// \brief Takes ownership of a resource that this device created
+    ///        outside of the creation functions, such as a surface for a
+    ///        target that only a particular device can draw into
+    ///
+    /// \pre \p handle refers to a live resource created by this device
+    /// \param handle the handle of the resource
+    /// \return the owner of the resource
+    template <typename Tag>
+    auto adopt(resource_handle<Tag> handle) noexcept -> unique_resource<Tag>;
 
     //--------------------------------------------------------------------------
     // Virtual Hooks
@@ -179,6 +209,13 @@ namespace alloy::render {
     virtual auto do_create_model(const model_spec& spec)
       -> core::result<model_handle, render_error> = 0;
 
+    /// \brief Creates the surface described by \p spec
+    ///
+    /// \param spec the surface spec
+    /// \return the handle of the surface on success
+    virtual auto do_create_surface(const surface_spec& spec)
+      -> core::result<surface_handle, render_error> = 0;
+
     /// \{
     /// \brief Disposes of the resource identified by \p handle
     ///
@@ -189,6 +226,7 @@ namespace alloy::render {
     virtual auto do_dispose(material_handle handle) noexcept -> void = 0;
     virtual auto do_dispose(mesh_handle handle) noexcept -> void = 0;
     virtual auto do_dispose(model_handle handle) noexcept -> void = 0;
+    virtual auto do_dispose(surface_handle handle) noexcept -> void = 0;
     /// \}
 
     template <typename>
@@ -288,6 +326,22 @@ namespace alloy::render {
   };
 
 } // namespace alloy::render
+
+//==============================================================================
+// definitions : class : device
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Protected Resource Ownership
+//------------------------------------------------------------------------------
+
+template <typename Tag>
+inline
+auto alloy::render::device::adopt(resource_handle<Tag> handle)
+  noexcept -> unique_resource<Tag>
+{
+  return unique_resource<Tag>{this, handle};
+}
 
 //==============================================================================
 // definitions : class : unique_resource
