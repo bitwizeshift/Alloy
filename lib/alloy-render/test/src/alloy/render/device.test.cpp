@@ -10,6 +10,8 @@
 #include <alloy/render/mesh/3d/cube_builder.hpp>
 #include <alloy/render/mesh/mesh.hpp>
 #include <alloy/render/model/model_spec.hpp>
+#include <alloy/render/pass/render_batch.hpp>
+#include <alloy/render/pass/render_pass.hpp>
 #include <alloy/render/resource/handle_pool.hpp>
 #include <alloy/render/shader/program_layout.hpp>
 #include <alloy/render/shader/program_spec.hpp>
@@ -18,12 +20,14 @@
 #include <alloy/render/texture/texture_format.hpp>
 #include <alloy/render/texture/texture_spec.hpp>
 
+#include <alloy/core/utilities/optional.hpp>
 #include <alloy/core/utilities/result.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
 #include <array>   // std::array
 #include <cstddef> // std::size_t
+#include <span>    // std::span
 #include <utility> // std::move
 
 namespace alloy::render::test {
@@ -59,9 +63,31 @@ public:
     return m_surfaces.size();
   }
 
+  auto render(surface_handle, const render_pass& pass)
+    -> core::result<void, render_error> override
+  {
+    m_rendered_entries += pass.batch->entries().size();
+    return {};
+  }
+
+  auto present(surface_handle) -> void override
+  {
+    ++m_presents;
+  }
+
   auto create_window_surface() -> unique_surface
   {
     return adopt(m_surfaces.insert(0));
+  }
+
+  auto rendered_entries() const noexcept -> std::size_t
+  {
+    return m_rendered_entries;
+  }
+
+  auto presents() const noexcept -> std::size_t
+  {
+    return m_presents;
   }
 
 private:
@@ -72,6 +98,8 @@ private:
   handle_pool<mesh_tag, int> m_meshes;
   handle_pool<model_tag, int> m_models;
   handle_pool<surface_tag, int> m_surfaces;
+  std::size_t m_rendered_entries = 0u;
+  std::size_t m_presents = 0u;
 
   auto do_create_program(const program_spec&, program_layout)
     -> core::result<program_handle, render_error> override
@@ -284,6 +312,43 @@ TEST_CASE("device::adopt(resource_handle)", "[resource ownership]") {
 
     // Assert
     REQUIRE(device.live_surfaces() == 0u);
+  }
+}
+
+TEST_CASE("device::render(surface_handle, const render_pass&)", "[drawing]") {
+  // Arrange
+  auto sut = fake_device{};
+  const auto surface = sut.create_window_surface();
+  const auto instances = std::array{0.0f, 1.0f};
+  auto batch = render_batch{};
+  batch.add(model_handle{}, std::span{instances});
+  const auto pass = render_pass{
+    .batch = &batch,
+    .globals = {},
+    .clear_color = core::null,
+    .clear_depth = core::null,
+  };
+
+  SECTION("Draws the batch of the pass") {
+    // Act
+    const auto result = sut.render(surface.get(), pass);
+
+    // Assert
+    REQUIRE(sut.rendered_entries() == 1u);
+  }
+}
+
+TEST_CASE("device::present(surface_handle)", "[drawing]") {
+  // Arrange
+  auto sut = fake_device{};
+  const auto surface = sut.create_window_surface();
+
+  SECTION("Presents the surface") {
+    // Act
+    sut.present(surface.get());
+
+    // Assert
+    REQUIRE(sut.presents() == 1u);
   }
 }
 

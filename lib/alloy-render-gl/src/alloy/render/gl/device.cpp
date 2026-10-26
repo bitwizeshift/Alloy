@@ -20,6 +20,7 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/string/string.hpp"
 #include "alloy/core/string/string_view.hpp"
+#include "alloy/core/utilities/optional.hpp"
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/render/device.hpp"
 #include "alloy/render/error.hpp"
@@ -27,10 +28,13 @@
 #include "alloy/render/mesh/attribute_locations.hpp"
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/model/model_spec.hpp"
+#include "alloy/render/pass/render_batch.hpp"
+#include "alloy/render/pass/render_pass.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
 #include "alloy/render/shader/resolved_parameters.hpp"
 #include "alloy/render/shader/shader_data_type.hpp"
+#include "alloy/render/shader/shader_parameter.hpp"
 #include "alloy/render/surface/surface_spec.hpp"
 #include "alloy/render/texture/texture_spec.hpp"
 
@@ -39,6 +43,8 @@
 #include <algorithm> // std::equal, std::sort
 #include <cstddef>   // std::size_t
 #include <cstdint>   // std::uint32_t
+#include <span>      // std::span
+#include <tuple>     // std::tie
 #include <utility>   // std::exchange, std::move
 #include <variant>   // std::visit
 
@@ -283,8 +289,141 @@ auto check_instance_inputs(
   return {};
 }
 
+/// \brief Gets the size of a uniform buffer resource, or null for any other
+///        kind of resource
+struct uniform_buffer_size_visitor
+{
+  auto operator()(const uniform_buffer_layout& buffer)
+    const noexcept -> core::optional<std::uint32_t>
+  {
+    return buffer.byte_size;
+  }
+
+  auto operator()(const sampled_texture_resource&)
+    const noexcept -> core::optional<std::uint32_t>
+  {
+    return core::null;
+  }
+};
+
+/// \brief How an instance input is read from the instance buffer, one
+///        attribute location at a time
+struct attribute_format
+{
+  /// The number of consecutive locations, which is the number of columns of
+  /// a matrix
+  std::uint32_t columns;
+
+  /// The number of components read from each location
+  ::GLint components;
+
+  /// The type of each component
+  ::GLenum type;
+
+  /// Whether components are read as integers rather than floats
+  bool integral;
+};
+
+auto attribute_format_of(shader_data_type type) noexcept -> attribute_format
+{
+  switch (type) {
+    case shader_data_type::int1: {
+      return attribute_format{1u, 1, GL_INT, true};
+    }
+    case shader_data_type::int2: {
+      return attribute_format{1u, 2, GL_INT, true};
+    }
+    case shader_data_type::int3: {
+      return attribute_format{1u, 3, GL_INT, true};
+    }
+    case shader_data_type::int4: {
+      return attribute_format{1u, 4, GL_INT, true};
+    }
+    case shader_data_type::uint1: {
+      return attribute_format{1u, 1, GL_UNSIGNED_INT, true};
+    }
+    case shader_data_type::uint2: {
+      return attribute_format{1u, 2, GL_UNSIGNED_INT, true};
+    }
+    case shader_data_type::uint3: {
+      return attribute_format{1u, 3, GL_UNSIGNED_INT, true};
+    }
+    case shader_data_type::uint4: {
+      return attribute_format{1u, 4, GL_UNSIGNED_INT, true};
+    }
+    case shader_data_type::float1: {
+      return attribute_format{1u, 1, GL_FLOAT, false};
+    }
+    case shader_data_type::float2: {
+      return attribute_format{1u, 2, GL_FLOAT, false};
+    }
+    case shader_data_type::float3: {
+      return attribute_format{1u, 3, GL_FLOAT, false};
+    }
+    case shader_data_type::float4: {
+      return attribute_format{1u, 4, GL_FLOAT, false};
+    }
+    case shader_data_type::float2x2: {
+      return attribute_format{2u, 2, GL_FLOAT, false};
+    }
+    case shader_data_type::float3x3: {
+      return attribute_format{3u, 3, GL_FLOAT, false};
+    }
+    case shader_data_type::float4x4: {
+      return attribute_format{4u, 4, GL_FLOAT, false};
+    }
+    case shader_data_type::boolean: {
+      // Models reject boolean instance inputs when they are created
+      break;
+    }
+  }
+  core::compiler::unreachable();
+}
+
 } // namespace <anonymous>
 } // namespace alloy::render::gl
+
+//==============================================================================
+// struct : device::surface_binder
+//==============================================================================
+
+struct alloy::render::gl::device::surface_binder
+{
+  auto operator()(const window_surface& surface) const -> bound_surface
+  {
+    ::glBindFramebuffer(GL_FRAMEBUFFER, 0u);
+    return bound_surface{
+      .extent = surface.target->drawable_extent(),
+      .has_depth = true,
+    };
+  }
+
+  auto operator()(const texture_surface& surface) const -> bound_surface
+  {
+    ::glBindFramebuffer(GL_FRAMEBUFFER, surface.framebuffer.id());
+    return bound_surface{
+      .extent = surface.extent,
+      .has_depth = surface.has_depth,
+    };
+  }
+};
+
+//==============================================================================
+// struct : device::surface_presenter
+//==============================================================================
+
+struct alloy::render::gl::device::surface_presenter
+{
+  auto operator()(const window_surface& surface) const -> void
+  {
+    surface.target->present();
+  }
+
+  auto operator()(const texture_surface&) const -> void
+  {
+    // Drawing into textures leaves nothing to present
+  }
+};
 
 //==============================================================================
 // class : device
@@ -315,28 +454,92 @@ auto alloy::render::gl::device::create_surface(presentation_target& target)
 // Drawing
 //------------------------------------------------------------------------------
 
-auto alloy::render::gl::device::bind_material(material_handle material)
-  noexcept -> void
+auto alloy::render::gl::device::render(
+  surface_handle surface,
+  const render_pass& pass
+) -> core::result<void, render_error>
 {
-  const auto* const entry = m_materials.find(material);
-  ALLOY_ASSERT(entry != nullptr, "material has been disposed");
+  const auto* const target = m_surfaces.find(surface);
+  ALLOY_ASSERT(target != nullptr, "surface has been disposed");
 
-  const auto* const program = m_programs.find(entry->program);
-  ALLOY_ASSERT(program != nullptr, "material outlived its program");
+  const auto bound = std::visit(surface_binder{}, *target);
+  ::glViewport(
+    0,
+    0,
+    static_cast<::GLsizei>(bound.extent.width),
+    static_cast<::GLsizei>(bound.extent.height)
+  );
 
-  ::glUseProgram(program->program.id());
-
-  for (const auto& buffer : entry->uniform_buffers) {
-    ::glBindBufferBase(GL_UNIFORM_BUFFER, buffer.binding(), buffer.id());
+  auto clear_mask = ::GLbitfield{0u};
+  if (pass.clear_color.has_value()) {
+    const auto& color = *pass.clear_color;
+    ::glClearColor(color.r(), color.g(), color.b(), color.a());
+    clear_mask |= GL_COLOR_BUFFER_BIT;
   }
-  for (const auto& bound : entry->textures) {
-    const auto* const texture = m_textures.find(bound.texture);
-    ALLOY_ASSERT(texture != nullptr, "material outlived its texture");
-
-    ::glActiveTexture(GL_TEXTURE0 + bound.unit);
-    ::glBindTexture(texture->target(), texture->id());
-    ::glBindSampler(bound.unit, bound.sampler);
+  if (pass.clear_depth.has_value() && bound.has_depth) {
+    ::glDepthMask(GL_TRUE);
+    ::glClearDepth(static_cast<::GLdouble>(*pass.clear_depth));
+    clear_mask |= GL_DEPTH_BUFFER_BIT;
   }
+  if (clear_mask != 0u) {
+    ::glClear(clear_mask);
+  }
+
+  sort_draws(*pass.batch);
+  if (m_draws.empty()) {
+    return {};
+  }
+  if (auto uploaded = upload_globals(pass.globals); !uploaded) {
+    return uploaded;
+  }
+  m_instances.upload(pass.batch->instance_data());
+
+  if (bound.has_depth) {
+    ::glEnable(GL_DEPTH_TEST);
+    ::glDepthFunc(GL_LESS);
+    ::glDepthMask(GL_TRUE);
+  } else {
+    ::glDisable(GL_DEPTH_TEST);
+  }
+  ::glEnable(GL_CULL_FACE);
+  ::glCullFace(GL_BACK);
+
+  const auto* program = static_cast<const program_entry*>(nullptr);
+  const auto* material = static_cast<const material_entry*>(nullptr);
+  const auto* mesh = static_cast<const gl::mesh*>(nullptr);
+  auto current = draw_item{m_draws.front()};
+  for (const auto& draw : m_draws) {
+    if (program == nullptr || draw.program != current.program) {
+      program = m_programs.find(draw.program);
+      ALLOY_ASSERT(program != nullptr, "model outlived its program");
+      bind_program(*program);
+      material = nullptr;
+    }
+    if (material == nullptr || draw.material != current.material) {
+      material = m_materials.find(draw.material);
+      ALLOY_ASSERT(material != nullptr, "model outlived its material");
+      bind_material(*material);
+    }
+    if (mesh == nullptr || draw.mesh != current.mesh) {
+      mesh = m_meshes.find(draw.mesh);
+      ALLOY_ASSERT(mesh != nullptr, "model outlived its mesh");
+      mesh->bind();
+    }
+    current = draw;
+
+    bind_instances(*draw.model, *draw.entry);
+    mesh->draw(draw.submesh, draw.entry->instance_count);
+  }
+  ::glBindVertexArray(0u);
+  return {};
+}
+
+auto alloy::render::gl::device::present(surface_handle surface) -> void
+{
+  const auto* const target = m_surfaces.find(surface);
+  ALLOY_ASSERT(target != nullptr, "surface has been disposed");
+
+  std::visit(surface_presenter{}, *target);
 }
 
 //------------------------------------------------------------------------------
@@ -351,9 +554,161 @@ alloy::render::gl::device::device(const capabilities& caps) noexcept
     m_materials{},
     m_meshes{},
     m_models{},
-    m_surfaces{}
+    m_surfaces{},
+    m_instances{},
+    m_draws{}
 {
 
+}
+
+//------------------------------------------------------------------------------
+// Private Drawing
+//------------------------------------------------------------------------------
+
+auto alloy::render::gl::device::sort_draws(const render_batch& batch) -> void
+{
+  m_draws.clear();
+  for (const auto& entry : batch.entries()) {
+    const auto* const model = m_models.find(entry.model);
+    ALLOY_ASSERT(model != nullptr, "model has been disposed");
+
+    for (const auto& part : model->parts) {
+      m_draws.push_back(
+        draw_item{
+          .program = part.program,
+          .material = part.material,
+          .mesh = model->mesh,
+          .submesh = part.submesh,
+          .model = model,
+          .entry = &entry,
+        }
+      );
+    }
+  }
+
+  const auto by_state = [](const draw_item& lhs, const draw_item& rhs) {
+    return std::tie(lhs.program, lhs.material, lhs.mesh)
+      < std::tie(rhs.program, rhs.material, rhs.mesh);
+  };
+  std::sort(m_draws.begin(), m_draws.end(), by_state);
+}
+
+auto alloy::render::gl::device::upload_globals(
+  std::span<const shader_parameter> globals
+) -> core::result<void, render_error>
+{
+  auto previous = program_handle{};
+  for (const auto& draw : m_draws) {
+    if (draw.program == previous) {
+      continue;
+    }
+    previous = draw.program;
+
+    const auto* const program = m_programs.find(draw.program);
+    ALLOY_ASSERT(program != nullptr, "model outlived its program");
+
+    auto resolved = resolved_parameters::from_parameters(
+      program->layout,
+      resource_scope::global,
+      globals
+    );
+    if (!resolved) {
+      return core::fail(std::move(resolved).error());
+    }
+
+    for (const auto& block : resolved->uniform_blocks()) {
+      const auto buffer = std::find_if(
+        program->global_buffers.begin(),
+        program->global_buffers.end(),
+        [&](const uniform_buffer& buffer) {
+          return buffer.binding() == block.binding.index;
+        }
+      );
+      ALLOY_ASSERT(buffer != program->global_buffers.end());
+
+      const auto bytes = pack_uniform_block(block);
+      ::glBindBuffer(GL_UNIFORM_BUFFER, buffer->id());
+      ::glBufferData(
+        GL_UNIFORM_BUFFER,
+        static_cast<::GLsizeiptr>(bytes.size()),
+        bytes.data(),
+        GL_DYNAMIC_DRAW
+      );
+    }
+  }
+  ::glBindBuffer(GL_UNIFORM_BUFFER, 0u);
+  return {};
+}
+
+auto alloy::render::gl::device::bind_program(const program_entry& program)
+  const noexcept -> void
+{
+  ::glUseProgram(program.program.id());
+  for (const auto& buffer : program.global_buffers) {
+    ::glBindBufferBase(GL_UNIFORM_BUFFER, buffer.binding(), buffer.id());
+  }
+}
+
+auto alloy::render::gl::device::bind_material(const material_entry& material)
+  const noexcept -> void
+{
+  for (const auto& buffer : material.uniform_buffers) {
+    ::glBindBufferBase(GL_UNIFORM_BUFFER, buffer.binding(), buffer.id());
+  }
+  for (const auto& bound : material.textures) {
+    const auto* const texture = m_textures.find(bound.texture);
+    ALLOY_ASSERT(texture != nullptr, "material outlived its texture");
+
+    ::glActiveTexture(GL_TEXTURE0 + bound.unit);
+    ::glBindTexture(texture->target(), texture->id());
+    ::glBindSampler(bound.unit, bound.sampler);
+  }
+}
+
+auto alloy::render::gl::device::bind_instances(
+  const model_entry& model,
+  const batch_entry& entry
+) const noexcept -> void
+{
+  if (model.instance_attributes.empty()) {
+    return;
+  }
+
+  ::glBindBuffer(GL_ARRAY_BUFFER, m_instances.id());
+  const auto stride = static_cast<::GLsizei>(model.instance_stride);
+  for (const auto& attribute : model.instance_attributes) {
+    const auto format = attribute_format_of(attribute.type);
+    const auto column_size = static_cast<std::size_t>(format.components) * 4u;
+
+    for (auto column = 0u; column < format.columns; ++column) {
+      const auto location = attribute.location + column;
+      const auto offset = entry.offset
+        + attribute.offset
+        + (column * column_size);
+      const auto* const pointer = reinterpret_cast<const void*>(offset);
+
+      ::glEnableVertexAttribArray(location);
+      if (format.integral) {
+        ::glVertexAttribIPointer(
+          location,
+          format.components,
+          format.type,
+          stride,
+          pointer
+        );
+      } else {
+        ::glVertexAttribPointer(
+          location,
+          format.components,
+          format.type,
+          GL_FALSE,
+          stride,
+          pointer
+        );
+      }
+      ::glVertexAttribDivisor(location, 1u);
+    }
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -380,13 +735,44 @@ auto alloy::render::gl::device::do_create_program(
     shaders.push_back(std::move(compiled).value());
   }
 
-  auto linked = gl::program::link(shaders, spec.vertex_inputs, layout);
+  auto linked = gl::program::link(shaders, layout);
   if (!linked) {
     return core::fail(std::move(linked).error());
   }
 
+  auto global_buffers = core::vector<uniform_buffer>{};
+  for (const auto& resource : layout.resources()) {
+    if (resource.scope != resource_scope::global) {
+      continue;
+    }
+    const auto size = std::visit(
+      uniform_buffer_size_visitor{},
+      resource.kind
+    );
+    if (!size.has_value()) {
+      continue;
+    }
+
+    auto id = ::GLuint{};
+    ::glGenBuffers(1, &id);
+    global_buffers.emplace_back(resource.binding.index, id);
+
+    ::glBindBuffer(GL_UNIFORM_BUFFER, id);
+    ::glBufferData(
+      GL_UNIFORM_BUFFER,
+      static_cast<::GLsizeiptr>(*size),
+      nullptr,
+      GL_DYNAMIC_DRAW
+    );
+  }
+  ::glBindBuffer(GL_UNIFORM_BUFFER, 0u);
+
   return m_programs.insert(
-    program_entry{std::move(linked).value(), std::move(layout)}
+    program_entry{
+      .program = std::move(linked).value(),
+      .layout = std::move(layout),
+      .global_buffers = std::move(global_buffers),
+    }
   );
 }
 
@@ -659,6 +1045,42 @@ auto alloy::render::gl::device::uniform_buffer::binding()
 }
 
 auto alloy::render::gl::device::uniform_buffer::id()
+  const noexcept -> ::GLuint
+{
+  return m_id;
+}
+
+//==============================================================================
+// class : device::instance_buffer
+//==============================================================================
+
+alloy::render::gl::device::instance_buffer::instance_buffer() noexcept
+  : m_id{0u}
+{
+  ::glGenBuffers(1, &m_id);
+}
+
+alloy::render::gl::device::instance_buffer::~instance_buffer()
+{
+  ::glDeleteBuffers(1, &m_id);
+}
+
+auto alloy::render::gl::device::instance_buffer::upload(
+  std::span<const std::byte> data
+) noexcept -> void
+{
+  // Respecifying the whole store lets the driver hand out fresh memory
+  // rather than wait for draws that still read the previous batch
+  ::glBindBuffer(GL_ARRAY_BUFFER, m_id);
+  ::glBufferData(
+    GL_ARRAY_BUFFER,
+    static_cast<::GLsizeiptr>(data.size()),
+    data.data(),
+    GL_STREAM_DRAW
+  );
+}
+
+auto alloy::render::gl::device::instance_buffer::id()
   const noexcept -> ::GLuint
 {
   return m_id;

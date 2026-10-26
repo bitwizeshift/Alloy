@@ -21,6 +21,7 @@
 #include "alloy/render/material/material_spec.hpp"
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/model/model_spec.hpp"
+#include "alloy/render/pass/render_pass.hpp"
 #include "alloy/render/resource/resource_handle.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
@@ -143,6 +144,37 @@ namespace alloy::render {
     ///           drawn into together
     auto create_surface(const surface_spec& spec)
       -> core::result<unique_surface, render_error>;
+
+    //--------------------------------------------------------------------------
+    // Drawing
+    //--------------------------------------------------------------------------
+  public:
+
+    /// \brief Draws the batch of \p pass into \p surface
+    ///
+    /// The surface is cleared first if the pass asks for it. Everything in
+    /// the batch is drawn, in whatever order the device finds cheapest.
+    ///
+    /// \pre \p surface, and every model in the batch along with everything
+    ///      it refers to, are alive
+    /// \param surface the surface to draw into
+    /// \param pass the pass to draw
+    /// \return nothing on success, or an error if a global parameter of the
+    ///         pass names nothing that a program in the batch declares, or
+    ///         does not match the type it is bound to. Nothing is drawn on
+    ///         failure, although the surface may have been cleared.
+    virtual auto render(surface_handle surface, const render_pass& pass)
+      -> core::result<void, render_error> = 0;
+
+    /// \brief Presents everything drawn into \p surface since it was last
+    ///        presented
+    ///
+    /// Surfaces that draw into textures have nothing to present; what is
+    /// drawn into them may be sampled as soon as it has been drawn.
+    ///
+    /// \pre \p surface is alive
+    /// \param surface the surface to present
+    virtual auto present(surface_handle surface) -> void = 0;
 
     //--------------------------------------------------------------------------
     // Protected Constructors

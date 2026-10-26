@@ -32,16 +32,21 @@
 #include "alloy/render/material/material_spec.hpp"
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/model/model_spec.hpp"
+#include "alloy/render/pass/render_batch.hpp"
+#include "alloy/render/pass/render_pass.hpp"
 #include "alloy/render/resource/handle_pool.hpp"
 #include "alloy/render/shader/program_layout.hpp"
 #include "alloy/render/shader/program_spec.hpp"
 #include "alloy/render/shader/shader_data_type.hpp"
+#include "alloy/render/shader/shader_parameter.hpp"
 #include "alloy/render/surface/surface_spec.hpp"
 #include "alloy/render/texture/texture_spec.hpp"
 
 #include <GL/glew.h>
 
+#include <cstddef> // std::byte
 #include <cstdint> // std::uint32_t
+#include <span>    // std::span
 #include <variant> // std::variant
 
 namespace alloy::render::gl {
@@ -95,27 +100,14 @@ namespace alloy::render::gl {
     //--------------------------------------------------------------------------
   public:
 
-    /// \brief Binds the program, uniform buffers, and textures of \p material
-    ///        for drawing
-    ///
-    /// \pre \p material, its program, and its textures are alive
-    /// \param material the material to bind
-    auto bind_material(material_handle material) noexcept -> void;
+    auto render(surface_handle surface, const render_pass& pass)
+      -> core::result<void, render_error> override;
+    auto present(surface_handle surface) -> void override;
 
     //--------------------------------------------------------------------------
     // Private Member Types
     //--------------------------------------------------------------------------
   private:
-
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief A linked program, along with the layout that materials are
-    ///        resolved against
-    ///////////////////////////////////////////////////////////////////////////
-    struct program_entry
-    {
-      gl::program program;
-      program_layout layout;
-    };
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief The unique owner of a uniform buffer object, along with the
@@ -140,6 +132,42 @@ namespace alloy::render::gl {
     private:
 
       std::uint32_t m_binding;
+      ::GLuint m_id;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief A linked program, along with the layout that parameters are
+    ///        resolved against and the buffers of its global resources
+    ///////////////////////////////////////////////////////////////////////////
+    struct program_entry
+    {
+      gl::program program;
+      program_layout layout;
+      core::vector<uniform_buffer> global_buffers;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief The unique owner of the buffer object that the instances of
+    ///        every batch are streamed through
+    ///////////////////////////////////////////////////////////////////////////
+    class instance_buffer
+    {
+    public:
+
+      instance_buffer() noexcept;
+      instance_buffer(instance_buffer&&) = delete;
+      instance_buffer(const instance_buffer&) = delete;
+
+      ~instance_buffer();
+
+      auto operator=(instance_buffer&&) -> instance_buffer& = delete;
+      auto operator=(const instance_buffer&) -> instance_buffer& = delete;
+
+      auto upload(std::span<const std::byte> data) noexcept -> void;
+      auto id() const noexcept -> ::GLuint;
+
+    private:
+
       ::GLuint m_id;
     };
 
@@ -218,12 +246,72 @@ namespace alloy::render::gl {
     /// \brief Either kind of surface
     using surface_entry = std::variant<window_surface, texture_surface>;
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief The properties of a surface that has been bound for drawing
+    ///////////////////////////////////////////////////////////////////////////
+    struct bound_surface
+    {
+      surface_extent extent;
+      bool has_depth;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief Binds the framebuffer of a surface for drawing
+    ///////////////////////////////////////////////////////////////////////////
+    struct surface_binder;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief Presents a surface
+    ///////////////////////////////////////////////////////////////////////////
+    struct surface_presenter;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief A single draw of a submesh, as it is sorted before drawing
+    ///////////////////////////////////////////////////////////////////////////
+    struct draw_item
+    {
+      program_handle program;
+      material_handle material;
+      mesh_handle mesh;
+      std::uint32_t submesh;
+      core::not_null<const model_entry*> model;
+      core::not_null<const batch_entry*> entry;
+    };
+
     //--------------------------------------------------------------------------
     // Private Constructors
     //--------------------------------------------------------------------------
   private:
 
     explicit device(const capabilities& caps) noexcept;
+
+    //--------------------------------------------------------------------------
+    // Private Drawing
+    //--------------------------------------------------------------------------
+  private:
+
+    /// \brief Fills the draw list with every draw of \p batch, sorted so that
+    ///        draws sharing a program, then a material, then a mesh, are
+    ///        adjacent
+    auto sort_draws(const render_batch& batch) -> void;
+
+    /// \brief Resolves \p globals against the global resources of every
+    ///        program in the draw list, and uploads them into each program's
+    ///        buffers
+    auto upload_globals(std::span<const shader_parameter> globals)
+      -> core::result<void, render_error>;
+
+    /// \brief Binds \p program, along with the buffers of its global
+    ///        resources
+    auto bind_program(const program_entry& program) const noexcept -> void;
+
+    /// \brief Binds the uniform buffers and textures of \p material
+    auto bind_material(const material_entry& material) const noexcept -> void;
+
+    /// \brief Points the instance inputs of \p model at the instances of
+    ///        \p entry in the instance buffer
+    auto bind_instances(const model_entry& model, const batch_entry& entry)
+      const noexcept -> void;
 
     //--------------------------------------------------------------------------
     // Virtual Hooks
@@ -263,6 +351,8 @@ namespace alloy::render::gl {
     handle_pool<mesh_tag, gl::mesh> m_meshes;
     handle_pool<model_tag, model_entry> m_models;
     handle_pool<surface_tag, surface_entry> m_surfaces;
+    instance_buffer m_instances;
+    core::vector<draw_item> m_draws;
   };
 
 } // namespace alloy::render::gl

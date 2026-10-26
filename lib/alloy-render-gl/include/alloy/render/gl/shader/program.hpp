@@ -20,7 +20,6 @@
 #include "alloy/core/utilities/result.hpp"
 #include "alloy/render/error.hpp"
 #include "alloy/render/shader/program_layout.hpp"
-#include "alloy/render/shader/program_spec.hpp"
 
 #include <GL/glew.h>
 
@@ -40,19 +39,18 @@ namespace alloy::render::gl {
 
     /// \brief Links \p shaders into a program
     ///
-    /// Shaders compiled from GLSL have their vertex input locations and
-    /// resource bindings assigned by name, since OpenGL 4.1 cannot declare
-    /// bindings in GLSL. Shaders loaded from SPIR-V carry their locations and
-    /// bindings in the binary, which may have its names stripped.
+    /// Shaders compiled from GLSL have their vertex and instance input
+    /// locations and resource bindings assigned by name, since OpenGL 4.1
+    /// cannot declare bindings in GLSL. Shaders loaded from SPIR-V carry
+    /// their locations and bindings in the binary, which may have its names
+    /// stripped.
     ///
     /// \param shaders the shaders to link, which must share a format
-    /// \param vertex_inputs the inputs that the vertex stage reads
-    /// \param layout the resources that the program reads
+    /// \param layout the inputs and resources that the program reads
     /// \return the program on success, or `render_errc::program_link_failed`
     ///         with the link log on failure
     static auto link(
       std::span<const shader> shaders,
-      std::span<const vertex_input> vertex_inputs,
       const program_layout& layout
     ) -> core::result<program, render_error>;
 

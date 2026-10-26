@@ -85,7 +85,6 @@ struct binding_visitor
 
 auto alloy::render::gl::program::link(
   std::span<const shader> shaders,
-  std::span<const vertex_input> vertex_inputs,
   const program_layout& layout
 ) -> core::result<program, render_error>
 {
@@ -109,9 +108,11 @@ auto alloy::render::gl::program::link(
   }};
 
   if (all_glsl) {
-    for (const auto& input : vertex_inputs) {
-      const auto name = core::string{input.name};
-      ::glBindAttribLocation(program_id, input.location, name.c_str());
+    for (const auto& input : layout.vertex_inputs()) {
+      ::glBindAttribLocation(program_id, input.location, input.name.c_str());
+    }
+    for (const auto& input : layout.instance_inputs()) {
+      ::glBindAttribLocation(program_id, input.location, input.name.c_str());
     }
   }
 
