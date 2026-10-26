@@ -62,6 +62,7 @@ auto alloy::extra::sdl2_gl_window::from_window_data(
   ::SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, version.major);
   ::SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, version.minor);
   ::SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  ::SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
   auto context = ::SDL_GL_CreateContext(window);
 
@@ -107,6 +108,18 @@ auto alloy::extra::sdl2_gl_window::context_handle()
   const noexcept -> context_handle_type
 {
   return m_gl_context;
+}
+
+auto alloy::extra::sdl2_gl_window::drawable_dimensions()
+  const -> dimensions
+{
+  auto result = dimensions{};
+  ::SDL_GetWindowSizeInPixels(
+    sdl2_window::window_handle(),
+    &result.width,
+    &result.height
+  );
+  return result;
 }
 
 //------------------------------------------------------------------------------

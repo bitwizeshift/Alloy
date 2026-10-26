@@ -144,6 +144,17 @@ namespace alloy::extra {
     ALLOY_EXTRA_SDL2_API
     auto context_handle() const noexcept -> context_handle_type;
 
+    /// \brief Gets the size of the default framebuffer of this window, in
+    ///        pixels
+    ///
+    /// This differs from the size of the window on displays with a high
+    /// pixel density, where each unit of the window's size spans several
+    /// pixels.
+    ///
+    /// \return the size of the default framebuffer
+    ALLOY_EXTRA_SDL2_API
+    auto drawable_dimensions() const -> dimensions;
+
     //--------------------------------------------------------------------------
     // Modifiers
     //--------------------------------------------------------------------------
