@@ -149,6 +149,8 @@ set(header_files
   include/alloy/core/math/basis.hpp
   include/alloy/core/math/basis/basis2.hpp
   include/alloy/core/math/basis/basis3.hpp
+  include/alloy/core/math/dual_quaternion.hpp
+  include/alloy/core/math/dual_quaternion_constants.hpp
   include/alloy/core/math/euler_angles.hpp
   include/alloy/core/math/interpolation.hpp
   include/alloy/core/math/math_constants.hpp
@@ -220,6 +222,7 @@ set(source_files
   src/alloy/core/string/string_utilities.cpp
 
   # Math
+  src/alloy/core/math/dual_quaternion.cpp
   src/alloy/core/math/simplex.cpp
   src/alloy/core/math/trigonometry.cpp
   src/alloy/core/math/quaternion.cpp

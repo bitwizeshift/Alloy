@@ -66,6 +66,7 @@ set(source_files
   src/alloy/core/math/vector/vector_utilities.test.cpp
   src/alloy/core/math/angle/basic_angle.test.cpp
   src/alloy/core/math/clamped.test.cpp
+  src/alloy/core/math/dual_quaternion.test.cpp
   src/alloy/core/math/euler_angles.test.cpp
   src/alloy/core/math/interpolation.test.cpp
   src/alloy/core/math/math.test.cpp
