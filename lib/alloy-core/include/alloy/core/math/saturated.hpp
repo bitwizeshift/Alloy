@@ -20,6 +20,7 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/precision/real.hpp"
 
+#include <cmath>       // std::isnan, std::isfinite, std::fpclassify, etc
 #include <concepts>    // std::convertible_to
 #include <cstddef>
 #include <functional>  // std::hash
@@ -378,14 +379,14 @@ namespace alloy::core {
 
   //---------------------------------------------------------------------------
 
-  /// \brief Determines whether a given real value \p f is finite
+  /// \brief Determines whether a given saturated value \p f is finite
   ///
   /// \param f the value to check
   /// \return `true` if \p f is `finite`
   template <typename Float>
   auto is_finite(saturated<Float> f) noexcept -> bool;
 
-  /// \brief Determines whether a given real value \p f is infinite
+  /// \brief Determines whether a given saturated value \p f is infinite
   ///
   /// \param f the value to check
   /// \return `true` if \p f is `infinite`
@@ -394,7 +395,7 @@ namespace alloy::core {
 
   //---------------------------------------------------------------------------
 
-  /// \brief Determines whether a given real value \p f is normal
+  /// \brief Determines whether a given saturated value \p f is normal
   ///
   /// \param f the value to check
   /// \return `true` if \p f is `normal`
@@ -891,7 +892,7 @@ template <typename Float>
 ALLOY_FORCE_INLINE
 auto alloy::core::is_nan(saturated<Float> f) noexcept -> bool
 {
-  return is_nan(f.value());
+  return std::isnan(f.value());
 }
 
 //---------------------------------------------------------------------------
@@ -900,14 +901,14 @@ template <typename Float>
 ALLOY_FORCE_INLINE
 auto alloy::core::is_finite(saturated<Float> f) noexcept -> bool
 {
-  return is_finite(f.value());
+  return std::isfinite(f.value());
 }
 
 template <typename Float>
 ALLOY_FORCE_INLINE
 auto alloy::core::is_infinite(saturated<Float> f) noexcept -> bool
 {
-  return is_infinite(f.value());
+  return std::isinf(f.value());
 }
 
 //---------------------------------------------------------------------------
@@ -916,14 +917,14 @@ template <typename Float>
 ALLOY_FORCE_INLINE
 auto alloy::core::is_normal(saturated<Float> f) noexcept -> bool
 {
-  return is_normal(f.value());
+  return std::isnormal(f.value());
 }
 
 template <typename Float>
 ALLOY_FORCE_INLINE
 auto alloy::core::is_subnormal(saturated<Float> f) noexcept -> bool
 {
-  return is_subnormal(f.value());
+  return std::fpclassify(f.value()) == FP_SUBNORMAL;
 }
 
 #endif /* ALLOY_CORE_MATH_SATURATED_HPP */
