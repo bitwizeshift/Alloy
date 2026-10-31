@@ -34,7 +34,6 @@
 #include "alloy/core/math/matrix/matrix_utilities.hpp"
 #include "alloy/core/math/trigonometry.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 #include <cassert>   // assert
@@ -49,7 +48,7 @@ auto alloy::core::quaternion::from_angle_axis(radian angle, const vector3& axis)
 {
   const auto norm_axis = axis.normalized();
 
-  const auto half_angle = angle * real{0.5};
+  const auto half_angle = angle * 0.5f;
   const auto result = trigonometry::sin(half_angle);
 
   const auto w = trigonometry::cos(half_angle);
@@ -64,9 +63,9 @@ auto alloy::core::quaternion::from_angles(radian yaw, radian pitch, radian roll)
   noexcept -> quaternion
 {
   // Half Angles
-  const auto half_yaw   = yaw * real{0.5};
-  const auto half_pitch = pitch * real{0.5};
-  const auto half_roll  = roll * real{0.5};
+  const auto half_yaw   = yaw * 0.5f;
+  const auto half_pitch = pitch * 0.5f;
+  const auto half_roll  = roll * 0.5f;
 
   // y-vector
   const auto v0w = trigonometry::cos(half_yaw);
@@ -102,12 +101,12 @@ auto alloy::core::quaternion::from_rotation_matrix(const matrix3& rot)
   // article "Quaternion Calculus and Fast Animation".
 
   const auto trace = rot.trace();
-  auto root = real{};
+  auto root = float{};
 
-  if (trace > real{0}){
+  if (trace > 0.0f){
     root = sqrt(trace + 1);
-    const auto w = real{0.5} * root;
-    root = real{0.5} / root;
+    const auto w = 0.5f * root;
+    root = 0.5f / root;
     const auto x = (rot[1][2] - rot[2][1]) * root;
     const auto y = (rot[2][0] - rot[0][2]) * root;
     const auto z = (rot[0][1] - rot[1][0]) * root;
@@ -116,7 +115,7 @@ auto alloy::core::quaternion::from_rotation_matrix(const matrix3& rot)
   }
 
   static constexpr int s_next[3] = { 1, 2, 0 };
-  core::real apk_quat[3] = {};
+  float apk_quat[3] = {};
   int i, j, k;
 
   i = 0;
@@ -129,11 +128,11 @@ auto alloy::core::quaternion::from_rotation_matrix(const matrix3& rot)
   j = s_next[i];
   k = s_next[j];
 
-  root = sqrt(rot.get(i,i) - rot.get(j,j) - rot.get(k,k) + real{1});
+  root = sqrt(rot.get(i,i) - rot.get(j,j) - rot.get(k,k) + 1.0f);
 
-  apk_quat[i] = real{0.5} * root;
+  apk_quat[i] = 0.5f * root;
 
-  root = real{0.5} / root;
+  root = 0.5f / root;
 
   apk_quat[j] = (rot.get(j,i) + rot.get(i,j)) * root;
   apk_quat[k] = (rot.get(k,i) + rot.get(i,k)) * root;
@@ -176,7 +175,7 @@ auto alloy::core::quaternion::from_to(const vector3& from, const vector3& to)
 
   // The cross product of opposite directions is 0, so it cannot provide the
   // axis of the half turn between them.
-  if (cos_theta < real{-1} + default_tolerance) {
+  if (cos_theta < -1.0f + default_tolerance) {
     return from_angle_axis(
       radian_constants::half_revolution,
       from_dir.perpendicular()
@@ -189,7 +188,7 @@ auto alloy::core::quaternion::from_to(const vector3& from, const vector3& to)
   const auto axis = from_dir.cross(to_dir);
 
   return quaternion{
-    real{1} + cos_theta,
+    1.0f + cos_theta,
     axis.x(),
     axis.y(),
     axis.z()
@@ -234,8 +233,8 @@ auto alloy::core::quaternion::at(index_type n) const -> const_reference
 
 auto alloy::core::quaternion::x_axis() const noexcept -> vector3
 {
-  const auto ty  = real{2.0} * y();
-  const auto tz  = real{2.0} * z();
+  const auto ty  = 2.0f * y();
+  const auto tz  = 2.0f * z();
   const auto twy = ty * w();
   const auto twz = tz * w();
   const auto txy = ty * x();
@@ -243,7 +242,7 @@ auto alloy::core::quaternion::x_axis() const noexcept -> vector3
   const auto tyy = ty * y();
   const auto tzz = tz * z();
 
-  return vector3{real{1.0} - (tyy + tzz), txy + twz, txz - twy};
+  return vector3{1.0f - (tyy + tzz), txy + twz, txz - twy};
 }
 
 //----------------------------------------------------------------------------
@@ -286,20 +285,20 @@ auto alloy::core::quaternion::to_euler_angles() const noexcept -> euler_angles
 {
   // Entries of the rotation matrix Ry(yaw) * Rx(pitch) * Rz(roll) that
   // `from_angles` produces.
-  const auto r02 = real{2} * (x()*z() + w()*y());
-  const auto r22 = real{1} - real{2} * (x()*x() + y()*y());
-  const auto r12 = real{2} * (y()*z() - w()*x());
-  const auto r10 = real{2} * (x()*y() + w()*z());
-  const auto r11 = real{1} - real{2} * (x()*x() + z()*z());
+  const auto r02 = 2.0f * (x()*z() + w()*y());
+  const auto r22 = 1.0f - 2.0f * (x()*x() + y()*y());
+  const auto r12 = 2.0f * (y()*z() - w()*x());
+  const auto r10 = 2.0f * (x()*y() + w()*z());
+  const auto r11 = 1.0f - 2.0f * (x()*x() + z()*z());
 
-  const auto pitch = trigonometry::arcsin(clamp(-r12, real{-1}, real{1}));
+  const auto pitch = trigonometry::arcsin(clamp(-r12, -1.0f, 1.0f));
 
   // r02 and r22 are the sine and cosine of the yaw, each scaled by the cosine
   // of the pitch. At a quarter turn of pitch, they vanish along with the
   // entries that the roll is read from.
   if ((r02*r02 + r22*r22) < default_tolerance) {
-    const auto r00 = real{1} - real{2} * (y()*y() + z()*z());
-    const auto r20 = real{2} * (x()*z() - w()*y());
+    const auto r00 = 1.0f - 2.0f * (y()*y() + z()*z());
+    const auto r20 = 2.0f * (x()*z() - w()*y());
     const auto yaw = trigonometry::arctan2(-r20, r00);
 
     return euler_angles{yaw, pitch, radian{0}};
@@ -335,17 +334,17 @@ auto alloy::core::quaternion::extract_rotation_matrix(not_null<matrix3*> rot)
 
   auto& matrix = (*rot);
 
-  matrix[0][0] = real{1} - (tyy + tzz);
+  matrix[0][0] = 1.0f - (tyy + tzz);
   matrix[0][1] = txy + twz;
   matrix[0][2] = txz - twy;
 
   matrix[1][0] = txy - twz;
-  matrix[1][1] = real{1} - (txx + tzz);
+  matrix[1][1] = 1.0f - (txx + tzz);
   matrix[1][2] = tyz + twx;
 
   matrix[2][0] = txz + twy;
   matrix[2][1] = tyz - twx;
-  matrix[2][2] = real{1} - (txx + tyy);
+  matrix[2][2] = 1.0f - (txx + tyy);
 }
 
 //----------------------------------------------------------------------------
@@ -353,9 +352,9 @@ auto alloy::core::quaternion::extract_rotation_matrix(not_null<matrix3*> rot)
 auto alloy::core::quaternion::extract_rotation_matrix(not_null<matrix4*> rot)
   const noexcept -> void
 {
-  const auto tx  = real{2} * x();
-  const auto ty  = real{2} * y();
-  const auto tz  = real{2} * z();
+  const auto tx  = 2.0f * x();
+  const auto ty  = 2.0f * y();
+  const auto tz  = 2.0f * z();
   const auto twx = tx * w();
   const auto twy = ty * w();
   const auto twz = tz * w();
@@ -370,25 +369,25 @@ auto alloy::core::quaternion::extract_rotation_matrix(not_null<matrix4*> rot)
 
   auto& matrix = (*rot);
 
-  matrix[0][0] = real{1} - (tyy + tzz);
+  matrix[0][0] = 1.0f - (tyy + tzz);
   matrix[0][1] = txy + twz;
   matrix[0][2] = txz - twy;
-  matrix[0][3] = real{0};
+  matrix[0][3] = 0.0f;
 
   matrix[1][0] = txy - twz;
-  matrix[1][1] = real{1} - (txx + tzz);
+  matrix[1][1] = 1.0f - (txx + tzz);
   matrix[1][2] = tyz + twx;
-  matrix[1][3] = real{0};
+  matrix[1][3] = 0.0f;
 
   matrix[2][0] = txz + twy;
   matrix[2][1] = tyz - twx;
-  matrix[2][2] = real{1} - (txx + tyy);
-  matrix[2][3] = real{0};
+  matrix[2][2] = 1.0f - (txx + tyy);
+  matrix[2][3] = 0.0f;
 
-  matrix[3][0] = real{0};
-  matrix[3][1] = real{0};
-  matrix[3][2] = real{0};
-  matrix[3][3] = real{1};
+  matrix[3][0] = 0.0f;
+  matrix[3][1] = 0.0f;
+  matrix[3][2] = 0.0f;
+  matrix[3][3] = 1.0f;
 }
 
 //----------------------------------------------------------------------------
@@ -400,10 +399,10 @@ auto alloy::core::quaternion::extract_angle_axis(
 {
   const auto squared_length = x()*x() + y()*y() + z()*z();
 
-  if (squared_length > real{0}){
+  if (squared_length > 0.0f){
 
-    const auto inv_length = real{1} / sqrt(squared_length);
-    (*angle) = 2 * trigonometry::arccos(clamp(w(), real{-1}, real{1}));
+    const auto inv_length = 1.0f / sqrt(squared_length);
+    (*angle) = 2 * trigonometry::arccos(clamp(w(), -1.0f, 1.0f));
     axis->x() = x() * inv_length;
     axis->y() = y() * inv_length;
     axis->z() = z() * inv_length;
@@ -411,9 +410,9 @@ auto alloy::core::quaternion::extract_angle_axis(
   } else {
 
     (*angle)  = radian{0};
-    axis->x() = real{1};
-    axis->y() = real{0};
-    axis->z() = real{0};
+    axis->x() = 1.0f;
+    axis->y() = 0.0f;
+    axis->z() = 0.0f;
 
   }
 }
@@ -444,8 +443,8 @@ auto alloy::core::quaternion::normalize() noexcept -> quaternion&
 {
   const auto mag = magnitude();
 
-  if (mag > real{0}) {
-    const auto mag_inv = real{1} / mag;
+  if (mag > 0.0f) {
+    const auto mag_inv = 1.0f / mag;
 
     for (auto i=0; i<4; ++i) {
       m_data[i] *= mag_inv;
@@ -457,8 +456,8 @@ auto alloy::core::quaternion::normalize() noexcept -> quaternion&
 auto alloy::core::quaternion::invert() noexcept -> quaternion&
 {
   const auto square_mag = dot(*this);
-  if (square_mag > real{0}){
-    const auto square_mag_inv = real{1} / square_mag;
+  if (square_mag > 0.0f){
+    const auto square_mag_inv = 1.0f / square_mag;
     w() *=  square_mag_inv;
     x() *= -square_mag_inv;
     y() *= -square_mag_inv;
@@ -618,7 +617,7 @@ auto alloy::core::quaternion::operator*=(value_type rhs) noexcept -> quaternion&
 
 auto alloy::core::quaternion::operator/=(value_type rhs) noexcept -> quaternion&
 {
-  const auto inv = real{1} / rhs;
+  const auto inv = 1.0f / rhs;
 
   for (auto i=0; i<4;++i) {
     m_data[i] *= inv;
@@ -645,8 +644,8 @@ auto alloy::core::operator*(const quaternion& lhs, const vector3& rhs)
 
   auto uv  = qvec.cross(rhs);
   auto uuv = qvec.cross(uv);
-  uv *= (real{2} * lhs.w());
-  uuv *= real{2};
+  uv *= (2.0f * lhs.w());
+  uuv *= 2.0f;
 
   return (rhs + uv + uuv);
 }
@@ -655,35 +654,35 @@ auto alloy::core::operator*(const quaternion& lhs, const vector3& rhs)
 // Interpolation
 //----------------------------------------------------------------------------
 
-auto alloy::core::nlerp(const quaternion& q0, const quaternion& q1, real alpha)
+auto alloy::core::nlerp(const quaternion& q0, const quaternion& q1, float alpha)
   noexcept -> quaternion
 {
   // q and -q are the same rotation; picking the one closer to q0 takes the
   // shorter of the two paths between them.
-  const auto end = (dot(q0, q1) < real{0}) ? -q1 : q1;
+  const auto end = (dot(q0, q1) < 0.0f) ? -q1 : q1;
 
-  return ((q0 * (real{1} - alpha)) + (end * alpha)).normalized();
+  return ((q0 * (1.0f - alpha)) + (end * alpha)).normalized();
 }
 
-auto alloy::core::slerp(const quaternion& q0, const quaternion& q1, real alpha)
+auto alloy::core::slerp(const quaternion& q0, const quaternion& q1, float alpha)
   noexcept -> quaternion
 {
   auto cos_theta = dot(q0, q1);
   auto end = q1;
-  if (cos_theta < real{0}) {
+  if (cos_theta < 0.0f) {
     cos_theta = -cos_theta;
     end = -q1;
   }
 
   // Nearly parallel rotations would divide by a sine that is close to 0, and
   // are close enough for a linear interpolation to be indistinguishable.
-  if (cos_theta > real{0.9995}) {
+  if (cos_theta > 0.9995f) {
     return nlerp(q0, end, alpha);
   }
 
   const auto theta = trigonometry::arccos(cos_theta);
   const auto sin_theta = trigonometry::sin(theta);
-  const auto s0 = trigonometry::sin(theta * (real{1} - alpha)) / sin_theta;
+  const auto s0 = trigonometry::sin(theta * (1.0f - alpha)) / sin_theta;
   const auto s1 = trigonometry::sin(theta * alpha) / sin_theta;
 
   return (q0 * s0) + (end * s1);

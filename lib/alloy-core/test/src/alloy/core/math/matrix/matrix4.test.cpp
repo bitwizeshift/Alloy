@@ -8,7 +8,6 @@
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix4_constants.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -23,10 +22,10 @@ namespace alloy::core::test {
 // Constructors
 //------------------------------------------------------------------------------
 
-TEST_CASE("matrix4::matrix4( const real(&)[16] )", "[ctor]")
+TEST_CASE("matrix4::matrix4( const float(&)[16] )", "[ctor]")
 {
   // Arrange
-  const real array[16] = {
+  const float array[16] = {
      1,  2,  3,  4,
      5,  6,  7,  8,
      9, 10, 11, 12,
@@ -43,10 +42,10 @@ TEST_CASE("matrix4::matrix4( const real(&)[16] )", "[ctor]")
   }
 }
 
-TEST_CASE("matrix4::matrix4( const real(&)[4][4] )", "[ctor]")
+TEST_CASE("matrix4::matrix4( const float(&)[4][4] )", "[ctor]")
 {
   // Arrange
-  const real array[4][4] = {
+  const float array[4][4] = {
     { 1,  2,  3,  4},
     { 5,  6,  7,  8},
     { 9, 10, 11, 12},
@@ -83,7 +82,7 @@ TEST_CASE("matrix4::at( index_type, index_type )", "[element access]")
   // Assert
   SECTION("Retrieves the entry at the row and column")
   {
-    REQUIRE( result == real{4} );
+    REQUIRE( result == 4.0f );
   }
 }
 
@@ -136,7 +135,7 @@ TEST_CASE("matrix4::operator[]( index_type )", "[element access]")
     13, 14, 15, 16
   };
 
-  const auto expected = std::array<real,4>{2, 6, 10, 14};
+  const auto expected = std::array<float,4>{2, 6, 10, 14};
 
   // Act
   const auto* const column = sut[1];
@@ -162,7 +161,7 @@ TEST_CASE("matrix4::data()", "[observers]")
       0, 0, 1, 7,
       0, 0, 0, 1
     };
-    const real expected[16] = {
+    const float expected[16] = {
       1, 0, 0, 0,
       0, 1, 0, 0,
       0, 0, 1, 0,
@@ -185,7 +184,7 @@ TEST_CASE("matrix4::data()", "[observers]")
        9, 10, 11, 12,
       13, 14, 15, 16
     };
-    real array[16] = {};
+    float array[16] = {};
 
     // Act
     std::copy_n(sut.data(), 16, array);
@@ -218,7 +217,7 @@ TEST_CASE("matrix4::determinant()", "[quantifiers]")
     const auto result = sut.determinant();
 
     // Assert
-    REQUIRE( almost_equal(result, real{24}) );
+    REQUIRE( almost_equal(result, 24.0f) );
   }
 
   SECTION("Determinant of a general matrix")
@@ -235,7 +234,7 @@ TEST_CASE("matrix4::determinant()", "[quantifiers]")
     const auto result = sut.determinant();
 
     // Assert
-    REQUIRE( almost_equal(result, real{-16}) );
+    REQUIRE( almost_equal(result, -16.0f) );
   }
 }
 
@@ -253,7 +252,7 @@ TEST_CASE("matrix4::trace()", "[quantifiers]")
   const auto result = sut.trace();
 
   // Assert
-  REQUIRE( almost_equal(result, real{10}) );
+  REQUIRE( almost_equal(result, 10.0f) );
 }
 
 TEST_CASE("matrix4::inverse()", "[quantifiers]")
@@ -290,7 +289,7 @@ TEST_CASE("matrix4::inverse()", "[quantifiers]")
        1, -1,  1,  1,
       -1,  1,  1,  1
     };
-    const auto expected = sut * real{0.25};
+    const auto expected = sut * 0.25f;
 
     // Act
     const auto result = sut.inverse();
@@ -405,7 +404,7 @@ TEST_CASE("operator*( const matrix4&, const matrix4& )", "[arithmetic]")
   }
 }
 
-TEST_CASE("operator*( const matrix4&, real )", "[arithmetic]")
+TEST_CASE("operator*( const matrix4&, float )", "[arithmetic]")
 {
   // Arrange
   const auto sut = matrix4_constants::identity;
@@ -418,39 +417,39 @@ TEST_CASE("operator*( const matrix4&, real )", "[arithmetic]")
   };
 
   // Act
-  const auto result = sut * real{3};
+  const auto result = sut * 3.0f;
 
   // Assert
   REQUIRE( result == expected );
 }
 
-TEST_CASE("matrix4::operator/=( real )", "[arithmetic]")
+TEST_CASE("matrix4::operator/=( float )", "[arithmetic]")
 {
   // Arrange
-  auto sut = matrix4_constants::identity * real{4};
+  auto sut = matrix4_constants::identity * 4.0f;
 
   // Act
-  sut /= real{2};
+  sut /= 2.0f;
 
   // Assert
-  REQUIRE( sut == matrix4_constants::identity * real{2} );
+  REQUIRE( sut == matrix4_constants::identity * 2.0f );
 }
 
 //------------------------------------------------------------------------------
 // Comparisons
 //------------------------------------------------------------------------------
 
-TEST_CASE("almost_equal( const matrix4&, const matrix4&, real )", "[comparison]")
+TEST_CASE("almost_equal( const matrix4&, const matrix4&, float )", "[comparison]")
 {
   // Arrange
   const auto lhs = matrix4_constants::identity;
   auto rhs = matrix4_constants::identity;
-  rhs.get(3,0) = real{0.05};
+  rhs.get(3,0) = 0.05f;
 
   SECTION("Matrices within tolerance are almost equal")
   {
     // Act
-    const auto result = almost_equal(lhs, rhs, real{0.1});
+    const auto result = almost_equal(lhs, rhs, 0.1f);
 
     // Assert
     REQUIRE( result );
@@ -458,7 +457,7 @@ TEST_CASE("almost_equal( const matrix4&, const matrix4&, real )", "[comparison]"
   SECTION("Matrices outside tolerance are not almost equal")
   {
     // Act
-    const auto result = almost_equal(lhs, rhs, real{0.01});
+    const auto result = almost_equal(lhs, rhs, 0.01f);
 
     // Assert
     REQUIRE_FALSE( result );

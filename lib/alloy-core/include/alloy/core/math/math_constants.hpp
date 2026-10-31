@@ -16,8 +16,6 @@
 # pragma once
 #endif
 
-#include "alloy/core/precision.hpp"
-
 namespace alloy::core {
 
   //===========================================================================
@@ -33,7 +31,7 @@ namespace alloy::core {
     math_constants() = delete;
     ~math_constants() = delete;
 
-    inline static constexpr auto pi = 3.1415926535897932384626433832795028_real;
+    inline static constexpr auto pi = 3.14159265358979323846f;
     inline static constexpr auto half_pi = pi / 2;
     inline static constexpr auto two_pi = 2 * pi;
 

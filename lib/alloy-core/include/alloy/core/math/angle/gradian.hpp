@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/core/math/angle/basic_angle.hpp"
-#include "alloy/core/precision.hpp"
 
 #include <type_traits> // std::enable_if
 
@@ -28,7 +27,7 @@ namespace alloy::core {
 
   struct gradian_unit
   {
-    static constexpr auto revolution() noexcept -> real;
+    static constexpr auto revolution() noexcept -> float;
   };
 
   //============================================================================
@@ -95,9 +94,9 @@ namespace alloy::core {
 //==============================================================================
 
 inline constexpr
-auto alloy::core::gradian_unit::revolution() noexcept -> real
+auto alloy::core::gradian_unit::revolution() noexcept -> float
 {
-  return static_cast<real>(400);
+  return 400.0f;
 }
 
 //==============================================================================
@@ -123,7 +122,7 @@ auto alloy::core::casts::to_gradian(basic_angle<AngleUnit> angle)
 inline constexpr
 auto alloy::core::literals::operator""_grad(long double x) noexcept -> gradian
 {
-  return gradian{ static_cast<real>(x) };
+  return gradian{ static_cast<float>(x) };
 }
 
 #endif /* ALLOY_CORE_MATH_ANGLE_GRADIAN_HPP */

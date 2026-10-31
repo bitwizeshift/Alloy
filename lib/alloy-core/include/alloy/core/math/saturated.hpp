@@ -18,7 +18,6 @@
 
 #include "alloy/core/assert.hpp"
 #include "alloy/core/intrinsics.hpp"
-#include "alloy/core/precision/real.hpp"
 
 #include <cmath>       // std::isnan, std::isfinite, std::fpclassify, etc
 #include <concepts>    // std::convertible_to
@@ -319,7 +318,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     saturated<Float> lhs,
     saturated<Float> rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //---------------------------------------------------------------------------
@@ -760,7 +759,7 @@ inline constexpr
 auto alloy::core::almost_equal(
   saturated<Float> lhs,
   saturated<Float> rhs,
-  real tolerance
+  float tolerance
 ) noexcept -> bool
 {
   const auto tmp = (lhs.value() - rhs.value());

@@ -12,7 +12,6 @@
 #include "alloy/core/math/matrix/matrix4.hpp"
 #include "alloy/core/math/quaternion.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 #include <array>
@@ -24,7 +23,7 @@
 alloy::core::transform::transform() noexcept
   : m_orientation{},
     m_translation{},
-    m_scale{real{1}, real{1}, real{1}}
+    m_scale{1.0f, 1.0f, 1.0f}
 {
 
 }
@@ -33,7 +32,7 @@ alloy::core::transform::transform() noexcept
 // Relative Transformations
 //-----------------------------------------------------------------------------
 
-auto alloy::core::transform::translate(real delta_x, real delta_y, real delta_z)
+auto alloy::core::transform::translate(float delta_x, float delta_y, float delta_z)
   noexcept -> void
 {
   m_translation.x() += delta_x;
@@ -46,17 +45,17 @@ auto alloy::core::transform::translate(const vector3& delta) noexcept -> void
   m_translation += delta;
 }
 
-auto alloy::core::transform::translate_x(real delta) noexcept -> void
+auto alloy::core::transform::translate_x(float delta) noexcept -> void
 {
   m_translation.x() += delta;
 }
 
-auto alloy::core::transform::translate_y(real delta) noexcept -> void
+auto alloy::core::transform::translate_y(float delta) noexcept -> void
 {
   m_translation.y() += delta;
 }
 
-auto alloy::core::transform::translate_z(real delta) noexcept -> void
+auto alloy::core::transform::translate_z(float delta) noexcept -> void
 {
   m_translation.z() += delta;
 }
@@ -97,7 +96,7 @@ auto alloy::core::transform::rotate_yaw(radian angle) noexcept -> void
 
 //-----------------------------------------------------------------------------
 
-auto alloy::core::transform::scale(real uniform) noexcept -> void
+auto alloy::core::transform::scale(float uniform) noexcept -> void
 {
   m_scale *= uniform;
 }
@@ -109,17 +108,17 @@ auto alloy::core::transform::scale(const vector3& scale) noexcept -> void
   }
 }
 
-auto alloy::core::transform::scale_x(real scale) noexcept -> void
+auto alloy::core::transform::scale_x(float scale) noexcept -> void
 {
   m_scale.x() *= scale;
 }
 
-auto alloy::core::transform::scale_y(real scale) noexcept -> void
+auto alloy::core::transform::scale_y(float scale) noexcept -> void
 {
   m_scale.y() *= scale;
 }
 
-auto alloy::core::transform::scale_z(real scale) noexcept -> void
+auto alloy::core::transform::scale_z(float scale) noexcept -> void
 {
   m_scale.z() *= scale;
 }
@@ -128,7 +127,7 @@ auto alloy::core::transform::scale_z(real scale) noexcept -> void
 // Absolute Transformations
 //-----------------------------------------------------------------------------
 
-auto alloy::core::transform::set_translation(real x, real y, real z)
+auto alloy::core::transform::set_translation(float x, float y, float z)
   noexcept -> void
 {
   m_translation = {x,y,z};
@@ -140,17 +139,17 @@ auto alloy::core::transform::set_translation(const vector3& translation)
   m_translation = translation;
 }
 
-auto alloy::core::transform::set_translation_x(real x) noexcept -> void
+auto alloy::core::transform::set_translation_x(float x) noexcept -> void
 {
   m_translation.x() = x;
 }
 
-auto alloy::core::transform::set_translation_y(real y) noexcept -> void
+auto alloy::core::transform::set_translation_y(float y) noexcept -> void
 {
   m_translation.y() = y;
 }
 
-auto alloy::core::transform::set_translation_z(real z) noexcept -> void
+auto alloy::core::transform::set_translation_z(float z) noexcept -> void
 {
   m_translation.z() = z;
 }
@@ -205,7 +204,7 @@ auto alloy::core::transform::look_at(const vector3& target, const vector3& up)
   m_orientation = quaternion::look_rotation(direction, up);
 }
 
-auto alloy::core::transform::set_scale(real uniform) noexcept -> void
+auto alloy::core::transform::set_scale(float uniform) noexcept -> void
 {
   for (auto i = 0; i < 3; ++i) {
     m_scale[i] = uniform;
@@ -217,17 +216,17 @@ auto alloy::core::transform::set_scale(const vector3& scale) noexcept -> void
   m_scale = scale;
 }
 
-auto alloy::core::transform::set_scale_x(real scale) noexcept -> void
+auto alloy::core::transform::set_scale_x(float scale) noexcept -> void
 {
   m_scale.x() = scale;
 }
 
-auto alloy::core::transform::set_scale_y(real scale) noexcept -> void
+auto alloy::core::transform::set_scale_y(float scale) noexcept -> void
 {
   m_scale.y() = scale;
 }
 
-auto alloy::core::transform::set_scale_z(real scale) noexcept -> void
+auto alloy::core::transform::set_scale_z(float scale) noexcept -> void
 {
   m_scale.z() = scale;
 }
@@ -327,9 +326,9 @@ auto alloy::core::transform::to_matrix4() const noexcept -> matrix4
 auto alloy::core::transform::extract_inverse_matrix(not_null<matrix4*> out)
   const noexcept -> void
 {
-  ALLOY_ASSERT(m_scale.x() != real{0});
-  ALLOY_ASSERT(m_scale.y() != real{0});
-  ALLOY_ASSERT(m_scale.z() != real{0});
+  ALLOY_ASSERT(m_scale.x() != 0.0f);
+  ALLOY_ASSERT(m_scale.y() != 0.0f);
+  ALLOY_ASSERT(m_scale.z() != 0.0f);
 
   // The inverse of translate * rotate * scale is
   // inverse(scale) * transpose(rotate) * inverse(translate). The inverse of
@@ -340,10 +339,10 @@ auto alloy::core::transform::extract_inverse_matrix(not_null<matrix4*> out)
 
   auto& result = *out;
 
-  auto inverse_scales = std::array<real, 3>{};
+  auto inverse_scales = std::array<float, 3>{};
 
   for (auto r = 0; r < 3; ++r) {
-    inverse_scales[r] = real{1} / m_scale[r];
+    inverse_scales[r] = 1.0f / m_scale[r];
   }
   for (auto c = 0; c < 3; ++c) {
     for (auto r = 0; r < 3; ++r) {
@@ -374,7 +373,7 @@ auto alloy::core::transform::to_inverse_matrix4() const noexcept -> matrix4
 auto alloy::core::almost_equal(
   const transform& lhs,
   const transform& rhs,
-  real tolerance
+  float tolerance
 ) noexcept -> bool
 {
   const auto orientation = lhs.orientation();
@@ -392,7 +391,7 @@ auto alloy::core::almost_equal(
 auto alloy::core::interpolator<alloy::core::transform>::operator()(
   const transform& v0,
   const transform& v1,
-  real alpha
+  float alpha
 ) noexcept -> transform
 {
   auto result = transform{};

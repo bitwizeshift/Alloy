@@ -5,7 +5,6 @@
 #include <alloy/core/geometry/sphere.hpp>
 
 #include <alloy/core/geometry/point/point3.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -63,9 +62,9 @@ TEST_CASE("sphere::contains(const point&)", "[containment]") {
   }
 }
 
-TEST_CASE("sphere::contains(const point&, real)", "[containment]") {
+TEST_CASE("sphere::contains(const point&, float)", "[containment]") {
   // Arrange
-  constexpr auto tolerance = real{0.1};
+  constexpr auto tolerance = 0.1f;
   constexpr auto radius = 3.0;
   constexpr auto center = point3{1,1,1};
   constexpr auto sut = sphere{

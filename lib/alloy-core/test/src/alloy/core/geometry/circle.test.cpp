@@ -6,7 +6,6 @@
 
 #include <alloy/core/geometry/point/point2.hpp>
 #include <alloy/core/math/math.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -14,7 +13,7 @@ namespace alloy::core::test {
 
 TEST_CASE("circle::nearest_point(const point2&)", "[quantifier]") {
   // Arrange
-  const auto sut = circle{point2{1, 1}, real{2}};
+  const auto sut = circle{point2{1, 1}, 2.0f};
 
   SECTION("Point is inside the circle") {
     // Act
@@ -34,7 +33,7 @@ TEST_CASE("circle::nearest_point(const point2&)", "[quantifier]") {
 
 TEST_CASE("circle::contains(const point2&)", "[quantifier]") {
   // Arrange
-  const auto sut = circle{point2{1, 1}, real{2}};
+  const auto sut = circle{point2{1, 1}, 2.0f};
 
   SECTION("Point is inside the circle") {
     // Act
@@ -59,10 +58,10 @@ TEST_CASE("circle::contains(const point2&)", "[quantifier]") {
   }
 }
 
-TEST_CASE("circle::contains(const point2&, real)", "[quantifier]") {
+TEST_CASE("circle::contains(const point2&, float)", "[quantifier]") {
   // Arrange
-  const auto sut = circle{point2{1, 1}, real{2}};
-  const auto tolerance = real{0.1f};
+  const auto sut = circle{point2{1, 1}, 2.0f};
+  const auto tolerance = 0.1f;
 
   SECTION("Point is within tolerance of the edge") {
     // Act

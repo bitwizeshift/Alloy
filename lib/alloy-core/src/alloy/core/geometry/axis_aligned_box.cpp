@@ -10,7 +10,6 @@
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/math/vector/vector3_constants.hpp"
-#include "alloy/core/precision/real.hpp"
 
 #include <algorithm> // std::min, std::max
 #include <array>
@@ -166,13 +165,13 @@ auto alloy::core::axis_aligned_box::planes()
 }
 
 auto alloy::core::axis_aligned_box::distance_to(const point3& p)
-  const noexcept -> real
+  const noexcept -> float
 {
   return (p - nearest_point(p)).magnitude();
 }
 
 auto alloy::core::axis_aligned_box::square_distance_to(const point3& p)
-  const noexcept -> real
+  const noexcept -> float
 {
   return (p - nearest_point(p)).square_magnitude();
 }
@@ -195,7 +194,7 @@ auto alloy::core::axis_aligned_box::contains(const point3& p)
          (p.z() <= m_top_right.z()) && (p.z() >= m_bottom_left.z());
 }
 
-auto alloy::core::axis_aligned_box::contains(const point3& p, real tolerance)
+auto alloy::core::axis_aligned_box::contains(const point3& p, float tolerance)
   const noexcept -> bool
 {
   // Add a buffer of 'tolerance' for fuzzy matching
@@ -274,7 +273,7 @@ auto alloy::core::operator!=(
 auto alloy::core::almost_equal(
   const axis_aligned_box& lhs,
   const axis_aligned_box& rhs,
-  real tolerance
+  float tolerance
 ) noexcept -> bool
 {
   return almost_equal(lhs.top_right_point(),

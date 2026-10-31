@@ -7,7 +7,6 @@
 #include <alloy/core/math/vector/vector2.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -46,7 +45,7 @@ TEST_CASE("is_vector<T>", "[traits]")
   SECTION("Scalar types are not vectors")
   {
     // Act
-    constexpr auto property_holds = is_vector_v<real>;
+    constexpr auto property_holds = is_vector_v<float>;
 
     // Assert
     STATIC_REQUIRE_FALSE(property_holds);
@@ -64,7 +63,7 @@ TEST_CASE("vector_traits<T>", "[traits]")
     const auto z = vector_traits<vector3>::z(vec);
 
     // Assert
-    REQUIRE( z == real{3} );
+    REQUIRE( z == 3.0f );
   }
 
   SECTION("Reads 0 for components that the vector lacks")
@@ -78,10 +77,10 @@ TEST_CASE("vector_traits<T>", "[traits]")
 
     // Assert
     SECTION("Supplies zero for the missing third dimension") {
-      REQUIRE( z == real{0} );
+      REQUIRE( z == 0.0f );
     }
     SECTION("Supplies zero for the missing fourth dimension") {
-      REQUIRE( w == real{0} );
+      REQUIRE( w == 0.0f );
     }
   }
 }

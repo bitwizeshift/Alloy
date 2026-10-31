@@ -20,7 +20,6 @@
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision/real.hpp"
 
 #include <algorithm> // std::min, std::max, std::swap
 #include <optional>  // std::optional
@@ -31,8 +30,8 @@ namespace alloy::core::detail {
   ///        shape
   struct interval
   {
-    real near;
-    real far;
+    float near;
+    float far;
   };
 
   /// \brief Clips \p range of the line `origin + t * direction` to the part
@@ -91,7 +90,7 @@ auto alloy::core::detail::clip_to_slabs(
       }
       continue;
     }
-    const auto reciprocal = real{1} / direction[i];
+    const auto reciprocal = 1.0f / direction[i];
     auto t0 = (box_min[i] - origin[i]) * reciprocal;
     auto t1 = (box_max[i] - origin[i]) * reciprocal;
     if (t0 > t1) {

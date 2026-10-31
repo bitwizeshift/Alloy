@@ -6,7 +6,6 @@
 
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision/real.hpp"
 
 //==============================================================================
 // class : capsule
@@ -33,7 +32,7 @@ auto alloy::core::capsule::contains(const point3& p) const noexcept -> bool
   return contains(p, default_tolerance);
 }
 
-auto alloy::core::capsule::contains(const point3& p, real tolerance)
+auto alloy::core::capsule::contains(const point3& p, float tolerance)
   const noexcept -> bool
 {
   const auto offset = (p - m_segment.nearest_point(p));

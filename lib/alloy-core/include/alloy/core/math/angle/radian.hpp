@@ -17,7 +17,6 @@
 
 #include "alloy/core/math/angle/basic_angle.hpp"
 #include "alloy/core/math/math_constants.hpp"
-#include "alloy/core/precision.hpp"
 
 #include <type_traits> // std::enable_if
 
@@ -29,7 +28,7 @@ namespace alloy::core {
 
   struct radian_unit
   {
-    static constexpr auto revolution() noexcept -> real;
+    static constexpr auto revolution() noexcept -> float;
   };
 
   //============================================================================
@@ -96,9 +95,9 @@ namespace alloy::core {
 //==============================================================================
 
 inline constexpr
-auto alloy::core::radian_unit::revolution() noexcept -> real
+auto alloy::core::radian_unit::revolution() noexcept -> float
 {
-  return static_cast<real>(math_constants::two_pi);
+  return static_cast<float>(math_constants::two_pi);
 }
 
 //==============================================================================
@@ -124,7 +123,7 @@ auto alloy::core::casts::to_radian(basic_angle<AngleUnit> angle)
 inline constexpr
 auto alloy::core::literals::operator""_rad(long double x) noexcept -> radian
 {
-  return radian{ static_cast<real>(x) };
+  return radian{ static_cast<float>(x) };
 }
 
 #endif /* ALLOY_CORE_MATH_ANGLE_RADIAN_HPP */

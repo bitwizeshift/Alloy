@@ -11,7 +11,6 @@
 #include <alloy/core/math/matrix/matrix4_constants.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/model/projection.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -51,8 +50,8 @@ TEST_CASE("frustum::from_matrix(const matrix4&)", "[factory][static]") {
     // Arrange
     const auto matrix = projection::perspective(
       degree{90},
-      real{1},
-      view_volume::depth_bounds{real{1}, real{10}}
+      1.0f,
+      view_volume::depth_bounds{1.0f, 10.0f}
     ).to_matrix4();
 
     // Act

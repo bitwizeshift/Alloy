@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/core/math/matrix/matrix4.hpp"
-#include "alloy/core/precision/real.hpp"
 
 namespace alloy::core {
 
@@ -33,10 +32,10 @@ namespace alloy::core {
     ~matrix4_constants() = delete;
 
     inline static constexpr auto identity = matrix4{
-      real{1}, real{0}, real{0}, real{0},
-      real{0}, real{1}, real{0}, real{0},
-      real{0}, real{0}, real{1}, real{0},
-      real{0}, real{0}, real{0}, real{1},
+      1.0f, 0.0f, 0.0f, 0.0f,
+      0.0f, 1.0f, 0.0f, 0.0f,
+      0.0f, 0.0f, 1.0f, 0.0f,
+      0.0f, 0.0f, 0.0f, 1.0f,
     };
   };
 } // namespace alloy::core

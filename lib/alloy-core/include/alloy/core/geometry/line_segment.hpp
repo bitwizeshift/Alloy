@@ -18,7 +18,6 @@
 #include "alloy/core/api.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision.hpp"
 
 namespace alloy::core {
 
@@ -98,13 +97,13 @@ namespace alloy::core {
     ///
     /// \return the square magnitude
     [[nodiscard]]
-    constexpr auto square_magnitude() const noexcept -> real;
+    constexpr auto square_magnitude() const noexcept -> float;
 
     /// \brief Gets the magnitude of this line segment
     ///
     /// \return the magnitude of this line segment
     [[nodiscard]]
-    auto magnitude() const noexcept -> real;
+    auto magnitude() const noexcept -> float;
 
     //--------------------------------------------------------------------------
     // Quantifiers
@@ -118,7 +117,7 @@ namespace alloy::core {
     /// \param percent the distance to get this point at
     /// \return the point at the distance
     [[nodiscard]]
-    auto point_at_percent(real percent) const noexcept -> point3;
+    auto point_at_percent(float percent) const noexcept -> point3;
 
     /// \brief Gets the point on this line_segment nearest to the point \p p
     ///
@@ -141,7 +140,7 @@ namespace alloy::core {
     /// \param tolerance the tolerance for accepting the containment
     /// \return `true` if \p p is in the line_segment
     [[nodiscard]]
-    auto contains(const point3& p, real tolerance) const noexcept -> bool;
+    auto contains(const point3& p, float tolerance) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -176,7 +175,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const line_segment& lhs,
     const line_segment& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
 } // namespace alloy::core
@@ -191,8 +190,8 @@ namespace alloy::core {
 
 inline constexpr
 alloy::core::line_segment::line_segment() noexcept
-  : m_start{real{0}, real{0}, real{0}},
-    m_end{real{0}, real{0}, real{0}}
+  : m_start{0.0f, 0.0f, 0.0f},
+    m_end{0.0f, 0.0f, 0.0f}
 {
 
 }
@@ -242,7 +241,7 @@ auto alloy::core::line_segment::direction() const noexcept -> vector3
 }
 
 inline constexpr
-auto alloy::core::line_segment::square_magnitude() const noexcept -> real
+auto alloy::core::line_segment::square_magnitude() const noexcept -> float
 {
   const auto dir = direction();
   return dir.dot(dir);
@@ -273,7 +272,7 @@ inline constexpr
 auto alloy::core::almost_equal(
   const line_segment& lhs,
   const line_segment& rhs,
-  real tolerance
+  float tolerance
 ) noexcept -> bool
 {
   return almost_equal(lhs.start_point(), rhs.start_point(), tolerance) &&

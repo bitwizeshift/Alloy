@@ -7,7 +7,6 @@
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix2_constants.hpp>
 #include <alloy/core/math/vector/vector2.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -29,7 +28,7 @@ TEST_CASE("matrix2::operator[]( index_type )", "[element access]")
     3, 4
   };
 
-  const auto expected = std::array<real,2>{2, 4};
+  const auto expected = std::array<float,2>{2, 4};
 
   // Act
   const auto* const column = sut[1];
@@ -47,7 +46,7 @@ TEST_CASE("matrix2::data()", "[observers]")
     1, 2,
     3, 4
   };
-  const real expected[4] = {1, 3, 2, 4};
+  const float expected[4] = {1, 3, 2, 4};
 
   // Act
   const auto* const result = sut.data();
@@ -75,7 +74,7 @@ TEST_CASE("matrix2::determinant()", "[quantifiers]")
   const auto result = sut.determinant();
 
   // Assert
-  REQUIRE( almost_equal(result, real{10}) );
+  REQUIRE( almost_equal(result, 10.0f) );
 }
 
 TEST_CASE("matrix2::trace()", "[quantifiers]")
@@ -90,7 +89,7 @@ TEST_CASE("matrix2::trace()", "[quantifiers]")
   const auto result = sut.trace();
 
   // Assert
-  REQUIRE( almost_equal(result, real{10}) );
+  REQUIRE( almost_equal(result, 10.0f) );
 }
 
 TEST_CASE("matrix2::inverse()", "[quantifiers]")

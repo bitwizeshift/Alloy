@@ -17,7 +17,6 @@
 
 #include "alloy/core/api.hpp"
 #include "alloy/core/math/quaternion.hpp"
-#include "alloy/core/precision/real.hpp"
 
 namespace alloy::core {
 
@@ -31,18 +30,18 @@ namespace alloy::core {
 
     /// \brief A quaternion with every component set to 0
     inline static constexpr auto zero = quaternion{
-      real{0},
-      real{0},
-      real{0},
-      real{0}
+      0.0f,
+      0.0f,
+      0.0f,
+      0.0f
     };
 
     /// \brief The quaternion that represents no rotation
     inline static constexpr auto identity = quaternion{
-      real{1},
-      real{0},
-      real{0},
-      real{0}
+      1.0f,
+      0.0f,
+      0.0f,
+      0.0f
     };
   };
 

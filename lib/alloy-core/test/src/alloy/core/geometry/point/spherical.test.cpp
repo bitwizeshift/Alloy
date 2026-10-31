@@ -8,7 +8,6 @@
 #include <alloy/core/math/angle/radian.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/math_constants.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -23,7 +22,7 @@ TEST_CASE("to_spherical(const point3&)", "[utility]") {
 
   // Assert
   SECTION("Has the distance from the origin") {
-    REQUIRE(almost_equal(result.rho(), real{2}));
+    REQUIRE(almost_equal(result.rho(), 2.0f));
   }
   SECTION("Has the angle from the z-axis") {
     REQUIRE(almost_equal(result.phi(), radian{math_constants::half_pi}));
@@ -37,7 +36,7 @@ TEST_CASE("to_point(const spherical&)", "[utility]") {
   SECTION("Point is on the y-axis") {
     // Arrange
     const auto p = spherical{
-      real{2},
+      2.0f,
       radian{math_constants::half_pi},
       radian{math_constants::half_pi}
     };

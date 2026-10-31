@@ -18,7 +18,6 @@
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision.hpp"
 
 #include <cstddef> // std::size_t
 
@@ -76,7 +75,7 @@ namespace alloy::core {
     /// \param u the u component (alpha)
     /// \param v the v component (beta0
     /// \param w the w component (gamma)
-    constexpr barycentric(real u, real v, real w) noexcept;
+    constexpr barycentric(float u, float v, float w) noexcept;
 
     /// \brief Copies the contents of \p other
     ///
@@ -100,24 +99,24 @@ namespace alloy::core {
     /// \brief Gets the u component
     ///
     /// \return the u component
-    constexpr auto u() noexcept -> real&;
-    constexpr auto u() const noexcept -> real;
+    constexpr auto u() noexcept -> float&;
+    constexpr auto u() const noexcept -> float;
     /// \}
 
     /// \{
     /// \brief Gets the v component
     ///
     /// \return the v component
-    constexpr auto v() noexcept -> real&;
-    constexpr auto v() const noexcept -> real;
+    constexpr auto v() noexcept -> float&;
+    constexpr auto v() const noexcept -> float;
     /// \}
 
     /// \{
     /// \brief Gets the w component
     ///
     /// \return the w component
-    constexpr auto w() noexcept -> real&;
-    constexpr auto w() const noexcept -> real;
+    constexpr auto w() noexcept -> float&;
+    constexpr auto w() const noexcept -> float;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -126,7 +125,7 @@ namespace alloy::core {
     ///
     /// \return a pointer to the data
     [[nodiscard]]
-    constexpr auto data() const noexcept -> const real*;
+    constexpr auto data() const noexcept -> const float*;
 
     /// \brief Gets the number of components in this barycentric coordinate
     ///
@@ -139,7 +138,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   private:
 
-    real m_data[3];
+    float m_data[3];
   };
 
 } // namespace alloy::core
@@ -152,7 +151,7 @@ alloy::core::barycentric::barycentric() noexcept
 }
 
 inline constexpr
-alloy::core::barycentric::barycentric(real u, real v, real w) noexcept
+alloy::core::barycentric::barycentric(float u, float v, float w) noexcept
   : m_data{u, v, w}
 {
 
@@ -176,10 +175,10 @@ auto alloy::core::barycentric::from_cartesian(
     const auto d20 = v2.dot(v0);
     const auto d21 = v2.dot(v1);
 
-    const auto reciprocal = real{1} / (d00 * d11 - d01 * d01);
+    const auto reciprocal = 1.0f / (d00 * d11 - d01 * d01);
     const auto v = (d11 * d20 - d01 * d21) * reciprocal;
     const auto w = (d00 * d21 - d01 * d20) * reciprocal;
-    const auto u = real{1} - v - w;
+    const auto u = 1.0f - v - w;
 
     return barycentric{u, v, w};
 }
@@ -197,52 +196,52 @@ auto alloy::core::barycentric::from_cartesian(
   const auto v1 = (t2 - t0);
   const auto v2 = (p  - t0);
 
-  const auto reciprocal = real{1} / ((v0.x() * v1.y()) - (v1.x() * v0.y()));
+  const auto reciprocal = 1.0f / ((v0.x() * v1.y()) - (v1.x() * v0.y()));
   const auto v = (v2.x() * v1.y() - v1.x() * v2.y()) * reciprocal;
   const auto w = (v0.x() * v2.y() - v2.x() * v0.y()) * reciprocal;
-  const auto u = real{1} - v - w;
+  const auto u = 1.0f - v - w;
 
   return barycentric{u, v, w};
 }
 
 inline constexpr
-auto alloy::core::barycentric::u() noexcept -> real&
+auto alloy::core::barycentric::u() noexcept -> float&
 {
   return m_data[0];
 }
 
 inline constexpr
-auto alloy::core::barycentric::u() const noexcept -> real
+auto alloy::core::barycentric::u() const noexcept -> float
 {
   return m_data[0];
 }
 
 inline constexpr
-auto alloy::core::barycentric::v() noexcept -> real&
+auto alloy::core::barycentric::v() noexcept -> float&
 {
   return m_data[1];
 }
 
 inline constexpr
-auto alloy::core::barycentric::v() const noexcept -> real
+auto alloy::core::barycentric::v() const noexcept -> float
 {
   return m_data[1];
 }
 
 inline constexpr
-auto alloy::core::barycentric::w() noexcept -> real&
+auto alloy::core::barycentric::w() noexcept -> float&
 {
   return m_data[2];
 }
 
 inline constexpr
-auto alloy::core::barycentric::w() const noexcept -> real
+auto alloy::core::barycentric::w() const noexcept -> float
 {
   return m_data[2];
 }
 
 inline constexpr
-auto alloy::core::barycentric::data() const noexcept -> const real*
+auto alloy::core::barycentric::data() const noexcept -> const float*
 {
   return m_data;
 }

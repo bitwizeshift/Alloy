@@ -6,7 +6,6 @@
 
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision/real.hpp"
 
 //==============================================================================
 // class : ray
@@ -28,7 +27,7 @@ auto alloy::core::ray::from_points(const point3& origin, const point3& p)
 // Quantifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::ray::point_at_distance(real dt) const noexcept -> point3
+auto alloy::core::ray::point_at_distance(float dt) const noexcept -> point3
 {
   return m_origin + (m_direction * dt);
 }
@@ -38,7 +37,7 @@ auto alloy::core::ray::contains(const point3& p) const noexcept -> bool
   return contains(p, default_tolerance);
 }
 
-auto alloy::core::ray::contains(const point3& p, real tolerance)
+auto alloy::core::ray::contains(const point3& p, float tolerance)
   const noexcept -> bool
 {
   const auto offset = (p - m_origin);

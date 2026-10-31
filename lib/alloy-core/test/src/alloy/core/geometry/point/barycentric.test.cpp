@@ -8,7 +8,6 @@
 #include <alloy/core/geometry/point/point3.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -18,7 +17,7 @@ namespace alloy::core::test {
 
 TEST_CASE("barycentric::barycentric()", "[ctor]") {
   // Arrange
-  const auto expected = std::array<real,3>{};
+  const auto expected = std::array<float,3>{};
 
   // Act
   const auto sut = barycentric{};
@@ -37,7 +36,7 @@ TEST_CASE("barycentric::from_cartesian(const point3&, const point3&, const point
 
   SECTION("Point is a vertex") {
     // Arrange
-    const auto expected = vector3{real{0}, real{1}, real{0}};
+    const auto expected = vector3{0.0f, 1.0f, 0.0f};
 
     // Act
     const auto result = barycentric::from_cartesian(t1, t0, t1, t2);
@@ -49,7 +48,7 @@ TEST_CASE("barycentric::from_cartesian(const point3&, const point3&, const point
   }
   SECTION("Point is the centroid") {
     // Arrange
-    const auto expected = vector3{real{1} / real{3}, real{1} / real{3}, real{1} / real{3}};
+    const auto expected = vector3{1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f};
 
     // Act
     const auto result = barycentric::from_cartesian(
@@ -74,7 +73,7 @@ TEST_CASE("barycentric::from_cartesian(const point2&, const point2&, const point
 
   SECTION("Point is a vertex") {
     // Arrange
-    const auto expected = vector3{real{0}, real{0}, real{1}};
+    const auto expected = vector3{0.0f, 0.0f, 1.0f};
 
     // Act
     const auto result = barycentric::from_cartesian(t2, t0, t1, t2);
@@ -86,7 +85,7 @@ TEST_CASE("barycentric::from_cartesian(const point2&, const point2&, const point
   }
   SECTION("Point is the centroid") {
     // Arrange
-    const auto expected = vector3{real{1} / real{3}, real{1} / real{3}, real{1} / real{3}};
+    const auto expected = vector3{1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f};
 
     // Act
     const auto result = barycentric::from_cartesian(point2{1, 1}, t0, t1, t2);

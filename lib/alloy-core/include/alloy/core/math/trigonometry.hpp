@@ -19,7 +19,6 @@
 #include "alloy/core/api.hpp"
 #include "alloy/core/math/angle/basic_angle.hpp"
 #include "alloy/core/math/angle/radian.hpp"
-#include "alloy/core/precision.hpp"
 
 namespace alloy::core {
 
@@ -43,7 +42,7 @@ namespace alloy::core {
     ///
     /// \param rad the angle
     /// \return the result of `cos(rad)`
-    static auto cos(radian rad) noexcept -> real;
+    static auto cos(radian rad) noexcept -> float;
 
     /// \brief Calculates the cosine of the given \p angle
     ///
@@ -53,7 +52,7 @@ namespace alloy::core {
     /// \param angle the angle
     /// \return the result of `cos(angle)`
     template<typename AngleUnit>
-    static auto cos(basic_angle<AngleUnit> angle) noexcept -> real;
+    static auto cos(basic_angle<AngleUnit> angle) noexcept -> float;
 
     //--------------------------------------------------------------------------
 
@@ -61,7 +60,7 @@ namespace alloy::core {
     ///
     /// \param rad the angle
     /// \return the result of `sin(rad)`
-    static auto sin(radian rad) noexcept -> real;
+    static auto sin(radian rad) noexcept -> float;
 
     /// \brief Calculates the sine of the given \p angle
     ///
@@ -71,7 +70,7 @@ namespace alloy::core {
     /// \param angle the angle
     /// \return the result of `sin(angle)`
     template<typename AngleUnit>
-    static auto sin(basic_angle<AngleUnit> angle) noexcept -> real;
+    static auto sin(basic_angle<AngleUnit> angle) noexcept -> float;
 
     //--------------------------------------------------------------------------
 
@@ -79,7 +78,7 @@ namespace alloy::core {
     ///
     /// \param rad the angle
     /// \return the result of `tan(rad)`
-    static auto tan(radian rad) noexcept -> real;
+    static auto tan(radian rad) noexcept -> float;
 
     /// \brief Calculates the tangent of the given \p angle
     ///
@@ -89,7 +88,7 @@ namespace alloy::core {
     /// \param angle the angle
     /// \return the result of `tan(angle)`
     template<typename AngleUnit>
-    static auto tan(basic_angle<AngleUnit> angle) noexcept -> real;
+    static auto tan(basic_angle<AngleUnit> angle) noexcept -> float;
 
     //--------------------------------------------------------------------------
 
@@ -101,7 +100,7 @@ namespace alloy::core {
     /// \param angle the angle
     /// \return the result of `sec(angle)`
     template<typename AngleUnit>
-    static auto sec(basic_angle<AngleUnit> angle) noexcept -> real;
+    static auto sec(basic_angle<AngleUnit> angle) noexcept -> float;
 
     /// \brief Calculates the cosecant of the given \p angle
     ///
@@ -111,7 +110,7 @@ namespace alloy::core {
     /// \param angle the angle
     /// \return the result of `csc(angle)`
     template<typename AngleUnit>
-    static auto csc(basic_angle<AngleUnit> angle) noexcept -> real;
+    static auto csc(basic_angle<AngleUnit> angle) noexcept -> float;
 
     /// \brief Calculates the cotangent of the given \p angle
     ///
@@ -121,7 +120,7 @@ namespace alloy::core {
     /// \param angle the angle
     /// \return the result of `cot(angle)`
     template<typename AngleUnit>
-    static auto cot(basic_angle<AngleUnit> angle) noexcept -> real;
+    static auto cot(basic_angle<AngleUnit> angle) noexcept -> float;
 
     //--------------------------------------------------------------------------
     // Inverse Trig
@@ -131,19 +130,19 @@ namespace alloy::core {
     ///
     /// \param f the value, in [-1, 1]
     /// \return the inverse cosine, in [0, pi]
-    static auto arccos(real f) noexcept -> radian;
+    static auto arccos(float f) noexcept -> radian;
 
     /// \brief Calculates the inverse sine
     ///
     /// \param f the value, in [-1, 1]
     /// \return the inverse sine, in [-pi/2, pi/2]
-    static auto arcsin(real f) noexcept -> radian;
+    static auto arcsin(float f) noexcept -> radian;
 
     /// \brief Calculates the inverse tangent
     ///
     /// \param f the value
     /// \return the inverse tangent, in [-pi/2, pi/2]
-    static auto arctan(real f) noexcept -> radian;
+    static auto arctan(float f) noexcept -> radian;
 
     /// \brief Calculates the angle of the point (\p f2, \p f1) from the
     ///        positive x-axis, as if by `std::atan2(f1, f2)`
@@ -154,7 +153,7 @@ namespace alloy::core {
     /// \param f1 the y-coordinate
     /// \param f2 the x-coordinate
     /// \return the angle of the point
-    static auto arctan2(real f1, real f2) noexcept -> radian;
+    static auto arctan2(float f1, float f2) noexcept -> radian;
   };
 
 } // namespace alloy::core
@@ -166,7 +165,7 @@ namespace alloy::core {
 template<typename AngleUnit>
 inline
 auto alloy::core::trigonometry::cos(basic_angle<AngleUnit> angle)
-  noexcept -> real
+  noexcept -> float
 {
   return cos( to_radian(angle) );
 }
@@ -176,7 +175,7 @@ auto alloy::core::trigonometry::cos(basic_angle<AngleUnit> angle)
 template<typename AngleUnit>
 inline
 auto alloy::core::trigonometry::sin(basic_angle<AngleUnit> angle)
-  noexcept -> real
+  noexcept -> float
 {
   return sin( to_radian(angle) );
 }
@@ -186,7 +185,7 @@ auto alloy::core::trigonometry::sin(basic_angle<AngleUnit> angle)
 template<typename AngleUnit>
 inline
 auto alloy::core::trigonometry::tan(basic_angle<AngleUnit> angle)
-  noexcept -> real
+  noexcept -> float
 {
   return tan( to_radian(angle) );
 }
@@ -196,25 +195,25 @@ auto alloy::core::trigonometry::tan(basic_angle<AngleUnit> angle)
 template<typename AngleUnit>
 inline
 auto alloy::core::trigonometry::sec(basic_angle<AngleUnit> angle)
-  noexcept -> real
+  noexcept -> float
 {
-  return real{1} / cos( angle );
+  return 1.0f / cos( angle );
 }
 
 template<typename AngleUnit>
 inline
 auto alloy::core::trigonometry::csc(basic_angle<AngleUnit> angle)
-  noexcept -> real
+  noexcept -> float
 {
-  return real{1} / sin( angle );
+  return 1.0f / sin( angle );
 }
 
 template<typename AngleUnit>
 inline
 auto alloy::core::trigonometry::cot(basic_angle<AngleUnit> angle)
-  noexcept -> real
+  noexcept -> float
 {
-  return real{1} / tan( angle );
+  return 1.0f / tan( angle );
 }
 
 #endif /* ALLOY_CORE_MATH_TRIGONOMETRY_HPP */

@@ -6,18 +6,17 @@
 
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector2.hpp"
-#include "alloy/core/precision/real.hpp"
 
 //------------------------------------------------------------------------------
 // Quantifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::matrix2::determinant() const noexcept -> real
+auto alloy::core::matrix2::determinant() const noexcept -> float
 {
   return (get(0,0) * get(1,1)) - (get(0,1) * get(1,0));
 }
 
-auto alloy::core::matrix2::trace() const noexcept -> real
+auto alloy::core::matrix2::trace() const noexcept -> float
 {
   return (get(0,0) + get(1,1));
 }
@@ -26,14 +25,14 @@ auto alloy::core::matrix2::inverse() const noexcept -> matrix2
 {
   const auto det = determinant();
 
-  if (almost_equal(det, real{0})) {
+  if (almost_equal(det, 0.0f)) {
     return matrix2{
-      real{1}, real{0},
-      real{0}, real{1}
+      1.0f, 0.0f,
+      0.0f, 1.0f
     };
   }
 
-  const auto inv_det = (real{1} / det);
+  const auto inv_det = (1.0f / det);
 
   return matrix2{
      get(1,1) * inv_det, -get(0,1) * inv_det,

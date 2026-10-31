@@ -6,7 +6,6 @@
 
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision/real.hpp"
 
 //==============================================================================
 // class : line_segment
@@ -16,7 +15,7 @@
 // Observers
 //------------------------------------------------------------------------------
 
-auto alloy::core::line_segment::magnitude() const noexcept -> real
+auto alloy::core::line_segment::magnitude() const noexcept -> float
 {
   return sqrt(square_magnitude());
 }
@@ -25,7 +24,7 @@ auto alloy::core::line_segment::magnitude() const noexcept -> real
 // Quantifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::line_segment::point_at_percent(real percent)
+auto alloy::core::line_segment::point_at_percent(float percent)
   const noexcept -> point3
 {
   percent = saturate(percent);
@@ -41,7 +40,7 @@ auto alloy::core::line_segment::nearest_point(const point3& p)
 
   // A degenerate segment is a single point, and has no direction to project
   // onto.
-  if (square_length <= real{0}) {
+  if (square_length <= 0.0f) {
     return m_start;
   }
   const auto percent = saturate((p - m_start).dot(dir) / square_length);
@@ -54,7 +53,7 @@ auto alloy::core::line_segment::contains(const point3& p) const noexcept -> bool
   return contains(p, default_tolerance);
 }
 
-auto alloy::core::line_segment::contains(const point3& p, real tolerance)
+auto alloy::core::line_segment::contains(const point3& p, float tolerance)
   const noexcept -> bool
 {
   const auto offset = (p - nearest_point(p));

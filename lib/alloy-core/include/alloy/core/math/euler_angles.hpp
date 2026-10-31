@@ -21,7 +21,6 @@
 #include "alloy/core/math/angle/basic_angle.hpp"
 #include "alloy/core/math/angle/radian.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision.hpp"
 
 #include <cstddef>   // std::size_t, std::ptrdiff_t
 #include <stdexcept> // std::out_of_range
@@ -169,7 +168,7 @@ namespace alloy::core {
     ///
     /// \param rhs the other euler_angles to perform the dot-product with
     /// \return the dot product of `this` and \p rhs
-    constexpr auto dot(const euler_angles& rhs) const noexcept -> real;
+    constexpr auto dot(const euler_angles& rhs) const noexcept -> float;
 
     //--------------------------------------------------------------------------
     // Unary Operators
@@ -186,8 +185,8 @@ namespace alloy::core {
 
     auto operator+=(const euler_angles& rhs) noexcept -> euler_angles&;
     auto operator-=(const euler_angles& rhs) noexcept -> euler_angles&;
-    auto operator*=(real scalar) noexcept -> euler_angles&;
-    auto operator/=(real scalar) noexcept -> euler_angles&;
+    auto operator*=(float scalar) noexcept -> euler_angles&;
+    auto operator/=(float scalar) noexcept -> euler_angles&;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -209,11 +208,11 @@ namespace alloy::core {
     noexcept -> euler_angles;
   constexpr auto operator-(const euler_angles& lhs, const euler_angles& rhs)
     noexcept -> euler_angles;
-  constexpr auto operator*(const euler_angles& lhs, real scalar)
+  constexpr auto operator*(const euler_angles& lhs, float scalar)
     noexcept -> euler_angles;
-  constexpr auto operator*(real scalar, const euler_angles& rhs)
+  constexpr auto operator*(float scalar, const euler_angles& rhs)
     noexcept -> euler_angles;
-  constexpr auto operator/(const euler_angles& lhs, real scalar)
+  constexpr auto operator/(const euler_angles& lhs, float scalar)
     noexcept -> euler_angles;
 
   //----------------------------------------------------------------------------
@@ -236,7 +235,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const euler_angles& lhs,
     const euler_angles& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
@@ -249,7 +248,7 @@ namespace alloy::core {
   /// \param rhs the right euler_angles
   /// \return the result of the dot product
   constexpr
-  auto dot(const euler_angles& lhs, const euler_angles& rhs) noexcept -> real;
+  auto dot(const euler_angles& lhs, const euler_angles& rhs) noexcept -> float;
 
 } // namespace alloy::core
 
@@ -264,9 +263,9 @@ namespace alloy::core {
 inline constexpr
 alloy::core::euler_angles::euler_angles() noexcept
   : m_data{
-      radian{real{0}},
-      radian{real{0}},
-      radian{real{0}}
+      radian{0.0f},
+      radian{0.0f},
+      radian{0.0f}
     }
 {
 
@@ -389,9 +388,9 @@ auto alloy::core::euler_angles::operator[](index_type n)
 
 inline constexpr
 auto alloy::core::euler_angles::dot(const euler_angles& rhs)
-  const noexcept -> real
+  const noexcept -> float
 {
-  auto result = real{0};
+  auto result = 0.0f;
   for (auto i = 0; i < 3; ++i) {
     result += m_data[i].value() * rhs.m_data[i].value();
   }
@@ -440,7 +439,7 @@ auto alloy::core::euler_angles::operator-=(const euler_angles& rhs)
 }
 
 inline
-auto alloy::core::euler_angles::operator*=(real scalar)
+auto alloy::core::euler_angles::operator*=(float scalar)
   noexcept -> euler_angles&
 {
   for (auto i = 0; i < 3; ++i) {
@@ -450,10 +449,10 @@ auto alloy::core::euler_angles::operator*=(real scalar)
 }
 
 inline
-auto alloy::core::euler_angles::operator/=(real scalar)
+auto alloy::core::euler_angles::operator/=(float scalar)
   noexcept -> euler_angles&
 {
-  const auto reciprocal = real{1} / scalar;
+  const auto reciprocal = 1.0f / scalar;
 
   for (auto i = 0; i < 3; ++i) {
     m_data[i] *= reciprocal;
@@ -492,7 +491,7 @@ auto alloy::core::operator-(const euler_angles& lhs, const euler_angles& rhs)
 }
 
 inline constexpr
-auto alloy::core::operator*(const euler_angles& lhs, real scalar)
+auto alloy::core::operator*(const euler_angles& lhs, float scalar)
   noexcept -> euler_angles
 {
   return euler_angles{
@@ -503,17 +502,17 @@ auto alloy::core::operator*(const euler_angles& lhs, real scalar)
 }
 
 inline constexpr
-auto alloy::core::operator*(real scalar, const euler_angles& rhs)
+auto alloy::core::operator*(float scalar, const euler_angles& rhs)
   noexcept -> euler_angles
 {
   return rhs * scalar;
 }
 
 inline constexpr
-auto alloy::core::operator/(const euler_angles& lhs, real scalar)
+auto alloy::core::operator/(const euler_angles& lhs, float scalar)
   noexcept -> euler_angles
 {
-  const auto reciprocal = real{1} / scalar;
+  const auto reciprocal = 1.0f / scalar;
 
   return euler_angles{
     lhs.yaw() * reciprocal,
@@ -555,7 +554,7 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 inline constexpr
 auto alloy::core::almost_equal(const euler_angles& lhs,
                                const euler_angles& rhs,
-                               real tolerance)
+                               float tolerance)
   noexcept -> bool
 {
   for (auto i = 0; i < 3; ++i) {
@@ -572,7 +571,7 @@ auto alloy::core::almost_equal(const euler_angles& lhs,
 
 inline constexpr
 auto alloy::core::dot(const euler_angles& lhs, const euler_angles& rhs)
-  noexcept -> real
+  noexcept -> float
 {
   return lhs.dot(rhs);
 }

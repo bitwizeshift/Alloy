@@ -20,7 +20,6 @@
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision.hpp"
 
 namespace alloy::core {
 
@@ -135,7 +134,7 @@ namespace alloy::core {
     /// \param dt the distance to get this point at
     /// \return the point at the distance
     [[nodiscard]]
-    auto point_at_distance(real dt) const noexcept -> point3;
+    auto point_at_distance(float dt) const noexcept -> point3;
 
     /// \brief Checks if this ray intersects the given point \p p
     ///
@@ -151,7 +150,7 @@ namespace alloy::core {
     /// \param tolerance the tolerance for accepting the containment
     /// \return `true` if \p p is in the ray
     [[nodiscard]]
-    auto contains(const point3& p, real tolerance) const noexcept -> bool;
+    auto contains(const point3& p, float tolerance) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -180,7 +179,7 @@ namespace alloy::core {
   /// \param lhs the left ray
   /// \param rhs the right ray
   /// \return `true` if the two rays contain almost equal values
-  constexpr auto almost_equal(const ray& lhs, const ray& rhs, real tolerance)
+  constexpr auto almost_equal(const ray& lhs, const ray& rhs, float tolerance)
     noexcept -> bool;
 
 } // namespace alloy::core
@@ -273,7 +272,7 @@ auto alloy::core::operator!=(const ray& lhs, const ray& rhs) noexcept -> bool
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::almost_equal(const ray& lhs, const ray& rhs, real tolerance)
+auto alloy::core::almost_equal(const ray& lhs, const ray& rhs, float tolerance)
   noexcept -> bool
 {
   return almost_equal(lhs.origin(), rhs.origin(), tolerance) &&

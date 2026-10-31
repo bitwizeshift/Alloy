@@ -6,7 +6,6 @@
 
 #include <alloy/core/intrinsics.hpp>
 #include <alloy/core/math/matrix/matrix4.hpp>
-#include <alloy/core/precision/real.hpp>
 #include <alloy/core/utilities/not_null.hpp>
 
 #include <catch2/catch_test_macros.hpp>
@@ -21,7 +20,7 @@ namespace {
   // writes its value into the first entry of the matrix.
   struct counting_transform
   {
-    real value;
+    float value;
     int* extractions;
 
     auto extract_matrix(not_null<matrix4*> out) const noexcept -> void
@@ -36,7 +35,7 @@ namespace {
   // first entry of the matrix.
   struct move_only_transform
   {
-    std::unique_ptr<real> value;
+    std::unique_ptr<float> value;
 
     auto extract_matrix(not_null<matrix4*> out) const noexcept -> void
     {
@@ -54,7 +53,7 @@ namespace {
 TEST_CASE("cached_transform::cached_transform( Transform&& )", "[ctor]")
 {
   // Arrange
-  auto transform = move_only_transform{std::make_unique<real>(real{3})};
+  auto transform = move_only_transform{std::make_unique<float>(3.0f)};
 
   // Act
   auto sut = cached_transform{std::move(transform)};
@@ -63,7 +62,7 @@ TEST_CASE("cached_transform::cached_transform( Transform&& )", "[ctor]")
   // Assert
   SECTION("Takes ownership of a move-only transform")
   {
-    REQUIRE( result[0][0] == real{3} );
+    REQUIRE( result[0][0] == 3.0f );
   }
 }
 
@@ -76,7 +75,7 @@ TEST_CASE("cached_transform::cached_transform( std::in_place_t, Args&&... )",
   // Act
   const auto sut = cached_transform<counting_transform>{
     std::in_place,
-    real{3},
+    3.0f,
     &extractions
   };
   const auto result = sut.value().value;
@@ -84,7 +83,7 @@ TEST_CASE("cached_transform::cached_transform( std::in_place_t, Args&&... )",
   // Assert
   SECTION("Constructs the transform from the arguments")
   {
-    REQUIRE( result == real{3} );
+    REQUIRE( result == 3.0f );
   }
 }
 
@@ -96,17 +95,17 @@ TEST_CASE("cached_transform::operator*() &", "[element access]")
 {
   // Arrange
   auto extractions = 0;
-  auto sut = cached_transform{counting_transform{real{1}, &extractions}};
+  auto sut = cached_transform{counting_transform{1.0f, &extractions}};
   sut.matrix();
 
   // Act
-  (*sut).value = real{2};
+  (*sut).value = 2.0f;
   const auto result = sut.matrix();
 
   // Assert
   SECTION("Marks the matrix as stale")
   {
-    REQUIRE( result[0][0] == real{2} );
+    REQUIRE( result[0][0] == 2.0f );
   }
 }
 
@@ -114,7 +113,7 @@ TEST_CASE("cached_transform::operator*() &&", "[element access]")
 {
   // Arrange
   auto sut = cached_transform{
-    move_only_transform{std::make_unique<real>(real{3})}
+    move_only_transform{std::make_unique<float>(3.0f)}
   };
 
   // Act
@@ -123,7 +122,7 @@ TEST_CASE("cached_transform::operator*() &&", "[element access]")
   // Assert
   SECTION("Moves the transform out")
   {
-    REQUIRE( *result.value == real{3} );
+    REQUIRE( *result.value == 3.0f );
   }
 }
 
@@ -131,7 +130,7 @@ TEST_CASE("cached_transform::operator->() const", "[element access]")
 {
   // Arrange
   auto extractions = 0;
-  auto sut = cached_transform{counting_transform{real{1}, &extractions}};
+  auto sut = cached_transform{counting_transform{1.0f, &extractions}};
   sut.matrix();
 
   // Act
@@ -149,7 +148,7 @@ TEST_CASE("cached_transform::operator*() const &", "[element access]")
 {
   // Arrange
   auto extractions = 0;
-  auto sut = cached_transform{counting_transform{real{1}, &extractions}};
+  auto sut = cached_transform{counting_transform{1.0f, &extractions}};
   sut.matrix();
 
   // Act
@@ -171,7 +170,7 @@ TEST_CASE("cached_transform::matrix()", "[conversion]")
 {
   // Arrange
   auto extractions = 0;
-  auto sut = cached_transform{counting_transform{real{1}, &extractions}};
+  auto sut = cached_transform{counting_transform{1.0f, &extractions}};
 
   SECTION("First call computes the matrix")
   {
@@ -179,7 +178,7 @@ TEST_CASE("cached_transform::matrix()", "[conversion]")
     const auto result = sut.matrix();
 
     // Assert
-    REQUIRE( result[0][0] == real{1} );
+    REQUIRE( result[0][0] == 1.0f );
   }
   SECTION("Unmodified transform is not recomputed")
   {
@@ -196,7 +195,7 @@ TEST_CASE("cached_transform::matrix()", "[conversion]")
     sut.matrix();
 
     // Act
-    sut->value = real{2};
+    sut->value = 2.0f;
     sut.matrix();
     sut.matrix();
 
@@ -209,11 +208,11 @@ TEST_CASE("cached_transform::matrix()", "[conversion]")
     sut.matrix();
 
     // Act
-    sut->value = real{2};
+    sut->value = 2.0f;
     const auto result = sut.matrix();
 
     // Assert
-    REQUIRE( result[0][0] == real{2} );
+    REQUIRE( result[0][0] == 2.0f );
   }
 }
 

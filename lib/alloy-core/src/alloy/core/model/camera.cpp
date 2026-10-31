@@ -15,7 +15,6 @@
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/math/vector/vector3_constants.hpp"
 #include "alloy/core/math/vector/vector_utilities.hpp"
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 //-----------------------------------------------------------------------------
@@ -23,9 +22,9 @@
 //-----------------------------------------------------------------------------
 
 auto alloy::core::camera::translate_world(
-  real delta_x,
-  real delta_y,
-  real delta_z
+  float delta_x,
+  float delta_y,
+  float delta_z
 ) noexcept -> void
 {
   translate_world(vector3{delta_x, delta_y, delta_z});
@@ -36,17 +35,17 @@ auto alloy::core::camera::translate_world(const vector3& delta) noexcept -> void
   m_translation += delta;
 }
 
-auto alloy::core::camera::translate_world_x(real delta) noexcept -> void
+auto alloy::core::camera::translate_world_x(float delta) noexcept -> void
 {
   m_translation.x() += delta;
 }
 
-auto alloy::core::camera::translate_world_y(real delta) noexcept -> void
+auto alloy::core::camera::translate_world_y(float delta) noexcept -> void
 {
   m_translation.y() += delta;
 }
 
-auto alloy::core::camera::translate_world_z(real delta) noexcept -> void
+auto alloy::core::camera::translate_world_z(float delta) noexcept -> void
 {
   m_translation.z() += delta;
 }
@@ -55,17 +54,17 @@ auto alloy::core::camera::translate_world_z(real delta) noexcept -> void
 // Local Translations
 //-----------------------------------------------------------------------------
 
-auto alloy::core::camera::translate_local_x(real delta) noexcept -> void
+auto alloy::core::camera::translate_local_x(float delta) noexcept -> void
 {
   m_translation += m_right * delta;
 }
 
-auto alloy::core::camera::translate_local_y(real delta) noexcept -> void
+auto alloy::core::camera::translate_local_y(float delta) noexcept -> void
 {
   m_translation += m_up * delta;
 }
 
-auto alloy::core::camera::translate_local_z(real delta) noexcept -> void
+auto alloy::core::camera::translate_local_z(float delta) noexcept -> void
 {
   m_translation += m_forward * delta;
 }
@@ -135,7 +134,7 @@ auto alloy::core::camera::rotate_world_yaw(radian angle) noexcept -> void
 // Absolute Transformations
 //-----------------------------------------------------------------------------
 
-auto alloy::core::camera::set_translation(real x, real y, real z)
+auto alloy::core::camera::set_translation(float x, float y, float z)
   noexcept -> void
 {
   m_translation = vector3{x, y, z};
@@ -147,17 +146,17 @@ auto alloy::core::camera::set_translation(const vector3& translation)
   m_translation = translation;
 }
 
-auto alloy::core::camera::set_translation_x(real x) noexcept -> void
+auto alloy::core::camera::set_translation_x(float x) noexcept -> void
 {
   m_translation.x() = x;
 }
 
-auto alloy::core::camera::set_translation_y(real y) noexcept -> void
+auto alloy::core::camera::set_translation_y(float y) noexcept -> void
 {
   m_translation.y() = y;
 }
 
-auto alloy::core::camera::set_translation_z(real z) noexcept -> void
+auto alloy::core::camera::set_translation_z(float z) noexcept -> void
 {
   m_translation.z() = z;
 }
@@ -214,7 +213,7 @@ auto alloy::core::camera::look_at(const vector3& subject, const vector3& up)
   update_axes();
 }
 
-auto alloy::core::camera::look_at(real x, real y, real z, const vector3& up)
+auto alloy::core::camera::look_at(float x, float y, float z, const vector3& up)
   noexcept -> void
 {
   look_at(vector3{x,y,z}, up);
@@ -334,7 +333,7 @@ auto alloy::core::camera::update_axes() noexcept -> void
 auto alloy::core::interpolator<alloy::core::camera>::operator()(
   const camera& v0,
   const camera& v1,
-  real alpha
+  float alpha
 ) noexcept -> camera
 {
   auto result = camera{};

@@ -7,18 +7,17 @@
 #include <alloy/core/geometry/point/point3.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
 namespace alloy::core::test {
 
-TEST_CASE("line::point_at_distance(real)", "[quantifier]") {
+TEST_CASE("line::point_at_distance(float)", "[quantifier]") {
   // Arrange
   const auto sut = line{point3{1, 2, 3}, vector3{0, 1, 0}};
 
   // Act
-  const auto result = sut.point_at_distance(real{-4});
+  const auto result = sut.point_at_distance(-4.0f);
 
   // Assert
   SECTION("Moves along the direction from the origin") {
@@ -67,10 +66,10 @@ TEST_CASE("line::contains(const point3&)", "[quantifier]") {
   }
 }
 
-TEST_CASE("line::contains(const point3&, real)", "[quantifier]") {
+TEST_CASE("line::contains(const point3&, float)", "[quantifier]") {
   // Arrange
   const auto sut = line{};
-  const auto tolerance = real{0.1f};
+  const auto tolerance = 0.1f;
 
   SECTION("Point is within tolerance of the line") {
     // Act
@@ -146,10 +145,10 @@ TEST_CASE("operator==(const line&, const line&)", "[equality]") {
   }
 }
 
-TEST_CASE("almost_equal(const line&, const line&, real)", "[equality]") {
+TEST_CASE("almost_equal(const line&, const line&, float)", "[equality]") {
   // Arrange
   const auto lhs = line{point3{0, 0, 2}, vector3{0, 1, 0}};
-  const auto tolerance = real{1e-3f};
+  const auto tolerance = 1e-3f;
 
   SECTION("Lines are the same within tolerance") {
     // Arrange

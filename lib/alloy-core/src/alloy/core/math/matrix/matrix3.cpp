@@ -6,7 +6,6 @@
 
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision/real.hpp"
 
 #include <utility>
 
@@ -15,7 +14,7 @@
 // Quantifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::matrix3::determinant() const noexcept -> real
+auto alloy::core::matrix3::determinant() const noexcept -> float
 {
   return (get(0,0)*get(1,1)*get(2,2)) -
          (get(0,0)*get(1,2)*get(2,1)) -
@@ -25,7 +24,7 @@ auto alloy::core::matrix3::determinant() const noexcept -> real
          (get(0,2)*get(1,1)*get(2,0));
 }
 
-auto alloy::core::matrix3::trace() const noexcept -> real
+auto alloy::core::matrix3::trace() const noexcept -> float
 {
   return (get(0,0) + get(1,1) + get(2,2));
 }
@@ -34,15 +33,15 @@ auto alloy::core::matrix3::inverse() const noexcept -> matrix3
 {
   const auto det = determinant();
 
-  if (almost_equal(det,real{0})) {
+  if (almost_equal(det,0.0f)) {
     return matrix3{
-      real{1}, real{0}, real{0},
-      real{0}, real{1}, real{0},
-      real{0}, real{0}, real{1}
+      1.0f, 0.0f, 0.0f,
+      0.0f, 1.0f, 0.0f,
+      0.0f, 0.0f, 1.0f
     };
   }
 
-  const auto inv_det = (real{1} / det);
+  const auto inv_det = (1.0f / det);
 
   return matrix3{
     (get(1,1)*get(2,2) - get(1,2)*get(2,1)) * inv_det,

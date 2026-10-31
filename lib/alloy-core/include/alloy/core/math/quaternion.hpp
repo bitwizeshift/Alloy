@@ -24,7 +24,6 @@
 #include "alloy/core/math/matrix/matrix3.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 #include <cstddef>     // std::size_t, std::ptrdiff_t
@@ -76,7 +75,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    using value_type      = core::real;        ///< The underlying value type
+    using value_type      = float;             ///< The underlying value type
     using pointer         = value_type*;       ///< The pointer type
     using reference       = value_type&;       ///< The reference type
     using const_pointer   = const value_type*; ///< The const reference type
@@ -458,12 +457,12 @@ namespace alloy::core {
     ///
     /// \param rhs the quaternion to perform the dot product with
     /// \return the result of the dot product
-    auto dot(const quaternion& rhs) const noexcept -> real;
+    auto dot(const quaternion& rhs) const noexcept -> float;
 
     /// \brief Computes the magnitude of this quaternion
     ///
     /// \return the magnitude
-    auto magnitude() const noexcept -> real;
+    auto magnitude() const noexcept -> float;
 
     //--------------------------------------------------------------------------
 
@@ -580,8 +579,8 @@ namespace alloy::core {
   auto operator/(const quaternion& lhs, const quaternion& rhs)
     noexcept -> quaternion;
 
-  auto operator*(const quaternion& lhs, real rhs) noexcept -> quaternion;
-  auto operator*(real lhs, const quaternion& rhs) noexcept -> quaternion;
+  auto operator*(const quaternion& lhs, float rhs) noexcept -> quaternion;
+  auto operator*(float lhs, const quaternion& rhs) noexcept -> quaternion;
 
   /// \brief Rotates the vector \p rhs by \p lhs
   ///
@@ -593,7 +592,7 @@ namespace alloy::core {
   ALLOY_CORE_API
   auto operator*(const quaternion& lhs, const vector3& rhs) noexcept -> vector3;
 
-  auto operator/(const quaternion& lhs, real rhs) noexcept -> quaternion;
+  auto operator/(const quaternion& lhs, float rhs) noexcept -> quaternion;
 
   //----------------------------------------------------------------------------
   // Comparisons
@@ -615,7 +614,7 @@ namespace alloy::core {
   auto almost_equal(
     const quaternion& lhs,
     const quaternion& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
@@ -627,12 +626,12 @@ namespace alloy::core {
   /// \param lhs the left quaternion
   /// \param rhs the right quaternion
   /// \return the result of the dot product
-  auto dot(const quaternion& lhs, const quaternion& rhs) noexcept -> real;
+  auto dot(const quaternion& lhs, const quaternion& rhs) noexcept -> float;
 
   /// \brief Computes the magnitude of \p x
   ///
   /// \return the magnitude of \p x
-  auto magnitude(const quaternion& x) noexcept -> real;
+  auto magnitude(const quaternion& x) noexcept -> float;
 
   //----------------------------------------------------------------------------
   // Interpolation
@@ -652,7 +651,7 @@ namespace alloy::core {
   /// \param alpha the amount to interpolate [0, 1]
   /// \return the normalized interpolated rotation
   ALLOY_CORE_API
-  auto nlerp(const quaternion& q0, const quaternion& q1, real alpha)
+  auto nlerp(const quaternion& q0, const quaternion& q1, float alpha)
     noexcept -> quaternion;
 
   /// \brief Spherically interpolates between \p q0 and \p q1
@@ -667,7 +666,7 @@ namespace alloy::core {
   /// \param alpha the amount to interpolate [0, 1]
   /// \return the interpolated rotation
   ALLOY_CORE_API
-  auto slerp(const quaternion& q0, const quaternion& q1, real alpha)
+  auto slerp(const quaternion& q0, const quaternion& q1, float alpha)
     noexcept -> quaternion;
 
   /// \brief Interpolates rotations with \ref nlerp
@@ -677,7 +676,7 @@ namespace alloy::core {
   template <>
   struct interpolator<quaternion>
   {
-    auto operator()(const quaternion& v0, const quaternion& v1, real alpha)
+    auto operator()(const quaternion& v0, const quaternion& v1, float alpha)
       noexcept -> quaternion;
   };
 
@@ -716,10 +715,10 @@ auto alloy::core::quaternion::from_angles(const euler_angles& angles)
 ALLOY_FORCE_INLINE constexpr
 alloy::core::quaternion::quaternion() noexcept
   : quaternion{
-    real{1},
-    real{0},
-    real{0},
-    real{0}
+    1.0f,
+    0.0f,
+    0.0f,
+    0.0f
   }
 {
 
@@ -904,13 +903,13 @@ auto alloy::core::quaternion::operator-() const noexcept -> quaternion
 
 inline
 auto alloy::core::dot(const quaternion& lhs, const quaternion& rhs)
-  noexcept -> real
+  noexcept -> float
 {
   return lhs.dot(rhs);
 }
 
 inline
-auto alloy::core::magnitude(const quaternion& x) noexcept -> real
+auto alloy::core::magnitude(const quaternion& x) noexcept -> float
 {
   return x.magnitude();
 }
@@ -1001,7 +1000,7 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 inline
 auto alloy::core::almost_equal(const quaternion& lhs,
                                const quaternion& rhs,
-                               real tolerance)
+                               float tolerance)
   noexcept -> bool
 {
   for (auto i=0; i<4;++i) {
@@ -1020,7 +1019,7 @@ inline
 auto alloy::core::interpolator<alloy::core::quaternion>::operator()(
   const quaternion& v0,
   const quaternion& v1,
-  real alpha
+  float alpha
 ) noexcept -> quaternion
 {
   return nlerp(v0, v1, alpha);

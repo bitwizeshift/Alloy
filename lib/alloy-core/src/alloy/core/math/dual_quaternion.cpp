@@ -8,7 +8,6 @@
 #include "alloy/core/math/quaternion.hpp"
 #include "alloy/core/math/trigonometry.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 //------------------------------------------------------------------------------
@@ -139,7 +138,7 @@ auto alloy::core::operator==(
 auto alloy::core::almost_equal(
   const dual_quaternion& lhs,
   const dual_quaternion& rhs,
-  real tolerance
+  float tolerance
 ) noexcept -> bool
 {
   return almost_equal(lhs.real(), rhs.real(), tolerance)
@@ -153,23 +152,23 @@ auto alloy::core::almost_equal(
 auto alloy::core::nlerp(
   const dual_quaternion& q0,
   const dual_quaternion& q1,
-  real alpha
+  float alpha
 ) noexcept -> dual_quaternion
 {
   // q and -q are the same transformation; picking the one whose rotation is
   // closer to q0 takes the shorter of the two paths between them.
-  const auto end = (dot(q0.real(), q1.real()) < real{0}) ? -q1 : q1;
+  const auto end = (dot(q0.real(), q1.real()) < 0.0f) ? -q1 : q1;
 
-  return ((q0 * (real{1} - alpha)) + (end * alpha)).normalized();
+  return ((q0 * (1.0f - alpha)) + (end * alpha)).normalized();
 }
 
 auto alloy::core::sclerp(
   const dual_quaternion& q0,
   const dual_quaternion& q1,
-  real alpha
+  float alpha
 ) noexcept -> dual_quaternion
 {
-  const auto end = (dot(q0.real(), q1.real()) < real{0}) ? -q1 : q1;
+  const auto end = (dot(q0.real(), q1.real()) < 0.0f) ? -q1 : q1;
   const auto diff = q0.conjugated() * end;
   const auto& diff_real = diff.real();
   const auto& diff_dual = diff.dual();
@@ -177,7 +176,7 @@ auto alloy::core::sclerp(
   // Nearly parallel rotations would divide by a sine that is close to 0. The
   // screw motion between them is nearly a pure translation, which linear
   // blending interpolates at a constant velocity.
-  if (diff_real.w() > real{0.9995}) {
+  if (diff_real.w() > 0.9995f) {
     return nlerp(q0, end, alpha);
   }
 
@@ -187,18 +186,18 @@ auto alloy::core::sclerp(
   //   + ε{-(d/2)sin(theta/2), sin(theta/2)m + (d/2)cos(theta/2)l}
   // Scaling theta and d by alpha raises it to the power of alpha.
   const auto half_theta = trigonometry::arccos(diff_real.w());
-  const auto inv_sin = real{1} / trigonometry::sin(half_theta);
+  const auto inv_sin = 1.0f / trigonometry::sin(half_theta);
   const auto real_axis = vector3{diff_real.x(), diff_real.y(), diff_real.z()};
   const auto dual_axis = vector3{diff_dual.x(), diff_dual.y(), diff_dual.z()};
 
   const auto direction = real_axis * inv_sin;
-  const auto pitch = real{-2} * diff_dual.w() * inv_sin;
+  const auto pitch = -2.0f * diff_dual.w() * inv_sin;
   const auto moment = (
-    dual_axis - (direction * (pitch * real{0.5} * diff_real.w()))
+    dual_axis - (direction * (pitch * 0.5f * diff_real.w()))
   ) * inv_sin;
 
   const auto scaled_half_theta = half_theta * alpha;
-  const auto scaled_half_pitch = pitch * real{0.5} * alpha;
+  const auto scaled_half_pitch = pitch * 0.5f * alpha;
   const auto scaled_sin = trigonometry::sin(scaled_half_theta);
   const auto scaled_cos = trigonometry::cos(scaled_half_theta);
 

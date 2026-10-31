@@ -17,7 +17,6 @@
 #include <alloy/core/math/basis/basis3.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -69,7 +68,7 @@ TEST_CASE("raycast(const ray&, const plane&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Measures the distance to the plane crossing") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{4}));
+      REQUIRE(almost_equal(*result, 4.0f));
     }
   }
   SECTION("Ray faces the plane from the side opposite its normal") {
@@ -83,7 +82,7 @@ TEST_CASE("raycast(const ray&, const plane&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Measures the distance to the plane crossing") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{2}));
+      REQUIRE(almost_equal(*result, 2.0f));
     }
   }
   SECTION("Ray starts on the plane") {
@@ -97,7 +96,7 @@ TEST_CASE("raycast(const ray&, const plane&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Reports an immediate hit at the ray origin") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{0}));
+      REQUIRE(almost_equal(*result, 0.0f));
     }
   }
   SECTION("Ray faces away from the plane") {
@@ -137,7 +136,7 @@ TEST_CASE("raycast(const ray&, const triangle&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Measures the distance to the triangle face") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{5}));
+      REQUIRE(almost_equal(*result, 5.0f));
     }
   }
   SECTION("Ray faces the back of the triangle") {
@@ -151,7 +150,7 @@ TEST_CASE("raycast(const ray&, const triangle&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Measures the distance to the triangle face") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{2}));
+      REQUIRE(almost_equal(*result, 2.0f));
     }
   }
   SECTION("Ray passes beside the triangle") {
@@ -188,7 +187,7 @@ TEST_CASE("raycast(const ray&, const triangle&)", "[raycast]") {
 
 TEST_CASE("raycast(const ray&, const sphere&)", "[raycast]") {
   // Arrange
-  const auto sut = sphere{point3{5, 0, 0}, real{1}};
+  const auto sut = sphere{point3{5, 0, 0}, 1.0f};
 
   SECTION("Ray faces the sphere") {
     // Arrange
@@ -201,7 +200,7 @@ TEST_CASE("raycast(const ray&, const sphere&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Measures the distance to the nearest sphere surface") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{4}));
+      REQUIRE(almost_equal(*result, 4.0f));
     }
   }
   SECTION("Ray grazes the sphere") {
@@ -215,12 +214,12 @@ TEST_CASE("raycast(const ray&, const sphere&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Measures the distance to the tangent point") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{5}));
+      REQUIRE(almost_equal(*result, 5.0f));
     }
   }
   SECTION("Ray starts inside the sphere") {
     // Arrange
-    const auto r = ray{point3{5, real{0.5f}, 0}, vector3{1, 0, 0}};
+    const auto r = ray{point3{5, 0.5f, 0}, vector3{1, 0, 0}};
 
     // Act
     const auto result = raycast(r, sut);
@@ -229,7 +228,7 @@ TEST_CASE("raycast(const ray&, const sphere&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Reports an immediate hit at the ray origin") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{0}));
+      REQUIRE(almost_equal(*result, 0.0f));
     }
   }
   SECTION("Ray passes beside the sphere") {
@@ -258,7 +257,7 @@ TEST_CASE("raycast(const ray&, const capsule&)", "[raycast]") {
   // Arrange
   const auto sut = capsule{
     line_segment{point3{0, 0, 0}, point3{0, 4, 0}},
-    real{1}
+    1.0f
   };
 
   SECTION("Ray faces the side of the capsule") {
@@ -272,7 +271,7 @@ TEST_CASE("raycast(const ray&, const capsule&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Measures the distance to the cylindrical side") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{4}));
+      REQUIRE(almost_equal(*result, 4.0f));
     }
   }
   SECTION("Ray faces a cap along the axis") {
@@ -286,7 +285,7 @@ TEST_CASE("raycast(const ray&, const capsule&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Measures the distance to the nearest capsule cap") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{5}));
+      REQUIRE(almost_equal(*result, 5.0f));
     }
   }
   SECTION("Ray faces a cap from below") {
@@ -300,7 +299,7 @@ TEST_CASE("raycast(const ray&, const capsule&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Measures the distance to the nearest capsule cap") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{4}));
+      REQUIRE(almost_equal(*result, 4.0f));
     }
   }
   SECTION("Ray starts inside the capsule") {
@@ -314,7 +313,7 @@ TEST_CASE("raycast(const ray&, const capsule&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Reports an immediate hit at the ray origin") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{0}));
+      REQUIRE(almost_equal(*result, 0.0f));
     }
   }
   SECTION("Ray passes beside the capsule") {
@@ -345,7 +344,7 @@ TEST_CASE("raycast(const ray&, const axis_aligned_box&)", "[raycast]") {
 
   SECTION("Ray faces the box") {
     // Arrange
-    const auto r = ray{point3{-5, real{0.5f}, 0}, vector3{1, 0, 0}};
+    const auto r = ray{point3{-5, 0.5f, 0}, vector3{1, 0, 0}};
 
     // Act
     const auto result = raycast(r, sut);
@@ -354,7 +353,7 @@ TEST_CASE("raycast(const ray&, const axis_aligned_box&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Measures the distance to the box entry") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{4}));
+      REQUIRE(almost_equal(*result, 4.0f));
     }
   }
   SECTION("Ray starts inside the box") {
@@ -368,7 +367,7 @@ TEST_CASE("raycast(const ray&, const axis_aligned_box&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Reports an immediate hit at the ray origin") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{0}));
+      REQUIRE(almost_equal(*result, 0.0f));
     }
   }
   SECTION("Ray passes beside the box") {
@@ -383,7 +382,7 @@ TEST_CASE("raycast(const ray&, const axis_aligned_box&)", "[raycast]") {
   }
   SECTION("Box is behind the ray") {
     // Arrange
-    const auto r = ray{point3{-5, real{0.5f}, 0}, vector3{-1, 0, 0}};
+    const auto r = ray{point3{-5, 0.5f, 0}, vector3{-1, 0, 0}};
 
     // Act
     const auto result = raycast(r, sut);
@@ -408,12 +407,12 @@ TEST_CASE("raycast(const ray&, const oriented_box&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Measures the distance to the rotated corner") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, 5 - sqrt(real{2})));
+      REQUIRE(almost_equal(*result, 5 - sqrt(2.0f)));
     }
   }
   SECTION("Ray starts inside the box") {
     // Arrange
-    const auto r = ray{point3{real{1.3f}, 0, 0}, vector3{0, 0, 1}};
+    const auto r = ray{point3{1.3f, 0, 0}, vector3{0, 0, 1}};
 
     // Act
     const auto result = raycast(r, sut);
@@ -422,7 +421,7 @@ TEST_CASE("raycast(const ray&, const oriented_box&)", "[raycast]") {
     REQUIRE(result.has_value());
     SECTION("Reports an immediate hit at the ray origin") {
       // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
-      REQUIRE(almost_equal(*result, real{0}));
+      REQUIRE(almost_equal(*result, 0.0f));
     }
   }
   SECTION("Ray passes beside the box") {

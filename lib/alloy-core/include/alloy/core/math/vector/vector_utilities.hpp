@@ -19,7 +19,6 @@
 #include "alloy/core/math/vector/vector2.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/math/vector/vector4.hpp"
-#include "alloy/core/precision.hpp"
 
 #include <type_traits> // std::true_type, std::false_type
 
@@ -66,10 +65,10 @@ namespace alloy::core {
     vector_traits() = delete;
     ~vector_traits() = delete;
 
-    static constexpr auto x(const T& vec) noexcept -> real;
-    static constexpr auto y(const T& vec) noexcept -> real;
-    static constexpr auto z(const T& vec) noexcept -> real;
-    static constexpr auto w(const T& vec) noexcept -> real;
+    static constexpr auto x(const T& vec) noexcept -> float;
+    static constexpr auto y(const T& vec) noexcept -> float;
+    static constexpr auto z(const T& vec) noexcept -> float;
+    static constexpr auto w(const T& vec) noexcept -> float;
   };
 
 
@@ -145,45 +144,45 @@ namespace alloy::core::detail {
 
 template<typename T>
 inline constexpr
-auto alloy::core::vector_traits<T>::x(const T& vec) noexcept -> real
+auto alloy::core::vector_traits<T>::x(const T& vec) noexcept -> float
 {
   if constexpr (detail::vector_has_x<T>::value) {
     return vec.x();
   } else {
-    return real{0};
+    return 0.0f;
   }
 }
 
 template<typename T>
 inline constexpr
-auto alloy::core::vector_traits<T>::y(const T& vec) noexcept -> real
+auto alloy::core::vector_traits<T>::y(const T& vec) noexcept -> float
 {
   if constexpr (detail::vector_has_y<T>::value) {
     return vec.y();
   } else {
-    return real{0};
+    return 0.0f;
   }
 }
 
 template<typename T>
 inline constexpr
-auto alloy::core::vector_traits<T>::z(const T& vec) noexcept -> real
+auto alloy::core::vector_traits<T>::z(const T& vec) noexcept -> float
 {
   if constexpr (detail::vector_has_z<T>::value) {
     return vec.z();
   } else {
-    return real{0};
+    return 0.0f;
   }
 }
 
 template<typename T>
 inline constexpr
-auto alloy::core::vector_traits<T>::w(const T& vec) noexcept -> real
+auto alloy::core::vector_traits<T>::w(const T& vec) noexcept -> float
 {
   if constexpr (detail::vector_has_w<T>::value) {
     return vec.w();
   } else {
-    return real{0};
+    return 0.0f;
   }
 }
 

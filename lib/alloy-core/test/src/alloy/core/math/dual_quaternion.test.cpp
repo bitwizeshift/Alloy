@@ -13,7 +13,6 @@
 #include <alloy/core/math/quaternion_constants.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -121,7 +120,7 @@ TEST_CASE("dual_quaternion::inverse()", "[observers]")
     REQUIRE( almost_equal(result, dual_quaternion_constants::identity) );
   }
 
-  SECTION("Zero real part inverts to zero")
+  SECTION("Zero float part inverts to zero")
   {
     // Arrange
     const auto sut = dual_quaternion{
@@ -241,7 +240,7 @@ TEST_CASE("dual_quaternion::normalize()", "[modifiers]")
   SECTION("Scaled dual quaternion transforms the same as the original")
   {
     // Arrange
-    auto sut = unit * real{3};
+    auto sut = unit * 3.0f;
     const auto point = vector3{4, 5, 6};
 
     const auto expected = unit.transform_point(point);
@@ -257,17 +256,17 @@ TEST_CASE("dual_quaternion::normalize()", "[modifiers]")
   SECTION("Real part becomes unit length")
   {
     // Arrange
-    auto sut = unit * real{3};
+    auto sut = unit * 3.0f;
 
     // Act
     sut.normalize();
     const auto result = sut.real().magnitude();
 
     // Assert
-    REQUIRE( almost_equal(result, real{1}) );
+    REQUIRE( almost_equal(result, 1.0f) );
   }
 
-  SECTION("Dual part becomes orthogonal to the real part")
+  SECTION("Dual part becomes orthogonal to the float part")
   {
     // Arrange
     auto sut = dual_quaternion{unit.real(), unit.dual() + unit.real()};
@@ -277,10 +276,10 @@ TEST_CASE("dual_quaternion::normalize()", "[modifiers]")
     const auto result = sut.real().dot(sut.dual());
 
     // Assert
-    REQUIRE( almost_equal(result, real{0}) );
+    REQUIRE( almost_equal(result, 0.0f) );
   }
 
-  SECTION("Zero real part is left unchanged")
+  SECTION("Zero float part is left unchanged")
   {
     // Arrange
     const auto expected = dual_quaternion{
@@ -467,7 +466,7 @@ TEST_CASE("operator*( const dual_quaternion&, const dual_quaternion& )", "[arith
     REQUIRE( almost_equal(result, expected) );
   }
 
-  SECTION("Dual unit scales the real part into the dual part")
+  SECTION("Dual unit scales the float part into the dual part")
   {
     // Arrange
     const auto epsilon = dual_quaternion{
@@ -509,7 +508,7 @@ TEST_CASE("operator/( const dual_quaternion&, const dual_quaternion& )", "[arith
   // Assert
   SECTION("Division is undone by multiplying with the divisor")
   {
-    REQUIRE( almost_equal(result, lhs, real{1e-4f}) );
+    REQUIRE( almost_equal(result, lhs, 1e-4f) );
   }
 }
 
@@ -517,7 +516,7 @@ TEST_CASE("operator/( const dual_quaternion&, const dual_quaternion& )", "[arith
 // Comparisons
 //------------------------------------------------------------------------------
 
-TEST_CASE("almost_equal( const dual_quaternion&, const dual_quaternion&, real )", "[comparison]")
+TEST_CASE("almost_equal( const dual_quaternion&, const dual_quaternion&, float )", "[comparison]")
 {
   // Arrange
   const auto sut = dual_quaternion{
@@ -530,11 +529,11 @@ TEST_CASE("almost_equal( const dual_quaternion&, const dual_quaternion&, real )"
     // Arrange
     const auto other = dual_quaternion{
       quaternion{1, 2, 3, 4},
-      quaternion{5, 6, 7, real{8.01f}}
+      quaternion{5, 6, 7, 8.01f}
     };
 
     // Act
-    const auto result = almost_equal(sut, other, real{0.1f});
+    const auto result = almost_equal(sut, other, 0.1f);
 
     // Assert
     REQUIRE( result );
@@ -549,7 +548,7 @@ TEST_CASE("almost_equal( const dual_quaternion&, const dual_quaternion&, real )"
     };
 
     // Act
-    const auto result = almost_equal(sut, other, real{0.1f});
+    const auto result = almost_equal(sut, other, 0.1f);
 
     // Assert
     REQUIRE_FALSE( result );
@@ -560,7 +559,7 @@ TEST_CASE("almost_equal( const dual_quaternion&, const dual_quaternion&, real )"
 // Interpolation
 //------------------------------------------------------------------------------
 
-TEST_CASE("sclerp( const dual_quaternion&, const dual_quaternion&, real )", "[interpolation]")
+TEST_CASE("sclerp( const dual_quaternion&, const dual_quaternion&, float )", "[interpolation]")
 {
   // Arrange
   const auto start = dual_quaternion::from_rotation_translation(
@@ -584,17 +583,17 @@ TEST_CASE("sclerp( const dual_quaternion&, const dual_quaternion&, real )", "[in
     );
     const auto expected = dual_quaternion::from_rotation_translation(
       quaternion::from_angle_axis(
-        radian_constants::quarter_revolution * real{0.25},
+        radian_constants::quarter_revolution * 0.25f,
         vector3{0, 0, 1}
       ),
-      vector3{0, 0, real{0.5}}
+      vector3{0, 0, 0.5f}
     );
 
     // Act
     const auto result = sclerp(
       dual_quaternion_constants::identity,
       screw,
-      real{0.25}
+      0.25f
     );
 
     // Assert
@@ -604,7 +603,7 @@ TEST_CASE("sclerp( const dual_quaternion&, const dual_quaternion&, real )", "[in
   SECTION("Midpoint splits the motion into two equal steps")
   {
     // Arrange
-    const auto mid = sclerp(start, end, real{0.5});
+    const auto mid = sclerp(start, end, 0.5f);
 
     // Act
     const auto result = mid * (start.conjugated() * mid);
@@ -616,10 +615,10 @@ TEST_CASE("sclerp( const dual_quaternion&, const dual_quaternion&, real )", "[in
   SECTION("Takes the shortest path when the end is negated")
   {
     // Arrange
-    const auto expected = sclerp(start, end, real{0.5});
+    const auto expected = sclerp(start, end, 0.5f);
 
     // Act
-    const auto result = sclerp(start, -end, real{0.5});
+    const auto result = sclerp(start, -end, 0.5f);
 
     // Assert
     REQUIRE( almost_equal(result, expected) );
@@ -634,7 +633,7 @@ TEST_CASE("sclerp( const dual_quaternion&, const dual_quaternion&, real )", "[in
     const auto result = sclerp(
       dual_quaternion_constants::identity,
       dual_quaternion::from_translation(vector3{2, 0, 0}),
-      real{0.5}
+      0.5f
     );
 
     // Assert
@@ -644,7 +643,7 @@ TEST_CASE("sclerp( const dual_quaternion&, const dual_quaternion&, real )", "[in
   SECTION("Returns the start at 0")
   {
     // Act
-    const auto result = sclerp(start, end, real{0});
+    const auto result = sclerp(start, end, 0.0f);
 
     // Assert
     REQUIRE( almost_equal(result, start) );
@@ -653,14 +652,14 @@ TEST_CASE("sclerp( const dual_quaternion&, const dual_quaternion&, real )", "[in
   SECTION("Returns the end at 1")
   {
     // Act
-    const auto result = sclerp(start, end, real{1});
+    const auto result = sclerp(start, end, 1.0f);
 
     // Assert
     REQUIRE( almost_equal(result, end) );
   }
 }
 
-TEST_CASE("nlerp( const dual_quaternion&, const dual_quaternion&, real )", "[interpolation]")
+TEST_CASE("nlerp( const dual_quaternion&, const dual_quaternion&, float )", "[interpolation]")
 {
   SECTION("Interpolates the translation between equal rotations")
   {
@@ -671,7 +670,7 @@ TEST_CASE("nlerp( const dual_quaternion&, const dual_quaternion&, real )", "[int
     const auto result = nlerp(
       dual_quaternion_constants::identity,
       dual_quaternion::from_translation(vector3{2, 0, 0}),
-      real{0.5}
+      0.5f
     );
 
     // Assert
@@ -689,7 +688,7 @@ TEST_CASE("nlerp( const dual_quaternion&, const dual_quaternion&, real )", "[int
     );
     const auto expected = dual_quaternion::from_rotation(
       quaternion::from_angle_axis(
-        radian_constants::quarter_revolution * real{0.5},
+        radian_constants::quarter_revolution * 0.5f,
         vector3{0, 0, 1}
       )
     );
@@ -698,7 +697,7 @@ TEST_CASE("nlerp( const dual_quaternion&, const dual_quaternion&, real )", "[int
     const auto result = nlerp(
       dual_quaternion_constants::identity,
       end,
-      real{0.5}
+      0.5f
     );
 
     // Assert
@@ -716,10 +715,10 @@ TEST_CASE("nlerp( const dual_quaternion&, const dual_quaternion&, real )", "[int
       quaternion::from_angle_axis(radian{2.0f}, vector3{0, 1, 1}),
       vector3{-3, 0, 2}
     );
-    const auto expected = nlerp(start, end, real{0.5});
+    const auto expected = nlerp(start, end, 0.5f);
 
     // Act
-    const auto result = nlerp(start, -end, real{0.5});
+    const auto result = nlerp(start, -end, 0.5f);
 
     // Assert
     REQUIRE( almost_equal(result, expected) );
@@ -732,30 +731,30 @@ TEST_CASE("interpolator<dual_quaternion>", "[interpolation]")
   const auto start = dual_quaternion_constants::identity;
   const auto end = dual_quaternion::from_rotation_translation(
     quaternion::from_angle_axis(
-      radian_constants::half_revolution * real{0.9},
+      radian_constants::half_revolution * 0.9f,
       vector3{1, 0, 0}
     ),
     vector3{1, 2, 3}
   );
 
-  SECTION("Interpolated real part is unit length")
+  SECTION("Interpolated float part is unit length")
   {
     // Act
-    const auto sut = interpolation::linear(start, end, real{0.5});
+    const auto sut = interpolation::linear(start, end, 0.5f);
     const auto result = sut.real().magnitude();
 
     // Assert
-    REQUIRE( almost_equal(result, real{1}) );
+    REQUIRE( almost_equal(result, 1.0f) );
   }
 
   SECTION("Interpolated parts are orthogonal")
   {
     // Act
-    const auto sut = interpolation::linear(start, end, real{0.5});
+    const auto sut = interpolation::linear(start, end, 0.5f);
     const auto result = sut.real().dot(sut.dual());
 
     // Assert
-    REQUIRE( almost_equal(result, real{0}) );
+    REQUIRE( almost_equal(result, 0.0f) );
   }
 }
 

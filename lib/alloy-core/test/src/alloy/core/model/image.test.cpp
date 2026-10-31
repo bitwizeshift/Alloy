@@ -6,7 +6,6 @@
 
 #include <alloy/core/containers/vector.hpp>
 #include <alloy/core/model/color.hpp>
-#include <alloy/core/precision/real.hpp>
 #include <alloy/core/types.hpp>
 
 #include <catch2/catch_test_macros.hpp>
@@ -194,7 +193,7 @@ TEST_CASE("image::get_pixel( std::size_t, std::size_t )", "[accessor]")
   // Assert
   SECTION("Pixel of a format without alpha is opaque")
   {
-    REQUIRE( result == real{1} );
+    REQUIRE( result == 1.0f );
   }
 }
 

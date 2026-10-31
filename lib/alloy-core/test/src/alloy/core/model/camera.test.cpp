@@ -14,7 +14,6 @@
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector3_constants.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -24,7 +23,7 @@ namespace alloy::core::test {
 // World Translations
 //------------------------------------------------------------------------------
 
-TEST_CASE("camera::translate_world( real, real, real )", "[translation]")
+TEST_CASE("camera::translate_world( float, float, float )", "[translation]")
 {
   // Arrange
   auto sut = camera{};
@@ -59,11 +58,11 @@ TEST_CASE("camera::translate_local( const vector3& )", "[translation]")
   // Assert
   SECTION("Moves right, up, and forward along the camera's axes")
   {
-    REQUIRE( almost_equal(result, vector3{-3, 2, -1}, real{1e-5f}) );
+    REQUIRE( almost_equal(result, vector3{-3, 2, -1}, 1e-5f) );
   }
 }
 
-TEST_CASE("camera::translate_local_x( real )", "[translation]")
+TEST_CASE("camera::translate_local_x( float )", "[translation]")
 {
   SECTION("Camera that looks at a subject moves along its x-axis")
   {
@@ -93,7 +92,7 @@ TEST_CASE("camera::translate_local_x( real )", "[translation]")
   }
 }
 
-TEST_CASE("camera::translate_local_y( real )", "[translation]")
+TEST_CASE("camera::translate_local_y( float )", "[translation]")
 {
   // Arrange
   auto sut = camera{};
@@ -110,7 +109,7 @@ TEST_CASE("camera::translate_local_y( real )", "[translation]")
   }
 }
 
-TEST_CASE("camera::translate_local_z( real )", "[translation]")
+TEST_CASE("camera::translate_local_z( float )", "[translation]")
 {
   SECTION("Unrotated camera moves down the negative z-axis")
   {
@@ -157,7 +156,7 @@ TEST_CASE("camera::translate_local_z( real )", "[translation]")
 // Rotations
 //------------------------------------------------------------------------------
 
-TEST_CASE("camera::look_at( real, real, real, const vector3& )", "[rotation]")
+TEST_CASE("camera::look_at( float, float, float, const vector3& )", "[rotation]")
 {
   // Arrange
   auto sut = camera{};
@@ -171,11 +170,11 @@ TEST_CASE("camera::look_at( real, real, real, const vector3& )", "[rotation]")
   // Assert
   SECTION("Faces the subject")
   {
-    REQUIRE( almost_equal(forward, vector3{0, 0, -1}, real{1e-5f}) );
+    REQUIRE( almost_equal(forward, vector3{0, 0, -1}, 1e-5f) );
   }
   SECTION("Orients up towards the up direction")
   {
-    REQUIRE( almost_equal(up, vector3{1, 0, 0}, real{1e-5f}) );
+    REQUIRE( almost_equal(up, vector3{1, 0, 0}, 1e-5f) );
   }
 }
 
@@ -232,7 +231,7 @@ TEST_CASE("camera::rotate_world( radian, const vector3& )", "[rotation]")
   // Assert
   SECTION("Rotates about the world axis")
   {
-    REQUIRE( almost_equal(result, vector3{-1, 0, 0}, real{1e-5f}) );
+    REQUIRE( almost_equal(result, vector3{-1, 0, 0}, 1e-5f) );
   }
 }
 
@@ -249,7 +248,7 @@ TEST_CASE("camera::rotate_world_yaw( radian )", "[rotation]")
   // Assert
   SECTION("Keeps the right direction level")
   {
-    REQUIRE( almost_equal(result, vector3{0, 0, -1}, real{1e-5f}) );
+    REQUIRE( almost_equal(result, vector3{0, 0, -1}, 1e-5f) );
   }
 }
 
@@ -278,7 +277,7 @@ TEST_CASE("camera::set_roll( radian )", "[absolute]")
       radian{0.2f}
     };
 
-    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+    REQUIRE( almost_equal(result, expected, 1e-5f) );
   }
 }
 
@@ -303,7 +302,7 @@ TEST_CASE("camera::set_pitch( radian )", "[absolute]")
       radian{2.5f}
     };
 
-    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+    REQUIRE( almost_equal(result, expected, 1e-5f) );
   }
 }
 
@@ -328,7 +327,7 @@ TEST_CASE("camera::set_yaw( radian )", "[absolute]")
       radian{2.5f}
     };
 
-    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+    REQUIRE( almost_equal(result, expected, 1e-5f) );
   }
 }
 
@@ -349,7 +348,7 @@ TEST_CASE("camera::angles()", "[observers]")
   // Assert
   SECTION("Recovers the angles that the orientation was set from")
   {
-    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+    REQUIRE( almost_equal(result, expected, 1e-5f) );
   }
 }
 
@@ -365,7 +364,7 @@ TEST_CASE("camera::right()", "[observers]")
   // Assert
   SECTION("Is the rotated x-axis")
   {
-    REQUIRE( almost_equal(result, vector3{0, 0, -1}, real{1e-5f}) );
+    REQUIRE( almost_equal(result, vector3{0, 0, -1}, 1e-5f) );
   }
 }
 
@@ -381,7 +380,7 @@ TEST_CASE("camera::up()", "[observers]")
   // Assert
   SECTION("Is the rotated y-axis")
   {
-    REQUIRE( almost_equal(result, vector3{0, 0, 1}, real{1e-5f}) );
+    REQUIRE( almost_equal(result, vector3{0, 0, 1}, 1e-5f) );
   }
 }
 
@@ -397,7 +396,7 @@ TEST_CASE("camera::forward()", "[observers]")
   // Assert
   SECTION("Is the rotated negative z-axis")
   {
-    REQUIRE( almost_equal(result, vector3{-1, 0, 0}, real{1e-5f}) );
+    REQUIRE( almost_equal(result, vector3{-1, 0, 0}, 1e-5f) );
   }
 }
 
@@ -442,7 +441,7 @@ TEST_CASE("camera::to_inverse_matrix4()", "[conversion]")
   // Assert
   SECTION("Undoes the view transformation")
   {
-    REQUIRE( almost_equal(result, matrix4_constants::identity, real{1e-5f}) );
+    REQUIRE( almost_equal(result, matrix4_constants::identity, 1e-5f) );
   }
 }
 
@@ -460,7 +459,7 @@ TEST_CASE("interpolator<camera>", "[interpolation]")
     end.set_translation(2, 4, 6);
 
     // Act
-    const auto result = interpolation::linear(start, end, real{0.5});
+    const auto result = interpolation::linear(start, end, 0.5f);
 
     // Assert
     REQUIRE( almost_equal(result.translation(), vector3{1, 2, 3}) );
@@ -472,7 +471,7 @@ TEST_CASE("interpolator<camera>", "[interpolation]")
     const auto start = camera{};
     auto end = camera{};
     end.rotate_yaw(radian_constants::quarter_revolution);
-    auto sut = interpolation::linear(start, end, real{0.5});
+    auto sut = interpolation::linear(start, end, 0.5f);
     const auto expected = sut.orientation() * vector3_constants::unit_x;
 
     // Act
@@ -480,7 +479,7 @@ TEST_CASE("interpolator<camera>", "[interpolation]")
     const auto result = sut.translation();
 
     // Assert
-    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+    REQUIRE( almost_equal(result, expected, 1e-5f) );
   }
 }
 

@@ -7,7 +7,6 @@
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/matrix/matrix3.hpp"
-#include "alloy/core/precision/real.hpp"
 
 //==============================================================================
 // class : plane
@@ -60,7 +59,7 @@ auto alloy::core::plane::normalize() noexcept -> plane&
                                       m_data[2] * m_data[2] );
 
   if (normal_magnitude > 0) {
-    const auto reciprocal = real{1} / normal_magnitude;
+    const auto reciprocal = 1.0f / normal_magnitude;
     for (auto& i : m_data) {
       i *= reciprocal;
     }
@@ -81,9 +80,9 @@ auto alloy::core::plane::invert() noexcept -> plane&
 // Quantifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::plane::distance_to(const point3& p) const noexcept -> real
+auto alloy::core::plane::distance_to(const point3& p) const noexcept -> float
 {
-  auto result = real{0};
+  auto result = 0.0f;
   for (auto i = 0; i < 3; ++i) {
     result += m_data[i] * p[i];
   }
@@ -97,15 +96,15 @@ auto alloy::core::plane::projection(const vector3& vec)
 {
   const auto norm = normal();
   auto matrix = matrix3{};
-  matrix.get(0,0) = real{1} - norm.x() * norm.x();
+  matrix.get(0,0) = 1.0f - norm.x() * norm.x();
   matrix.get(0,1) = -norm.x() * norm.y();
   matrix.get(0,2) = -norm.x() * norm.z();
   matrix.get(1,0) = -norm.y() * norm.x();
-  matrix.get(1,1) = real{1} - norm.y() * norm.y();
+  matrix.get(1,1) = 1.0f - norm.y() * norm.y();
   matrix.get(1,2) = -norm.y() * norm.z();
   matrix.get(2,0) = -norm.z() * norm.x();
   matrix.get(2,1) = -norm.z() * norm.y();
-  matrix.get(2,2) = real{1} - norm.z() * norm.z();
+  matrix.get(2,2) = 1.0f - norm.z() * norm.z();
 
   return matrix * vec;
 }
@@ -115,10 +114,10 @@ auto alloy::core::plane::contains(const point3& p) const noexcept -> bool
   return contains(p, default_tolerance);
 }
 
-auto alloy::core::plane::contains(const point3& p, real tolerance)
+auto alloy::core::plane::contains(const point3& p, float tolerance)
   const noexcept -> bool
 {
-  return almost_equal(distance_to(p), real{0}, tolerance);
+  return almost_equal(distance_to(p), 0.0f, tolerance);
 }
 
 //------------------------------------------------------------------------------
@@ -128,11 +127,11 @@ auto alloy::core::plane::contains(const point3& p, real tolerance)
 auto alloy::core::is_point_over_plane(const point3& p, const plane& plane)
   noexcept -> bool
 {
-  return plane.distance_to(p) > real{0};
+  return plane.distance_to(p) > 0.0f;
 }
 
 auto alloy::core::is_point_under_plane(const point3& p, const plane& plane)
   noexcept -> bool
 {
-  return plane.distance_to(p) < real{0};
+  return plane.distance_to(p) < 0.0f;
 }

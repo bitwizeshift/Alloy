@@ -22,7 +22,6 @@
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision.hpp"
 
 namespace alloy::core {
 
@@ -56,7 +55,7 @@ namespace alloy::core {
     ///
     /// \param segment the segment at the center of the capsule
     /// \param radius the radius of the capsule
-    constexpr capsule(const line_segment& segment, real radius) noexcept;
+    constexpr capsule(const line_segment& segment, float radius) noexcept;
 
     /// \brief Constructs a capsule by copying an existing instance
     ///
@@ -86,7 +85,7 @@ namespace alloy::core {
     ///
     /// \return the radius
     [[nodiscard]]
-    constexpr auto radius() const noexcept -> real;
+    constexpr auto radius() const noexcept -> float;
 
     //--------------------------------------------------------------------------
     // Quantifiers
@@ -116,7 +115,7 @@ namespace alloy::core {
     /// \param tolerance the error tolerance to accept
     /// \return `true` if the point is contained in this capsule
     [[nodiscard]]
-    auto contains(const point3& p, real tolerance) const noexcept -> bool;
+    auto contains(const point3& p, float tolerance) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -124,7 +123,7 @@ namespace alloy::core {
   private:
 
     line_segment m_segment; ///< The segment at the center of the capsule
-    real m_radius;          ///< The radius of the capsule
+    float m_radius;         ///< The radius of the capsule
   };
 
   //============================================================================
@@ -151,7 +150,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const capsule& lhs,
     const capsule& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
 } // namespace alloy::core
@@ -173,7 +172,7 @@ alloy::core::capsule::capsule() noexcept
 }
 
 inline constexpr
-alloy::core::capsule::capsule(const line_segment& segment, real radius)
+alloy::core::capsule::capsule(const line_segment& segment, float radius)
   noexcept
   : m_segment{segment},
     m_radius{radius}
@@ -192,7 +191,7 @@ auto alloy::core::capsule::segment() const noexcept -> const line_segment&
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::capsule::radius() const noexcept -> real
+auto alloy::core::capsule::radius() const noexcept -> float
 {
   return m_radius;
 }
@@ -230,7 +229,7 @@ inline constexpr
 auto alloy::core::almost_equal(
   const capsule& lhs,
   const capsule& rhs,
-  real tolerance
+  float tolerance
 ) noexcept -> bool
 {
   return almost_equal(lhs.segment(), rhs.segment(), tolerance) &&

@@ -7,7 +7,6 @@
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector2.hpp"
-#include "alloy/core/precision/real.hpp"
 
 #include <algorithm> // std::min, std::max
 
@@ -46,13 +45,13 @@ auto alloy::core::rectangle::from_points(const point2& p0, const point2& p1)
 //------------------------------------------------------------------------------
 
 auto alloy::core::rectangle::distance_to(const point2& p)
-  const noexcept -> real
+  const noexcept -> float
 {
   return (p - nearest_point(p)).magnitude();
 }
 
 auto alloy::core::rectangle::square_distance_to(const point2& p)
-  const noexcept -> real
+  const noexcept -> float
 {
   return (p - nearest_point(p)).square_magnitude();
 }
@@ -72,7 +71,7 @@ auto alloy::core::rectangle::contains(const point2& p) const noexcept -> bool
          (p.y() >= m_bottom_left.y()) && (p.y() <= m_top_right.y());
 }
 
-auto alloy::core::rectangle::contains(const point2& p, real tolerance)
+auto alloy::core::rectangle::contains(const point2& p, float tolerance)
   const noexcept -> bool
 {
   return (p.x() >= (m_bottom_left.x() - tolerance)) &&

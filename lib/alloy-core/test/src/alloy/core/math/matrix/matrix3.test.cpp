@@ -7,7 +7,6 @@
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix3_constants.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -30,7 +29,7 @@ TEST_CASE("matrix3::operator[]( index_type )", "[element access]")
     7, 8, 9
   };
 
-  const auto expected = std::array<real,3>{3, 6, 9};
+  const auto expected = std::array<float,3>{3, 6, 9};
 
   // Act
   const auto* const column = sut[2];
@@ -49,7 +48,7 @@ TEST_CASE("matrix3::data()", "[observers]")
     4, 5, 6,
     7, 8, 9
   };
-  const real expected[9] = {1, 4, 7, 2, 5, 8, 3, 6, 9};
+  const float expected[9] = {1, 4, 7, 2, 5, 8, 3, 6, 9};
 
   // Act
   const auto* const result = sut.data();
@@ -78,7 +77,7 @@ TEST_CASE("matrix3::determinant()", "[quantifiers]")
   const auto result = sut.determinant();
 
   // Assert
-  REQUIRE( almost_equal(result, real{6}) );
+  REQUIRE( almost_equal(result, 6.0f) );
 }
 
 TEST_CASE("matrix3::trace()", "[quantifiers]")
@@ -94,7 +93,7 @@ TEST_CASE("matrix3::trace()", "[quantifiers]")
   const auto result = sut.trace();
 
   // Assert
-  REQUIRE( almost_equal(result, real{7}) );
+  REQUIRE( almost_equal(result, 7.0f) );
 }
 
 TEST_CASE("matrix3::inverse()", "[quantifiers]")

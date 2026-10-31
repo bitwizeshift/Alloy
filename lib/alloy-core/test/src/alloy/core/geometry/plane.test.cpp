@@ -7,7 +7,6 @@
 #include <alloy/core/geometry/point/point3.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -81,10 +80,10 @@ TEST_CASE("plane::from_points_clockwise(const point3&, const point3&, const poin
   }
 }
 
-TEST_CASE("plane::plane(const vector3&, real)", "[ctor]") {
+TEST_CASE("plane::plane(const vector3&, float)", "[ctor]") {
   // Arrange
   const auto normal = vector3{0, 0, 1};
-  const auto distance = real{4};
+  const auto distance = 4.0f;
 
   // Act
   const auto sut = plane{normal, distance};
@@ -133,14 +132,14 @@ TEST_CASE("plane::distance_to(const point3&)", "[quantifier]") {
     const auto result = sut.distance_to(point3{0, 0, 6});
 
     // Assert
-    REQUIRE(almost_equal(result, real{2}));
+    REQUIRE(almost_equal(result, 2.0f));
   }
   SECTION("Point is on the side opposite the normal") {
     // Act
     const auto result = sut.distance_to(point3{0, 0, 1});
 
     // Assert
-    REQUIRE(almost_equal(result, real{-3}));
+    REQUIRE(almost_equal(result, -3.0f));
   }
 }
 
@@ -192,10 +191,10 @@ TEST_CASE("plane::contains(const point3&)", "[quantifier]") {
   }
 }
 
-TEST_CASE("plane::contains(const point3&, real)", "[quantifier]") {
+TEST_CASE("plane::contains(const point3&, float)", "[quantifier]") {
   // Arrange
   const auto sut = plane{vector3{0, 0, 1}, 4};
-  const auto tolerance = real{0.1f};
+  const auto tolerance = 0.1f;
 
   SECTION("Point is within tolerance of the plane") {
     // Act

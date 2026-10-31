@@ -19,7 +19,6 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector2.hpp"
-#include "alloy/core/precision.hpp"
 
 namespace alloy::core {
 
@@ -161,7 +160,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const basis2& lhs,
     const basis2& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
 } // namespace alloy::core
@@ -262,7 +261,7 @@ inline constexpr
 auto alloy::core::almost_equal(
   const basis2& lhs,
   const basis2& rhs,
-  real tolerance
+  float tolerance
 ) noexcept -> bool
 {
   return almost_equal(lhs.up(), rhs.up(), tolerance) &&

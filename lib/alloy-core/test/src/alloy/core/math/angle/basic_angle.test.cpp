@@ -5,7 +5,6 @@
 #include <alloy/core/math/angle/basic_angle.hpp>
 
 #include <alloy/core/math/math.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
@@ -16,14 +15,14 @@
 namespace alloy::core::test {
 namespace {
 struct base_100_unit {
-  static inline constexpr auto revolution() noexcept -> real
+  static inline constexpr auto revolution() noexcept -> float
   {
     return 100;
   }
 };
 
 struct base_200_unit {
-  static inline constexpr auto revolution() noexcept -> real
+  static inline constexpr auto revolution() noexcept -> float
   {
     return 200;
   }
@@ -63,9 +62,9 @@ TEST_CASE("basic_angle::basic_angle()", "[ctor]") {
   }
 }
 
-TEST_CASE("basic_angle::basic_angle(real)", "[ctor]") {
+TEST_CASE("basic_angle::basic_angle(float)", "[ctor]") {
   // Arrange
-  const auto angle = real{50};
+  const auto angle = 50.0f;
 
   // Act
   const auto sut = basic_angle<base_100_unit>{angle};

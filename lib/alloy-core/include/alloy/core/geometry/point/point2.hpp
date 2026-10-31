@@ -19,7 +19,6 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector2.hpp"
-#include "alloy/core/precision.hpp"
 #include "alloy/core/utilities/piecewise_compare.hpp"
 
 #include <cstddef>     // std::size_t, std::ptrdiff_t
@@ -40,7 +39,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    using value_type      = real;
+    using value_type      = float;
     using pointer         = value_type*;
     using const_pointer   = const value_type*;
     using reference       = value_type&;
@@ -62,7 +61,7 @@ namespace alloy::core {
     /// \param x the x-coordinate
     /// \param y the y-coordinate
     /// \param z the z-coordinate
-    constexpr point2(real x, real y) noexcept;
+    constexpr point2(float x, float y) noexcept;
 
     /// \brief Copy-constructs a point from another point
     ///
@@ -130,7 +129,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   private:
 
-    real m_data[2]; ///< The storage data
+    float m_data[2]; ///< The storage data
   };
 
   //============================================================================
@@ -167,7 +166,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const point2& lhs,
     const point2& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
@@ -209,7 +208,7 @@ alloy::core::point2::point2() noexcept
 }
 
 inline constexpr
-alloy::core::point2::point2(real x, real y) noexcept
+alloy::core::point2::point2(float x, float y) noexcept
   : m_data{x,y}
 {
 
@@ -366,7 +365,7 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 inline constexpr
 auto alloy::core::almost_equal(const point2& lhs,
                                const point2& rhs,
-                               real tolerance)
+                               float tolerance)
   noexcept -> bool
 {
   for (auto i = 0; i < 2; ++i) {

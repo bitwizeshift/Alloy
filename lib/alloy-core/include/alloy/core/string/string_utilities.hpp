@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/core/api.hpp"
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/string/string_view.hpp"
 #include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/utilities/result.hpp"
@@ -107,7 +106,7 @@ namespace alloy::core {
     static auto to_float(string_view in) noexcept -> result<float,parse_error>;
     static auto to_double(string_view in)
       noexcept -> result<double,parse_error>;
-    static auto to_real(string_view in) noexcept -> result<real,parse_error>;
+    static auto to_real(string_view in) noexcept -> result<float,parse_error>;
     /// \}
   };
 

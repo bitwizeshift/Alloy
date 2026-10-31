@@ -24,7 +24,6 @@
 #include "alloy/core/geometry/ray.hpp"
 #include "alloy/core/geometry/sphere.hpp"
 #include "alloy/core/geometry/triangle.hpp"
-#include "alloy/core/precision.hpp"
 
 #include <concepts> // std::same_as
 #include <optional> // std::optional
@@ -39,7 +38,7 @@ namespace alloy::core {
   /// \brief A trait that casts rays against objects of the type \p Shape
   ///
   /// Specializations provide the static member function
-  /// `raycast(const ray&, const Shape&) noexcept -> std::optional<real>`,
+  /// `raycast(const ray&, const Shape&) noexcept -> std::optional<float>`,
   /// which gets the distance that the ray travels before it first reaches the
   /// object, or `std::nullopt` if it never does. A ray that starts inside of
   /// or on the object reaches it at a distance of 0.
@@ -57,42 +56,42 @@ namespace alloy::core {
   struct ALLOY_CORE_API raycast_traits<plane>
   {
     static auto raycast(const ray& r, const plane& p)
-      noexcept -> std::optional<real>;
+      noexcept -> std::optional<float>;
   };
 
   template <>
   struct ALLOY_CORE_API raycast_traits<triangle>
   {
     static auto raycast(const ray& r, const triangle& t)
-      noexcept -> std::optional<real>;
+      noexcept -> std::optional<float>;
   };
 
   template <>
   struct ALLOY_CORE_API raycast_traits<sphere>
   {
     static auto raycast(const ray& r, const sphere& s)
-      noexcept -> std::optional<real>;
+      noexcept -> std::optional<float>;
   };
 
   template <>
   struct ALLOY_CORE_API raycast_traits<capsule>
   {
     static auto raycast(const ray& r, const capsule& c)
-      noexcept -> std::optional<real>;
+      noexcept -> std::optional<float>;
   };
 
   template <>
   struct ALLOY_CORE_API raycast_traits<axis_aligned_box>
   {
     static auto raycast(const ray& r, const axis_aligned_box& b)
-      noexcept -> std::optional<real>;
+      noexcept -> std::optional<float>;
   };
 
   template <>
   struct ALLOY_CORE_API raycast_traits<oriented_box>
   {
     static auto raycast(const ray& r, const oriented_box& b)
-      noexcept -> std::optional<real>;
+      noexcept -> std::optional<float>;
   };
 
   //============================================================================
@@ -107,7 +106,7 @@ namespace alloy::core {
   concept raycastable = requires(const ray& r, const Shape& s) {
     {
       raycast_traits<Shape>::raycast(r, s)
-    } -> std::same_as<std::optional<real>>;
+    } -> std::same_as<std::optional<float>>;
   };
 
   //============================================================================
@@ -124,7 +123,7 @@ namespace alloy::core {
   template <typename Shape>
     requires raycastable<Shape>
   constexpr auto raycast(const ray& r, const Shape& shape)
-    noexcept -> std::optional<real>;
+    noexcept -> std::optional<float>;
 
 } // namespace alloy::core
 
@@ -136,7 +135,7 @@ template <typename Shape>
   requires alloy::core::raycastable<Shape>
 inline constexpr
 auto alloy::core::raycast(const ray& r, const Shape& shape)
-  noexcept -> std::optional<real>
+  noexcept -> std::optional<float>
 {
   return raycast_traits<Shape>::raycast(r, shape);
 }

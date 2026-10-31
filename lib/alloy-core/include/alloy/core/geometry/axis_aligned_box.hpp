@@ -22,7 +22,6 @@
 #include "alloy/core/geometry/sphere.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision.hpp"
 
 #include <array> // std::array
 
@@ -198,7 +197,7 @@ namespace alloy::core {
     /// \param p the point to get the distance to
     /// \return the distance
     [[nodiscard]]
-    auto distance_to(const point3& p) const noexcept -> real;
+    auto distance_to(const point3& p) const noexcept -> float;
 
     /// \brief Gets the squared distance between this box and the specified point
     ///        \p p
@@ -210,7 +209,7 @@ namespace alloy::core {
     /// \param p the point to get the distance to
     /// \return the squared distance to \p p
     [[nodiscard]]
-    auto square_distance_to(const point3& p) const noexcept -> real;
+    auto square_distance_to(const point3& p) const noexcept -> float;
 
     /// \brief Gets the nearest point on this box to the point \p p
     ///
@@ -233,7 +232,7 @@ namespace alloy::core {
     /// \param tolerance the tolerance for accepting the containment
     /// \return `true` if \p p is in the box
     [[nodiscard]]
-    auto contains(const point3& p, real tolerance) const noexcept -> bool;
+    auto contains(const point3& p, float tolerance) const noexcept -> bool;
 
     /// \brief Checks if this box intersect another box
     ///
@@ -283,7 +282,7 @@ namespace alloy::core {
   auto almost_equal(
     const axis_aligned_box& lhs,
     const axis_aligned_box& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
 } // namespace alloy::core

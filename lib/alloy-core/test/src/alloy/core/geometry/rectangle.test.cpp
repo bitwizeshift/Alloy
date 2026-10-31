@@ -7,7 +7,6 @@
 #include <alloy/core/geometry/point/point2.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector2.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -67,21 +66,21 @@ TEST_CASE("rectangle::distance_to(const point2&)", "[quantifier]") {
     const auto result = sut.distance_to(point2{0.5f, 0});
 
     // Assert
-    REQUIRE(almost_equal(result, real{0}));
+    REQUIRE(almost_equal(result, 0.0f));
   }
   SECTION("Point is outside an edge") {
     // Act
     const auto result = sut.distance_to(point2{0, 4});
 
     // Assert
-    REQUIRE(almost_equal(result, real{3}));
+    REQUIRE(almost_equal(result, 3.0f));
   }
   SECTION("Point is outside a corner") {
     // Act
     const auto result = sut.distance_to(point2{4, 5});
 
     // Assert
-    REQUIRE(almost_equal(result, real{5}));
+    REQUIRE(almost_equal(result, 5.0f));
   }
 }
 
@@ -132,10 +131,10 @@ TEST_CASE("rectangle::contains(const point2&)", "[quantifier]") {
   }
 }
 
-TEST_CASE("rectangle::contains(const point2&, real)", "[quantifier]") {
+TEST_CASE("rectangle::contains(const point2&, float)", "[quantifier]") {
   // Arrange
   const auto sut = rectangle{point2{-1, -1}, point2{1, 1}};
-  const auto tolerance = real{0.1f};
+  const auto tolerance = 0.1f;
 
   SECTION("Point is within tolerance of an edge") {
     // Act

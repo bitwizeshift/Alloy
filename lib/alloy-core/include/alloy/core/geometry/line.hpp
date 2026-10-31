@@ -19,7 +19,6 @@
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision.hpp"
 
 namespace alloy::core {
 
@@ -104,7 +103,7 @@ namespace alloy::core {
     /// \param dt the distance to get this point at
     /// \return the point at the distance
     [[nodiscard]]
-    auto point_at_distance(real dt) const noexcept -> point3;
+    auto point_at_distance(float dt) const noexcept -> point3;
 
     /// \brief Checks if this line intersects the given point \p p
     ///
@@ -120,7 +119,7 @@ namespace alloy::core {
     /// \param tolerance the tolerance for accepting the containment
     /// \return `true` if \p p is in the line
     [[nodiscard]]
-    auto contains(const point3& p, real tolerance) const noexcept -> bool;
+    auto contains(const point3& p, float tolerance) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -165,7 +164,7 @@ namespace alloy::core {
   /// \param rhs the right line
   /// \return `true` if the two lines contain almost equal values
   ALLOY_CORE_API
-  auto almost_equal(const line& lhs, const line& rhs, real tolerance)
+  auto almost_equal(const line& lhs, const line& rhs, float tolerance)
     noexcept -> bool;
 
 } // namespace alloy::core
@@ -180,8 +179,8 @@ namespace alloy::core {
 
 inline constexpr
 alloy::core::line::line() noexcept
-  : m_origin{real{0}, real{0}, real{0}},
-    m_direction{real{1}, real{0}, real{0}}
+  : m_origin{0.0f, 0.0f, 0.0f},
+    m_direction{1.0f, 0.0f, 0.0f}
 {
 
 }

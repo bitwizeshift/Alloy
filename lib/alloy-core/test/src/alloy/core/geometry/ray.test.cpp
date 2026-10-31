@@ -7,7 +7,6 @@
 #include <alloy/core/geometry/point/point3.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -46,12 +45,12 @@ TEST_CASE("ray::inverse()", "[quantifier]") {
   }
 }
 
-TEST_CASE("ray::point_at_distance(real)", "[quantifier]") {
+TEST_CASE("ray::point_at_distance(float)", "[quantifier]") {
   // Arrange
   const auto sut = ray{point3{1, 2, 3}, vector3{0, 0, 1}};
 
   // Act
-  const auto result = sut.point_at_distance(real{2});
+  const auto result = sut.point_at_distance(2.0f);
 
   // Assert
   SECTION("Moves along the direction from the origin") {
@@ -114,10 +113,10 @@ TEST_CASE("ray::contains(const point3&)", "[quantifier]") {
   }
 }
 
-TEST_CASE("ray::contains(const point3&, real)", "[quantifier]") {
+TEST_CASE("ray::contains(const point3&, float)", "[quantifier]") {
   // Arrange
   const auto sut = ray{};
-  const auto tolerance = real{0.1f};
+  const auto tolerance = 0.1f;
 
   SECTION("Point is within tolerance of the ray") {
     // Act

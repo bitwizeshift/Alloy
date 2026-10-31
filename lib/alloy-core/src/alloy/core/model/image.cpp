@@ -9,7 +9,6 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/model/color.hpp"
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/result.hpp"
 
 #include <cstddef>
@@ -370,23 +369,23 @@ auto alloy::core::image::get_pixel(std::size_t x, std::size_t y)
   const auto convert = ::get_pixel_index_function(m_format);
 
   // Formats without an alpha channel store opaque pixels.
-  auto result = color{real{0}, real{0}, real{0}, real{1}};
+  auto result = color{0.0f, 0.0f, 0.0f, 1.0f};
 
   for (auto i = 0u; i < pixel_size; ++i) {
     const auto color_component = (*convert)(i);
 
     switch (color_component) {
     case rgba::r:
-      result.r() = static_cast<real>(m_bytes[index + i]) / real{255};
+      result.r() = static_cast<float>(m_bytes[index + i]) / 255.0f;
       break;
     case rgba::g:
-      result.g() = static_cast<real>(m_bytes[index + i]) / real{255};
+      result.g() = static_cast<float>(m_bytes[index + i]) / 255.0f;
       break;
     case rgba::b:
-      result.b() = static_cast<real>(m_bytes[index + i]) / real{255};
+      result.b() = static_cast<float>(m_bytes[index + i]) / 255.0f;
       break;
     case rgba::a:
-      result.a() = static_cast<real>(m_bytes[index + i]) / real{255};
+      result.a() = static_cast<float>(m_bytes[index + i]) / 255.0f;
       break;
     }
   }

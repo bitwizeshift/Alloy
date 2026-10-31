@@ -7,7 +7,6 @@
 #include <alloy/core/geometry/line_segment.hpp>
 #include <alloy/core/geometry/point/point3.hpp>
 #include <alloy/core/math/math.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -17,7 +16,7 @@ TEST_CASE("capsule::nearest_point(const point3&)", "[quantifier]") {
   // Arrange
   const auto sut = capsule{
     line_segment{point3{0, 0, 0}, point3{0, 4, 0}},
-    real{1}
+    1.0f
   };
 
   SECTION("Point is inside the capsule") {
@@ -47,7 +46,7 @@ TEST_CASE("capsule::contains(const point3&)", "[quantifier]") {
   // Arrange
   const auto sut = capsule{
     line_segment{point3{0, 0, 0}, point3{0, 4, 0}},
-    real{1}
+    1.0f
   };
 
   SECTION("Point is inside the cylinder") {
@@ -80,13 +79,13 @@ TEST_CASE("capsule::contains(const point3&)", "[quantifier]") {
   }
 }
 
-TEST_CASE("capsule::contains(const point3&, real)", "[quantifier]") {
+TEST_CASE("capsule::contains(const point3&, float)", "[quantifier]") {
   // Arrange
   const auto sut = capsule{
     line_segment{point3{0, 0, 0}, point3{0, 4, 0}},
-    real{1}
+    1.0f
   };
-  const auto tolerance = real{0.1f};
+  const auto tolerance = 0.1f;
 
   SECTION("Point is within tolerance of the surface") {
     // Act

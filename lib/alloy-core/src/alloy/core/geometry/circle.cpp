@@ -6,7 +6,6 @@
 
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision/real.hpp"
 
 //==============================================================================
 // class : circle
@@ -32,7 +31,7 @@ auto alloy::core::circle::contains(const point2& p) const noexcept -> bool
   return contains(p, default_tolerance);
 }
 
-auto alloy::core::circle::contains(const point2& p, real tolerance)
+auto alloy::core::circle::contains(const point2& p, float tolerance)
   const noexcept -> bool
 {
   const auto offset = (p - m_center);

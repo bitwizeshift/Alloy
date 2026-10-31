@@ -7,7 +7,6 @@
 #include <alloy/core/geometry/point/point3.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -60,7 +59,7 @@ TEST_CASE("triangle::area()", "[observer]") {
 
   // Assert
   SECTION("Is half of the base times the height") {
-    REQUIRE(almost_equal(result, real{6}));
+    REQUIRE(almost_equal(result, 6.0f));
   }
 }
 
@@ -69,7 +68,7 @@ TEST_CASE("triangle::barycentric_of(const point3&)", "[quantifier]") {
   const auto sut = triangle{point3{0, 0, 2}, point3{3, 0, 2}, point3{0, 3, 2}};
 
   const auto expected = vector3{
-    real{1} / real{3}, real{1} / real{3}, real{1} / real{3}
+    1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f
   };
 
   // Act
@@ -172,10 +171,10 @@ TEST_CASE("triangle::contains(const point3&)", "[quantifier]") {
   }
 }
 
-TEST_CASE("triangle::contains(const point3&, real)", "[quantifier]") {
+TEST_CASE("triangle::contains(const point3&, float)", "[quantifier]") {
   // Arrange
   const auto sut = triangle{point3{0, 0, 0}, point3{4, 0, 0}, point3{0, 4, 0}};
-  const auto tolerance = real{0.1f};
+  const auto tolerance = 0.1f;
 
   SECTION("Point is within tolerance of the triangle") {
     // Act

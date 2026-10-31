@@ -11,7 +11,6 @@
 #include <alloy/core/math/matrix/matrix3.hpp>
 #include <alloy/core/math/quaternion_constants.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -67,7 +66,7 @@ TEST_CASE("quaternion::to_euler_angles()", "[observers]")
     const auto result = sut.to_euler_angles();
 
     // Assert
-    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+    REQUIRE( almost_equal(result, expected, 1e-5f) );
   }
 
   SECTION("Gimbal lock reproduces the same rotation")
@@ -83,7 +82,7 @@ TEST_CASE("quaternion::to_euler_angles()", "[observers]")
     const auto result = quaternion::from_angles(sut.to_euler_angles());
 
     // Assert
-    REQUIRE( almost_equal(result, sut, real{1e-3f}) );
+    REQUIRE( almost_equal(result, sut, 1e-3f) );
   }
 
   SECTION("Gimbal lock sets the roll to 0")
@@ -633,7 +632,7 @@ TEST_CASE("operator*( const quaternion&, const vector3& )", "[arithmetic]")
 // Interpolation
 //------------------------------------------------------------------------------
 
-TEST_CASE("slerp( const quaternion&, const quaternion&, real )", "[interpolation]")
+TEST_CASE("slerp( const quaternion&, const quaternion&, float )", "[interpolation]")
 {
   // Arrange
   const auto start = quaternion_constants::identity;
@@ -646,12 +645,12 @@ TEST_CASE("slerp( const quaternion&, const quaternion&, real )", "[interpolation
   {
     // Arrange
     const auto expected = quaternion::from_angle_axis(
-      radian_constants::quarter_revolution * real{0.25},
+      radian_constants::quarter_revolution * 0.25f,
       vector3{0, 0, 1}
     );
 
     // Act
-    const auto result = slerp(start, end, real{0.25});
+    const auto result = slerp(start, end, 0.25f);
 
     // Assert
     REQUIRE( almost_equal(result, expected) );
@@ -661,12 +660,12 @@ TEST_CASE("slerp( const quaternion&, const quaternion&, real )", "[interpolation
   {
     // Arrange
     const auto expected = quaternion::from_angle_axis(
-      radian_constants::quarter_revolution * real{0.5},
+      radian_constants::quarter_revolution * 0.5f,
       vector3{0, 0, 1}
     );
 
     // Act
-    const auto result = slerp(start, -end, real{0.5});
+    const auto result = slerp(start, -end, 0.5f);
 
     // Assert
     REQUIRE( almost_equal(result, expected) );
@@ -675,7 +674,7 @@ TEST_CASE("slerp( const quaternion&, const quaternion&, real )", "[interpolation
   SECTION("Returns the start at 0")
   {
     // Act
-    const auto result = slerp(start, end, real{0});
+    const auto result = slerp(start, end, 0.0f);
 
     // Assert
     REQUIRE( almost_equal(result, start) );
@@ -684,14 +683,14 @@ TEST_CASE("slerp( const quaternion&, const quaternion&, real )", "[interpolation
   SECTION("Returns the end at 1")
   {
     // Act
-    const auto result = slerp(start, end, real{1});
+    const auto result = slerp(start, end, 1.0f);
 
     // Assert
     REQUIRE( almost_equal(result, end) );
   }
 }
 
-TEST_CASE("nlerp( const quaternion&, const quaternion&, real )", "[interpolation]")
+TEST_CASE("nlerp( const quaternion&, const quaternion&, float )", "[interpolation]")
 {
   // Arrange
   const auto start = quaternion_constants::identity;
@@ -700,12 +699,12 @@ TEST_CASE("nlerp( const quaternion&, const quaternion&, real )", "[interpolation
     vector3{0, 0, 1}
   );
   const auto expected = quaternion::from_angle_axis(
-    radian_constants::quarter_revolution * real{0.5},
+    radian_constants::quarter_revolution * 0.5f,
     vector3{0, 0, 1}
   );
 
   // Act
-  const auto result = nlerp(start, end, real{0.5});
+  const auto result = nlerp(start, end, 0.5f);
 
   // Assert
   SECTION("Midpoint is the half rotation")
@@ -719,17 +718,17 @@ TEST_CASE("interpolator<quaternion>", "[interpolation]")
   // Arrange
   const auto start = quaternion_constants::identity;
   const auto end = quaternion::from_angle_axis(
-    radian_constants::half_revolution * real{0.9},
+    radian_constants::half_revolution * 0.9f,
     vector3{1, 0, 0}
   );
 
   // Act
-  const auto result = interpolation::linear(start, end, real{0.5});
+  const auto result = interpolation::linear(start, end, 0.5f);
 
   // Assert
   SECTION("Interpolated rotation is unit length")
   {
-    REQUIRE( almost_equal(result.magnitude(), real{1}) );
+    REQUIRE( almost_equal(result.magnitude(), 1.0f) );
   }
 }
 

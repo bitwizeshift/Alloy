@@ -21,7 +21,6 @@
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision.hpp"
 
 namespace alloy::core {
 
@@ -52,7 +51,7 @@ namespace alloy::core {
     ///
     /// \param center the center point
     /// \param radius the radius of the sphere
-    constexpr sphere(const point3& center, real radius) noexcept;
+    constexpr sphere(const point3& center, float radius) noexcept;
 
     /// \brief Constructs a sphere by copying an existing instance
     ///
@@ -82,7 +81,7 @@ namespace alloy::core {
     ///
     /// \return the radius
     [[nodiscard]]
-    constexpr auto radius() const noexcept -> const real&;
+    constexpr auto radius() const noexcept -> const float&;
 
     /// \brief Checks whether a given point \p p is contained within this
     ///        sphere
@@ -99,7 +98,7 @@ namespace alloy::core {
     /// \param tolerance the error tolerance to accept
     /// \return `true` if the point is contained in this sphere
     [[nodiscard]] ALLOY_CORE_API
-    auto contains(const point3& p, real tolerance) const noexcept -> bool;
+    auto contains(const point3& p, float tolerance) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -107,7 +106,7 @@ namespace alloy::core {
   private:
 
     point3 m_center; ///< The center point of the sphere
-    real  m_radius; ///< The radius of the sphere
+    float m_radius;  ///< The radius of the sphere
   };
 
   //============================================================================
@@ -133,7 +132,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const sphere& lhs,
     const sphere& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
 } // namespace alloy::core
@@ -155,7 +154,7 @@ alloy::core::sphere::sphere() noexcept
 }
 
 inline constexpr
-alloy::core::sphere::sphere(const point3& center, real radius) noexcept
+alloy::core::sphere::sphere(const point3& center, float radius) noexcept
   : m_center{center},
     m_radius{radius}
 {
@@ -173,7 +172,7 @@ auto alloy::core::sphere::center() const noexcept -> const point3&
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::sphere::radius() const noexcept -> const real&
+auto alloy::core::sphere::radius() const noexcept -> const float&
 {
   return m_radius;
 }
@@ -211,7 +210,7 @@ inline constexpr
 auto alloy::core::almost_equal(
   const sphere& lhs,
   const sphere& rhs,
-  real tolerance
+  float tolerance
 ) noexcept -> bool
 {
   return almost_equal(lhs.center(), rhs.center(), tolerance) &&

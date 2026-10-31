@@ -22,7 +22,6 @@
 #include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision.hpp"
 
 namespace alloy::core {
 
@@ -105,7 +104,7 @@ namespace alloy::core {
     ///
     /// \return the area
     [[nodiscard]]
-    auto area() const noexcept -> real;
+    auto area() const noexcept -> float;
 
     //--------------------------------------------------------------------------
     // Quantifiers
@@ -145,7 +144,7 @@ namespace alloy::core {
     /// \param tolerance the error tolerance to accept
     /// \return `true` if the point is on this triangle
     [[nodiscard]]
-    auto contains(const point3& p, real tolerance) const noexcept -> bool;
+    auto contains(const point3& p, float tolerance) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -182,7 +181,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const triangle& lhs,
     const triangle& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
 } // namespace alloy::core
@@ -267,7 +266,7 @@ inline constexpr
 auto alloy::core::almost_equal(
   const triangle& lhs,
   const triangle& rhs,
-  real tolerance
+  float tolerance
 ) noexcept -> bool
 {
   return almost_equal(lhs.a(), rhs.a(), tolerance) &&

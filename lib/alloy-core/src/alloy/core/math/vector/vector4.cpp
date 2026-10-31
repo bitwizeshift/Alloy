@@ -5,7 +5,6 @@
 #include "alloy/core/math/vector/vector4.hpp"
 
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision/real.hpp"
 
 //=============================================================================
 // class : vector4
@@ -15,7 +14,7 @@
 // Quantifiers
 //-----------------------------------------------------------------------------
 
-auto alloy::core::vector4::magnitude() const noexcept -> real
+auto alloy::core::vector4::magnitude() const noexcept -> float
 {
   return sqrt( dot(*this) );
 }
@@ -27,12 +26,12 @@ auto alloy::core::vector4::normalize() noexcept -> vector4&
 {
   const auto square_mag = square_magnitude();
 
-  if (almost_equal(square_mag, real{1})) {
+  if (almost_equal(square_mag, 1.0f)) {
     return (*this);
   }
 
-  if (square_mag > real{0}) {
-    const auto mag_inv = real{1} / sqrt(square_mag);
+  if (square_mag > 0.0f) {
+    const auto mag_inv = 1.0f / sqrt(square_mag);
 
     for (auto i = 0; i < 4; ++i) {
       m_data[i] *= mag_inv;

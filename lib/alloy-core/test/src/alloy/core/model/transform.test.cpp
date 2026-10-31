@@ -14,7 +14,6 @@
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector3_constants.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -41,7 +40,7 @@ TEST_CASE("transform::transform()", "[ctor]")
 // Relative Transformations
 //------------------------------------------------------------------------------
 
-TEST_CASE("transform::translate( real, real, real )", "[relative]")
+TEST_CASE("transform::translate( float, float, float )", "[relative]")
 {
   // Arrange
   auto sut = transform{};
@@ -76,11 +75,11 @@ TEST_CASE("transform::rotate( const quaternion& )", "[relative]")
   // Assert
   SECTION("Rotates about the transform's own axes")
   {
-    REQUIRE( almost_equal(result, vector3{0, 1, 0}, real{1e-5f}) );
+    REQUIRE( almost_equal(result, vector3{0, 1, 0}, 1e-5f) );
   }
 }
 
-TEST_CASE("transform::scale( real )", "[relative]")
+TEST_CASE("transform::scale( float )", "[relative]")
 {
   // Arrange
   auto sut = transform{};
@@ -118,7 +117,7 @@ TEST_CASE("transform::scale( const vector3& )", "[relative]")
 // Absolute Transformations
 //------------------------------------------------------------------------------
 
-TEST_CASE("transform::set_scale( real )", "[absolute]")
+TEST_CASE("transform::set_scale( float )", "[absolute]")
 {
   // Arrange
   auto sut = transform{};
@@ -156,7 +155,7 @@ TEST_CASE("transform::set_roll( radian )", "[absolute]")
       radian{0.2f}
     };
 
-    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+    REQUIRE( almost_equal(result, expected, 1e-5f) );
   }
 }
 
@@ -181,7 +180,7 @@ TEST_CASE("transform::set_pitch( radian )", "[absolute]")
       radian{2.5f}
     };
 
-    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+    REQUIRE( almost_equal(result, expected, 1e-5f) );
   }
 }
 
@@ -206,7 +205,7 @@ TEST_CASE("transform::set_yaw( radian )", "[absolute]")
       radian{2.5f}
     };
 
-    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+    REQUIRE( almost_equal(result, expected, 1e-5f) );
   }
 }
 
@@ -224,11 +223,11 @@ TEST_CASE("transform::look_at( const vector3&, const vector3& )", "[absolute]")
   // Assert
   SECTION("Faces the target")
   {
-    REQUIRE( almost_equal(forward, vector3{0, 0, -1}, real{1e-5f}) );
+    REQUIRE( almost_equal(forward, vector3{0, 0, -1}, 1e-5f) );
   }
   SECTION("Orients up towards the up direction")
   {
-    REQUIRE( almost_equal(up, vector3{1, 0, 0}, real{1e-5f}) );
+    REQUIRE( almost_equal(up, vector3{1, 0, 0}, 1e-5f) );
   }
 }
 
@@ -249,7 +248,7 @@ TEST_CASE("transform::angles()", "[observers]")
   // Assert
   SECTION("Recovers the angles that the orientation was set from")
   {
-    REQUIRE( almost_equal(result, expected, real{1e-5f}) );
+    REQUIRE( almost_equal(result, expected, 1e-5f) );
   }
 }
 
@@ -265,7 +264,7 @@ TEST_CASE("transform::right()", "[observers]")
   // Assert
   SECTION("Is the rotated x-axis")
   {
-    REQUIRE( almost_equal(result, vector3{0, 0, -1}, real{1e-5f}) );
+    REQUIRE( almost_equal(result, vector3{0, 0, -1}, 1e-5f) );
   }
 }
 
@@ -281,7 +280,7 @@ TEST_CASE("transform::up()", "[observers]")
   // Assert
   SECTION("Is the rotated y-axis")
   {
-    REQUIRE( almost_equal(result, vector3{0, 0, 1}, real{1e-5f}) );
+    REQUIRE( almost_equal(result, vector3{0, 0, 1}, 1e-5f) );
   }
 }
 
@@ -297,7 +296,7 @@ TEST_CASE("transform::forward()", "[observers]")
   // Assert
   SECTION("Is the rotated negative z-axis")
   {
-    REQUIRE( almost_equal(result, vector3{-1, 0, 0}, real{1e-5f}) );
+    REQUIRE( almost_equal(result, vector3{-1, 0, 0}, 1e-5f) );
   }
 }
 
@@ -319,7 +318,7 @@ TEST_CASE("transform::transform_point( const vector3& )", "[transformation]")
   // Assert
   SECTION("Scales, then rotates, then translates")
   {
-    REQUIRE( almost_equal(result, vector3{7, 0, 0}, real{1e-5f}) );
+    REQUIRE( almost_equal(result, vector3{7, 0, 0}, 1e-5f) );
   }
 }
 
@@ -337,7 +336,7 @@ TEST_CASE("transform::transform_vector( const vector3& )", "[transformation]")
   // Assert
   SECTION("Scales, then rotates, without translating")
   {
-    REQUIRE( almost_equal(result, vector3{-3, 0, 0}, real{1e-5f}) );
+    REQUIRE( almost_equal(result, vector3{-3, 0, 0}, 1e-5f) );
   }
 }
 
@@ -363,7 +362,7 @@ TEST_CASE("transform::to_matrix4()", "[conversion]")
   // Assert
   SECTION("Scales, then rotates, then translates")
   {
-    REQUIRE( almost_equal(result, vector4{10, 2, 0, 1}, real{1e-5}) );
+    REQUIRE( almost_equal(result, vector4{10, 2, 0, 1}, 1e-5f) );
   }
 }
 
@@ -387,7 +386,7 @@ TEST_CASE("transform::extract_matrix( not_null<matrix4*> )", "[conversion]")
   // Assert
   SECTION("Scales each axis, then rotates, then translates")
   {
-    REQUIRE( almost_equal(result, vector4{7, 0, 0, 1}, real{1e-5}) );
+    REQUIRE( almost_equal(result, vector4{7, 0, 0, 1}, 1e-5f) );
   }
 }
 
@@ -406,7 +405,7 @@ TEST_CASE("transform::to_inverse_matrix4()", "[conversion]")
   // Assert
   SECTION("Undoes the transformation")
   {
-    REQUIRE( almost_equal(result, matrix4_constants::identity, real{1e-5f}) );
+    REQUIRE( almost_equal(result, matrix4_constants::identity, 1e-5f) );
   }
 }
 
@@ -424,7 +423,7 @@ TEST_CASE("interpolator<transform>", "[interpolation]")
   end.set_yaw(radian_constants::quarter_revolution);
 
   // Act
-  const auto result = interpolation::linear(start, end, real{0.5});
+  const auto result = interpolation::linear(start, end, 0.5f);
 
   // Assert
   SECTION("Interpolates the translation")
@@ -438,12 +437,12 @@ TEST_CASE("interpolator<transform>", "[interpolation]")
   SECTION("Interpolates the orientation along the shortest rotation")
   {
     const auto expected = euler_angles{
-      radian_constants::quarter_revolution * real{0.5},
+      radian_constants::quarter_revolution * 0.5f,
       radian{0},
       radian{0}
     };
 
-    REQUIRE( almost_equal(result.angles(), expected, real{1e-5f}) );
+    REQUIRE( almost_equal(result.angles(), expected, 1e-5f) );
   }
 }
 
@@ -451,7 +450,7 @@ TEST_CASE("interpolator<transform>", "[interpolation]")
 // Non-member Functions
 //------------------------------------------------------------------------------
 
-TEST_CASE("almost_equal( const transform&, const transform&, real )",
+TEST_CASE("almost_equal( const transform&, const transform&, float )",
           "[comparison]")
 {
   // Arrange
@@ -466,7 +465,7 @@ TEST_CASE("almost_equal( const transform&, const transform&, real )",
     const auto rhs = lhs;
 
     // Act
-    const auto result = almost_equal(lhs, rhs, real{1e-5f});
+    const auto result = almost_equal(lhs, rhs, 1e-5f);
 
     // Assert
     REQUIRE( result );
@@ -478,7 +477,7 @@ TEST_CASE("almost_equal( const transform&, const transform&, real )",
     rhs.set_orientation(-lhs.orientation());
 
     // Act
-    const auto result = almost_equal(lhs, rhs, real{1e-5f});
+    const auto result = almost_equal(lhs, rhs, 1e-5f);
 
     // Assert
     REQUIRE( result );
@@ -490,7 +489,7 @@ TEST_CASE("almost_equal( const transform&, const transform&, real )",
     rhs.translate_x(1);
 
     // Act
-    const auto result = almost_equal(lhs, rhs, real{1e-5f});
+    const auto result = almost_equal(lhs, rhs, 1e-5f);
 
     // Assert
     REQUIRE_FALSE( result );
@@ -502,7 +501,7 @@ TEST_CASE("almost_equal( const transform&, const transform&, real )",
     rhs.scale_x(2);
 
     // Act
-    const auto result = almost_equal(lhs, rhs, real{1e-5f});
+    const auto result = almost_equal(lhs, rhs, 1e-5f);
 
     // Assert
     REQUIRE_FALSE( result );
@@ -514,7 +513,7 @@ TEST_CASE("almost_equal( const transform&, const transform&, real )",
     rhs.rotate_yaw(radian{0.5f});
 
     // Act
-    const auto result = almost_equal(lhs, rhs, real{1e-5f});
+    const auto result = almost_equal(lhs, rhs, 1e-5f);
 
     // Assert
     REQUIRE_FALSE( result );

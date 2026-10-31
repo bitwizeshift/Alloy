@@ -24,7 +24,6 @@
 #include "alloy/core/math/basis/basis3.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/math/vector/vector3_constants.hpp"
-#include "alloy/core/precision.hpp"
 
 #include <array> // std::array
 
@@ -166,7 +165,7 @@ namespace alloy::core {
     /// \param tolerance the error tolerance to accept
     /// \return `true` if the point is contained in this box
     [[nodiscard]]
-    auto contains(const point3& p, real tolerance) const noexcept -> bool;
+    auto contains(const point3& p, float tolerance) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -203,7 +202,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const oriented_box& lhs,
     const oriented_box& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
 } // namespace alloy::core
@@ -307,7 +306,7 @@ inline constexpr
 auto alloy::core::almost_equal(
   const oriented_box& lhs,
   const oriented_box& rhs,
-  real tolerance
+  float tolerance
 ) noexcept -> bool
 {
   return almost_equal(lhs.center(), rhs.center(), tolerance) &&

@@ -7,7 +7,6 @@
 #include <alloy/core/geometry/point/point3.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -39,16 +38,16 @@ TEST_CASE("line_segment::magnitude()", "[observer]") {
 
   // Assert
   SECTION("Is the distance between the points") {
-    REQUIRE(almost_equal(result, real{5}));
+    REQUIRE(almost_equal(result, 5.0f));
   }
 }
 
-TEST_CASE("line_segment::point_at_percent(real)", "[quantifier]") {
+TEST_CASE("line_segment::point_at_percent(float)", "[quantifier]") {
   // Arrange
   const auto sut = line_segment{point3{0, 0, 0}, point3{0, 0, 10}};
 
   // Act
-  const auto result = sut.point_at_percent(real{0.25f});
+  const auto result = sut.point_at_percent(0.25f);
 
   // Assert
   SECTION("Is the fraction of the way to the end point") {
@@ -181,10 +180,10 @@ TEST_CASE("line_segment::contains(const point3&)", "[quantifier]") {
   }
 }
 
-TEST_CASE("line_segment::contains(const point3&, real)", "[quantifier]") {
+TEST_CASE("line_segment::contains(const point3&, float)", "[quantifier]") {
   // Arrange
   const auto sut = line_segment{point3{1, 0, 0}, point3{5, 0, 0}};
-  const auto tolerance = real{0.1f};
+  const auto tolerance = 0.1f;
 
   SECTION("Point is within tolerance of the segment") {
     // Act

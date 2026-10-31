@@ -20,7 +20,6 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision.hpp"
 
 
 namespace alloy::core {
@@ -81,7 +80,7 @@ namespace alloy::core {
     ///
     /// \param normal the normal vector
     /// \param distance the distance to move the plane along the normal
-    constexpr explicit plane(const vector3& normal, real distance) noexcept;
+    constexpr explicit plane(const vector3& normal, float distance) noexcept;
 
     /// \brief Constructs a plane givene the 4 underlying components
     ///
@@ -89,7 +88,7 @@ namespace alloy::core {
     /// \param b the b component
     /// \param c the c component
     /// \param d the d component
-    constexpr plane(real a, real b, real c, real d) noexcept;
+    constexpr plane(float a, float b, float c, float d) noexcept;
 
     /// \brief Constructs this plane by copy-constructing from an existing one
     ///
@@ -124,10 +123,10 @@ namespace alloy::core {
     // Observers
     //--------------------------------------------------------------------------
   public:
-    [[nodiscard]] constexpr auto a() const noexcept -> real;
-    [[nodiscard]] constexpr auto b() const noexcept -> real;
-    [[nodiscard]] constexpr auto c() const noexcept -> real;
-    [[nodiscard]] constexpr auto d() const noexcept -> real;
+    [[nodiscard]] constexpr auto a() const noexcept -> float;
+    [[nodiscard]] constexpr auto b() const noexcept -> float;
+    [[nodiscard]] constexpr auto c() const noexcept -> float;
+    [[nodiscard]] constexpr auto d() const noexcept -> float;
 
     /// \brief Gets the normal of this plane
     ///
@@ -149,7 +148,7 @@ namespace alloy::core {
     /// \param p the point to get the distance to
     /// \return the distance
     [[nodiscard]]
-    auto distance_to(const point3& p) const noexcept -> real;
+    auto distance_to(const point3& p) const noexcept -> float;
 
     /// \brief Gets the projection of the specified vector onto this plane
     ///
@@ -199,7 +198,7 @@ namespace alloy::core {
     /// \param tolerance the tolerance for accepting the containment
     /// \return `true` if \p p is in the plane
     [[nodiscard]]
-    auto contains(const point3& p, real tolerance) const noexcept -> bool;
+    auto contains(const point3& p, float tolerance) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Unary Operators
@@ -214,7 +213,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   private:
 
-    alignas(16) real m_data[4];
+    alignas(16) float m_data[4];
   };
 
   //============================================================================
@@ -240,7 +239,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const plane& lhs,
     const plane& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
@@ -283,14 +282,14 @@ alloy::core::plane::plane() noexcept
 }
 
 inline constexpr
-alloy::core::plane::plane(const vector3& normal, real distance) noexcept
+alloy::core::plane::plane(const vector3& normal, float distance) noexcept
   : plane{normal.x(), normal.y(), normal.z(), -distance}
 {
 
 }
 
 inline constexpr
-alloy::core::plane::plane(real a, real b, real c, real d) noexcept
+alloy::core::plane::plane(float a, float b, float c, float d) noexcept
   : m_data{a,b,c,d}
 {
 
@@ -301,25 +300,25 @@ alloy::core::plane::plane(real a, real b, real c, real d) noexcept
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::plane::a() const noexcept -> real
+auto alloy::core::plane::a() const noexcept -> float
 {
   return m_data[0];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::plane::b() const noexcept -> real
+auto alloy::core::plane::b() const noexcept -> float
 {
   return m_data[1];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::plane::c() const noexcept -> real
+auto alloy::core::plane::c() const noexcept -> float
 {
   return m_data[2];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::plane::d() const noexcept -> real
+auto alloy::core::plane::d() const noexcept -> float
 {
   return m_data[3];
 }
@@ -407,7 +406,7 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::almost_equal(const plane& lhs, const plane& rhs, real tolerance)
+auto alloy::core::almost_equal(const plane& lhs, const plane& rhs, float tolerance)
   noexcept -> bool
 {
   return almost_equal(lhs.a(), rhs.a(), tolerance) &&

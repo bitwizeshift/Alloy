@@ -21,7 +21,6 @@
 #include <alloy/core/math/basis/basis3.hpp>
 #include <alloy/core/math/matrix/matrix4_constants.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -211,9 +210,9 @@ TEST_CASE("operator==(const intersection<Types...>&, const intersection<Types...
   }
 }
 
-TEST_CASE("almost_equal(const intersection<Types...>&, const intersection<Types...>&, real)", "[equality]") {
+TEST_CASE("almost_equal(const intersection<Types...>&, const intersection<Types...>&, float)", "[equality]") {
   // Arrange
-  const auto tolerance = real{1e-3f};
+  const auto tolerance = 1e-3f;
 
   SECTION("Both have no intersection") {
     // Arrange
@@ -628,7 +627,7 @@ TEST_CASE("intersects(const plane&, const sphere&)", "[intersects]") {
 
   SECTION("Sphere straddles the plane") {
     // Arrange
-    const auto b = sphere{point3{0, 0, 3}, real{2}};
+    const auto b = sphere{point3{0, 0, 3}, 2.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -638,7 +637,7 @@ TEST_CASE("intersects(const plane&, const sphere&)", "[intersects]") {
   }
   SECTION("Sphere touches the plane") {
     // Arrange
-    const auto b = sphere{point3{0, 0, 5}, real{3}};
+    const auto b = sphere{point3{0, 0, 5}, 3.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -648,7 +647,7 @@ TEST_CASE("intersects(const plane&, const sphere&)", "[intersects]") {
   }
   SECTION("Sphere is apart from the plane") {
     // Arrange
-    const auto b = sphere{point3{0, 0, 5}, real{2}};
+    const auto b = sphere{point3{0, 0, 5}, 2.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -658,7 +657,7 @@ TEST_CASE("intersects(const plane&, const sphere&)", "[intersects]") {
   }
   SECTION("Arguments are reversed") {
     // Arrange
-    const auto b = sphere{point3{0, 0, 5}, real{2}};
+    const auto b = sphere{point3{0, 0, 5}, 2.0f};
 
     // Act
     const auto result = intersects(b, a);
@@ -674,7 +673,7 @@ TEST_CASE("intersects(const plane&, const axis_aligned_box&)", "[intersects]") {
 
   SECTION("Plane cuts through the box") {
     // Arrange
-    const auto a = plane{vector3{0, 0, 1}, real{0.5f}};
+    const auto a = plane{vector3{0, 0, 1}, 0.5f};
 
     // Act
     const auto result = intersects(a, b);
@@ -694,7 +693,7 @@ TEST_CASE("intersects(const plane&, const axis_aligned_box&)", "[intersects]") {
   }
   SECTION("Plane cuts off a corner of the box") {
     // Arrange
-    const auto a = plane{vector3{1, 1, 0}.normalized(), real{1.3f}};
+    const auto a = plane{vector3{1, 1, 0}.normalized(), 1.3f};
 
     // Act
     const auto result = intersects(a, b);
@@ -704,7 +703,7 @@ TEST_CASE("intersects(const plane&, const axis_aligned_box&)", "[intersects]") {
   }
   SECTION("Plane passes beside a corner of the box") {
     // Arrange
-    const auto a = plane{vector3{1, 1, 0}.normalized(), real{1.5f}};
+    const auto a = plane{vector3{1, 1, 0}.normalized(), 1.5f};
 
     // Act
     const auto result = intersects(a, b);
@@ -714,7 +713,7 @@ TEST_CASE("intersects(const plane&, const axis_aligned_box&)", "[intersects]") {
   }
   SECTION("Arguments are reversed") {
     // Arrange
-    const auto a = plane{vector3{0, 0, 1}, real{0.5f}};
+    const auto a = plane{vector3{0, 0, 1}, 0.5f};
 
     // Act
     const auto result = intersects(b, a);
@@ -730,7 +729,7 @@ TEST_CASE("intersects(const plane&, const axis_aligned_box&)", "[intersects]") {
 
 TEST_CASE("intersects(const line&, const sphere&)", "[intersects]") {
   // Arrange
-  const auto b = sphere{point3{0, 1, 0}, real{1}};
+  const auto b = sphere{point3{0, 1, 0}, 1.0f};
 
   SECTION("Line passes through the sphere") {
     // Arrange
@@ -836,7 +835,7 @@ TEST_CASE("intersects(const line&, const axis_aligned_box&)", "[intersects]") {
 
 TEST_CASE("intersects(const ray&, const sphere&)", "[intersects]") {
   // Arrange
-  const auto b = sphere{point3{5, 0, 0}, real{1}};
+  const auto b = sphere{point3{5, 0, 0}, 1.0f};
 
   SECTION("Sphere is ahead of the ray") {
     // Arrange
@@ -932,7 +931,7 @@ TEST_CASE("intersects(const ray&, const axis_aligned_box&)", "[intersects]") {
 
 TEST_CASE("intersects(const line_segment&, const sphere&)", "[intersects]") {
   // Arrange
-  const auto b = sphere{point3{5, 0, 0}, real{1}};
+  const auto b = sphere{point3{5, 0, 0}, 1.0f};
 
   SECTION("Segment passes through the sphere") {
     // Arrange
@@ -1028,11 +1027,11 @@ TEST_CASE("intersects(const line_segment&, const axis_aligned_box&)", "[intersec
 
 TEST_CASE("intersects(const sphere&, const sphere&)", "[intersects]") {
   // Arrange
-  const auto a = sphere{point3{0, 0, 0}, real{1}};
+  const auto a = sphere{point3{0, 0, 0}, 1.0f};
 
   SECTION("Spheres overlap") {
     // Arrange
-    const auto b = sphere{point3{1.5f, 0, 0}, real{1}};
+    const auto b = sphere{point3{1.5f, 0, 0}, 1.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1042,7 +1041,7 @@ TEST_CASE("intersects(const sphere&, const sphere&)", "[intersects]") {
   }
   SECTION("Spheres touch") {
     // Arrange
-    const auto b = sphere{point3{0, 3, 0}, real{2}};
+    const auto b = sphere{point3{0, 3, 0}, 2.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1052,7 +1051,7 @@ TEST_CASE("intersects(const sphere&, const sphere&)", "[intersects]") {
   }
   SECTION("Spheres are apart") {
     // Arrange
-    const auto b = sphere{point3{0, 3, 0}, real{1}};
+    const auto b = sphere{point3{0, 3, 0}, 1.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1068,7 +1067,7 @@ TEST_CASE("intersects(const sphere&, const axis_aligned_box&)", "[intersects]") 
 
   SECTION("Sphere overlaps a face") {
     // Arrange
-    const auto a = sphere{point3{1.5f, 0, 0}, real{1}};
+    const auto a = sphere{point3{1.5f, 0, 0}, 1.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1078,7 +1077,7 @@ TEST_CASE("intersects(const sphere&, const axis_aligned_box&)", "[intersects]") 
   }
   SECTION("Sphere touches a face") {
     // Arrange
-    const auto a = sphere{point3{0, 0, 3}, real{2}};
+    const auto a = sphere{point3{0, 0, 3}, 2.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1088,7 +1087,7 @@ TEST_CASE("intersects(const sphere&, const axis_aligned_box&)", "[intersects]") 
   }
   SECTION("Sphere is beside a corner, within reach of each face") {
     // Arrange
-    const auto a = sphere{point3{1.8f, 1.8f, 0}, real{1}};
+    const auto a = sphere{point3{1.8f, 1.8f, 0}, 1.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1098,7 +1097,7 @@ TEST_CASE("intersects(const sphere&, const axis_aligned_box&)", "[intersects]") 
   }
   SECTION("Sphere is inside the box") {
     // Arrange
-    const auto a = sphere{point3{0, 0, 0}, real{0.5f}};
+    const auto a = sphere{point3{0, 0, 0}, 0.5f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1108,7 +1107,7 @@ TEST_CASE("intersects(const sphere&, const axis_aligned_box&)", "[intersects]") 
   }
   SECTION("Arguments are reversed") {
     // Arrange
-    const auto a = sphere{point3{1.8f, 1.8f, 0}, real{1}};
+    const auto a = sphere{point3{1.8f, 1.8f, 0}, 1.0f};
 
     // Act
     const auto result = intersects(b, a);
@@ -1158,7 +1157,7 @@ TEST_CASE("intersects(const frustum&, const sphere&)", "[intersects]") {
 
   SECTION("Sphere is inside the frustum") {
     // Arrange
-    const auto b = sphere{point3{0, 0, 0}, real{0.5f}};
+    const auto b = sphere{point3{0, 0, 0}, 0.5f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1168,7 +1167,7 @@ TEST_CASE("intersects(const frustum&, const sphere&)", "[intersects]") {
   }
   SECTION("Sphere straddles a plane") {
     // Arrange
-    const auto b = sphere{point3{1.5f, 0, 0}, real{1}};
+    const auto b = sphere{point3{1.5f, 0, 0}, 1.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1178,7 +1177,7 @@ TEST_CASE("intersects(const frustum&, const sphere&)", "[intersects]") {
   }
   SECTION("Sphere is outside a plane") {
     // Arrange
-    const auto b = sphere{point3{0, 0, -3}, real{1}};
+    const auto b = sphere{point3{0, 0, -3}, 1.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1188,7 +1187,7 @@ TEST_CASE("intersects(const frustum&, const sphere&)", "[intersects]") {
   }
   SECTION("Arguments are reversed") {
     // Arrange
-    const auto b = sphere{point3{0, 0, -3}, real{1}};
+    const auto b = sphere{point3{0, 0, -3}, 1.0f};
 
     // Act
     const auto result = intersects(b, a);
@@ -1297,7 +1296,7 @@ TEST_CASE("intersects(const plane&, const capsule&)", "[intersects]") {
   // Arrange
   const auto b = capsule{
     line_segment{point3{0, 0, 2}, point3{0, 0, 4}},
-    real{1}
+    1.0f
   };
 
   SECTION("Plane crosses the segment of the capsule") {
@@ -1312,7 +1311,7 @@ TEST_CASE("intersects(const plane&, const capsule&)", "[intersects]") {
   }
   SECTION("Plane cuts through a cap of the capsule") {
     // Arrange
-    const auto a = plane{vector3{0, 0, 1}, real{1.5f}};
+    const auto a = plane{vector3{0, 0, 1}, 1.5f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1348,7 +1347,7 @@ TEST_CASE("intersects(const plane&, const oriented_box&)", "[intersects]") {
 
   SECTION("Plane cuts off a corner of the box") {
     // Arrange
-    const auto a = plane{vector3{1, 0, 0}, real{1.3f}};
+    const auto a = plane{vector3{1, 0, 0}, 1.3f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1358,7 +1357,7 @@ TEST_CASE("intersects(const plane&, const oriented_box&)", "[intersects]") {
   }
   SECTION("Plane is beside a corner of the box") {
     // Arrange
-    const auto a = plane{vector3{1, 0, 0}, real{1.5f}};
+    const auto a = plane{vector3{1, 0, 0}, 1.5f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1368,7 +1367,7 @@ TEST_CASE("intersects(const plane&, const oriented_box&)", "[intersects]") {
   }
   SECTION("Arguments are reversed") {
     // Arrange
-    const auto a = plane{vector3{1, 0, 0}, real{1.5f}};
+    const auto a = plane{vector3{1, 0, 0}, 1.5f};
 
     // Act
     const auto result = intersects(b, a);
@@ -1428,12 +1427,12 @@ TEST_CASE("intersects(const line&, const capsule&)", "[intersects]") {
   // Arrange
   const auto b = capsule{
     line_segment{point3{0, 0, 0}, point3{0, 4, 0}},
-    real{1}
+    1.0f
   };
 
   SECTION("Line passes through the capsule") {
     // Arrange
-    const auto a = line{point3{0, 2, real{0.5f}}, vector3{1, 0, 0}};
+    const auto a = line{point3{0, 2, 0.5f}, vector3{1, 0, 0}};
 
     // Act
     const auto result = intersects(a, b);
@@ -1443,7 +1442,7 @@ TEST_CASE("intersects(const line&, const capsule&)", "[intersects]") {
   }
   SECTION("Line lies inside the capsule along its segment") {
     // Arrange
-    const auto a = line{point3{real{0.5f}, 0, 0}, vector3{0, 1, 0}};
+    const auto a = line{point3{0.5f, 0, 0}, vector3{0, 1, 0}};
 
     // Act
     const auto result = intersects(a, b);
@@ -1479,7 +1478,7 @@ TEST_CASE("intersects(const line&, const oriented_box&)", "[intersects]") {
 
   SECTION("Line passes through a corner of the box") {
     // Arrange
-    const auto a = line{point3{real{1.3f}, 0, 0}, vector3{0, 1, 0}};
+    const auto a = line{point3{1.3f, 0, 0}, vector3{0, 1, 0}};
 
     // Act
     const auto result = intersects(a, b);
@@ -1489,7 +1488,7 @@ TEST_CASE("intersects(const line&, const oriented_box&)", "[intersects]") {
   }
   SECTION("Line passes beside a corner of the box") {
     // Arrange
-    const auto a = line{point3{real{1.5f}, 0, 0}, vector3{0, 1, 0}};
+    const auto a = line{point3{1.5f, 0, 0}, vector3{0, 1, 0}};
 
     // Act
     const auto result = intersects(a, b);
@@ -1499,7 +1498,7 @@ TEST_CASE("intersects(const line&, const oriented_box&)", "[intersects]") {
   }
   SECTION("Arguments are reversed") {
     // Arrange
-    const auto a = line{point3{real{1.5f}, 0, 0}, vector3{0, 1, 0}};
+    const auto a = line{point3{1.5f, 0, 0}, vector3{0, 1, 0}};
 
     // Act
     const auto result = intersects(b, a);
@@ -1549,7 +1548,7 @@ TEST_CASE("intersects(const ray&, const capsule&)", "[intersects]") {
   // Arrange
   const auto b = capsule{
     line_segment{point3{0, 0, 0}, point3{0, 4, 0}},
-    real{1}
+    1.0f
   };
 
   SECTION("Capsule is ahead of the ray") {
@@ -1646,7 +1645,7 @@ TEST_CASE("intersects(const line_segment&, const triangle&)", "[intersects]") {
   }
   SECTION("Segment ends short of the triangle") {
     // Arrange
-    const auto a = line_segment{point3{1, 1, 1}, point3{1, 1, real{0.5f}}};
+    const auto a = line_segment{point3{1, 1, 1}, point3{1, 1, 0.5f}};
 
     // Act
     const auto result = intersects(a, b);
@@ -1700,14 +1699,14 @@ TEST_CASE("intersects(const line_segment&, const capsule&)", "[intersects]") {
   // Arrange
   const auto b = capsule{
     line_segment{point3{0, 0, 0}, point3{0, 4, 0}},
-    real{1}
+    1.0f
   };
 
   SECTION("Segment passes through the capsule") {
     // Arrange
     const auto a = line_segment{
-      point3{-3, 2, real{0.5f}},
-      point3{3, 2, real{0.5f}}
+      point3{-3, 2, 0.5f},
+      point3{3, 2, 0.5f}
     };
 
     // Act
@@ -1728,7 +1727,7 @@ TEST_CASE("intersects(const line_segment&, const capsule&)", "[intersects]") {
   }
   SECTION("Segment ends short of the capsule") {
     // Arrange
-    const auto a = line_segment{point3{-3, 2, 0}, point3{real{-1.5f}, 2, 0}};
+    const auto a = line_segment{point3{-3, 2, 0}, point3{-1.5f, 2, 0}};
 
     // Act
     const auto result = intersects(a, b);
@@ -1844,7 +1843,7 @@ TEST_CASE("intersects(const triangle&, const sphere&)", "[intersects]") {
 
   SECTION("Sphere overlaps the triangle") {
     // Arrange
-    const auto b = sphere{point3{1, 1, 1}, real{1.5f}};
+    const auto b = sphere{point3{1, 1, 1}, 1.5f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1854,7 +1853,7 @@ TEST_CASE("intersects(const triangle&, const sphere&)", "[intersects]") {
   }
   SECTION("Sphere is apart from the triangle") {
     // Arrange
-    const auto b = sphere{point3{1, 1, 3}, real{1}};
+    const auto b = sphere{point3{1, 1, 3}, 1.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -1864,7 +1863,7 @@ TEST_CASE("intersects(const triangle&, const sphere&)", "[intersects]") {
   }
   SECTION("Arguments are reversed") {
     // Arrange
-    const auto b = sphere{point3{1, 1, 1}, real{1.5f}};
+    const auto b = sphere{point3{1, 1, 1}, 1.5f};
 
     // Act
     const auto result = intersects(b, a);
@@ -1882,7 +1881,7 @@ TEST_CASE("intersects(const triangle&, const capsule&)", "[intersects]") {
     // Arrange
     const auto b = capsule{
       line_segment{point3{1, 1, 1}, point3{1, 1, 3}},
-      real{1.2f}
+      1.2f
     };
 
     // Act
@@ -1895,7 +1894,7 @@ TEST_CASE("intersects(const triangle&, const capsule&)", "[intersects]") {
     // Arrange
     const auto b = capsule{
       line_segment{point3{1, 1, 1}, point3{1, 1, 3}},
-      real{0.5f}
+      0.5f
     };
 
     // Act
@@ -1908,7 +1907,7 @@ TEST_CASE("intersects(const triangle&, const capsule&)", "[intersects]") {
     // Arrange
     const auto b = capsule{
       line_segment{point3{1, 1, -1}, point3{1, 1, 1}},
-      real{0.1f}
+      0.1f
     };
 
     // Act
@@ -1921,7 +1920,7 @@ TEST_CASE("intersects(const triangle&, const capsule&)", "[intersects]") {
     // Arrange
     const auto b = capsule{
       line_segment{point3{1, 1, 1}, point3{1, 1, 3}},
-      real{0.5f}
+      0.5f
     };
 
     // Act
@@ -1959,8 +1958,8 @@ TEST_CASE("intersects(const triangle&, const axis_aligned_box&)", "[intersects]"
   SECTION("Triangle is beside an edge of the box") {
     // Arrange
     const auto a = triangle{
-      point3{2, real{0.5f}, 0},
-      point3{real{0.5f}, 2, 0},
+      point3{2, 0.5f, 0},
+      point3{0.5f, 2, 0},
       point3{2, 2, 0}
     };
 
@@ -1989,9 +1988,9 @@ TEST_CASE("intersects(const triangle&, const oriented_box&)", "[intersects]") {
   SECTION("Triangle is inside a corner of the box") {
     // Arrange
     const auto a = triangle{
-      point3{real{1.3f}, 0, real{-0.5f}},
-      point3{real{1.3f}, 0, real{0.5f}},
-      point3{real{1.3f}, real{0.05f}, 0}
+      point3{1.3f, 0, -0.5f},
+      point3{1.3f, 0, 0.5f},
+      point3{1.3f, 0.05f, 0}
     };
 
     // Act
@@ -2003,8 +2002,8 @@ TEST_CASE("intersects(const triangle&, const oriented_box&)", "[intersects]") {
   SECTION("Triangle is beside an edge of the box") {
     // Arrange
     const auto a = triangle{
-      point3{real{0.9f}, real{0.9f}, real{-0.5f}},
-      point3{real{0.9f}, real{0.9f}, real{0.5f}},
+      point3{0.9f, 0.9f, -0.5f},
+      point3{0.9f, 0.9f, 0.5f},
       point3{1, 1, 0}
     };
 
@@ -2017,8 +2016,8 @@ TEST_CASE("intersects(const triangle&, const oriented_box&)", "[intersects]") {
   SECTION("Arguments are reversed") {
     // Arrange
     const auto a = triangle{
-      point3{real{0.9f}, real{0.9f}, real{-0.5f}},
-      point3{real{0.9f}, real{0.9f}, real{0.5f}},
+      point3{0.9f, 0.9f, -0.5f},
+      point3{0.9f, 0.9f, 0.5f},
       point3{1, 1, 0}
     };
 
@@ -2034,12 +2033,12 @@ TEST_CASE("intersects(const sphere&, const capsule&)", "[intersects]") {
   // Arrange
   const auto b = capsule{
     line_segment{point3{0, 0, 0}, point3{0, 4, 0}},
-    real{1}
+    1.0f
   };
 
   SECTION("Sphere overlaps the capsule") {
     // Arrange
-    const auto a = sphere{point3{real{2.5f}, 2, 0}, real{1.6f}};
+    const auto a = sphere{point3{2.5f, 2, 0}, 1.6f};
 
     // Act
     const auto result = intersects(a, b);
@@ -2049,7 +2048,7 @@ TEST_CASE("intersects(const sphere&, const capsule&)", "[intersects]") {
   }
   SECTION("Sphere is apart from the capsule") {
     // Arrange
-    const auto a = sphere{point3{real{2.5f}, 2, 0}, real{1}};
+    const auto a = sphere{point3{2.5f, 2, 0}, 1.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -2059,7 +2058,7 @@ TEST_CASE("intersects(const sphere&, const capsule&)", "[intersects]") {
   }
   SECTION("Arguments are reversed") {
     // Arrange
-    const auto a = sphere{point3{real{2.5f}, 2, 0}, real{1.6f}};
+    const auto a = sphere{point3{2.5f, 2, 0}, 1.6f};
 
     // Act
     const auto result = intersects(b, a);
@@ -2075,7 +2074,7 @@ TEST_CASE("intersects(const sphere&, const oriented_box&)", "[intersects]") {
 
   SECTION("Sphere overlaps a corner of the box") {
     // Arrange
-    const auto a = sphere{point3{2, 0, 0}, real{0.7f}};
+    const auto a = sphere{point3{2, 0, 0}, 0.7f};
 
     // Act
     const auto result = intersects(a, b);
@@ -2085,7 +2084,7 @@ TEST_CASE("intersects(const sphere&, const oriented_box&)", "[intersects]") {
   }
   SECTION("Sphere is beside a corner of the box") {
     // Arrange
-    const auto a = sphere{point3{2, 0, 0}, real{0.5f}};
+    const auto a = sphere{point3{2, 0, 0}, 0.5f};
 
     // Act
     const auto result = intersects(a, b);
@@ -2095,7 +2094,7 @@ TEST_CASE("intersects(const sphere&, const oriented_box&)", "[intersects]") {
   }
   SECTION("Arguments are reversed") {
     // Arrange
-    const auto a = sphere{point3{2, 0, 0}, real{0.5f}};
+    const auto a = sphere{point3{2, 0, 0}, 0.5f};
 
     // Act
     const auto result = intersects(b, a);
@@ -2109,14 +2108,14 @@ TEST_CASE("intersects(const capsule&, const capsule&)", "[intersects]") {
   // Arrange
   const auto a = capsule{
     line_segment{point3{0, 0, 0}, point3{0, 4, 0}},
-    real{1}
+    1.0f
   };
 
   SECTION("Capsules overlap") {
     // Arrange
     const auto b = capsule{
-      line_segment{point3{-2, 2, real{1.5f}}, point3{2, 2, real{1.5f}}},
-      real{1}
+      line_segment{point3{-2, 2, 1.5f}, point3{2, 2, 1.5f}},
+      1.0f
     };
 
     // Act
@@ -2128,8 +2127,8 @@ TEST_CASE("intersects(const capsule&, const capsule&)", "[intersects]") {
   SECTION("Capsules are apart") {
     // Arrange
     const auto b = capsule{
-      line_segment{point3{-2, 2, real{1.5f}}, point3{2, 2, real{1.5f}}},
-      real{0.4f}
+      line_segment{point3{-2, 2, 1.5f}, point3{2, 2, 1.5f}},
+      0.4f
     };
 
     // Act
@@ -2147,8 +2146,8 @@ TEST_CASE("intersects(const capsule&, const axis_aligned_box&)", "[intersects]")
   SECTION("Capsule overlaps a face of the box") {
     // Arrange
     const auto a = capsule{
-      line_segment{point3{-3, 0, real{1.5f}}, point3{3, 0, real{1.5f}}},
-      real{0.6f}
+      line_segment{point3{-3, 0, 1.5f}, point3{3, 0, 1.5f}},
+      0.6f
     };
 
     // Act
@@ -2160,8 +2159,8 @@ TEST_CASE("intersects(const capsule&, const axis_aligned_box&)", "[intersects]")
   SECTION("Capsule is apart from a face of the box") {
     // Arrange
     const auto a = capsule{
-      line_segment{point3{-3, 0, real{1.5f}}, point3{3, 0, real{1.5f}}},
-      real{0.4f}
+      line_segment{point3{-3, 0, 1.5f}, point3{3, 0, 1.5f}},
+      0.4f
     };
 
     // Act
@@ -2174,7 +2173,7 @@ TEST_CASE("intersects(const capsule&, const axis_aligned_box&)", "[intersects]")
     // Arrange
     const auto a = capsule{
       line_segment{point3{2, 2, -1}, point3{2, 2, 1}},
-      real{1}
+      1.0f
     };
 
     // Act
@@ -2186,8 +2185,8 @@ TEST_CASE("intersects(const capsule&, const axis_aligned_box&)", "[intersects]")
   SECTION("Arguments are reversed") {
     // Arrange
     const auto a = capsule{
-      line_segment{point3{-3, 0, real{1.5f}}, point3{3, 0, real{1.5f}}},
-      real{0.6f}
+      line_segment{point3{-3, 0, 1.5f}, point3{3, 0, 1.5f}},
+      0.6f
     };
 
     // Act
@@ -2206,7 +2205,7 @@ TEST_CASE("intersects(const capsule&, const oriented_box&)", "[intersects]") {
     // Arrange
     const auto a = capsule{
       line_segment{point3{2, 0, -1}, point3{2, 0, 1}},
-      real{0.7f}
+      0.7f
     };
 
     // Act
@@ -2219,7 +2218,7 @@ TEST_CASE("intersects(const capsule&, const oriented_box&)", "[intersects]") {
     // Arrange
     const auto a = capsule{
       line_segment{point3{2, 0, -1}, point3{2, 0, 1}},
-      real{0.5f}
+      0.5f
     };
 
     // Act
@@ -2232,7 +2231,7 @@ TEST_CASE("intersects(const capsule&, const oriented_box&)", "[intersects]") {
     // Arrange
     const auto a = capsule{
       line_segment{point3{2, 0, -1}, point3{2, 0, 1}},
-      real{0.5f}
+      0.5f
     };
 
     // Act
@@ -2249,7 +2248,7 @@ TEST_CASE("intersects(const axis_aligned_box&, const oriented_box&)", "[intersec
 
   SECTION("Boxes overlap") {
     // Arrange
-    const auto b = make_rotated_cube(point3{real{2.2f}, 0, 0});
+    const auto b = make_rotated_cube(point3{2.2f, 0, 0});
 
     // Act
     const auto result = intersects(a, b);
@@ -2259,7 +2258,7 @@ TEST_CASE("intersects(const axis_aligned_box&, const oriented_box&)", "[intersec
   }
   SECTION("Boxes are apart along an axis of the aligned box") {
     // Arrange
-    const auto b = make_rotated_cube(point3{real{2.5f}, 0, 0});
+    const auto b = make_rotated_cube(point3{2.5f, 0, 0});
 
     // Act
     const auto result = intersects(a, b);
@@ -2269,7 +2268,7 @@ TEST_CASE("intersects(const axis_aligned_box&, const oriented_box&)", "[intersec
   }
   SECTION("Boxes are apart along an axis of the oriented box only") {
     // Arrange
-    const auto b = make_rotated_cube(point3{real{1.9f}, real{1.9f}, 0});
+    const auto b = make_rotated_cube(point3{1.9f, 1.9f, 0});
 
     // Act
     const auto result = intersects(a, b);
@@ -2279,7 +2278,7 @@ TEST_CASE("intersects(const axis_aligned_box&, const oriented_box&)", "[intersec
   }
   SECTION("Arguments are reversed") {
     // Arrange
-    const auto b = make_rotated_cube(point3{real{2.2f}, 0, 0});
+    const auto b = make_rotated_cube(point3{2.2f, 0, 0});
 
     // Act
     const auto result = intersects(b, a);
@@ -2295,7 +2294,7 @@ TEST_CASE("intersects(const oriented_box&, const oriented_box&)", "[intersects]"
 
   SECTION("Boxes overlap") {
     // Arrange
-    const auto b = make_rotated_cube(point3{real{2.5f}, 0, 0});
+    const auto b = make_rotated_cube(point3{2.5f, 0, 0});
 
     // Act
     const auto result = intersects(a, b);
@@ -2353,11 +2352,11 @@ TEST_CASE("intersects(const frustum&, const oriented_box&)", "[intersects]") {
 
 TEST_CASE("intersects(const circle&, const circle&)", "[intersects]") {
   // Arrange
-  const auto a = circle{point2{0, 0}, real{1}};
+  const auto a = circle{point2{0, 0}, 1.0f};
 
   SECTION("Circles overlap") {
     // Arrange
-    const auto b = circle{point2{real{1.5f}, 0}, real{1}};
+    const auto b = circle{point2{1.5f, 0}, 1.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -2367,7 +2366,7 @@ TEST_CASE("intersects(const circle&, const circle&)", "[intersects]") {
   }
   SECTION("Circles touch") {
     // Arrange
-    const auto b = circle{point2{0, 3}, real{2}};
+    const auto b = circle{point2{0, 3}, 2.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -2377,7 +2376,7 @@ TEST_CASE("intersects(const circle&, const circle&)", "[intersects]") {
   }
   SECTION("Circles are apart") {
     // Arrange
-    const auto b = circle{point2{0, 3}, real{1}};
+    const auto b = circle{point2{0, 3}, 1.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -2393,7 +2392,7 @@ TEST_CASE("intersects(const circle&, const rectangle&)", "[intersects]") {
 
   SECTION("Circle overlaps an edge") {
     // Arrange
-    const auto a = circle{point2{real{1.5f}, 0}, real{1}};
+    const auto a = circle{point2{1.5f, 0}, 1.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -2403,7 +2402,7 @@ TEST_CASE("intersects(const circle&, const rectangle&)", "[intersects]") {
   }
   SECTION("Circle is beside a corner, within reach of each edge") {
     // Arrange
-    const auto a = circle{point2{real{1.8f}, real{1.8f}}, real{1}};
+    const auto a = circle{point2{1.8f, 1.8f}, 1.0f};
 
     // Act
     const auto result = intersects(a, b);
@@ -2413,7 +2412,7 @@ TEST_CASE("intersects(const circle&, const rectangle&)", "[intersects]") {
   }
   SECTION("Circle is inside the rectangle") {
     // Arrange
-    const auto a = circle{point2{0, 0}, real{0.5f}};
+    const auto a = circle{point2{0, 0}, 0.5f};
 
     // Act
     const auto result = intersects(a, b);
@@ -2423,7 +2422,7 @@ TEST_CASE("intersects(const circle&, const rectangle&)", "[intersects]") {
   }
   SECTION("Arguments are reversed") {
     // Arrange
-    const auto a = circle{point2{real{1.8f}, real{1.8f}}, real{1}};
+    const auto a = circle{point2{1.8f, 1.8f}, 1.0f};
 
     // Act
     const auto result = intersects(b, a);
@@ -2486,7 +2485,7 @@ TEST_CASE("intersection_computable<L, R>", "[intersection_of]") {
 TEST_CASE("intersection_of(const plane&, const plane&)", "[intersection_of]") {
   // Arrange
   const auto a = plane{vector3{0, 0, 1}, 1};
-  const auto tolerance = real{1e-4f};
+  const auto tolerance = 1e-4f;
 
   SECTION("Planes cross") {
     // Arrange
@@ -2531,7 +2530,7 @@ TEST_CASE("intersection_of(const plane&, const plane&)", "[intersection_of]") {
 TEST_CASE("intersection_of(const plane&, const line&)", "[intersection_of]") {
   // Arrange
   const auto a = plane{vector3{0, 0, 1}, 1};
-  const auto tolerance = real{1e-4f};
+  const auto tolerance = 1e-4f;
 
   SECTION("Line crosses the plane") {
     // Arrange
@@ -2590,7 +2589,7 @@ TEST_CASE("intersection_of(const plane&, const line&)", "[intersection_of]") {
 TEST_CASE("intersection_of(const plane&, const ray&)", "[intersection_of]") {
   // Arrange
   const auto a = plane{vector3{0, 0, 1}, 1};
-  const auto tolerance = real{1e-4f};
+  const auto tolerance = 1e-4f;
 
   SECTION("Ray faces the plane") {
     // Arrange
@@ -2635,7 +2634,7 @@ TEST_CASE("intersection_of(const plane&, const ray&)", "[intersection_of]") {
 TEST_CASE("intersection_of(const plane&, const line_segment&)", "[intersection_of]") {
   // Arrange
   const auto a = plane{vector3{0, 0, 1}, 1};
-  const auto tolerance = real{1e-4f};
+  const auto tolerance = 1e-4f;
 
   SECTION("Segment crosses the plane") {
     // Arrange
@@ -2679,8 +2678,8 @@ TEST_CASE("intersection_of(const plane&, const line_segment&)", "[intersection_o
 
 TEST_CASE("intersection_of(const line&, const sphere&)", "[intersection_of]") {
   // Arrange
-  const auto b = sphere{point3{5, 0, 0}, real{1}};
-  const auto tolerance = real{1e-4f};
+  const auto b = sphere{point3{5, 0, 0}, 1.0f};
+  const auto tolerance = 1e-4f;
 
   SECTION("Line passes through the sphere") {
     // Arrange
@@ -2738,8 +2737,8 @@ TEST_CASE("intersection_of(const line&, const sphere&)", "[intersection_of]") {
 
 TEST_CASE("intersection_of(const ray&, const sphere&)", "[intersection_of]") {
   // Arrange
-  const auto b = sphere{point3{5, 0, 0}, real{1}};
-  const auto tolerance = real{1e-4f};
+  const auto b = sphere{point3{5, 0, 0}, 1.0f};
+  const auto tolerance = 1e-4f;
 
   SECTION("Ray starts inside the sphere") {
     // Arrange
@@ -2769,8 +2768,8 @@ TEST_CASE("intersection_of(const ray&, const sphere&)", "[intersection_of]") {
 
 TEST_CASE("intersection_of(const line_segment&, const sphere&)", "[intersection_of]") {
   // Arrange
-  const auto b = sphere{point3{5, 0, 0}, real{1}};
-  const auto tolerance = real{1e-4f};
+  const auto b = sphere{point3{5, 0, 0}, 1.0f};
+  const auto tolerance = 1e-4f;
 
   SECTION("Segment ends inside the sphere") {
     // Arrange
@@ -2801,7 +2800,7 @@ TEST_CASE("intersection_of(const line_segment&, const sphere&)", "[intersection_
 TEST_CASE("intersection_of(const line&, const axis_aligned_box&)", "[intersection_of]") {
   // Arrange
   const auto b = make_unit_box();
-  const auto tolerance = real{1e-4f};
+  const auto tolerance = 1e-4f;
 
   SECTION("Line passes through the box") {
     // Arrange
@@ -2846,7 +2845,7 @@ TEST_CASE("intersection_of(const line&, const axis_aligned_box&)", "[intersectio
 TEST_CASE("intersection_of(const ray&, const axis_aligned_box&)", "[intersection_of]") {
   // Arrange
   const auto b = make_unit_box();
-  const auto tolerance = real{1e-4f};
+  const auto tolerance = 1e-4f;
 
   SECTION("Ray starts inside the box") {
     // Arrange
@@ -2877,7 +2876,7 @@ TEST_CASE("intersection_of(const ray&, const axis_aligned_box&)", "[intersection
 TEST_CASE("intersection_of(const line_segment&, const axis_aligned_box&)", "[intersection_of]") {
   // Arrange
   const auto b = make_unit_box();
-  const auto tolerance = real{1e-4f};
+  const auto tolerance = 1e-4f;
 
   SECTION("Segment passes through the box") {
     // Arrange

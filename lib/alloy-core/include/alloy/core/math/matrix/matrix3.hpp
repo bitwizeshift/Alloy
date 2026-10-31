@@ -21,7 +21,6 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision.hpp"
 
 #include <cassert>     // assert
 #include <cstddef>     // std::size_t, std::ptrdiff_t
@@ -52,7 +51,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    using value_type      = real;
+    using value_type      = float;
     using pointer         = value_type*;
     using const_pointer   = const value_type*;
     using reference       = value_type&;
@@ -102,14 +101,14 @@ namespace alloy::core {
     /// `data()` exposes them.
     ///
     /// \param array the 1-dimensional array
-    explicit constexpr matrix3(const real(&array)[9]) noexcept;
+    explicit constexpr matrix3(const float(&array)[9]) noexcept;
 
     /// \brief Constructs a matrix3 from a 2-dimensional array
     ///
     /// The array is indexed `array[c][r]`, by column and then by row.
     ///
     /// \param array the 2-dimensional array
-    explicit constexpr matrix3(const real(&array)[3][3]) noexcept;
+    explicit constexpr matrix3(const float(&array)[3][3]) noexcept;
 
     /// \brief Constructs a matrix3 from value entries
     ///
@@ -123,15 +122,15 @@ namespace alloy::core {
     /// \param m21 the entry at coordinate (2,1)
     /// \param m22 the entry at coordinate (2,2)
     constexpr matrix3(
-      real m00,
-      real m01,
-      real m02,
-      real m10,
-      real m11,
-      real m12,
-      real m20,
-      real m21,
-      real m22
+      float m00,
+      float m01,
+      float m02,
+      float m10,
+      float m11,
+      float m12,
+      float m20,
+      float m21,
+      float m22
     ) noexcept;
 
     /// \brief Copy-constructs a matrix3 from another matrix3
@@ -231,12 +230,12 @@ namespace alloy::core {
     /// Calculates the determinant for this matrix3
     ///
     /// \returns the determinant of this matrix
-    auto determinant() const noexcept -> real;
+    auto determinant() const noexcept -> float;
 
     /// Calculates the trace for this matrix3
     ///
     /// \returns the trace of this matrix
-    auto trace() const noexcept -> real;
+    auto trace() const noexcept -> float;
 
     /// \brief Computes the inverse of this matrix3
     ///
@@ -284,15 +283,15 @@ namespace alloy::core {
    auto operator+=(const matrix3& rhs) noexcept -> matrix3&;
    auto operator-=(const matrix3& rhs) noexcept -> matrix3&;
    auto operator*=(const matrix3& rhs) noexcept -> matrix3&;
-   auto operator*=(real scalar) noexcept -> matrix3&;
-   auto operator/=(real scalar) noexcept -> matrix3&;
+   auto operator*=(float scalar) noexcept -> matrix3&;
+   auto operator/=(float scalar) noexcept -> matrix3&;
 
     //----------------------------------------------------------------------
     // Private Members
     //----------------------------------------------------------------------
   private:
 
-    real m_matrix[columns][rows]; ///< The entries, stored column by column
+    float m_matrix[columns][rows]; ///< The entries, stored column by column
 
   };
 
@@ -331,8 +330,8 @@ namespace alloy::core {
   /// \return the row vector `lhs * rhs`, which is `transpose(rhs) * lhs`
   auto operator*(const vector3& lhs, const matrix3& rhs) noexcept -> vector3;
 
-  auto operator*(real lhs, const matrix3& rhs) noexcept -> matrix3;
-  auto operator*(const matrix3& lhs, real rhs) noexcept -> matrix3;
+  auto operator*(float lhs, const matrix3& rhs) noexcept -> matrix3;
+  auto operator*(const matrix3& lhs, float rhs) noexcept -> matrix3;
 
   //----------------------------------------------------------------------------
   // Comparisons
@@ -353,7 +352,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const matrix3& lhs,
     const matrix3& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
@@ -386,9 +385,9 @@ namespace alloy::core {
 inline constexpr
 alloy::core::matrix3::matrix3() noexcept
   : m_matrix {
-    {real{0}, real{0}, real{0}},
-    {real{0}, real{0}, real{0}},
-    {real{0}, real{0}, real{0}}
+    {0.0f, 0.0f, 0.0f},
+    {0.0f, 0.0f, 0.0f},
+    {0.0f, 0.0f, 0.0f}
   }
 {
 
@@ -410,7 +409,7 @@ alloy::core::matrix3::matrix3(
 }
 
 inline constexpr
-alloy::core::matrix3::matrix3(const real(&array)[9]) noexcept
+alloy::core::matrix3::matrix3(const float(&array)[9]) noexcept
   : m_matrix {
       {array[0], array[1], array[2]},
       {array[3], array[4], array[5]},
@@ -421,7 +420,7 @@ alloy::core::matrix3::matrix3(const real(&array)[9]) noexcept
 }
 
 inline constexpr
-alloy::core::matrix3::matrix3(const real(&array)[3][3]) noexcept
+alloy::core::matrix3::matrix3(const float(&array)[3][3]) noexcept
   : m_matrix {
       {array[0][0], array[0][1], array[0][2]},
       {array[1][0], array[1][1], array[1][2]},
@@ -433,15 +432,15 @@ alloy::core::matrix3::matrix3(const real(&array)[3][3]) noexcept
 
 inline constexpr
 alloy::core::matrix3::matrix3(
-  real m00,
-  real m01,
-  real m02,
-  real m10,
-  real m11,
-  real m12,
-  real m20,
-  real m21,
-  real m22
+  float m00,
+  float m01,
+  float m02,
+  float m10,
+  float m11,
+  float m12,
+  float m20,
+  float m21,
+  float m22
 ) noexcept
   : m_matrix {
       {m00, m10, m20},
@@ -609,7 +608,7 @@ auto alloy::core::matrix3::operator*=(const matrix3& rhs) noexcept -> matrix3&
 }
 
 inline
-auto alloy::core::matrix3::operator*=(real scalar) noexcept -> matrix3&
+auto alloy::core::matrix3::operator*=(float scalar) noexcept -> matrix3&
 {
   for (auto c = 0; c < columns; ++c) {
     for (auto r = 0; r < rows; ++r) {
@@ -620,9 +619,9 @@ auto alloy::core::matrix3::operator*=(real scalar) noexcept -> matrix3&
 }
 
 inline
-auto alloy::core::matrix3::operator/=(real scalar) noexcept -> matrix3&
+auto alloy::core::matrix3::operator/=(float scalar) noexcept -> matrix3&
 {
-  const auto inv = real{1} / scalar;
+  const auto inv = 1.0f / scalar;
 
   for (auto c = 0; c < columns; ++c) {
     for (auto r = 0; r < rows; ++r) {
@@ -675,7 +674,7 @@ auto alloy::core::operator*(const vector3& lhs, const matrix3& rhs)
   auto result = vector3{};
 
   for (auto c = 0; c < matrix3::columns; ++c) {
-    auto sum = real{0};
+    auto sum = 0.0f;
 
     for (auto r = 0; r < matrix3::rows; ++r) {
       sum += lhs[r] * rhs.get(r,c);
@@ -686,13 +685,13 @@ auto alloy::core::operator*(const vector3& lhs, const matrix3& rhs)
 }
 
 inline
-auto alloy::core::operator*(real lhs, const matrix3& rhs) noexcept -> matrix3
+auto alloy::core::operator*(float lhs, const matrix3& rhs) noexcept -> matrix3
 {
   return matrix3{rhs} *= lhs;
 }
 
 inline
-auto alloy::core::operator*(const matrix3& lhs, real rhs) noexcept -> matrix3
+auto alloy::core::operator*(const matrix3& lhs, float rhs) noexcept -> matrix3
 {
   return matrix3{lhs} *= rhs;
 }
@@ -732,7 +731,7 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 inline constexpr auto
   alloy::core::almost_equal(const matrix3& lhs,
                             const matrix3& rhs,
-                            real tolerance)
+                            float tolerance)
   noexcept -> bool
 {
   for (auto c = 0; c < matrix3::columns; ++c) {

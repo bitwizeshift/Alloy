@@ -32,7 +32,7 @@ namespace alloy::engine {
   /// * `Derived& d`,
   /// * `const Derived& cd`,
   /// * `Clock::duration t`, and
-  /// * `alloy::core::real alpha`
+  /// * `float alpha`
   ///
   /// the following must be satisfied:
   ///

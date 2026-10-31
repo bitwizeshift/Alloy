@@ -21,7 +21,6 @@
 #include "alloy/core/math/angle/degree.hpp"
 #include "alloy/core/math/angle/radian.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 #include <cstdint> // std::uint8_t
@@ -67,18 +66,18 @@ namespace alloy::core {
   public:
 
     struct horizontal_bounds {
-      real left;
-      real right;
+      float left;
+      float right;
     };
 
     struct vertical_bounds {
-      real bottom;
-      real top;
+      float bottom;
+      float top;
     };
 
     struct depth_bounds {
-      real near;
-      real far;
+      float near;
+      float far;
     };
 
     //-------------------------------------------------------------------------
@@ -118,12 +117,12 @@ namespace alloy::core {
     /// \param far the furthest visible area in the depth space
     /// \return the view_volume
     static constexpr auto make(
-      real left,
-      real right,
-      real bottom,
-      real top,
-      real near,
-      real far
+      float left,
+      float right,
+      float bottom,
+      float top,
+      float near,
+      float far
     ) noexcept -> view_volume;
 
     /// \brief Makes a view_volume with symmetric viewing area
@@ -142,9 +141,9 @@ namespace alloy::core {
     /// \param distance the distance
     /// \return the view_volume
     static constexpr auto make_symmetric(
-      real half_width,
-      real half_height,
-      real distance
+      float half_width,
+      float half_height,
+      float distance
     ) noexcept -> view_volume;
 
     //-------------------------------------------------------------------------
@@ -179,12 +178,12 @@ namespace alloy::core {
     /// \param far the furthest visible area in the depth space
     /// \return the view_volume
     static constexpr auto make_unchecked(
-      real left,
-      real right,
-      real bottom,
-      real top,
-      real near,
-      real far
+      float left,
+      float right,
+      float bottom,
+      float top,
+      float near,
+      float far
     ) noexcept -> view_volume;
 
     //-------------------------------------------------------------------------
@@ -315,7 +314,7 @@ namespace alloy::core {
     [[nodiscard]]
     static auto perspective(
       degree fov,
-      real aspect_ratio,
+      float aspect_ratio,
       view_volume::depth_bounds depth,
       clip_depth clip = clip_depth::negative_one_to_one
     ) noexcept -> projection;
@@ -334,7 +333,7 @@ namespace alloy::core {
     [[nodiscard]]
     static auto perspective(
       radian fov,
-      real aspect_ratio,
+      float aspect_ratio,
       view_volume::depth_bounds depth,
       clip_depth clip = clip_depth::negative_one_to_one
     ) noexcept -> projection;
@@ -358,12 +357,12 @@ namespace alloy::core {
     /// \return An orthographic projection
     [[nodiscard]]
     static auto orthographic(
-      real left,
-      real right,
-      real bottom,
-      real top,
-      real near,
-      real far,
+      float left,
+      float right,
+      float bottom,
+      float top,
+      float near,
+      float far,
       clip_depth clip = clip_depth::negative_one_to_one
     ) noexcept -> projection;
 
@@ -415,7 +414,7 @@ namespace alloy::core {
     /// \param aspect_ratio the aspect ratio, as the width over the height
     /// \return the adjusted projection
     [[nodiscard]]
-    auto with_aspect_ratio(real aspect_ratio) const noexcept -> projection;
+    auto with_aspect_ratio(float aspect_ratio) const noexcept -> projection;
 
     //--------------------------------------------------------------------------
     // Conversion
@@ -459,7 +458,7 @@ namespace alloy::core {
     struct perspective_data
     {
       radian fov;
-      real aspect_ratio;
+      float aspect_ratio;
       view_volume::depth_bounds depth;
       clip_depth clip;
     };
@@ -566,15 +565,15 @@ namespace alloy::core {
     /// \return the adjusted projection
     static auto with_aspect_ratio_of(
       const identity_data& data,
-      real aspect_ratio
+      float aspect_ratio
     ) noexcept -> projection;
     static auto with_aspect_ratio_of(
       const perspective_data& data,
-      real aspect_ratio
+      float aspect_ratio
     ) noexcept -> projection;
     static auto with_aspect_ratio_of(
       const orthographic_data& data,
-      real aspect_ratio
+      float aspect_ratio
     ) noexcept -> projection;
     /// \}
 
@@ -606,12 +605,12 @@ auto alloy::core::view_volume::make(
 
 inline constexpr
 auto alloy::core::view_volume::make(
-  real left,
-  real right,
-  real bottom,
-  real top,
-  real near,
-  real far
+  float left,
+  float right,
+  float bottom,
+  float top,
+  float near,
+  float far
 ) noexcept -> view_volume
 {
   ALLOY_ALWAYS_ASSERT(left < right);
@@ -623,9 +622,9 @@ auto alloy::core::view_volume::make(
 
 inline constexpr
 auto alloy::core::view_volume::make_symmetric(
-  real half_width,
-  real half_height,
-  real distance
+  float half_width,
+  float half_height,
+  float distance
 ) noexcept -> view_volume
 {
   ALLOY_ALWAYS_ASSERT(half_width > 0);
@@ -653,12 +652,12 @@ auto alloy::core::view_volume::make_unchecked(
 
 inline constexpr
 auto alloy::core::view_volume::make_unchecked(
-  real left,
-  real right,
-  real bottom,
-  real top,
-  real near,
-  real far
+  float left,
+  float right,
+  float bottom,
+  float top,
+  float near,
+  float far
 ) noexcept -> alloy::core::view_volume
 {
   return make_unchecked(

@@ -7,7 +7,6 @@
 #include "alloy/core/assert.hpp"
 #include "alloy/core/config.hpp"
 #include "alloy/core/intrinsics.hpp"
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/string/string_view.hpp"
 #include "alloy/core/string/zstring_view.hpp"
 #include "alloy/core/utilities/result.hpp"
@@ -129,7 +128,7 @@ auto alloy::core::string_utilities::to_double(string_view in)
 }
 
 auto alloy::core::string_utilities::to_real(string_view in)
-  noexcept -> result<real,parse_error>
+  noexcept -> result<float,parse_error>
 {
 #if ALLOY_CORE_PRECISION == ALLOY_CORE_PRECISION_FLOAT
     return to_float(in);

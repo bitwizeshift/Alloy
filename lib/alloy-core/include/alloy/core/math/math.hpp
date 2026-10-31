@@ -18,8 +18,6 @@
 
 // TODO(bitwize): Come up with a better group name than 'math' for this.
 
-#include "alloy/core/precision.hpp"
-
 #include <cmath>       // std::fmod
 #include <concepts>
 #include <cstddef>     // std::size_t
@@ -35,7 +33,7 @@ namespace alloy::core {
   using math_result = std::conditional<
     std::is_floating_point<T>::value,
     T,
-    core::real
+    float
   >;
 
   template <typename T>
@@ -46,7 +44,7 @@ namespace alloy::core {
   //===========================================================================
 
   /// The tolerance to use for floating-point equality
-  inline constexpr auto default_tolerance = real{1e-6f};
+  inline constexpr auto default_tolerance = 1e-6f;
 
   //===========================================================================
   // non-member functions
@@ -105,7 +103,7 @@ namespace alloy::core {
   /// \param num the numerator
   /// \param den the denominator
   /// \return the modulo of \p num and \p den
-  auto mod(real num, real den) noexcept -> real;
+  auto mod(float num, float den) noexcept -> float;
 
   //---------------------------------------------------------------------------
   // Roots
@@ -179,13 +177,13 @@ namespace alloy::core {
   /// \param min the min value
   /// \param max the max value
   /// \return the clamped value
-  constexpr auto clamp(real val, real min, real max) noexcept -> real;
+  constexpr auto clamp(float val, float min, float max) noexcept -> float;
 
   /// \brief Clamps a floating value between ``[0,1]
   ///
   /// \param val the value to clamp
   /// \return the clamped value
-  constexpr auto saturate(real val) noexcept -> real;
+  constexpr auto saturate(float val) noexcept -> float;
 
   //---------------------------------------------------------------------------
   // Equality
@@ -243,7 +241,7 @@ namespace alloy::core {
   /// \param rhs the value on the right of the equation
   /// \param tolerance the tolerance to use for comparison
   /// \return `true` if \p lhs is almost equal to \p rhs
-  constexpr auto almost_equal(real lhs, real rhs, real tolerance)
+  constexpr auto almost_equal(float lhs, float rhs, float tolerance)
     noexcept -> bool;
 
 } // namespace alloy::core
@@ -301,7 +299,7 @@ auto alloy::core::trunc(Arithmetic a) noexcept -> Arithmetic
 }
 
 inline
-auto alloy::core::mod(real num, real den) noexcept -> alloy::core::real
+auto alloy::core::mod(float num, float den) noexcept -> float
 {
   return std::fmod(num,den);
 }
@@ -362,15 +360,15 @@ auto alloy::core::abs(Arithmetic x) noexcept -> Arithmetic
 //-----------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::clamp(real val, real min, real max) noexcept -> real
+auto alloy::core::clamp(float val, float min, float max) noexcept -> float
 {
   return ((val < min) ? min : ((val > max) ? max : val));
 }
 
 inline constexpr
-auto alloy::core::saturate(real val) noexcept -> real
+auto alloy::core::saturate(float val) noexcept -> float
 {
-    return clamp( val, real{0}, real{1} );
+    return clamp( val, 0.0f, 1.0f );
 }
 
 //-----------------------------------------------------------------------------
@@ -390,12 +388,12 @@ auto alloy::core::almost_equal(const T& lhs, const U& rhs) noexcept -> bool
 }
 
 inline constexpr
-auto alloy::core::almost_equal(real lhs, real rhs, real tolerance)
+auto alloy::core::almost_equal(float lhs, float rhs, float tolerance)
   noexcept -> bool
 {
   const auto tmp = (lhs - rhs);
 
-  return (((tmp < real{0}) ? -tmp : tmp) <= tolerance);
+  return (((tmp < 0.0f) ? -tmp : tmp) <= tolerance);
 }
 
 #endif /* ALLOY_CORE_MATH_MATH_HPP */

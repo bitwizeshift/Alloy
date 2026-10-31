@@ -21,7 +21,6 @@
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision.hpp"
 
 namespace alloy::core {
 
@@ -51,7 +50,7 @@ namespace alloy::core {
     ///
     /// \param center the center point
     /// \param radius the radius of the circle
-    constexpr circle(const point2& center, real radius) noexcept;
+    constexpr circle(const point2& center, float radius) noexcept;
 
     /// \brief Constructs a circle by copying an existing instance
     ///
@@ -81,7 +80,7 @@ namespace alloy::core {
     ///
     /// \return the radius
     [[nodiscard]]
-    constexpr auto radius() const noexcept -> real;
+    constexpr auto radius() const noexcept -> float;
 
     //--------------------------------------------------------------------------
     // Quantifiers
@@ -111,7 +110,7 @@ namespace alloy::core {
     /// \param tolerance the error tolerance to accept
     /// \return `true` if the point is contained in this circle
     [[nodiscard]]
-    auto contains(const point2& p, real tolerance) const noexcept -> bool;
+    auto contains(const point2& p, float tolerance) const noexcept -> bool;
 
     //--------------------------------------------------------------------------
     // Private Members
@@ -119,7 +118,7 @@ namespace alloy::core {
   private:
 
     point2 m_center; ///< The center point of the circle
-    real m_radius;   ///< The radius of the circle
+    float m_radius;  ///< The radius of the circle
   };
 
   //============================================================================
@@ -146,7 +145,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const circle& lhs,
     const circle& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
 } // namespace alloy::core
@@ -168,7 +167,7 @@ alloy::core::circle::circle() noexcept
 }
 
 inline constexpr
-alloy::core::circle::circle(const point2& center, real radius) noexcept
+alloy::core::circle::circle(const point2& center, float radius) noexcept
   : m_center{center},
     m_radius{radius}
 {
@@ -186,7 +185,7 @@ auto alloy::core::circle::center() const noexcept -> const point2&
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::circle::radius() const noexcept -> real
+auto alloy::core::circle::radius() const noexcept -> float
 {
   return m_radius;
 }
@@ -224,7 +223,7 @@ inline constexpr
 auto alloy::core::almost_equal(
   const circle& lhs,
   const circle& rhs,
-  real tolerance
+  float tolerance
 ) noexcept -> bool
 {
   return almost_equal(lhs.center(), rhs.center(), tolerance) &&

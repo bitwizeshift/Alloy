@@ -21,7 +21,6 @@
 #include "alloy/core/geometry/point/point2.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/vector/vector2.hpp"
-#include "alloy/core/precision.hpp"
 
 namespace alloy::core {
 
@@ -128,7 +127,7 @@ namespace alloy::core {
     /// \param p the point to get the distance to
     /// \return the distance, which is 0 if \p p is in this rectangle
     [[nodiscard]]
-    auto distance_to(const point2& p) const noexcept -> real;
+    auto distance_to(const point2& p) const noexcept -> float;
 
     /// \brief Gets the squared distance between this rectangle and the point
     ///        \p p
@@ -136,7 +135,7 @@ namespace alloy::core {
     /// \param p the point to get the distance to
     /// \return the squared distance
     [[nodiscard]]
-    auto square_distance_to(const point2& p) const noexcept -> real;
+    auto square_distance_to(const point2& p) const noexcept -> float;
 
     /// \brief Gets the point in this rectangle nearest to the point \p p
     ///
@@ -159,7 +158,7 @@ namespace alloy::core {
     /// \param tolerance the tolerance for accepting the containment
     /// \return `true` if \p p is in the rectangle
     [[nodiscard]]
-    auto contains(const point2& p, real tolerance) const noexcept -> bool;
+    auto contains(const point2& p, float tolerance) const noexcept -> bool;
 
     /// \brief Checks if this rectangle intersects another rectangle
     ///
@@ -209,7 +208,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const rectangle& lhs,
     const rectangle& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
 } // namespace alloy::core
@@ -293,7 +292,7 @@ inline constexpr
 auto alloy::core::almost_equal(
   const rectangle& lhs,
   const rectangle& rhs,
-  real tolerance
+  float tolerance
 ) noexcept -> bool
 {
   const auto& lhs_min = lhs.bottom_left_point();

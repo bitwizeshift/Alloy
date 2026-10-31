@@ -10,7 +10,6 @@
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector3_constants.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
@@ -66,7 +65,7 @@ TEST_CASE("axis_aligned_box::from_points(const point3&, const point3&)", "[facto
 
 TEST_CASE("axis_aligned_box::from_sphere(const sphere&)", "[factory][static]") {
   // Arrange
-  const auto s = sphere{point3{1, 2, 3}, real{2}};
+  const auto s = sphere{point3{1, 2, 3}, 2.0f};
 
   const auto expected = axis_aligned_box{point3{-1, 0, 1}, point3{3, 4, 5}};
 
@@ -178,7 +177,7 @@ TEST_CASE("axis_aligned_box::contains(const point3&)", "[observers]") {
   }
 }
 
-TEST_CASE("axis_aligned_box::contains(const point3&, real)", "[observers]") {
+TEST_CASE("axis_aligned_box::contains(const point3&, float)", "[observers]") {
   // Arrange
   const auto sut = axis_aligned_box::from_point_and_size({-1,-1,-1}, {2,2,2});
   const auto tolerance = 1e-6f;
@@ -253,21 +252,21 @@ TEST_CASE("axis_aligned_box::distance_to(const point&)", "[observers]") {
     const auto result = sut.distance_to(point3{0.5f, 0, -0.5f});
 
     // Assert
-    REQUIRE(almost_equal(result, real{0}));
+    REQUIRE(almost_equal(result, 0.0f));
   }
   SECTION("Point is outside a face") {
     // Act
     const auto result = sut.distance_to(point3{0, 4, 0});
 
     // Assert
-    REQUIRE(almost_equal(result, real{3}));
+    REQUIRE(almost_equal(result, 3.0f));
   }
   SECTION("Point is outside a corner") {
     // Act
     const auto result = sut.distance_to(point3{2, 2, 1});
 
     // Assert
-    REQUIRE(almost_equal(result, sqrt(real{2})));
+    REQUIRE(almost_equal(result, sqrt(2.0f)));
   }
 }
 

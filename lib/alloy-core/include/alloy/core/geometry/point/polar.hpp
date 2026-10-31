@@ -22,7 +22,6 @@
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/trigonometry.hpp"
 #include "alloy/core/math/vector/vector2.hpp"
-#include "alloy/core/precision.hpp"
 #include "alloy/core/utilities/piecewise_compare.hpp"
 
 namespace alloy::core {
@@ -48,7 +47,7 @@ namespace alloy::core {
     ///
     /// \param distance the distance from the origin
     /// \param theta the angle
-    constexpr polar(real distance, radian theta) noexcept;
+    constexpr polar(float distance, radian theta) noexcept;
 
     /// \brief Copies the contents from \p other
     ///
@@ -72,8 +71,8 @@ namespace alloy::core {
     /// \brief Gets the distance component of this polar
     ///
     /// \return reference to the distance component
-    constexpr auto r() noexcept -> real&;
-    constexpr auto r() const noexcept -> real;
+    constexpr auto r() noexcept -> float&;
+    constexpr auto r() const noexcept -> float;
     /// \}
 
     /// \{
@@ -91,7 +90,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   private:
 
-    real m_distance;
+    float m_distance;
     radian m_theta;
   };
 
@@ -118,7 +117,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const polar& lhs,
     const polar& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
@@ -168,7 +167,7 @@ alloy::core::polar::polar() noexcept
 }
 
 inline constexpr
-alloy::core::polar::polar(real distance, radian theta) noexcept
+alloy::core::polar::polar(float distance, radian theta) noexcept
   : m_distance{distance},
     m_theta{theta}
 {
@@ -180,13 +179,13 @@ alloy::core::polar::polar(real distance, radian theta) noexcept
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::polar::r() noexcept -> real&
+auto alloy::core::polar::r() noexcept -> float&
 {
   return m_distance;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::polar::r() const noexcept -> real
+auto alloy::core::polar::r() const noexcept -> float
 {
   return m_distance;
 }
@@ -233,7 +232,7 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::almost_equal(const polar& lhs, const polar& rhs, real tolerance)
+auto alloy::core::almost_equal(const polar& lhs, const polar& rhs, float tolerance)
   noexcept -> bool
 {
   return (

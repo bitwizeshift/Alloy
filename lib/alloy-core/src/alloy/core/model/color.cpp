@@ -6,7 +6,6 @@
 
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision/real.hpp"
 
 #include <algorithm> // std::min, std::max
 #include <cmath>     // std::pow
@@ -16,24 +15,20 @@ namespace {
   // The piecewise sRGB transfer functions from IEC 61966-2-1, which are
   // linear near black and a power curve elsewhere.
 
-  auto srgb_to_linear(alloy::core::real c) noexcept -> alloy::core::real
+  auto srgb_to_linear(float c) noexcept -> float
   {
-    using alloy::core::real;
-
-    if (c <= real{0.04045}) {
-      return c / real{12.92};
+    if (c <= 0.04045f) {
+      return c / 12.92f;
     }
-    return std::pow((c + real{0.055}) / real{1.055}, real{2.4});
+    return std::pow((c + 0.055f) / 1.055f, 2.4f);
   }
 
-  auto linear_to_srgb(alloy::core::real c) noexcept -> alloy::core::real
+  auto linear_to_srgb(float c) noexcept -> float
   {
-    using alloy::core::real;
-
-    if (c <= real{0.0031308}) {
-      return c * real{12.92};
+    if (c <= 0.0031308f) {
+      return c * 12.92f;
     }
-    return real{1.055} * std::pow(c, real{1} / real{2.4}) - real{0.055};
+    return 1.055f * std::pow(c, 1.0f / 2.4f) - 0.055f;
   }
 
 } // namespace
@@ -46,17 +41,17 @@ namespace {
 
 auto alloy::core::color::from_hsb(hsb c) noexcept -> color
 {
-  const auto hue        = mod(c.hue, real{1});
+  const auto hue        = mod(c.hue, 1.0f);
   const auto saturation = saturate(c.saturation);
   const auto brightness = saturate(c.brightness);
 
   // 0 brightness means: must be black
-  if (almost_equal(brightness, real{0})) {
-    return {real{0},real{0},real{0}};
+  if (almost_equal(brightness, 0.0f)) {
+    return {0.0f,0.0f,0.0f};
   }
 
   // 0 saturation means: must be gray
-  if (almost_equal(saturation, real{0})) {
+  if (almost_equal(saturation, 0.0f)) {
     return {brightness, brightness, brightness};
   }
 
@@ -69,13 +64,13 @@ auto alloy::core::color::from_hsb(hsb c) noexcept -> color
   static constexpr auto magenta_domain = 5;
 
   // wrap around, and allow mathematical errors
-  auto hue_domain  = hue * real{total_domains};
-  if (hue_domain >= real{total_domains}) {
-    hue_domain = real{0};
+  auto hue_domain  = hue * float{total_domains};
+  if (hue_domain >= float{total_domains}) {
+    hue_domain = 0.0f;
   }
 
   const auto domain = static_cast<unsigned short>(hue_domain);
-  const auto domain_offset = hue_domain - static_cast<real>(domain);
+  const auto domain_offset = hue_domain - static_cast<float>(domain);
 
   const auto f1 = brightness * (1 - saturation);
   const auto f2 = brightness * (1 - saturation * domain_offset);
@@ -118,30 +113,30 @@ auto alloy::core::color::from_hsb(hsb c) noexcept -> color
 auto alloy::core::color::invert() noexcept -> void
 {
   for (auto i = 0; i < 3; ++i) {
-    m_data[i] = real{1} - m_data[i];
+    m_data[i] = 1.0f - m_data[i];
   }
 }
 
 auto alloy::core::color::contrast() noexcept -> void
 {
-  static constexpr auto half = real{1} / real{2};
+  static constexpr auto half = 1.0f / 2.0f;
 
   for (auto i = 0; i < 3; ++i) {
-    m_data[i] = mod(m_data[i] + half, real{1});
+    m_data[i] = mod(m_data[i] + half, 1.0f);
   }
 }
 
-auto alloy::core::color::darken(real percent) noexcept -> void
+auto alloy::core::color::darken(float percent) noexcept -> void
 {
   for (auto i = 0; i < 3; ++i) {
-    m_data[i] = m_data[i] * (real{1} - percent);
+    m_data[i] = m_data[i] * (1.0f - percent);
   }
 }
 
-auto alloy::core::color::brighten(real percent) noexcept -> void
+auto alloy::core::color::brighten(float percent) noexcept -> void
 {
   for (auto i = 0; i < 3; ++i) {
-    m_data[i] = m_data[i] + (real{1} - m_data[i]) * percent;
+    m_data[i] = m_data[i] + (1.0f - m_data[i]) * percent;
   }
 }
 
@@ -158,21 +153,21 @@ auto alloy::core::color::to_hsb() const noexcept -> hsb
   const auto brightness = max_value;
 
   // If the difference is nearly 0, must be gray
-  if (almost_equal(delta, real{0})) {
-    return hsb{ real{0}, real{0}, brightness };
+  if (almost_equal(delta, 0.0f)) {
+    return hsb{ 0.0f, 0.0f, brightness };
   }
 
   const auto saturation = delta / max_value;
-  const auto half_delta = delta / real{2};
+  const auto half_delta = delta / 2.0f;
 
-  const auto delta_r = (((max_value - r()) / real{6}) + half_delta) / delta;
-  const auto delta_g = (((max_value - g()) / real{6}) + half_delta) / delta;
-  const auto delta_b = (((max_value - b()) / real{6}) + half_delta) / delta;
+  const auto delta_r = (((max_value - r()) / 6.0f) + half_delta) / delta;
+  const auto delta_g = (((max_value - g()) / 6.0f) + half_delta) / delta;
+  const auto delta_b = (((max_value - b()) / 6.0f) + half_delta) / delta;
 
-  static constexpr auto one_third = real{1} / real{3};
-  static constexpr auto two_third = real{2} / real{3};
+  static constexpr auto one_third = 1.0f / 3.0f;
+  static constexpr auto two_third = 2.0f / 3.0f;
 
-  auto hue = real{0};
+  auto hue = 0.0f;
   if (almost_equal(r(), max_value)) {
     hue = delta_b - delta_g;
   } else if (almost_equal(g(), max_value)) {
@@ -181,10 +176,10 @@ auto alloy::core::color::to_hsb() const noexcept -> hsb
     hue = two_third + delta_g - delta_r;
   }
 
-  if (hue < real{0}) {
-    hue += real{1};
-  } else if (hue > real{1}) {
-    hue -= real{1};
+  if (hue < 0.0f) {
+    hue += 1.0f;
+  } else if (hue > 1.0f) {
+    hue -= 1.0f;
   }
 
   return hsb{hue, saturation, brightness};

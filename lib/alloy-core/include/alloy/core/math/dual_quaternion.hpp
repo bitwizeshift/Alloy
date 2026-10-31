@@ -22,7 +22,6 @@
 #include "alloy/core/math/matrix/matrix4.hpp"
 #include "alloy/core/math/quaternion.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 namespace alloy::core {
@@ -53,7 +52,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    using value_type = core::real; ///< The underlying value type
+    using value_type = float; ///< The underlying value type
 
     //--------------------------------------------------------------------------
     // Static Factory Functions
@@ -328,11 +327,11 @@ namespace alloy::core {
   auto operator/(const dual_quaternion& lhs, const dual_quaternion& rhs)
     noexcept -> dual_quaternion;
 
-  auto operator*(const dual_quaternion& lhs, real rhs)
+  auto operator*(const dual_quaternion& lhs, float rhs)
     noexcept -> dual_quaternion;
-  auto operator*(real lhs, const dual_quaternion& rhs)
+  auto operator*(float lhs, const dual_quaternion& rhs)
     noexcept -> dual_quaternion;
-  auto operator/(const dual_quaternion& lhs, real rhs)
+  auto operator/(const dual_quaternion& lhs, float rhs)
     noexcept -> dual_quaternion;
 
   //----------------------------------------------------------------------------
@@ -358,7 +357,7 @@ namespace alloy::core {
   auto almost_equal(
     const dual_quaternion& lhs,
     const dual_quaternion& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
@@ -380,7 +379,7 @@ namespace alloy::core {
   /// \param alpha the amount to interpolate [0, 1]
   /// \return the normalized interpolated transformation
   ALLOY_CORE_API
-  auto nlerp(const dual_quaternion& q0, const dual_quaternion& q1, real alpha)
+  auto nlerp(const dual_quaternion& q0, const dual_quaternion& q1, float alpha)
     noexcept -> dual_quaternion;
 
   /// \brief Interpolates between \p q0 and \p q1 along the screw motion
@@ -397,7 +396,7 @@ namespace alloy::core {
   /// \param alpha the amount to interpolate [0, 1]
   /// \return the interpolated transformation
   ALLOY_CORE_API
-  auto sclerp(const dual_quaternion& q0, const dual_quaternion& q1, real alpha)
+  auto sclerp(const dual_quaternion& q0, const dual_quaternion& q1, float alpha)
     noexcept -> dual_quaternion;
 
   //============================================================================
@@ -417,7 +416,7 @@ namespace alloy::core {
     auto operator()(
       const dual_quaternion& v0,
       const dual_quaternion& v1,
-      real alpha
+      float alpha
     ) noexcept -> dual_quaternion;
   };
 
@@ -680,21 +679,21 @@ auto alloy::core::operator/(
 }
 
 inline
-auto alloy::core::operator*(const dual_quaternion& lhs, real rhs)
+auto alloy::core::operator*(const dual_quaternion& lhs, float rhs)
   noexcept -> dual_quaternion
 {
   return dual_quaternion{lhs} *= rhs;
 }
 
 inline
-auto alloy::core::operator*(real lhs, const dual_quaternion& rhs)
+auto alloy::core::operator*(float lhs, const dual_quaternion& rhs)
   noexcept -> dual_quaternion
 {
   return dual_quaternion{rhs} *= lhs;
 }
 
 inline
-auto alloy::core::operator/(const dual_quaternion& lhs, real rhs)
+auto alloy::core::operator/(const dual_quaternion& lhs, float rhs)
   noexcept -> dual_quaternion
 {
   return dual_quaternion{lhs} /= rhs;
@@ -721,7 +720,7 @@ inline
 auto alloy::core::interpolator<alloy::core::dual_quaternion>::operator()(
   const dual_quaternion& v0,
   const dual_quaternion& v1,
-  real alpha
+  float alpha
 ) noexcept -> dual_quaternion
 {
   return nlerp(v0, v1, alpha);

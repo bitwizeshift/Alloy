@@ -7,7 +7,6 @@
 #include "alloy/core/math/angle/radian.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/trigonometry.hpp"
-#include "alloy/core/precision/real.hpp"
 
 #include <array> // std::array
 
@@ -19,7 +18,7 @@
 // Quantifiers
 //-----------------------------------------------------------------------------
 
-auto alloy::core::vector3::magnitude() const noexcept -> real
+auto alloy::core::vector3::magnitude() const noexcept -> float
 {
   return sqrt((x()*x()) + (y()*y()) + (z()*z()));
 }
@@ -27,10 +26,10 @@ auto alloy::core::vector3::magnitude() const noexcept -> real
 auto alloy::core::vector3::perpendicular() const noexcept -> vector3
 {
   static constexpr auto unit_x = vector3{
-    real{1}, real{0}, real{0},
+    1.0f, 0.0f, 0.0f,
   };
   static constexpr auto unit_y = vector3{
-    real{0}, real{1}, real{0},
+    0.0f, 1.0f, 0.0f,
   };
   // Try perpendicular to x-axis
   // if result is 0, try y-axis
@@ -48,13 +47,13 @@ auto alloy::core::vector3::angle_between(const vector3& other)
 {
   auto mag_product = magnitude() * other.magnitude();
 
-  if (almost_equal(mag_product, real{0})){
+  if (almost_equal(mag_product, 0.0f)){
     mag_product = default_tolerance;
   }
 
   auto f = dot(other) / mag_product;
 
-  f = clamp(f, real{-1.0}, real{1.0});
+  f = clamp(f, -1.0f, 1.0f);
   return trigonometry::arccos(f);
 }
 
@@ -63,7 +62,7 @@ auto alloy::core::vector3::angle_to(const vector3& other)
 {
   const auto angle = angle_between(other);
 
-  // if (cross(other) < real{0}) {
+  // if (cross(other) < 0.0f) {
   //   return radian_constants::revolution - angle;
   // }
 
@@ -78,12 +77,12 @@ auto alloy::core::vector3::normalize() noexcept -> vector3&
 {
   const auto square_mag = square_magnitude();
 
-  if (almost_equal(square_mag, real{1})) {
+  if (almost_equal(square_mag, 1.0f)) {
     return (*this);
   }
 
-  if (square_mag > real{0}){
-    const auto mag_inv = real{1} / sqrt(square_mag);
+  if (square_mag > 0.0f){
+    const auto mag_inv = 1.0f / sqrt(square_mag);
 
     x() *= mag_inv;
     y() *= mag_inv;
@@ -118,5 +117,5 @@ auto alloy::core::are_linearly_independent(
                            (matrix[0][2] * matrix[1][0] * matrix[2][1]) -
                            (matrix[0][2] * matrix[1][1] * matrix[2][0]);
 
-  return !almost_equal(real{0}, determinant);
+  return !almost_equal(0.0f, determinant);
 }

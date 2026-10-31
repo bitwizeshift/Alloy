@@ -19,7 +19,6 @@
 #include "alloy/core/assert.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision.hpp"
 #include "alloy/core/types.hpp"
 #include "alloy/core/utilities/int_utilities.hpp"
 #include "alloy/core/utilities/not_null.hpp"
@@ -39,7 +38,7 @@ namespace alloy::core::detail {
   /// \param channel the color channel
   /// \return the quantized channel
   template <typename T>
-  constexpr auto quantize_channel(real channel) noexcept -> T;
+  constexpr auto quantize_channel(float channel) noexcept -> T;
 
   //////////////////////////////////////////////////////////////////////////////
   /// \brief An internal type for providing a "reference"-like type for uint8
@@ -66,7 +65,7 @@ namespace alloy::core::detail {
     /// \brief Constructs this color from a non-null pointer to the color
     ///
     /// \param color the color
-    constexpr explicit color_reference(not_null<real*> color) noexcept;
+    constexpr explicit color_reference(not_null<float*> color) noexcept;
     color_reference(const color_reference&) = delete;
     color_reference(color_reference&&) = delete;
 
@@ -102,7 +101,7 @@ namespace alloy::core::detail {
   private:
 
     /// The color component
-    not_null<real*> m_color;
+    not_null<float*> m_color;
   };
 
   template <typename T>
@@ -213,9 +212,9 @@ namespace alloy::core {
   //////////////////////////////////////////////////////////////////////////////
   struct hsb
   {
-    real hue;
-    real saturation;
-    real brightness;
+    float hue;
+    float saturation;
+    float brightness;
   };
 
   //============================================================================
@@ -314,7 +313,7 @@ namespace alloy::core {
     /// \param r the red color component
     /// \param g the green color component
     /// \param b the blue color component
-    constexpr color(real r, real g, real b) noexcept;
+    constexpr color(float r, float g, float b) noexcept;
 
     /// \brief Constructs a color from the given color components
     ///
@@ -322,7 +321,7 @@ namespace alloy::core {
     /// \param g the green color component
     /// \param b the blue color component
     /// \param a the alpha component
-    constexpr color(real r, real g, real b, real a) noexcept;
+    constexpr color(float r, float g, float b, float a) noexcept;
 
     /// \brief Copy-constructs a color from an existing one
     ///
@@ -364,14 +363,14 @@ namespace alloy::core {
     /// A value of `1` darkens this to be black
     ///
     /// \param percent the percentage to darken this by
-    auto darken(real percent) noexcept -> void;
+    auto darken(float percent) noexcept -> void;
 
     /// \brief Brightens this color by \p percent
     ///
     /// A value of `1` brightens this to be white
     ///
     /// \param percent the percentage to brighten this by
-    auto brighten(real percent) noexcept -> void;
+    auto brighten(float percent) noexcept -> void;
 
     //--------------------------------------------------------------------------
     // Observers
@@ -382,32 +381,32 @@ namespace alloy::core {
     /// \brief Gets the red component of this color
     ///
     /// \return the red component
-    constexpr auto r() noexcept -> real&;
-    constexpr auto r() const noexcept -> real;
+    constexpr auto r() noexcept -> float&;
+    constexpr auto r() const noexcept -> float;
     /// \}
 
     /// \{
     /// \brief Gets the green component of this color
     ///
     /// \return the green component
-    constexpr auto g() noexcept -> real&;
-    constexpr auto g() const noexcept -> real;
+    constexpr auto g() noexcept -> float&;
+    constexpr auto g() const noexcept -> float;
     /// \}
 
     /// \{
     /// \brief Gets the blue component of this color
     ///
     /// \return the blue component
-    constexpr auto b() noexcept -> real&;
-    constexpr auto b() const noexcept -> real;
+    constexpr auto b() noexcept -> float&;
+    constexpr auto b() const noexcept -> float;
     /// \}
 
     /// \{
     /// \brief Gets the alpha component of this color
     ///
     /// \return the alpha component
-    constexpr auto a() noexcept -> real&;
-    constexpr auto a() const noexcept -> real;
+    constexpr auto a() noexcept -> float&;
+    constexpr auto a() const noexcept -> float;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -485,16 +484,16 @@ namespace alloy::core {
     ///
     /// \param n the index
     /// \return the color at index \p n
-    constexpr auto operator[](std::ptrdiff_t n) noexcept -> real&;
-    constexpr auto operator[](std::ptrdiff_t n) const noexcept -> real;
+    constexpr auto operator[](std::ptrdiff_t n) noexcept -> float&;
+    constexpr auto operator[](std::ptrdiff_t n) const noexcept -> float;
     /// \}
 
     /// \{
     /// \brief Gets a pointer to the underlying data
     ///
     /// \return a pointer to the underlying data
-    constexpr auto data() noexcept -> real*;
-    constexpr auto data() const noexcept -> const real*;
+    constexpr auto data() noexcept -> float*;
+    constexpr auto data() const noexcept -> const float*;
     /// \}
 
     //--------------------------------------------------------------------------
@@ -551,20 +550,20 @@ namespace alloy::core {
     ///
     /// \param percent the percentage to darken this by
     /// \return the color
-    auto darkened(real percent) const noexcept -> color;
+    auto darkened(float percent) const noexcept -> color;
 
     /// \brief Returns a copy of this color brightened by \p percent
     ///
     /// \param percent the percentage to brighten this by
     /// \return the color
-    auto brightened(real percent) const noexcept -> color;
+    auto brightened(float percent) const noexcept -> color;
 
     //--------------------------------------------------------------------------
     // Private Members
     //--------------------------------------------------------------------------
   private:
 
-    real m_data[4];
+    float m_data[4];
   };
 
   //============================================================================
@@ -583,7 +582,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const color& lhs,
     const color& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
@@ -594,9 +593,9 @@ namespace alloy::core {
     noexcept -> color;
   constexpr auto operator-(const color& lhs, const color& rhs)
     noexcept -> color;
-  constexpr auto operator*(const color& lhs, real scalar) noexcept -> color;
-  constexpr auto operator*(real scalar, const color& rhs) noexcept -> color;
-  constexpr auto operator/(const color& lhs, real scalar) noexcept -> color;
+  constexpr auto operator*(const color& lhs, float scalar) noexcept -> color;
+  constexpr auto operator*(float scalar, const color& rhs) noexcept -> color;
+  constexpr auto operator/(const color& lhs, float scalar) noexcept -> color;
 
   //----------------------------------------------------------------------------
   // Utilities
@@ -617,13 +616,14 @@ namespace alloy::core {
 
 template <typename T>
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::detail::quantize_channel(real channel) noexcept -> T
+auto alloy::core::detail::quantize_channel(float channel) noexcept -> T
 {
-  constexpr auto max = static_cast<real>(std::numeric_limits<T>::max());
+  constexpr auto max = static_cast<float>(std::numeric_limits<T>::max());
 
   // The clamped channel is never negative, so adding a half before the
   // truncating cast rounds to the nearest value.
-  return static_cast<T>(saturate(channel) * max + real{0.5});
+  // NOLINTNEXTLINE(bugprone-incorrect-roundings)
+  return static_cast<T>(saturate(channel) * max + 0.5f);
 }
 
 //==============================================================================
@@ -636,7 +636,7 @@ auto alloy::core::detail::quantize_channel(real channel) noexcept -> T
 
 template <typename T>
 ALLOY_FORCE_INLINE constexpr
-alloy::core::detail::color_reference<T>::color_reference(not_null<real*> color)
+alloy::core::detail::color_reference<T>::color_reference(not_null<float*> color)
   noexcept
   : m_color{color}
 {
@@ -661,7 +661,7 @@ ALLOY_FORCE_INLINE constexpr
 auto alloy::core::detail::color_reference<T>::operator=(T v)
   noexcept -> color_reference<T>&
 {
-  (*m_color) = (static_cast<real>(v) / static_cast<real>(std::numeric_limits<T>::max()));
+  (*m_color) = (static_cast<float>(v) / static_cast<float>(std::numeric_limits<T>::max()));
   return (*this);
 }
 
@@ -857,12 +857,12 @@ auto alloy::core::color::from_rgb8(u8 r, u8 g, u8 b) noexcept -> color
 inline constexpr
 auto alloy::core::color::from_rgba8(u8 r, u8 g, u8 b, u8 a) noexcept -> color
 {
-  constexpr auto inverse_radix = real{1} / real{255};
+  constexpr auto inverse_radix = 1.0f / 255.0f;
 
-  const auto rf = static_cast<real>(r) * inverse_radix;
-  const auto gf = static_cast<real>(g) * inverse_radix;
-  const auto bf = static_cast<real>(b) * inverse_radix;
-  const auto af = static_cast<real>(a) * inverse_radix;
+  const auto rf = static_cast<float>(r) * inverse_radix;
+  const auto gf = static_cast<float>(g) * inverse_radix;
+  const auto bf = static_cast<float>(b) * inverse_radix;
+  const auto af = static_cast<float>(a) * inverse_radix;
 
   return color{rf, gf, bf, af};
 }
@@ -879,12 +879,12 @@ inline constexpr
 auto alloy::core::color::from_rgba16(u16 r, u16 g, u16 b, u16 a)
   noexcept -> color
 {
-  constexpr auto inverse_radix = real{1} / real{65535};
+  constexpr auto inverse_radix = 1.0f / 65535.0f;
 
-  const auto rf = static_cast<real>(r) * inverse_radix;
-  const auto gf = static_cast<real>(g) * inverse_radix;
-  const auto bf = static_cast<real>(b) * inverse_radix;
-  const auto af = static_cast<real>(a) * inverse_radix;
+  const auto rf = static_cast<float>(r) * inverse_radix;
+  const auto gf = static_cast<float>(g) * inverse_radix;
+  const auto bf = static_cast<float>(b) * inverse_radix;
+  const auto af = static_cast<float>(a) * inverse_radix;
 
   return color{rf, gf, bf, af};
 }
@@ -945,20 +945,20 @@ auto alloy::core::color::from_abgr16(abgr16 c) noexcept -> color
 
 inline constexpr
 alloy::core::color::color() noexcept
-  : color{real{0}, real{0}, real{0}, real{0}}
+  : color{0.0f, 0.0f, 0.0f, 0.0f}
 {
 
 }
 
 inline constexpr
-alloy::core::color::color(real r, real g, real b) noexcept
-  : color{r, g, b, real{1}}
+alloy::core::color::color(float r, float g, float b) noexcept
+  : color{r, g, b, 1.0f}
 {
 
 }
 
 inline constexpr
-alloy::core::color::color(real r, real g, real b, real a) noexcept
+alloy::core::color::color(float r, float g, float b, float a) noexcept
   : m_data{r, g, b, a}
 {
 
@@ -969,52 +969,52 @@ alloy::core::color::color(real r, real g, real b, real a) noexcept
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::r() noexcept -> real&
+auto alloy::core::color::r() noexcept -> float&
 {
   return m_data[0];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::r() const noexcept -> real
+auto alloy::core::color::r() const noexcept -> float
 {
   return m_data[0];
 }
 
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::g() noexcept -> real&
+auto alloy::core::color::g() noexcept -> float&
 {
   return m_data[1];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::g() const noexcept -> real
+auto alloy::core::color::g() const noexcept -> float
 {
   return m_data[1];
 }
 
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::b() noexcept -> real&
+auto alloy::core::color::b() noexcept -> float&
 {
   return m_data[2];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::b() const noexcept -> real
+auto alloy::core::color::b() const noexcept -> float
 {
   return m_data[2];
 }
 
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::a() noexcept -> real&
+auto alloy::core::color::a() noexcept -> float&
 {
   return m_data[3];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::a() const noexcept -> real
+auto alloy::core::color::a() const noexcept -> float
 {
   return m_data[3];
 }
@@ -1120,14 +1120,14 @@ auto alloy::core::color::a16() const noexcept -> u16
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::operator[](std::ptrdiff_t n) noexcept -> real&
+auto alloy::core::color::operator[](std::ptrdiff_t n) noexcept -> float&
 {
   ALLOY_ASSERT(n >= 0 && n < 4);
   return m_data[n];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::operator[](std::ptrdiff_t n) const noexcept -> real
+auto alloy::core::color::operator[](std::ptrdiff_t n) const noexcept -> float
 {
   ALLOY_ASSERT(n >= 0 && n < 4);
   return m_data[n];
@@ -1135,13 +1135,13 @@ auto alloy::core::color::operator[](std::ptrdiff_t n) const noexcept -> real
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::data() noexcept -> real*
+auto alloy::core::color::data() noexcept -> float*
 {
   return &m_data[0];
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::color::data() const noexcept -> const real*
+auto alloy::core::color::data() const noexcept -> const float*
 {
   return &m_data[0];
 }
@@ -1203,7 +1203,7 @@ auto alloy::core::color::contrasted() const noexcept -> color
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::color::darkened(real percent) const noexcept -> color
+auto alloy::core::color::darkened(float percent) const noexcept -> color
 {
   auto copy = (*this);
   copy.darken(percent);
@@ -1211,7 +1211,7 @@ auto alloy::core::color::darkened(real percent) const noexcept -> color
 }
 
 ALLOY_FORCE_INLINE
-auto alloy::core::color::brightened(real percent) const noexcept -> color
+auto alloy::core::color::brightened(float percent) const noexcept -> color
 {
   auto copy = (*this);
   copy.brighten(percent);
@@ -1233,7 +1233,7 @@ auto alloy::core::operator+(const color& lhs, const color& rhs)
   auto result = color{};
   for (auto i = 0; i < 4; ++i ) {
     result[i] = saturate(lhs[i] + rhs[i]);
-    ALLOY_ASSERT(result[i] >= real{0} && result[i] <= real{1});
+    ALLOY_ASSERT(result[i] >= 0.0f && result[i] <= 1.0f);
   }
   return result;
 }
@@ -1245,32 +1245,32 @@ auto alloy::core::operator-(const color& lhs, const color& rhs)
   auto result = color{};
   for (auto i = 0; i < 4; ++i ) {
     result[i] = saturate(lhs[i] - rhs[i]);
-    ALLOY_ASSERT(result[i] >= real{0} && result[i] <= real{1});
+    ALLOY_ASSERT(result[i] >= 0.0f && result[i] <= 1.0f);
   }
   return result;
 }
 
 inline constexpr
-auto alloy::core::operator*(const color& lhs, real scalar) noexcept -> color
+auto alloy::core::operator*(const color& lhs, float scalar) noexcept -> color
 {
   auto result = color{};
   for (auto i = 0; i < 4; ++i ) {
     result[i] = saturate(lhs[i] * scalar);
-    ALLOY_ASSERT(result[i] >= real{0} && result[i] <= real{1});
+    ALLOY_ASSERT(result[i] >= 0.0f && result[i] <= 1.0f);
   }
   return result;
 }
 
 inline constexpr
-auto alloy::core::operator*(real scalar, const color& rhs) noexcept -> color
+auto alloy::core::operator*(float scalar, const color& rhs) noexcept -> color
 {
   return rhs * scalar;
 }
 
 inline constexpr
-auto alloy::core::operator/(const color& lhs, real scalar) noexcept -> color
+auto alloy::core::operator/(const color& lhs, float scalar) noexcept -> color
 {
-  const auto reciprocal = real{1} / scalar;
+  const auto reciprocal = 1.0f / scalar;
   return lhs * reciprocal;
 }
 
@@ -1305,7 +1305,7 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::almost_equal(const color& lhs, const color& rhs, real tolerance)
+auto alloy::core::almost_equal(const color& lhs, const color& rhs, float tolerance)
   noexcept
   -> bool
 {
@@ -1322,7 +1322,7 @@ auto alloy::core::almost_equal(const color& lhs, const color& rhs, real toleranc
 inline constexpr
 auto alloy::core::blend(const color& c1, const color& c2) -> color
 {
-  const auto diff = real{1} - c2.a();
+  const auto diff = 1.0f - c2.a();
 
   auto result = color{};
   const auto alpha_delta = c1.a() * diff;

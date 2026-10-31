@@ -23,7 +23,6 @@
 #include "alloy/core/math/quaternion.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/math/vector/vector3_constants.hpp"
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 namespace alloy::core {
@@ -74,7 +73,8 @@ namespace alloy::core {
     /// \param delta_x the change in the x position
     /// \param delta_y the change in the y position
     /// \param delta_z the change in the z position
-    auto translate(real delta_x, real delta_y, real delta_z) noexcept -> void;
+    auto translate(float delta_x, float delta_y, float delta_z)
+      noexcept -> void;
 
     /// \brief Translates this transform by the vector \p delta
     ///
@@ -84,17 +84,17 @@ namespace alloy::core {
     /// \brief Translates this transform by \p delta in the x axis
     ///
     /// \param delta the change in translation for the x axis
-    auto translate_x(real delta) noexcept -> void;
+    auto translate_x(float delta) noexcept -> void;
 
     /// \brief Translates this transform by \p delta in the y axis
     ///
     /// \param delta the change in translation for the y axis
-    auto translate_y(real delta) noexcept -> void;
+    auto translate_y(float delta) noexcept -> void;
 
     /// \brief Translates this transform by \p delta in the z axis
     ///
     /// \param delta the change in translation for the z axis
-    auto translate_z(real delta) noexcept -> void;
+    auto translate_z(float delta) noexcept -> void;
 
     //-------------------------------------------------------------------------
 
@@ -138,7 +138,7 @@ namespace alloy::core {
     /// \brief Scales this transform by \p uniform in all directions
     ///
     /// \param uniform the direction to scale
-    auto scale(real uniform) noexcept -> void;
+    auto scale(float uniform) noexcept -> void;
 
     /// \brief Scales this transformation by \p scale
     ///
@@ -148,17 +148,17 @@ namespace alloy::core {
     /// \brief Scales this transformation by \p scale in the x direction
     ///
     /// \param scale the amount to scale
-    auto scale_x(real scale) noexcept -> void;
+    auto scale_x(float scale) noexcept -> void;
 
     /// \brief Scales this transformation by \p scale in the y direction
     ///
     /// \param scale the amount to scale
-    auto scale_y(real scale) noexcept -> void;
+    auto scale_y(float scale) noexcept -> void;
 
     /// \brief Scales this transformation by \p scale in the z direction
     ///
     /// \param scale the amount to scale
-    auto scale_z(real scale) noexcept -> void;
+    auto scale_z(float scale) noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Absolute Transformations
@@ -171,7 +171,7 @@ namespace alloy::core {
     /// \param x the x position
     /// \param y the y position
     /// \param z the z position
-    auto set_translation(real x, real y, real z) noexcept -> void;
+    auto set_translation(float x, float y, float z) noexcept -> void;
 
     /// \brief Sets the translation of this transform to \p translation
     ///
@@ -181,17 +181,17 @@ namespace alloy::core {
     /// \brief Sets the \p x translation of this transformation
     ///
     /// \param x the x position
-    auto set_translation_x(real x) noexcept -> void;
+    auto set_translation_x(float x) noexcept -> void;
 
     /// \brief Sets the \p y translation of this transformation
     ///
     /// \param y the y position
-    auto set_translation_y(real y) noexcept -> void;
+    auto set_translation_y(float y) noexcept -> void;
 
     /// \brief Sets the \p z translation of this transformation
     ///
     /// \param z the z position
-    auto set_translation_z(real z) noexcept -> void;
+    auto set_translation_z(float z) noexcept -> void;
 
     //-------------------------------------------------------------------------
 
@@ -247,7 +247,7 @@ namespace alloy::core {
     /// \brief Sets the uniform scale of this transformation
     ///
     /// \param uniform the uniform scale
-    auto set_scale(real uniform) noexcept -> void;
+    auto set_scale(float uniform) noexcept -> void;
 
     /// \brief Sets the scale of this transformation
     ///
@@ -257,17 +257,17 @@ namespace alloy::core {
     /// \brief Sets the x scale
     ///
     /// \param scale the x-scale
-    auto set_scale_x(real scale) noexcept -> void;
+    auto set_scale_x(float scale) noexcept -> void;
 
     /// \brief Sets the y scale
     ///
     /// \param scale the y-scale
-    auto set_scale_y(real scale) noexcept -> void;
+    auto set_scale_y(float scale) noexcept -> void;
 
     /// \brief Sets the z scale
     ///
     /// \param scale the z-scale
-    auto set_scale_z(real scale) noexcept -> void;
+    auto set_scale_z(float scale) noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Observers
@@ -417,7 +417,7 @@ namespace alloy::core {
   auto almost_equal(
     const transform& lhs,
     const transform& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //===========================================================================
@@ -433,7 +433,7 @@ namespace alloy::core {
   template <>
   struct ALLOY_CORE_API interpolator<transform>
   {
-    auto operator()(const transform& v0, const transform& v1, real alpha)
+    auto operator()(const transform& v0, const transform& v1, float alpha)
       noexcept -> transform;
   };
 

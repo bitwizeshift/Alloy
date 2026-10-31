@@ -20,7 +20,6 @@
 #include "alloy/core/geometry/triangle.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision/real.hpp"
 
 #include <algorithm> // std::min, std::max, std::swap
 #include <array>     // std::array
@@ -40,23 +39,22 @@ namespace {
   using alloy::core::oriented_box;
   using alloy::core::plane;
   using alloy::core::point3;
-  using alloy::core::real;
   using alloy::core::sphere;
   using alloy::core::triangle;
   using alloy::core::vector3;
 
-  constexpr auto infinity = std::numeric_limits<real>::infinity();
+  constexpr auto infinity = std::numeric_limits<float>::infinity();
 
   /// Gets the distance from the plane 'p' to the point 'q' in units of the
   /// world, regardless of whether 'p' is normalized
-  auto true_distance(const plane& p, const point3& q) noexcept -> real
+  auto true_distance(const plane& p, const point3& q) noexcept -> float
   {
     return p.normalized().distance_to(q);
   }
 
   /// Gets the radius of the box 'b' projected onto the unit normal 'n'
   auto projected_radius(const axis_aligned_box& b, const vector3& n)
-    noexcept -> real
+    noexcept -> float
   {
     const auto extent = (b.top_right_point() - b.bottom_left_point()) / 2;
 
@@ -82,8 +80,8 @@ namespace {
   /// The extremes of a set of points projected onto an axis
   struct projection
   {
-    real min;
-    real max;
+    float min;
+    float max;
   };
 
   auto project(std::span<const point3> points, const vector3& axis)
@@ -140,10 +138,10 @@ namespace {
   /// Minimizes the convex function 'fn' over the interval [0, 1] with a
   /// ternary search
   template <typename Fn>
-  auto minimize_over_unit_interval(const Fn& fn) noexcept -> real
+  auto minimize_over_unit_interval(const Fn& fn) noexcept -> float
   {
-    auto low = real{0};
-    auto high = real{1};
+    auto low = 0.0f;
+    auto high = 1.0f;
     for (auto i = 0; i < 64; ++i) {
       const auto third = (high - low) / 3;
       if (fn(low + third) < fn(high - third)) {
@@ -160,11 +158,11 @@ namespace {
   /// function along 's', so its minimum is found by a ternary search.
   template <typename Shape>
   auto square_distance(const line_segment& s, const Shape& shape)
-    noexcept -> real
+    noexcept -> float
   {
     const auto direction = s.direction();
 
-    return minimize_over_unit_interval([&](real t) -> real {
+    return minimize_over_unit_interval([&](float t) -> float {
       const auto p = s.start_point() + (direction * t);
       return (p - shape.nearest_point(p)).square_magnitude();
     });
@@ -222,7 +220,7 @@ namespace {
 
   /// Gets the radius of the box 'b' projected onto the unit normal 'n'
   auto projected_radius(const oriented_box& b, const vector3& n)
-    noexcept -> real
+    noexcept -> float
   {
     const auto axes = b.axes();
     const auto& extents = b.half_extents();
@@ -277,7 +275,7 @@ namespace {
     const auto d0 = surface.distance_to(s.start_point());
     const auto d1 = surface.distance_to(s.end_point());
 
-    if ((d0 * d1) > real{0}) {
+    if ((d0 * d1) > 0.0f) {
       return false;
     }
     if (alloy::core::abs(d0 - d1) <= default_tolerance) {
@@ -306,13 +304,13 @@ namespace {
     const auto c = offset.square_magnitude() - (s.radius() * s.radius());
     if (a <= (default_tolerance * default_tolerance)) {
       // Without a direction, the line is a single point.
-      if (c > real{0}) {
+      if (c > 0.0f) {
         return std::nullopt;
       }
       return interval{-infinity, infinity};
     }
     const auto discriminant = (b * b) - (a * c);
-    if (discriminant < real{0}) {
+    if (discriminant < 0.0f) {
       return std::nullopt;
     }
     const auto root = alloy::core::sqrt(discriminant);
@@ -367,7 +365,7 @@ auto alloy::core::intersection_traits<
   }
   // Parallel planes only intersect when they are the same plane, which is
   // when the same offset is reached along the same normal.
-  const auto same_facing = na.normal().dot(nb.normal()) > real{0};
+  const auto same_facing = na.normal().dot(nb.normal()) > 0.0f;
   const auto offset = same_facing ? (na.d() - nb.d()) : (na.d() + nb.d());
 
   return abs(offset) <= default_tolerance;
@@ -440,7 +438,7 @@ auto alloy::core::intersection_traits<
   }
   // The ray moves toward the plane when it travels against the side of the
   // plane that its origin is on.
-  return (n.normal().dot(b.direction()) * distance) < real{0};
+  return (n.normal().dot(b.direction()) * distance) < 0.0f;
 }
 
 auto alloy::core::intersection_traits<
@@ -459,7 +457,7 @@ auto alloy::core::intersection_traits<
     return {};
   }
   const auto t = -distance / approach;
-  if (t < real{0}) {
+  if (t < 0.0f) {
     return {};
   }
   return b.point_at_distance(t);
@@ -473,7 +471,7 @@ auto alloy::core::intersection_traits<
   const auto d0 = a.distance_to(b.start_point());
   const auto d1 = a.distance_to(b.end_point());
 
-  return (d0 * d1) <= real{0};
+  return (d0 * d1) <= 0.0f;
 }
 
 auto alloy::core::intersection_traits<
@@ -488,7 +486,7 @@ auto alloy::core::intersection_traits<
   if (abs(d0) <= default_tolerance && abs(d1) <= default_tolerance) {
     return b;
   }
-  if ((d0 * d1) > real{0}) {
+  if ((d0 * d1) > 0.0f) {
     return {};
   }
   return b.start_point() + (b.direction() * (d0 / (d0 - d1)));
@@ -503,7 +501,7 @@ auto alloy::core::intersection_traits<
   const auto d1 = a.distance_to(b.b());
   const auto d2 = a.distance_to(b.c());
 
-  return std::min({d0, d1, d2}) <= real{0} && std::max({d0, d1, d2}) >= real{0};
+  return std::min({d0, d1, d2}) <= 0.0f && std::max({d0, d1, d2}) >= 0.0f;
 }
 
 auto alloy::core::intersection_traits<
@@ -523,7 +521,7 @@ auto alloy::core::intersection_traits<
   const auto d0 = n.distance_to(b.segment().start_point());
   const auto d1 = n.distance_to(b.segment().end_point());
 
-  if ((d0 * d1) <= real{0}) {
+  if ((d0 * d1) <= 0.0f) {
     return true;
   }
   return std::min(abs(d0), abs(d1)) <= b.radius();
@@ -666,7 +664,7 @@ auto alloy::core::intersection_traits<
   const auto segment = to_segment(
     a.origin(),
     a.direction(),
-    interval{real{0}, infinity},
+    interval{0.0f, infinity},
     range_of(a.origin(), a.direction(), vertices)
   );
 
@@ -680,7 +678,7 @@ auto alloy::core::intersection_traits<
 {
   const auto t = (b.center() - a.origin()).dot(a.direction());
 
-  return intersects_point(b, a.point_at_distance(std::max(t, real{0})));
+  return intersects_point(b, a.point_at_distance(std::max(t, 0.0f)));
 }
 
 auto alloy::core::intersection_traits<
@@ -692,7 +690,7 @@ auto alloy::core::intersection_traits<
   return chord_within(
     a.origin(),
     a.direction(),
-    interval{real{0}, infinity},
+    interval{0.0f, infinity},
     range_within(a.origin(), a.direction(), b)
   );
 }
@@ -705,7 +703,7 @@ auto alloy::core::intersection_traits<
   const auto segment = to_segment(
     a.origin(),
     a.direction(),
-    interval{real{0}, infinity},
+    interval{0.0f, infinity},
     range_of(a.origin(), a.direction(), b)
   );
 
@@ -720,7 +718,7 @@ auto alloy::core::intersection_traits<
   return clip_to_slabs(
     a.origin(),
     a.direction(),
-    interval{real{0}, infinity},
+    interval{0.0f, infinity},
     b.bottom_left_point(),
     b.top_right_point()
   ).has_value();
@@ -732,7 +730,7 @@ auto alloy::core::intersection_traits<
 >::intersection(const ray& a, const axis_aligned_box& b)
   noexcept -> core::intersection<point3, line_segment>
 {
-  const auto limits = interval{real{0}, infinity};
+  const auto limits = interval{0.0f, infinity};
   const auto range = clip_to_slabs(
     a.origin(),
     a.direction(),
@@ -752,7 +750,7 @@ auto alloy::core::intersection_traits<
   return clip_to_box(
     a.origin(),
     a.direction(),
-    interval{real{0}, infinity},
+    interval{0.0f, infinity},
     b
   ).has_value();
 }
@@ -786,7 +784,7 @@ auto alloy::core::intersection_traits<
   return chord_within(
     a.start_point(),
     a.direction(),
-    interval{real{0}, real{1}},
+    interval{0.0f, 1.0f},
     range_within(a.start_point(), a.direction(), b)
   );
 }
@@ -807,7 +805,7 @@ auto alloy::core::intersection_traits<
   return clip_to_slabs(
     a.start_point(),
     a.direction(),
-    interval{real{0}, real{1}},
+    interval{0.0f, 1.0f},
     b.bottom_left_point(),
     b.top_right_point()
   ).has_value();
@@ -819,7 +817,7 @@ auto alloy::core::intersection_traits<
 >::intersection(const line_segment& a, const axis_aligned_box& b)
   noexcept -> core::intersection<point3, line_segment>
 {
-  const auto limits = interval{real{0}, real{1}};
+  const auto limits = interval{0.0f, 1.0f};
   const auto range = clip_to_slabs(
     a.start_point(),
     a.direction(),
@@ -839,7 +837,7 @@ auto alloy::core::intersection_traits<
   return clip_to_box(
     a.start_point(),
     a.direction(),
-    interval{real{0}, real{1}},
+    interval{0.0f, 1.0f},
     b
   ).has_value();
 }

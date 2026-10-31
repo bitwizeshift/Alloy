@@ -6,7 +6,6 @@
 
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector4.hpp"
-#include "alloy/core/precision/real.hpp"
 
 #include <utility>
 
@@ -15,7 +14,7 @@
 // Quantifiers
 //------------------------------------------------------------------------------
 
-auto alloy::core::matrix4::determinant() const noexcept -> real
+auto alloy::core::matrix4::determinant() const noexcept -> float
 {
   return  get(0,0) *
         ( get(1,1) * get(2,2) * get(3,3) -
@@ -47,7 +46,7 @@ auto alloy::core::matrix4::determinant() const noexcept -> real
           get(3,0) * get(1,2) * get(2,1));
 }
 
-auto alloy::core::matrix4::trace() const noexcept -> real
+auto alloy::core::matrix4::trace() const noexcept -> float
 {
   return (get(0,0) + get(1,1) + get(2,2) + get(3,3));
 }
@@ -86,7 +85,7 @@ auto alloy::core::matrix4::combine(const vector4& vec) const noexcept -> vector4
 
 auto alloy::core::matrix4::invert() noexcept -> matrix4&
 {
-  real inv[4][4] = {}; // The resultant matrix
+  float inv[4][4] = {}; // The resultant matrix
 
   inv[0][0] = get(1,1) * get(2,2) * get(3,3) -
               get(1,1) * get(2,3) * get(3,2) -
@@ -122,12 +121,12 @@ auto alloy::core::matrix4::invert() noexcept -> matrix4&
              get(0,3) * inv[3][0];
 
   // If determinant is zero, just return the identity matrix
-  if (almost_equal(det, real{0})) {
+  if (almost_equal(det, 0.0f)) {
     (*this) = matrix4{
-      real{1}, real{0}, real{0}, real{0},
-      real{0}, real{1}, real{0}, real{0},
-      real{0}, real{0}, real{1}, real{0},
-      real{0}, real{0}, real{0}, real{1}
+      1.0f, 0.0f, 0.0f, 0.0f,
+      0.0f, 1.0f, 0.0f, 0.0f,
+      0.0f, 0.0f, 1.0f, 0.0f,
+      0.0f, 0.0f, 0.0f, 1.0f
     };
 
     return (*this);
@@ -217,7 +216,7 @@ auto alloy::core::matrix4::invert() noexcept -> matrix4&
               get(2,0) * get(0,1) * get(1,2) -
               get(2,0) * get(0,2) * get(1,1);
 
-  const auto inv_det = real{1} / det;
+  const auto inv_det = 1.0f / det;
 
   for (auto c = 0; c < columns; ++c) {
     for (auto r = 0; r < rows; ++r) {

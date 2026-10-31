@@ -6,7 +6,6 @@
 
 #include "alloy/core/assert.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision/real.hpp"
 
 namespace alloy::core {
   namespace {
@@ -48,37 +47,37 @@ namespace alloy::core {
     };
 
     constexpr
-    auto dot2(const int* a, real x, real y) noexcept -> real
+    auto dot2(const int* a, float x, float y) noexcept -> float
     {
-      return static_cast<real>(a[0]) * x +
-             static_cast<real>(a[1]) * y;
+      return static_cast<float>(a[0]) * x +
+             static_cast<float>(a[1]) * y;
     }
 
     constexpr
-    auto dot3(const int* a, real x, real y, real z) noexcept -> real
+    auto dot3(const int* a, float x, float y, float z) noexcept -> float
     {
-      return static_cast<real>(a[0]) * x +
-             static_cast<real>(a[1]) * y +
-             static_cast<real>(a[2]) * z;
+      return static_cast<float>(a[0]) * x +
+             static_cast<float>(a[1]) * y +
+             static_cast<float>(a[2]) * z;
     }
 
     constexpr
-    auto corner3(int gi, real x, real y, real z) noexcept -> real
+    auto corner3(int gi, float x, float y, float z) noexcept -> float
     {
-      auto t = real{0.6} - (x*x) - (y*y) - (z*z);
-      if (t < real{0}) {
-        return real{0};
+      auto t = 0.6f - (x*x) - (y*y) - (z*z);
+      if (t < 0.0f) {
+        return 0.0f;
       }
       t *= t;
       return t * t * dot3(g_grad[gi], x, y, z);
     }
 
     constexpr
-    auto floor_f_to_i(real x) noexcept -> int
+    auto floor_f_to_i(float x) noexcept -> int
     {
       const auto truncated = static_cast<int>(x);
 
-      return (x < static_cast<real>(truncated)) ? truncated - 1 : truncated;
+      return (x < static_cast<float>(truncated)) ? truncated - 1 : truncated;
     }
   } // anonymous namespace
 } // namespace alloy::core
@@ -87,28 +86,28 @@ namespace alloy::core {
 // Raw Noise
 //------------------------------------------------------------------------------
 
-auto alloy::core::simplex::raw_noise(real x, real y) noexcept -> real
+auto alloy::core::simplex::raw_noise(float x, float y) noexcept -> float
 {
-  static const auto s_sqrt3 = static_cast<real>(sqrt( 3.0 ));
-  static const auto s_skew  = real{0.5} * (s_sqrt3 - real{1});
+  static const auto s_sqrt3 = static_cast<float>(sqrt( 3.0 ));
+  static const auto s_skew  = 0.5f * (s_sqrt3 - 1.0f);
 
-  static const auto s_unskew = (real{3} - s_sqrt3) / real{6};
+  static const auto s_unskew = (3.0f - s_sqrt3) / 6.0f;
 
   // Noise contributions from the three corners
-  auto n0 = real{};
-  auto n1 = real{};
-  auto n2 = real{};
+  auto n0 = float{};
+  auto n1 = float{};
+  auto n2 = float{};
 
   // Hairy factor for 2D
   auto s = (x + y) * s_skew;
   auto i = floor_f_to_i( x + s );
   auto j = floor_f_to_i( y + s );
 
-  auto t = static_cast<real>(i + j) * s_unskew;
+  auto t = static_cast<float>(i + j) * s_unskew;
 
   // Unskew the cell origin back to (x,y) space
-  const auto x_unskew = static_cast<real>(i) - t;
-  const auto y_unskew = static_cast<real>(j) - t;
+  const auto x_unskew = static_cast<float>(i) - t;
+  const auto y_unskew = static_cast<float>(j) - t;
 
   // The x,y distances from the cell origin
   auto x0 = x - x_unskew;
@@ -134,12 +133,12 @@ auto alloy::core::simplex::raw_noise(real x, real y) noexcept -> real
   // c = (3-sqrt(3))/6
 
   // Offsets for middle corner in (x,y) unskewed coords
-  auto x1 = x0 - static_cast<real>(i1) + s_unskew;
-  auto y1 = y0 - static_cast<real>(j1) + s_unskew;
+  auto x1 = x0 - static_cast<float>(i1) + s_unskew;
+  auto y1 = y0 - static_cast<float>(j1) + s_unskew;
 
   // Offsets for last corner in (x,y) unskewed coords
-  auto x2 = x0 - real{1} + real{2} * s_unskew;
-  auto y2 = y0 - real{1} + real{2} * s_unskew;
+  auto x2 = x0 - 1.0f + 2.0f * s_unskew;
+  auto y2 = y0 - 1.0f + 2.0f * s_unskew;
 
   // Work out the hashed gradient indices of the three simplex corners
   auto ii = i & 255;
@@ -149,42 +148,43 @@ auto alloy::core::simplex::raw_noise(real x, real y) noexcept -> real
   auto gi2 = g_permutation_table[ ii + 1  + g_permutation_table[jj + 1] ] % 12;
 
   // Calculate the contribution from the three corners
-  auto t0 = real{0.5} - (x0*x0) - (y0*y0);
+  auto t0 = 0.5f - (x0*x0) - (y0*y0);
 
   if (t0 < 0) {
-    n0 = real{0.0};
+    n0 = 0.0f;
   } else {
     t0 *= t0;
     n0 = t0 * t0 * dot2( g_grad[gi0], x0, y0 );
   }
 
-  auto t1 = real{0.5} - x1*x1-y1*y1;
+  auto t1 = 0.5f - x1*x1-y1*y1;
   if (t1 < 0) {
-    n1 = real{0.0};
+    n1 = 0.0f;
   } else {
     t1 *= t1;
-    n1 = static_cast<real>(t1 * t1) * dot2( g_grad[gi1], x1, y1 );
+    n1 = static_cast<float>(t1 * t1) * dot2( g_grad[gi1], x1, y1 );
   }
 
-  auto t2 = real{0.5} - x2*x2-y2*y2;
+  auto t2 = 0.5f - x2*x2-y2*y2;
   if (t2 < 0){
-    n2 = real{0.0};
+    n2 = 0.0f;
   } else {
     t2 *= t2;
-    n2 = static_cast<real>(t2 * t2) * dot2( g_grad[gi2], x2, y2 );
+    n2 = static_cast<float>(t2 * t2) * dot2( g_grad[gi2], x2, y2 );
   }
 
   // Add contributions from each corner to get the final noise value.
   // The result is scaled to return values in the interval [-1,1].
-  const auto result = real{70} * static_cast<real>(n0 + n1 + n2);
+  const auto result = 70.0f * static_cast<float>(n0 + n1 + n2);
 
-  return static_cast<real>(result);
+  return static_cast<float>(result);
 }
 
-auto alloy::core::simplex::raw_noise(real x, real y, real z) noexcept -> real
+auto alloy::core::simplex::raw_noise(float x, float y, float z)
+  noexcept -> float
 {
-  static constexpr auto s_skew = real{1} / real{3};
-  static constexpr auto s_unskew = real{1} / real{6};
+  static constexpr auto s_skew = 1.0f / 3.0f;
+  static constexpr auto s_unskew = 1.0f / 6.0f;
 
   // Skew the input space to determine which simplex cell we are in
   const auto s = (x + y + z) * s_skew;
@@ -192,12 +192,12 @@ auto alloy::core::simplex::raw_noise(real x, real y, real z) noexcept -> real
   const auto j = floor_f_to_i(y + s);
   const auto k = floor_f_to_i(z + s);
 
-  const auto t = static_cast<real>(i + j + k) * s_unskew;
+  const auto t = static_cast<float>(i + j + k) * s_unskew;
 
   // The x,y,z distances from the unskewed cell origin
-  const auto x0 = x - (static_cast<real>(i) - t);
-  const auto y0 = y - (static_cast<real>(j) - t);
-  const auto z0 = z - (static_cast<real>(k) - t);
+  const auto x0 = x - (static_cast<float>(i) - t);
+  const auto y0 = y - (static_cast<float>(j) - t);
+  const auto z0 = z - (static_cast<float>(k) - t);
 
   // For the 3D case, the simplex shape is a slightly irregular tetrahedron.
   // The order of the offsets determines which of the six simplices of the
@@ -226,17 +226,17 @@ auto alloy::core::simplex::raw_noise(real x, real y, real z) noexcept -> real
 
   // A step of 1 in (i,j,k) is a step of (1 - c) in that axis and -c in the
   // others in (x,y,z), where c = 1/6
-  const auto x1 = x0 - static_cast<real>(i1) + s_unskew;
-  const auto y1 = y0 - static_cast<real>(j1) + s_unskew;
-  const auto z1 = z0 - static_cast<real>(k1) + s_unskew;
+  const auto x1 = x0 - static_cast<float>(i1) + s_unskew;
+  const auto y1 = y0 - static_cast<float>(j1) + s_unskew;
+  const auto z1 = z0 - static_cast<float>(k1) + s_unskew;
 
-  const auto x2 = x0 - static_cast<real>(i2) + real{2} * s_unskew;
-  const auto y2 = y0 - static_cast<real>(j2) + real{2} * s_unskew;
-  const auto z2 = z0 - static_cast<real>(k2) + real{2} * s_unskew;
+  const auto x2 = x0 - static_cast<float>(i2) + 2.0f * s_unskew;
+  const auto y2 = y0 - static_cast<float>(j2) + 2.0f * s_unskew;
+  const auto z2 = z0 - static_cast<float>(k2) + 2.0f * s_unskew;
 
-  const auto x3 = x0 - real{1} + real{3} * s_unskew;
-  const auto y3 = y0 - real{1} + real{3} * s_unskew;
-  const auto z3 = z0 - real{1} + real{3} * s_unskew;
+  const auto x3 = x0 - 1.0f + 3.0f * s_unskew;
+  const auto y3 = y0 - 1.0f + 3.0f * s_unskew;
+  const auto z3 = z0 - 1.0f + 3.0f * s_unskew;
 
   // Work out the hashed gradient indices of the four simplex corners
   const auto ii = i & 255;
@@ -250,7 +250,7 @@ auto alloy::core::simplex::raw_noise(real x, real y, real z) noexcept -> real
 
   // Add contributions from each corner to get the final noise value.
   // The result is scaled to stay just inside [-1,1]
-  return real{32} * (
+  return 32.0f * (
     corner3(gi0, x0, y0, z0) +
     corner3(gi1, x1, y1, z1) +
     corner3(gi2, x2, y2, z2) +
@@ -263,20 +263,20 @@ auto alloy::core::simplex::raw_noise(real x, real y, real z) noexcept -> real
 //------------------------------------------------------------------------------
 
 auto alloy::core::simplex::octave_noise(
-  real octaves,
-  real persistence,
-  real scale,
-  real x,
-  real y
-) noexcept -> real
+  float octaves,
+  float persistence,
+  float scale,
+  float x,
+  float y
+) noexcept -> float
 {
-    ALLOY_ASSERT(octaves >= real{1});
+    ALLOY_ASSERT(octaves >= 1.0f);
 
     auto frequency = scale;
-    auto total     = real{0};
-    auto amplitude = real{1};
+    auto total     = 0.0f;
+    auto amplitude = 1.0f;
 
-    auto max_amplitude = real{0};
+    auto max_amplitude = 0.0f;
 
     for( auto i = 0; i < int(octaves); ++i ) {
       total += raw_noise( x * frequency, y * frequency ) * amplitude;
@@ -286,25 +286,25 @@ auto alloy::core::simplex::octave_noise(
       amplitude *= persistence;
     }
 
-    return static_cast<real>(total / max_amplitude);
+    return static_cast<float>(total / max_amplitude);
 }
 
 auto alloy::core::simplex::octave_noise(
-  real octaves,
-  real persistence,
-  real scale,
-  real x,
-  real y,
-  real z
-) noexcept -> real
+  float octaves,
+  float persistence,
+  float scale,
+  float x,
+  float y,
+  float z
+) noexcept -> float
 {
-    ALLOY_ASSERT(octaves >= real{1});
+    ALLOY_ASSERT(octaves >= 1.0f);
 
     auto frequency = scale;
-    auto total     = real{0};
-    auto amplitude = real{1};
+    auto total     = 0.0f;
+    auto amplitude = 1.0f;
 
-    auto max_amplitude = real(0);
+    auto max_amplitude = 0.0f;
 
     for( int i = 0; i < int(octaves); ++i ) {
       total += raw_noise( x*frequency, y*frequency, z*frequency ) * amplitude;
@@ -314,5 +314,5 @@ auto alloy::core::simplex::octave_noise(
       amplitude *= persistence;
     }
 
-    return static_cast<real>(total / max_amplitude);
+    return static_cast<float>(total / max_amplitude);
 }

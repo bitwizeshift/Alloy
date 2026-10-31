@@ -21,7 +21,6 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/angle/radian.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision.hpp"
 #include "alloy/core/utilities/piecewise_compare.hpp"
 
 #include <cstddef>     // std::size_t, std::ptrdiff_t
@@ -51,7 +50,7 @@ namespace alloy::core {
     //-------------------------------------------------------------------------
   public:
 
-    using value_type      = real;
+    using value_type      = float;
     using pointer         = value_type*;
     using const_pointer   = const value_type*;
     using reference       = value_type&;
@@ -81,7 +80,7 @@ namespace alloy::core {
     /// \param x the x-component of the vector3
     /// \param y the y-component of the vector3
     /// \param z the z-component of the vector3
-    constexpr vector3(real x, real y, real z) noexcept;
+    constexpr vector3(float x, float y, float z) noexcept;
 
     /// \brief Copy-constructs a vector3 with the value of another
     ///        vector3
@@ -175,7 +174,7 @@ namespace alloy::core {
     ///
     /// \param other the other vector3 to perform the dot-product with
     /// \return the dot product of `this` and \p other
-    constexpr auto dot(const vector3& other) const noexcept -> real;
+    constexpr auto dot(const vector3& other) const noexcept -> float;
 
     /// \brief Calculates the cross-product of `this` and \p other
     ///
@@ -186,12 +185,12 @@ namespace alloy::core {
     /// \brief Gets the square magnitude of this vector3
     ///
     /// \return the square magnitude of the vector3
-    constexpr auto square_magnitude() const noexcept -> real;
+    constexpr auto square_magnitude() const noexcept -> float;
 
     /// \brief Gets the magnitude of this vector3
     ///
     /// \return the magnitude of the vector3
-    auto magnitude() const noexcept -> real;
+    auto magnitude() const noexcept -> float;
 
     /// \brief Gets the midpoint between `this` and \p other
     ///
@@ -286,15 +285,15 @@ namespace alloy::core {
 
     constexpr auto operator+=(const vector3& rhs) noexcept -> vector3&;
     constexpr auto operator-=(const vector3& rhs) noexcept -> vector3&;
-    constexpr auto operator*=(real scalar) noexcept -> vector3&;
-    constexpr auto operator/=(real scalar) noexcept -> vector3&;
+    constexpr auto operator*=(float scalar) noexcept -> vector3&;
+    constexpr auto operator/=(float scalar) noexcept -> vector3&;
 
     //-------------------------------------------------------------------------
     // Private Members
     //-------------------------------------------------------------------------
   private:
 
-    real m_data[3]; ///< The storage data
+    float m_data[3]; ///< The storage data
   };
 
   //===========================================================================
@@ -326,9 +325,12 @@ namespace alloy::core {
     noexcept -> vector3;
   constexpr auto operator-(const vector3& lhs, const vector3& rhs)
     noexcept -> vector3;
-  constexpr auto operator*(const vector3& lhs, real scalar) noexcept -> vector3;
-  constexpr auto operator*(real scalar, const vector3& lhs) noexcept -> vector3;
-  constexpr auto operator/(const vector3& lhs, real scalar) noexcept -> vector3;
+  constexpr auto operator*(const vector3& lhs, float scalar)
+    noexcept -> vector3;
+  constexpr auto operator*(float scalar, const vector3& lhs)
+    noexcept -> vector3;
+  constexpr auto operator/(const vector3& lhs, float scalar)
+    noexcept -> vector3;
 
   //---------------------------------------------------------------------------
   // Comparisons
@@ -349,7 +351,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const vector3& lhs,
     const vector3& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //---------------------------------------------------------------------------
@@ -376,9 +378,9 @@ namespace alloy::core {
   /// \param vec the vector to decompose
   /// \return reference to the Nth entry
   template <std::size_t N>
-  constexpr auto get(vector3& vec) noexcept -> real&;
+  constexpr auto get(vector3& vec) noexcept -> float&;
   template <std::size_t N>
-  constexpr auto get(const vector3& vec) noexcept -> const real&;
+  constexpr auto get(const vector3& vec) noexcept -> const float&;
   /// \}
 
   //---------------------------------------------------------------------------
@@ -390,7 +392,7 @@ namespace alloy::core {
   /// \param lhs the left vector3
   /// \param rhs the right vector3
   /// \return the result of the dot product
-  constexpr auto dot(const vector3& lhs, const vector3& rhs) noexcept -> real;
+  constexpr auto dot(const vector3& lhs, const vector3& rhs) noexcept -> float;
 
   /// \brief Performs the cross product between \p lhs and \p rhs
   ///
@@ -404,7 +406,7 @@ namespace alloy::core {
   ///
   /// \param vec the vector3 to calculate the magnitude from
   /// \return the magnitude
-  auto magnitude(const vector3& vec) noexcept -> real;
+  auto magnitude(const vector3& vec) noexcept -> float;
 
   //============================================================================
   // struct : piecewise_compare<vector3>
@@ -432,7 +434,7 @@ namespace std {
 
   template <std::size_t N>
   struct tuple_element<N, ::alloy::core::vector3> {
-    using type = ::alloy::core::real;
+    using type = float;
   };
 
 } // namespace std
@@ -448,16 +450,16 @@ namespace std {
 inline constexpr
 alloy::core::vector3::vector3() noexcept
   : m_data{
-      real{0},
-      real{0},
-      real{0}
+      0.0f,
+      0.0f,
+      0.0f
     }
 {
 
 }
 
 inline constexpr
-alloy::core::vector3::vector3(real x, real y, real z) noexcept
+alloy::core::vector3::vector3(float x, float y, float z) noexcept
   : m_data{x,y,z}
 {
 
@@ -581,7 +583,7 @@ auto alloy::core::vector3::operator[](index_type n)
 //-----------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector3::dot(const vector3& other) const noexcept -> real
+auto alloy::core::vector3::dot(const vector3& other) const noexcept -> float
 {
   return (x() * other.x()) + (y() * other.y()) + (z() * other.z());
 }
@@ -601,7 +603,7 @@ auto alloy::core::vector3::cross(const vector3& other) const noexcept -> vector3
 //-----------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::vector3::square_magnitude() const noexcept -> real
+auto alloy::core::vector3::square_magnitude() const noexcept -> float
 {
   return dot(*this);
 }
@@ -611,9 +613,9 @@ auto alloy::core::vector3::midpoint(const vector3& other)
   const noexcept -> vector3
 {
   return vector3{
-    ((x() + other.x()) * real{0.5}),
-    ((y() + other.y()) * real{0.5}),
-    ((z() + other.z()) * real{0.5})
+    ((x() + other.x()) * 0.5f),
+    ((y() + other.y()) * 0.5f),
+    ((z() + other.z()) * 0.5f)
   };
 }
 
@@ -659,7 +661,7 @@ auto alloy::core::vector3::inverse() const noexcept -> vector3
 inline constexpr
 auto alloy::core::vector3::is_normalized() const noexcept -> bool
 {
-  return almost_equal(square_magnitude(), real{1});
+  return almost_equal(square_magnitude(), 1.0f);
 }
 
 //-----------------------------------------------------------------------------
@@ -715,7 +717,7 @@ auto alloy::core::vector3::operator-=(const vector3& rhs) noexcept -> vector3&
 }
 
 inline constexpr
-auto alloy::core::vector3::operator*=(real scalar) noexcept -> vector3&
+auto alloy::core::vector3::operator*=(float scalar) noexcept -> vector3&
 {
   x() *= scalar;
   y() *= scalar;
@@ -724,9 +726,9 @@ auto alloy::core::vector3::operator*=(real scalar) noexcept -> vector3&
 }
 
 inline constexpr
-auto alloy::core::vector3::operator/=(real scalar) noexcept -> vector3&
+auto alloy::core::vector3::operator/=(float scalar) noexcept -> vector3&
 {
-  const auto inv = real{1} / scalar;
+  const auto inv = 1.0f / scalar;
 
   x() *= inv;
   y() *= inv;
@@ -757,19 +759,22 @@ auto alloy::core::operator-(const vector3& lhs, const vector3& rhs)
 }
 
 inline constexpr
-auto alloy::core::operator*(const vector3& lhs, real scalar) noexcept -> vector3
+auto alloy::core::operator*(const vector3& lhs, float scalar)
+  noexcept -> vector3
 {
   return vector3{lhs}*=scalar;
 }
 
 inline constexpr
-auto alloy::core::operator*(real scalar, const vector3& lhs) noexcept -> vector3
+auto alloy::core::operator*(float scalar, const vector3& lhs)
+  noexcept -> vector3
 {
   return vector3{lhs}*=scalar;
 }
 
 inline constexpr
-auto alloy::core::operator/(const vector3& lhs, real scalar) noexcept -> vector3
+auto alloy::core::operator/(const vector3& lhs, float scalar)
+  noexcept -> vector3
 {
   return vector3{lhs}/=scalar;
 }
@@ -807,7 +812,7 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 inline constexpr
 auto alloy::core::almost_equal(const vector3& lhs,
                                const vector3& rhs,
-                               real tolerance)
+                               float tolerance)
   noexcept -> bool
 {
   for (auto i=0; i<3; ++i) {
@@ -824,7 +829,7 @@ auto alloy::core::almost_equal(const vector3& lhs,
 
 template <std::size_t N>
 inline constexpr
-auto alloy::core::get(vector3& vec) noexcept -> real&
+auto alloy::core::get(vector3& vec) noexcept -> float&
 {
   static_assert(N < vector3::size());
   return vec[N];
@@ -832,7 +837,7 @@ auto alloy::core::get(vector3& vec) noexcept -> real&
 
 template <std::size_t N>
 inline constexpr
-auto alloy::core::get(const vector3& vec) noexcept -> const real&
+auto alloy::core::get(const vector3& vec) noexcept -> const float&
 {
   static_assert(N < vector3::size());
   return vec[N];
@@ -843,7 +848,7 @@ auto alloy::core::get(const vector3& vec) noexcept -> const real&
 //-----------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::dot(const vector3& lhs, const vector3& rhs) noexcept -> real
+auto alloy::core::dot(const vector3& lhs, const vector3& rhs) noexcept -> float
 {
   return lhs.dot(rhs);
 }
@@ -856,7 +861,7 @@ auto alloy::core::cross(const vector3& lhs, const vector3& rhs)
 }
 
 inline
-auto alloy::core::magnitude(const vector3& vec) noexcept -> real
+auto alloy::core::magnitude(const vector3& vec) noexcept -> float
 {
   return vec.magnitude();
 }

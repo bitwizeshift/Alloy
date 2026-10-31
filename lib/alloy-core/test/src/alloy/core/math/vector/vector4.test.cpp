@@ -7,7 +7,6 @@
 #include <alloy/core/config.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector4_constants.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -32,7 +31,7 @@ TEST_CASE("vector4::vector4()", "[ctor]")
   }
 }
 
-TEST_CASE("vector4::vector4( real, real, real, real )", "[ctor]")
+TEST_CASE("vector4::vector4( float, float, float, float )", "[ctor]")
 {
   // Act
   const auto sut = vector4{1,2,3,4};
@@ -40,19 +39,19 @@ TEST_CASE("vector4::vector4( real, real, real, real )", "[ctor]")
   // Assert
   SECTION("x contains specified x value")
   {
-    REQUIRE( sut.x() == real{1} );
+    REQUIRE( sut.x() == 1.0f );
   }
   SECTION("y contains specified y value")
   {
-    REQUIRE( sut.y() == real{2} );
+    REQUIRE( sut.y() == 2.0f );
   }
   SECTION("z contains specified z value")
   {
-    REQUIRE( sut.z() == real{3} );
+    REQUIRE( sut.z() == 3.0f );
   }
   SECTION("w contains specified w value")
   {
-    REQUIRE( sut.w() == real{4} );
+    REQUIRE( sut.w() == 4.0f );
   }
 }
 
@@ -112,7 +111,7 @@ TEST_CASE("get<N>( vector4 )", "[observers]")
   // Arrange
   const auto sut = vector4{1,2,3,4};
 
-  const auto expected = std::array{real{1}, real{2}, real{3}, real{4}};
+  const auto expected = std::array{1.0f, 2.0f, 3.0f, 4.0f};
 
   // Act
   const auto [x, y, z, w] = sut;
@@ -139,7 +138,7 @@ TEST_CASE("vector4::dot( vector4 )", "[quantifiers]")
   // Assert
   SECTION("Sums the products of each pair of components")
   {
-    REQUIRE( result == real{70} );
+    REQUIRE( result == 70.0f );
   }
 }
 
@@ -168,7 +167,7 @@ TEST_CASE("vector4::cross( vector4 )", "[quantifiers]")
     const auto result = sut.cross(other);
 
     // Assert
-    REQUIRE( result.w() == real{0} );
+    REQUIRE( result.w() == 0.0f );
   }
 }
 
@@ -183,7 +182,7 @@ TEST_CASE("vector4::magnitude()", "[quantifiers]")
   // Assert
   SECTION("Is the square root of the sum of the squared components")
   {
-    REQUIRE( almost_equal(result, real{2}) );
+    REQUIRE( almost_equal(result, 2.0f) );
   }
 }
 
@@ -373,13 +372,13 @@ TEST_CASE("operator-( vector4, vector4 )", "[arithmetic]")
   }
 }
 
-TEST_CASE("operator*( vector4, real )", "[arithmetic]")
+TEST_CASE("operator*( vector4, float )", "[arithmetic]")
 {
   // Arrange
   const auto lhs = vector4{1,2,3,4};
 
   // Act
-  const auto result = lhs * real{2};
+  const auto result = lhs * 2.0f;
 
   // Assert
   SECTION("Scales every component")
@@ -388,13 +387,13 @@ TEST_CASE("operator*( vector4, real )", "[arithmetic]")
   }
 }
 
-TEST_CASE("operator/( vector4, real )", "[arithmetic]")
+TEST_CASE("operator/( vector4, float )", "[arithmetic]")
 {
   // Arrange
   const auto lhs = vector4{2,4,6,8};
 
   // Act
-  const auto result = lhs / real{2};
+  const auto result = lhs / 2.0f;
 
   // Assert
   SECTION("Divides every component")
@@ -407,7 +406,7 @@ TEST_CASE("operator/( vector4, real )", "[arithmetic]")
 // Comparisons
 //-----------------------------------------------------------------------------
 
-TEST_CASE("almost_equal( vector4, vector4, real )", "[comparison]")
+TEST_CASE("almost_equal( vector4, vector4, float )", "[comparison]")
 {
   // Arrange
   const auto lhs = vector4{1,2,3,4};
@@ -415,10 +414,10 @@ TEST_CASE("almost_equal( vector4, vector4, real )", "[comparison]")
   SECTION("Vectors within tolerance are almost equal")
   {
     // Arrange
-    const auto rhs = vector4{1,2,3,real{4.05}};
+    const auto rhs = vector4{1,2,3,4.05f};
 
     // Act
-    const auto result = almost_equal(lhs, rhs, real{0.1});
+    const auto result = almost_equal(lhs, rhs, 0.1f);
 
     // Assert
     REQUIRE( result );
@@ -427,10 +426,10 @@ TEST_CASE("almost_equal( vector4, vector4, real )", "[comparison]")
   SECTION("Vectors outside tolerance are not almost equal")
   {
     // Arrange
-    const auto rhs = vector4{1,2,3,real{4.5}};
+    const auto rhs = vector4{1,2,3,4.5f};
 
     // Act
-    const auto result = almost_equal(lhs, rhs, real{0.1});
+    const auto result = almost_equal(lhs, rhs, 0.1f);
 
     // Assert
     REQUIRE_FALSE( result );

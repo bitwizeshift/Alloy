@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/core/math/angle/basic_angle.hpp"
-#include "alloy/core/precision.hpp"
 
 #include <type_traits> // std::enable_if
 
@@ -28,7 +27,7 @@ namespace alloy::core {
 
   struct degree_unit
   {
-    static constexpr auto revolution() noexcept -> core::real;
+    static constexpr auto revolution() noexcept -> float;
   };
 
   //============================================================================
@@ -95,9 +94,9 @@ namespace alloy::core {
 //==============================================================================
 
 inline constexpr
-auto alloy::core::degree_unit::revolution() noexcept -> alloy::core::real
+auto alloy::core::degree_unit::revolution() noexcept -> float
 {
-  return static_cast<real>(360);
+  return 360.0f;
 }
 
 //==============================================================================
@@ -124,7 +123,7 @@ inline constexpr
 auto alloy::core::literals::operator""_deg(long double x)
   noexcept -> alloy::core::degree
 {
-  return degree{ static_cast<real>(x) };
+  return degree{ static_cast<float>(x) };
 }
 
 #endif /* ALLOY_CORE_MATH_ANGLE_DEGREE_HPP */

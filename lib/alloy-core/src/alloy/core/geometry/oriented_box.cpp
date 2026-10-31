@@ -10,7 +10,6 @@
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/math/vector/vector3_constants.hpp"
-#include "alloy/core/precision/real.hpp"
 
 #include <array> // std::array
 
@@ -38,7 +37,7 @@ auto alloy::core::oriented_box::from_axis_aligned_box(
 {
   const auto& min = box.bottom_left_point();
   const auto& max = box.top_right_point();
-  const auto half_extents = (max - min) * real{0.5};
+  const auto half_extents = (max - min) * 0.5f;
 
   return oriented_box{min + half_extents, half_extents, world_orientation};
 }
@@ -107,7 +106,7 @@ auto alloy::core::oriented_box::contains(const point3& p) const noexcept -> bool
   return contains(p, default_tolerance);
 }
 
-auto alloy::core::oriented_box::contains(const point3& p, real tolerance)
+auto alloy::core::oriented_box::contains(const point3& p, float tolerance)
   const noexcept -> bool
 {
   const auto offset = (p - m_center);

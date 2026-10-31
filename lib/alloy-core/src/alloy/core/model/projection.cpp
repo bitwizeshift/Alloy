@@ -10,7 +10,6 @@
 #include "alloy/core/math/matrix/matrix4.hpp"
 #include "alloy/core/math/matrix/matrix4_constants.hpp"
 #include "alloy/core/math/trigonometry.hpp"
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 #include <variant>
@@ -30,7 +29,7 @@ auto alloy::core::projection::identity() noexcept -> projection
 
 auto alloy::core::projection::perspective(
   degree fov,
-  real aspect_ratio,
+  float aspect_ratio,
   view_volume::depth_bounds depth,
   clip_depth clip
 ) noexcept -> projection
@@ -40,7 +39,7 @@ auto alloy::core::projection::perspective(
 
 auto alloy::core::projection::perspective(
   radian fov,
-  real aspect_ratio,
+  float aspect_ratio,
   view_volume::depth_bounds depth,
   clip_depth clip
 ) noexcept -> projection
@@ -66,12 +65,12 @@ auto alloy::core::projection::perspective(
 //------------------------------------------------------------------------------
 
 auto alloy::core::projection::orthographic(
-  real left,
-  real right,
-  real bottom,
-  real top,
-  real near,
-  real far,
+  float left,
+  float right,
+  float bottom,
+  float top,
+  float near,
+  float far,
   clip_depth clip
 ) noexcept -> projection
 {
@@ -98,7 +97,7 @@ auto alloy::core::projection::orthographic(
 // this is insured by being an internal invariant.
 //
 // NOLINTNEXTLINE(bugprone-exception-escape)
-auto alloy::core::projection::with_aspect_ratio(real aspect_ratio)
+auto alloy::core::projection::with_aspect_ratio(float aspect_ratio)
   const noexcept -> projection
 {
   ALLOY_ASSERT(aspect_ratio > 0);
@@ -176,18 +175,18 @@ auto alloy::core::projection::extract_matrix_of(
 {
   const auto& depth = data.depth;
 
-  const auto half_tan_fov = trigonometry::tan(data.fov * real{0.5});
+  const auto half_tan_fov = trigonometry::tan(data.fov * 0.5f);
 
   const auto dz = (depth.far - depth.near);
 
-  const auto rx = real{1} / (data.aspect_ratio * half_tan_fov);
-  const auto ry = real{1} / half_tan_fov;
+  const auto rx = 1.0f / (data.aspect_ratio * half_tan_fov);
+  const auto ry = 1.0f / half_tan_fov;
   const auto rz = (data.clip == clip_depth::zero_to_one)
     ? -depth.far / dz
     : -(depth.far + depth.near) / dz;
   const auto factor = (data.clip == clip_depth::zero_to_one)
     ? -(depth.far * depth.near) / dz
-    : -(real{2} * depth.far * depth.near) / dz;
+    : -(2.0f * depth.far * depth.near) / dz;
 
   (*out) = matrix4{
     rx, 0,  0,   0,
@@ -220,11 +219,11 @@ auto alloy::core::projection::extract_matrix_of(
     ? -(near / dz)
     : -((far + near) / dz);
 
-  const auto rx = real{2} / dx;
-  const auto ry = real{2} / dy;
+  const auto rx = 2.0f / dx;
+  const auto ry = 2.0f / dy;
   const auto rz = (data.clip == clip_depth::zero_to_one)
-    ? -real{1} / dz
-    : -real{2} / dz;
+    ? -1.0f / dz
+    : -2.0f / dz;
 
   (*out) = matrix4{
     rx, 0,  0,  tx,
@@ -260,10 +259,10 @@ auto alloy::core::projection::extract_inverse_matrix_of(
   const auto factor = out->get(2, 3);
 
   (*out) = matrix4{
-    real{1} / rx, 0,            0,                0,
-    0,            real{1} / ry, 0,                0,
+    1.0f / rx, 0,            0,                0,
+    0,            1.0f / ry, 0,                0,
     0,            0,            0,                -1,
-    0,            0,            real{1} / factor, rz / factor,
+    0,            0,            1.0f / factor, rz / factor,
   };
 }
 
@@ -284,9 +283,9 @@ auto alloy::core::projection::extract_inverse_matrix_of(
   const auto tz = out->get(2, 3);
 
   (*out) = matrix4{
-    real{1} / rx, 0,            0,            -tx / rx,
-    0,            real{1} / ry, 0,            -ty / ry,
-    0,            0,            real{1} / rz, -tz / rz,
+    1.0f / rx, 0,            0,            -tx / rx,
+    0,            1.0f / ry, 0,            -ty / ry,
+    0,            0,            1.0f / rz, -tz / rz,
     0,            0,            0,            1,
   };
 }
@@ -295,7 +294,7 @@ auto alloy::core::projection::extract_inverse_matrix_of(
 
 auto alloy::core::projection::with_aspect_ratio_of(
   const identity_data&,
-  real
+  float
 ) noexcept -> projection
 {
   return projection::identity();
@@ -303,7 +302,7 @@ auto alloy::core::projection::with_aspect_ratio_of(
 
 auto alloy::core::projection::with_aspect_ratio_of(
   const perspective_data& data,
-  real aspect_ratio
+  float aspect_ratio
 ) noexcept -> projection
 {
   auto result = data;
@@ -314,15 +313,15 @@ auto alloy::core::projection::with_aspect_ratio_of(
 
 auto alloy::core::projection::with_aspect_ratio_of(
   const orthographic_data& data,
-  real aspect_ratio
+  float aspect_ratio
 ) noexcept -> projection
 {
   const auto& horizontal = data.volume.horizontal();
   const auto& vertical = data.volume.vertical();
-  const auto center = (horizontal.left + horizontal.right) * real{0.5};
+  const auto center = (horizontal.left + horizontal.right) * 0.5f;
   const auto half_width = (vertical.top - vertical.bottom)
                         * aspect_ratio
-                        * real{0.5};
+                        * 0.5f;
   const auto volume = view_volume::make_unchecked(
     view_volume::horizontal_bounds{center - half_width, center + half_width},
     vertical,

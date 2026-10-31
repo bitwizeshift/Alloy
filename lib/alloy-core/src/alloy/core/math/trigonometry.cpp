@@ -5,7 +5,6 @@
 #include "alloy/core/math/trigonometry.hpp"
 
 #include "alloy/core/math/angle/radian.hpp"
-#include "alloy/core/precision/real.hpp"
 
 #include <cmath>
 
@@ -17,17 +16,17 @@
 // Trig
 //----------------------------------------------------------------------------
 
-auto alloy::core::trigonometry::cos(radian rad) noexcept -> real
+auto alloy::core::trigonometry::cos(radian rad) noexcept -> float
 {
   return std::cos( rad.value() );
 }
 
-auto alloy::core::trigonometry::sin(radian rad) noexcept -> real
+auto alloy::core::trigonometry::sin(radian rad) noexcept -> float
 {
   return std::sin( rad.value() );
 }
 
-auto alloy::core::trigonometry::tan(radian rad) noexcept -> real
+auto alloy::core::trigonometry::tan(radian rad) noexcept -> float
 {
   return std::tan( rad.value() );
 }
@@ -36,22 +35,22 @@ auto alloy::core::trigonometry::tan(radian rad) noexcept -> real
 // Inverse Trig
 //----------------------------------------------------------------------------
 
-auto alloy::core::trigonometry::arccos(core::real f) noexcept -> radian
+auto alloy::core::trigonometry::arccos(float f) noexcept -> radian
 {
   return radian{ std::acos(f) };
 }
 
-auto alloy::core::trigonometry::arcsin(core::real f) noexcept -> radian
+auto alloy::core::trigonometry::arcsin(float f) noexcept -> radian
 {
   return radian{ std::asin(f) };
 }
 
-auto alloy::core::trigonometry::arctan(core::real f) noexcept -> radian
+auto alloy::core::trigonometry::arctan(float f) noexcept -> radian
 {
   return radian{ std::atan(f) };
 }
 
-auto alloy::core::trigonometry::arctan2(core::real f1, core::real f2)
+auto alloy::core::trigonometry::arctan2(float f1, float f2)
   noexcept -> radian
 {
   return radian{ std::atan2(f1,f2) };

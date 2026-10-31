@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/core/math/vector/vector2.hpp"
-#include "alloy/core/precision/real.hpp"
 
 namespace alloy::core {
 
@@ -37,19 +36,19 @@ namespace alloy::core {
 
     /// \brief A zero-valued vector2
     inline static constexpr auto zero = vector2{
-      real{0}, real{0}
+      0.0f, 0.0f
     };
 
     //-------------------------------------------------------------------------
 
     /// \brief A vector representing the X unit-vector
     inline static constexpr auto unit_x = vector2{
-      real{1}, real{0}
+      1.0f, 0.0f
     };
 
     /// \brief A vector representing the X unit-vector
     inline static constexpr auto unit_y = vector2{
-      real{0}, real{1}
+      0.0f, 1.0f
     };
 
     //-------------------------------------------------------------------------

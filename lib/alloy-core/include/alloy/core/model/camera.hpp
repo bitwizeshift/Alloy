@@ -24,7 +24,6 @@
 #include "alloy/core/math/quaternion.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/math/vector/vector3_constants.hpp"
-#include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 namespace alloy::core {
@@ -77,7 +76,7 @@ namespace alloy::core {
     /// \param delta_x the change in the x position
     /// \param delta_y the change in the y position
     /// \param delta_z the change in the z position
-    auto translate_world(real delta_x, real delta_y, real delta_z)
+    auto translate_world(float delta_x, float delta_y, float delta_z)
       noexcept -> void;
 
     /// \brief Translates this camera by the vector \p delta
@@ -94,7 +93,7 @@ namespace alloy::core {
     /// This works in terms of absolute world coordinates
     ///
     /// \param delta the change in translation for the x axis
-    auto translate_world_x(real delta) noexcept -> void;
+    auto translate_world_x(float delta) noexcept -> void;
 
     /// \brief Translates this camera by \p delta in the y axis
     ///
@@ -102,7 +101,7 @@ namespace alloy::core {
     /// This works in terms of absolute world coordinates
     ///
     /// \param delta the change in translation for the y axis
-    auto translate_world_y(real delta) noexcept -> void;
+    auto translate_world_y(float delta) noexcept -> void;
 
     /// \brief Translates this camera by \p delta in the z axis
     ///
@@ -110,7 +109,7 @@ namespace alloy::core {
     /// This works in terms of absolute world coordinates
     ///
     /// \param delta the change in translation for the z axis
-    auto translate_world_z(real delta) noexcept -> void;
+    auto translate_world_z(float delta) noexcept -> void;
 
     //-------------------------------------------------------------------------
     // Local Translations
@@ -125,7 +124,7 @@ namespace alloy::core {
     /// camera's position in world-coordinates
     ///
     /// \param delta the amount to move forward
-    auto translate_local_z(real delta) noexcept -> void;
+    auto translate_local_z(float delta) noexcept -> void;
 
     /// \brief Strafes the camera along the camera's x-axis
     ///
@@ -134,7 +133,7 @@ namespace alloy::core {
     /// camera's position in world-coordinates
     ///
     /// \param delta the amount to move right
-    auto translate_local_x(real delta) noexcept -> void;
+    auto translate_local_x(float delta) noexcept -> void;
 
     /// \brief Raises the camera along the camera's y-axis
     ///
@@ -143,7 +142,7 @@ namespace alloy::core {
     /// camera's position in world-coordinates
     ///
     /// \param delta the amount to move up
-    auto translate_local_y(real delta) noexcept -> void;
+    auto translate_local_y(float delta) noexcept -> void;
 
     /// \brief Moves the camera relative to its own axes
     ///
@@ -230,7 +229,7 @@ namespace alloy::core {
     /// \param x the x position
     /// \param y the y position
     /// \param z the z position
-    auto set_translation(real x, real y, real z) noexcept -> void;
+    auto set_translation(float x, float y, float z) noexcept -> void;
 
     /// \brief Sets the translation of this camera to \p translation
     ///
@@ -240,17 +239,17 @@ namespace alloy::core {
     /// \brief Sets the \p x translation of this camera
     ///
     /// \param x the x position
-    auto set_translation_x(real x) noexcept -> void;
+    auto set_translation_x(float x) noexcept -> void;
 
     /// \brief Sets the \p y translation of this camera
     ///
     /// \param y the y position
-    auto set_translation_y(real y) noexcept -> void;
+    auto set_translation_y(float y) noexcept -> void;
 
     /// \brief Sets the \p z translation of this camera
     ///
     /// \param z the z position
-    auto set_translation_z(real z) noexcept -> void;
+    auto set_translation_z(float z) noexcept -> void;
 
     //-------------------------------------------------------------------------
 
@@ -307,9 +306,9 @@ namespace alloy::core {
     /// \param z the z position
     /// \param up the direction for up
     auto look_at(
-      real x,
-      real y,
-      real z,
+      float x,
+      float y,
+      float z,
       const vector3& up = vector3_constants::unit_y
     ) noexcept -> void;
 
@@ -420,7 +419,7 @@ namespace alloy::core {
   template <>
   struct ALLOY_CORE_API interpolator<camera>
   {
-    auto operator()(const camera& v0, const camera& v1, real alpha)
+    auto operator()(const camera& v0, const camera& v1, float alpha)
       noexcept -> camera;
   };
 

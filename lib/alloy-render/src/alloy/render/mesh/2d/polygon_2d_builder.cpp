@@ -17,7 +17,6 @@
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/model/color.hpp"
-#include "alloy/core/precision/real.hpp"
 
 #include <cstddef> // std::size_t
 #include <cstdint> // std::uint8_t
@@ -33,7 +32,7 @@ inline constexpr auto entries_per_indices = 3u;
 
 auto to_point3(const alloy::core::point2& p) noexcept -> alloy::core::point3
 {
-  return alloy::core::point3{p.x(), p.y(), alloy::core::real{0}};
+  return alloy::core::point3{p.x(), p.y(), 0.0f};
 }
 
 template <typename T>

@@ -23,7 +23,6 @@
 #include "alloy/core/math/trigonometry.hpp"
 #include "alloy/core/math/vector/vector2.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision.hpp"
 #include "alloy/core/utilities/piecewise_compare.hpp"
 
 namespace alloy::core {
@@ -51,7 +50,7 @@ namespace alloy::core {
     /// \param rho the distance from the origin
     /// \param theta the first angular component
     /// \param theta the second angular component
-    constexpr spherical(real rho, radian phi, radian theta) noexcept;
+    constexpr spherical(float rho, radian phi, radian theta) noexcept;
 
     /// \brief Copies the contents from \p other
     ///
@@ -75,8 +74,8 @@ namespace alloy::core {
     /// \brief Gets the distance component of this spherical
     ///
     /// \return reference to the distance component
-    constexpr auto rho() noexcept -> real&;
-    constexpr auto rho() const noexcept -> real;
+    constexpr auto rho() noexcept -> float&;
+    constexpr auto rho() const noexcept -> float;
     /// \}
 
     /// \{
@@ -105,7 +104,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   private:
 
-    real m_rho;
+    float m_rho;
     radian m_phi;
     radian m_theta;
   };
@@ -133,7 +132,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const spherical& lhs,
     const spherical& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
@@ -184,7 +183,7 @@ alloy::core::spherical::spherical() noexcept
 }
 
 inline constexpr
-alloy::core::spherical::spherical(real rho, radian phi, radian theta) noexcept
+alloy::core::spherical::spherical(float rho, radian phi, radian theta) noexcept
   : m_rho{rho},
     m_phi{phi},
     m_theta{theta}
@@ -197,13 +196,13 @@ alloy::core::spherical::spherical(real rho, radian phi, radian theta) noexcept
 //------------------------------------------------------------------------------
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::rho() noexcept -> real&
+auto alloy::core::spherical::rho() noexcept -> float&
 {
   return m_rho;
 }
 
 ALLOY_FORCE_INLINE constexpr
-auto alloy::core::spherical::rho() const noexcept -> real
+auto alloy::core::spherical::rho() const noexcept -> float
 {
   return m_rho;
 }
@@ -268,7 +267,7 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 inline constexpr
 auto alloy::core::almost_equal(const spherical& lhs,
                                const spherical& rhs,
-                               real tolerance)
+                               float tolerance)
   noexcept -> bool
 {
   return (

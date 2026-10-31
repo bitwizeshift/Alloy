@@ -8,7 +8,6 @@
 #include <alloy/core/math/angle/radian.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3_constants.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -21,7 +20,7 @@ namespace alloy::core::test {
 // Constructors
 //-----------------------------------------------------------------------------
 
-TEST_CASE("vector3::vector3( real, real, real )", "[ctor]")
+TEST_CASE("vector3::vector3( float, float, float )", "[ctor]")
 {
   // Arrange
   const auto x = 3.14f;
@@ -505,9 +504,9 @@ TEST_CASE("vector3::normalize()", "[modifiers]")
     {
       // Arrange
       auto sut = vector3{
-        alloy::core::real{1} / alloy::core::sqrt(3.0f),
-        alloy::core::real{1} / alloy::core::sqrt(3.0f),
-        alloy::core::real{1} / alloy::core::sqrt(3.0f)
+        1.0f / alloy::core::sqrt(3.0f),
+        1.0f / alloy::core::sqrt(3.0f),
+        1.0f / alloy::core::sqrt(3.0f)
       };
       const auto expected = sut;
 
@@ -526,9 +525,9 @@ TEST_CASE("vector3::normalize()", "[modifiers]")
       // Arrange
       auto sut = vector3{ 1.0f, 1.0f, 1.0f };
       const auto expected = vector3{
-        alloy::core::real{1} / alloy::core::sqrt(3.0f),
-        alloy::core::real{1} / alloy::core::sqrt(3.0f),
-        alloy::core::real{1} / alloy::core::sqrt(3.0f)
+        1.0f / alloy::core::sqrt(3.0f),
+        1.0f / alloy::core::sqrt(3.0f),
+        1.0f / alloy::core::sqrt(3.0f)
       };
 
       // Act
@@ -690,12 +689,12 @@ TEST_CASE("operator-( vector3, vector3 )", "[arithmetic]")
   }
 }
 
-TEST_CASE("operator*( real, vector3 )", "[arithmetic]")
+TEST_CASE("operator*( float, vector3 )", "[arithmetic]")
 {
   SECTION("Is distributive")
   {
     // Arrange
-    const auto constant = alloy::core::real{2};
+    const auto constant = 2.0f;
     const auto a = vector3{1,2,1};
     const auto b = vector3{2,1,2};
 
@@ -710,7 +709,7 @@ TEST_CASE("operator*( real, vector3 )", "[arithmetic]")
   {
     // Arrange
     const auto a = vector3{1,2,3};
-    const auto identity = alloy::core::real{1};
+    const auto identity = 1.0f;
 
     // Act
     const auto actual = (identity * a);
@@ -721,12 +720,12 @@ TEST_CASE("operator*( real, vector3 )", "[arithmetic]")
   }
 }
 
-TEST_CASE("operator*( vector3, real )", "[arithmetic]")
+TEST_CASE("operator*( vector3, float )", "[arithmetic]")
 {
   SECTION("Is distributive")
   {
     // Arrange
-    const auto constant = alloy::core::real{2};
+    const auto constant = 2.0f;
     const auto a = vector3{1,2,1};
     const auto b = vector3{2,1,2};
 
@@ -741,7 +740,7 @@ TEST_CASE("operator*( vector3, real )", "[arithmetic]")
   {
     // Arrange
     const auto a = vector3{1,2,3};
-    const auto identity = alloy::core::real{1};
+    const auto identity = 1.0f;
 
     // Act
     const auto actual = (a * identity);

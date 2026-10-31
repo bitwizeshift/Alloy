@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/core/math/vector/vector4.hpp"
-#include "alloy/core/precision/real.hpp"
 
 namespace alloy::core {
 
@@ -37,29 +36,29 @@ namespace alloy::core {
 
     /// \brief A zero-valued vector4
     inline static constexpr auto zero = vector4{
-      real{0}, real{0}, real{0}, real{0}
+      0.0f, 0.0f, 0.0f, 0.0f
     };
 
     //-------------------------------------------------------------------------
 
     /// \brief A vector representing the X unit-vector
     inline static constexpr auto unit_x = vector4{
-      real{1}, real{0}, real{0}, real{0}
+      1.0f, 0.0f, 0.0f, 0.0f
     };
 
     /// \brief A vector representing the Y unit-vector
     inline static constexpr auto unit_y = vector4{
-      real{0}, real{1}, real{0}, real{0}
+      0.0f, 1.0f, 0.0f, 0.0f
     };
 
     /// \brief A vector representing the Z unit-vector
     inline static constexpr auto unit_z = vector4{
-      real{0}, real{0}, real{1}, real{0}
+      0.0f, 0.0f, 1.0f, 0.0f
     };
 
     /// \brief A vector representing the W unit-vector
     inline static constexpr auto unit_w = vector4{
-      real{0}, real{0}, real{0}, real{1}
+      0.0f, 0.0f, 0.0f, 1.0f
     };
 
     //-------------------------------------------------------------------------

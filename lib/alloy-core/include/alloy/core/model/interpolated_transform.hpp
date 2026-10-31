@@ -19,7 +19,6 @@
 #include "alloy/core/math/matrix/matrix4.hpp"
 #include "alloy/core/model/camera.hpp"
 #include "alloy/core/model/transform.hpp"
-#include "alloy/core/precision.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 
 #include <array> // std::array
@@ -110,7 +109,7 @@ namespace alloy::core {
     ///
     /// \param out a pointer to the matrix to update
     /// \param alpha the percent between the previous and current state [0,1]
-    auto update_matrix(not_null<matrix4*> out, real alpha) noexcept -> void;
+    auto update_matrix(not_null<matrix4*> out, float alpha) noexcept -> void;
 
     /// \brief Updates the state of the matrix by storing the result in \p out
     ///
@@ -222,7 +221,7 @@ template <typename Transform>
 inline
 auto alloy::core::interpolated_transform<Transform>::update_matrix(
   not_null<matrix4*> out,
-  real alpha
+  float alpha
 ) noexcept -> void
 {
   if (!m_is_dirty) {

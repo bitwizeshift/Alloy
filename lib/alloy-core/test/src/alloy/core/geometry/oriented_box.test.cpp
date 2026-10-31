@@ -9,7 +9,6 @@
 #include <alloy/core/math/basis/basis3.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -69,7 +68,7 @@ TEST_CASE("oriented_box::corners()", "[observer]") {
   const auto all_at_radius = std::ranges::all_of(
     result,
     [&sut](const point3& corner) {
-      return almost_equal((corner - sut.center()).magnitude(), sqrt(real{3}));
+      return almost_equal((corner - sut.center()).magnitude(), sqrt(3.0f));
     }
   );
 
@@ -94,7 +93,7 @@ TEST_CASE("oriented_box::bounding_box()", "[observer]") {
 
   // Assert
   SECTION("Encloses the rotated extents") {
-    const auto extent = sqrt(real{2});
+    const auto extent = sqrt(2.0f);
     const auto expected = axis_aligned_box{
       point3{-extent, -extent, -1},
       point3{extent, extent, 1}
@@ -119,7 +118,7 @@ TEST_CASE("oriented_box::nearest_point(const point3&)", "[quantifier]") {
     const auto result = sut.nearest_point(point3{2, 2, 0});
 
     // Assert
-    const auto half_root_two = sqrt(real{2}) * real{0.5};
+    const auto half_root_two = sqrt(2.0f) * 0.5f;
     REQUIRE(almost_equal(result, point3{half_root_two, half_root_two, 0}));
   }
 }
@@ -144,10 +143,10 @@ TEST_CASE("oriented_box::contains(const point3&)", "[quantifier]") {
   }
 }
 
-TEST_CASE("oriented_box::contains(const point3&, real)", "[quantifier]") {
+TEST_CASE("oriented_box::contains(const point3&, float)", "[quantifier]") {
   // Arrange
   const auto sut = make_rotated_cube();
-  const auto tolerance = real{0.1f};
+  const auto tolerance = 0.1f;
 
   SECTION("Point is within tolerance of a face") {
     // Act

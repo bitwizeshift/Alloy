@@ -32,7 +32,6 @@
 #include "alloy/core/geometry/sphere.hpp"
 #include "alloy/core/geometry/triangle.hpp"
 #include "alloy/core/math/math.hpp"
-#include "alloy/core/precision.hpp"
 
 #include <concepts>
 #include <type_traits> // std::conjunction, std::negation, std::is_reference
@@ -169,7 +168,7 @@ namespace alloy::core {
     friend constexpr auto almost_equal(
       const intersection<UTypes...>&,
       const intersection<UTypes...>&,
-      real
+      float
     ) noexcept -> bool;
   };
 
@@ -205,7 +204,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const intersection<Types...>& lhs,
     const intersection<Types...>& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //============================================================================
@@ -779,7 +778,7 @@ inline constexpr
 auto alloy::core::almost_equal(
   const intersection<Types...>& lhs,
   const intersection<Types...>& rhs,
-  real tolerance
+  float tolerance
 ) noexcept -> bool
 {
   if (lhs.m_intersection_types.index() != rhs.m_intersection_types.index()) {

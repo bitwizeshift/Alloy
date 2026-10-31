@@ -20,7 +20,6 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision.hpp"
 #include "alloy/core/utilities/piecewise_compare.hpp"
 
 #include <cstddef>     // std::size_t, std::ptrdiff_t
@@ -42,7 +41,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   public:
 
-    using value_type      = real;
+    using value_type      = float;
     using pointer         = value_type*;
     using const_pointer   = const value_type*;
     using reference       = value_type&;
@@ -64,7 +63,7 @@ namespace alloy::core {
     /// \param x the x-coordinate
     /// \param y the y-coordinate
     /// \param z the z-coordinate
-    constexpr point3(real x, real y, real z) noexcept;
+    constexpr point3(float x, float y, float z) noexcept;
 
     /// \brief Copy-constructs a point from another point
     ///
@@ -139,7 +138,7 @@ namespace alloy::core {
     //--------------------------------------------------------------------------
   private:
 
-    real m_data[3]; ///< The storage data
+    float m_data[3]; ///< The storage data
   };
 
   //============================================================================
@@ -176,7 +175,7 @@ namespace alloy::core {
   constexpr auto almost_equal(
     const point3& lhs,
     const point3& rhs,
-    real tolerance
+    float tolerance
   ) noexcept -> bool;
 
   //----------------------------------------------------------------------------
@@ -218,7 +217,7 @@ alloy::core::point3::point3() noexcept
 }
 
 inline constexpr
-alloy::core::point3::point3(real x, real y, real z) noexcept
+alloy::core::point3::point3(float x, float y, float z) noexcept
   : m_data{x,y,z}
 {
 
@@ -385,7 +384,7 @@ ALLOY_COMPILER_DIAGNOSTIC_POP()
 //------------------------------------------------------------------------------
 
 inline constexpr
-auto alloy::core::almost_equal(const point3& lhs, const point3& rhs, real tolerance)
+auto alloy::core::almost_equal(const point3& lhs, const point3& rhs, float tolerance)
   noexcept -> bool
 {
   for (auto i = 0; i < 3; ++i) {

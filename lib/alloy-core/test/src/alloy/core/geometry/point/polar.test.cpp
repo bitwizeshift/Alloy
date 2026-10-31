@@ -8,7 +8,6 @@
 #include <alloy/core/math/angle/radian.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/math_constants.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -23,7 +22,7 @@ TEST_CASE("to_polar(const point2&)", "[utility]") {
 
   // Assert
   SECTION("Has the distance from the origin") {
-    REQUIRE(almost_equal(result.r(), real{2}));
+    REQUIRE(almost_equal(result.r(), 2.0f));
   }
   SECTION("Has the angle from the x-axis") {
     REQUIRE(almost_equal(result.theta(), radian{math_constants::half_pi}));
@@ -33,7 +32,7 @@ TEST_CASE("to_polar(const point2&)", "[utility]") {
 TEST_CASE("to_point(const polar&)", "[utility]") {
   SECTION("Angle is a quarter turn") {
     // Arrange
-    const auto p = polar{real{2}, radian{math_constants::half_pi}};
+    const auto p = polar{2.0f, radian{math_constants::half_pi}};
 
     // Act
     const auto result = to_point(p);

@@ -6,7 +6,6 @@
 
 #include <alloy/core/math/angle/radian.hpp>
 #include <alloy/core/math/math.hpp>
-#include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -28,7 +27,7 @@ TEST_CASE("euler_angles::dot( const euler_angles& )", "[quantifiers]")
   // Assert
   SECTION("Sums the products of every angle")
   {
-    REQUIRE( almost_equal(result, real{32}) );
+    REQUIRE( almost_equal(result, 32.0f) );
   }
 }
 
@@ -36,7 +35,7 @@ TEST_CASE("euler_angles::dot( const euler_angles& )", "[quantifiers]")
 // Comparisons
 //------------------------------------------------------------------------------
 
-TEST_CASE("almost_equal( const euler_angles&, const euler_angles&, real )", "[comparison]")
+TEST_CASE("almost_equal( const euler_angles&, const euler_angles&, float )", "[comparison]")
 {
   // Arrange
   const auto lhs = euler_angles{radian{1}, radian{2}, radian{3}};
@@ -47,7 +46,7 @@ TEST_CASE("almost_equal( const euler_angles&, const euler_angles&, real )", "[co
     const auto rhs = euler_angles{radian{1}, radian{2.05f}, radian{3}};
 
     // Act
-    const auto result = almost_equal(lhs, rhs, real{0.1});
+    const auto result = almost_equal(lhs, rhs, 0.1f);
 
     // Assert
     REQUIRE( result );
@@ -59,7 +58,7 @@ TEST_CASE("almost_equal( const euler_angles&, const euler_angles&, real )", "[co
     const auto rhs = euler_angles{radian{1}, radian{2}, radian{3.5f}};
 
     // Act
-    const auto result = almost_equal(lhs, rhs, real{0.1});
+    const auto result = almost_equal(lhs, rhs, 0.1f);
 
     // Assert
     REQUIRE_FALSE( result );

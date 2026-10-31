@@ -6,7 +6,6 @@
 
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/model/color_constants.hpp>
-#include <alloy/core/precision/real.hpp>
 #include <alloy/core/types.hpp>
 
 #include <catch2/catch_message.hpp>
@@ -163,7 +162,7 @@ TEST_CASE("color::color()","[ctor]") {
   }
 }
 
-TEST_CASE("color::color(real r, real g, real b)","[ctor]") {
+TEST_CASE("color::color(float r, float g, float b)","[ctor]") {
   // Arrange
   constexpr auto r = 0.25f;
   constexpr auto g = 0.5f;
@@ -189,7 +188,7 @@ TEST_CASE("color::color(real r, real g, real b)","[ctor]") {
   }
 }
 
-TEST_CASE("color::color(real r, real g, real b, real a)","[ctor]") {
+TEST_CASE("color::color(float r, float g, float b, float a)","[ctor]") {
   // Arrange
   constexpr auto r = 0.25f;
   constexpr auto g = 0.5f;
@@ -253,7 +252,7 @@ TEST_CASE("color::inverted()", "[modifier]") {
   }
 }
 
-TEST_CASE("color::darken(real)", "[modifier]") {
+TEST_CASE("color::darken(float)", "[modifier]") {
   // Arrange
   auto sut = color{0.5f, 1.0f, 0.0f, 0.25f};
 
@@ -262,11 +261,11 @@ TEST_CASE("color::darken(real)", "[modifier]") {
 
   // Assert
   SECTION("Scales each color component towards black") {
-    REQUIRE(almost_equal(sut, color{0.25f, 0.5f, 0.0f, 0.25f}, real{1e-6f}));
+    REQUIRE(almost_equal(sut, color{0.25f, 0.5f, 0.0f, 0.25f}, 1e-6f));
   }
 }
 
-TEST_CASE("color::brighten(real)", "[modifier]") {
+TEST_CASE("color::brighten(float)", "[modifier]") {
   // Arrange
   auto sut = color{0.5f, 0.0f, 1.0f, 0.25f};
 
@@ -275,7 +274,7 @@ TEST_CASE("color::brighten(real)", "[modifier]") {
 
   // Assert
   SECTION("Moves each color component towards white") {
-    REQUIRE(almost_equal(sut, color{0.75f, 0.5f, 1.0f, 0.25f}, real{1e-6f}));
+    REQUIRE(almost_equal(sut, color{0.75f, 0.5f, 1.0f, 0.25f}, 1e-6f));
   }
 }
 
@@ -288,11 +287,11 @@ TEST_CASE("color::contrast()", "[modifier]") {
 
   // Assert
   SECTION("Shifts each color component by half, wrapping around") {
-    REQUIRE(almost_equal(sut, color{0.75f, 0.25f, 0.5f, 0.25f}, real{1e-6f}));
+    REQUIRE(almost_equal(sut, color{0.75f, 0.25f, 0.5f, 0.25f}, 1e-6f));
   }
 }
 
-TEST_CASE("color::darkened(real)", "[modifier]") {
+TEST_CASE("color::darkened(float)", "[modifier]") {
   // Arrange
   const auto sut = color{0.5f, 1.0f, 0.0f, 0.25f};
 
@@ -301,11 +300,11 @@ TEST_CASE("color::darkened(real)", "[modifier]") {
 
   // Assert
   SECTION("Is the darkened copy of the color") {
-    REQUIRE(almost_equal(result, color{0.25f, 0.5f, 0.0f, 0.25f}, real{1e-6f}));
+    REQUIRE(almost_equal(result, color{0.25f, 0.5f, 0.0f, 0.25f}, 1e-6f));
   }
 }
 
-TEST_CASE("color::brightened(real)", "[modifier]") {
+TEST_CASE("color::brightened(float)", "[modifier]") {
   // Arrange
   const auto sut = color{0.5f, 0.0f, 1.0f, 0.25f};
 
@@ -314,7 +313,7 @@ TEST_CASE("color::brightened(real)", "[modifier]") {
 
   // Assert
   SECTION("Is the brightened copy of the color") {
-    REQUIRE(almost_equal(result, color{0.75f, 0.5f, 1.0f, 0.25f}, real{1e-6f}));
+    REQUIRE(almost_equal(result, color{0.75f, 0.5f, 1.0f, 0.25f}, 1e-6f));
   }
 }
 
@@ -329,7 +328,7 @@ TEST_CASE("color::contrasted()", "[modifier]") {
   SECTION("Is the contrasted copy of the color") {
     const auto expected = color{0.75f, 0.25f, 0.5f, 0.25f};
 
-    REQUIRE(almost_equal(result, expected, real{1e-6f}));
+    REQUIRE(almost_equal(result, expected, 1e-6f));
   }
 }
 
@@ -345,7 +344,7 @@ TEST_CASE("blend(const color&, const color&)", "[blend]") {
     const auto result = blend(background, foreground);
 
     // Assert
-    REQUIRE(almost_equal(result, foreground, real{1e-6f}));
+    REQUIRE(almost_equal(result, foreground, 1e-6f));
   }
   SECTION("Translucent foreground mixes with the background") {
     // Arrange
@@ -355,7 +354,7 @@ TEST_CASE("blend(const color&, const color&)", "[blend]") {
     const auto result = blend(background, foreground);
 
     // Assert
-    REQUIRE(almost_equal(result, color{0.5f, 0.0f, 0.5f, 1.0f}, real{1e-6f}));
+    REQUIRE(almost_equal(result, color{0.5f, 0.0f, 0.5f, 1.0f}, 1e-6f));
   }
 }
 
@@ -463,7 +462,7 @@ TEST_CASE("color::to_linear()", "[conversion]") {
     const auto result = sut.to_linear();
 
     // Assert
-    REQUIRE(almost_equal(result.r(), real{0.21404f}, real{1e-4f}));
+    REQUIRE(almost_equal(result.r(), 0.21404f, 1e-4f));
   }
   SECTION("Value near black decodes linearly") {
     // Arrange
@@ -473,7 +472,7 @@ TEST_CASE("color::to_linear()", "[conversion]") {
     const auto result = sut.to_linear();
 
     // Assert
-    REQUIRE(almost_equal(result.r(), real{0.02f / 12.92f}, real{1e-6f}));
+    REQUIRE(almost_equal(result.r(), float{0.02f / 12.92f}, 1e-6f));
   }
   SECTION("Alpha is untouched") {
     // Arrange
@@ -496,7 +495,7 @@ TEST_CASE("color::to_srgb()", "[conversion]") {
 
   // Assert
   SECTION("Is undone by to_linear") {
-    REQUIRE(almost_equal(result, sut, real{1e-5f}));
+    REQUIRE(almost_equal(result, sut, 1e-5f));
   }
 }
 

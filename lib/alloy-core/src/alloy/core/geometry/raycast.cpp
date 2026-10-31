@@ -14,7 +14,6 @@
 #include "alloy/core/geometry/triangle.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
-#include "alloy/core/precision/real.hpp"
 
 #include <algorithm> // std::min, std::max
 #include <limits>    // std::numeric_limits
@@ -22,14 +21,12 @@
 
 namespace {
 
-  using alloy::core::real;
-
-  constexpr auto infinity = std::numeric_limits<real>::infinity();
+  constexpr auto infinity = std::numeric_limits<float>::infinity();
 
   /// Gets the lesser of two optional distances, where a missing distance is
   /// never reached
-  auto nearest_of(std::optional<real> a, std::optional<real> b)
-    noexcept -> std::optional<real>
+  auto nearest_of(std::optional<float> a, std::optional<float> b)
+    noexcept -> std::optional<float>
   {
     if (!a.has_value()) {
       return b;
@@ -49,19 +46,19 @@ namespace {
 auto alloy::core::raycast_traits<alloy::core::plane>::raycast(
   const ray& r,
   const plane& p
-) noexcept -> std::optional<real>
+) noexcept -> std::optional<float>
 {
   const auto n = p.normalized();
   const auto distance = n.distance_to(r.origin());
   if (abs(distance) <= default_tolerance) {
-    return real{0};
+    return 0.0f;
   }
   const auto approach = n.normal().dot(r.direction());
   if (abs(approach) <= default_tolerance) {
     return std::nullopt;
   }
   const auto t = -distance / approach;
-  if (t < real{0}) {
+  if (t < 0.0f) {
     return std::nullopt;
   }
   return t;
@@ -70,7 +67,7 @@ auto alloy::core::raycast_traits<alloy::core::plane>::raycast(
 auto alloy::core::raycast_traits<alloy::core::triangle>::raycast(
   const ray& r,
   const triangle& t
-) noexcept -> std::optional<real>
+) noexcept -> std::optional<float>
 {
   // The Möller-Trumbore algorithm, which solves for the distance along the
   // ray and the barycentric coordinates of the hit at once.
@@ -81,20 +78,20 @@ auto alloy::core::raycast_traits<alloy::core::triangle>::raycast(
   if (abs(determinant) <= default_tolerance) {
     return std::nullopt;
   }
-  const auto reciprocal = real{1} / determinant;
+  const auto reciprocal = 1.0f / determinant;
 
   const auto s = (r.origin() - t.a());
   const auto u = s.dot(p) * reciprocal;
-  if (u < real{0} || u > real{1}) {
+  if (u < 0.0f || u > 1.0f) {
     return std::nullopt;
   }
   const auto q = s.cross(e1);
   const auto v = r.direction().dot(q) * reciprocal;
-  if (v < real{0} || (u + v) > real{1}) {
+  if (v < 0.0f || (u + v) > 1.0f) {
     return std::nullopt;
   }
   const auto distance = e2.dot(q) * reciprocal;
-  if (distance < real{0}) {
+  if (distance < 0.0f) {
     return std::nullopt;
   }
   return distance;
@@ -103,35 +100,35 @@ auto alloy::core::raycast_traits<alloy::core::triangle>::raycast(
 auto alloy::core::raycast_traits<alloy::core::sphere>::raycast(
   const ray& r,
   const sphere& s
-) noexcept -> std::optional<real>
+) noexcept -> std::optional<float>
 {
   // Solves '|offset + t * direction|^2 = radius^2' for the lesser 't'.
   const auto offset = (r.origin() - s.center());
   const auto b = offset.dot(r.direction());
   const auto c = offset.square_magnitude() - (s.radius() * s.radius());
-  if (c <= real{0}) {
-    return real{0};
+  if (c <= 0.0f) {
+    return 0.0f;
   }
-  if (b > real{0}) {
+  if (b > 0.0f) {
     return std::nullopt;
   }
   const auto discriminant = (b * b) - c;
-  if (discriminant < real{0}) {
+  if (discriminant < 0.0f) {
     return std::nullopt;
   }
-  return std::max(-b - sqrt(discriminant), real{0});
+  return std::max(-b - sqrt(discriminant), 0.0f);
 }
 
 auto alloy::core::raycast_traits<alloy::core::capsule>::raycast(
   const ray& r,
   const capsule& c
-) noexcept -> std::optional<real>
+) noexcept -> std::optional<float>
 {
   const auto& segment = c.segment();
   const auto radius = c.radius();
   const auto offset = (r.origin() - segment.nearest_point(r.origin()));
   if (offset.square_magnitude() <= (radius * radius)) {
-    return real{0};
+    return 0.0f;
   }
 
   // The capsule is the union of the spheres at its ends, and the cylinder
@@ -161,12 +158,12 @@ auto alloy::core::raycast_traits<alloy::core::capsule>::raycast(
   const auto b = m.dot(d);
   const auto excess = m.square_magnitude() - (radius * radius);
   const auto discriminant = (b * b) - (a * excess);
-  if (discriminant < real{0}) {
+  if (discriminant < 0.0f) {
     return result;
   }
   const auto t = (-b - sqrt(discriminant)) / a;
   const auto along_axis = (start_offset + (r.direction() * t)).dot(unit_axis);
-  if (t >= real{0} && along_axis >= real{0} && along_axis <= length) {
+  if (t >= 0.0f && along_axis >= 0.0f && along_axis <= length) {
     result = nearest_of(result, t);
   }
   return result;
@@ -175,12 +172,12 @@ auto alloy::core::raycast_traits<alloy::core::capsule>::raycast(
 auto alloy::core::raycast_traits<alloy::core::axis_aligned_box>::raycast(
   const ray& r,
   const axis_aligned_box& b
-) noexcept -> std::optional<real>
+) noexcept -> std::optional<float>
 {
   const auto range = detail::clip_to_slabs(
     r.origin(),
     r.direction(),
-    detail::interval{real{0}, infinity},
+    detail::interval{0.0f, infinity},
     b.bottom_left_point(),
     b.top_right_point()
   );
@@ -193,12 +190,12 @@ auto alloy::core::raycast_traits<alloy::core::axis_aligned_box>::raycast(
 auto alloy::core::raycast_traits<alloy::core::oriented_box>::raycast(
   const ray& r,
   const oriented_box& b
-) noexcept -> std::optional<real>
+) noexcept -> std::optional<float>
 {
   const auto range = detail::clip_to_box(
     r.origin(),
     r.direction(),
-    detail::interval{real{0}, infinity},
+    detail::interval{0.0f, infinity},
     b
   );
   if (!range.has_value()) {
