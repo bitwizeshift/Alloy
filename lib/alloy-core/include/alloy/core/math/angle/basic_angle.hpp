@@ -16,9 +16,9 @@
 # pragma once
 #endif
 
-#include "alloy/core/intrinsics.hpp" // ALLOY_COMPILER_GCC_DIAGNOSTIC_IGNORE
-#include "alloy/core/math/math.hpp"  // core::almost_equal
-#include "alloy/core/precision.hpp"  // core::real
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/math/math.hpp"
+#include "alloy/core/precision.hpp"
 
 #include <cmath>       // std::fmod
 #include <concepts>   // std::same_as

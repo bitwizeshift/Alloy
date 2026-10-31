@@ -71,8 +71,8 @@
 # pragma once
 #endif
 
-#include "alloy/core/intrinsics.hpp" // ALLOY_UNLIKELY
-#include "alloy/core/types.hpp"      // char32
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/types.hpp"
 
 #include <locale>  // std::locale
 #include <utility> // std::pair

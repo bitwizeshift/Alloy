@@ -11,7 +11,7 @@
 #include "alloy/platform/filesystem/file.hpp"
 #include "alloy/platform/filesystem/file_stream.hpp"
 
-#include "alloy/core/intrinsics.hpp"       // core::compiler::unreachable
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/string/string.hpp"
 #include "alloy/core/utilities/result.hpp"

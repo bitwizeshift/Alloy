@@ -15,10 +15,10 @@
 # pragma once
 #endif
 
-#include "alloy/core/assert.hpp"                     // ALLOY_ASSERT
-#include "alloy/core/config.hpp"                     // ALLOY_CORE_EXCEPTIONS_ENABLE
+#include "alloy/core/assert.hpp"
+#include "alloy/core/config.hpp"
 #include "alloy/core/intrinsics.hpp"
-#include "alloy/core/traits/function_traits.hpp"     // function_traits
+#include "alloy/core/traits/function_traits.hpp"
 #include "alloy/core/traits/is_function_pointer.hpp"
 
 #include <concepts>

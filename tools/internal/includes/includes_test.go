@@ -320,6 +320,43 @@ func TestCheckerCheck(t *testing.T) {
 			want:    nil,
 			wantErr: nil,
 		}, {
+			name: "comment on library include",
+			path: headerPath,
+			reader: strings.NewReader(lines(
+				`#include "alloy/a/a.hpp" // core::a`,
+				``,
+				`#include <SDL3/SDL.h> /* ::SDL_Init */`,
+			)),
+			want: []check.Finding{
+				{Line: 1, Message: `"alloy/a/a.hpp" must not be followed by a comment, as it is not from the standard library`},
+				{Line: 3, Message: `<SDL3/SDL.h> must not be followed by a comment, as it is not from the standard library`},
+			},
+			wantErr: nil,
+		}, {
+			name: "comment in conditional block",
+			path: headerPath,
+			reader: strings.NewReader(lines(
+				`#if X`,
+				`# include <SDL3/SDL.h> // ::SDL_Init`,
+				`#endif`,
+			)),
+			want: []check.Finding{
+				{Line: 2, Message: `<SDL3/SDL.h> must not be followed by a comment, as it is not from the standard library`},
+			},
+			wantErr: nil,
+		}, {
+			name: "pragma comments",
+			path: headerPath,
+			reader: strings.NewReader(lines(
+				`#include "alloy/a/a.hpp" // IWYU pragma: export`,
+				``,
+				`#include <SDL3/SDL.h> /* NOLINT */`,
+				``,
+				`#include <vector> // std::vector`,
+			)),
+			want:    nil,
+			wantErr: nil,
+		}, {
 			name: "duplicate include",
 			path: headerPath,
 			reader: strings.NewReader(lines(
@@ -480,12 +517,12 @@ func TestCheckerFix(t *testing.T) {
 			name: "wrong quotes",
 			path: testPath,
 			reader: strings.NewReader(lines(
-				`#include "alloy/a/x/y.hpp" // subject`,
+				`#include "alloy/a/x/y.hpp"`,
 				``,
 				`#include "test_doubles.hpp"`,
 			)),
 			want: lines(
-				`#include <alloy/a/x/y.hpp> // subject`,
+				`#include <alloy/a/x/y.hpp>`,
 				``,
 				`#include "test_doubles.hpp"`,
 			),
@@ -520,6 +557,42 @@ func TestCheckerFix(t *testing.T) {
 				`#if X`,
 				`# define Y`,
 				`#endif`,
+			),
+			wantErr: nil,
+		}, {
+			name: "comments",
+			path: headerPath,
+			reader: strings.NewReader(lines(
+				`#include "alloy/a/a.hpp"   // core::a`,
+				`#include "alloy/a/x/w.hpp" // IWYU pragma: keep`,
+				``,
+				`#include <vector> // std::vector`,
+				``,
+				`#if X`,
+				`# include <SDL3/SDL.h> // ::SDL_Init`,
+				`#endif`,
+			)),
+			want: lines(
+				`#include "alloy/a/a.hpp"`,
+				`#include "alloy/a/x/w.hpp" // IWYU pragma: keep`,
+				``,
+				`#include <vector> // std::vector`,
+				``,
+				`#if X`,
+				`# include <SDL3/SDL.h>`,
+				`#endif`,
+			),
+			wantErr: nil,
+		}, {
+			name: "comments realigned",
+			path: headerPath,
+			reader: strings.NewReader(lines(
+				`#include "alloy/a/a.hpp"           // IWYU pragma: keep`,
+				`#include "alloy/a/x/z/z/z/z.hpp"   // core::z`,
+			)),
+			want: lines(
+				`#include "alloy/a/a.hpp" // IWYU pragma: keep`,
+				`#include "alloy/a/x/z/z/z/z.hpp"`,
 			),
 			wantErr: nil,
 		}, {

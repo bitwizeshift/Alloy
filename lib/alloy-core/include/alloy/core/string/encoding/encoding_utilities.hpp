@@ -28,10 +28,10 @@
 #include "alloy/core/string/encoding/utf32_encoding.hpp"
 #include "alloy/core/string/encoding/utf8_encoding.hpp"
 #include "alloy/core/string/encoding/wide_encoding.hpp"
-#include "alloy/core/types.hpp"            // char32
-#include "alloy/core/utilities/mixins.hpp" // uninstantiable
+#include "alloy/core/types.hpp"
+#include "alloy/core/utilities/mixins.hpp"
 #include "alloy/core/utilities/optional.hpp"
-#include "alloy/core/utilities/quantity.hpp" // uquantity
+#include "alloy/core/utilities/quantity.hpp"
 
 #include <iterator>
 #include <optional>

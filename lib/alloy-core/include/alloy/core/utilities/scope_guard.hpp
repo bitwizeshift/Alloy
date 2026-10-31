@@ -15,7 +15,7 @@
 # pragma once
 #endif
 
-#include "alloy/core/macros.hpp" // ALLOY_UNIQUE_NAME
+#include "alloy/core/macros.hpp"
 
 #include <concepts>
 #include <exception>   // std::uncaught_exceptions

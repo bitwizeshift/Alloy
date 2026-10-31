@@ -47,8 +47,8 @@
 
 #include <GL/glew.h>
 
-#include <SDL3/SDL.h>      // ::SDL_Init, ::SDL_Quit
-#include <SDL3/SDL_main.h> // main
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 
 #include <array>       // std::array
 #include <chrono>      // std::chrono::steady_clock

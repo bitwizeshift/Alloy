@@ -16,11 +16,11 @@
 #endif
 
 #include "alloy/core/api.hpp"
-#include "alloy/core/geometry/point/point3.hpp" // core::point
+#include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/intrinsics.hpp"
-#include "alloy/core/math/math.hpp"           // core::default_tolerance
-#include "alloy/core/math/vector/vector3.hpp" // core::vector3
-#include "alloy/core/precision.hpp"           // core::real
+#include "alloy/core/math/math.hpp"
+#include "alloy/core/math/vector/vector3.hpp"
+#include "alloy/core/precision.hpp"
 
 
 namespace alloy::core {

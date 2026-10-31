@@ -19,7 +19,7 @@
 #include "alloy/core/math/vector/vector2.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/math/vector/vector4.hpp"
-#include "alloy/core/precision.hpp" // core::real
+#include "alloy/core/precision.hpp"
 
 #include <type_traits> // std::true_type, std::false_type
 

@@ -10,7 +10,7 @@
 #include "alloy/platform/filesystem/file_stream.hpp"
 #include "alloy/platform/filesystem/file_stream_finalizer.hpp"
 
-#include "alloy/core/intrinsics.hpp"       // core::compiler::unused
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/utilities/result.hpp"
 
 #include <cstddef> // std::byte

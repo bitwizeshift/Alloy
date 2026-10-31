@@ -17,7 +17,7 @@
 #endif
 
 #include "alloy/core/api.hpp"
-#include "alloy/core/assert.hpp" // ALLOY_ASSERT
+#include "alloy/core/assert.hpp"
 #include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/geometry/capsule.hpp"
 #include "alloy/core/geometry/circle.hpp"
@@ -31,8 +31,8 @@
 #include "alloy/core/geometry/rectangle.hpp"
 #include "alloy/core/geometry/sphere.hpp"
 #include "alloy/core/geometry/triangle.hpp"
-#include "alloy/core/math/math.hpp" // default_tolerance
-#include "alloy/core/precision.hpp" // real
+#include "alloy/core/math/math.hpp"
+#include "alloy/core/precision.hpp"
 
 #include <concepts>
 #include <type_traits> // std::conjunction, std::negation, std::is_reference

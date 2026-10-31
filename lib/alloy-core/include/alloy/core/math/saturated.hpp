@@ -17,8 +17,8 @@
 #endif
 
 #include "alloy/core/assert.hpp"
-#include "alloy/core/intrinsics.hpp"     // ALLOY_FORCE_INLINE
-#include "alloy/core/precision/real.hpp" // real
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/precision/real.hpp"
 
 #include <concepts>    // std::convertible_to
 #include <cstddef>

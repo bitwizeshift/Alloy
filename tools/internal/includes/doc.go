@@ -1,5 +1,6 @@
 // Package includes finds and fixes C and C++ files whose includes are not
-// grouped and ordered by where the included headers come from.
+// grouped and ordered by where the included headers come from, or that break
+// the conventions of the repository for how headers are included.
 //
 // Where a header comes from is relative to the file that includes it: the
 // same library, another library of the repository, a third-party library, or

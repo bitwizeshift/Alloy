@@ -92,7 +92,11 @@ func (o origin) String() string {
 // to the file that includes them, which are taken to be from the same
 // library.
 //
-// A header may be included only once.
+// A header may be included only once. Only includes of the standard library
+// may be followed by a comment, such as one naming what they provide, unless
+// the comment is a pragma for a tool, such as "// IWYU pragma: keep". This
+// applies to every include of the file, including those within conditional
+// blocks.
 //
 // Includes within conditional blocks are not checked, and a conditional block
 // may separate two groups in place of the blank line.
@@ -114,17 +118,22 @@ type Checker struct {
 
 // Check returns a [check.Finding] for each include of the file at path, read
 // from r, that is out of order, is not separated from the includes around it
-// as its group requires, is delimited with the wrong quotes, or includes a
-// header that is already included. An error is returned only if r cannot be
-// read.
+// as its group requires, is delimited with the wrong quotes, includes a
+// header that is already included, or is followed by a comment that it may
+// not have. An error is returned only if r cannot be read.
 func (c *Checker) Check(path string, r io.Reader) ([]check.Finding, error) {
 	lines, err := readLines(r)
 	if err != nil {
 		return nil, err
 	}
 	f := c.file(path)
-	s := parseSection(lines)
 	var findings []check.Finding
+	for i, line := range lines {
+		if d := parseDirective(i, line); d != nil && !f.allowsComment(d) {
+			findings = append(findings, finding(d, "%v must not be followed by a comment, as it is not from the standard library", d))
+		}
+	}
+	s := parseSection(lines)
 	var prev *directive
 	seen := map[string]*directive{}
 	for _, d := range s.directives() {
@@ -145,10 +154,11 @@ func (c *Checker) Check(path string, r io.Reader) ([]check.Finding, error) {
 }
 
 // Fix copies r to w with the includes of the file at path grouped, sorted, and
-// delimited as [Checker.Check] requires. Conditional blocks follow the group
-// of the last include above them. A file with a comment between its includes
-// is copied as is, since there is no telling which includes the comment
-// describes. An error is returned if r cannot be read, or w cannot be written.
+// delimited as [Checker.Check] requires, and with the comments that includes
+// may not have removed. Conditional blocks follow the group of the last
+// include above them. A file with a comment between its includes is not
+// regrouped, since there is no telling which includes the comment describes.
+// An error is returned if r cannot be read, or w cannot be written.
 func (c *Checker) Fix(path string, r io.Reader, w io.Writer) error {
 	lines, err := readLines(r)
 	if err != nil {
@@ -158,6 +168,11 @@ func (c *Checker) Fix(path string, r io.Reader, w io.Writer) error {
 	s := parseSection(lines)
 	if len(s.items) > 0 && !s.comments {
 		lines = slices.Concat(lines[:s.start], f.render(s, lines), lines[s.end:])
+	}
+	for i, line := range lines {
+		if d := parseDirective(i, line); d != nil && !f.allowsComment(d) {
+			lines[i] = d.prefix + d.spelling(d.angled)
+		}
 	}
 	_, err = io.WriteString(w, strings.Join(lines, "\n"))
 	return err
@@ -321,6 +336,23 @@ func (f *file) origin(d *directive) origin {
 	}
 }
 
+// allowsComment reports whether d may be followed by the text after its path:
+// either nothing, a pragma, or for the standard library, any comment.
+func (f *file) allowsComment(d *directive) bool {
+	text := strings.TrimSpace(d.suffix)
+	return text == "" || isPragma(text) || f.group(d) == standardGroup
+}
+
+// isPragma reports whether the comment text is a pragma for a tool.
+func isPragma(text string) bool {
+	text = strings.TrimPrefix(text, "//")
+	if body, ok := strings.CutPrefix(text, "/*"); ok {
+		text = strings.TrimSuffix(body, "*/")
+	}
+	text = strings.TrimSpace(text)
+	return strings.HasPrefix(text, "IWYU pragma:") || strings.HasPrefix(text, "NOLINT")
+}
+
 // isOwn reports whether header is the header of the source file: the header
 // in the same directory with the same name, up to its first dot. The header of
 // "quaternion.cpp" and "quaternion.test.cpp" is "quaternion.hpp".
@@ -402,30 +434,34 @@ func (f *file) render(s *section, lines []string) []string {
 	return rendered
 }
 
-// renderGroup returns the lines of the sorted directives of an origin. If the
-// directives are not already on consecutive lines in this order, the trailing
+// renderGroup returns the lines of the sorted directives of an origin, without
+// the comments that they may not have. If the directives are not already on
+// consecutive lines in this order, or any comment was removed, the trailing
 // comments of each run of consecutive directives that have one are aligned to
-// the same column, as moving them leaves them misaligned.
+// the same column, as moving or removing them leaves them misaligned.
 func (f *file) renderGroup(directives []*directive) []string {
 	inPlace := true
 	rendered := make([]string, len(directives))
 	for i, d := range directives {
-		inPlace = inPlace && (i == 0 || d.line == directives[i-1].line+1)
-		rendered[i] = d.text(f.angled(d))
+		inPlace = inPlace && (i == 0 || d.line == directives[i-1].line+1) && f.allowsComment(d)
+		rendered[i] = d.prefix + d.spelling(f.angled(d))
+		if f.allowsComment(d) {
+			rendered[i] = d.text(f.angled(d))
+		}
 	}
 	if inPlace {
 		return rendered
 	}
 	for start := 0; start < len(directives); start++ {
 		end, width := start, 0
-		for ; end < len(directives) && trailingComment(directives[end]) != ""; end++ {
+		for ; end < len(directives) && f.trailingComment(directives[end]) != ""; end++ {
 			d := directives[end]
 			width = max(width, len(d.prefix)+len(d.spelling(f.angled(d))))
 		}
 		for i := start; i < end; i++ {
 			d := directives[i]
 			head := d.prefix + d.spelling(f.angled(d))
-			rendered[i] = head + strings.Repeat(" ", width-len(head)+1) + trailingComment(d)
+			rendered[i] = head + strings.Repeat(" ", width-len(head)+1) + f.trailingComment(d)
 		}
 		start = end
 	}
@@ -433,10 +469,10 @@ func (f *file) renderGroup(directives []*directive) []string {
 }
 
 // trailingComment returns the // comment after the path of d, or an empty
-// string if it has none.
-func trailingComment(d *directive) string {
+// string if it has none or may not have one.
+func (f *file) trailingComment(d *directive) string {
 	comment := strings.TrimLeft(d.suffix, " \t")
-	if !strings.HasPrefix(comment, "//") {
+	if !strings.HasPrefix(comment, "//") || !f.allowsComment(d) {
 		return ""
 	}
 	return comment

@@ -74,9 +74,9 @@
 # pragma once
 #endif
 
-#include "alloy/core/intrinsics.hpp"         // ALLOY_UNLIKELY
-#include "alloy/core/types.hpp"              // char32, char8
-#include "alloy/core/utilities/quantity.hpp" // uquantity
+#include "alloy/core/intrinsics.hpp"
+#include "alloy/core/types.hpp"
+#include "alloy/core/utilities/quantity.hpp"
 
 #include <algorithm> // std::copy
 #include <array>     // std::array

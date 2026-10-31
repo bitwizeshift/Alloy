@@ -46,7 +46,7 @@
 #endif
 
 #include "alloy/core/config.hpp"
-#include "alloy/core/intrinsics.hpp" // ALLOY_FORCE_INLINE
+#include "alloy/core/intrinsics.hpp"
 
 #include <cstddef>          // std::size_t
 #include <functional>       // std::reference_wrapper, std::invoke

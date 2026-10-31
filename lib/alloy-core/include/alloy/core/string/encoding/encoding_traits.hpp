@@ -18,9 +18,9 @@
 #include "alloy/core/assert.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/traits/always_false.hpp"
-#include "alloy/core/traits/detected.hpp"     // is_detected
-#include "alloy/core/types.hpp"               // char32
-#include "alloy/core/utilities/quantity.hpp"  // uquantity
+#include "alloy/core/traits/detected.hpp"
+#include "alloy/core/types.hpp"
+#include "alloy/core/utilities/quantity.hpp"
 
 #include <array>
 #include <cstddef>

@@ -15,7 +15,7 @@
 # pragma once
 #endif
 
-#include "alloy/core/intrinsics.hpp" // ALLOY_FORCE_INLINE
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/traits/for_each_member.hpp"
 
 #include <cstddef>     // std::size_t

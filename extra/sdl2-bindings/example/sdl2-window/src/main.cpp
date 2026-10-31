@@ -13,13 +13,13 @@
 #include <alloy/platform/message_pump.hpp>
 #include <alloy/platform/window.hpp>
 
-#include <SDL3/SDL.h>      // ::SDL_Init, ::SDL_Quit, etc
-#include <SDL3/SDL_main.h> // main
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 
 #if defined(__APPLE__)
-# include <OpenGL/gl.h> // ::glClear, ::glClearColor
+# include <OpenGL/gl.h>
 #else
-# include <GL/gl.h> // ::glClear, ::glClearColor
+# include <GL/gl.h>
 #endif
 
 #include <chrono>   // std::chrono::steady_clock

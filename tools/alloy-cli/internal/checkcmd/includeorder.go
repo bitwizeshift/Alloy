@@ -14,7 +14,8 @@ import (
 
 // IncludeOrderBuilder builds a [FileRunner] that checks that the C and C++
 // files named on the command line group and order their includes by where
-// their headers come from, among the libraries under lib/ and extra/.
+// their headers come from, among the libraries under lib/ and extra/, and
+// follow the rules of [includes.Checker] for how headers are included.
 type IncludeOrderBuilder struct {
 	// Rooter reports the repository root that file paths are relative to, and
 	// that the libraries are found under.

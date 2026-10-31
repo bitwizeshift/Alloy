@@ -18,7 +18,7 @@
 
 // TODO(bitwize): Come up with a better group name than 'math' for this.
 
-#include "alloy/core/precision.hpp" // core::real
+#include "alloy/core/precision.hpp"
 
 #include <cmath>       // std::fmod
 #include <concepts>
