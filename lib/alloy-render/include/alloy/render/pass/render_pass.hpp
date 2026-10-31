@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/render/pass/render_batch.hpp"
-
 #include "alloy/render/shader/shader_parameter.hpp"
 
 #include "alloy/core/model/color.hpp"

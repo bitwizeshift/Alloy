@@ -5,7 +5,6 @@
 #include <alloy/core/geometry/rectangle.hpp>
 
 #include <alloy/core/geometry/point/point2.hpp>
-
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector2.hpp>
 #include <alloy/core/precision/real.hpp>

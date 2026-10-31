@@ -4,11 +4,11 @@
 
 #include "alloy/render/gl/texture/texture.hpp"
 
+#include "alloy/render/gl/capabilities.hpp"
 #include "alloy/render/gl/texture/texture_format.hpp"
 
-#include "alloy/render/gl/capabilities.hpp"
-
 #include "alloy/core/utilities/result.hpp"
+
 #include "alloy/render/error.hpp"
 #include "alloy/render/texture/texture_dimension.hpp"
 #include "alloy/render/texture/texture_format.hpp"

@@ -16,13 +16,12 @@
 # pragma once
 #endif
 
-#include "alloy/core/io/indirect_reader.hpp"
-#include "alloy/core/io/reader.hpp"
-
 #include "alloy/core/api.hpp"
 #include "alloy/core/assert.hpp"
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/io/indirect_reader.hpp"
+#include "alloy/core/io/reader.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/result.hpp"

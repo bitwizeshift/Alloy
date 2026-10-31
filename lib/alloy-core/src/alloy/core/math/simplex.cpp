@@ -4,9 +4,8 @@
 
 #include "alloy/core/math/simplex.hpp"
 
-#include "alloy/core/math/math.hpp"
-
 #include "alloy/core/assert.hpp"
+#include "alloy/core/math/math.hpp"
 #include "alloy/core/precision/real.hpp"
 
 namespace alloy::core {

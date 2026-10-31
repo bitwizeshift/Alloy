@@ -4,13 +4,12 @@
 
 #include <alloy/render/shader/resolved_parameters.hpp>
 
+#include <alloy/render/error.hpp>
 #include <alloy/render/shader/program_layout.hpp>
 #include <alloy/render/shader/program_spec.hpp>
 #include <alloy/render/shader/shader_data_type.hpp>
 #include <alloy/render/shader/shader_parameter.hpp>
 #include <alloy/render/shader/shader_stage.hpp>
-
-#include <alloy/render/error.hpp>
 #include <alloy/render/texture/texture_dimension.hpp>
 
 #include <alloy/core/math/matrix/matrix4.hpp>

@@ -16,11 +16,10 @@
 # pragma once
 #endif
 
-#include "alloy/core/geometry/line_segment.hpp"
-#include "alloy/core/geometry/point/point3.hpp"
-
 #include "alloy/core/api.hpp"
 #include "alloy/core/assert.hpp"
+#include "alloy/core/geometry/line_segment.hpp"
+#include "alloy/core/geometry/point/point3.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/precision.hpp"

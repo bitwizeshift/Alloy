@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/core/math/matrix/matrix3.hpp"
-
 #include "alloy/core/precision/real.hpp"
 
 namespace alloy::core {

@@ -9,6 +9,7 @@
 #include "alloy/core/model/image.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/result.hpp"
+
 #include "alloy/platform/filesystem/file.hpp"
 
 #include <tga.h>

@@ -10,10 +10,9 @@
 
 #include "alloy/core/geometry/frustum.hpp"
 
+#include "alloy/core/assert.hpp"
 #include "alloy/core/geometry/plane.hpp"
 #include "alloy/core/geometry/point/point3.hpp"
-
-#include "alloy/core/assert.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"
 #include "alloy/core/math/vector/vector4.hpp"
 

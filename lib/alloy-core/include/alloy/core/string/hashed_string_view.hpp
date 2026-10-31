@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/core/string/string_view.hpp"
-
 #include "alloy/core/utilities/fnv1a_hash.hpp"
 #include "alloy/core/utilities/hash.hpp"
 

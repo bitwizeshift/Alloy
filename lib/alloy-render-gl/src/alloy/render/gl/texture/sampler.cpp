@@ -7,6 +7,7 @@
 #include "alloy/render/gl/material/depth_compare.hpp"
 
 #include "alloy/core/intrinsics.hpp"
+
 #include "alloy/render/texture/sampler_state.hpp"
 
 #include <GL/glew.h>

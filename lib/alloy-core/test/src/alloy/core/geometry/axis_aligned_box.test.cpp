@@ -7,7 +7,6 @@
 #include <alloy/core/geometry/plane.hpp>
 #include <alloy/core/geometry/point/point3.hpp>
 #include <alloy/core/geometry/sphere.hpp>
-
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
 #include <alloy/core/math/vector/vector3_constants.hpp>

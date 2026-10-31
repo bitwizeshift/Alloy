@@ -7,6 +7,7 @@
 #include "alloy/core/assert.hpp"
 #include "alloy/core/model/image.hpp"
 #include "alloy/core/utilities/result.hpp"
+
 #include "alloy/platform/filesystem/file.hpp"
 
 #include <string>

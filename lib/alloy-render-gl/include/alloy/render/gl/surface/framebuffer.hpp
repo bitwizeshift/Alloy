@@ -18,6 +18,7 @@
 #include "alloy/render/gl/texture/texture.hpp"
 
 #include "alloy/core/utilities/result.hpp"
+
 #include "alloy/render/error.hpp"
 
 #include <GL/glew.h>

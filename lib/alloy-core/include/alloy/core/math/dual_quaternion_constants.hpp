@@ -15,10 +15,9 @@
 # pragma once
 #endif
 
+#include "alloy/core/api.hpp"
 #include "alloy/core/math/dual_quaternion.hpp"
 #include "alloy/core/math/quaternion_constants.hpp"
-
-#include "alloy/core/api.hpp"
 
 namespace alloy::core {
 

@@ -5,7 +5,6 @@
 #include <alloy/core/math/interpolation.hpp>
 
 #include <alloy/core/math/math.hpp>
-
 #include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>

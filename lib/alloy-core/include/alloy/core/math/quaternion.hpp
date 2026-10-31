@@ -15,6 +15,8 @@
 # pragma once
 #endif
 
+#include "alloy/core/api.hpp"                 // ALLOY_CORE_API
+#include "alloy/core/intrinsics.hpp"          // ALLOY_FORCE_INLINE
 #include "alloy/core/math/angle/radian.hpp"   // radian
 #include "alloy/core/math/euler_angles.hpp"   // euler_angles
 #include "alloy/core/math/interpolation.hpp"  // interpolator
@@ -22,11 +24,8 @@
 #include "alloy/core/math/matrix/matrix3.hpp" // matrix3
 #include "alloy/core/math/matrix/matrix4.hpp" // matrix4
 #include "alloy/core/math/vector/vector3.hpp" // vector3
-
-#include "alloy/core/api.hpp"                // ALLOY_CORE_API
-#include "alloy/core/intrinsics.hpp"         // ALLOY_FORCE_INLINE
-#include "alloy/core/precision.hpp"          // core::real
-#include "alloy/core/utilities/not_null.hpp" // not_null
+#include "alloy/core/precision.hpp"           // core::real
+#include "alloy/core/utilities/not_null.hpp"  // not_null
 
 #include <cstddef>     // std::size_t, std::ptrdiff_t
 #include <tuple>       // std::tuple

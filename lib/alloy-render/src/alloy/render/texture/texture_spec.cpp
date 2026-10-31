@@ -4,10 +4,9 @@
 
 #include "alloy/render/texture/texture_spec.hpp"
 
+#include "alloy/render/error.hpp"
 #include "alloy/render/texture/texture_dimension.hpp"
 #include "alloy/render/texture/texture_format.hpp"
-
-#include "alloy/render/error.hpp"
 
 #include "alloy/core/assert.hpp"
 #include "alloy/core/model/image.hpp"

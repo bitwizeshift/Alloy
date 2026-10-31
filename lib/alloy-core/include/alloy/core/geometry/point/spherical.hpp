@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/core/geometry/point/point3.hpp"
-
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/angle/basic_angle.hpp"
 #include "alloy/core/math/angle/radian.hpp"

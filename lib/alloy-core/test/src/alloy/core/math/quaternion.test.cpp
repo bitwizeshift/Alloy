@@ -11,7 +11,6 @@
 #include <alloy/core/math/matrix/matrix3.hpp>
 #include <alloy/core/math/quaternion_constants.hpp>
 #include <alloy/core/math/vector/vector3.hpp>
-
 #include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>

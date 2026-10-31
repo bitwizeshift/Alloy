@@ -16,11 +16,11 @@
 # pragma once
 #endif
 
+#include "alloy/render/gl/capabilities.hpp"
 #include "alloy/render/gl/shader/shader.hpp"
 
-#include "alloy/render/gl/capabilities.hpp"
-
 #include "alloy/core/utilities/result.hpp"
+
 #include "alloy/render/error.hpp"
 #include "alloy/render/shader/program_spec.hpp"
 

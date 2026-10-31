@@ -15,14 +15,16 @@
 #include <alloy/core/model/transform.hpp>
 #include <alloy/core/utilities/optional.hpp>
 #include <alloy/core/utilities/signal.hpp>
+
 #include <alloy/extra/sdl2-bindings/sdl2_gl_window.hpp>
 #include <alloy/extra/sdl2-bindings/sdl2_pump_source.hpp>
+
 #include <alloy/platform/event.hpp>
 #include <alloy/platform/events/window_events.hpp>
 #include <alloy/platform/message_pump.hpp>
 #include <alloy/platform/window.hpp>
+
 #include <alloy/render/error.hpp>
-#include <alloy/render/gl/device.hpp>
 #include <alloy/render/light/light.hpp>
 #include <alloy/render/light/point_light.hpp>
 #include <alloy/render/material/material_spec.hpp>
@@ -41,7 +43,10 @@
 #include <alloy/render/texture/texture_format.hpp>
 #include <alloy/render/texture/texture_spec.hpp>
 
+#include <alloy/render/gl/device.hpp>
+
 #include <GL/glew.h>
+
 #include <SDL3/SDL.h>      // ::SDL_Init, ::SDL_Quit
 #include <SDL3/SDL_main.h> // main
 

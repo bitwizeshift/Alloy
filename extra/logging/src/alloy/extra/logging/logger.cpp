@@ -8,6 +8,7 @@
 
 #include "alloy/core/assert.hpp"
 #include "alloy/core/utilities/not_null.hpp"
+
 #include "alloy/platform/buffers/mutable_buffer.hpp"
 
 //==============================================================================

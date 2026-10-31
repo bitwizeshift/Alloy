@@ -17,6 +17,7 @@
 #endif
 
 #include "alloy/core/intrinsics.hpp"
+
 #include "alloy/render/shader/shader_stage.hpp"
 
 #include <GL/glew.h>

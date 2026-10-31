@@ -4,11 +4,10 @@
 
 #include <alloy/core/math/matrix/matrix4.hpp>
 
+#include <alloy/core/config.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix4_constants.hpp>
 #include <alloy/core/math/vector/vector4.hpp>
-
-#include <alloy/core/config.hpp>
 #include <alloy/core/precision/real.hpp>
 
 #include <catch2/catch_test_macros.hpp>

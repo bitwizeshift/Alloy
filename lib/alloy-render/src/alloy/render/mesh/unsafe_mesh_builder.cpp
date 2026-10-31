@@ -4,11 +4,11 @@
 
 #include "alloy/render/mesh/unsafe_mesh_builder.hpp"
 
+#include "attribute_packer.hpp"
 #include "alloy/render/mesh/index_format.hpp"
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
 #include "alloy/render/mesh/winding_order.hpp"
-#include "attribute_packer.hpp"
 
 #include "alloy/core/assert.hpp"
 #include "alloy/core/containers/vector.hpp"

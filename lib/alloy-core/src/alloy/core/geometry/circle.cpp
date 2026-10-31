@@ -5,7 +5,6 @@
 #include "alloy/core/geometry/circle.hpp"
 
 #include "alloy/core/geometry/point/point2.hpp"
-
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/precision/real.hpp"
 

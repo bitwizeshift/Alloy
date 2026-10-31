@@ -18,6 +18,7 @@
 #include "alloy/render/gl/texture/sampler.hpp"
 
 #include "alloy/core/containers/hash_map.hpp"
+
 #include "alloy/render/texture/sampler_state.hpp"
 
 #include <GL/glew.h>

@@ -9,10 +9,9 @@
 # pragma once
 #endif
 
+#include <alloy/core/intrinsics.hpp>
 #include <alloy/core/io/reader.hpp>
 #include <alloy/core/io/writer.hpp>
-
-#include <alloy/core/intrinsics.hpp>
 #include <alloy/core/memory/memory_resource.hpp>
 #include <alloy/core/utilities/result.hpp>
 

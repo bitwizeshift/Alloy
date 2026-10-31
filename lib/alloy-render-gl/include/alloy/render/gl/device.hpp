@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/render/gl/capabilities.hpp"
-
 #include "alloy/render/gl/mesh/mesh.hpp"
 #include "alloy/render/gl/shader/program.hpp"
 #include "alloy/render/gl/surface/framebuffer.hpp"
@@ -27,6 +26,7 @@
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/result.hpp"
+
 #include "alloy/render/device.hpp"
 #include "alloy/render/error.hpp"
 #include "alloy/render/material/material_spec.hpp"

@@ -15,9 +15,8 @@
 # pragma once
 #endif
 
-#include "alloy/core/utilities/int_utilities.hpp"
-
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/utilities/int_utilities.hpp"
 
 #include <functional>  // std::less, std::greater, etc
 #include <type_traits> // std::is_integral_v

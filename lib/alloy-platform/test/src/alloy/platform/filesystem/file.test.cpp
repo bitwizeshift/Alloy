@@ -4,9 +4,8 @@
 
 #include <alloy/platform/filesystem/file.hpp>
 
-#include <alloy/platform/filesystem/memory_filesystem.hpp>
-
 #include <alloy/platform/buffers/mutable_buffer.hpp>
+#include <alloy/platform/filesystem/memory_filesystem.hpp>
 
 #include <alloy/core/intrinsics.hpp>
 #include <alloy/core/io/error.hpp>

@@ -16,6 +16,7 @@
 #endif
 
 #include "alloy/core/intrinsics.hpp"
+
 #include "alloy/render/material/blend_equation.hpp"
 
 #include <GL/glew.h>

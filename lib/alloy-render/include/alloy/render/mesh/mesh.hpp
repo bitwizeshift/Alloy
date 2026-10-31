@@ -19,7 +19,6 @@
 #include "alloy/render/mesh/index_format.hpp"
 #include "alloy/render/mesh/primitive_topology.hpp"
 #include "alloy/render/mesh/winding_order.hpp"
-
 #include "alloy/render/resource/resource_handle.hpp"
 
 #include "alloy/core/assert.hpp"

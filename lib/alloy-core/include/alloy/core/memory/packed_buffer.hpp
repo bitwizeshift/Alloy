@@ -15,14 +15,13 @@
 # pragma once
 #endif
 
-#include "alloy/core/memory/allocator.hpp"
-#include "alloy/core/memory/data_quantity.hpp" // bytes
-
 #include "alloy/core/api.hpp"
 #include "alloy/core/assert.hpp"
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/intrinsics.hpp"
-#include "alloy/core/utilities/casts.hpp"    // narrow_cast
+#include "alloy/core/memory/allocator.hpp"
+#include "alloy/core/memory/data_quantity.hpp" // bytes
+#include "alloy/core/utilities/casts.hpp"      // narrow_cast
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/result.hpp"
 

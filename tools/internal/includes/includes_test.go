@@ -45,17 +45,19 @@ func TestCheckerCheck(t *testing.T) {
 			reader: strings.NewReader(lines(
 				`#include "alloy/a/x/y.hpp"`,
 				``,
-				`#include "alloy/a/x/w.hpp"`,
-				`#include "alloy/a/x/z/z.hpp"`,
 				`#include "detail.hpp"`,
-				``,
 				`#include "alloy/a/a.hpp"`,
 				`#include "alloy/a/v/v.hpp"`,
+				`#include "alloy/a/x/w.hpp"`,
+				`#include "alloy/a/x/z/z.hpp"`,
 				``,
 				`#include "alloy/b/b.hpp"`,
+				``,
 				`#include "alloy/b/c/c.hpp"`,
 				``,
 				`#include <SDL3/SDL.h>`,
+				``,
+				`#include <catch2/catch.hpp>`,
 				``,
 				`#include <cstdint>`,
 				`#include <vector>`,
@@ -145,7 +147,7 @@ func TestCheckerCheck(t *testing.T) {
 				`#include "alloy/a/x/y.hpp"`,
 			)),
 			want: []check.Finding{
-				{Line: 3, Message: `"alloy/a/x/y.hpp" (own header) must be included before "alloy/a/x/w.hpp" (same subsystem)`},
+				{Line: 3, Message: `"alloy/a/x/y.hpp" (own header) must be included before "alloy/a/x/w.hpp" (same library)`},
 			},
 			wantErr: nil,
 		}, {
@@ -156,7 +158,7 @@ func TestCheckerCheck(t *testing.T) {
 				`#include <cstdint>`,
 			)),
 			want: []check.Finding{
-				{Line: 2, Message: `<cstdint> (standard library) must be separated from <SDL3/SDL.h> (third-party) by a blank line`},
+				{Line: 2, Message: `<cstdint> (standard library) must be separated from <SDL3/SDL.h> (SDL3) by a blank line`},
 			},
 			wantErr: nil,
 		}, {
@@ -169,7 +171,64 @@ func TestCheckerCheck(t *testing.T) {
 				`#include <cstdint>`,
 			)),
 			want: []check.Finding{
-				{Line: 4, Message: `<cstdint> (standard library) must be separated from <SDL3/SDL.h> (third-party) by a blank line`},
+				{Line: 4, Message: `<cstdint> (standard library) must be separated from <SDL3/SDL.h> (SDL3) by a blank line`},
+			},
+			wantErr: nil,
+		}, {
+			name: "libraries not separated",
+			path: headerPath,
+			reader: strings.NewReader(lines(
+				`#include "alloy/b/b.hpp"`,
+				`#include "alloy/b/c/c.hpp"`,
+			)),
+			want: []check.Finding{
+				{Line: 2, Message: `"alloy/b/c/c.hpp" (alloy/b/c) must be separated from "alloy/b/b.hpp" (alloy/b) by a blank line`},
+			},
+			wantErr: nil,
+		}, {
+			name: "third-party libraries not separated",
+			path: headerPath,
+			reader: strings.NewReader(lines(
+				`#include <SDL3/SDL.h>`,
+				`#include <catch2/catch.hpp>`,
+			)),
+			want: []check.Finding{
+				{Line: 2, Message: `<catch2/catch.hpp> (catch2) must be separated from <SDL3/SDL.h> (SDL3) by a blank line`},
+			},
+			wantErr: nil,
+		}, {
+			name: "third-party headers without directory",
+			path: headerPath,
+			reader: strings.NewReader(lines(
+				`#include <Windows.h>`,
+				`#include <windef.h>`,
+			)),
+			want:    nil,
+			wantErr: nil,
+		}, {
+			name: "nested library interleaved",
+			path: headerPath,
+			reader: strings.NewReader(lines(
+				`#include "alloy/b/a.hpp"`,
+				``,
+				`#include "alloy/b/c/c.hpp"`,
+				``,
+				`#include "alloy/b/d.hpp"`,
+			)),
+			want: []check.Finding{
+				{Line: 5, Message: `"alloy/b/d.hpp" must be included before "alloy/b/c/c.hpp"`},
+			},
+			wantErr: nil,
+		}, {
+			name: "library split",
+			path: sourcePath,
+			reader: strings.NewReader(lines(
+				`#include "alloy/a/a.hpp"`,
+				``,
+				`#include "alloy/a/x/w.hpp"`,
+			)),
+			want: []check.Finding{
+				{Line: 3, Message: `"alloy/a/x/w.hpp" must directly follow "alloy/a/a.hpp" (both alloy/a)`},
 			},
 			wantErr: nil,
 		}, {
@@ -214,15 +273,35 @@ func TestCheckerCheck(t *testing.T) {
 			reader: strings.NewReader(lines(
 				`#include <alloy/a/x/y.hpp>`,
 				``,
-				`#include "alloy/a/x/w.hpp"`,
 				`#include "test_doubles.hpp"`,
+				`#include "alloy/a/x/w.hpp"`,
 			)),
 			want: []check.Finding{
-				{Line: 3, Message: `"alloy/a/x/w.hpp" must be included as <alloy/a/x/w.hpp>`},
+				{Line: 4, Message: `"alloy/a/x/w.hpp" must be included as <alloy/a/x/w.hpp>`},
 			},
 			wantErr: nil,
 		}, {
-			name: "relative include escaping subsystem",
+			name: "relative include after library include",
+			path: sourcePath,
+			reader: strings.NewReader(lines(
+				`#include "alloy/a/a.hpp"`,
+				`#include "detail.hpp"`,
+			)),
+			want: []check.Finding{
+				{Line: 2, Message: `"detail.hpp" must be included before "alloy/a/a.hpp"`},
+			},
+			wantErr: nil,
+		}, {
+			name: "relative include before angled library include",
+			path: testPath,
+			reader: strings.NewReader(lines(
+				`#include "test_doubles.hpp"`,
+				`#include <alloy/a/x/w.hpp>`,
+			)),
+			want:    nil,
+			wantErr: nil,
+		}, {
+			name: "relative include escaping directory",
 			path: sourcePath,
 			reader: strings.NewReader(lines(
 				`#include "../a.hpp"`,
@@ -329,6 +408,49 @@ func TestCheckerFix(t *testing.T) {
 				`int x;`,
 			)),
 			want:    ordered,
+			wantErr: nil,
+		}, {
+			name: "libraries",
+			path: sourcePath,
+			reader: strings.NewReader(lines(
+				`#include <catch2/catch.hpp>`,
+				`#include "alloy/b/d.hpp"`,
+				`#include "alloy/a/a.hpp"`,
+				``,
+				`#include "alloy/b/c/c.hpp"`,
+				`#include "alloy/a/x/w.hpp"`,
+				`#include <SDL3/SDL.h>`,
+				`#include "alloy/b/b.hpp"`,
+			)),
+			want: lines(
+				`#include "alloy/a/a.hpp"`,
+				`#include "alloy/a/x/w.hpp"`,
+				``,
+				`#include "alloy/b/b.hpp"`,
+				`#include "alloy/b/d.hpp"`,
+				``,
+				`#include "alloy/b/c/c.hpp"`,
+				``,
+				`#include <SDL3/SDL.h>`,
+				``,
+				`#include <catch2/catch.hpp>`,
+			),
+			wantErr: nil,
+		}, {
+			name: "comments aligned per run",
+			path: headerPath,
+			reader: strings.NewReader(lines(
+				`#include <vector> // std::vector`,
+				`#include <cstdint> // std::uint32_t`,
+				`#include <condition_variable>`,
+				`#include <array> // std::array`,
+			)),
+			want: lines(
+				`#include <array> // std::array`,
+				`#include <condition_variable>`,
+				`#include <cstdint> // std::uint32_t`,
+				`#include <vector>  // std::vector`,
+			),
 			wantErr: nil,
 		}, {
 			name: "wrong quotes",

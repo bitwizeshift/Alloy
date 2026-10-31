@@ -9,6 +9,7 @@
 #include "alloy/core/assert.hpp"
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/intrinsics.hpp"
+
 #include "alloy/render/mesh/attribute_locations.hpp"
 #include "alloy/render/mesh/index_format.hpp"
 #include "alloy/render/mesh/mesh.hpp"

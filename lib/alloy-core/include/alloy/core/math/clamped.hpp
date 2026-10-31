@@ -16,9 +16,8 @@
 # pragma once
 #endif
 
-#include "alloy/core/math/saturated.hpp"
-
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/math/saturated.hpp"
 #include "alloy/core/precision/real.hpp"
 #include "alloy/core/utilities/result.hpp"
 

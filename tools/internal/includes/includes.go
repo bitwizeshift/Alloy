@@ -17,7 +17,6 @@ type group int
 
 const (
 	ownGroup group = iota
-	subsystemGroup
 	libraryGroup
 	otherLibraryGroup
 	thirdPartyGroup
@@ -28,8 +27,6 @@ func (g group) String() string {
 	switch g {
 	case ownGroup:
 		return "own header"
-	case subsystemGroup:
-		return "same subsystem"
 	case libraryGroup:
 		return "same library"
 	case otherLibraryGroup:
@@ -40,17 +37,37 @@ func (g group) String() string {
 	return "standard library"
 }
 
+// origin is the library that an included header comes from. Includes from
+// the same origin are kept together, and includes from different ones are
+// separated by a blank line.
+type origin struct {
+	group group
+
+	// library is the library or third-party library of the header, and is
+	// empty for the header of the source file itself, the standard library,
+	// and third-party headers that are in no directory.
+	library string
+}
+
+func (o origin) String() string {
+	if o.library != "" {
+		return o.library
+	}
+	return o.group.String()
+}
+
 // Checker reports and fixes C and C++ files whose includes do not follow the
 // layout:
 //
 //	#include "alloy/core/math/quaternion.hpp"
 //
+//	#include "alloy/core/assert.hpp"
 //	#include "alloy/core/math/math.hpp"
 //	#include "alloy/core/math/trigonometry.hpp"
 //
-//	#include "alloy/core/assert.hpp"
-//
 //	#include "alloy/platform/window.hpp"
+//
+//	#include "alloy/render/device.hpp"
 //
 //	#include <SDL3/SDL.h>
 //
@@ -58,24 +75,29 @@ func (g group) String() string {
 //	#include <vector>
 //
 // The includes are grouped by where their headers come from: the header of the
-// source file itself, the same subsystem, another subsystem of the same
-// library, another library, a third-party library, and the standard library.
-// The groups are in that order and separated by a blank line, and the includes
-// of each group are sorted by path. The subsystem of a header is the directory
-// below its library that it is in.
+// source file itself, the same library, another library, a third-party
+// library, and the standard library. The groups are in that order, and the
+// includes of each group are sorted by library and then by path, except that
+// headers included relative to the file come first in their library. The
+// library of a third-party header is the first directory of its path.
+// Third-party headers that are in no directory, such as <Windows.h>, are taken
+// to be from the same library, as their paths do not tell them apart.
+//
+// A blank line separates the header of the source file from the rest, and the
+// includes of each library from those of the next.
 //
 // Library headers are included with quotes from within a library, and with
 // angle brackets from other targets, such as tests. Every other header is
 // included with angle brackets, except for those included with quotes relative
 // to the file that includes them, which are taken to be from the same
-// subsystem.
+// library.
 //
 // Includes within conditional blocks are not checked, and a conditional block
 // may separate two groups in place of the blank line.
 type Checker struct {
 	// Roots are the names of the directories that sources are included
-	// relative to. A file is placed in its library and subsystem by the part of
-	// its path after the first of these directories.
+	// relative to. A file is placed in its library by the part of its path
+	// after the first of these directories.
 	Roots []string
 
 	// Targets are the names of the directories that hold targets other than
@@ -138,18 +160,42 @@ var _ check.CheckFixer = (*Checker)(nil)
 // prev.
 func (f *file) compare(s *section, lines []string, prev, d *directive) []check.Finding {
 	pg, g := f.group(prev), f.group(d)
+	po, o := f.origin(prev), f.origin(d)
 	switch {
-	case pg > g || pg == g && prev.path > d.path:
+	case f.compareDirectives(prev, d) > 0:
 		if pg == g {
 			return []check.Finding{finding(d, "%v must be included before %v", d, prev)}
 		}
 		return []check.Finding{finding(d, "%v (%v) must be included before %v (%v)", d, g, prev, pg)}
-	case pg == g && d.line != prev.line+1:
-		return []check.Finding{finding(d, "%v must directly follow %v (both %v)", d, prev, g)}
-	case pg != g && !s.hasConditional(prev.line+1, d.line) && !isSeparator(lines[prev.line+1:d.line]):
-		return []check.Finding{finding(d, "%v (%v) must be separated from %v (%v) by a blank line", d, g, prev, pg)}
+	case po == o && d.line != prev.line+1:
+		return []check.Finding{finding(d, "%v must directly follow %v (both %v)", d, prev, o)}
+	case po != o && !s.hasConditional(prev.line+1, d.line) && !isSeparator(lines[prev.line+1:d.line]):
+		return []check.Finding{finding(d, "%v (%v) must be separated from %v (%v) by a blank line", d, o, prev, po)}
 	}
 	return nil
+}
+
+// compareDirectives orders the directives lhs and rhs by group, then by the
+// library of their origin, then with relative includes first, and then by
+// path.
+func (f *file) compareDirectives(lhs, rhs *directive) int {
+	return cmp.Or(
+		cmp.Compare(f.group(lhs), f.group(rhs)),
+		strings.Compare(f.origin(lhs).library, f.origin(rhs).library),
+		compareBool(f.isRelative(rhs), f.isRelative(lhs)),
+		strings.Compare(lhs.path, rhs.path),
+	)
+}
+
+// compareBool orders false before true.
+func compareBool(lhs, rhs bool) int {
+	switch {
+	case lhs == rhs:
+		return 0
+	case lhs:
+		return 1
+	}
+	return -1
 }
 
 func isSeparator(lines []string) bool {
@@ -212,10 +258,15 @@ func (f *file) libraryOf(p string) string {
 // resolve returns the path of the header that d includes, relative to the
 // roots.
 func (f *file) resolve(d *directive) string {
-	if d.angled || f.libraryOf(d.path) != "" {
+	if !f.isRelative(d) {
 		return d.path
 	}
 	return path.Join(path.Dir(f.path), d.path)
+}
+
+// isRelative reports whether d includes a header relative to the file.
+func (f *file) isRelative(d *directive) bool {
+	return !d.angled && f.libraryOf(d.path) == ""
 }
 
 // angled reports whether d must be delimited with angle brackets.
@@ -233,18 +284,32 @@ func (f *file) group(d *directive) group {
 	case f.isOwn(header):
 		return ownGroup
 	case library != "" && library == f.library:
-		if subsystem(header, library) == subsystem(f.path, library) {
-			return subsystemGroup
-		}
 		return libraryGroup
 	case library != "":
 		return otherLibraryGroup
 	case !d.angled:
-		return subsystemGroup
+		return libraryGroup
 	case standard[d.path]:
 		return standardGroup
 	}
 	return thirdPartyGroup
+}
+
+func (f *file) origin(d *directive) origin {
+	switch g := f.group(d); g {
+	case libraryGroup:
+		return origin{group: g, library: f.library}
+	case otherLibraryGroup:
+		return origin{group: g, library: f.libraryOf(f.resolve(d))}
+	case thirdPartyGroup:
+		library, _, found := strings.Cut(d.path, "/")
+		if !found {
+			return origin{group: g}
+		}
+		return origin{group: g, library: library}
+	default:
+		return origin{group: g}
+	}
 }
 
 // isOwn reports whether header is the header of the source file: the header
@@ -280,71 +345,86 @@ func (f *file) render(s *section, lines []string) []string {
 		includes = append(includes, entry{group: g, item: it})
 	}
 	slices.SortStableFunc(includes, func(lhs, rhs entry) int {
-		return cmp.Or(cmp.Compare(lhs.group, rhs.group), strings.Compare(lhs.item.include.path, rhs.item.include.path))
+		return f.compareDirectives(lhs.item.include, rhs.item.include)
 	})
 
-	var chunks [][]string
+	// A chunk is either the includes of one origin, or a conditional block.
+	type chunk struct {
+		origin     origin
+		directives []*directive
+		block      []string
+	}
+	var chunks []chunk
 	for g := ownGroup; g <= standardGroup; g++ {
-		var members []*directive
 		for _, e := range includes {
-			if e.group == g {
-				members = append(members, e.item.include)
+			if e.group != g {
+				continue
 			}
-		}
-		if len(members) > 0 {
-			chunks = append(chunks, f.renderGroup(members))
+			o := f.origin(e.item.include)
+			if n := len(chunks); n > 0 && chunks[n-1].block == nil && chunks[n-1].origin == o {
+				chunks[n-1].directives = append(chunks[n-1].directives, e.item.include)
+				continue
+			}
+			chunks = append(chunks, chunk{origin: o, directives: []*directive{e.item.include}})
 		}
 		for _, e := range blocks {
 			if e.group == g {
-				chunks = append(chunks, lines[e.item.start:e.item.end])
+				chunks = append(chunks, chunk{block: lines[e.item.start:e.item.end]})
 			}
 		}
 	}
 	var rendered []string
-	for i, chunk := range chunks {
+	for i, c := range chunks {
 		if i > 0 {
 			rendered = append(rendered, "")
 		}
-		rendered = append(rendered, chunk...)
-	}
-	return rendered
-}
-
-// renderGroup returns the lines of the sorted directives of a group. If the
-// directives are not already on consecutive lines in this order, their
-// trailing comments are aligned to the same column, as moving them leaves
-// them misaligned.
-func (f *file) renderGroup(directives []*directive) []string {
-	inPlace := true
-	width := 0
-	for i, d := range directives {
-		inPlace = inPlace && (i == 0 || d.line == directives[i-1].line+1)
-		width = max(width, len(d.prefix)+len(d.spelling(f.angled(d))))
-	}
-	rendered := make([]string, len(directives))
-	for i, d := range directives {
-		angled := f.angled(d)
-		comment := strings.TrimLeft(d.suffix, " \t")
-		if inPlace || !strings.HasPrefix(comment, "//") {
-			rendered[i] = d.text(angled)
+		if c.block != nil {
+			rendered = append(rendered, c.block...)
 			continue
 		}
-		head := d.prefix + d.spelling(angled)
-		rendered[i] = head + strings.Repeat(" ", width-len(head)+1) + comment
+		rendered = append(rendered, f.renderGroup(c.directives)...)
 	}
 	return rendered
 }
 
-// subsystem returns the subsystem of the header at p in library: the first
-// directory below the library, or an empty string for a header directly in
-// it.
-func subsystem(p, library string) string {
-	rest := strings.TrimPrefix(p, library+"/")
-	dir, _, found := strings.Cut(rest, "/")
-	if !found {
+// renderGroup returns the lines of the sorted directives of an origin. If the
+// directives are not already on consecutive lines in this order, the trailing
+// comments of each run of consecutive directives that have one are aligned to
+// the same column, as moving them leaves them misaligned.
+func (f *file) renderGroup(directives []*directive) []string {
+	inPlace := true
+	rendered := make([]string, len(directives))
+	for i, d := range directives {
+		inPlace = inPlace && (i == 0 || d.line == directives[i-1].line+1)
+		rendered[i] = d.text(f.angled(d))
+	}
+	if inPlace {
+		return rendered
+	}
+	for start := 0; start < len(directives); start++ {
+		end, width := start, 0
+		for ; end < len(directives) && trailingComment(directives[end]) != ""; end++ {
+			d := directives[end]
+			width = max(width, len(d.prefix)+len(d.spelling(f.angled(d))))
+		}
+		for i := start; i < end; i++ {
+			d := directives[i]
+			head := d.prefix + d.spelling(f.angled(d))
+			rendered[i] = head + strings.Repeat(" ", width-len(head)+1) + trailingComment(d)
+		}
+		start = end
+	}
+	return rendered
+}
+
+// trailingComment returns the // comment after the path of d, or an empty
+// string if it has none.
+func trailingComment(d *directive) string {
+	comment := strings.TrimLeft(d.suffix, " \t")
+	if !strings.HasPrefix(comment, "//") {
 		return ""
 	}
-	return dir
+	return comment
 }
 
 func stem(p string) string {

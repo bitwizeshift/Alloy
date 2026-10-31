@@ -5,7 +5,6 @@
 #include "alloy/core/geometry/sphere.hpp"
 
 #include "alloy/core/geometry/point/point3.hpp"
-
 #include "alloy/core/precision/real.hpp"
 
 auto alloy::core::sphere::contains(const point3& p) const noexcept -> bool

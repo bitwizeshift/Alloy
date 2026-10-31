@@ -17,7 +17,6 @@
 #endif
 
 #include "alloy/core/io/reader.hpp"
-
 #include "alloy/core/utilities/result.hpp"
 
 #include <array>        // std::array

@@ -5,7 +5,9 @@
 #include "sdl_window_target.hpp"
 
 #include <alloy/core/utilities/not_null.hpp>
+
 #include <alloy/extra/sdl2-bindings/sdl2_gl_window.hpp>
+
 #include <alloy/render/gl/surface/presentation_target.hpp>
 
 #include <cstdint> // std::uint32_t

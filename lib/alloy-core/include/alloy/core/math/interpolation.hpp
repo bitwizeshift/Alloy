@@ -15,12 +15,11 @@
 # pragma once
 #endif
 
-#include "alloy/core/math/angle/radian.hpp"    // radian
-#include "alloy/core/math/math.hpp"            // core::sqrt
-#include "alloy/core/math/math_constants.hpp"  // math_constants::half_pi, etc
-#include "alloy/core/math/trigonometry.hpp"    // trigonometry::cos, etc
-
 #include "alloy/core/assert.hpp"
+#include "alloy/core/math/angle/radian.hpp"   // radian
+#include "alloy/core/math/math.hpp"           // core::sqrt
+#include "alloy/core/math/math_constants.hpp" // math_constants::half_pi, etc
+#include "alloy/core/math/trigonometry.hpp"   // trigonometry::cos, etc
 
 #include <type_traits> // std::common_type
 

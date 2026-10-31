@@ -18,6 +18,7 @@
 #include "alloy/extra/sdl2-bindings/api.hpp"
 
 #include "alloy/core/utilities/not_null.hpp"
+
 #include "alloy/platform/keyboard.hpp"
 #include "alloy/platform/message_pump.hpp"
 

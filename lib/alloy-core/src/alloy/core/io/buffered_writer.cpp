@@ -4,11 +4,10 @@
 
 #include "alloy/core/io/buffered_writer.hpp"
 
-#include "alloy/core/io/error.hpp"
-#include "alloy/core/io/writer.hpp"
-
 #include "alloy/core/assert.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/io/error.hpp"
+#include "alloy/core/io/writer.hpp"
 #include "alloy/core/memory/allocator.hpp"
 #include "alloy/core/utilities/result.hpp"
 

@@ -17,6 +17,7 @@
 #endif
 
 #include "alloy/core/intrinsics.hpp"
+
 #include "alloy/render/texture/texture_dimension.hpp"
 #include "alloy/render/texture/texture_format.hpp"
 #include "alloy/render/texture/texture_spec.hpp"

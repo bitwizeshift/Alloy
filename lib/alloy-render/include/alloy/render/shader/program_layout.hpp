@@ -16,11 +16,10 @@
 # pragma once
 #endif
 
+#include "alloy/render/error.hpp"
 #include "alloy/render/shader/program_spec.hpp"
 #include "alloy/render/shader/shader_data_type.hpp"
 #include "alloy/render/shader/shader_stage.hpp"
-
-#include "alloy/render/error.hpp"
 
 #include "alloy/core/containers/hash_map.hpp"
 #include "alloy/core/containers/vector.hpp"

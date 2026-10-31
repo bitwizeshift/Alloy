@@ -16,6 +16,7 @@
 # pragma once
 #endif
 
+#include "alloy/core/api.hpp"
 #include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/geometry/capsule.hpp"
 #include "alloy/core/geometry/oriented_box.hpp"
@@ -23,8 +24,6 @@
 #include "alloy/core/geometry/ray.hpp"
 #include "alloy/core/geometry/sphere.hpp"
 #include "alloy/core/geometry/triangle.hpp"
-
-#include "alloy/core/api.hpp"
 #include "alloy/core/precision.hpp"
 
 #include <concepts> // std::same_as

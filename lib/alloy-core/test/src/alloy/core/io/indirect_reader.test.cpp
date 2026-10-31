@@ -5,7 +5,6 @@
 #include <alloy/core/io/indirect_reader.hpp>
 
 #include "test_doubles.hpp"
-
 #include <alloy/core/utilities/result.hpp>
 
 #include <catch2/catch_test_macros.hpp>

@@ -15,11 +15,10 @@
 # pragma once
 #endif
 
-#include "alloy/core/model/color.hpp"
-
 #include "alloy/core/api.hpp"
 #include "alloy/core/containers/vector.hpp"
 #include "alloy/core/memory/allocator.hpp"
+#include "alloy/core/model/color.hpp"
 #include "alloy/core/utilities/result.hpp"
 
 #include <cstddef>      // std::size_t, std::byte

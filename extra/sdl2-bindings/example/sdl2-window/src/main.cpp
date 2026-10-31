@@ -4,8 +4,10 @@
 
 #include <alloy/core/intrinsics.hpp>
 #include <alloy/core/utilities/signal.hpp>
+
 #include <alloy/extra/sdl2-bindings/sdl2_gl_window.hpp>
 #include <alloy/extra/sdl2-bindings/sdl2_pump_source.hpp>
+
 #include <alloy/platform/event.hpp>
 #include <alloy/platform/events/window_events.hpp>
 #include <alloy/platform/message_pump.hpp>

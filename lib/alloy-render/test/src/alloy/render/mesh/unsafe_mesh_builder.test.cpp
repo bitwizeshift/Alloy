@@ -4,9 +4,9 @@
 
 #include <alloy/render/mesh/unsafe_mesh_builder.hpp>
 
+#include "mesh_test_utilities.hpp"
 #include <alloy/render/mesh/index_format.hpp>
 #include <alloy/render/mesh/mesh.hpp>
-#include "mesh_test_utilities.hpp"
 
 #include <alloy/core/geometry/point/point2.hpp>
 #include <alloy/core/geometry/point/point3.hpp>

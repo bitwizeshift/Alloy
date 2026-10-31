@@ -15,11 +15,10 @@
 # pragma once
 #endif
 
-#include "alloy/core/model/camera.hpp"
-#include "alloy/core/model/transform.hpp"
-
 #include "alloy/core/math/interpolation.hpp"
 #include "alloy/core/math/matrix/matrix4.hpp"
+#include "alloy/core/model/camera.hpp"
+#include "alloy/core/model/transform.hpp"
 #include "alloy/core/precision.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 

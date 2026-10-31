@@ -4,9 +4,8 @@
 
 #include <alloy/core/math/clamped.hpp>
 
-#include <alloy/core/math/saturated.hpp>
-
 #include <alloy/core/intrinsics.hpp>
+#include <alloy/core/math/saturated.hpp>
 #include <alloy/core/utilities/result.hpp>
 
 #include <catch2/catch_test_macros.hpp>

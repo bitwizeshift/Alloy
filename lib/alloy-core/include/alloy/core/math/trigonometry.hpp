@@ -16,10 +16,9 @@
 # pragma once
 #endif
 
+#include "alloy/core/api.hpp"
 #include "alloy/core/math/angle/basic_angle.hpp"
 #include "alloy/core/math/angle/radian.hpp"
-
-#include "alloy/core/api.hpp"
 #include "alloy/core/precision.hpp"
 
 namespace alloy::core {

@@ -6,11 +6,10 @@
 // allowed to use 'std::fopen', which Microsoft decided to deprecate.
 #include "alloy/platform/filesystem/disk_filesystem.hpp"
 
-#include "alloy/platform/filesystem/file.hpp"
-#include "alloy/platform/filesystem/file_stream.hpp"
-
 #include "alloy/platform/buffers/const_buffer.hpp"
 #include "alloy/platform/buffers/mutable_buffer.hpp"
+#include "alloy/platform/filesystem/file.hpp"
+#include "alloy/platform/filesystem/file_stream.hpp"
 
 #include "alloy/core/intrinsics.hpp"       // core::compiler::unreachable
 #include "alloy/core/memory/allocator.hpp"

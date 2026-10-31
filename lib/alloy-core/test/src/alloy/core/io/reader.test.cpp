@@ -4,10 +4,9 @@
 
 #include <alloy/core/io/reader.hpp>
 
-#include <alloy/core/io/error.hpp>
 #include "test_doubles.hpp"
-
 #include <alloy/core/containers/vector.hpp>
+#include <alloy/core/io/error.hpp>
 #include <alloy/core/utilities/result.hpp>
 
 #include <catch2/catch_test_macros.hpp>

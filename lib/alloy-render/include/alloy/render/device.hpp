@@ -17,7 +17,6 @@
 #endif
 
 #include "alloy/render/error.hpp"
-
 #include "alloy/render/material/material_spec.hpp"
 #include "alloy/render/mesh/mesh.hpp"
 #include "alloy/render/model/model_spec.hpp"

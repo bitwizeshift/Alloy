@@ -21,6 +21,7 @@
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/utilities/delegate.hpp"
 #include "alloy/core/utilities/not_null.hpp"
+
 #include "alloy/platform/buffers/mutable_buffer.hpp"
 
 #include <chrono>      // std::chrono

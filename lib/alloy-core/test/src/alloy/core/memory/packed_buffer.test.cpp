@@ -5,7 +5,6 @@
 #include <alloy/core/memory/packed_buffer.hpp>
 
 #include <alloy/core/memory/data_quantity.hpp>
-
 #include <alloy/core/utilities/result.hpp>
 
 #include <catch2/catch_test_macros.hpp>

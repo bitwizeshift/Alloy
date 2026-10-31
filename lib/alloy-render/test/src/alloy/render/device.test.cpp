@@ -5,7 +5,6 @@
 #include <alloy/render/device.hpp>
 
 #include <alloy/render/error.hpp>
-
 #include <alloy/render/material/material_spec.hpp>
 #include <alloy/render/mesh/3d/cube_builder.hpp>
 #include <alloy/render/mesh/mesh.hpp>

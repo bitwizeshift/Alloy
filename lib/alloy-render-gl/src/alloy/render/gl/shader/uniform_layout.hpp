@@ -17,6 +17,7 @@
 #endif
 
 #include "alloy/core/containers/vector.hpp"
+
 #include "alloy/render/shader/resolved_parameters.hpp"
 #include "alloy/render/shader/shader_data_type.hpp"
 

@@ -8,6 +8,7 @@
 
 #include "alloy/core/assert.hpp"
 #include "alloy/core/utilities/not_null.hpp"
+
 #include "alloy/platform/events/keyboard_events.hpp"
 #include "alloy/platform/events/mouse_events.hpp"
 #include "alloy/platform/events/window_events.hpp"

@@ -4,10 +4,10 @@
 
 #include <alloy/render/mesh/mesh.hpp>
 
+#include "mesh_test_utilities.hpp"
 #include <alloy/render/mesh/index_format.hpp>
 #include <alloy/render/mesh/primitive_topology.hpp>
 #include <alloy/render/mesh/winding_order.hpp>
-#include "mesh_test_utilities.hpp"
 
 #include <alloy/core/containers/vector.hpp>
 #include <alloy/core/geometry/axis_aligned_box.hpp>

@@ -18,7 +18,6 @@
 #include <alloy/core/geometry/rectangle.hpp>
 #include <alloy/core/geometry/sphere.hpp>
 #include <alloy/core/geometry/triangle.hpp>
-
 #include <alloy/core/math/basis/basis3.hpp>
 #include <alloy/core/math/matrix/matrix4_constants.hpp>
 #include <alloy/core/math/vector/vector3.hpp>

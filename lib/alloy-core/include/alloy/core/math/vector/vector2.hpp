@@ -15,13 +15,12 @@
 # pragma once
 #endif
 
-#include "alloy/core/math/angle/radian.hpp" // core::radian
-#include "alloy/core/math/math.hpp"         // core::sqrt
-
-#include "alloy/core/api.hpp"                         // ALLOY_CORE_API
-#include "alloy/core/assert.hpp"                      // ALLOY_ASSERT
-#include "alloy/core/config.hpp"                      // ALLOY_CORE_EXCEPTIONS_ENABLED
+#include "alloy/core/api.hpp"    // ALLOY_CORE_API
+#include "alloy/core/assert.hpp" // ALLOY_ASSERT
+#include "alloy/core/config.hpp" // ALLOY_CORE_EXCEPTIONS_ENABLED
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/math/angle/radian.hpp"           // core::radian
+#include "alloy/core/math/math.hpp"                   // core::sqrt
 #include "alloy/core/precision.hpp"                   // core::real
 #include "alloy/core/utilities/piecewise_compare.hpp" // core::piecewise_compare
 

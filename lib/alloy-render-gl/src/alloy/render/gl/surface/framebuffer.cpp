@@ -7,6 +7,7 @@
 #include "alloy/render/gl/texture/texture.hpp"
 
 #include "alloy/core/utilities/result.hpp"
+
 #include "alloy/render/error.hpp"
 #include "alloy/render/texture/texture_format.hpp"
 #include "alloy/render/texture/texture_spec.hpp"

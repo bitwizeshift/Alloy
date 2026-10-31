@@ -6,7 +6,6 @@
 
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector2.hpp"
-
 #include "alloy/core/precision/real.hpp"
 
 //------------------------------------------------------------------------------

@@ -16,10 +16,9 @@
 # pragma once
 #endif
 
-#include "alloy/core/io/reader.hpp"
-
 #include "alloy/core/api.hpp"
 #include "alloy/core/assert.hpp"
+#include "alloy/core/io/reader.hpp"
 #include "alloy/core/utilities/result.hpp"
 
 #include <cstddef>      // std::byte, std::size_t

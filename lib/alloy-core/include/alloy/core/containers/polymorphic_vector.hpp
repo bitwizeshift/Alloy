@@ -17,7 +17,6 @@
 #endif
 
 #include "alloy/core/containers/vector.hpp"
-
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/memory/allocator.hpp"
 

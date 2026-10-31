@@ -15,12 +15,11 @@
 # pragma once
 #endif
 
-#include "alloy/core/utilities/delegate.hpp"
-
-#include "alloy/core/assert.hpp"            // ALLOY_ASSERT
+#include "alloy/core/assert.hpp" // ALLOY_ASSERT
 #include "alloy/core/containers/vector.hpp"
-#include "alloy/core/intrinsics.hpp"        // ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH
+#include "alloy/core/intrinsics.hpp" // ALLOY_COMPILER_MSVC_DIAGNOSTIC_PUSH
 #include "alloy/core/memory/allocator.hpp"
+#include "alloy/core/utilities/delegate.hpp"
 
 #include <algorithm>   // std::remove
 #include <concepts>

@@ -15,10 +15,9 @@
 # pragma once
 #endif
 
+#include "alloy/core/api.hpp"
 #include "alloy/core/string/string_view.hpp"
 #include "alloy/core/string/zstring_view.hpp"
-
-#include "alloy/core/api.hpp"
 #include "alloy/core/utilities/result.hpp"
 
 #include <string>  // std::char_traits

@@ -15,11 +15,10 @@
 # pragma once
 #endif
 
-#include "alloy/core/memory/lifetime_utilities.hpp"
-#include "alloy/core/memory/memory_resource.hpp"
-
 #include "alloy/core/assert.hpp"
 #include "alloy/core/intrinsics.hpp"
+#include "alloy/core/memory/lifetime_utilities.hpp"
+#include "alloy/core/memory/memory_resource.hpp"
 #include "alloy/core/utilities/not_null.hpp"
 #include "alloy/core/utilities/scope_guard.hpp"
 

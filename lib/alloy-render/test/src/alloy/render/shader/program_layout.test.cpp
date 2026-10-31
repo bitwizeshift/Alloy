@@ -4,11 +4,10 @@
 
 #include <alloy/render/shader/program_layout.hpp>
 
+#include <alloy/render/error.hpp>
 #include <alloy/render/shader/program_spec.hpp>
 #include <alloy/render/shader/shader_data_type.hpp>
 #include <alloy/render/shader/shader_stage.hpp>
-
-#include <alloy/render/error.hpp>
 #include <alloy/render/texture/texture_dimension.hpp>
 
 #include <alloy/core/memory/data_quantity.hpp>

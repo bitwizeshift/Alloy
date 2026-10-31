@@ -4,9 +4,8 @@
 
 #include <alloy/core/model/image.hpp>
 
-#include <alloy/core/model/color.hpp>
-
 #include <alloy/core/containers/vector.hpp>
+#include <alloy/core/model/color.hpp>
 #include <alloy/core/precision/real.hpp>
 #include <alloy/core/types.hpp>
 

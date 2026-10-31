@@ -16,10 +16,9 @@
 # pragma once
 #endif
 
+#include "alloy/render/resource/resource_handle.hpp"
 #include "alloy/render/shader/shader_data_type.hpp"
 #include "alloy/render/shader/shader_stage.hpp"
-
-#include "alloy/render/resource/resource_handle.hpp"
 #include "alloy/render/texture/texture_dimension.hpp"
 
 #include "alloy/core/string/string_view.hpp"

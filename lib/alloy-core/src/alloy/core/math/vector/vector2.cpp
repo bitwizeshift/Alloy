@@ -7,7 +7,6 @@
 #include "alloy/core/math/angle/radian.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/trigonometry.hpp"
-
 #include "alloy/core/precision/real.hpp"
 
 //=============================================================================

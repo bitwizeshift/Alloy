@@ -5,6 +5,7 @@
 #include <alloy/extra/logging/console_log_stream.hpp>
 #include <alloy/extra/logging/file_log_stream.hpp>
 #include <alloy/extra/logging/logger.hpp>
+
 #include <alloy/platform/buffers/mutable_buffer.hpp>
 #include <alloy/platform/filesystem/disk_filesystem.hpp>
 

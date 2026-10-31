@@ -4,6 +4,7 @@
 
 #include "alloy/core/geometry/intersection.hpp"
 
+#include "slab_clipping.hpp"
 #include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/geometry/capsule.hpp"
 #include "alloy/core/geometry/circle.hpp"
@@ -17,8 +18,6 @@
 #include "alloy/core/geometry/rectangle.hpp"
 #include "alloy/core/geometry/sphere.hpp"
 #include "alloy/core/geometry/triangle.hpp"
-#include "slab_clipping.hpp"
-
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/precision/real.hpp"

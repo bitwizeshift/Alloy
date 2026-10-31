@@ -15,14 +15,13 @@
 # pragma once
 #endif
 
+#include "alloy/core/assert.hpp"                 // IWYU pragma: keep
+#include "alloy/core/config.hpp"                 // ALLOY_CORE_EXCEPTIONS_ENABLED
+#include "alloy/core/intrinsics.hpp"             // ALLOY_COMPILER_DIAGNOSTIC_PUSH
 #include "alloy/core/math/angle/basic_angle.hpp" // core::almost_equal
 #include "alloy/core/math/angle/radian.hpp"      // radian
-#include "alloy/core/math/math.hpp"             // almost_equals
-
-#include "alloy/core/assert.hpp"            // IWYU pragma: keep
-#include "alloy/core/config.hpp"            // ALLOY_CORE_EXCEPTIONS_ENABLED
-#include "alloy/core/intrinsics.hpp"        // ALLOY_COMPILER_DIAGNOSTIC_PUSH
-#include "alloy/core/precision.hpp"         // real
+#include "alloy/core/math/math.hpp"              // almost_equals
+#include "alloy/core/precision.hpp"              // real
 
 #include <cstddef>   // std::size_t, std::ptrdiff_t
 #include <stdexcept> // std::out_of_range

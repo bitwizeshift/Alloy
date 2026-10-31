@@ -17,6 +17,7 @@
 #endif
 
 #include "alloy/core/containers/vector.hpp"
+
 #include "alloy/render/mesh/mesh.hpp"
 
 #include <GL/glew.h>

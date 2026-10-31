@@ -14,7 +14,6 @@
 #include <alloy/core/geometry/ray.hpp>
 #include <alloy/core/geometry/sphere.hpp>
 #include <alloy/core/geometry/triangle.hpp>
-
 #include <alloy/core/math/basis/basis3.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/vector/vector3.hpp>

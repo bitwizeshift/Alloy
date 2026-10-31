@@ -15,13 +15,12 @@
 # pragma once
 #endif
 
+#include "alloy/core/api.hpp"    // ALLOY_CORE_API
+#include "alloy/core/assert.hpp" // IWYU pragma: keep
+#include "alloy/core/config.hpp" // ALLOY_CORE_EXCEPTIONS_ENABLED
+#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp" // vector3
-
-#include "alloy/core/api.hpp"                 // ALLOY_CORE_API
-#include "alloy/core/assert.hpp"              // IWYU pragma: keep
-#include "alloy/core/config.hpp"              // ALLOY_CORE_EXCEPTIONS_ENABLED
-#include "alloy/core/intrinsics.hpp"
 #include "alloy/core/precision.hpp"           // core::real
 
 #include <cassert>     // assert

@@ -5,7 +5,6 @@
 #include <alloy/core/geometry/point/polar.hpp>
 
 #include <alloy/core/geometry/point/point2.hpp>
-
 #include <alloy/core/math/angle/radian.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/math_constants.hpp>

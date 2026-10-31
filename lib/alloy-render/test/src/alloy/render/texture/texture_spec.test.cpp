@@ -4,9 +4,8 @@
 
 #include <alloy/render/texture/texture_spec.hpp>
 
-#include <alloy/render/texture/texture_format.hpp>
-
 #include <alloy/render/error.hpp>
+#include <alloy/render/texture/texture_format.hpp>
 
 #include <alloy/core/model/color.hpp>
 #include <alloy/core/model/image.hpp>

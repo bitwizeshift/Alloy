@@ -4,13 +4,13 @@
 
 #include "shader_compiler.hpp"
 
-#include "alloy/render/gl/shader/shader.hpp"
-
 #include "alloy/render/gl/capabilities.hpp"
+#include "alloy/render/gl/shader/shader.hpp"
 
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/string/string_view.hpp"
 #include "alloy/core/utilities/result.hpp"
+
 #include "alloy/render/error.hpp"
 #include "alloy/render/shader/program_spec.hpp"
 

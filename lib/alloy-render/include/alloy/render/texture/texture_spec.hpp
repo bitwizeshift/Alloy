@@ -16,11 +16,10 @@
 # pragma once
 #endif
 
-#include "alloy/render/texture/texture_dimension.hpp"
-#include "alloy/render/texture/texture_format.hpp"
-
 #include "alloy/render/error.hpp"
 #include "alloy/render/resource/resource_handle.hpp"
+#include "alloy/render/texture/texture_dimension.hpp"
+#include "alloy/render/texture/texture_format.hpp"
 
 #include "alloy/core/model/image.hpp"
 #include "alloy/core/utilities/enum_traits.hpp"

@@ -17,7 +17,6 @@
 #endif
 
 #include "alloy/core/containers/deque.hpp"
-
 #include "alloy/core/utilities/explicitly_copyable.hpp"
 
 #include <stack> // std::stack

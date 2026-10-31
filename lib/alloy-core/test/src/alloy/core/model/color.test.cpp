@@ -4,9 +4,8 @@
 
 #include <alloy/core/model/color.hpp>
 
-#include <alloy/core/model/color_constants.hpp>
-
 #include <alloy/core/math/math.hpp>
+#include <alloy/core/model/color_constants.hpp>
 #include <alloy/core/precision/real.hpp>
 #include <alloy/core/types.hpp>
 

@@ -16,6 +16,7 @@
 #endif
 
 #include "alloy/core/intrinsics.hpp"
+
 #include "alloy/render/material/depth_compare.hpp"
 
 #include <GL/glew.h>

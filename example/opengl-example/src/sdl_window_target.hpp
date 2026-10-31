@@ -17,7 +17,9 @@
 #endif
 
 #include <alloy/core/utilities/not_null.hpp>
+
 #include <alloy/extra/sdl2-bindings/sdl2_gl_window.hpp>
+
 #include <alloy/render/gl/surface/presentation_target.hpp>
 
 namespace alloy::example {

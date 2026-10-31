@@ -6,7 +6,6 @@
 
 #include <alloy/core/geometry/plane.hpp>
 #include <alloy/core/geometry/point/point3.hpp>
-
 #include <alloy/core/math/angle/degree.hpp>
 #include <alloy/core/math/math.hpp>
 #include <alloy/core/math/matrix/matrix4_constants.hpp>

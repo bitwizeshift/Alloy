@@ -16,7 +16,6 @@
 #endif
 
 #include "alloy/core/math/vector/vector3.hpp"
-
 #include "alloy/core/precision/real.hpp"
 
 namespace alloy::core {

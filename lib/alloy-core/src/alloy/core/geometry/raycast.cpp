@@ -4,6 +4,7 @@
 
 #include "alloy/core/geometry/raycast.hpp"
 
+#include "slab_clipping.hpp"
 #include "alloy/core/geometry/axis_aligned_box.hpp"
 #include "alloy/core/geometry/capsule.hpp"
 #include "alloy/core/geometry/oriented_box.hpp"
@@ -11,8 +12,6 @@
 #include "alloy/core/geometry/ray.hpp"
 #include "alloy/core/geometry/sphere.hpp"
 #include "alloy/core/geometry/triangle.hpp"
-#include "slab_clipping.hpp"
-
 #include "alloy/core/math/math.hpp"
 #include "alloy/core/math/vector/vector3.hpp"
 #include "alloy/core/precision/real.hpp"
