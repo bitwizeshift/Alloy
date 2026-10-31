@@ -40,7 +40,6 @@ set(header_files
   include/alloy/core/precision.hpp
   include/alloy/core/precision/fixed.hpp
   include/alloy/core/precision/half.hpp
-  include/alloy/core/precision/real.hpp
 
   # Containers
   include/alloy/core/containers/deque.hpp

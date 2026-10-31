@@ -89,8 +89,6 @@ namespace alloy::core {
       noexcept -> void;
     static auto store_double(std::span<std::byte> destination, double val)
       noexcept -> void;
-    static auto store_real(std::span<std::byte> destination, float val)
-      noexcept -> void;
     /// \}
 
     //-------------------------------------------------------------------------
@@ -142,7 +140,6 @@ namespace alloy::core {
     static auto load_float(std::span<const std::byte> source) noexcept -> float;
     static auto load_double(std::span<const std::byte> source)
       noexcept -> double;
-    static auto load_real(std::span<const std::byte> source) noexcept -> float;
     /// \}
   };
 
@@ -256,15 +253,6 @@ auto alloy::core::unaligned::store_double(
   store_object(destination, val);
 }
 
-ALLOY_FORCE_INLINE
-auto alloy::core::unaligned::store_real(
-  std::span<std::byte> destination,
-  float val
-) noexcept -> void
-{
-  store_object(destination, val);
-}
-
 //-----------------------------------------------------------------------------
 // Loading
 //-----------------------------------------------------------------------------
@@ -358,13 +346,6 @@ auto alloy::core::unaligned::load_double(std::span<const std::byte> source)
   noexcept -> double
 {
   return load_object<double>(source);
-}
-
-ALLOY_FORCE_INLINE
-auto alloy::core::unaligned::load_real(std::span<const std::byte> source)
-  noexcept -> float
-{
-  return load_object<float>(source);
 }
 
 #endif /* ALLOY_CORE_MEMORY_UNALIGNED_HPP */

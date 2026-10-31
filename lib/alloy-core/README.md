@@ -12,7 +12,7 @@ will be leveraged by the various other libraries instead.
 
 ## Concerns
 
-* core types (e.g. `half`,`real`, `string_view`, etc)
+* core types (e.g. `half`, `string_view`, etc)
 * mathematical types / functionality (`trigonometry`, `vector[2,3,4]`, etc)
 * geometric types (e.g. `aabb`, `line`, `ray`, etc)
 * model types (`mesh`, `transform`, `vertex`, `camera`, `color`, etc)

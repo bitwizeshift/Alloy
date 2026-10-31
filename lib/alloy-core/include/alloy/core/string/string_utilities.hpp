@@ -106,7 +106,6 @@ namespace alloy::core {
     static auto to_float(string_view in) noexcept -> result<float,parse_error>;
     static auto to_double(string_view in)
       noexcept -> result<double,parse_error>;
-    static auto to_real(string_view in) noexcept -> result<float,parse_error>;
     /// \}
   };
 

@@ -5,7 +5,6 @@
 #include "alloy/core/string/string_utilities.hpp"
 
 #include "alloy/core/assert.hpp"
-#include "alloy/core/config.hpp"
 #include "alloy/core/intrinsics.hpp"
 #include "alloy/core/string/string_view.hpp"
 #include "alloy/core/string/zstring_view.hpp"
@@ -125,18 +124,6 @@ auto alloy::core::string_utilities::to_double(string_view in)
   noexcept -> result<double,parse_error>
 {
   return to_number<double>(in);
-}
-
-auto alloy::core::string_utilities::to_real(string_view in)
-  noexcept -> result<float,parse_error>
-{
-#if ALLOY_CORE_PRECISION == ALLOY_CORE_PRECISION_FLOAT
-    return to_float(in);
-#elif ALLOY_CORE_PRECISION == ALLOY_CORE_PRECISION_DOUBLE
-    return to_double(in);
-#else
-# error Uknown precision for 'to_real'
-#endif
 }
 
 auto alloy::core::get_message(string_utilities::parse_error error)

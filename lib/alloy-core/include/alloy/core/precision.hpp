@@ -18,6 +18,5 @@
 
 #include "alloy/core/precision/fixed.hpp" // IWYU pragma: export
 #include "alloy/core/precision/half.hpp" // IWYU pragma: export
-#include "alloy/core/precision/real.hpp" // IWYU pragma: export
 
 #endif /* ALLOY_CORE_PRECISION_HPP */
