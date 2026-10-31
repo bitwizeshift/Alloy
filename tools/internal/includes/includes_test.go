@@ -320,6 +320,30 @@ func TestCheckerCheck(t *testing.T) {
 			want:    nil,
 			wantErr: nil,
 		}, {
+			name: "duplicate include",
+			path: headerPath,
+			reader: strings.NewReader(lines(
+				`#include <array>`,
+				`#include <vector>`,
+				``,
+				`#include <array>`,
+			)),
+			want: []check.Finding{
+				{Line: 4, Message: `<array> is already included on line 1`},
+			},
+			wantErr: nil,
+		}, {
+			name: "duplicate relative include",
+			path: sourcePath,
+			reader: strings.NewReader(lines(
+				`#include "detail.hpp"`,
+				`#include "alloy/a/x/detail.hpp"`,
+			)),
+			want: []check.Finding{
+				{Line: 2, Message: `"alloy/a/x/detail.hpp" is already included on line 1`},
+			},
+			wantErr: nil,
+		}, {
 			name: "own name without header extension",
 			path: sourcePath,
 			reader: strings.NewReader(lines(
@@ -496,6 +520,28 @@ func TestCheckerFix(t *testing.T) {
 				`#if X`,
 				`# define Y`,
 				`#endif`,
+			),
+			wantErr: nil,
+		}, {
+			name: "duplicates",
+			path: sourcePath,
+			reader: strings.NewReader(lines(
+				`#include "alloy/a/x/y.hpp"`,
+				``,
+				`#include "alloy/a/a.hpp"`,
+				`#include "detail.hpp"`,
+				``,
+				`#include "alloy/a/a.hpp"`,
+				`#include "alloy/a/x/detail.hpp"`,
+				`#include <vector>`,
+			)),
+			want: lines(
+				`#include "alloy/a/x/y.hpp"`,
+				``,
+				`#include "detail.hpp"`,
+				`#include "alloy/a/a.hpp"`,
+				``,
+				`#include <vector>`,
 			),
 			wantErr: nil,
 		}, {

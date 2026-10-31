@@ -92,6 +92,8 @@ func (o origin) String() string {
 // to the file that includes them, which are taken to be from the same
 // library.
 //
+// A header may be included only once.
+//
 // Includes within conditional blocks are not checked, and a conditional block
 // may separate two groups in place of the blank line.
 type Checker struct {
@@ -112,8 +114,9 @@ type Checker struct {
 
 // Check returns a [check.Finding] for each include of the file at path, read
 // from r, that is out of order, is not separated from the includes around it
-// as its group requires, or is delimited with the wrong quotes. An error is
-// returned only if r cannot be read.
+// as its group requires, is delimited with the wrong quotes, or includes a
+// header that is already included. An error is returned only if r cannot be
+// read.
 func (c *Checker) Check(path string, r io.Reader) ([]check.Finding, error) {
 	lines, err := readLines(r)
 	if err != nil {
@@ -123,7 +126,13 @@ func (c *Checker) Check(path string, r io.Reader) ([]check.Finding, error) {
 	s := parseSection(lines)
 	var findings []check.Finding
 	var prev *directive
+	seen := map[string]*directive{}
 	for _, d := range s.directives() {
+		if first, ok := seen[f.resolve(d)]; ok {
+			findings = append(findings, finding(d, "%v is already included on line %d", d, first.line+1))
+			continue
+		}
+		seen[f.resolve(d)] = d
 		if f.angled(d) != d.angled {
 			findings = append(findings, finding(d, "%v must be included as %s", d, d.spelling(!d.angled)))
 		}
@@ -327,7 +336,7 @@ func (f *file) isOwn(header string) bool {
 
 // render returns the lines of the section s, with its includes grouped,
 // sorted, and delimited as required, each group followed by the conditional
-// blocks anchored to it.
+// blocks anchored to it. Only the first include of each header is kept.
 func (f *file) render(s *section, lines []string) []string {
 	type entry struct {
 		group group
@@ -335,11 +344,17 @@ func (f *file) render(s *section, lines []string) []string {
 	}
 	var includes, blocks []entry
 	anchor := ownGroup
+	seen := map[string]bool{}
 	for _, it := range s.items {
 		if it.include == nil {
 			blocks = append(blocks, entry{group: anchor, item: it})
 			continue
 		}
+		header := f.resolve(it.include)
+		if seen[header] {
+			continue
+		}
+		seen[header] = true
 		g := f.group(it.include)
 		anchor = max(anchor, g)
 		includes = append(includes, entry{group: g, item: it})
