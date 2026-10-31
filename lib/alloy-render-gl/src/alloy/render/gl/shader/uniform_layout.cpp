@@ -35,16 +35,13 @@ auto pack_columns(const Matrix& m) noexcept -> std::array<float, Columns * 4u>
   auto result = std::array<float, Columns * 4u>{};
   for (auto c = 0u; c < Columns; ++c) {
     for (auto r = 0u; r < Columns; ++r) {
-      result[(c * 4u) + r] = static_cast<float>(m.get(r, c));
+      result[(c * 4u) + r] = m.get(r, c);
     }
   }
   return result;
 }
 
 /// \brief Writes a single uniform value into the bytes of its buffer
-///
-/// Values are converted to 32-bit floats, since `core::real` may be
-/// configured as a double.
 struct pack_visitor
 {
   std::span<std::byte> destination;
@@ -78,39 +75,22 @@ struct pack_visitor
 
   auto operator()(const core::vector2& value) const noexcept -> void
   {
-    write(std::array{
-      static_cast<float>(value.x()),
-      static_cast<float>(value.y()),
-    });
+    write(std::array{value.x(), value.y()});
   }
 
   auto operator()(const core::vector3& value) const noexcept -> void
   {
-    write(std::array{
-      static_cast<float>(value.x()),
-      static_cast<float>(value.y()),
-      static_cast<float>(value.z()),
-    });
+    write(std::array{value.x(), value.y(), value.z()});
   }
 
   auto operator()(const core::vector4& value) const noexcept -> void
   {
-    write(std::array{
-      static_cast<float>(value.x()),
-      static_cast<float>(value.y()),
-      static_cast<float>(value.z()),
-      static_cast<float>(value.w()),
-    });
+    write(std::array{value.x(), value.y(), value.z(), value.w()});
   }
 
   auto operator()(const core::color& value) const noexcept -> void
   {
-    write(std::array{
-      static_cast<float>(value.r()),
-      static_cast<float>(value.g()),
-      static_cast<float>(value.b()),
-      static_cast<float>(value.a()),
-    });
+    write(std::array{value.r(), value.g(), value.b(), value.a()});
   }
 
   auto operator()(const core::matrix2& value) const noexcept -> void
